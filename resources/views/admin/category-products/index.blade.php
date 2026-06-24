@@ -132,6 +132,22 @@ a{text-decoration:none;color:inherit;}
 .filter-btn:hover,.filter-btn.on{border-color:var(--a);color:var(--a);background:var(--a-lt);}
 .cnt-badge{background:var(--a);color:#fff;font-size:9.5px;font-weight:700;padding:1px 5px;border-radius:100px;font-family:var(--mono);}
 
+/* ── Category select filter ── */
+.select-wrap{position:relative;}
+.select-wrap .si{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:13px;height:13px;color:var(--text3);pointer-events:none;z-index:1;}
+.filter-select{
+  height:36px;padding:0 30px 0 33px;background:var(--surface);border:1px solid var(--border2);
+  border-radius:var(--r-sm);font-size:12.5px;color:var(--text2);font-family:var(--font);
+  outline:none;cursor:pointer;transition:all var(--ease);appearance:none;-webkit-appearance:none;-moz-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239096b4' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 9px center;background-size:13px;
+}
+.filter-select:hover,.filter-select:focus{border-color:var(--a);color:var(--a);background-color:var(--a-lt);box-shadow:0 0 0 3px var(--a-glow);}
+.filter-select.on{border-color:var(--a);color:var(--a);background-color:var(--a-lt);}
+[data-theme="dark"] .filter-select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234c5272' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+}
+
 /* ═══ MAIN CARD ═══ */
 .main-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;animation:fadeUp .4s .15s ease both;}
 .card-head{padding:14px 20px;border-bottom:1px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:space-between;}
@@ -404,6 +420,17 @@ td{padding:13px 18px;font-size:13px;vertical-align:middle;}
       $total=$products->total()??$products->count();
       $active=$products->where('is_active',1)->count();
       $inactive=$total-$active;
+
+      /*
+       * Category options for the filter dropdown.
+       * RECOMMENDED: pass $categories from your controller (e.g. \App\Models\Category::orderBy('name')->get())
+       * for the complete list across all pages. Fallback below only reflects categories present
+       * on the products currently loaded (a single paginated page), so on a paginated list it may
+       * not show every category until you pass $categories explicitly.
+       */
+      $categoryOptions = isset($categories)
+          ? $categories
+          : $products->pluck('category')->filter()->unique('id')->sortBy('name')->values();
     @endphp
 
     {{-- STATS --}}
@@ -429,6 +456,17 @@ td{padding:13px 18px;font-size:13px;vertical-align:middle;}
           <svg class="si" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
           <input type="text" class="search-input" id="searchInput" placeholder="Search products…" oninput="filterRows()">
         </div>
+
+        <div class="select-wrap">
+          <svg class="si" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a2 2 0 012-2z"/></svg>
+          <select class="filter-select" id="categorySelect" onchange="onCategoryChange(this)">
+            <option value="">All Categories</option>
+            @foreach($categoryOptions as $cat)
+              <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+            @endforeach
+          </select>
+        </div>
+
         <button class="filter-btn on" id="fAll" onclick="setFilter('all',this)">All <span class="cnt-badge">{{ $total }}</span></button>
         <button class="filter-btn" id="fActive" onclick="setFilter('active',this)">
           <span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;"></span>Active
@@ -477,6 +515,7 @@ td{padding:13px 18px;font-size:13px;vertical-align:middle;}
             <tr class="prod-row"
               data-name="{{ strtolower($product->name) }}"
               data-status="{{ $product->is_active?'active':'inactive' }}"
+              data-category="{{ $product->category_id ?? '' }}"
               style="animation:fadeUp 0.35s {{ $loop->index*0.04 }}s ease both;opacity:0;animation-fill-mode:both;">
               <td><span class="serial">{{ str_pad($loop->iteration,2,'0',STR_PAD_LEFT) }}</span></td>
               <td>
@@ -576,12 +615,21 @@ window.setFilter=function(f,btn){
   filterRows();
 };
 
+window.onCategoryChange=function(sel){
+  sel.classList.toggle('on', sel.value !== '');
+  filterRows();
+};
+
 window.filterRows=function(){
   var q=document.getElementById('searchInput').value.toLowerCase().trim();
+  var cat=document.getElementById('categorySelect').value;
   var rows=document.querySelectorAll('.prod-row');
   var visible=0;
   rows.forEach(function(r){
-    var ok=(!q||(r.getAttribute('data-name')||'').includes(q))&&(activeFilter==='all'||r.getAttribute('data-status')===activeFilter);
+    var matchesSearch   = !q || (r.getAttribute('data-name')||'').includes(q);
+    var matchesStatus   = activeFilter==='all' || r.getAttribute('data-status')===activeFilter;
+    var matchesCategory = !cat || r.getAttribute('data-category')===cat;
+    var ok = matchesSearch && matchesStatus && matchesCategory;
     r.style.display=ok?'':'none';
     if(ok)visible++;
   });
