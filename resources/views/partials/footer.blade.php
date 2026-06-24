@@ -15,6 +15,7 @@
             --accent:  #7c6dfa;
             --accent2: #9b59f5;
             --green:   #7effc4;
+            --pink:    #ec6eaf;
             --font-mono: 'DM Mono', monospace;
             --font:      'DM Sans', sans-serif;
         }
@@ -22,6 +23,20 @@
         body {
             font-family: var(--font);
             background: #f0f2f8;
+        }
+
+        /* Respect reduced motion preference across the whole footer */
+        @media (prefers-reduced-motion: reduce) {
+            * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+        }
+
+        /* Visible keyboard focus, consistent everywhere */
+        .site-footer a:focus-visible,
+        .site-footer button:focus-visible,
+        .site-footer input:focus-visible {
+            outline: 2px solid var(--green);
+            outline-offset: 3px;
+            border-radius: 6px;
         }
 
         /* ═══════════════════════════════
@@ -96,20 +111,30 @@
             backdrop-filter: blur(14px);
             position: relative;
             overflow: hidden;
+            isolation: isolate;
+            transition: border-color 0.4s ease, box-shadow 0.4s ease;
         }
+        /* Subtle "alive" glow that drifts — gives the banner presence without being loud */
         .footer-cta::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(124,109,250,0.55), transparent);
+            inset: -40%;
+            background: conic-gradient(from 0deg, transparent 0deg, rgba(124,109,250,0.10) 90deg, transparent 180deg, rgba(236,110,175,0.08) 270deg, transparent 360deg);
+            animation: ctaSpin 16s linear infinite;
+            z-index: -1;
+            opacity: 0.7;
         }
+        @keyframes ctaSpin { to { transform: rotate(360deg); } }
         .footer-cta::after {
             content: '';
             position: absolute;
             bottom: 0; left: 50%; transform: translateX(-50%);
             width: 40%; height: 1px;
             background: linear-gradient(90deg, transparent, rgba(155,89,245,0.20), transparent);
+        }
+        .footer-cta:hover {
+            border-color: rgba(124,109,250,0.34);
+            box-shadow: 0 0 60px -20px rgba(124,109,250,0.45);
         }
 
         .cta-eyebrow {
@@ -128,7 +153,8 @@
             width: 5px; height: 5px;
             border-radius: 50%;
             background: var(--green);
-            animation: blink 1.8s ease-in-out infinite;
+            box-shadow: 0 0 0 0 rgba(126,255,196,0.6);
+            animation: blinkPulse 1.8s ease-in-out infinite;
         }
         .cta-text h2 {
             font-size: 23px;
@@ -144,7 +170,7 @@
             line-height: 1.6;
         }
 
-        /* Stats inside CTA */
+        /* Stats inside CTA — now with a count-up affordance hint */
         .cta-stats {
             display: flex;
             gap: 28px;
@@ -157,6 +183,7 @@
             font-weight: 500;
             color: white;
             letter-spacing: -0.02em;
+            font-variant-numeric: tabular-nums;
         }
         .cta-stat-label { font-size: 11.5px; color: rgba(255,255,255,0.40); }
 
@@ -182,12 +209,28 @@
             white-space: nowrap;
             box-shadow: 0 4px 24px rgba(124,109,250,0.40);
             transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
         }
+        /* Sheen sweep on hover — reads as "responsive", not decorative noise */
+        .cta-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -120%;
+            width: 60%; height: 100%;
+            background: linear-gradient(115deg, transparent, rgba(255,255,255,0.30), transparent);
+            transition: left 0.55s ease;
+        }
+        .cta-btn:hover::before { left: 130%; }
         .cta-btn:hover {
-            opacity: 0.9;
+            opacity: 0.96;
             transform: translateY(-1px);
             box-shadow: 0 8px 36px rgba(124,109,250,0.55);
         }
+        .cta-btn:active { transform: translateY(0) scale(0.98); }
+        .cta-btn svg { transition: transform 0.25s ease; }
+        .cta-btn:hover svg { transform: rotate(-8deg) scale(1.08); }
+
         .cta-btn-ghost {
             display: inline-flex;
             align-items: center;
@@ -202,13 +245,20 @@
             border-radius: 12px;
             text-decoration: none;
             white-space: nowrap;
-            transition: background 0.2s, color 0.2s, border-color 0.2s;
+            transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.15s;
+        }
+        .cta-btn-ghost span {
+            display: inline-block;
+            transition: transform 0.25s ease;
         }
         .cta-btn-ghost:hover {
             background: rgba(255,255,255,0.10);
             color: white;
             border-color: rgba(255,255,255,0.22);
+            transform: translateY(-1px);
         }
+        .cta-btn-ghost:hover span { transform: translateX(3px); }
+        .cta-btn-ghost:active { transform: translateY(0) scale(0.98); }
 
         /* ── Main grid ── */
         .footer-grid {
@@ -229,12 +279,14 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin-bottom: 14px;
+            display: inline-block;
         }
         .footer-brand-desc {
             font-size: 13.5px;
             color: rgba(255,255,255,0.45);
             line-height: 1.75;
             margin-bottom: 24px;
+            max-width: 320px;
         }
 
         /* Trust pill */
@@ -253,16 +305,22 @@
             letter-spacing: 0.06em;
             margin-bottom: 24px;
             width: fit-content;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .trust-pill:hover {
+            background: rgba(126,255,196,0.12);
+            border-color: rgba(126,255,196,0.30);
         }
         .trust-pill-dot {
             width: 5px; height: 5px;
             border-radius: 50%;
             background: var(--green);
-            animation: blink 1.8s ease-in-out infinite;
+            animation: blinkPulse 1.8s ease-in-out infinite;
         }
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50%       { opacity: 0.25; }
+        @keyframes blinkPulse {
+            0%   { opacity: 1;    box-shadow: 0 0 0 0 rgba(126,255,196,0.55); }
+            70%  { opacity: 0.35; box-shadow: 0 0 0 5px rgba(126,255,196,0); }
+            100% { opacity: 1;    box-shadow: 0 0 0 0 rgba(126,255,196,0); }
         }
 
         /* Social icons */
@@ -275,14 +333,16 @@
             display: flex; align-items: center; justify-content: center;
             color: rgba(255,255,255,0.55);
             text-decoration: none;
-            transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.15s;
+            transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.15s, box-shadow 0.2s;
         }
         .social-btn:hover {
             background: var(--accent);
             border-color: var(--accent);
             color: white;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px -4px rgba(124,109,250,0.55);
         }
+        .social-btn:active { transform: translateY(-1px) scale(0.95); }
 
         /* Link columns */
         .footer-col h3 {
@@ -293,6 +353,17 @@
             text-transform: uppercase;
             color: rgba(255,255,255,0.32);
             margin-bottom: 22px;
+            position: relative;
+            padding-bottom: 12px;
+        }
+        /* Tiny accent underline so section headers feel anchored, not floating labels */
+        .footer-col h3::after {
+            content: '';
+            position: absolute;
+            left: 0; bottom: 0;
+            width: 18px; height: 2px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+            border-radius: 2px;
         }
         .footer-col ul {
             list-style: none;
@@ -317,8 +388,8 @@
             flex-shrink: 0;
             transition: background 0.2s, transform 0.2s;
         }
-        .footer-col ul li a:hover { color: white; padding-left: 2px; }
-        .footer-col ul li a:hover::before { background: var(--green); transform: scale(1.4); }
+        .footer-col ul li a:hover { color: white; padding-left: 4px; }
+        .footer-col ul li a:hover::before { background: var(--green); transform: scale(1.5); }
 
         /* ── Newsletter column ── */
         .newsletter-col h3 {
@@ -329,6 +400,16 @@
             text-transform: uppercase;
             color: rgba(255,255,255,0.32);
             margin-bottom: 22px;
+            position: relative;
+            padding-bottom: 12px;
+        }
+        .newsletter-col h3::after {
+            content: '';
+            position: absolute;
+            left: 0; bottom: 0;
+            width: 18px; height: 2px;
+            background: linear-gradient(90deg, var(--green), transparent);
+            border-radius: 2px;
         }
         .newsletter-desc {
             font-size: 13px;
@@ -337,18 +418,17 @@
             margin-bottom: 18px;
         }
 
-        /*
-         * ★ FIX: The <form> is now the outer wrapper.
-         *   .newsletter-form-wrap  → provides the styled border/background box
-         *   .newsletter-form-inner → flex row for input + button (no block-level <form> breaking flex)
-         */
         .newsletter-form-wrap {
             background: rgba(255,255,255,0.05);
             border: 1px solid rgba(124,109,250,0.22);
             border-radius: 12px;
             overflow: hidden;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
             margin-bottom: 14px;
+        }
+        .newsletter-form-wrap:hover {
+            border-color: rgba(124,109,250,0.36);
+            background: rgba(255,255,255,0.07);
         }
         .newsletter-form-wrap:focus-within {
             border-color: var(--accent);
@@ -370,6 +450,10 @@
             min-width: 0;
         }
         .newsletter-form-inner input::placeholder { color: rgba(255,255,255,0.25); }
+        /* Invalid email feedback right on the field, no layout shift */
+        .newsletter-form-inner input:invalid:not(:placeholder-shown):not(:focus) {
+            box-shadow: inset 0 -2px 0 0 rgba(255,100,100,0.55);
+        }
         .newsletter-form-inner button {
             background: linear-gradient(135deg, #6c5ff5, #9b59f5);
             border: none;
@@ -379,12 +463,31 @@
             font-weight: 500;
             color: white;
             cursor: pointer;
-            transition: opacity 0.2s;
+            transition: opacity 0.2s, letter-spacing 0.2s;
             white-space: nowrap;
             letter-spacing: 0.03em;
             flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            min-width: 78px;
+            justify-content: center;
         }
-        .newsletter-form-inner button:hover { opacity: 0.85; }
+        .newsletter-form-inner button:hover { opacity: 0.88; letter-spacing: 0.05em; }
+        .newsletter-form-inner button:disabled { opacity: 0.55; cursor: default; letter-spacing: 0.03em; }
+
+        /* Lightweight inline spinner shown while the form submits */
+        .btn-spinner {
+            width: 11px; height: 11px;
+            border-radius: 50%;
+            border: 1.6px solid rgba(255,255,255,0.35);
+            border-top-color: white;
+            display: none;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .newsletter-form-inner button.is-loading .btn-spinner { display: inline-block; }
+        .newsletter-form-inner button.is-loading .btn-label { display: none; }
 
         /* Feedback messages */
         .nl-feedback {
@@ -393,22 +496,23 @@
             border-radius: 8px;
             margin-bottom: 14px;
             display: none;
+            align-items: center;
+            gap: 7px;
         }
+        .nl-feedback.show { display: flex; }
         .nl-feedback.success {
             background: rgba(126,255,196,0.08);
             border: 1px solid rgba(126,255,196,0.20);
             color: var(--green);
-            display: block;
         }
         .nl-feedback.error {
             background: rgba(255,100,100,0.08);
             border: 1px solid rgba(255,100,100,0.20);
             color: #ff9090;
-            display: block;
         }
 
         /* Mini stats */
-        .mini-stats { display: flex; gap: 16px; }
+        .mini-stats { display: flex; gap: 16px; flex-wrap: wrap; }
         .mini-stat {
             display: flex;
             align-items: center;
@@ -447,8 +551,41 @@
             color: rgba(255,255,255,0.32);
             text-decoration: none;
             transition: color 0.2s;
+            position: relative;
         }
-        .footer-bottom-links a:hover { color: rgba(255,255,255,0.72); }
+        .footer-bottom-links a::after {
+            content: '';
+            position: absolute;
+            left: 0; bottom: -3px;
+            width: 0; height: 1px;
+            background: rgba(255,255,255,0.5);
+            transition: width 0.2s ease;
+        }
+        .footer-bottom-links a:hover { color: rgba(255,255,255,0.85); }
+        .footer-bottom-links a:hover::after { width: 100%; }
+
+        /* Back-to-top — small, useful, on-brand */
+        .back-to-top {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px; height: 34px;
+            border-radius: 10px;
+            background: rgba(124,109,250,0.10);
+            border: 1px solid rgba(124,109,250,0.20);
+            color: rgba(255,255,255,0.55);
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.15s;
+            flex-shrink: 0;
+        }
+        .back-to-top:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+            transform: translateY(-2px);
+        }
+        .back-to-top svg { transition: transform 0.2s ease; }
+        .back-to-top:hover svg { transform: translateY(-2px); }
 
         .made-with {
             display: flex;
@@ -484,6 +621,7 @@
             .cta-stats { gap: 20px; }
             .cta-actions { flex-direction: column; width: 100%; }
             .cta-btn, .cta-btn-ghost { width: 100%; justify-content: center; }
+            .footer-bottom-links { gap: 18px; }
         }
     </style>
 </head>
@@ -492,7 +630,7 @@
 <!-- ══════════════════════════════
      FOOTER
 ══════════════════════════════ -->
-<footer class="site-footer">
+<footer class="site-footer" id="site-footer">
 
     <!-- Decorative geometry -->
     <div class="footer-ring footer-ring-1"></div>
@@ -517,15 +655,15 @@
                 </div>
                 <div class="cta-stats">
                     <div class="cta-stat">
-                        <span class="cta-stat-num">2.5M+</span>
+                        <span class="cta-stat-num" data-count-to="2.5" data-suffix="M+">0</span>
                         <span class="cta-stat-label">Donors</span>
                     </div>
                     <div class="cta-stat">
-                        <span class="cta-stat-num">₹480Cr+</span>
+                        <span class="cta-stat-num" data-count-to="480" data-prefix="₹" data-suffix="Cr+">₹0</span>
                         <span class="cta-stat-label">Raised</span>
                     </div>
                     <div class="cta-stat">
-                        <span class="cta-stat-num">12K+</span>
+                        <span class="cta-stat-num" data-count-to="12" data-suffix="K+">0</span>
                         <span class="cta-stat-label">Campaigns</span>
                     </div>
                 </div>
@@ -537,7 +675,7 @@
                     </svg>
                     Explore Campaigns
                 </a>
-                <a href="{{ route('campaign.create') }}" class="cta-btn-ghost">Start a Fundraiser →</a>
+                <a href="{{ route('campaign.create') }}" class="cta-btn-ghost">Start a Fundraiser <span>→</span></a>
             </div>
         </div>
 
@@ -613,7 +751,7 @@
                 </ul>
             </div>
 
-            <!-- Newsletter — FIXED -->
+            <!-- Newsletter -->
             <div class="newsletter-col">
                 <h3>Stay Updated</h3>
                 <p class="newsletter-desc">
@@ -621,27 +759,27 @@
                 </p>
 
                 {{--
-                    ★ FIX: <form> is the outer element.
-                    .newsletter-form-wrap provides the styled box.
-                    .newsletter-form-inner is the flex row (input + button).
-                    Putting <form> *inside* a flex container broke the layout in the previous version.
+                    <form> remains the outer element so Laravel/CSRF/validation work exactly as before.
+                    JS below only adds a loading state + inline success/error swap;
+                    it still allows a normal POST if JS is unavailable.
                 --}}
-                <form id="newsletter-form" action="{{ route('newsletter.subscribe') }}" method="POST">
+                <form id="newsletter-form" action="{{ route('newsletter.subscribe') }}" method="POST" novalidate>
                     @csrf
 
                     {{-- Success flash --}}
-                    @if(session('newsletter_success'))
-                        <div class="nl-feedback success">
-                            ✓ {{ session('newsletter_success') }}
-                        </div>
-                    @endif
+                    <div class="nl-feedback success @if(session('newsletter_success')) show @endif" id="nl-success">
+                        <span>✓</span><span>{{ session('newsletter_success') ?? 'You are subscribed. Welcome aboard!' }}</span>
+                    </div>
 
                     {{-- Validation error --}}
                     @error('email')
-                        <div class="nl-feedback error">
-                            {{ $message }}
+                        <div class="nl-feedback error show">
+                            <span>!</span><span>{{ $message }}</span>
                         </div>
                     @enderror
+                    <div class="nl-feedback error" id="nl-error">
+                        <span>!</span><span>Enter a valid email address.</span>
+                    </div>
 
                     <div class="newsletter-form-wrap">
                         <div class="newsletter-form-inner">
@@ -653,7 +791,10 @@
                                 value="{{ old('email') }}"
                                 required
                             >
-                            <button type="submit">Join</button>
+                            <button type="submit" id="nl-submit">
+                                <span class="btn-label">Join</span>
+                                <span class="btn-spinner" aria-hidden="true"></span>
+                            </button>
                         </div>
                     </div>
                 </form>
@@ -679,10 +820,17 @@
             <div class="made-with">
                 Made with <span class="heart-pulse">♥</span> for a better world
             </div>
-            <div class="footer-bottom-links">
-                <a href="#">Privacy</a>
-                <a href="#">Terms</a>
-                <a href="#">Security</a>
+            <div style="display:flex; align-items:center; gap:24px;">
+                <div class="footer-bottom-links">
+                    <a href="#">Privacy</a>
+                    <a href="#">Terms</a>
+                    <a href="#">Security</a>
+                </div>
+                <button class="back-to-top" id="back-to-top" aria-label="Back to top">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 19V5M5 12l7-7 7 7"/>
+                    </svg>
+                </button>
             </div>
         </div>
 
@@ -695,6 +843,7 @@
     const canvas = document.getElementById('footer-canvas');
     const footer = canvas.parentElement;
     const ctx    = canvas.getContext('2d');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     function resize() {
         canvas.width  = footer.offsetWidth;
@@ -794,9 +943,92 @@
             }
         }
 
-        requestAnimationFrame(tick);
+        if (!reduceMotion) requestAnimationFrame(tick);
     }
     tick();
+})();
+
+/* ── Count-up stats: trigger once when the CTA scrolls into view ── */
+(function () {
+    const stats = document.querySelectorAll('.cta-stat-num[data-count-to]');
+    if (!stats.length) return;
+
+    function animateCount(el) {
+        const target = parseFloat(el.dataset.countTo);
+        const prefix = el.dataset.prefix || '';
+        const suffix = el.dataset.suffix || '';
+        const decimals = target % 1 !== 0 ? 1 : 0;
+        const duration = 1100;
+        const start = performance.now();
+
+        function frame(now) {
+            const progress = Math.min((now - start) / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3); // ease-out-cubic
+            const value = (target * eased).toFixed(decimals);
+            el.textContent = `${prefix}${value}${suffix}`;
+            if (progress < 1) requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+    }
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) {
+        stats.forEach(el => {
+            const target = parseFloat(el.dataset.countTo);
+            el.textContent = `${el.dataset.prefix || ''}${target}${el.dataset.suffix || ''}`;
+        });
+        return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                animateCount(entry.target);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.4 });
+
+    stats.forEach(el => observer.observe(el));
+})();
+
+/* ── Newsletter form: lightweight client feedback, falls back to real POST ── */
+(function () {
+    const form = document.getElementById('newsletter-form');
+    if (!form) return;
+    const input = form.querySelector('input[name="email"]');
+    const button = document.getElementById('nl-submit');
+    const successEl = document.getElementById('nl-success');
+    const errorEl = document.getElementById('nl-error');
+
+    form.addEventListener('submit', function (e) {
+        const isValidEmail = input.checkValidity();
+        if (!isValidEmail) {
+            e.preventDefault();
+            successEl.classList.remove('show');
+            errorEl.classList.add('show');
+            input.focus();
+            return;
+        }
+        // Let the real form submission proceed (server handles persistence + CSRF);
+        // show a loading state in the meantime for immediate feedback.
+        errorEl.classList.remove('show');
+        button.classList.add('is-loading');
+        button.disabled = true;
+    });
+
+    input.addEventListener('input', function () {
+        errorEl.classList.remove('show');
+    });
+})();
+
+/* ── Back to top ── */
+(function () {
+    const btn = document.getElementById('back-to-top');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+        window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    });
 })();
 </script>
 
