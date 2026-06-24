@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('donations', function (Blueprint $table) {
+    Schema::create('donations', function (Blueprint $table) {
     $table->id();
     $table->index('payment_status');
     $table->index('donation_type');
@@ -54,7 +54,8 @@ return new class extends Migration
     $table->text('message')->nullable();
 
     $table->timestamps();
-});
+    
+    });
 
     }
 

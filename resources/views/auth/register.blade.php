@@ -1,52 +1,850 @@
-<x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
-        @csrf
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register — DonateBazaar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        <!-- Name -->
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+        :root {
+            --left-bg-1: #0d0e1a;
+            --left-bg-2: #13122b;
+            --left-bg-3: #1a1040;
+            --accent: #7c6dfa;
+            --accent2: #9b59f5;
+            --accent-glow: rgba(124,109,250,0.22);
+            --green: #7effc4;
+            --text: #1a1a2e;
+            --muted: #6b7280;
+            --border: rgba(0,0,0,0.1);
+            --bg: #f0f2f8;
+            --card: #ffffff;
+            --danger: #ef4444;
+            --font-mono: 'DM Mono', monospace;
+            --font: 'DM Sans', sans-serif;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before, body::after {
+            content: '';
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.13;
+            pointer-events: none;
+            z-index: 0;
+            animation: float 10s ease-in-out infinite;
+        }
+        body::before {
+            width: 540px; height: 540px;
+            background: radial-gradient(circle, #7c6dfa, transparent);
+            top: -140px; left: -140px;
+        }
+        body::after {
+            width: 440px; height: 440px;
+            background: radial-gradient(circle, #9b59f5, transparent);
+            bottom: -120px; right: -120px;
+            animation-delay: 5s;
+        }
+        @keyframes float {
+            0%, 100% { transform: translate(0,0) scale(1); }
+            50%       { transform: translate(18px, 18px) scale(1.04); }
+        }
+
+        .page-wrapper {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            max-width: 960px;
+            width: 100%;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 28px 90px rgba(13,14,26,0.28), 0 4px 24px rgba(0,0,0,0.10);
+            animation: rise 0.55s cubic-bezier(0.22,1,0.36,1) both;
+        }
+        @keyframes rise {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ══════════════════════════════
+           LEFT PANEL — dark navy/purple
+        ══════════════════════════════ */
+        .left-panel {
+            background:
+                radial-gradient(ellipse at 70% 10%, rgba(124,109,250,0.28) 0%, transparent 55%),
+                radial-gradient(ellipse at 20% 90%, rgba(155,89,245,0.20) 0%, transparent 50%),
+                linear-gradient(160deg, #0d0e1a 0%, #13122b 45%, #1a1040 100%);
+            padding: 40px 36px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            min-height: 640px;
+        }
+
+        /* decorative rings */
+        .deco-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid rgba(124,109,250,0.12);
+            pointer-events: none;
+        }
+        .deco-ring-1 { width: 340px; height: 340px; top: -90px; right: -90px; }
+        .deco-ring-2 { width: 230px; height: 230px; top: -30px; right: -30px; border-color: rgba(124,109,250,0.08); }
+        .deco-ring-3 { width: 280px; height: 280px; bottom: -70px; left: -70px; border-color: rgba(155,89,245,0.08); }
+        .deco-blob {
+            position: absolute;
+            width: 160px; height: 160px;
+            border-radius: 50%;
+            background: rgba(124,109,250,0.07);
+            bottom: 90px; right: -50px;
+            pointer-events: none;
+        }
+
+        /* grid overlay */
+        .left-panel::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(124,109,250,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(124,109,250,0.04) 1px, transparent 1px);
+            background-size: 32px 32px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Brand */
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            position: relative;
+            z-index: 1;
+            margin-bottom: 32px;
+        }
+        .brand-icon {
+            width: 38px; height: 38px;
+            background: rgba(124,109,250,0.18);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            border: 1px solid rgba(124,109,250,0.35);
+        }
+        .brand-name {
+            font-family: var(--font-mono);
+            font-size: 18px;
+            font-weight: 500;
+            color: white;
+            letter-spacing: -0.01em;
+        }
+
+        /* Heading block */
+        .left-content {
+            position: relative;
+            z-index: 1;
+            margin-bottom: 24px;
+        }
+        .left-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(124,109,250,0.14);
+            border: 1px solid rgba(124,109,250,0.28);
+            color: rgba(255,255,255,0.82);
+            font-family: var(--font-mono);
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.10em;
+            text-transform: uppercase;
+            padding: 5px 12px;
+            border-radius: 99px;
+            margin-bottom: 14px;
+        }
+        .tag-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--green);
+            flex-shrink: 0;
+            animation: blink 2s ease-in-out infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.35; }
+        }
+
+        .left-heading {
+            font-family: var(--font-mono);
+            font-size: 30px;
+            font-weight: 500;
+            color: white;
+            line-height: 1.22;
+            margin-bottom: 11px;
+            letter-spacing: -0.02em;
+        }
+        .left-heading .dim {
+            color: rgba(255,255,255,0.42);
+        }
+        .left-sub {
+            font-family: var(--font);
+            font-size: 13px;
+            color: rgba(255,255,255,0.52);
+            line-height: 1.68;
+        }
+
+        /* Impact metrics — card */
+        .impact-wrap {
+            position: relative;
+            z-index: 1;
+            margin-bottom: 22px;
+        }
+        .impact-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(126,255,196,0.10);
+            border: 1px solid rgba(126,255,196,0.22);
+            border-radius: 99px;
+            padding: 3px 10px;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            font-weight: 500;
+            color: var(--green);
+            letter-spacing: 0.06em;
+            margin-bottom: 9px;
+            width: fit-content;
+        }
+        .impact-dot {
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: var(--green);
+            animation: blink 1.3s ease-in-out infinite;
+        }
+        .impact-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(124,109,250,0.18);
+            border-radius: 14px;
+            padding: 13px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+        .impact-item {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+        .impact-icon-wrap {
+            width: 32px; height: 32px;
+            border-radius: 9px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .impact-info { flex: 1; min-width: 0; }
+        .impact-title {
+            font-family: var(--font);
+            font-size: 12.5px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.88);
+            line-height: 1.2;
+        }
+        .impact-desc {
+            font-size: 11px;
+            color: rgba(255,255,255,0.45);
+        }
+        .impact-tag {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 500;
+            padding: 2px 8px;
+            border-radius: 99px;
+            flex-shrink: 0;
+        }
+        .impact-divider { height: 1px; background: rgba(124,109,250,0.12); }
+
+        /* Feature trust list */
+        .trust-list {
+            position: relative;
+            z-index: 1;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+        .trust-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12.5px;
+            color: rgba(255,255,255,0.62);
+            font-weight: 500;
+        }
+        .trust-icon {
+            width: 30px; height: 30px;
+            background: rgba(124,109,250,0.12);
+            border: 1px solid rgba(124,109,250,0.22);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+
+        /* Stats */
+        .stats-row {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: auto;
+        }
+        .stat-card {
+            background: rgba(124,109,250,0.10);
+            border: 1px solid rgba(124,109,250,0.20);
+            border-radius: 11px;
+            padding: 11px 8px;
+            text-align: center;
+        }
+        .stat-num {
+            font-family: var(--font-mono);
+            font-size: 16px;
+            font-weight: 500;
+            color: white;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+        .stat-label {
+            font-family: var(--font);
+            font-size: 10px;
+            color: rgba(255,255,255,0.45);
+            font-weight: 500;
+        }
+
+        /* ══════════════════════════════
+           RIGHT PANEL — white form
+        ══════════════════════════════ */
+        .right-panel {
+            background: var(--card);
+            padding: 40px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-header { margin-bottom: 22px; }
+        .form-title {
+            font-family: var(--font-mono);
+            font-size: 24px;
+            font-weight: 500;
+            color: var(--text);
+            letter-spacing: -0.03em;
+            margin-bottom: 5px;
+        }
+        .form-subtitle {
+            font-family: var(--font);
+            font-size: 13.5px;
+            color: var(--muted);
+        }
+
+        /* Validation errors */
+        .alert-errors {
+            background: rgba(239,68,68,0.06);
+            border: 1px solid rgba(239,68,68,0.18);
+            border-radius: 10px;
+            padding: 11px 14px;
+            margin-bottom: 16px;
+        }
+        .alert-errors ul { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+        .alert-errors li {
+            font-size: 12.5px; color: #dc2626;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .alert-errors li::before { content: '·'; font-weight: bold; font-size: 16px; line-height: 1; }
+
+        /* Fields */
+        .fields { display: flex; flex-direction: column; gap: 14px; }
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .field { display: flex; flex-direction: column; gap: 6px; }
+        .field label {
+            font-family: var(--font);
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .input-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .input-wrap .ico {
+            position: absolute;
+            left: 13px; top: 50%;
+            transform: translateY(-50%);
+            color: #c4c9d4;
+            pointer-events: none;
+            transition: color 0.2s;
+            width: 15px; height: 15px;
+            z-index: 1;
+        }
+        .input-wrap input {
+            width: 100%;
+            height: 44px;
+            padding: 0 13px 0 40px;
+            font-family: var(--font);
+            font-size: 13.5px;
+            color: var(--text);
+            background: #f9fafb;
+            border: 1.5px solid rgba(0,0,0,0.09);
+            border-radius: 10px;
+            outline: none;
+            transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+        }
+        .input-wrap.has-toggle input { padding-right: 42px; }
+        .input-wrap input::placeholder { color: #c4c9d4; font-size: 13px; }
+        .input-wrap input:focus {
+            border-color: var(--accent);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(124,109,250,0.12);
+        }
+        .input-wrap:focus-within .ico { color: var(--accent); }
+
+        .pwd-toggle {
+            position: absolute;
+            right: 11px; top: 50%;
+            transform: translateY(-50%);
+            background: none; border: none;
+            cursor: pointer; color: #bbb;
+            padding: 4px;
+            display: flex; align-items: center;
+            z-index: 2;
+            transition: color 0.2s;
+        }
+        .pwd-toggle:hover { color: var(--accent); }
+
+        .field-error { font-size: 11.5px; color: var(--danger); }
+
+        /* Terms */
+        .terms-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+        }
+        .terms-row input[type="checkbox"] {
+            width: 14px; height: 14px;
+            margin-top: 2px;
+            accent-color: var(--accent);
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+        .terms-row label {
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.5;
+            cursor: pointer;
+        }
+        .terms-row a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .terms-row a:hover { text-decoration: underline; }
+
+        /* Submit */
+        .btn-register {
+            width: 100%;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 13.5px;
+            font-weight: 500;
+            color: white;
+            background: linear-gradient(135deg, #6c5ff5 0%, #9b59f5 100%);
+            border: none;
+            border-radius: 11px;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+            box-shadow: 0 4px 22px rgba(124,109,250,0.38);
+            letter-spacing: 0.01em;
+        }
+        .btn-register:hover {
+            opacity: 0.91;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 30px rgba(124,109,250,0.48);
+        }
+        .btn-register:active { transform: translateY(0); }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(0,0,0,0.07);
+        }
+        .divider span { font-size: 11.5px; color: #bbb; font-weight: 500; font-family: var(--font-mono); }
+
+        /* Google */
+        .btn-google {
+            width: 100%;
+            height: 43px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-family: var(--font);
+            font-size: 13.5px;
+            font-weight: 600;
+            color: #333;
+            background: white;
+            border: 1.5px solid rgba(0,0,0,0.09);
+            border-radius: 11px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        .btn-google:hover {
+            background: #f9fafb;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+        }
+
+        /* Login link */
+        .login-link {
+            text-align: center;
+            font-size: 13px;
+            color: var(--muted);
+        }
+        .login-link a {
+            color: var(--accent);
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .login-link a:hover { text-decoration: underline; }
+
+        /* ── Responsive ── */
+        @media (max-width: 720px) {
+            .page-wrapper {
+                grid-template-columns: 1fr;
+                max-width: 430px;
+                border-radius: 20px;
+            }
+            .left-panel { padding: 28px 24px; min-height: auto; }
+            .left-heading { font-size: 24px; }
+            .right-panel { padding: 34px 26px; }
+            .field-row { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 400px) {
+            .right-panel { padding: 28px 18px; }
+            .left-panel  { padding: 24px 18px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="page-wrapper">
+
+    <!-- ══════════════════════════════
+         LEFT PANEL
+    ══════════════════════════════ -->
+    <div class="left-panel">
+
+        <div class="deco-ring deco-ring-1"></div>
+        <div class="deco-ring deco-ring-2"></div>
+        <div class="deco-ring deco-ring-3"></div>
+        <div class="deco-blob"></div>
+
+        <!-- Brand — DM Mono -->
+        <a href="{{ route('home') }}" class="brand">
+            <span class="brand-icon">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="rgba(124,109,250,0.9)">
+                    <path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402C1 3.335 4.18 1 7.5 1c1.862 0 3.706.902 4.5 2.338C12.794 1.902 14.638 1 16.5 1 19.82 1 23 3.335 23 7.191c0 4.105-5.37 8.863-11 14.402z"/>
+                </svg>
+            </span>
+            <span class="brand-name">DonateBazaar</span>
+        </a>
+
+        <!-- Heading — DM Mono -->
+        <div class="left-content">
+            <div class="left-tag">
+                <span class="tag-dot"></span>
+                Join the movement
+            </div>
+            <h1 class="left-heading">
+                Be the Reason<br>
+                <span class="dim">Someone Smiles</span>
+            </h1>
+            <p class="left-sub">Create your free account and start making a difference. Every donation, no matter how small, changes a life.</p>
         </div>
 
-        <!-- Email Address -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        <!-- Impact card — mirrors login's activity card style -->
+        <div class="impact-wrap">
+            <div class="impact-badge">
+                <span class="impact-dot"></span>
+                Why join us
+            </div>
+            <div class="impact-card">
+                <div class="impact-item">
+                    <div class="impact-icon-wrap" style="background:linear-gradient(135deg,rgba(126,255,196,0.18),rgba(59,130,246,0.18));">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                    </div>
+                    <div class="impact-info">
+                        <div class="impact-title">Zero platform fees</div>
+                        <div class="impact-desc">100% of your donation reaches the cause</div>
+                    </div>
+                    <span class="impact-tag" style="background:rgba(126,255,196,0.12);color:var(--green);">Free</span>
+                </div>
+                <div class="impact-divider"></div>
+                <div class="impact-item">
+                    <div class="impact-icon-wrap" style="background:linear-gradient(135deg,rgba(124,109,250,0.2),rgba(236,72,153,0.15));">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(124,109,250,0.9)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                        </svg>
+                    </div>
+                    <div class="impact-info">
+                        <div class="impact-title">Bank-grade security</div>
+                        <div class="impact-desc">256-bit encrypted, fully PCI compliant</div>
+                    </div>
+                    <span class="impact-tag" style="background:rgba(124,109,250,0.15);color:rgba(180,170,255,0.9);">Secure</span>
+                </div>
+                <div class="impact-divider"></div>
+                <div class="impact-item">
+                    <div class="impact-icon-wrap" style="background:linear-gradient(135deg,rgba(251,191,36,0.18),rgba(249,115,22,0.15));">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(251,191,36,0.9)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+                            <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+                        </svg>
+                    </div>
+                    <div class="impact-info">
+                        <div class="impact-title">80G tax receipts</div>
+                        <div class="impact-desc">Instant certificates for every donation</div>
+                    </div>
+                    <span class="impact-tag" style="background:rgba(251,191,36,0.12);color:rgba(251,191,36,0.9);">80G</span>
+                </div>
+            </div>
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+        <!-- Trust signals -->
+        <ul class="trust-list">
+            <li class="trust-item">
+                <span class="trust-icon">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(124,109,250,0.85)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                </span>
+                Verified NGOs — every campaign manually reviewed
+            </li>
+            <li class="trust-item">
+                <span class="trust-icon">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(124,109,250,0.85)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                    </svg>
+                </span>
+                2.5M+ donors already trust DonateBazaar
+            </li>
+            <li class="trust-item">
+                <span class="trust-icon">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(124,109,250,0.85)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                    </svg>
+                </span>
+                ₹50Cr+ raised transparently for good causes
+            </li>
+        </ul>
 
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+        <!-- Stats — DM Mono numbers -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-num">2.5M+</div>
+                <div class="stat-label">Donors</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num">10K+</div>
+                <div class="stat-label">Campaigns</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num">₹50Cr+</div>
+                <div class="stat-label">Raised</div>
+            </div>
         </div>
 
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
+    </div><!-- /left-panel -->
 
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
+    <!-- ══════════════════════════════
+         RIGHT PANEL
+    ══════════════════════════════ -->
+    <div class="right-panel">
 
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+        <div class="form-header">
+            <h2 class="form-title">Create your account</h2>
+            <p class="form-subtitle">Join thousands of changemakers today</p>
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
-            </a>
-
-            <x-primary-button class="ms-4">
-                {{ __('Register') }}
-            </x-primary-button>
+        {{-- Validation Errors --}}
+        @if ($errors->any())
+        <div class="alert-errors">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
         </div>
-    </form>
-</x-guest-layout>
+        @endif
+
+        <form method="POST" action="{{ route('register') }}">
+            @csrf
+
+            <div class="fields">
+
+                {{-- Full Name --}}
+                <div class="field">
+                    <label for="name">Full Name</label>
+                    <div class="input-wrap">
+                        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                        </svg>
+                        <input type="text" id="name" name="name" value="{{ old('name') }}"
+                               placeholder="Enter Your Full Name" required autofocus autocomplete="name">
+                    </div>
+                    @error('name')
+                        <span class="field-error">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                {{-- Email --}}
+                <div class="field">
+                    <label for="email">Email Address</label>
+                    <div class="input-wrap">
+                        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+                        </svg>
+                        <input type="email" id="email" name="email" value="{{ old('email') }}"
+                               placeholder="Enter Your Email Address" required autocomplete="email">
+                    </div>
+                    @error('email')
+                        <span class="field-error">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                {{-- Passwords side by side --}}
+                <div class="field-row">
+                    <div class="field">
+                        <label for="password">Password</label>
+                        <div class="input-wrap has-toggle">
+                            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                            </svg>
+                            <input type="password" id="password" name="password"
+                                   placeholder="Min. 8 characters" required autocomplete="new-password">
+                            <button type="button" class="pwd-toggle" onclick="togglePwd('password', this)" aria-label="Show password">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                                </svg>
+                            </button>
+                        </div>
+                        @error('password')
+                            <span class="field-error">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="field">
+                        <label for="password_confirmation">Confirm Password</label>
+                        <div class="input-wrap has-toggle">
+                            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                            </svg>
+                            <input type="password" id="password_confirmation" name="password_confirmation"
+                                   placeholder="Repeat password" required autocomplete="new-password">
+                            <button type="button" class="pwd-toggle" onclick="togglePwd('password_confirmation', this)" aria-label="Show confirm password">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Terms --}}
+                <div class="terms-row">
+                    <input type="checkbox" id="terms" name="terms" required>
+                    <label for="terms">
+                        I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                    </label>
+                </div>
+
+                {{-- Submit --}}
+                <button type="submit" class="btn-register">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                        <line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/>
+                    </svg>
+                    Create Free Account
+                </button>
+
+                <div class="divider"><span>or</span></div>
+
+                {{-- Google OAuth --}}
+                <a href="#" class="btn-google">
+                    <svg width="17" height="17" viewBox="0 0 24 24">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                    </svg>
+                    Sign up with Google
+                </a>
+
+                <p class="login-link">
+                    Already have an account? <a href="{{ route('login') }}">Log in</a>
+                </p>
+
+            </div>
+        </form>
+
+    </div><!-- /right-panel -->
+
+</div><!-- /page-wrapper -->
+
+<script>
+function togglePwd(fieldId, btn) {
+    const input = document.getElementById(fieldId);
+    const isText = input.type === 'text';
+    input.type = isText ? 'password' : 'text';
+    btn.innerHTML = isText
+        ? `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`
+        : `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
+    btn.style.color = isText ? '' : '#7c6dfa';
+}
+</script>
+
+</body>
+</html>

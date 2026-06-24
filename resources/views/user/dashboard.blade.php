@@ -11,7 +11,7 @@
         <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-10 gap-6">
             <div>
                 <h1 class="text-3xl font-bold text-gray-900">
-                    Welcome back, {{ auth()->user()->name }} 👋
+                    Welcome {{ auth()->user()->name }} 
                 </h1>
                 <p class="text-gray-500 mt-2">
                     Manage your campaigns and track performance.
@@ -94,26 +94,54 @@
                                 {{ $campaign->title }}
                             </h3>
 
-                            {{-- STATUS BADGE --}}
-                            <div class="mb-4">
-                                @if(strtolower($campaign->status) == 'pending')
-                                    <span class="px-3 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-700">
-                                        Pending
-                                    </span>
-                                @elseif(strtolower($campaign->status) == 'approved')
-                                    <span class="px-3 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700">
-                                        Approved
-                                    </span>
-                                @elseif(strtolower($campaign->status) == 'rejected')
-                                    <span class="px-3 py-1 text-xs font-medium rounded-full bg-red-100 text-red-700">
-                                        Rejected
-                                    </span>
-                                @else
-                                    <span class="px-3 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-600">
-                                        {{ ucfirst($campaign->status) }}
-                                    </span>
-                                @endif
-                            </div>
+{{-- STATUS BADGE --}}
+<div class="mb-4">
+
+    @if(strtolower($campaign->campaign_state) == 'pending')
+
+        <span class="px-3 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-700">
+            Pending
+        </span>
+
+    @elseif(strtolower($campaign->campaign_state) == 'active')
+
+        <span class="px-3 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700">
+            Active
+        </span>
+
+    @elseif(strtolower($campaign->campaign_state) == 'paused')
+
+        <span class="px-3 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-700">
+            Paused
+        </span>
+
+    @elseif(strtolower($campaign->campaign_state) == 'rejected')
+
+        <span class="px-3 py-1 text-xs font-medium rounded-full bg-red-100 text-red-700">
+            Rejected
+        </span>
+
+    @elseif(strtolower($campaign->campaign_state) == 'completed')
+
+        <span class="px-3 py-1 text-xs font-medium rounded-full bg-emerald-100 text-emerald-700">
+            Completed
+        </span>
+
+    @elseif(strtolower($campaign->campaign_state) == 'expired')
+
+        <span class="px-3 py-1 text-xs font-medium rounded-full bg-gray-200 text-gray-700">
+            Expired
+        </span>
+
+    @else
+
+        <span class="px-3 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-600">
+            {{ ucfirst($campaign->campaign_state) }}
+        </span>
+
+    @endif
+
+</div>
 
                             {{-- RAISED + GOAL --}}
                             <div class="mb-3">
@@ -158,11 +186,13 @@
             {{-- EMPTY STATE --}}
             <div class="bg-white rounded-2xl shadow-md p-16 text-center">
                 <h3 class="text-xl font-semibold text-gray-800 mb-3">
-                    Start your first fundraiser 🚀
+                    Start your first fundraiser 
                 </h3>
+               
                 <p class="text-gray-500 mb-6">
                     You haven’t created any campaigns yet.
                 </p>
+                <br><br>
                 <a href="{{ route('campaign.create') }}"
                    class="inline-block bg-indigo-600 text-white px-6 py-3 rounded-xl hover:bg-indigo-700 transition">
                     Create Campaign

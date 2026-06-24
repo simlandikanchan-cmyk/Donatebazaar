@@ -37,13 +37,18 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
+    /* Reverse the migrations.
      */
+
+
     public function down(): void
+
+
     {
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
     }
+
+    
 };

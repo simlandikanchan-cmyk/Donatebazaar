@@ -2,60 +2,191 @@
 
 @section('content')
 
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Outfit:wght@300;400;500;600&display=swap');
 
-<div class="max-w-7xl mx-auto px-6 py-10">
-    <h2 class="text-3xl font-bold mb-8">Active Campaigns</h2>
+:root {
+    --purple-main: #7c3aed;
+    --indigo-main: #4f46e5;
+    --purple-light: #a78bfa;
+    --border: #ddd6fe;
+    --surface: #faf9ff;
+    --ink: #1e1b4b;
+    --ink-soft: #6d6aaf;
+}
 
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        @forelse($campaigns as $campaign)
-            <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition">
+body {
+    font-family: 'Outfit', sans-serif;
+}
 
-                {{-- Cover Image --}}
-                <div class="relative">
-                    <img src="{{ asset('storage/' . $campaign->cover_image) }}"
-                         class="w-full h-56 object-cover">
+/* Section */
+.campaign-section {
+    background: var(--surface);
+    padding: 80px 0;
+}
 
-                    <span class="absolute top-3 left-3 bg-green-600 text-white text-xs px-3 py-1 rounded-full">
-                        Verified
-                    </span>
-                </div>
+/* Title */
+.section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 40px;
+}
 
-                <div class="p-5">
+/* Card */
+.camp-card {
+    background: #fff;
+    border-radius: 24px;
+    border: 1.5px solid var(--border);
+    overflow: hidden;
+    transition: 0.3s;
+}
+.camp-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 50px rgba(124,58,237,.15);
+    border-color: var(--purple-light);
+}
 
-                    {{-- Title --}}
-                    <h3 class="text-lg font-semibold mb-2 line-clamp-2">
-                        {{ $campaign->title }}
-                    </h3>
+/* Image */
+.camp-img {
+    position: relative;
+    height: 220px;
+}
+.camp-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 
-                    {{-- Short Description --}}
-                    <p class="text-gray-600 text-sm mb-4 line-clamp-2">
-                        {{ $campaign->description }}
-                    </p>
+/* Badge */
+.badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(255,255,255,.9);
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--purple-main);
+}
 
-                    {{-- Raised Amount --}}
-                    <div class="mb-2">
-                        <div class="flex justify-between text-sm font-medium">
-                            <span>₹12,500 Raised</span>
-                            <span>₹{{ number_format($campaign->goal_amount) }}</span>
-                        </div>
+/* Content */
+.camp-body {
+    padding: 20px;
+}
 
-                        {{-- Progress Bar --}}
-                        <div class="w-full bg-gray-200 rounded-full h-2 mt-1">
-                            <div class="bg-blue-600 h-2 rounded-full"
-                                 style="width: 40%"></div>
-                        </div>
+.camp-title {
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--ink);
+    margin-bottom: 8px;
+}
+
+.camp-desc {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-bottom: 15px;
+}
+
+/* Progress */
+.progress-track {
+    height: 6px;
+    background: #e0e7ff;
+    border-radius: 4px;
+    overflow: hidden;
+}
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--purple-main), var(--indigo-main));
+}
+
+/* Button */
+.btn-donate {
+    display: block;
+    text-align: center;
+    background: linear-gradient(135deg, var(--purple-main), var(--indigo-main));
+    color: #fff;
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: 600;
+    margin-top: 16px;
+    text-decoration: none;
+    transition: 0.2s;
+}
+.btn-donate:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+}
+</style>
+
+
+<section class="campaign-section">
+    <div class="max-w-7xl mx-auto px-6">
+
+        <h2 class="section-title">All Campaigns</h2>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            @forelse($campaigns as $campaign)
+
+                @php
+                    $raised = $campaign->donations->sum('amount');
+                    $goal = $campaign->goal_amount;
+                    $percent = $goal > 0 ? min(100, round(($raised / $goal) * 100)) : 0;
+                @endphp
+
+                <div class="camp-card">
+
+                    {{-- Image --}}
+                    <div class="camp-img">
+                        @if($campaign->cover_image)
+                            <img src="{{ asset('storage/' . $campaign->cover_image) }}" alt="">
+                        @else
+                            <div class="flex items-center justify-center h-full text-gray-400">
+                                No Image
+                            </div>
+                        @endif
+
+                        <div class="badge">{{ $percent }}% Funded</div>
                     </div>
 
-                    {{-- Donate Button --}}
-                    <a href="#"
-                       class="mt-4 block text-center bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition font-semibold">
-                        Donate Now
-                    </a>
+                    {{-- Content --}}
+                    <div class="camp-body">
+
+                        <h3 class="camp-title">{{ $campaign->title }}</h3>
+
+                        <p class="camp-desc">
+                            {{ \Illuminate\Support\Str::limit($campaign->description, 80) }}
+                        </p>
+
+                        {{-- Amount --}}
+                        <div class="flex justify-between text-sm mb-2">
+                            <span><strong>₹{{ number_format($raised) }}</strong></span>
+                            <span>₹{{ number_format($goal) }}</span>
+                        </div>
+
+                        {{-- Progress --}}
+                        <div class="progress-track">
+                            <div class="progress-fill" style="width: {{ $percent }}%"></div>
+                        </div>
+
+                        {{-- Button --}}
+                        <a href="#" class="btn-donate">
+                            Donate Now
+                        </a>
+
+                    </div>
+
                 </div>
-            </div>
-        @empty
-            <p>No campaigns available.</p>
-        @endforelse
+
+            @empty
+                <p>No campaigns available.</p>
+            @endforelse
+
+        </div>
     </div>
-</div>
+</section>
+
 @endsection

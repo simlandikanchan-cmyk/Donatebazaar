@@ -9,24 +9,22 @@ use Symfony\Component\HttpFoundation\Response;
 class AdminMiddleware
 {
     /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * Allow only authenticated admin users.
      */
-    // public function handle(Request $request, Closure $next): Response
-    // {
-    //     return $next($request);
-    // }
+    public function handle(Request $request, Closure $next): Response
+    {
+        $user = auth()->user();
 
+        // Not logged in → redirect
+        if (!$user) {
+            return redirect()->route('login');
+        }
 
-public function handle($request, Closure $next)
-{
-    if(auth()->check() && auth()->user()->role === 'admin'){
+        // Not admin → block
+        if ($user->role !== 'admin') {
+            abort(403, 'Access denied. Admins only.');
+        }
+
         return $next($request);
     }
-
-    abort(403, 'Unauthorized');
-}
-
-
 }
