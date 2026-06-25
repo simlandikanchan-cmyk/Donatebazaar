@@ -180,6 +180,24 @@ class PaymentController extends Controller
 
     /*
     |--------------------------------------------------------------------------
+    | Helper — build campaign public URL
+    |--------------------------------------------------------------------------
+    */
+
+    private function campaignUrl(Campaign $campaign): string
+    {
+        if (! $campaign->relationLoaded('category')) {
+            $campaign->load('category');
+        }
+
+        return route('campaign.public', [
+            'category' => $campaign->category->slug,
+            'slug'     => $campaign->slug,
+        ]);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
     | STEP 1 → Redirect To Payment
     |--------------------------------------------------------------------------
     */
@@ -508,14 +526,52 @@ class PaymentController extends Controller
 
         $campaign->load('category');
 
+        /*
+        |----------------------------------------------------------------------
+        | Completed-payment guard
+        |
+        | If someone navigates directly to /payment/{id} after already paying
+        | (e.g. back button, refresh, shared URL) we redirect them away
+        | BEFORE the view renders, so the Razorpay modal never re-opens.
+        |
+        | This MUST live here in the controller, not in a Blade @php block.
+        | Calling redirect()->send() inside Blade causes a 500 because
+        | headers are already being written when the template is rendering.
+        |----------------------------------------------------------------------
+        */
+
+        if ($donation->payment_status === 'completed') {
+            return $this->successToCampaign(
+                $campaign,
+                'Your donation has already been completed. Thank you!'
+            );
+        }
+
         return view('payment.index', [
             'campaign'     => $campaign,
+
+            /*
+             * $donation is passed to the view so Blade can read
+             * $donation->payment_status via data-payment-status on the
+             * pay button — without any redirect()->send() in the template.
+             */
+            'donation'     => $donation,
+
             'amount'       => $amount,
             'platform_fee' => $fees['platform_fee'],
             'net_amount'   => $fees['net_amount'],
             'order_id'     => $order['id'],
             'donation_id'  => $donation->id,
             'razorpay_key' => config('services.razorpay.key'),
+
+            /*
+             * guest_phone: passed so the Blade @php block can resolve
+             * $donorPhone even when the user is not authenticated.
+             */
+            'guest_phone'  => null,
+             'donor_name'   => Auth::user()?->name  ?? 'Guest Donor',
+             'donor_email'  => Auth::user()?->email ?? '',
+             'donor_phone'  => Auth::user()?->phone ?? '',
         ]);
     }
 
@@ -659,15 +715,11 @@ class PaymentController extends Controller
             // Send receipt email
             $this->sendReceiptEmail($donation);
 
-            // optimized version
-
-        //     Mail::to($donation->email)
-        // ->queue(new DonationReceiptMail($donation));
-
             return response()->json([
                 'success'      => true,
                 'message'      => 'Payment successful. Thank you for your donation!',
                 'redirect_url' => $this->campaignUrl($donation->campaign),
+                'paid_at'      => $donation->paid_at?->toISOString(),
             ]);
 
         } catch (SignatureVerificationError $e) {
@@ -718,24 +770,6 @@ class PaymentController extends Controller
         } finally {
             $lock->release();
         }
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Helper — build campaign public URL
-    |--------------------------------------------------------------------------
-    */
-
-    private function campaignUrl(Campaign $campaign): string
-    {
-        if (! $campaign->relationLoaded('category')) {
-            $campaign->load('category');
-        }
-
-        return route('campaign.public', [
-            'category' => $campaign->category->slug,
-            'slug'     => $campaign->slug,
-        ]);
     }
 
     /*

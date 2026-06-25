@@ -1,6 +1,6 @@
-@extends('layouts.app')
 
-@section('content')
+
+<?php $__env->startSection('content'); ?>
 
 <style>
 
@@ -27,17 +27,17 @@
 <div class="min-h-screen flex items-center justify-center px-4 py-10"
      style="background: linear-gradient(180deg,#F8FAFC 0%,#EEF2FF 100%);">
 
-    {{-- Main Card --}}
+    
     <div class="w-full max-w-md overflow-hidden shadow-2xl"
          style="background:#fff; border-radius:28px; border:1px solid #E5E7EB;">
 
-        {{-- Top Banner --}}
+        
         <div class="relative px-6 pt-6 pb-5"
              style="background: linear-gradient(135deg,#4F46E5 0%,#7C3AED 100%);">
 
             <div class="flex items-center justify-between mb-5">
 
-                {{-- Brand --}}
+                
                 <div class="flex items-center gap-3">
                     <div class="w-11 h-11 rounded-2xl bg-white/15 backdrop-blur flex items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg"
@@ -60,7 +60,7 @@
                     </div>
                 </div>
 
-                {{-- Secure Badge --}}
+                
                 <div class="px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1"
                      style="background: rgba(255,255,255,0.15); color:#fff;">
 
@@ -79,7 +79,7 @@
                 </div>
             </div>
 
-            {{-- Campaign Info --}}
+            
             <div class="bg-white/10 backdrop-blur rounded-2xl p-4 border border-white/10">
 
                 <p class="text-[11px] uppercase tracking-[2px] text-indigo-100 mb-2">
@@ -87,7 +87,8 @@
                 </p>
 
                 <h1 class="text-white text-lg font-semibold leading-snug">
-                    {{ $campaign->title }}
+                    <?php echo e($campaign->title); ?>
+
                 </h1>
 
                 <div class="flex items-center gap-2 mt-3 text-indigo-100 text-sm">
@@ -103,22 +104,22 @@
                         <circle cx="12" cy="10" r="3"/>
                     </svg>
 
-                    <span>{{ $campaign->location ?? 'India' }}</span>
+                    <span><?php echo e($campaign->location ?? 'India'); ?></span>
 
-                    @if($campaign->is_urgent)
+                    <?php if($campaign->is_urgent): ?>
                     <span class="ml-auto px-2 py-1 rounded-full text-[10px] font-semibold"
                           style="background:#FEF3C7; color:#B45309;">
                         Ending Soon
                     </span>
-                    @endif
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
 
-        {{-- Card Body --}}
+        
         <div class="p-6">
 
-            {{-- Donation Amount --}}
+            
             <div class="rounded-3xl text-center py-6 px-5 mb-6"
                  style="background: linear-gradient(180deg,#EEF2FF 0%,#F8FAFC 100%); border:1px solid #E0E7FF;">
 
@@ -127,7 +128,8 @@
                 </p>
 
                 <h2 class="text-5xl font-bold text-gray-900 tracking-tight">
-                    ₹{{ number_format($amount, 2) }}
+                    ₹<?php echo e(number_format($amount, 2)); ?>
+
                 </h2>
 
                 <p class="text-sm text-gray-500 mt-2">
@@ -135,7 +137,7 @@
                 </p>
             </div>
 
-            {{-- Summary --}}
+            
             <div class="space-y-4 mb-6">
 
                 <div class="flex items-center justify-between">
@@ -143,13 +145,10 @@
                         Donor
                     </span>
 
-                    {{--
-                        Null-safe operator (?->) avoids a crash for guest
-                        users, where auth()->user() returns null. Without
-                        it, ->name on null throws before ?? can fall back.
-                    --}}
+                    
                     <span class="font-semibold text-gray-800">
-                        {{ auth()->user()?->name ?? 'Guest Donor' }}
+                        <?php echo e(auth()->user()?->name ?? 'Guest Donor'); ?>
+
                     </span>
                 </div>
 
@@ -191,7 +190,8 @@
                     </span>
 
                     <span class="font-medium text-gray-800">
-                        DN-{{ str_pad($donation_id, 6, '0', STR_PAD_LEFT) }}
+                        DN-<?php echo e(str_pad($donation_id, 6, '0', STR_PAD_LEFT)); ?>
+
                     </span>
                 </div>
 
@@ -211,7 +211,8 @@
                     </span>
 
                     <span class="font-medium text-gray-800 truncate max-w-[60%] text-right">
-                        {{ auth()->user()?->email ?? $guest_email ?? 'N/A' }}
+                        <?php echo e(auth()->user()?->email ?? $guest_email ?? 'N/A'); ?>
+
                     </span>
                 </div>
 
@@ -221,21 +222,17 @@
                     </span>
 
                     <span class="font-medium text-gray-800">
-                        {{ auth()->user()?->phone ?? $guest_phone ?? 'N/A' }}
+                        <?php echo e(auth()->user()?->phone ?? $guest_phone ?? 'N/A'); ?>
+
                     </span>
                 </div>
             </div>
 
-            {{--
-                Pay Button — data-payment-status lets the script below
-                decide whether to auto-open Razorpay on page load. Without
-                this, refreshing the page after a successful payment would
-                re-open the modal and risk a duplicate charge.
-            --}}
+            
             <button id="rzp-button"
                     class="w-full rounded-2xl text-white font-semibold py-4 transition-all duration-200 shadow-lg hover:scale-[1.01]"
                     style="background: linear-gradient(135deg,#4F46E5 0%,#7C3AED 100%);"
-                    data-payment-status="{{ $donation->payment_status ?? 'pending' }}">
+                    data-payment-status="<?php echo e($donation->payment_status ?? 'pending'); ?>">
 
                 <span class="flex items-center justify-center gap-2">
 
@@ -250,13 +247,13 @@
                         <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                     </svg>
 
-                    Pay ₹{{ number_format($amount, 2) }} Securely
+                    Pay ₹<?php echo e(number_format($amount, 2)); ?> Securely
                 </span>
             </button>
 
-            {{-- Cancel / Back link --}}
+            
             <a id="cancel-link"
-               href="{{ route('campaign.public', ['category' => $campaign->category->slug, 'slug' => $campaign->slug]) }}"
+               href="<?php echo e(route('campaign.public', ['category' => $campaign->category->slug, 'slug' => $campaign->slug])); ?>"
                class="block text-center py-3 rounded-2xl mt-3 text-sm font-medium transition"
                style="border:1px solid #E5E7EB; color:#6B7280;"
                onmouseover="this.style.background='#F9FAFB'"
@@ -265,7 +262,7 @@
                 Cancel Donation
             </a>
 
-            {{-- Trust Badges --}}
+            
             <div class="grid grid-cols-3 gap-3 mt-6">
 
                 <div class="rounded-2xl border border-gray-100 py-3 text-center">
@@ -329,25 +326,13 @@
     </div>
 </div>
 
-{{-- Razorpay --}}
+
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-{{--
-    SECURITY NOTE — why donor data is passed this way:
 
-    Blade's {{ }} only HTML-escapes (e.g. < becomes &lt;). It does NOT
-    escape characters that break a JS string literal, like " or \.
-    If a donor's name ever contains a double-quote, interpolating it
-    directly into "{{ $name }}" inside a <script> tag would either break
-    the page's JS or, in the worst case, allow injected script to run.
-
-    Js::from() (or @json) properly JSON-encodes the PHP value, escaping
-    quotes/backslashes/HTML-sensitive characters, so it's safe to drop
-    straight into JS regardless of what the donor's name contains.
---}}
 <script>
-    const donorName  = {{ Js::from(auth()->user()?->name ?? 'Guest Donor') }};
-    const donorEmail = {{ Js::from(auth()->user()?->email ?? '') }};
+    const donorName  = <?php echo e(Js::from(auth()->user()?->name ?? 'Guest Donor')); ?>;
+    const donorEmail = <?php echo e(Js::from(auth()->user()?->email ?? '')); ?>;
 </script>
 
 <script>
@@ -357,7 +342,7 @@
     const datetimeEl = document.getElementById('payment-datetime');
     const paymentStatus = payBtn.dataset.paymentStatus;
 
-    const campaignUrl = "{{ route('campaign.public', ['category' => $campaign->category->slug, 'slug' => $campaign->slug]) }}";
+    const campaignUrl = "<?php echo e(route('campaign.public', ['category' => $campaign->category->slug, 'slug' => $campaign->slug])); ?>";
 
     const idleButtonHtml = `
         <span class="flex items-center justify-center gap-2">
@@ -371,7 +356,7 @@
                 <rect x="3" y="11" width="18" height="11" rx="2"/>
                 <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
             </svg>
-            Pay ₹{{ number_format($amount, 2) }} Securely
+            Pay ₹<?php echo e(number_format($amount, 2)); ?> Securely
         </span>
     `;
 
@@ -383,16 +368,16 @@
 
     var options = {
 
-        key: "{{ $razorpay_key }}",
-        amount: "{{ (int) round($amount * 100) }}",
+        key: "<?php echo e($razorpay_key); ?>",
+        amount: "<?php echo e((int) round($amount * 100)); ?>",
         currency: "INR",
 
         name: "DonateBazaar",
-        description: "{{ $campaign->title }}",
+        description: "<?php echo e($campaign->title); ?>",
 
-        image: "{{ asset('logo.png') }}",
+        image: "<?php echo e(asset('logo.png')); ?>",
 
-        order_id: "{{ $order_id }}",
+        order_id: "<?php echo e($order_id); ?>",
 
         prefill: {
             // donorName / donorEmail come from Js::from() above —
@@ -402,8 +387,8 @@
         },
 
         notes: {
-            campaign_id: "{{ $campaign->id }}",
-            donation_id: "{{ $donation_id }}"
+            campaign_id: "<?php echo e($campaign->id); ?>",
+            donation_id: "<?php echo e($donation_id); ?>"
         },
 
         theme: {
@@ -433,13 +418,13 @@
             // registers what's happening instead of seeing a flash.
             const minDelay = new Promise(resolve => setTimeout(resolve, 1000));
 
-            const verifyRequest = fetch("{{ route('payment.verify') }}", {
+            const verifyRequest = fetch("<?php echo e(route('payment.verify')); ?>", {
 
                 method: "POST",
 
                 headers: {
                     "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                    "X-CSRF-TOKEN": "<?php echo e(csrf_token()); ?>"
                 },
 
                 body: JSON.stringify({
@@ -447,7 +432,7 @@
                     razorpay_payment_id: response.razorpay_payment_id,
                     razorpay_order_id: response.razorpay_order_id,
                     razorpay_signature: response.razorpay_signature,
-                    donation_id: "{{ $donation_id }}"
+                    donation_id: "<?php echo e($donation_id); ?>"
                 })
             })
             .then(res => res.json());
@@ -541,4 +526,5 @@
 
 </script>
 
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\fundraise\resources\views/payment/index.blade.php ENDPATH**/ ?>
