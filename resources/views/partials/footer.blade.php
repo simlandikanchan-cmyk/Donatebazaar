@@ -351,7 +351,7 @@
             font-weight: 500;
             letter-spacing: 0.12em;
             text-transform: uppercase;
-            color: rgba(255,255,255,0.32);
+            color:#ffffff;
             margin-bottom: 22px;
             position: relative;
             padding-bottom: 12px;
@@ -398,7 +398,7 @@
             font-weight: 500;
             letter-spacing: 0.12em;
             text-transform: uppercase;
-            color: rgba(255,255,255,0.32);
+            color: #ffffff;
             margin-bottom: 22px;
             position: relative;
             padding-bottom: 12px;

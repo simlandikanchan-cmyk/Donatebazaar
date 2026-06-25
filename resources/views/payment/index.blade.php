@@ -2,6 +2,28 @@
 
 @section('content')
 
+<style>
+
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    .btn-spinner 
+    
+    {
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(255,255,255,0.4);
+        border-top-color: #fff;
+        border-radius: 50%;
+        display: inline-block;
+        animation: spin 0.7s linear infinite;
+        
+    }
+
+</style>
+
 <div class="min-h-screen flex items-center justify-center px-4 py-10"
      style="background: linear-gradient(180deg,#F8FAFC 0%,#EEF2FF 100%);">
 
@@ -157,6 +179,46 @@
                         INR (₹)
                     </span>
                 </div>
+
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-500 text-sm">
+                        Receipt No.
+                    </span>
+
+                    <span class="font-medium text-gray-800">
+                        DN-{{ str_pad($donation_id, 6, '0', STR_PAD_LEFT) }}
+                    </span>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-500 text-sm">
+                        Date &amp; Time
+                    </span>
+
+                    <span id="payment-datetime" class="font-medium text-gray-800">
+                        Pending
+                    </span>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-500 text-sm">
+                        Email
+                    </span>
+
+                    <span class="font-medium text-gray-800 truncate max-w-[60%] text-right">
+                        {{ auth()->user()->email ?? $guest_email ?? 'N/A' }}
+                    </span>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-500 text-sm">
+                        Phone
+                    </span>
+
+                    <span class="font-medium text-gray-800">
+                        {{ auth()->user()->phone ?? $guest_phone ?? 'N/A' }}
+                    </span>
+                </div>
             </div>
 
             {{-- Pay Button --}}
@@ -181,8 +243,9 @@
                 </span>
             </button>
 
-            {{-- Cancel --}}
-            <a href="{{ route('campaign.public', ['category' => $campaign->category->slug, 'slug' => $campaign->slug]) }}"
+            {{-- Cancel / Back link --}}
+            <a id="cancel-link"
+               href="{{ route('campaign.public', ['category' => $campaign->category->slug, 'slug' => $campaign->slug]) }}"
                class="block text-center py-3 rounded-2xl mt-3 text-sm font-medium transition"
                style="border:1px solid #E5E7EB; color:#6B7280;"
                onmouseover="this.style.background='#F9FAFB'"
@@ -261,6 +324,32 @@
 <script>
 
     const payBtn = document.getElementById('rzp-button');
+    const cancelLink = document.getElementById('cancel-link');
+    const datetimeEl = document.getElementById('payment-datetime');
+
+    const campaignUrl = "{{ route('campaign.public', ['category' => $campaign->category->slug, 'slug' => $campaign->slug]) }}";
+
+    const idleButtonHtml = `
+        <span class="flex items-center justify-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 width="17"
+                 height="17"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            Pay ₹{{ number_format($amount, 2) }} Securely
+        </span>
+    `;
+
+    function resetButton() {
+        payBtn.disabled = false;
+        payBtn.style.background = "linear-gradient(135deg,#4F46E5 0%,#7C3AED 100%)";
+        payBtn.innerHTML = idleButtonHtml;
+    }
 
     var options = {
 
@@ -291,38 +380,28 @@
 
         modal: {
             ondismiss: function () {
-
-                payBtn.disabled = false;
-
-                payBtn.innerHTML = `
-                    <span class="flex items-center justify-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                             width="17"
-                             height="17"
-                             viewBox="0 0 24 24"
-                             fill="none"
-                             stroke="currentColor"
-                             stroke-width="2">
-                            <rect x="3" y="11" width="18" height="11" rx="2"/>
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                        </svg>
-                        Pay ₹{{ number_format($amount, 2) }} Securely
-                    </span>
-                `;
+                resetButton();
             }
         },
 
         handler: function (response) {
 
             payBtn.disabled = true;
+            cancelLink.style.visibility = "hidden";
 
             payBtn.innerHTML = `
                 <span class="flex items-center justify-center gap-2">
+                    <span class="btn-spinner"></span>
                     Verifying Payment...
                 </span>
             `;
 
-            fetch("{{ route('payment.verify') }}", {
+            // Guarantee the "Verifying" state is visible for at least 1s,
+            // even if the server responds instantly, so the user actually
+            // registers what's happening instead of seeing a flash.
+            const minDelay = new Promise(resolve => setTimeout(resolve, 1000));
+
+            const verifyRequest = fetch("{{ route('payment.verify') }}", {
 
                 method: "POST",
 
@@ -339,43 +418,64 @@
                     donation_id: "{{ $donation_id }}"
                 })
             })
+            .then(res => res.json());
 
-            .then(res => res.json())
+            Promise.all([verifyRequest, minDelay])
 
-            .then(data => {
+            .then(([data]) => {
 
                 if (data.success) {
 
+                    const completedAt = data.paid_at
+                        ? new Date(data.paid_at)
+                        : new Date();
+
+                    datetimeEl.textContent = completedAt.toLocaleString('en-IN', {
+                        day: '2-digit', month: 'short', year: 'numeric',
+                        hour: '2-digit', minute: '2-digit', hour12: true
+                    });
+
                     payBtn.innerHTML = `
                         <span class="flex items-center justify-center gap-2">
-                            ✓ Payment Successful
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 width="18" height="18"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                            Payment Successful
                         </span>
                     `;
 
                     payBtn.style.background = "#059669";
 
-                    setTimeout(() => {
-
-                        window.location.href =
-                        "{{ route('campaign.public', ['category' => $campaign->category->slug, 'slug' => $campaign->slug]) }}";
-
-                    }, 1500);
+                    // No auto-redirect. The user stays on this confirmation
+                    // state and decides themselves when to leave, instead of
+                    // being bounced back to the campaign page mid-read.
+                    cancelLink.style.visibility = "visible";
+                    cancelLink.textContent = "Back to Campaign";
+                    cancelLink.href = campaignUrl;
+                    cancelLink.style.borderColor = "#A7F3D0";
+                    cancelLink.style.color = "#047857";
+                    cancelLink.style.fontWeight = "600";
 
                 } else {
 
-                    payBtn.disabled = false;
+                    resetButton();
+                    cancelLink.style.visibility = "visible";
 
                     alert(data.message || 'Payment verification failed.');
-
                 }
             })
 
             .catch(() => {
 
-                payBtn.disabled = false;
+                resetButton();
+                cancelLink.style.visibility = "visible";
 
                 alert('Something went wrong. Please try again.');
-
             });
         }
     };
@@ -390,6 +490,7 @@
 
         payBtn.innerHTML = `
             <span class="flex items-center justify-center gap-2">
+                <span class="btn-spinner"></span>
                 Opening Payment Gateway...
             </span>
         `;
