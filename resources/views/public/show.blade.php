@@ -878,10 +878,15 @@ button { font-family:var(--font); }
                     @endif
                 </div>
                 @if($goalReached)
-                <div class="overfund-note" style="color:rgba(255,255,255,.55)">
-                    Goal reached! Continued contributions go toward ongoing support for this cause.
-                </div>
-                @endif
+<div class="overfund-note" style="color:rgba(255,255,255,.55)">
+    Goal reached! All additional contributions go toward ongoing support for this cause.
+</div>
+@else
+<div class="overfund-note" style="color:rgba(255,255,255,.42);margin-top:8px;font-size:12px;line-height:1.55;">
+    Funds raised beyond the goal will go toward ongoing needs for this cause.
+    Donations are eligible for 80G tax deduction.
+</div>
+@endif
             </div>
         </div>
     </div>
@@ -1255,11 +1260,16 @@ button { font-family:var(--font); }
                     @endif
                     <span class="donate-donors-count-new">· {{ $donors }} donors</span>
                 </div>
-                @if($goalReached)
-                <div class="overfund-note" style="color:rgba(255,255,255,.5);position:relative;z-index:1;">
-                    Extra donations beyond the goal go toward continued support for this cause.
-                </div>
-                @endif
+@if($goalReached)
+<div class="overfund-note" style="color:rgba(255,255,255,.5);position:relative;z-index:1;">
+    Goal reached! Extra donations go toward continued support for this cause.
+</div>
+@else
+<div class="overfund-note" style="color:rgba(255,255,255,.42);position:relative;z-index:1;font-size:11.5px;line-height:1.55;margin-top:6px;">
+    Funds beyond the goal go toward ongoing needs for this cause.
+    All donations qualify for 80G tax deduction.
+</div>
+@endif
                 {{-- Breakdown pills --}}
                 @if($moneyRaised > 0 || $productRaised > 0)
                 <div class="donate-breakdown">
