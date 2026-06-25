@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 
 @section('content')
@@ -721,13 +720,25 @@ button { font-family:var(--font); }
 .empty-state p { font-size:13px; }
 .alert-error { background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.25); color:#dc2626; padding:10px 13px; border-radius:var(--radius-sm); font-size:12.5px; font-weight:500; margin-bottom:11px; display:flex; align-items:center; gap:8px; }
 .alert-error svg { flex-shrink:0; width:14px; height:14px; }
+
+/* ─── Goal Reached badge / disclosure ─── */
+.goal-reached-pill {
+    font-family:var(--font-mono); font-size:13px; font-weight:600;
+    color:var(--accent); padding:3px 10px;
+    background:rgba(99,102,241,.15); border:1px solid rgba(99,102,241,.3);
+    border-radius:100px; display:inline-flex; align-items:center; gap:5px;
+}
+.goal-reached-pill svg { width:11px; height:11px; }
+.overfund-note { font-size:11.5px; line-height:1.55; margin-top:8px; }
 </style>
 
 
 @php
-    $goal    = $campaign->goal_amount   ?? 0;
-    $raised  = $campaign->raised_amount ?? 0;
-    $percent = $goal > 0 ? min(100, round(($raised / $goal) * 100)) : 0;
+    $goal       = $campaign->goal_amount   ?? 0;
+    $raised     = $campaign->raised_amount ?? 0;
+    $percentRaw = $goal > 0 ? round(($raised / $goal) * 100) : 0;
+    $percent    = min(100, $percentRaw); // capped, used only for bar widths
+    $goalReached = $goal > 0 && $raised >= $goal;
     $donors  = $campaign->donations->count() ?? 0;
     $daysLeft = isset($campaign->end_date) && $campaign->end_date
                 ? max(0, now()->diffInDays($campaign->end_date, false))
@@ -857,8 +868,20 @@ button { font-family:var(--font); }
                         <div class="hero-raised">₹{{ number_format($raised) }}</div>
                         <div class="hero-goal">of ₹{{ number_format($goal) }} goal</div>
                     </div>
-                    <div class="hero-pct">{{ $percent }}% funded</div>
+                    @if($goalReached)
+                    <div class="goal-reached-pill">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        Goal Reached · {{ $percentRaw }}%
+                    </div>
+                    @else
+                    <div class="hero-pct">{{ $percentRaw }}% funded</div>
+                    @endif
                 </div>
+                @if($goalReached)
+                <div class="overfund-note" style="color:rgba(255,255,255,.55)">
+                    Goal reached! Continued contributions go toward ongoing support for this cause.
+                </div>
+                @endif
             </div>
         </div>
     </div>
@@ -1225,9 +1248,18 @@ button { font-family:var(--font); }
                     <div class="donate-prog-fill-new" style="width:{{ $percent }}%"></div>
                 </div>
                 <div class="donate-prog-meta-new">
-                    <span class="donate-pct-new">{{ $percent }}% funded</span>
+                    @if($goalReached)
+                    <span class="donate-pct-new" style="color:var(--accent2)"> Goal Reached · {{ $percentRaw }}%</span>
+                    @else
+                    <span class="donate-pct-new">{{ $percentRaw }}% funded</span>
+                    @endif
                     <span class="donate-donors-count-new">· {{ $donors }} donors</span>
                 </div>
+                @if($goalReached)
+                <div class="overfund-note" style="color:rgba(255,255,255,.5);position:relative;z-index:1;">
+                    Extra donations beyond the goal go toward continued support for this cause.
+                </div>
+                @endif
                 {{-- Breakdown pills --}}
                 @if($moneyRaised > 0 || $productRaised > 0)
                 <div class="donate-breakdown">
