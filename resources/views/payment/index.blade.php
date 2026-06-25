@@ -528,7 +528,10 @@
         `;
 
         rzp.open();
+
+        
     });
+
 
     // Auto-open on page load ONLY when the payment is still pending.
     // Without this check, refreshing the page after a completed payment

@@ -338,6 +338,19 @@ body {
 @media (max-width: 960px) { .page-grid { grid-template-columns: 1fr; } .right-col { position: static; } }
 @media (max-width: 860px) { .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); } .main { margin-left: 0; } .hamburger { display: flex; } .body { padding: 16px 16px 60px; } }
 @media (max-width: 600px) { .topbar { padding: 0 16px; } .events-grid { grid-template-columns: 1fr; } }
+
+/* ══ NEW: extra informative bits ══ */
+.title-meta-chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+.title-meta-chip { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; color: var(--text2); background: var(--surface2); border: 1px solid var(--border2); border-radius: 100px; padding: 4px 11px; font-family: var(--font-mono); }
+.title-meta-chip svg { width: 11px; height: 11px; color: var(--text3); flex-shrink: 0; }
+.title-meta-chip.warn { color: #b45309; background: rgba(245,158,11,.08); border-color: rgba(245,158,11,.22); }
+[data-theme="dark"] .title-meta-chip.warn { color: #fbbf24; }
+.mini-stats-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+.donor-mini-list { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+.donor-mini-row { display: flex; align-items: center; justify-content: space-between; font-size: 11.5px; }
+.donor-mini-name { color: var(--text2); font-weight: 600; }
+.donor-mini-amt { color: var(--accent); font-weight: 700; font-family: var(--font-mono); }
+.donor-mini-empty { font-size: 11.5px; color: var(--text3); text-align: center; padding: 6px 0; }
 </style>
 </head>
 <body>
@@ -368,10 +381,30 @@ body {
         $chipClass = 'chip-pending';  $chipLabel = ucfirst($state ?? 'Draft');
     }
 
-    $raised     = $campaign->raised_amount ?? 0;
-    $goal       = $campaign->goal_amount > 0 ? $campaign->goal_amount : 1;
-    $percentage = min(100, round(($raised / $goal) * 100));
-    $remaining  = max(0, $campaign->goal_amount - $raised);
+
+
+    $raised      = $campaign->raised_amount ?? 0;
+    $goal        = $campaign->goal_amount > 0 ? $campaign->goal_amount : 1;
+    $rawPercent  = round(($raised / $goal) * 100);
+    $percentage  = min(100, $rawPercent);   // bar never exceeds 100% width
+    $isOverfunded = $raised > $campaign->goal_amount;
+    $remaining   = max(0, $campaign->goal_amount - $raised);
+    $surplus     = $isOverfunded ? ($raised - $campaign->goal_amount) : 0;
+
+    /* ── NEW: donor + timing stats ── */
+    $donorsList   = collect();
+    try {
+        $donorsList = $campaign->donations()->where('payment_status', 'completed')->get();
+    } catch (\Throwable $e) {}
+    $donorCount   = $donorsList->count();
+    $avgDonation  = $donorCount > 0 ? $donorsList->avg('total_amount') : 0;
+    $lastDonation = $donorsList->sortByDesc('created_at')->first();
+    $recentDonors = $donorsList->sortByDesc('created_at')->take(3);
+
+    $daysLeft = isset($campaign->end_date) && $campaign->end_date
+                ? now()->diffInDays($campaign->end_date, false)
+                : null;
+    $isEnded  = $daysLeft !== null && $daysLeft < 0;
 
     /* new multi-doc KYC fields */
     $kycAadhaarUrl = $kyc?->aadhaar_url  ? asset('storage/'.$kyc->aadhaar_url)  : null;
@@ -389,6 +422,14 @@ body {
 
     /* campaign updates */
     $updates = $campaign->updates ?? collect();
+
+    /* public page link, if category/slug are set up */
+    $publicUrl = null;
+    try {
+        if ($campaign->category && $campaign->slug) {
+            $publicUrl = route('campaign.public', ['category' => $campaign->category->slug, 'slug' => $campaign->slug]);
+        }
+    } catch (\Throwable $e) {}
 @endphp
 
 {{-- ══ SIDEBAR ══ --}}
@@ -519,6 +560,34 @@ body {
                     <div class="campaign-title-block">
                         <h2>{{ $campaign->title }}</h2>
                         <div class="campaign-meta">Created {{ $campaign->created_at->diffForHumans() }}</div>
+
+                        {{-- ── NEW: quick meta chips ── --}}
+                        <div class="title-meta-chips">
+                            @if($campaign->category)
+                            <span class="title-meta-chip">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z"/></svg>
+                                {{ $campaign->category->name }}
+                            </span>
+                            @endif
+                            @if($campaign->location)
+                            <span class="title-meta-chip">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                {{ $campaign->location }}
+                            </span>
+                            @endif
+                            @if($campaign->end_date)
+                            <span class="title-meta-chip {{ $isEnded ? 'warn' : '' }}">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                {{ $isEnded ? 'Ended ' . abs($daysLeft) . ' days ago' : $daysLeft . ' days left' }}
+                            </span>
+                            @endif
+                            @if($publicUrl)
+                            <a href="{{ $publicUrl }}" target="_blank" class="title-meta-chip" style="text-decoration:none;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                                View Public Page
+                            </a>
+                            @endif
+                        </div>
                     </div>
                 </div>
 
@@ -909,17 +978,75 @@ body {
                         <div class="prog-bar">
                             <div class="prog-fill" style="width:{{ $percentage }}%"></div>
                         </div>
-                        <div class="prog-pct">{{ $percentage }}% funded</div>
-                        <div class="mini-stats">
-                            <div class="mini-stat">
-                                <div class="mini-stat-val">{{ $percentage }}%</div>
-                                <div class="mini-stat-lbl">Completed</div>
-                            </div>
-                            <div class="mini-stat">
-                                <div class="mini-stat-val" style="font-size:14px;">₹{{ number_format($remaining) }}</div>
-                                <div class="mini-stat-lbl">Remaining</div>
-                            </div>
-                        </div>
+
+
+                        <div class="prog-pct">
+    @if($isOverfunded)
+        <span style="color:#10b981;font-weight:700;">{{ $rawPercent }}% funded — goal exceeded!</span>
+    @else
+        {{ $percentage }}% funded
+    @endif
+</div>
+<div class="mini-stats">
+    <div class="mini-stat">
+        <div class="mini-stat-val">{{ $rawPercent }}%</div>
+        <div class="mini-stat-lbl">Completed</div>
+    </div>
+    @if($isOverfunded)
+        <div class="mini-stat" style="background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.25);">
+            <div class="mini-stat-val" style="font-size:14px;color:#10b981;">+₹{{ number_format($surplus) }}</div>
+            <div class="mini-stat-lbl" style="color:#10b981;">Overfunded</div>
+        </div>
+    @else
+        <div class="mini-stat">
+            <div class="mini-stat-val" style="font-size:14px;">₹{{ number_format($remaining) }}</div>
+            <div class="mini-stat-lbl">Remaining</div>
+        </div>
+    @endif
+</div>
+
+{{-- ── NEW: donor count + average donation ── --}}
+<div class="mini-stats-row2">
+    <div class="mini-stat">
+        <div class="mini-stat-val">{{ number_format($donorCount) }}</div>
+        <div class="mini-stat-lbl">Donors</div>
+    </div>
+    <div class="mini-stat">
+        <div class="mini-stat-val" style="font-size:14px;">₹{{ number_format($avgDonation) }}</div>
+        <div class="mini-stat-lbl">Avg. Donation</div>
+    </div>
+</div>
+
+{{-- ── NEW: time remaining, if campaign has an end date ── --}}
+@if($daysLeft !== null)
+<div class="mini-stats-row2">
+    <div class="mini-stat" style="grid-column:1 / -1;{{ $isEnded ? 'background:rgba(239,68,68,0.06);border-color:rgba(239,68,68,0.2);' : '' }}">
+        <div class="mini-stat-val" style="font-size:14px;{{ $isEnded ? 'color:#ef4444;' : '' }}">
+            {{ $isEnded ? 'Campaign ended ' . abs($daysLeft) . ' days ago' : $daysLeft . ' days left' }}
+        </div>
+        <div class="mini-stat-lbl" style="{{ $isEnded ? 'color:#ef4444;' : '' }}">{{ $isEnded ? 'Status' : 'Time Remaining' }}</div>
+    </div>
+</div>
+@endif
+
+{{-- ── NEW: recent donors mini-list ── --}}
+@if($donorCount > 0)
+<div class="donor-mini-list">
+    @foreach($recentDonors as $d)
+    <div class="donor-mini-row">
+        <span class="donor-mini-name">{{ $d->is_anonymous ? 'Anonymous Donor' : ($d->donor_name ?? 'Anonymous') }}</span>
+        <span class="donor-mini-amt">₹{{ number_format($d->total_amount) }}</span>
+    </div>
+    @endforeach
+    @if($lastDonation)
+    <div style="font-size:10px;color:var(--text3);text-align:center;margin-top:2px;">Last donation {{ \Carbon\Carbon::parse($lastDonation->created_at)->diffForHumans() }}</div>
+    @endif
+</div>
+@else
+<div class="donor-mini-list">
+    <div class="donor-mini-empty">No donations yet — share your campaign to get started.</div>
+</div>
+@endif
                     </div>
                 </div>
 
@@ -982,7 +1109,13 @@ body {
                         </div>
                     </div>
                     <div class="card-body">
-                        <a href="{{ route('campaign.edit', $campaign->id) }}" class="action-btn btn-accent">
+                        @if($publicUrl)
+                        <a href="{{ $publicUrl }}" target="_blank" class="action-btn btn-accent">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                            View Public Page
+                        </a>
+                        @endif
+                        <a href="{{ route('campaign.edit', $campaign->id) }}" class="action-btn {{ $publicUrl ? 'btn-ghost' : 'btn-accent' }}">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                             Edit Campaign
                         </a>
@@ -1026,6 +1159,28 @@ body {
                             <span class="status-chip {{ $chipClass }}" style="font-size:10px;padding:3px 9px;"><span class="dot"></span> {{ $chipLabel }}</span>
                         </div>
                         <div class="info-row">
+                            <span class="info-row-lbl">GOAL</span>
+                            <span style="font-weight:700;color:var(--text);font-family:var(--font-mono);">₹{{ number_format($campaign->goal_amount) }}</span>
+                        </div>
+                        @if($campaign->category)
+                        <div class="info-row">
+                            <span class="info-row-lbl">CATEGORY</span>
+                            <span style="font-weight:600;color:var(--text2);font-size:11px;">{{ $campaign->category->name }}</span>
+                        </div>
+                        @endif
+                        @if($campaign->location)
+                        <div class="info-row">
+                            <span class="info-row-lbl">LOCATION</span>
+                            <span style="font-weight:600;color:var(--text2);font-size:11px;">{{ $campaign->location }}</span>
+                        </div>
+                        @endif
+                        @if($campaign->end_date)
+                        <div class="info-row">
+                            <span class="info-row-lbl">END DATE</span>
+                            <span style="font-weight:600;color:var(--text2);font-size:11px;">{{ \Carbon\Carbon::parse($campaign->end_date)->format('d M Y') }}</span>
+                        </div>
+                        @endif
+                        <div class="info-row">
                             <span class="info-row-lbl">KYC</span>
                             <span style="font-size:11px;font-weight:700;
                                 color:{{ $kyc?->status === 'approved' ? '#10b981' : ($kyc?->status === 'pending' ? '#f59e0b' : '#ef4444') }};">
@@ -1035,6 +1190,10 @@ body {
                                 @else Rejected
                                 @endif
                             </span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-row-lbl">DONORS</span>
+                            <span style="font-weight:700;color:var(--text);font-family:var(--font-mono);">{{ number_format($donorCount) }}</span>
                         </div>
                         <div class="info-row">
                             <span class="info-row-lbl">UPDATES</span>
