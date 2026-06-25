@@ -549,29 +549,17 @@ class PaymentController extends Controller
 
         return view('payment.index', [
             'campaign'     => $campaign,
-
-            /*
-             * $donation is passed to the view so Blade can read
-             * $donation->payment_status via data-payment-status on the
-             * pay button — without any redirect()->send() in the template.
-             */
             'donation'     => $donation,
-
             'amount'       => $amount,
             'platform_fee' => $fees['platform_fee'],
             'net_amount'   => $fees['net_amount'],
             'order_id'     => $order['id'],
             'donation_id'  => $donation->id,
             'razorpay_key' => config('services.razorpay.key'),
-
-            /*
-             * guest_phone: passed so the Blade @php block can resolve
-             * $donorPhone even when the user is not authenticated.
-             */
             'guest_phone'  => null,
-             'donor_name'   => Auth::user()?->name  ?? 'Guest Donor',
-             'donor_email'  => Auth::user()?->email ?? '',
-             'donor_phone'  => Auth::user()?->phone ?? '',
+            'donor_name'   => Auth::user()?->name  ?? 'Guest Donor',
+            'donor_email'  => Auth::user()?->email ?? '',
+            'donor_phone'  => Auth::user()?->phone ?? '',
         ]);
     }
 
@@ -691,7 +679,6 @@ class PaymentController extends Controller
                 ]);
 
                 // raised_amount is updated automatically by DB trigger.
-                // campaign.platform_earnings can be updated here if needed:
                 Campaign::lockForUpdate()
                     ->findOrFail($lockedDonation->campaign_id)
                     ->increment('platform_earnings', $lockedDonation->platform_fee);
@@ -712,7 +699,7 @@ class PaymentController extends Controller
                 'user_id'       => Auth::id(),
             ]);
 
-            // Send receipt email
+            // Send receipt email — outside transaction, no DB lock held
             $this->sendReceiptEmail($donation);
 
             return response()->json([
@@ -784,8 +771,31 @@ class PaymentController extends Controller
         $signature = $request->header('X-Razorpay-Signature');
         $payload   = $request->getContent();
 
-        if (! $secret || ! $signature) {
-            return response()->json(['status' => 'ignored'], 200);
+        /*
+        |----------------------------------------------------------------------
+        | Webhook Secret Guard
+        |
+        | Separating the two checks intentionally:
+        |
+        | !$secret  → our misconfiguration — 500 so it shows up in alerts.
+        |             Returning 200 here would silently swallow all webhooks
+        |             and we would never know payments were being missed.
+        |
+        | !$signature → Razorpay sent a request with no signature header —
+        |               reject with 400, log it, but don't 500 the server.
+        |----------------------------------------------------------------------
+        */
+
+        if (! $secret) {
+            Log::critical('RAZORPAY_WEBHOOK_SECRET is not set — all webhooks are being dropped');
+            return response()->json(['status' => 'misconfigured'], 500);
+        }
+
+        if (! $signature) {
+            Log::warning('Webhook received without X-Razorpay-Signature header', [
+                'ip' => $request->ip(),
+            ]);
+            return response()->json(['status' => 'invalid'], 400);
         }
 
         $expected = hash_hmac('sha256', $payload, $secret);
@@ -826,8 +836,23 @@ class PaymentController extends Controller
 
         if (! $lock->get()) return;
 
+        /*
+        |----------------------------------------------------------------------
+        | $donationToMail is declared outside the transaction so we can
+        | send the receipt email AFTER the transaction commits.
+        |
+        | Sending email inside the transaction is dangerous in production:
+        | the DB row-lock is held for the entire duration of the mail call.
+        | If the mail server is slow (common) the lock times out, the
+        | transaction rolls back, and the payment_status is never updated —
+        | even though Razorpay already captured the money.
+        |----------------------------------------------------------------------
+        */
+
+        $donationToMail = null;
+
         try {
-            DB::transaction(function () use ($paymentId, $orderId) {
+            DB::transaction(function () use ($paymentId, $orderId, &$donationToMail) {
 
                 $donation = Donation::lockForUpdate()
                     ->where('order_id', $orderId)
@@ -842,7 +867,6 @@ class PaymentController extends Controller
                 ]);
 
                 // raised_amount handled by DB trigger.
-                // Only increment platform_earnings here.
                 Campaign::lockForUpdate()
                     ->findOrFail($donation->campaign_id)
                     ->increment('platform_earnings', $donation->platform_fee);
@@ -855,10 +879,16 @@ class PaymentController extends Controller
                     'net_amount'    => $donation->net_amount,
                 ]);
 
-                // Send receipt email via webhook as a safety net
-                // (in case verify() was never called e.g. user closed browser)
-                $this->sendReceiptEmail($donation->fresh());
+                // Store for emailing after commit — NOT inside transaction
+                $donationToMail = $donation->fresh();
             });
+
+            // Transaction committed — now safe to send email.
+            // DB lock is released; slow mail server cannot affect DB state.
+            if ($donationToMail) {
+                $this->sendReceiptEmail($donationToMail);
+            }
+
         } finally {
             $lock->release();
         }
@@ -877,3 +907,4 @@ class PaymentController extends Controller
         Log::info('Webhook: payment failed', ['order_id' => $orderId]);
     }
 }
+

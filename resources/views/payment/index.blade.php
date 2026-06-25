@@ -9,9 +9,7 @@
         to { transform: rotate(360deg); }
     }
 
-    .btn-spinner 
-    
-    {
+    .btn-spinner {
         width: 16px;
         height: 16px;
         border: 2px solid rgba(255,255,255,0.4);
@@ -19,7 +17,6 @@
         border-radius: 50%;
         display: inline-block;
         animation: spin 0.7s linear infinite;
-        
     }
 
 </style>
@@ -142,11 +139,10 @@
                     <span class="text-gray-500 text-sm">
                         Donor
                     </span>
-
                     {{--
-                        Null-safe operator (?->) avoids a crash for guest
-                        users, where auth()->user() returns null. Without
-                        it, ->name on null throws before ?? can fall back.
+                        ?-> null-safe operator — if auth()->user() is null
+                        (guest), plain -> would throw. ?-> returns null safely
+                        and ?? falls back to 'Guest Donor'.
                     --}}
                     <span class="font-semibold text-gray-800">
                         {{ auth()->user()?->name ?? 'Guest Donor' }}
@@ -200,6 +196,11 @@
                         Date &amp; Time
                     </span>
 
+                    {{--
+                        Starts as "Pending" — JS fills this in after
+                        successful payment verification. No server timestamp
+                        leaks into the initial page source.
+                    --}}
                     <span id="payment-datetime" class="font-medium text-gray-800">
                         Pending
                     </span>
@@ -227,10 +228,9 @@
             </div>
 
             {{--
-                Pay Button — data-payment-status lets the script below
-                decide whether to auto-open Razorpay on page load. Without
-                this, refreshing the page after a successful payment would
-                re-open the modal and risk a duplicate charge.
+                data-payment-status — read by JS to decide whether to
+                auto-open Razorpay on page load. Prevents the modal from
+                re-opening when the user refreshes after a completed payment.
             --}}
             <button id="rzp-button"
                     class="w-full rounded-2xl text-white font-semibold py-4 transition-all duration-200 shadow-lg hover:scale-[1.01]"
@@ -329,32 +329,19 @@
     </div>
 </div>
 
-{{-- Razorpay --}}
+{{-- Razorpay SDK --}}
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
-{{--
-    SECURITY NOTE — why donor data is passed this way:
-
-    Blade's {{ }} only HTML-escapes (e.g. < becomes &lt;). It does NOT
-    escape characters that break a JS string literal, like " or \.
-    If a donor's name ever contains a double-quote, interpolating it
-    directly into "{{ $name }}" inside a <script> tag would either break
-    the page's JS or, in the worst case, allow injected script to run.
-
-    Js::from() (or @json) properly JSON-encodes the PHP value, escaping
-    quotes/backslashes/HTML-sensitive characters, so it's safe to drop
-    straight into JS regardless of what the donor's name contains.
---}}
-<script>
-    const donorName  = {{ Js::from(auth()->user()?->name ?? 'Guest Donor') }};
-    const donorEmail = {{ Js::from(auth()->user()?->email ?? '') }};
-</script>
 
 <script>
 
     const payBtn = document.getElementById('rzp-button');
     const cancelLink = document.getElementById('cancel-link');
     const datetimeEl = document.getElementById('payment-datetime');
+
+    {{--
+        paymentStatus from data-* attribute — not a JS string literal.
+        Keeps DB state in the DOM rather than floating in JS global scope.
+    --}}
     const paymentStatus = payBtn.dataset.paymentStatus;
 
     const campaignUrl = "{{ route('campaign.public', ['category' => $campaign->category->slug, 'slug' => $campaign->slug]) }}";
@@ -388,17 +375,26 @@
         currency: "INR",
 
         name: "DonateBazaar",
-        description: "{{ $campaign->title }}",
+
+        {{--
+            addslashes() prevents a campaign title containing a quote or
+            backslash from breaking the JS string literal.
+            e.g. title: Help "Children" Today  →  without fix: broken JS
+        --}}
+        description: "{{ addslashes($campaign->title) }}",
 
         image: "{{ asset('logo.png') }}",
 
         order_id: "{{ $order_id }}",
 
         prefill: {
-            // donorName / donorEmail come from Js::from() above —
-            // already safely JSON-encoded, not raw Blade interpolation.
-            name: donorName,
-            email: donorEmail
+            {{--
+                Js::from() JSON-encodes the PHP value so quotes/backslashes
+                in the donor's name or email cannot break the JS string.
+                {{ }} alone only HTML-escapes — not safe inside <script>.
+            --}}
+            name:  {{ Js::from(auth()->user()?->name  ?? 'Guest Donor') }},
+            email: {{ Js::from(auth()->user()?->email ?? '') }}
         },
 
         notes: {
@@ -443,11 +439,10 @@
                 },
 
                 body: JSON.stringify({
-
                     razorpay_payment_id: response.razorpay_payment_id,
-                    razorpay_order_id: response.razorpay_order_id,
-                    razorpay_signature: response.razorpay_signature,
-                    donation_id: "{{ $donation_id }}"
+                    razorpay_order_id:   response.razorpay_order_id,
+                    razorpay_signature:  response.razorpay_signature,
+                    donation_id:         "{{ $donation_id }}"
                 })
             })
             .then(res => res.json());
@@ -484,20 +479,18 @@
                     payBtn.style.background = "#059669";
 
                     // No auto-redirect. The user stays on this confirmation
-                    // state and decides themselves when to leave, instead of
-                    // being bounced back to the campaign page mid-read.
+                    // state and decides themselves when to leave.
                     cancelLink.style.visibility = "visible";
-                    cancelLink.textContent = "Back to Campaign";
-                    cancelLink.href = campaignUrl;
+                    cancelLink.textContent      = "Back to Campaign";
+                    cancelLink.href             = campaignUrl;
                     cancelLink.style.borderColor = "#A7F3D0";
-                    cancelLink.style.color = "#047857";
-                    cancelLink.style.fontWeight = "600";
+                    cancelLink.style.color       = "#047857";
+                    cancelLink.style.fontWeight  = "600";
 
                 } else {
 
                     resetButton();
                     cancelLink.style.visibility = "visible";
-
                     alert(data.message || 'Payment verification failed.');
                 }
             })
@@ -506,7 +499,6 @@
 
                 resetButton();
                 cancelLink.style.visibility = "visible";
-
                 alert('Something went wrong. Please try again.');
             });
         }
@@ -528,10 +520,7 @@
         `;
 
         rzp.open();
-
-        
     });
-
 
     // Auto-open on page load ONLY when the payment is still pending.
     // Without this check, refreshing the page after a completed payment
