@@ -376,7 +376,7 @@ svg:not([width]):not([height]) {
   justify-content: center;
   max-width:      1180px;
   margin:         0 auto;
-  padding:        120px 24px 160px;
+  padding:        120px 24px 50px;
   width:          100%;
 }
 
@@ -1718,7 +1718,7 @@ svg:not([width]):not([height]) {
 }
 
 @media (max-width: 480px) {
-  .hero-content { padding: 100px 16px 150px; }
+  .hero-content { padding: 100px 16px 100px; }
   .container    { padding: 0 16px; }
 
   .purpose-section,

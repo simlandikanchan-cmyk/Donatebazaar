@@ -8,6 +8,12 @@
  *  4. Scroll-to-Top Button
  *  5. FAQ Accordion
  *  6. Bootstrap
+ *
+ * Counter data-attributes:
+ *   data-target="10000000" data-format="crore"  → ₹10 Cr+
+ *   data-target="50000"    data-suffix="K+"      → 50K+
+ *   data-target="2000"     data-suffix="+"        → 2,000+
+ *   data-target="100"      data-suffix="%"        → 100%
  */
 
 'use strict';
@@ -26,16 +32,52 @@
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /**
+   * Formats a counter value according to its display mode.
+   *
+   * Supported formats:
+   *   format="crore"   — animates through ₹0.0 Cr … ₹10 Cr+
+   *   suffix="K+"      — divides by 1000, appends K+  (e.g. 50K+)
+   *   suffix="+"       — Indian locale integer + suffix (e.g. 2,000+)
+   *   suffix="%"       — plain integer + %
+   *   (none)           — Indian locale integer, no suffix
+   *
+   * @param {number}      value   - Current animated value
+   * @param {number}      target  - Final target value
+   * @param {string|null} format  - Special format key or null
+   * @param {string}      suffix  - Suffix string (may contain "K+")
+   * @returns {string}
+   */
+  function formatValue(value, target, format, suffix) {
+    if (format === 'crore') {
+      const cr = value / 10_000_000;
+      // While animating show one decimal; snap to clean label at end
+      return value >= target
+        ? '₹10 Cr+'
+        : '₹' + cr.toFixed(cr < 1 ? 2 : 1) + ' Cr';
+    }
+
+    if (suffix === 'K+') {
+      // Animate in thousands; snap to exact at end
+      return value >= target
+        ? Math.round(target / 1000) + 'K+'
+        : Math.floor(value / 1000) + 'K+';
+    }
+
+    // Default: Indian-locale integer + any suffix ('+', '%', '')
+    return Math.floor(value).toLocaleString('en-IN') + suffix;
+  }
+
+  /**
    * rAF-based counter with ease-out cubic.
    * More accurate than setInterval — frame rate adapts to the device.
    *
    * @param {HTMLElement} el
-   * @param {number}      target    - Final integer value
-   * @param {string|null} format    - 'crore' or null
-   * @param {string}      suffix    - e.g. '+', '%'
-   * @param {number}      [dur=1200] - Duration in ms
+   * @param {number}      target     - Final integer value
+   * @param {string|null} format     - 'crore' or null
+   * @param {string}      suffix     - e.g. '+', '%', 'K+'
+   * @param {number}      [dur=1800] - Duration in ms
    */
-  function runCounter(el, target, format, suffix, dur = 1200) {
+  function runCounter(el, target, format, suffix, dur = 1800) {
     if (reducedMotion) {
       el.textContent = formatValue(target, target, format, suffix);
       return;
@@ -45,37 +87,20 @@
 
     function step(now) {
       const p       = Math.min((now - start) / dur, 1);
-      const eased   = 1 - Math.pow(1 - p, 3);           // ease-out cubic
-      const current = Math.floor(eased * target);
+      const eased   = 1 - Math.pow(1 - p, 3);      // ease-out cubic
+      const current = eased * target;
 
       el.textContent = formatValue(current, target, format, suffix);
 
       if (p < 1) {
         requestAnimationFrame(step);
       } else {
-        // Snap to exact final value (avoids floating-point drift)
+        // Hard-snap to final value — avoids any floating-point drift
         el.textContent = formatValue(target, target, format, suffix);
       }
     }
 
     requestAnimationFrame(step);
-  }
-
-  /**
-   * Formats a counter value according to its display mode.
-   *
-   * @param {number}      value   - Current animated value
-   * @param {number}      target  - Final target (used for hard-coded crore label)
-   * @param {string|null} format
-   * @param {string}      suffix
-   */
-  function formatValue(value, target, format, suffix) {
-    if (format === 'crore') {
-      return value < target
-        ? '₹' + (value / 10_000_000).toFixed(1) + ' Cr'
-        : '₹10 Cr+';                                    // final label override
-    }
-    return value.toLocaleString('en-IN') + suffix;
   }
 
 
@@ -96,7 +121,7 @@
       entries.forEach(({ isIntersecting, target }) => {
         if (!isIntersecting) return;
         target.classList.add('visible');
-        obs.unobserve(target);              // fire once, then stop watching
+        obs.unobserve(target);          // fire once, then stop watching
       });
     }, {
       threshold:  0.1,
@@ -125,9 +150,11 @@
         const suffix = el.dataset.suffix ?? '';
 
         runCounter(el, target, format, suffix);
-        obs.unobserve(el);                  // animate once per page load
+        obs.unobserve(el);              // animate once per page load
       });
-    }, { threshold: 0.5 });
+    }, {
+      threshold: 0.35,                  // slightly lower = fires earlier on mobile
+    });
 
     els.forEach(el => obs.observe(el));
   }

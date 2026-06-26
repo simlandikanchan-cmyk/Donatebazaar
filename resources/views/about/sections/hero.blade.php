@@ -56,7 +56,7 @@
         </div>
 
         {{-- Floating metric cards --}}
-        <div class="hero-float-cards">
+        <!-- <div class="hero-float-cards">
             <div class="hero-float-card">
                 <div class="float-card-top">
                     <div class="float-card-icon" style="background:rgba(16,185,129,.15);">
@@ -87,10 +87,10 @@
                 <div class="float-card-num">2,000+</div>
                 <div class="float-card-sub">active &amp; verified</div>
             </div>
-        </div>
+        </div> -->
 
         {{-- Bottom stat bar --}}
-        <div class="hero-stat-bar">
+        <!-- <div class="hero-stat-bar">
             <div class="hero-stat-item">
                 <span class="hero-stat-val counter" data-target="10000000" data-format="crore">₹10 Cr+</span>
                 <span class="hero-stat-lbl">Funds Raised</span>
@@ -107,6 +107,6 @@
                 <span class="hero-stat-val">100%</span>
                 <span class="hero-stat-lbl">Transparent</span>
             </div>
-        </div>
+        </div> -->
     </div>
 </div>
