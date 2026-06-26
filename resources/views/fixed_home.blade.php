@@ -795,12 +795,12 @@ body { font-family: 'Outfit', sans-serif; color: var(--ink); }
 </section>
 
 
-{{-- ═══ WHY DONATEBAZAR ═══ --}}
+{{-- ═══ WHY DonateBazaar ═══ --}}
 <section class="why-section">
     <div class="container">
         <div class="section-header">
             <div class="section-eyebrow">6 Reasons of assurance</div>
-            <h2 class="section-title">Why DonateBazar?</h2>
+            <h2 class="section-title">Why DonateBazaar?</h2>
             <p class="section-sub">Trusted platform for transparent, secure, and impactful donations.</p>
         </div>
         <div class="why-grid">

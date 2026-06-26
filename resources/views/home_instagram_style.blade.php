@@ -1093,7 +1093,7 @@ ul { list-style: none; }
                             @if($campaign->category)
                             <span class="hashtag">#{{ Str::studly($campaign->category->name) }}</span>
                             @endif
-                            <span class="hashtag">#DonateBazar</span>
+                            <span class="hashtag">#DonateBazaar</span>
                         </div>
 
                         <button class="view-comments-btn">View all {{ rand(10, 200) }} comments</button>
@@ -1189,7 +1189,7 @@ ul { list-style: none; }
                     <div class="r-footer">
                         <a href="#">About</a> · <a href="#">Privacy</a> · <a href="#">Terms</a> · <a href="#">Help</a> · <a href="#">Contact</a>
                         <br><br>
-                        © {{ date('Y') }} DonateBazar. All rights reserved.
+                        © {{ date('Y') }} DonateBazaar. All rights reserved.
                     </div>
 
                 </div>

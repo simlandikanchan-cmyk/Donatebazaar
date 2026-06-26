@@ -3,7 +3,7 @@
         
         <!-- Logo -->
         <h1 class="text-xl font-bold text-blue-600">
-            DonateBazar
+            DonateBazaar
         </h1>
 
         <!-- Navigation -->

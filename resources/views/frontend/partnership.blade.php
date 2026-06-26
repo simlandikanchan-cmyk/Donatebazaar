@@ -417,12 +417,12 @@ textarea.field-input{resize:vertical;min-height:110px;line-height:1.6}
 <div class="pg-grid">
 
 {{-- ══ LEFT ══ --}}
-<aside class="pg-left">
+<aside class="pg-left">DonateBazaar
     <div class="brand">
         <div class="brand-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         </div>
-        <span class="brand-name">DonateBazar</span>
+        <span class="brand-name">DonateBazaar</span>
     </div>
     <div class="trust-eyebrow"><span></span> Partnership Program</div>
     <h2 class="trust-headline">Make an impact<br>that truly matters</h2>
@@ -500,7 +500,7 @@ textarea.field-input{resize:vertical;min-height:110px;line-height:1.6}
                 <div class="review-status-text">
                     @if($partnership->status === 'approved')
                         <h3>Partnership Approved</h3>
-                        <p>Congratulations — your request has been approved. Welcome to the DonateBazar partner network.</p>
+                        <p>Congratulations — your request has been approved. Welcome to the DonateBazaar partner network.</p>
                     @elseif($partnership->status === 'rejected')
                         <h3>Request Not Approved</h3>
                         <p>Your request could not be approved at this time. Review the feedback below and consider reapplying.</p>
@@ -739,7 +739,7 @@ textarea.field-input{resize:vertical;min-height:110px;line-height:1.6}
 <aside class="pg-right">
     <div class="testimonial-card">
         <div class="quote-mark">"</div>
-        <p class="testimonial-text">Partnering with DonateBazar gave our CSR program real credibility. The impact reports are detailed and our employees feel genuinely proud of where the money goes.</p>
+        <p class="testimonial-text">Partnering with DonateBazaar gave our CSR program real credibility. The impact reports are detailed and our employees feel genuinely proud of where the money goes.</p>
         <div class="testimonial-author">
             <div class="t-avatar">R</div>
             <div><div class="t-name">Riya Menon</div><div class="t-role">CSR Head, Infosys Foundation</div></div>

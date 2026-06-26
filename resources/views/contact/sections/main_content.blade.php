@@ -46,7 +46,7 @@
                     </div>
                     <div>
                         <div class="info-label">Email</div>
-                        <div class="info-val">info@donatebazar.com</div>
+                        <div class="info-val">info@DonateBazaar.com</div>
                     </div>
                     <div class="verified-badge">Verified</div>
                 </div>

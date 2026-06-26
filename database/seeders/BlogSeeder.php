@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 /**
  * BlogSeeder
  *
- * Seeds blog-specific tags (categories already exist in DonateBazar).
+ * Seeds blog-specific tags (categories already exist in DonateBazaar).
  * Run with: php artisan db:seed --class=BlogSeeder
  */
 class BlogSeeder extends Seeder
@@ -36,7 +36,7 @@ class BlogSeeder extends Seeder
             'Event Recap', 'Volunteer Spotlight', 'Founder Story',
 
             // Platform
-            'DonateBazar', 'Community', 'Appeal', 'Awareness',
+            'DonateBazaar', 'Community', 'Appeal', 'Awareness',
         ];
 
         foreach ($tags as $name) {

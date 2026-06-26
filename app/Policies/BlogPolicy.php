@@ -14,7 +14,7 @@ use Illuminate\Auth\Access\HandlesAuthorization;
  *       Blog::class => BlogPolicy::class,
  *   ];
  *
- * Role mapping (existing DonateBazar users table):
+ * Role mapping (existing DonateBazaar users table):
  *   role = 'admin'  → full access
  *   role = 'ngo'    → create, edit own, submit
  *   role = 'donor'  → create, edit own, submit

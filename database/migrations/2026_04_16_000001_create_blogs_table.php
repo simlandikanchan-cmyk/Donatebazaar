@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 /**
  * BLOGS TABLE
  *
- * Extends existing DonateBazar schema. Does NOT alter users, categories, or tags tables.
+ * Extends existing DonateBazaar schema. Does NOT alter users, categories, or tags tables.
  *
  * Roles mapped to existing users.role enum: 'admin' | 'ngo' | 'donor'
  * verified_author is stored as a separate column (not on users.role) to avoid

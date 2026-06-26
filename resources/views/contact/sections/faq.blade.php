@@ -12,7 +12,7 @@
                 'Where does my money go?' => 'Every rupee goes directly to the verified campaign you choose. We publish transparent fund allocation reports accessible to all donors at any time.',
                 'Can I track my donation?' => 'Yes! Once logged in, your dashboard shows all donations, downloadable receipts, and real-time progress updates from the campaigns you\'ve supported.',
                 'Can I get a tax receipt?' => 'Yes, all donations qualify for 80G tax deductions. Your certificate is auto-generated and emailed to your registered address within minutes.',
-                'How do I contact support urgently?' => 'For urgent matters, call us at +91 98765 43210 or email info@donatebazar.com. Our team responds within 2 hours on business days.',
+                'How do I contact support urgently?' => 'For urgent matters, call us at +91 98765 43210 or email info@DonateBazaar.com. Our team responds within 2 hours on business days.',
             ] as $question => $answer)
             <div class="faq-item">
                 <button class="faq-q" onclick="toggleFAQ(this)" type="button">

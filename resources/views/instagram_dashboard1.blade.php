@@ -604,7 +604,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--surface); color: va
     {{-- ── Top bar ── --}}
     <header class="ig-topbar">
         <div class="ig-topbar-inner">
-            <span class="ig-logo">DonateBazar</span>
+            <span class="ig-logo">DonateBazaar</span>
             <div class="ig-topbar-actions">
                 <a href="{{ route('campaign.create') }}" class="ig-icon-btn" title="New campaign">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8M8 12h8"/></svg>
@@ -663,7 +663,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--surface); color: va
                     </div>
                 </div>
                 <div class="ig-bio">
-                    Fundraiser on DonateBazar &nbsp;·&nbsp;
+                    Fundraiser on DonateBazaar &nbsp;·&nbsp;
                     <span>{{ $countActive }} active campaign{{ $countActive !== 1 ? 's' : '' }}</span><br>
                     ₹{{ number_format($totalGoal, 0) }} total goal &nbsp;·&nbsp; {{ $overallPct }}% achieved
                 </div>

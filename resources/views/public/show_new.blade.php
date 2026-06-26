@@ -1146,7 +1146,7 @@ You can support our mission by volunteering, sharing campaigns with others, or o
 </p>
 
 <h2 class="text-4xl font-bold mt-2">
-Why Donatebazar?
+Why DonateBazaar?
 </h2>
 
 <p class="text-gray-500 mt-3">
