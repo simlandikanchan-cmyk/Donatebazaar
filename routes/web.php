@@ -34,12 +34,13 @@ use App\Http\Controllers\JobPostController;
 use App\Http\Controllers\Admin\JobPostController as AdminJobPostController;
 use App\Http\Controllers\Admin\JobPostApplicationController;
 use App\Http\Controllers\ChatbotController;
-use App\Http\Controllers\GoogleController;
+use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\GiftCardController;
 use App\Http\Controllers\Admin\GiftCardController as AdminGiftCardController;
 use App\Http\Controllers\CategoryProductController;
 use App\Http\Controllers\Admin\CategoryProductController as AdminCategoryProductController;
 use App\Http\Controllers\Admin\EventController as AdminEventController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -335,3 +336,12 @@ use App\Http\Controllers\NewsletterController;
 
 Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])
      ->name('newsletter.subscribe');
+
+
+     
+     
+     
+     Route::get('/user/kyc', function () {
+    $campaigns = Campaign::where('user_id', auth()->id())->get();
+    return view('kyc.index', compact('campaigns'));
+})->middleware('auth')->name('user.kyc');

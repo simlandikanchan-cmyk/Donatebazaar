@@ -184,7 +184,10 @@ a{text-decoration:none;color:inherit;}
 .submit-btn svg{width:15px;height:15px;}
 
 /* ═══ DANGER ZONE ═══ */
-.danger-card{background:rgba(240,68,68,.03);border:1px solid rgba(240,68,68,.14);border-radius:var(--r);overflow:hidden;animation:fadeUp .4s .18s ease both;}
+/* FIX: position:relative + z-index:0 + clear:both so this card
+   always stacks cleanly below the sticky preview card instead of
+   visually overlapping it. */
+.danger-card{background:rgba(240,68,68,.03);border:1px solid rgba(240,68,68,.14);border-radius:var(--r);overflow:hidden;animation:fadeUp .4s .18s ease both;position:relative;z-index:0;clear:both;}
 .danger-head{padding:13px 18px;background:rgba(240,68,68,.06);border-bottom:1px solid rgba(240,68,68,.12);display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.1em;font-family:var(--mono);}
 .danger-head svg{width:13px;height:13px;}
 .danger-body{padding:16px 18px;}
@@ -194,7 +197,10 @@ a{text-decoration:none;color:inherit;}
 .delete-btn svg{width:13px;height:13px;}
 
 /* ═══ PREVIEW ═══ */
-.preview-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;position:sticky;top:82px;animation:fadeUp .4s .15s ease both;margin-bottom:16px;}
+/* FIX: z-index:1 so the sticky preview card always sits above
+   normal-flow siblings rather than letting browsers' sticky
+   stacking context overlap the Danger Zone card below it. */
+.preview-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;position:sticky;top:82px;animation:fadeUp .4s .15s ease both;margin-bottom:16px;z-index:1;}
 .preview-live{padding:32px 24px;display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--surface2);border-bottom:1px solid var(--border);min-height:190px;}
 .prev-icon-box{width:72px;height:72px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:28px;color:#fff;margin-bottom:14px;transition:all .3s cubic-bezier(.4,0,.2,1);box-shadow:0 8px 28px rgba(0,0,0,.18);}
 .prev-name{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--text);letter-spacing:-.01em;margin-bottom:6px;transition:all .2s;}
@@ -522,7 +528,11 @@ a{text-decoration:none;color:inherit;}
       </div>
 
       {{-- RIGHT --}}
-      <div>
+      {{-- FIX: display:flex + flex-direction:column forces this column to
+           lay out its children (preview-card, danger-card) as a normal
+           vertical stack. Without this, the sticky preview card could
+           visually overlap the danger-card sibling below it. --}}
+      <div style="display:flex;flex-direction:column;">
         {{-- Live Preview --}}
         <div class="preview-card">
           <div class="card-head">
@@ -650,5 +660,6 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
 updatePreview();
 })();
 </script>
+
 </body>
 </html>

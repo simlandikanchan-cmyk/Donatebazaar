@@ -754,7 +754,7 @@ a    { text-decoration: none; color: inherit; }
                 @if(request('sort'))<input type="hidden" name="sort" value="{{ request('sort') }}">@endif
                 <button type="submit" class="hero-search-btn">Search</button>
             </form>
-
+<!-- 
             <div class="hero-trust">
                 <div class="hero-trust-item">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
@@ -775,7 +775,7 @@ a    { text-decoration: none; color: inherit; }
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
                     Real-time tracking
                 </div>
-            </div>
+            </div> -->
         </div>
 
         {{-- Stat bar --}}

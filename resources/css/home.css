@@ -255,6 +255,9 @@ body {
 .hero-dot.active { background:#fff; width:28px }
 
 /* Stat cards (floating) */
+
+
+
 .hero-stats { position:absolute; bottom:60px; right:6%; z-index:10; display:flex; gap:12px }
 .hero-stat-card {
   background:     rgba(255,255,255,.1);
@@ -265,6 +268,9 @@ body {
   text-align:     center;
   color:          #fff;
 }
+
+
+
 .hero-stat-card .num { font-size:22px; font-weight:700; font-family:var(--font-mono) }
 .hero-stat-card .lbl { font-size:11px; opacity:.65; margin-top:2px; font-family:var(--font); letter-spacing:.04em }
 
@@ -747,7 +753,23 @@ body {
 }
 
 /* ── Responsive ── */
-@media (max-width: 900px) {
+
+/* Desktop (> 1100px) — 3 equal columns */
+
+@media (min-width: 1101px) {
+    .how-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .how-card-wrap:last-child {
+        grid-column: auto;
+        max-width: none;
+        margin: 0;
+    }
+}
+
+/* iPad Pro / Large Tablets (≤ 1100px) — 2 columns, 3rd card centered */
+
+@media (max-width: 1100px) {
     .how-section {
         padding: 72px 0;
     }
@@ -766,7 +788,9 @@ body {
     }
 }
 
-@media (max-width: 580px) {
+/* Mobile (≤ 780px) — single column */
+
+@media (max-width: 780px) {
     .how-section {
         padding: 56px 0;
     }
@@ -804,6 +828,7 @@ body {
         justify-content: center;
     }
 }
+
 
 /* ==========================================================================
    09. TESTIMONIALS
@@ -1025,6 +1050,23 @@ body {
         gap: 14px;
     }
 }
+
+
+/* iPad Pro / Tablet (≤ 1100px) */
+
+
+@media (max-width: 1100px) {
+    .impact-layout {
+        grid-template-columns: 1fr;
+    }
+    .impact-section {
+        padding: 60px 0;
+    }
+    .impact-section .section-title {
+        font-size: clamp(1.6rem, 5vw, 2.2rem);
+    }
+}
+
 
 
 /* ==========================================================================

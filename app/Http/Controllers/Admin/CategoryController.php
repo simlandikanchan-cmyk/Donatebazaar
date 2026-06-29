@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Campaign;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
@@ -16,7 +17,9 @@ class CategoryController extends Controller
     */
     public function index()
     {
-        $categories = Category::latest()->get();
+        $categories = Category::withCount(['campaigns' => function ($q) {
+            $q->where('campaign_state', Campaign::STATE_ACTIVE);
+        }])->latest()->get();
 
         return view('admin.categories.index', compact('categories'));
     }
@@ -119,15 +122,15 @@ class CategoryController extends Controller
     |------------------------------------------------------------------
     */
     public function destroy(Category $category)
-{
-    if ($category->campaigns()->count() > 0) {
-        return back()->with('error', 'Cannot delete category. It has campaigns.');
+    {
+        if ($category->campaigns()->count() > 0) {
+            return back()->with('error', 'Cannot delete category. It has campaigns.');
+        }
+
+        $category->delete();
+
+        return back()->with('success', 'Deleted successfully');
     }
-
-    $category->delete();
-
-    return back()->with('success', 'Deleted successfully');
-}
 
     /*
     |------------------------------------------------------------------

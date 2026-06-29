@@ -931,7 +931,7 @@ svg{display:block;flex-shrink:0;}
 
                         <div class="kyc-pill kyc-pill-{{ $kyc?->status ?? 'none' }}">
                             @if(! $kyc) <span>⚠ KYC Not Submitted</span>
-                            @elseif($kyc->status === 'pending') <span>⏳ KYC Pending Review</span>
+                            @elseif($kyc->status === 'pending') <span> KYC Pending Review</span>
                             @elseif($kyc->status === 'approved') <span>✓ KYC Approved</span>
                             @elseif($kyc->status === 'rejected') <span>✗ KYC Rejected</span>
                             @endif

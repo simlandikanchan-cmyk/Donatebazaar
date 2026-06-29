@@ -75,6 +75,13 @@ class Campaign extends Model
 
     ];
 
+
+     protected $casts = [
+        'start_date' => 'date',
+        'end_date'   => 'date',
+        'paused_at'  => 'datetime',
+    ];
+
     // -------------------------------------------------------------------------
     // RELATIONSHIPS
     // -------------------------------------------------------------------------

@@ -44,62 +44,31 @@
                 @php
                     /*
                     |--------------------------------------------------------------------------
-                    | Skip Expired Campaigns
+                    | Raised / Goal / Donors
                     |--------------------------------------------------------------------------
+                    | raised_amount is a cached column on campaigns, read directly —
+                    | not recomputed from donations, so it stays consistent with
+                    | total_settled / pending_settlement / platform_earnings.
+                    | donors_count comes pre-aggregated from the controller (withCount).
+                    | Expiry + active-state filtering also already happened in the
+                    | controller, so there is no need to re-check $isExpired in this view.
                     */
-                    $isExpired =
-                        $campaign->end_date &&
-                        \Carbon\Carbon::parse($campaign->end_date)->isPast();
-                @endphp
+                    $raised = $campaign->raised_amount ?? 0;
+                    $goal   = $campaign->goal_amount ?? 0;
+                    $donors = $campaign->donors_count ?? 0;
 
-                @if($isExpired)
-                    @continue
-                @endif
-
-                @php
-                    /*
-                    |--------------------------------------------------------------------------
-                    | Completed Donations Only
-                    |--------------------------------------------------------------------------
-                    */
-                    $completedDonations = $campaign->donations
-                        ->where('payment_status', 'completed');
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | Total Raised Amount
-                    |--------------------------------------------------------------------------
-                    */
-                    $raised = $completedDonations->sum('total_amount');
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | Goal Amount
-                    |--------------------------------------------------------------------------
-                    */
-                    $goal = $campaign->goal_amount ?? 0;
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | Funding Percentage
-                    |--------------------------------------------------------------------------
-                    */
-                    $percentage = $goal > 0
-                        ? min(100, round(($raised / $goal) * 100))
-                        : 0;
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | Total Donors
-                    |--------------------------------------------------------------------------
-                    */
-                    $donors = $completedDonations->count();
+                    // Use the model's own `progress` accessor (uncapped — can exceed
+                    // 100% for an overfunded campaign) for the displayed badge text,
+                    // but cap a separate value at 100 for the progress-bar width so an
+                    // overfunded campaign never visually overflows the track.
+                    $percentage = $campaign->progress;
+                    $progressBarWidth = min($percentage, 100);
                 @endphp
 
                 {{-- ═══ CAMPAIGN CARD ═══ --}}
                 <div
                     class="camp-card hidden"
-                    data-cat="{{ $campaign->category->slug ?? 'uncategorized' }}"
+                    data-cat="{{ $campaign->category?->slug ?? 'uncategorized' }}"
                 >
 
                     {{-- IMAGE --}}
@@ -115,9 +84,17 @@
                             {{ $percentage }}% Funded
                         </div>
 
-                        <div class="camp-verified">
-                            Verified
-                        </div>
+                        {{--
+                            KYC is verified per fundraiser (user), not per campaign —
+                            see kyc_verifications table (status: pending/approved/rejected).
+                            Reuses Campaign::ownerKycApproved() so the check stays
+                            consistent with the rest of the app (e.g. resume()).
+                        --}}
+                        @if($campaign->ownerKycApproved())
+                            <div class="camp-verified">
+                                Verified
+                            </div>
+                        @endif
 
                     </div>
 
@@ -132,7 +109,7 @@
                         <div class="camp-progress-track">
                             <div
                                 class="camp-progress-fill"
-                                style="width: {{ $percentage }}%"
+                                style="width: {{ $progressBarWidth }}%"
                             ></div>
                         </div>
 
@@ -164,7 +141,7 @@
                         {{-- BUTTON --}}
                         <a
                             href="{{ route('campaign.public', [
-                                'category' => $campaign->category->slug ?? 'general',
+                                'category' => $campaign->category?->slug ?? 'general',
                                 'slug'     => $campaign->slug
                             ]) }}"
                             class="camp-btn"
