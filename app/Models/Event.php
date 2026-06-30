@@ -139,11 +139,32 @@ class Event extends Model
     |--------------------------------------------------------------------------
     */
 
+    // public function hasEnded(): bool
+    // {
+    //     return $this->event_date &&
+    //         Carbon::parse($this->event_date)->isPast();
+    // }
+
     public function hasEnded(): bool
-    {
-        return $this->event_date &&
-            Carbon::parse($this->event_date)->isPast();
+{
+    if (!$this->event_date) {
+        return false;
     }
+
+    // Combine event_date with end_time (or start_time, or end of day if neither set)
+    $dateStr = $this->event_date->format('Y-m-d');
+
+    if ($this->end_time) {
+        $cutoff = Carbon::parse($dateStr . ' ' . Carbon::parse($this->end_time)->format('H:i:s'));
+    } elseif ($this->start_time) {
+        $cutoff = Carbon::parse($dateStr . ' ' . Carbon::parse($this->start_time)->format('H:i:s'));
+    } else {
+        // No time info — treat the whole day as valid, ends at midnight after
+        $cutoff = Carbon::parse($dateStr)->endOfDay();
+    }
+
+    return $cutoff->isPast();
+}
 
     public function isFull(): bool
     {

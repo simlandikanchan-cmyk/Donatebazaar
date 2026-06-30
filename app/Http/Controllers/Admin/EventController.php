@@ -148,14 +148,16 @@ class EventController extends Controller
               ->loadCount('registrations');
 
         // Auto-expire if event date has passed
-        if (
-            $event->event_date &&
-            Carbon::parse($event->event_date)->isPast() &&
-            $event->status === Event::STATUS_ACTIVE
-        ) {
-            $event->update(['status' => Event::STATUS_EXPIRED]);
-            $event->refresh();
-        }
+       // Auto-expire if event date + end_time has passed.
+// Uses the model's hasEnded() helper, which combines event_date with
+// end_time instead of treating event_date as midnight.
+if (
+    $event->status === Event::STATUS_ACTIVE &&
+    $event->hasEnded()
+) {
+    $event->update(['status' => Event::STATUS_EXPIRED]);
+    $event->refresh();
+}
 
         return view('admin.events.show', compact('event'));
     }

@@ -182,12 +182,6 @@ class EventController extends Controller
 
     public function show(Event $event): View
     {
-        /*
-        |--------------------------------------------------------------------------
-        | Auto Expire Event
-        |--------------------------------------------------------------------------
-        */
-
         $shouldExpire = false;
 
         // Campaign expired/inactive
@@ -197,29 +191,24 @@ class EventController extends Controller
                 $event->campaign->campaign_state !== 'active' ||
                 (
                     $event->campaign->end_date &&
-                    Carbon::parse(
-                        $event->campaign->end_date
-                    )->isPast()
+                    Carbon::parse($event->campaign->end_date)->isPast()
                 )
             )
         ) {
             $shouldExpire = true;
         }
 
-        // Event date passed
-        if (
-            $event->event_date &&
-            Carbon::parse($event->event_date)->isPast()
-        ) {
+        // Event date + end_time passed.
+        // Uses the model's hasEnded() helper, which combines event_date with
+        // end_time (falling back to start_time, then end of day) instead of
+        // treating event_date as midnight — which was incorrectly marking
+        // same-day events as expired the moment they were created/viewed.
+        if ($event->hasEnded()) {
             $shouldExpire = true;
         }
 
         // Auto update status
-        if (
-            $shouldExpire &&
-            !$event->isExpired()
-        ) {
-
+        if ($shouldExpire && !$event->isExpired()) {
             $event->update([
                 'status' => Event::STATUS_EXPIRED,
             ]);
@@ -364,6 +353,11 @@ class EventController extends Controller
         |--------------------------------------------------------------------------
         | Auto Status Handling
         |--------------------------------------------------------------------------
+        | Status is forced to "expired" only if the parent campaign has expired.
+        | Event-level expiry (event_date + end_time passing) is handled lazily
+        | by show(), using hasEnded(), so it isn't duplicated/desynced here.
+        | We temporarily apply the incoming time fields to a clone so hasEnded()
+        | evaluates against the NEW date/time being saved, not the stale one.
         */
 
         if (
@@ -376,13 +370,18 @@ class EventController extends Controller
             )
         ) {
 
-            $validated['status'] =
-                Event::STATUS_EXPIRED;
+            $validated['status'] = Event::STATUS_EXPIRED;
 
         } else {
 
-            $validated['status'] =
-                $event->status;
+            $previewEvent = $event->replicate();
+            $previewEvent->event_date = $validated['event_date'];
+            $previewEvent->start_time = $validated['start_time'];
+            $previewEvent->end_time   = $validated['end_time'];
+
+            $validated['status'] = $previewEvent->hasEnded()
+                ? Event::STATUS_EXPIRED
+                : ($event->isExpired() ? Event::STATUS_PENDING : $event->status);
         }
 
         /*
