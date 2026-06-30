@@ -30,12 +30,17 @@ class PublicCampaignController extends Controller
         | backToCampaign() uses $campaign->slug, but more importantly
         | the campaign_state was 'active' even though end_date had passed.
         | This forces the correct state before the view renders.
+        |
+        | FIX (30-06-2026): end_date has no time component, so Carbon was
+        | treating it as midnight (00:00:00) and marking campaigns expired
+        | hours before the day actually ended. Using endOfDay() so the
+        | campaign stays active through the entire end_date calendar day.
         |----------------------------------------------------------------------
         */
         if (
             $campaign->campaign_state === 'active' &&
             $campaign->end_date &&
-            \Carbon\Carbon::parse($campaign->end_date)->isPast()
+            \Carbon\Carbon::parse($campaign->end_date)->endOfDay()->isPast()
         ) {
             // Update DB so next request is instant
             $campaign->update(['campaign_state' => 'expired']);

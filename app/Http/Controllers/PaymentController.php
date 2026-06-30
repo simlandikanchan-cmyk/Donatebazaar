@@ -117,20 +117,36 @@ class PaymentController extends Controller
     |--------------------------------------------------------------------------
     */
 
+    // private function resolveState(Campaign $campaign): string
+    // {
+    //     $state = $campaign->campaign_state;
+
+    //     if (
+    //         $state === 'active' &&
+    //         $campaign->end_date &&
+    //         Carbon::parse($campaign->end_date)->isPast()
+    //     ) {
+    //         return 'expired';
+    //     }
+
+    //     return $state;
+    // }
+
+
     private function resolveState(Campaign $campaign): string
-    {
-        $state = $campaign->campaign_state;
+{
+    $state = $campaign->campaign_state;
 
-        if (
-            $state === 'active' &&
-            $campaign->end_date &&
-            Carbon::parse($campaign->end_date)->isPast()
-        ) {
-            return 'expired';
-        }
-
-        return $state;
+    if (
+        $state === 'active' &&
+        $campaign->end_date &&
+        Carbon::parse($campaign->end_date)->endOfDay()->isPast()
+    ) {
+        return 'expired';
     }
+
+    return $state;
+}
 
     /*
     |--------------------------------------------------------------------------
