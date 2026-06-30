@@ -23,14 +23,19 @@ class User extends Authenticatable
     // -------------------------------------------------------------------------
 
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'phone',
-        'avatar',
-        'cover_image',
-        'bio',
-    ];
+    'name',
+    'email',
+    'password',
+    'phone',
+    'avatar',
+    'cover_image',
+    'bio',
+    'otp_hash',
+    'otp_expires_at',
+    'otp_attempts',
+    'phone_verified_at',
+    'last_login_at',
+];
 
     protected $hidden = [
         'password',
@@ -38,12 +43,15 @@ class User extends Authenticatable
     ];
 
     protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password'          => 'hashed',
-        ];
-    }
+{
+    return [
+        'email_verified_at' => 'datetime',
+        'phone_verified_at' => 'datetime',
+        'otp_expires_at'    => 'datetime',
+        'last_login_at'     => 'datetime',
+        'password'          => 'hashed',
+    ];
+}
 
     // -------------------------------------------------------------------------
     // Relationships — Core

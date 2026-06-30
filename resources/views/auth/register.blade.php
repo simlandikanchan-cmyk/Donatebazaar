@@ -823,6 +823,15 @@
                     Sign up with Google
                 </a>
 
+                {{-- Phone OTP --}}
+                <a href="{{ route('otp.login') }}" class="btn-google" style="margin-top:10px;">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="6" y="2" width="12" height="20" rx="2"/>
+                        <line x1="11" y1="18" x2="13" y2="18"/>
+                    </svg>
+                    Continue with Phone
+                </a>
+
                 <p class="login-link">
                     Already have an account? <a href="{{ route('login') }}">Log in</a>
                 </p>

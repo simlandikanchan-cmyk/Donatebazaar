@@ -19,21 +19,24 @@
             padding: 10px 20px;
             cursor: pointer;
         }
-        #recaptcha-container {
-            margin: 15px 0;
+        #message {
+            margin-top: 10px;
+            font-size: 14px;
         }
+        .error { color: #c0392b; }
+        .success { color: #27ae60; }
     </style>
 </head>
 <body>
 
 <h2>Verify OTP</h2>
 
-<p>Phone: {{ session('phone') }}</p>
+<p>Phone: {{ $phone ?? session('otp_phone') }}</p>
 
-<input type="text" id="otp" placeholder="Enter OTP">
+<input type="text" id="otp" placeholder="Enter OTP" maxlength="6" inputmode="numeric">
 <br>
 
-<button onclick="verifyOTP()">Verify OTP</button>
+<button id="verifyBtn" onclick="verifyOTP()">Verify OTP</button>
 
 <br><br>
 
@@ -41,93 +44,84 @@
     Resend OTP (30s)
 </button>
 
-<div id="recaptcha-container"></div>
-
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<div id="message"></div>
 
 <script>
-    //  Firebase Config (PUT YOURS)
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyAsmzZzntxdbggKog_LAAzKRuOz_rkKEAE",
-  authDomain: "web-app-4b1c2.firebaseapp.com",
-  projectId: "web-app-4b1c2",
-  storageBucket: "web-app-4b1c2.firebasestorage.app",
-  messagingSenderId: "382560900766",
-  appId: "1:382560900766:web:7af4ea0bd148d92226cd8f",
-  measurementId: "G-TFKFXCYKJY"
-};
+    const phone = "{{ $phone ?? session('otp_phone') }}";
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-    firebase.initializeApp(firebaseConfig);
-
-    const auth = firebase.auth();
-
-    let confirmationResult;
-
-    // 🔹 Setup reCAPTCHA
-    window.onload = function () {
-        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-            size: 'normal'
-        });
-    };
-
-    // 🔹 Send OTP again
-    function resendOTP() {
-
-        let phone = "{{ session('phone') }}";
-
-        // Add +91 if not present
-        if (!phone.startsWith('+')) {
-            phone = '+91' + phone;
-        }
-
-        auth.signInWithPhoneNumber(phone, window.recaptchaVerifier)
-        .then(function (result) {
-            confirmationResult = result;
-            alert('OTP sent again!');
-            startTimer();
-        })
-        .catch(function (error) {
-            alert(error.message);
-        });
+    function showMessage(text, isError) {
+        const el = document.getElementById('message');
+        el.textContent = text;
+        el.className = isError ? 'error' : 'success';
     }
 
-    // 🔹 Verify OTP
+    // 🔹 Verify OTP — calls your Laravel /verify-otp route
     function verifyOTP() {
+        const otp = document.getElementById('otp').value.trim();
 
-        const code = document.getElementById('otp').value;
-
-        if (!confirmationResult) {
-            alert("Please click resend OTP first");
+        if (!otp || otp.length !== 6) {
+            showMessage('Please enter the 6-digit OTP.', true);
             return;
         }
 
-        confirmationResult.confirm(code)
-        .then(function (result) {
+        const btn = document.getElementById('verifyBtn');
+        btn.disabled = true;
+        btn.innerText = 'Verifying...';
 
-            let phone = result.user.phoneNumber;
-
-            // 🔥 Send to Laravel backend
-            fetch('/firebase-login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                },
-                body: JSON.stringify({
-                    phone: phone.replace('+91', '') // store clean number
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                window.location.href = '/user/dashboard';
-            });
-
+        fetch('{{ route("otp.verify.post") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({ phone: phone, otp: otp })
         })
-        .catch(function (error) {
-            alert("Invalid OTP");
+        .then(async (res) => {
+            if (res.redirected) {
+                // Controller issued redirect()->intended(...) on success
+                window.location.href = res.url;
+                return;
+            }
+            if (!res.ok) {
+                const data = await res.json();
+                const msg = data.errors?.otp?.[0] || 'Invalid OTP. Please try again.';
+                showMessage(msg, true);
+                btn.disabled = false;
+                btn.innerText = 'Verify OTP';
+                return;
+            }
+            window.location.href = '/user/dashboard';
+        })
+        .catch(() => {
+            showMessage('Something went wrong. Please try again.', true);
+            btn.disabled = false;
+            btn.innerText = 'Verify OTP';
         });
+    }
+
+    // 🔹 Resend OTP — calls your Laravel /resend-otp route
+    function resendOTP() {
+        fetch('{{ route("otp.resend") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({ phone: phone })
+        })
+        .then(res => res.json().then(data => ({ status: res.status, data })))
+        .then(({ status, data }) => {
+            if (status === 429) {
+                showMessage('Too many requests. Please wait a moment.', true);
+                return;
+            }
+            showMessage(data.status || 'OTP sent again.', false);
+            startTimer();
+        })
+        .catch(() => showMessage('Could not resend OTP. Try again.', true));
     }
 
     // 🔹 Resend Timer (30 sec)
@@ -149,9 +143,8 @@ const firebaseConfig = {
         }, 1000);
     }
 
-    // Start timer on load
+    // Start timer on page load (OTP was already sent by sendOtp() before redirect here)
     startTimer();
-
 </script>
 
 </body>

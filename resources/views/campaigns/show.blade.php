@@ -190,7 +190,7 @@ body {
 
 .mini-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
 .mini-stat { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; text-align: center; }
-.mini-stat-val { font-size: 18px; font-weight: 700; color: var(--text); font-family: var(--font-mono); line-height: 1; }
+.mini-stat-val { font-size: 18px; font-weight: 700; color: var(--text); font-family: var(--font-mono); line-height: 1.4; }
 .mini-stat-lbl { font-size: 10px; color: var(--text3); margin-top: 4px; font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.06em; }
 
 /* ══ ACTION BUTTONS ══ */
@@ -578,7 +578,7 @@ body {
                             @if($campaign->end_date)
                             <span class="title-meta-chip {{ $isEnded ? 'warn' : '' }}">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                                {{ $isEnded ? 'Ended ' . abs($daysLeft) . ' days ago' : $daysLeft . ' days left' }}
+                                {{ $isEnded ? ' Will End within ' . abs($daysLeft) . ' days' : $daysLeft . ' days left' }}
                             </span>
                             @endif
                             @if($publicUrl)
@@ -1022,7 +1022,7 @@ body {
 <div class="mini-stats-row2">
     <div class="mini-stat" style="grid-column:1 / -1;{{ $isEnded ? 'background:rgba(239,68,68,0.06);border-color:rgba(239,68,68,0.2);' : '' }}">
         <div class="mini-stat-val" style="font-size:14px;{{ $isEnded ? 'color:#ef4444;' : '' }}">
-            {{ $isEnded ? 'Campaign ended ' . abs($daysLeft) . ' days ago' : $daysLeft . ' days left' }}
+            {{ $isEnded ? 'Campaign will end within ' . abs($daysLeft) . ' days ' : $daysLeft . ' days left' }}
         </div>
         <div class="mini-stat-lbl" style="{{ $isEnded ? 'color:#ef4444;' : '' }}">{{ $isEnded ? 'Status' : 'Time Remaining' }}</div>
     </div>

@@ -19,92 +19,79 @@
             padding: 10px 20px;
             cursor: pointer;
         }
-        #recaptcha-container {
-            margin-top: 20px;
+        #message {
+            margin-top: 12px;
+            font-size: 14px;
         }
+        .error { color: #c0392b; }
     </style>
 </head>
 <body>
 
 <h2>Login with Phone OTP</h2>
 
-<input type="text" id="phone" placeholder="Enter phone number (9876543210)">
+@if (session('status'))
+    <p style="color:#27ae60;">{{ session('status') }}</p>
+@endif
+
+@if (session('error'))
+    <p class="error">{{ session('error') }}</p>
+@endif
+
+<input type="text" id="phone" placeholder="Enter phone number (9876543210)" maxlength="10" inputmode="numeric">
 <br>
 
-<button onclick="sendOTP()">Send OTP</button>
+<button id="sendBtn" onclick="sendOTP()">Send OTP</button>
 
-<div id="recaptcha-container"></div>
-
-<!--  Firebase Compat SDK (IMPORTANT) -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<div id="message"></div>
 
 <script>
-    //  Your Firebase Config
-    const firebaseConfig = {
-        apiKey: "AIzaSyAsmzZzntxdbggKog_LAAzKRuOz_rkKEAE",
-        authDomain: "web-app-4b1c2.firebaseapp.com",
-        projectId: "web-app-4b1c2",
-        storageBucket: "web-app-4b1c2.firebasestorage.app",
-        messagingSenderId: "382560900766",
-        appId: "1:382560900766:web:7af4ea0bd148d92226cd8f"
-    };
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
+    function showMessage(text, isError) {
+        const el = document.getElementById('message');
+        el.textContent = text;
+        el.className = isError ? 'error' : '';
+    }
 
-    let confirmationResult;
-
-    // Setup reCAPTCHA
-    window.onload = function () {
-        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
-            'recaptcha-container',
-            {
-                size: 'normal'
-            }
-        );
-    };
-
-    // Send OTP
     function sendOTP() {
-
         let phone = document.getElementById('phone').value.trim();
+        phone = phone.replace(/\s+/g, '').replace(/^\+91/, '');
 
-        // remove spaces
-        phone = phone.replace(/\s+/g, '');
-
-        // add +91 if not present
-        if (!phone.startsWith('+91')) {
-            phone = '+91' + phone;
+        if (!/^\d{10}$/.test(phone)) {
+            showMessage('Please enter a valid 10-digit phone number.', true);
+            return;
         }
 
-        auth.signInWithPhoneNumber(phone, window.recaptchaVerifier)
-        .then(function (result) {
+        const btn = document.getElementById('sendBtn');
+        btn.disabled = true;
+        btn.innerText = 'Sending...';
 
-            confirmationResult = result;
-
-            alert("OTP sent successfully!");
-
-            // save phone in session (Laravel)
-            fetch('/store-phone', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                },
-                body: JSON.stringify({
-                    phone: phone.replace('+91', '')
-                })
-            });
-
-            // redirect to verify page
-            window.location.href = '/verify-otp';
-
+        fetch('{{ route("otp.send") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({ phone: phone })
         })
-        .catch(function (error) {
-            console.log(error);
-            alert(error.message);
+        .then(async (res) => {
+            if (!res.ok) {
+                const data = await res.json();
+                const msg = data.errors?.phone?.[0] || data.message || 'Could not send OTP. Please try again.';
+                showMessage(msg, true);
+                btn.disabled = false;
+                btn.innerText = 'Send OTP';
+                return;
+            }
+            const data = await res.json();
+            window.location.href = data.redirect || '{{ route("otp.verify") }}';
+        })
+        .catch(() => {
+            showMessage('Something went wrong. Please try again.', true);
+            btn.disabled = false;
+            btn.innerText = 'Send OTP';
         });
     }
 </script>
