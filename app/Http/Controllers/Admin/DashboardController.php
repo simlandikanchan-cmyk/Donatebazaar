@@ -21,10 +21,15 @@ class DashboardController extends Controller
         $cntCompleted = Campaign::where('campaign_state', 'completed')->count();
 
         // Active = state is active AND not yet expired by date
+        // FIX (30-06-2026): end_date has no time component, so comparing
+        // against now() (which includes the current time) marked campaigns
+        // as expired hours before their end_date calendar day actually
+        // ended. Using now()->startOfDay() keeps the campaign active
+        // through the entire end_date day.
         $cntActive = Campaign::where('campaign_state', 'active')
             ->where(function ($q) {
                 $q->whereNull('end_date')
-                  ->orWhere('end_date', '>=', now());
+                  ->orWhere('end_date', '>=', now()->startOfDay());
             })->count();
 
         // Expired = state is 'expired' OR state is 'active' but end_date has passed
@@ -32,7 +37,7 @@ class DashboardController extends Controller
             ->orWhere(function ($q) {
                 $q->where('campaign_state', 'active')
                   ->whereNotNull('end_date')
-                  ->where('end_date', '<', now());
+                  ->where('end_date', '<', now()->startOfDay());
             })->count();
 
         // ─────────────────────────────────────────────────────────
@@ -49,7 +54,7 @@ class DashboardController extends Controller
             ->whereIn('campaign_state', ['active', 'paused'])
             ->where(function ($q) {
                 $q->whereNull('end_date')
-                  ->orWhere('end_date', '>=', now());
+                  ->orWhere('end_date', '>=', now()->startOfDay());
             })
             ->latest()
             ->paginate(12, ['*'], 'active_page');
@@ -66,7 +71,7 @@ class DashboardController extends Controller
                   ->orWhere(function ($q2) {
                       $q2->where('campaign_state', 'active')
                          ->whereNotNull('end_date')
-                         ->where('end_date', '<', now());
+                         ->where('end_date', '<', now()->startOfDay());
                   });
             })
             ->latest()
