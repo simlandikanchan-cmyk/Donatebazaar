@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Carbon\Carbon;
 
 class RecurringDonation extends Model
 {
@@ -36,6 +37,18 @@ class RecurringDonation extends Model
         return $this->belongsTo(Campaign::class);
     }
 
+    // ── Shared billing-date calculator (store() + resume() both use this) ──
+    public static function calculateNextBilling(string $frequency): Carbon
+    {
+        return match($frequency) {
+            'daily'     => now()->addDay(),
+            'weekly'    => now()->addWeek(),
+            'monthly'   => now()->addMonth(),
+            'quarterly' => now()->addMonths(3),
+            default     => now()->addMonth(), // fallback safety net
+        };
+    }
+
     // ── Helpers ──
     public function isActive(): bool
     {
@@ -44,19 +57,31 @@ class RecurringDonation extends Model
 
     public function cancel(): void
     {
+        if ($this->status === 'cancelled') {
+            return;
+        }
+
         $this->update(['status' => 'cancelled']);
     }
 
     public function pause(): void
     {
+        if ($this->status !== 'active') {
+            return;
+        }
+
         $this->update(['status' => 'paused']);
     }
 
     public function resume(): void
     {
+        if ($this->status !== 'paused') {
+            return;
+        }
+
         $this->update([
             'status'            => 'active',
-            'next_billing_date' => now()->addDays($this->frequency === 'weekly' ? 7 : 30),
+            'next_billing_date' => self::calculateNextBilling($this->frequency),
         ]);
     }
 }

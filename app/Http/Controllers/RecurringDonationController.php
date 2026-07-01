@@ -6,7 +6,6 @@ use App\Models\Campaign;
 use App\Models\RecurringDonation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
 
 class RecurringDonationController extends Controller
 {
@@ -20,10 +19,9 @@ class RecurringDonationController extends Controller
 
         $request->validate([
             'amount'    => 'required|numeric|min:10',
-            'frequency' => 'required|in:daily,weekly,monthly,quarterly', // ← updated
+            'frequency' => 'required|in:daily,weekly,monthly,quarterly',
         ]);
 
-        // Check if user already has an active recurring donation for this campaign
         $existing = RecurringDonation::where('user_id', Auth::id())
             ->where('campaign_id', $campaign->id)
             ->where('status', 'active')
@@ -37,15 +35,9 @@ class RecurringDonationController extends Controller
             );
         }
 
-        // Calculate next billing date based on frequency
-        $nextBilling = match($request->frequency) {       // ← updated
-            'daily'     => Carbon::now()->addDay(),
-            'weekly'    => Carbon::now()->addWeek(),
-            'monthly'   => Carbon::now()->addMonth(),
-            'quarterly' => Carbon::now()->addMonths(3),
-        };
+        // Shared helper now used here too — keeps store() and resume() in sync
+        $nextBilling = RecurringDonation::calculateNextBilling($request->frequency);
 
-        // Create the recurring donation record
         $recurring = RecurringDonation::create([
             'user_id'           => Auth::id(),
             'campaign_id'       => $campaign->id,
@@ -56,7 +48,6 @@ class RecurringDonationController extends Controller
             'billing_count'     => 0,
         ]);
 
-        // Process the FIRST donation immediately via Razorpay
         return redirect()->route('donate.redirect', [
             'campaign'     => $campaign->id,
             'amount'       => $request->amount,
@@ -74,9 +65,19 @@ class RecurringDonationController extends Controller
         $recurring = RecurringDonation::where('user_id', Auth::id())
             ->with('campaign')
             ->latest()
-            ->get();
+            ->paginate(10);
 
-        return view('recurring.index', compact('recurring'));
+        // Needed by the sidebar (mirrors what the KYC dashboard passes in)
+        // for the "Campaigns" section counts (All / Active / Pending / etc.)
+        $campaigns = Campaign::where('user_id', Auth::id())->get();
+
+        // Badge shown next to "Recurring Donations" in the sidebar —
+        // counts only active plans so it reads like "things currently running".
+        $recurringCount = RecurringDonation::where('user_id', Auth::id())
+            ->where('status', 'active')
+            ->count();
+
+        return view('recurring.index', compact('recurring', 'campaigns', 'recurringCount'));
     }
 
     // ── Cancel ──
@@ -84,6 +85,10 @@ class RecurringDonationController extends Controller
     {
         if ($recurringDonation->user_id !== Auth::id()) {
             abort(403);
+        }
+
+        if ($recurringDonation->status === 'cancelled') {
+            return back()->with('error', 'This donation is already cancelled.');
         }
 
         $recurringDonation->cancel();
@@ -98,6 +103,10 @@ class RecurringDonationController extends Controller
             abort(403);
         }
 
+        if ($recurringDonation->status !== 'active') {
+            return back()->with('error', 'Only active donations can be paused.');
+        }
+
         $recurringDonation->pause();
 
         return back()->with('success', 'Recurring donation paused.');
@@ -108,6 +117,10 @@ class RecurringDonationController extends Controller
     {
         if ($recurringDonation->user_id !== Auth::id()) {
             abort(403);
+        }
+
+        if ($recurringDonation->status !== 'paused') {
+            return back()->with('error', 'Only paused donations can be resumed.');
         }
 
         $recurringDonation->resume();
