@@ -101,7 +101,11 @@ Route::get('/campaigns/{category}/{slug}', [PublicCampaignController::class, 'sh
 | Payment
 |--------------------------------------------------------------------------
 */
-Route::post('/donate/{campaign}', [PaymentController::class, 'redirectToPayment'])
+// Route::post('/donate/{campaign}', [PaymentController::class, 'redirectToPayment'])
+//      ->name('donate.redirect')
+//      ->middleware('auth');
+
+Route::match(['get', 'post'], '/donate/{campaign}', [PaymentController::class, 'redirectToPayment'])
      ->name('donate.redirect')
      ->middleware('auth');
 
