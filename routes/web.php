@@ -40,7 +40,10 @@ use App\Http\Controllers\Admin\GiftCardController as AdminGiftCardController;
 use App\Http\Controllers\CategoryProductController;
 use App\Http\Controllers\Admin\CategoryProductController as AdminCategoryProductController;
 use App\Http\Controllers\Admin\EventController as AdminEventController;
-
+use App\Http\Controllers\PublicEventController;
+use App\Http\Controllers\EventRegistrationController;
+use App\Http\Controllers\NewsletterController;
+use Spatie\Health\Http\Controllers\HealthCheckResultsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -69,18 +72,10 @@ require __DIR__.'/auth.php';
 | OTP Login
 |--------------------------------------------------------------------------
 */
-// Route::get('/otp-login',   [OtpController::class, 'login'])->name('otp.login');
-// Route::get('/verify-otp',  [OtpController::class, 'verifyPage'])->name('otp.verify');
-// Route::post('/send-otp',   [OtpController::class, 'sendOtp'])->name('otp.send');
-// Route::post('/resend-otp', [OtpController::class, 'resend'])->name('otp.resend');
-// Route::post('/resend-otp', [OtpController::class, 'resend'])->middleware('throttle:3,1')->name('otp.resend');
-
-
-
 Route::get('/otp-login',   [OtpController::class, 'login'])->name('otp.login');
 Route::get('/verify-otp',  [OtpController::class, 'verifyPage'])->name('otp.verify');
 
-Route::post('/send-otp',   [OtpController::class, 'sendOtp'])
+Route::post('/send-otp', [OtpController::class, 'sendOtp'])
      ->middleware('throttle:5,1')
      ->name('otp.send');
 
@@ -91,29 +86,6 @@ Route::post('/verify-otp', [OtpController::class, 'verifyOtp'])
 Route::post('/resend-otp', [OtpController::class, 'resend'])
      ->middleware('throttle:3,1')
      ->name('otp.resend');
-
-
-
-
-
-
-
-
-
-
-// Route::post('/store-phone', function (Request $request) {
-//     session(['phone' => $request->phone]);
-//     return response()->json(['success' => true]);
-// });
-
-// Route::post('/firebase-login', function (Request $request) {
-//     $user = User::firstOrCreate(
-//         ['phone' => $request->phone],
-//         ['role'  => 'donor']
-//     );
-//     auth()->login($user);
-//     return response()->json(['success' => true]);
-// });
 
 /*
 |--------------------------------------------------------------------------
@@ -141,7 +113,7 @@ Route::post('/payment/verify', [PaymentController::class, 'verify'])
      ->name('payment.verify')
      ->middleware('auth');
 
-// Webhook — NO auth, NO CSRF
+// Webhook — no auth/CSRF by design (verify signature inside the controller instead)
 Route::post('/payment/webhook', [PaymentController::class, 'webhook'])
      ->name('payment.webhook');
 
@@ -151,18 +123,27 @@ Route::post('/payment/webhook', [PaymentController::class, 'webhook'])
 |--------------------------------------------------------------------------
 */
 Route::get('/contact',      [ContactController::class, 'index'])->name('contact');
-Route::post('/contact',     [ContactController::class, 'store'])->name('contact.store');
+Route::post('/contact',     [ContactController::class, 'store'])
+     ->middleware('throttle:5,1')
+     ->name('contact.store');
 Route::get('/partnership',  [PartnershipController::class, 'index'])->name('partnership');
-Route::post('/partnership', [PartnershipController::class, 'store'])->name('partnership.store');
+Route::post('/partnership', [PartnershipController::class, 'store'])
+     ->middleware('throttle:5,1')
+     ->name('partnership.store');
 
 /*
 |--------------------------------------------------------------------------
-| Public Events
+| Public Events (read-only)
 |--------------------------------------------------------------------------
 */
-Route::get('/events/{event}',      [EventController::class, 'show'])->name('events.show');
-Route::get('/events/{event}/edit', [EventController::class, 'edit'])->name('events.edit');
-Route::put('/events/{event}',      [EventController::class, 'update'])->name('events.update');
+Route::get('/events', [PublicEventController::class, 'index'])->name('events.index');
+Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
+
+// Anonymous registration
+Route::get('/events/{event}/register',  [EventRegistrationController::class, 'register'])->name('events.register');
+Route::post('/events/{event}/register', [EventRegistrationController::class, 'store'])
+     ->middleware('throttle:5,1')
+     ->name('events.register.store');
 
 /*
 |--------------------------------------------------------------------------
@@ -237,22 +218,41 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/campaign/{campaign}',            [CampaignController::class, 'update'])->name('campaign.update');
     Route::post('/campaign/{campaign}/pause',     [CampaignController::class, 'pause'])->name('campaign.pause');
     Route::post('/campaign/{campaign}/resume',    [CampaignController::class, 'resume'])->name('campaign.resume');
-    Route::post('/campaigns/{campaign}/resubmit',[CampaignController::class, 'resubmit'])->name('campaign.resubmit');
+    Route::post('/campaigns/{campaign}/resubmit', [CampaignController::class, 'resubmit'])->name('campaign.resubmit');
+
+    // NOTE: campaign.edit/update/pause/resume/resubmit still need an authorization
+    // check inside the controller (or a policy: $this->authorize('update', $campaign))
+    // confirming the logged-in user actually owns $campaign. Being authenticated is
+    // not the same as being authorized — otherwise any donor could edit any campaign.
 
     // ── KYC ───────────────────────────────────────────────────────────────
     Route::get('/kyc/upload/{campaign}',   [KycUploadController::class, 'show'])->name('kyc.upload.form');
     Route::post('/kyc/upload/{campaign}',  [KycUploadController::class, 'store'])->name('kyc.upload');
     Route::get('/kyc/view/{campaign}',     [KycUploadController::class, 'view'])->name('kyc.view');
     Route::get('/kyc/document/{campaign}', [KycUploadController::class, 'serveDocument'])->name('kyc.document');
+    // NOTE: kyc.view / kyc.document return uploaded ID/financial documents — make sure
+    // the controller checks that $campaign belongs to auth()->id() (or the user is an
+    // admin), not just that *some* user is logged in.
 
-    // ── Events ────────────────────────────────────────────────────────────
+    Route::get('/user/kyc', function () {
+        $campaigns = Campaign::where('user_id', auth()->id())->get();
+        return view('kyc.index', compact('campaigns'));
+    })->name('user.kyc');
+
+    // ── Events (owner-managed) ──────────────────────────────────────────────
     Route::get('/campaign/{campaign}/events/create', [EventController::class, 'create'])->name('events.create');
     Route::post('/campaign/{campaign}/events',       [EventController::class, 'store'])->name('events.store');
 
+    // FIXED: these were previously public (no auth), letting anyone edit/update
+    // any event. Moved inside the auth group. Still add an ownership/policy check
+    // in the controller — auth alone doesn't confirm this user owns $event.
+    Route::get('/events/{event}/edit', [EventController::class, 'edit'])->name('events.edit');
+    Route::put('/events/{event}',      [EventController::class, 'update'])->name('events.update');
+
     // ── Volunteers ────────────────────────────────────────────────────────
-    Route::get('/volunteer/apply',              [VolunteerController::class, 'apply']);
-    Route::post('/admin/volunteer/{id}/status', [VolunteerController::class, 'updateStatus']);
-    Route::get('/campaign/{id}/volunteers',     [VolunteerController::class, 'campaignVolunteers']);
+    // FIXED: '/volunteer/apply' was inside the auth group, which likely blocks
+    // public applicants from applying. Moved out to the public section below.
+    Route::get('/campaign/{id}/volunteers', [VolunteerController::class, 'campaignVolunteers'])->name('volunteers.campaign');
 
     // ── NGO / Organisation Application (multi-step) ───────────────────────
     Route::prefix('apply')->name('application.')->group(function () {
@@ -272,20 +272,42 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/recurring/{recurringDonation}/cancel', [RecurringDonationController::class, 'cancel'])->name('recurring.cancel');
     Route::patch('/recurring/{recurringDonation}/pause',  [RecurringDonationController::class, 'pause'])->name('recurring.pause');
     Route::patch('/recurring/{recurringDonation}/resume', [RecurringDonationController::class, 'resume'])->name('recurring.resume');
+    // NOTE: same ownership caveat — confirm $recurringDonation->user_id === auth()->id()
+    // in the controller before cancel/pause/resume.
 
     // ── User Blog Dashboard ───────────────────────────────────────────────
     Route::prefix('user/dashboard/blogs')->name('user.blogs.')->group(function () {
-        Route::get('/',              [UserBlogController::class, 'index'])->name('index');
-        Route::get('/create',        [UserBlogController::class, 'create'])->name('create');
-        Route::post('/',             [UserBlogController::class, 'store'])->name('store');
-        Route::post('/restore/{id}', [UserBlogController::class, 'restore'])->name('restore');
-        Route::get('/{blog}',        [UserBlogController::class, 'show'])->name('show');
-        Route::get('/{blog}/edit',   [UserBlogController::class, 'edit'])->name('edit');
-        Route::put('/{blog}',        [UserBlogController::class, 'update'])->name('update');
-        Route::delete('/{blog}',     [UserBlogController::class, 'destroy'])->name('destroy');
-        Route::post('/{blog}/submit',[UserBlogController::class, 'submit'])->name('submit');
+        Route::get('/',               [UserBlogController::class, 'index'])->name('index');
+        Route::get('/create',         [UserBlogController::class, 'create'])->name('create');
+        Route::post('/',              [UserBlogController::class, 'store'])->name('store');
+        Route::post('/restore/{id}',  [UserBlogController::class, 'restore'])->name('restore');
+        Route::get('/{blog}',         [UserBlogController::class, 'show'])->name('show');
+        Route::get('/{blog}/edit',    [UserBlogController::class, 'edit'])->name('edit');
+        Route::put('/{blog}',         [UserBlogController::class, 'update'])->name('update');
+        Route::delete('/{blog}',      [UserBlogController::class, 'destroy'])->name('destroy');
+        Route::post('/{blog}/submit', [UserBlogController::class, 'submit'])->name('submit');
     });
 });
+
+/*
+|--------------------------------------------------------------------------
+| Admin-only: escalated actions that were previously reachable by any
+| authenticated user. FIXED: added role/'admin' middleware.
+| Adjust the middleware name to whatever your app actually uses
+| (e.g. 'role:admin', 'can:manage-volunteers', a Gate check, etc.)
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::post('/admin/volunteer/{id}/status', [VolunteerController::class, 'updateStatus'])
+         ->name('admin.volunteer.status');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Volunteers (public application form)
+|--------------------------------------------------------------------------
+*/
+Route::get('/volunteer/apply', [VolunteerController::class, 'apply'])->name('volunteer.apply');
 
 /*
 |--------------------------------------------------------------------------
@@ -302,7 +324,9 @@ require __DIR__.'/admin.php';
 Route::prefix('career')->name('job_posts.')->group(function () {
     Route::get('/',                      [JobPostController::class, 'index'])->name('index');
     Route::get('/{jobPost:slug}',        [JobPostController::class, 'show'])->name('show');
-    Route::post('/{jobPost:slug}/apply', [JobPostController::class, 'apply'])->name('apply');
+    Route::post('/{jobPost:slug}/apply', [JobPostController::class, 'apply'])
+         ->middleware('throttle:5,1')
+         ->name('apply');
 });
 
 /*
@@ -315,8 +339,12 @@ Route::prefix('gift-cards')->name('gift-cards.')->group(function () {
     Route::post('/order',         [GiftCardController::class, 'createOrder'])->name('order');
     Route::post('/verify',        [GiftCardController::class, 'verify'])->name('verify');
     Route::get('/redeem',         [GiftCardController::class, 'redeemPage'])->name('redeem');
-    Route::post('/validate-code', [GiftCardController::class, 'validateCode'])->name('validate-code');
-    Route::post('/redeem',        [GiftCardController::class, 'redeem'])->name('redeem.submit');
+    Route::post('/validate-code', [GiftCardController::class, 'validateCode'])
+         ->middleware('throttle:10,1') // FIXED: added throttle — code-guessing endpoint
+         ->name('validate-code');
+    Route::post('/redeem',        [GiftCardController::class, 'redeem'])
+         ->middleware('throttle:10,1') // FIXED: same reasoning
+         ->name('redeem.submit');
     Route::get('/success/{code}', [GiftCardController::class, 'redeemSuccess'])->name('redeem.success');
 });
 
@@ -325,50 +353,44 @@ Route::prefix('gift-cards')->name('gift-cards.')->group(function () {
 | Misc
 |--------------------------------------------------------------------------
 */
-Route::get('/category/{id}/products', [CategoryProductController::class, 'getProducts']);
+Route::get('/category/{id}/products', [CategoryProductController::class, 'getProducts'])
+     ->name('category.products');
 
+/*
+|--------------------------------------------------------------------------
+| Health Check
+| Public infra status page — consider gating behind IP allowlist or auth
+| in production so you're not exposing DB/cache/queue internals publicly.
+|--------------------------------------------------------------------------
+*/
+Route::get('/health', HealthCheckResultsController::class)->name('health');
 
-use App\Http\Controllers\PublicEventController;
-use App\Http\Controllers\EventRegistrationController;
-
-// 2. Add these routes in the "Public Events" section
-//    (replace or add alongside your existing events routes):
-
-Route::get('/events', [PublicEventController::class, 'index'])->name('events.index');
-
-// Registration routes (anonymous users)
-Route::get('/events/{event}/register',  [EventRegistrationController::class, 'register'])->name('events.register');
-Route::post('/events/{event}/register', [EventRegistrationController::class, 'store'])->name('events.register.store');
-
-
-// for site health check  broswer url http://127.0.0.1:8000/health
-use Spatie\Health\Http\Controllers\HealthCheckResultsController;
-
-Route::get('/health', HealthCheckResultsController::class);
-
-
-// for preview donation recipt
-
-use App\Models\Donation;
-use App\Mail\DonationReceiptMail;
-
-Route::get('/preview-receipt/{id}', function ($id) {
-    $donation = Donation::findOrFail($id);
-    return new DonationReceiptMail($donation);
-});
-
-// Newsletter Form
-
-use App\Http\Controllers\NewsletterController;
-
+/*
+|--------------------------------------------------------------------------
+| Newsletter
+|--------------------------------------------------------------------------
+*/
 Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])
+     ->middleware('throttle:5,1')
      ->name('newsletter.subscribe');
 
-
-     
-     
-     
-     Route::get('/user/kyc', function () {
-    $campaigns = Campaign::where('user_id', auth()->id())->get();
-    return view('kyc.index', compact('campaigns'));
-})->middleware('auth')->name('user.kyc');
+/*
+|--------------------------------------------------------------------------
+| REMOVED: /preview-receipt/{id}
+|--------------------------------------------------------------------------
+| This route returned any user's donation receipt to anyone who guessed
+| the numeric ID — no auth, no ownership check. It looked like a debug/
+| preview route left in from development.
+|
+| If you need this for local testing of the mailable's markup, keep it
+| but restrict it hard, e.g.:
+|
+| if (app()->environment('local')) {
+|     Route::get('/preview-receipt/{donation}', function (Donation $donation) {
+|         return new DonationReceiptMail($donation);
+|     })->middleware(['auth', 'role:admin']);
+| }
+|
+| Do not ship an equivalent of this route to production unguarded.
+|--------------------------------------------------------------------------
+*/
