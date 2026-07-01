@@ -9,3 +9,6 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('campaigns:expire')->dailyAt('00:01');
+
+// to delete telescopies entries after 48 hours
+Schedule::command('telescope:prune --hours=48')->daily();

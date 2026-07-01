@@ -108,6 +108,14 @@ class OrganizationApplication extends Model
         'priority_score'       => 'integer',
         'current_step'         => 'integer',
 
+
+         // sensitive fields — encrypted at rest
+    'pan_number'           => 'encrypted',
+    'bank_name'            => 'encrypted',
+    'bank_account_number'  => 'encrypted',
+    'bank_ifsc'            => 'encrypted',
+    'bank_account_type'    => 'encrypted'
+
     ];
 
     // ── Relationships ──────────────────────────────────────────────────────

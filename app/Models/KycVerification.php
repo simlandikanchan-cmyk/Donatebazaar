@@ -53,10 +53,14 @@ class KycVerification extends Model
     |--------------------------------------------------------------------------
     */
 
-    protected $casts = [
-        'verified_at'     => 'datetime',
-        'document_number' => 'encrypted', // FIXED: PAN/Aadhaar numbers now stored encrypted at rest
-    ];
+     protected $casts = [
+    'verified_at'         => 'datetime',
+    'document_number'     => 'encrypted', // PAN/Aadhaar numbers stored encrypted at rest
+    'kyc_account_name'    => 'encrypted',
+    'kyc_account_number'  => 'encrypted',
+    'kyc_ifsc'            => 'encrypted',
+    'kyc_bank_name'       => 'encrypted',
+];
 
     /*
     |--------------------------------------------------------------------------
