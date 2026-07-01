@@ -25,6 +25,7 @@ class KycVerification extends Model
 
     protected $fillable = [
         'user_id',
+        'campaign_id', // FIXED: added so KYC is scoped per-campaign, not just per-user
 
         'document_type',
         'document_number',
@@ -53,7 +54,8 @@ class KycVerification extends Model
     */
 
     protected $casts = [
-        'verified_at' => 'datetime',
+        'verified_at'     => 'datetime',
+        'document_number' => 'encrypted', // FIXED: PAN/Aadhaar numbers now stored encrypted at rest
     ];
 
     /*
@@ -65,6 +67,11 @@ class KycVerification extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function campaign(): BelongsTo
+    {
+        return $this->belongsTo(Campaign::class);
     }
 
     public function verifiedBy(): BelongsTo
@@ -130,4 +137,3 @@ class KycVerification extends Model
         };
     }
 }
-

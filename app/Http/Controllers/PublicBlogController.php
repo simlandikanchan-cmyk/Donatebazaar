@@ -285,28 +285,53 @@ class PublicBlogController extends Controller
     |--------------------------------------------------------------------------
     */
 
+    // public function comment(
+    //     StoreBlogCommentRequest $request,
+    //     Blog $blog
+    // ): RedirectResponse {
+
+    //     abort_unless(
+    //         $blog->is_publicly_visible,
+    //         404
+    //     );
+
+    //     $blog->allComments()->create([
+    //         'user_id' => Auth::id(),
+    //         'parent_id' => $request->parent_id,
+    //         'content' => $request->content,
+    //         'is_approved' => true,
+    //     ]);
+
+    //     return back()->with(
+    //         'success',
+    //         'Comment posted successfully.'
+    //     );
+    // }
+
     public function comment(
-        StoreBlogCommentRequest $request,
-        Blog $blog
-    ): RedirectResponse {
+    StoreBlogCommentRequest $request,
+    Blog $blog
+): RedirectResponse {
 
-        abort_unless(
-            $blog->is_publicly_visible,
-            404
-        );
+    abort_unless(
+        $blog->is_publicly_visible,
+        404
+    );
 
-        $blog->allComments()->create([
-            'user_id' => Auth::id(),
-            'parent_id' => $request->parent_id,
-            'content' => $request->content,
-            'is_approved' => true,
-        ]);
+    $blog->allComments()->create([
+        'user_id' => Auth::id(),
+        'parent_id' => $request->parent_id,
+        'content' => $request->content,
+        'is_approved' => true,
+    ]);
 
-        return back()->with(
-            'success',
-            'Comment posted successfully.'
-        );
-    }
+    $blog->increment('comments_count');
+
+    return back()->with(
+        'success',
+        'Comment posted successfully.'
+    );
+}
 
     /*
     |--------------------------------------------------------------------------

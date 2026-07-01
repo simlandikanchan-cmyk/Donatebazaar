@@ -1,4 +1,3 @@
-{{-- resources/views/public/blogs/index.blade.php --}}
 @extends('layouts.app')
 
 @section('title', isset($category) ? $category->name : (isset($tag) ? '#'.$tag->name : 'Blogs'))
@@ -56,7 +55,6 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: var(--font); color: var(--text); background: var(--bg); -webkit-font-smoothing: antialiased; }
 
-/* ── SHARED ── */
 .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
 .section-eyebrow {
     font-size: 11px; font-weight: 600; letter-spacing: .12em;
@@ -64,16 +62,12 @@ body { font-family: var(--font); color: var(--text); background: var(--bg); -web
     font-family: var(--font-mono);
 }
 
-/* ── REVEAL ── */
 .reveal { opacity: 0; transform: translateY(22px); transition: opacity .6s ease, transform .6s ease; }
 .reveal.visible { opacity: 1; transform: translateY(0); }
 .reveal-d1{transition-delay:.08s} .reveal-d2{transition-delay:.16s}
 .reveal-d3{transition-delay:.24s} .reveal-d4{transition-delay:.32s}
 .reveal-d5{transition-delay:.40s} .reveal-d6{transition-delay:.48s}
 
-/* ═══════════════════════════════════════════════════════════════
-   HERO
-   ═══════════════════════════════════════════════════════════════ */
 .blog-hero {
     position: relative;
     background: linear-gradient(160deg, #07080f 0%, #0d0e1a 45%, #13141f 100%);
@@ -144,9 +138,6 @@ body { font-family: var(--font); color: var(--text); background: var(--bg); -web
 .blog-hero-stat span   { color: rgba(255,255,255,.45); }
 .blog-hero-stat svg { width: 13px; height: 13px; stroke: rgba(165,180,252,.6); fill: none; stroke-width: 2; flex-shrink: 0; }
 
-/* ═══════════════════════════════════════════════════════════════
-   MARQUEE
-   ═══════════════════════════════════════════════════════════════ */
 .marquee-wrap { background: #0d0e1a; overflow: hidden; padding: 14px 0; border-bottom: 1px solid rgba(99,102,241,.1); }
 .marquee-track { display: flex; white-space: nowrap; animation: marquee 28s linear infinite; }
 .marquee-track:hover { animation-play-state: paused; }
@@ -158,9 +149,6 @@ body { font-family: var(--font); color: var(--text); background: var(--bg); -web
 .marquee-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent2); flex-shrink: 0; }
 @keyframes marquee { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
 
-/* ═══════════════════════════════════════════════════════════════
-   STICKY FILTER BAR
-   ═══════════════════════════════════════════════════════════════ */
 .blog-filter-bar {
     position: sticky; top: 0; z-index: 40;
     background: rgba(255,255,255,.96);
@@ -214,15 +202,11 @@ body { font-family: var(--font); color: var(--text); background: var(--bg); -web
 }
 .bfb-clear:hover { color: var(--red); }
 
-/* ═══════════════════════════════════════════════════════════════
-   BODY LAYOUT
-   ═══════════════════════════════════════════════════════════════ */
 .blog-body { padding: 40px 0 88px; background: var(--bg); }
 .blog-layout { display: flex; gap: 28px; align-items: flex-start; }
 .blog-main   { flex: 1; min-width: 0; }
 .blog-sidebar { width: 260px; flex-shrink: 0; position: sticky; top: 72px; }
 
-/* ── CATEGORY PILLS ── */
 .cat-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
 .cat-pill {
     display: inline-flex; align-items: center; gap: 6px;
@@ -239,7 +223,6 @@ body { font-family: var(--font); color: var(--text); background: var(--bg); -web
     box-shadow: 0 4px 14px rgba(99,102,241,.35);
 }
 
-/* ── FEATURED STRIP ── */
 .featured-label {
     font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
     color: var(--accent); margin-bottom: 14px; font-family: var(--font-mono);
@@ -287,7 +270,6 @@ body { font-family: var(--font); color: var(--text); background: var(--bg); -web
     overflow: hidden; font-family: var(--font);
 }
 
-/* ── RESULT COUNT ── */
 .result-count {
     display: flex; align-items: center; gap: 6px;
     font-size: 11.5px; color: var(--text3); margin-bottom: 20px; font-family: var(--font-mono);
@@ -295,7 +277,6 @@ body { font-family: var(--font); color: var(--text); background: var(--bg); -web
 .result-count svg { width: 12px; height: 12px; stroke: var(--text3); fill: none; stroke-width: 2; }
 .result-count .rq { color: var(--accent); font-weight: 600; }
 
-/* ── BLOG GRID ── */
 .blog-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 20px; }
 @media(max-width:680px) { .blog-grid { grid-template-columns: 1fr; } }
 
@@ -318,53 +299,51 @@ body { font-family: var(--font); color: var(--text); background: var(--bg); -web
 }
 .blog-card:hover .blog-card-bar { width: 100%; }
 
-.blog-card-img 
-{ 
-    height: 192px; 
-    overflow: hidden; 
-    flex-shrink: 0; 
-    position: relative; 
+.blog-card-img
+{
+    height: 192px;
+    overflow: hidden;
+    flex-shrink: 0;
+    position: relative;
 
 }
 
-.blog-card-img a 
-{ 
-    display: block; 
-    
-    /* height: 100%;  */
+.blog-card-img a
+{
+    display: block;
 }
 
 .blog-card-img img {
-    width: 100%; 
-    height: 100%; 
-    object-fit: cover; 
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     display: block;
     transition: transform .5s;
 
 }
 
 
-.blog-card:hover .blog-card-img img { 
+.blog-card:hover .blog-card-img img {
 
-    transform: scale(1.06); 
+    transform: scale(1.06);
 
 }
 
 .blog-card-img-ph {
-    
+
     width: 100%; height: 100%;
     background: linear-gradient(135deg, #eef2ff, #e0e7ff);
-    display: flex; 
-    align-items: center; 
+    display: flex;
+    align-items: center;
     justify-content: center;
 }
 
-.blog-card-img-ph svg { 
+.blog-card-img-ph svg {
 
-    width: 32px; 
-    height: 32px; 
+    width: 32px;
+    height: 32px;
     stroke: #c7d2fe;
-    fill: none; 
+    fill: none;
     stroke-width: 1.5; }
 
 .blog-card-cat-badge {
@@ -429,7 +408,6 @@ body { font-family: var(--font); color: var(--text); background: var(--bg); -web
 }
 .blog-card-stat svg { width: 11px; height: 11px; stroke: currentColor; fill: none; stroke-width: 2; flex-shrink: 0; }
 
-/* ── EMPTY STATE ── */
 .blog-empty {
     text-align: center; padding: 72px 24px;
     background: var(--surface); border-radius: var(--radius);
@@ -457,9 +435,6 @@ body { font-family: var(--font); color: var(--text); background: var(--bg); -web
 
 .blog-pagination { margin-top: 36px; display: flex; justify-content: center; }
 
-/* ═══════════════════════════════════════════════════════════════
-   SIDEBAR
-   ═══════════════════════════════════════════════════════════════ */
 .sidebar-card {
     background: var(--surface); border-radius: var(--radius);
     border: 1px solid var(--border2); padding: 20px 22px;
@@ -534,7 +509,6 @@ body { font-family: var(--font); color: var(--text); background: var(--bg); -web
 }
 .sidebar-cta-btn:hover { opacity: .9; transform: translateY(-2px); }
 
-/* ── RESPONSIVE ── */
 @media(max-width:1024px) { .blog-sidebar { display: none; } }
 @media(max-width:600px) {
     .blog-hero { padding: 60px 0 72px; }
@@ -576,20 +550,20 @@ body { font-family: var(--font); color: var(--text); background: var(--bg); -web
         <div class="blog-hero-stats">
             <div class="blog-hero-stat">
                 <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                <strong>{{ $blogs->total() ?? 0 }}</strong>
+                <strong>{{ number_format($blogs->total() ?? 0) }}</strong>
                 <span>Posts Published</span>
             </div>
             @if(isset($categories) && $categories->isNotEmpty())
             <div class="blog-hero-stat">
                 <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
-                <strong>{{ $categories->count() }}</strong>
+                <strong>{{ number_format($categories->count()) }}</strong>
                 <span>Categories</span>
             </div>
             @endif
             @if(isset($tags) && $tags->isNotEmpty())
             <div class="blog-hero-stat">
                 <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-                <strong>{{ $tags->count() }}</strong>
+                <strong>{{ number_format($tags->count()) }}</strong>
                 <span>Tags</span>
             </div>
             @endif
@@ -611,14 +585,30 @@ body { font-family: var(--font); color: var(--text); background: var(--bg); -web
 </div>
 
 {{-- ═══ FILTER BAR ═══ --}}
+{{--
+    NOTE: This is a GET form, so it intentionally has no @csrf — GET requests
+    are not state-changing and Laravel's VerifyCsrfToken middleware does not
+    check them. Do not add @csrf here; doing so would leak the token into the
+    URL/query string and into browser history, referrer headers, and analytics.
+    Validate `category`, `sort`, and `q` server-side in the controller
+    (e.g. with a FormRequest using `in:` rules for sort/category and a max
+    length + strip on `q`) — never trust these for raw SQL/LIKE building.
+--}}
 <div class="blog-filter-bar">
     <div class="container">
-        <form method="GET" action="{{ route('blogs.index') }}" class="blog-filter-inner">
+        <form method="GET" action="{{ route('blogs.index') }}" class="blog-filter-inner" role="search" aria-label="Search blog posts">
             <div class="bfb-search">
                 <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
                 </svg>
-                <input name="q" value="{{ request('q') }}" placeholder="Search stories…">
+                <input
+                    type="text"
+                    name="q"
+                    value="{{ request('q') }}"
+                    placeholder="Search stories…"
+                    maxlength="120"
+                    autocomplete="off"
+                    inputmode="search">
             </div>
             @if(isset($categories) && $categories->isNotEmpty())
             <select name="category" class="bfb-select">
@@ -659,8 +649,11 @@ body { font-family: var(--font); color: var(--text); background: var(--bg); -web
                     @foreach($categories as $cat)
                     <a href="{{ route('blogs.category', $cat->slug) }}"
                        class="cat-pill {{ isset($category) && $category->slug === $cat->slug ? 'active' : '' }}">
-                        @if($cat->icon)
-                            <i class="fa-solid {{ $cat->icon }}"></i>
+                        {{-- Icon class is restricted to a safe fa-* whitelist pattern to prevent
+                             attribute/markup injection if the icon field is ever editable by a
+                             non-trusted admin or imported from an external feed. --}}
+                        @if($cat->icon && preg_match('/^fa-[a-z0-9-]+$/', $cat->icon))
+                            <i class="fa-solid {{ $cat->icon }}" aria-hidden="true"></i>
                         @endif
                         {{ $cat->name }}
                     </a>
@@ -676,7 +669,11 @@ body { font-family: var(--font); color: var(--text); background: var(--bg); -web
                         @foreach($featured as $feat)
                         <a href="{{ route('blogs.show', $feat->slug) }}" class="featured-card">
                             @if($feat->cover_image)
-                                <img src="{{ $feat->cover_image_url ?? Storage::url($feat->cover_image) }}" alt="{{ $feat->title }}">
+                                <img
+                                    src="{{ $feat->cover_image_url ?? Storage::url($feat->cover_image) }}"
+                                    alt="{{ $feat->title }}"
+                                    loading="lazy"
+                                    referrerpolicy="no-referrer">
                             @else
                                 <div class="featured-card-bg"></div>
                             @endif
@@ -694,8 +691,8 @@ body { font-family: var(--font); color: var(--text); background: var(--bg); -web
                 {{-- Result count --}}
                 <div class="result-count reveal">
                     <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-                    {{ $blogs->total() }} {{ Str::plural('result', $blogs->total()) }}
-                    @if(request('q'))<span class="rq">"{{ request('q') }}"</span>@endif
+                    {{ number_format($blogs->total()) }} {{ Str::plural('result', $blogs->total()) }}
+                    @if(request('q'))<span class="rq">"{{ Str::limit(request('q'), 60) }}"</span>@endif
                 </div>
 
                 {{-- Grid --}}
@@ -709,7 +706,7 @@ body { font-family: var(--font); color: var(--text); background: var(--bg); -web
                         </div>
                         <div class="blog-empty-title">No posts found</div>
                         <p class="blog-empty-desc">
-                            @if(request('q')) No results for "{{ request('q') }}". Try a different keyword.
+                            @if(request('q')) No results for "{{ Str::limit(request('q'), 60) }}". Try a different keyword.
                             @else Nothing published yet — check back soon!
                             @endif
                         </p>
@@ -721,8 +718,20 @@ body { font-family: var(--font); color: var(--text); background: var(--bg); -web
                 </div>
 
                 @else
+                {{--
+                    SCALABILITY: this loop touches $blog->author and $blog->category for
+                    every row. Make sure the controller eager-loads these
+                    (Blog::with(['author:id,name,avatar', 'category:id,name,slug,icon'])->...)
+                    to avoid N+1 queries — the view cannot fix that on its own.
+                    Also prefer paginate()/cursorPaginate() with a sane per-page cap
+                    (e.g. 12-24) rather than loading unbounded result sets.
+                --}}
                 <div class="blog-grid">
                     @foreach($blogs as $i => $blog)
+                    @php
+                        $author = $blog->author; // expected eager-loaded relation
+                        $blogCategory = $blog->category;
+                    @endphp
                     <article class="blog-card reveal reveal-d{{ min(($i % 6) + 1, 6) }}">
                         <div class="blog-card-bar"></div>
 
@@ -730,7 +739,12 @@ body { font-family: var(--font); color: var(--text); background: var(--bg); -web
                         <div class="blog-card-img">
                             <a href="{{ route('blogs.show', $blog->slug) }}">
                                 @if($blog->cover_image)
-                                    <img src="{{ $blog->cover_image_url ?? Storage::url($blog->cover_image) }}" alt="{{ $blog->title }}" loading="lazy">
+                                    <img
+                                        src="{{ $blog->cover_image_url ?? Storage::url($blog->cover_image) }}"
+                                        alt="{{ $blog->title }}"
+                                        loading="lazy"
+                                        referrerpolicy="no-referrer"
+                                        width="280" height="192">
                                 @else
                                     <div class="blog-card-img-ph">
                                         <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
@@ -739,9 +753,9 @@ body { font-family: var(--font); color: var(--text); background: var(--bg); -web
                                     </div>
                                 @endif
                             </a>
-                            @if($blog->category)
-                            <a href="{{ route('blogs.category', $blog->category->slug) }}" class="blog-card-cat-badge">
-                                {{ $blog->category->name }}
+                            @if($blogCategory)
+                            <a href="{{ route('blogs.category', $blogCategory->slug) }}" class="blog-card-cat-badge">
+                                {{ $blogCategory->name }}
                             </a>
                             @endif
                             @if($blog->is_featured)
@@ -753,7 +767,7 @@ body { font-family: var(--font); color: var(--text); background: var(--bg); -web
                         <div class="blog-card-body">
                             <div class="blog-card-read-time">
                                 <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                                {{ $blog->read_time_minutes ?? 1 }} min read · {{ $blog->published_at?->diffForHumans() ?? 'Recently' }}
+                                {{ $blog->read_time_minutes ?? 1 }} min read · {{ optional($blog->published_at)->diffForHumans() ?? 'Recently' }}
                             </div>
 
                             <h3 class="blog-card-title">
@@ -763,12 +777,17 @@ body { font-family: var(--font); color: var(--text); background: var(--bg); -web
 
                             <div class="blog-card-footer">
                                 <div class="blog-card-author">
-                                    @if($blog->author->avatar ?? false)
-                                        <img src="{{ Storage::url($blog->author->avatar) }}" class="blog-card-avatar" alt="{{ $blog->author->name }}">
+                                    @if($author && $author->avatar)
+                                        <img
+                                            src="{{ Storage::url($author->avatar) }}"
+                                            class="blog-card-avatar"
+                                            alt="{{ $author->name }}"
+                                            loading="lazy"
+                                            referrerpolicy="no-referrer">
                                     @else
-                                        <div class="blog-card-initials">{{ strtoupper(substr($blog->author->name ?? 'A', 0, 1)) }}</div>
+                                        <div class="blog-card-initials">{{ strtoupper(substr($author->name ?? 'A', 0, 1)) }}</div>
                                     @endif
-                                    <span class="blog-card-author-name">{{ $blog->author->name ?? 'Anonymous' }}</span>
+                                    <span class="blog-card-author-name">{{ $author->name ?? 'Anonymous' }}</span>
                                 </div>
                                 <div class="blog-card-stats">
                                     <span class="blog-card-stat">
@@ -789,7 +808,7 @@ body { font-family: var(--font); color: var(--text); background: var(--bg); -web
                     </article>
                     @endforeach
                 </div>
-                <div class="blog-pagination">{{ $blogs->links() }}</div>
+                <div class="blog-pagination">{{ $blogs->appends(request()->query())->links() }}</div>
                 @endif
 
             </div>{{-- /main --}}
@@ -815,8 +834,8 @@ body { font-family: var(--font); color: var(--text); background: var(--bg); -web
                         @foreach($categories as $cat)
                         <li>
                             <a href="{{ route('blogs.category', $cat->slug) }}" class="sidebar-cat-link">
-                                @if($cat->icon)
-                                    <i class="fa-solid {{ $cat->icon }}"></i>
+                                @if($cat->icon && preg_match('/^fa-[a-z0-9-]+$/', $cat->icon))
+                                    <i class="fa-solid {{ $cat->icon }}" aria-hidden="true"></i>
                                 @endif
                                 <span>{{ $cat->name }}</span>
                                 <svg class="cat-arrow" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
@@ -849,6 +868,10 @@ body { font-family: var(--font); color: var(--text); background: var(--bg); -web
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     var reveals = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window)) {
+        reveals.forEach(function (el) { el.classList.add('visible'); });
+        return;
+    }
     var io = new IntersectionObserver(function(entries){
         entries.forEach(function(e){
             if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); }

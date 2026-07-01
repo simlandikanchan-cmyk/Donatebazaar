@@ -10,24 +10,7 @@
 
 <style>
     body { font-family: 'Outfit', sans-serif; }
-    .font-display { font-family: 'Dm Mono', Monospace; }
-
-.from-indigo-500 {
-    --tw-gradient-from: #6366f1 var(--tw-gradient-from-position);
-    color: #ffffff!impor;
-    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
-}
-
-
-
-
-
-
-
-
-
-
-
+    .font-display { font-family: 'DM Mono', monospace; }
 
     /* ── Reading progress bar ── */
     #reading-progress-bar {
@@ -43,33 +26,22 @@
 
     /* ── Prose ── */
     .prose-custom { font-family: 'DM Mono', monospace; font-size: 1.0625rem; line-height: 1.9; color: #292524; }
-    
 
-     .prose-custom h2, 
-     .prose-custom h3, 
-     .prose-custom h4 { 
-    font-family: 'DM Mono', monospace;
-    font-weight: 700; 
-    margin-top: 2.2em; 
-    margin-bottom: 0.6em; 
-    color: #0c0a09; 
-    scroll-margin-top: 80px; 
-}
-
-
-
-
-
-
-
-
-
-
+    .prose-custom h2,
+    .prose-custom h3,
+    .prose-custom h4 {
+        font-family: 'DM Mono', monospace;
+        font-weight: 700;
+        margin-top: 2.2em;
+        margin-bottom: 0.6em;
+        color: #0c0a09;
+        scroll-margin-top: 80px;
+    }
 
     .prose-custom h2 { font-size: 1.5rem; }
     .prose-custom h3 { font-size: 1.2rem; }
     .prose-custom p { margin-bottom: 1.5em; }
-    .prose-custom a { color: #065ad9ff; text-decoration: underline; text-underline-offset: 3px; }
+    .prose-custom a { color: #065ad9; text-decoration: underline; text-underline-offset: 3px; }
     .prose-custom blockquote { border-left: 3px solid #f59e0b; padding: 14px 22px; margin: 32px 0; background: #fffbeb; border-radius: 0 10px 10px 0; font-style: italic; color: #57534e; font-size: 1.05rem; }
     .prose-custom ul, .prose-custom ol { padding-left: 1.5rem; margin-bottom: 1.5em; }
     .prose-custom li { margin-bottom: 0.5em; }
@@ -134,10 +106,10 @@
                 {{ $blog->category->name }}
             </a>
             @endif
-<h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight mb-4 animate-up"
-    style="font-family:'DM Mono', monospace;">
-    {{ $blog->title }}
-</h1>
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight mb-4 animate-up"
+                style="font-family:'DM Mono', monospace;">
+                {{ $blog->title }}
+            </h1>
             {{-- Meta row inside cover --}}
             <div class="flex flex-wrap items-center gap-4 text-sm text-stone-300 animate-up-2">
                 <div class="flex items-center gap-2.5">
@@ -182,7 +154,7 @@
                 <span class="text-stone-500 truncate max-w-xs">{{ $blog->title }}</span>
             </nav>
 
-            {{-- Stats row (mobile friendly) --}}
+            {{-- Stats row (mobile friendly) — all figures sourced from cached counter columns on $blog for consistency with the action bar below --}}
             <div class="flex flex-wrap items-center gap-4 pb-6 border-b border-stone-100 mb-8 text-sm text-stone-500">
                 <span class="flex items-center gap-1.5">
                     <svg class="w-4 h-4 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -289,7 +261,9 @@
                     <p class="text-sm text-stone-500 leading-relaxed mb-3">
                         {{ $blog->author->bio ?? 'Writer and contributor at our community.' }}
                     </p>
-                    <a href="https://www.instagram.com/" class="inline-flex items-center gap-1.5 text-xs font-medium text-stone-700 border border-stone-300 px-3 py-1.5 rounded-full hover:bg-stone-900 hover:text-white hover:border-stone-900 transition-all">
+                    {{-- Uses the author's own social link if the column exists; falls back to the author profile route, never a generic Instagram homepage --}}
+                    <a href="{{ $blog->author->instagram_url ?? route('blogs.index', ['author' => $blog->author->id]) }}"
+                       class="inline-flex items-center gap-1.5 text-xs font-medium text-stone-700 border border-stone-300 px-3 py-1.5 rounded-full hover:bg-stone-900 hover:text-white hover:border-stone-900 transition-all">
                         + Follow
                     </a>
                 </div>
@@ -297,17 +271,14 @@
 
             {{-- ── COMMENTS ── --}}
             <section id="comments">
-<h2 
-    class="text-2xl font-bold text-stone-900 mb-6 flex items-center gap-3"
-    style="font-family:'DM Mono', monospace;">
-    
-    {{ $blog->comments->whereNull('parent_id')->count() }}
-    {{ Str::plural('Comment', $blog->comments->whereNull('parent_id')->count()) }}
-
-    <span class="text-sm font-sans font-normal text-stone-400 ml-1">
-        Join the discussion
-    </span>
-</h2>
+                <h2 class="text-2xl font-bold text-stone-900 mb-6 flex items-center gap-3"
+                    style="font-family:'DM Mono', monospace;">
+                    {{ $blog->comments_count ?? 0 }}
+                    {{ Str::plural('Comment', $blog->comments_count ?? 0) }}
+                    <span class="text-sm font-sans font-normal text-stone-400 ml-1">
+                        Join the discussion
+                    </span>
+                </h2>
 
                 {{-- Post comment --}}
                 @auth
@@ -332,17 +303,17 @@
                                     <p class="text-rose-500 text-xs mt-1.5">{{ $message }}</p>
                                 @enderror
                                 <div class="flex items-center justify-between mt-3">
-                                    <p class="text-xs text-stone-400">Be kind and constructive </p>
-<button type="submit"
-    class="mt-5 md:mt-0 text-white text-sm font-semibold rounded-xl transition-all hover:scale-105"
-    style="
-        padding:11px 18px;
-        font-family:'DM Sans', sans-serif;
-        background: linear-gradient(135deg, #6366f1, #8b5cf6);
-        box-shadow: 0 4px 14px rgba(99,102,241,.4);
-    ">
-    Post Comment
-</button>
+                                    <p class="text-xs text-stone-400">Be kind and constructive</p>
+                                    <button type="submit"
+                                        class="mt-5 md:mt-0 text-white text-sm font-semibold rounded-xl transition-all hover:scale-105"
+                                        style="
+                                            padding:11px 18px;
+                                            font-family:'DM Sans', sans-serif;
+                                            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+                                            box-shadow: 0 4px 14px rgba(99,102,241,.4);
+                                        ">
+                                        Post Comment
+                                    </button>
                                 </div>
                             </form>
                         </div>
@@ -453,7 +424,6 @@
                 </div>
                 @empty
                 <div class="text-center py-14 border border-dashed border-stone-200 rounded-2xl">
-                    <!-- <p class="text-2xl mb-2">💬</p> -->
                     <p class="text-stone-500 text-sm font-medium">No comments yet</p>
                     <p class="text-stone-400 text-xs mt-1">Be the first to share your thoughts!</p>
                 </div>
@@ -467,18 +437,6 @@
         {{-- ── SIDEBAR ── --}}
         <aside class="hidden lg:block w-64 xl:w-72 flex-shrink-0">
             <div class="sticky top-24 space-y-5">
-
-                {{-- Reading Progress Card --}}
-                <!-- <div class="bg-white rounded-2xl border border-stone-100 p-4 shadow-sm">
-                    <div class="flex items-center justify-between mb-2.5">
-                        <span class="text-xs font-medium text-stone-500">Reading progress</span>
-                        <span id="progress-pct" class="text-xs font-semibold text-amber-600">0%</span>
-                    </div>
-                    <div class="h-1.5 bg-stone-100 rounded-full overflow-hidden">
-                        <div id="progress-bar-sidebar" class="h-full bg-gradient-to-r from-amber-400 to-amber-500 rounded-full transition-all" style="width:0%"></div>
-                    </div>
-                    <p id="time-left" class="text-xs text-stone-400 mt-2">{{ $blog->read_time_minutes ?? 1 }} min read</p>
-                </div> -->
 
                 {{-- Table of Contents --}}
                 <div class="bg-white rounded-2xl border border-stone-100 p-4 shadow-sm" id="toc-card" style="display:none">
@@ -534,16 +492,16 @@
                 <div class="bg-stone-900 rounded-2xl p-5 text-center">
                     <p class="text-stone-400 text-xs mb-1">Inspired by this post?</p>
                     <p class="text-stone-200 text-sm font-medium mb-4">Write your own story.</p>
-<a href="{{ route('user.blogs.create') }}"
-   class="block w-full text-white text-sm font-semibold rounded-xl transition-all"
-   style="
-        padding:11px 18px;
-        font-family:'DM Sans', sans-serif;
-        background: linear-gradient(135deg, #6366f1, #8b5cf6);
-        box-shadow: 0 4px 14px rgba(99,102,241,.4);
-   ">
-   Start Writing
-</a>
+                    <a href="{{ route('user.blogs.create') }}"
+                       class="block w-full text-white text-sm font-semibold rounded-xl transition-all"
+                       style="
+                            padding:11px 18px;
+                            font-family:'DM Sans', sans-serif;
+                            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+                            box-shadow: 0 4px 14px rgba(99,102,241,.4);
+                       ">
+                       Start Writing
+                    </a>
                 </div>
                 @endauth
 
@@ -624,7 +582,13 @@
         const bodyRect = body.getBoundingClientRect();
         const total = body.offsetHeight;
         const scrolled = -bodyRect.top;
-        const pct = Math.min(100, Math.max(0, Math.round(scrolled / (total - winH) * 100)));
+
+        // Guard against division by zero / negative denominator when the
+        // article is shorter than the viewport.
+        const denom = total - winH;
+        const pct = denom > 0
+            ? Math.min(100, Math.max(0, Math.round((scrolled / denom) * 100)))
+            : 100;
 
         document.getElementById('reading-progress-bar').style.width = pct + '%';
 
@@ -733,9 +697,8 @@
             } catch(err) { likeForm.submit(); }
         });
     }
-    
-</script>
 
+</script>
 @endpush
 
 @endsection

@@ -1052,47 +1052,61 @@ document.addEventListener('DOMContentLoaded', function () {
 
     /* ── Counter animation ── */
     function animateCounter(el) {
-    const originalText = el.textContent.trim();
+        var originalText = el.textContent.trim();
 
-    // Detect currency symbol
-    const hasRupee = originalText.includes('₹');
+        // Detect currency symbol
+        var hasRupee = originalText.indexOf('₹') !== -1;
 
-    // Detect plus sign
-    const hasPlus = originalText.includes('+');
+        // Detect plus sign
+        var hasPlus = originalText.indexOf('+') !== -1;
 
-    // Extract numeric value only
-    const num = parseInt(originalText.replace(/[^\d]/g, ''), 10);
+        // Extract numeric value only
+        var num = parseInt(originalText.replace(/[^\d]/g, ''), 10);
 
-    if (isNaN(num) || num === 0) return;
+        if (isNaN(num) || num === 0) return;
 
-    const duration = 1500;
-    let startTime = null;
+        var duration = 1500;
+        var startTime = null;
 
-    function step(timestamp) {
-        if (!startTime) startTime = timestamp;
+        function step(timestamp) {
+            if (!startTime) startTime = timestamp;
 
-        const progress = Math.min((timestamp - startTime) / duration, 1);
-        const current = Math.floor(progress * num);
+            var progress = Math.min((timestamp - startTime) / duration, 1);
+            var current = Math.floor(progress * num);
 
-        let formatted = current.toLocaleString('en-IN');
+            var formatted = current.toLocaleString('en-IN');
 
-        if (hasRupee) formatted = '₹' + formatted;
-        if (hasPlus) formatted += '+';
+            if (hasRupee) formatted = '₹' + formatted;
+            if (hasPlus) formatted += '+';
 
-        el.textContent = formatted;
+            el.textContent = formatted;
 
-        if (progress < 1) {
-            requestAnimationFrame(step);
-        } else {
-            let finalText = num.toLocaleString('en-IN');
-            if (hasRupee) finalText = '₹' + finalText;
-            if (hasPlus) finalText += '+';
-            el.textContent = finalText;
+            if (progress < 1) {
+                requestAnimationFrame(step);
+            } else {
+                var finalText = num.toLocaleString('en-IN');
+                if (hasRupee) finalText = '₹' + finalText;
+                if (hasPlus) finalText += '+';
+                el.textContent = finalText;
+            }
         }
+
+        requestAnimationFrame(step);
     }
 
-    requestAnimationFrame(step);
-}
+    /* ── Wire up counter animation on stat numbers ── */
+    var statEls = document.querySelectorAll('.ddrf-stat-val, .ns-val');
+    var statObs = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+            if (e.isIntersecting) {
+                animateCounter(e.target);
+                statObs.unobserve(e.target);
+            }
+        });
+    }, { threshold: 0.3 });
+    statEls.forEach(function(el){ statObs.observe(el); });
+
+});
 </script>
 
 @endsection

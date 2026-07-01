@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
@@ -24,7 +25,10 @@ class KycUploadController extends Controller
     {
         abort_unless(Auth::id() === $campaign->user_id, 403);
 
+        // FIXED: scoped by campaign_id, not just user_id — otherwise a user
+        // with multiple campaigns would see another campaign's KYC status here.
         $existingKyc = KycVerification::where('user_id', Auth::id())
+            ->where('campaign_id', $campaign->id)
             ->latest()
             ->first();
 
@@ -41,6 +45,7 @@ class KycUploadController extends Controller
         abort_unless(Auth::id() === $campaign->user_id, 403);
 
         $kyc = KycVerification::where('user_id', Auth::id())
+            ->where('campaign_id', $campaign->id)
             ->latest()
             ->first();
 
@@ -58,7 +63,9 @@ class KycUploadController extends Controller
     {
         abort_unless(Auth::id() === $campaign->user_id, 403);
 
-        $kyc = KycVerification::where('user_id', Auth::id())->firstOrFail();
+        $kyc = KycVerification::where('user_id', Auth::id())
+            ->where('campaign_id', $campaign->id)
+            ->firstOrFail();
 
         abort_unless($kyc->document_url && Storage::disk('private')->exists($kyc->document_url), 404);
 
@@ -86,16 +93,25 @@ class KycUploadController extends Controller
             'document_file'   => ['required', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
         ]);
 
-        $existing = KycVerification::where('user_id', Auth::id())->first();
+        // FIXED: look up the existing record for THIS campaign only, so
+        // uploading for Campaign B no longer deletes/overwrites Campaign A's
+        // approved document and verification status.
+        $existing = KycVerification::where('user_id', Auth::id())
+            ->where('campaign_id', $campaign->id)
+            ->first();
+
         if ($existing && $existing->document_url) {
             Storage::disk('private')->delete($existing->document_url);
         }
 
         $path = $request->file('document_file')
-            ->store('kyc-documents/' . Auth::id(), 'private');
+            ->store('kyc-documents/' . Auth::id() . '/' . $campaign->id, 'private');
 
-        KycVerification::updateOrCreate(
-            ['user_id' => Auth::id()],
+        $kyc = KycVerification::updateOrCreate(
+            [
+                'user_id'     => Auth::id(),
+                'campaign_id' => $campaign->id,
+            ],
             [
                 'document_type'    => $validated['document_type'],
                 'document_number'  => $validated['document_number'],
@@ -108,9 +124,9 @@ class KycUploadController extends Controller
         );
 
         $admins = User::where('role', 'admin')->get();
-        foreach ($admins as $admin) {
-            $admin->notify(new KycSubmittedNotification(Auth::user(), $campaign));
-        }
+
+        // Minor cleanup: batch notification instead of an N+1 foreach loop.
+        Notification::send($admins, new KycSubmittedNotification(Auth::user(), $campaign));
 
         return redirect()
             ->route('kyc.view', $campaign->id)
