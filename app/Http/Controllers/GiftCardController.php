@@ -96,6 +96,15 @@ class GiftCardController extends Controller
 
         $giftCard = GiftCard::findOrFail($request->gift_card_id);
 
+        // Prevent duplicate processing (and duplicate emails) if verify is called more than once
+        if ($giftCard->payment_status === 'completed') {
+            return response()->json([
+                'success' => true,
+                'code'    => $giftCard->code,
+                'message' => 'Already processed.',
+            ]);
+        }
+
         $giftCard->update([
             'payment_id'     => $request->razorpay_payment_id,
             'payment_status' => 'completed',
@@ -167,45 +176,49 @@ class GiftCardController extends Controller
             'donor_email' => 'required|email',
         ]);
 
-        $giftCard = GiftCard::where('code', strtoupper($request->code))
-            ->where('payment_status', 'completed')
-            ->where('status', '!=', 'redeemed')
-            ->firstOrFail();
+        return \DB::transaction(function () use ($request) {
 
-        if ($giftCard->isExpired()) {
-            return back()->with('error', 'This gift card has expired.');
-        }
+            $giftCard = GiftCard::where('code', strtoupper($request->code))
+                ->where('payment_status', 'completed')
+                ->where('status', '!=', 'redeemed')
+                ->lockForUpdate()
+                ->firstOrFail();
 
-        // Mark redeemed
-        $giftCard->update([
-            'status'               => 'redeemed',
-            'redeemed_by'          => Auth::id(),
-            'redeemed_on_campaign' => $request->campaign_id,
-            'redeemed_at'          => now(),
-        ]);
+            if ($giftCard->isExpired()) {
+                return back()->with('error', 'This gift card has expired.');
+            }
 
-        // Create donation record
-        Donation::create([
-            'campaign_id'     => $request->campaign_id,
-            'user_id'         => Auth::id(),
-            'donor_name'      => $request->donor_name,
-            'donor_email'     => $request->donor_email,
-            'donation_type'   => 'money',
-            'total_amount'    => $giftCard->amount,
-            'payment_gateway' => 'gift_card',
-            'payment_status'  => 'completed',
-            'payment_id'      => $giftCard->code,
-            'order_id'        => $giftCard->order_id,
-            'currency'        => 'INR',
-            'receipt_number'  => strtoupper(\Illuminate\Support\Str::random(12)),
-            'paid_at'         => now(),
-        ]);
+            // Mark redeemed
+            $giftCard->update([
+                'status'               => 'redeemed',
+                'redeemed_by'          => Auth::id(),
+                'redeemed_on_campaign' => $request->campaign_id,
+                'redeemed_at'          => now(),
+            ]);
 
-        // Update campaign raised amount
-        \App\Models\Campaign::find($request->campaign_id)
-            ->increment('raised_amount', $giftCard->amount);
+            // Create donation record
+            Donation::create([
+                'campaign_id'     => $request->campaign_id,
+                'user_id'         => Auth::id(),
+                'donor_name'      => $request->donor_name,
+                'donor_email'     => $request->donor_email,
+                'donation_type'   => 'money',
+                'total_amount'    => $giftCard->amount,
+                'payment_gateway' => 'gift_card',
+                'payment_status'  => 'completed',
+                'payment_id'      => $giftCard->code,
+                'order_id'        => $giftCard->order_id,
+                'currency'        => 'INR',
+                'receipt_number'  => strtoupper(\Illuminate\Support\Str::random(12)),
+                'paid_at'         => now(),
+            ]);
 
-        return redirect()->route('gift-cards.redeem.success', ['code' => $giftCard->code]);
+            // Update campaign raised amount
+            \App\Models\Campaign::find($request->campaign_id)
+                ->increment('raised_amount', $giftCard->amount);
+
+            return redirect()->route('gift-cards.redeem.success', ['code' => $giftCard->code]);
+        });
     }
 
     // ── Success page ──────────────────────────────────────────────────────────
