@@ -159,9 +159,10 @@ class GiftCardController extends Controller
         }
 
         return response()->json([
-            'valid'  => true,
-            'amount' => $giftCard->amount,
-            'code'   => $giftCard->code,
+            'valid'           => true,
+            'amount'          => $giftCard->amount,
+            'code'            => $giftCard->code,
+            'recipient_email' => $giftCard->recipient_email, // NEW — for frontend hint/autofill
         ]);
     }
 
@@ -186,6 +187,13 @@ class GiftCardController extends Controller
 
             if ($giftCard->isExpired()) {
                 return back()->with('error', 'This gift card has expired.');
+            }
+
+            // 🔒 NEW: Only the intended recipient can redeem this gift card
+            if (strtolower(trim($giftCard->recipient_email)) !== strtolower(trim($request->donor_email))) {
+                return back()
+                    ->withInput()
+                    ->with('error', 'This gift card was sent to a different email address. Please use the email it was sent to.');
             }
 
             // Mark redeemed
