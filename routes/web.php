@@ -398,3 +398,6 @@ Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])
 | Do not ship an equivalent of this route to production unguarded.
 |--------------------------------------------------------------------------
 */
+
+
+Route::post('/chatbot', [ChatbotController::class, 'chat']);

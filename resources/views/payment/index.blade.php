@@ -212,7 +212,7 @@
                     </span>
 
                     <span class="font-medium text-gray-800 truncate max-w-[60%] text-right">
-                        {{ auth()->user()?->email ?? $guest_email ?? 'N/A' }}
+                        {{ auth()->user()?->email ?? 'N/A' }}
                     </span>
                 </div>
 
@@ -222,7 +222,7 @@
                     </span>
 
                     <span class="font-medium text-gray-800">
-                        {{ auth()->user()?->phone ?? $guest_phone ?? 'N/A' }}
+                        {{ auth()->user()?->phone ?? 'N/A' }}
                     </span>
                 </div>
             </div>

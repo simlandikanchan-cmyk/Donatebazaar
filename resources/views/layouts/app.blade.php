@@ -8,7 +8,7 @@
     {{-- Tailwind + JS --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    {{-- ✅ GOOGLE FONTS (ADDED HERE) --}} <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    {{--  GOOGLE FONTS (ADDED HERE) --}} <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     {{-- External Libraries --}}
     <!-- <script src="https://js.stripe.com/v3/"></script> -->

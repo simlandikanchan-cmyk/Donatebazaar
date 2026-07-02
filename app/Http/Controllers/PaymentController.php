@@ -194,6 +194,26 @@ class PaymentController extends Controller
         }
     }
 
+    private function decrementProductStock(Donation $donation): void
+    {
+        if ($donation->donation_type !== 'product') {
+            return;
+        }
+
+        $items = DonationItem::where('donation_id', $donation->id)->get();
+
+        foreach ($items as $item) {
+            CampaignProduct::where('id', $item->product_id)
+                ->where('remaining_quantity', '>=', $item->quantity)
+                ->decrement('remaining_quantity', $item->quantity);
+        }
+
+        Log::info('Product stock decremented after payment', [
+            'donation_id' => $donation->id,
+            'items'       => $items->count(),
+        ]);
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Helper — build campaign public URL
@@ -461,7 +481,7 @@ class PaymentController extends Controller
         |----------------------------------------------------------------------
         */
 
-        $donation = Donation::create([
+        $donation = Donation::make([
             'campaign_id'     => $campaign->id,
             'user_id'         => Auth::id(),
             'donor_name'      => Auth::user()?->name ?? 'Guest Donor',
@@ -472,10 +492,11 @@ class PaymentController extends Controller
             'net_amount'      => $fees['net_amount'],
             'order_id'        => $order['id'],
             'payment_gateway' => 'razorpay',
-            'payment_status'  => 'pending',
             'currency'        => 'INR',
             'receipt_number'  => strtoupper(Str::random(12)),
         ]);
+        $donation->payment_status = 'pending';
+        $donation->save();
 
         /*
         |----------------------------------------------------------------------
@@ -508,11 +529,6 @@ class PaymentController extends Controller
                     'quantity'    => $qty,
                     'price'       => $product->price,
                 ]);
-
-                // Decrement remaining stock safely (never go below 0)
-                CampaignProduct::where('id', $productId)
-                    ->where('remaining_quantity', '>=', $qty)
-                    ->decrement('remaining_quantity', $qty);
             }
 
             Log::info('Product donation items saved', [
@@ -572,10 +588,6 @@ class PaymentController extends Controller
             'order_id'     => $order['id'],
             'donation_id'  => $donation->id,
             'razorpay_key' => config('services.razorpay.key'),
-            'guest_phone'  => null,
-            'donor_name'   => Auth::user()?->name  ?? 'Guest Donor',
-            'donor_email'  => Auth::user()?->email ?? '',
-            'donor_phone'  => Auth::user()?->phone ?? '',
         ]);
     }
 
@@ -671,7 +683,7 @@ class PaymentController extends Controller
             |------------------------------------------------------------------
             | DB Transaction with Row-Level Locks
             | NOTE: We do NOT manually increment raised_amount here.
-            |       The DB trigger trg_raised_amount_on_donations handles it
+            |       The DB trigger trg_donation_raised_amount_update handles it
             |       automatically when payment_status changes to 'completed'.
             |       Double-incrementing would corrupt the raised_amount.
             |------------------------------------------------------------------
@@ -687,17 +699,18 @@ class PaymentController extends Controller
                     return;
                 }
 
-                $lockedDonation->update([
-                    'payment_id'     => $request->razorpay_payment_id,
-                    'signature'      => $request->razorpay_signature,
-                    'payment_status' => 'completed',
-                    'paid_at'        => now(),
-                ]);
+                $lockedDonation->payment_id     = $request->razorpay_payment_id;
+                $lockedDonation->signature      = $request->razorpay_signature;
+                $lockedDonation->payment_status = 'completed';
+                $lockedDonation->paid_at        = now();
+                $lockedDonation->save();
 
                 // raised_amount is updated automatically by DB trigger.
                 Campaign::lockForUpdate()
                     ->findOrFail($lockedDonation->campaign_id)
                     ->increment('platform_earnings', $lockedDonation->platform_fee);
+
+                $this->decrementProductStock($lockedDonation);
             });
 
             // Reload fresh donation with campaign for email
@@ -734,7 +747,8 @@ class PaymentController extends Controller
                 'ip'         => $request->ip(),
             ]);
 
-            Donation::where('order_id', $request->razorpay_order_id)
+            DB::table('donations')
+                ->where('order_id', $request->razorpay_order_id)
                 ->where('payment_status', 'pending')
                 ->update(['payment_status' => 'failed']);
 
@@ -876,16 +890,17 @@ class PaymentController extends Controller
 
                 if (! $donation || $donation->payment_status === 'completed') return;
 
-                $donation->update([
-                    'payment_id'     => $paymentId,
-                    'payment_status' => 'completed',
-                    'paid_at'        => now(),
-                ]);
+                $donation->payment_id     = $paymentId;
+                $donation->payment_status = 'completed';
+                $donation->paid_at        = now();
+                $donation->save();
 
                 // raised_amount handled by DB trigger.
                 Campaign::lockForUpdate()
                     ->findOrFail($donation->campaign_id)
                     ->increment('platform_earnings', $donation->platform_fee);
+
+                $this->decrementProductStock($donation);
 
                 Log::info('Webhook: payment captured', [
                     'donation_id'   => $donation->id,
@@ -916,7 +931,8 @@ class PaymentController extends Controller
 
         if (! $orderId) return;
 
-        Donation::where('order_id', $orderId)
+        DB::table('donations')
+            ->where('order_id', $orderId)
             ->where('payment_status', 'pending')
             ->update(['payment_status' => 'failed']);
 

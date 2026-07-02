@@ -20,24 +20,15 @@ class Donation extends Model
         'platform_fee',
         'net_amount',
 
-        'payment_id',
         'order_id',
-        'payment_method',
         'payment_gateway',
-        'payment_status',
 
         'currency',
-        'signature',
 
         'receipt_number',
 
-        'paid_at',
-
-        'is_refunded',
-        'refunded_at',
-
         'is_anonymous',
-        'message'
+        'message',
     ];
 
     protected $casts = [

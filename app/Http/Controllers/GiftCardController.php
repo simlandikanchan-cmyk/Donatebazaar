@@ -205,25 +205,21 @@ class GiftCardController extends Controller
             ]);
 
             // Create donation record
-            Donation::create([
-                'campaign_id'     => $request->campaign_id,
-                'user_id'         => Auth::id(),
-                'donor_name'      => $request->donor_name,
-                'donor_email'     => $request->donor_email,
-                'donation_type'   => 'money',
-                'total_amount'    => $giftCard->amount,
-                'payment_gateway' => 'gift_card',
-                'payment_status'  => 'completed',
-                'payment_id'      => $giftCard->code,
-                'order_id'        => $giftCard->order_id,
-                'currency'        => 'INR',
-                'receipt_number'  => strtoupper(\Illuminate\Support\Str::random(12)),
-                'paid_at'         => now(),
-            ]);
-
-            // Update campaign raised amount
-            \App\Models\Campaign::find($request->campaign_id)
-                ->increment('raised_amount', $giftCard->amount);
+            $donation = new Donation();
+            $donation->campaign_id     = $request->campaign_id;
+            $donation->user_id         = Auth::id();
+            $donation->donor_name      = $request->donor_name;
+            $donation->donor_email     = $request->donor_email;
+            $donation->donation_type   = 'money';
+            $donation->total_amount    = $giftCard->amount;
+            $donation->payment_gateway = 'gift_card';
+            $donation->payment_status  = 'completed';
+            $donation->payment_id      = $giftCard->code;
+            $donation->order_id        = $giftCard->order_id;
+            $donation->currency        = 'INR';
+            $donation->receipt_number  = strtoupper(\Illuminate\Support\Str::random(12));
+            $donation->paid_at         = now();
+            $donation->save();
 
             return redirect()->route('gift-cards.redeem.success', ['code' => $giftCard->code]);
         });

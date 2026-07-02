@@ -1,26 +1,132 @@
 @extends('layouts.app')
 
 @section('content')
-<div style="min-height:100vh;background:#f4f5fb;padding:40px 16px;">
-<div style="max-width:560px;margin:0 auto;">
 
-    <div style="text-align:center;margin-bottom:32px;">
-        <p style="font-size:11px;color:#9ca3af;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;">DonateBazaar</p>
-        <h1 style="font-size:28px;font-weight:700;color:#0f1117;margin-bottom:8px;">Gift the power of giving</h1>
-        <p style="font-size:14px;color:#6b7280;">Send a digital gift card — the recipient donates to any campaign they love.</p>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --bg:#f4f5fb; --surface:#ffffff; --surface2:#f0f2fa;
+    --border:rgba(0,0,0,0.07); --border2:rgba(0,0,0,0.11);
+    --text:#0f1117; --text2:#4b5563; --text3:#9ca3af;
+    --accent:#6366f1; --accent2:#8b5cf6; --accent-glow:rgba(99,102,241,0.16);
+    --green:#10b981; --green-glow:rgba(16,185,129,0.14);
+    --font:'DM Sans',sans-serif; --font-mono:'DM Mono',monospace;
+    --radius:14px; --radius-sm:9px;
+    --shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 16px rgba(0,0,0,0.04);
+    --shadow-lg:0 8px 40px rgba(0,0,0,0.12);
+    --tr:0.2s ease;
+}
+
+.gc-page{font-family:var(--font);background:var(--bg);min-height:100vh;padding:48px 16px 72px;color:var(--text);}
+.gc-wrap{max-width:560px;margin:0 auto;}
+
+/* ── Header ── */
+.gc-eyebrow{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:10.5px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+.gc-eyebrow .dot{width:5px;height:5px;border-radius:50%;background:var(--accent);}
+.gc-head{text-align:center;margin-bottom:28px;animation:fadeUp .4s both;}
+.gc-head h1{font-size:27px;font-weight:800;letter-spacing:-0.02em;color:var(--text);margin-bottom:8px;}
+.gc-head p{font-size:13.5px;color:var(--text3);line-height:1.6;}
+
+/* ── Card (matches dashboard .card token) ── */
+.gc-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-bottom:16px;animation:fadeUp .4s both;transition:box-shadow var(--tr);}
+.gc-card:hover{box-shadow:var(--shadow-lg);}
+.gc-card-label{font-family:var(--font-mono);font-size:10.5px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.09em;margin-bottom:14px;}
+
+/* ── Theme picker ── */
+.gc-theme-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.gc-theme-swatch{border-radius:var(--radius-sm);padding:14px 12px;cursor:pointer;border:2px solid transparent;transition:border-color var(--tr),transform var(--tr);position:relative;}
+.gc-theme-swatch:hover{transform:translateY(-2px);}
+.gc-theme-brand{font-family:var(--font-mono);font-size:9px;font-weight:600;letter-spacing:0.06em;margin-bottom:6px;}
+.gc-theme-amt{font-family:var(--font-mono);font-size:17px;font-weight:700;}
+.gc-theme-tag{font-size:9px;opacity:0.6;margin-top:4px;}
+.gc-theme-check{display:none;position:absolute;top:7px;right:7px;width:16px;height:16px;border-radius:50%;background:var(--accent);align-items:center;justify-content:center;box-shadow:0 2px 8px var(--accent-glow);}
+
+/* ── Amount pills ── */
+.gc-amt-pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+.gc-amt-pill{padding:8px 17px;border-radius:100px;border:1.5px solid var(--border2);background:var(--surface2);font-family:var(--font);font-size:12.5px;font-weight:600;color:var(--text2);cursor:pointer;transition:all var(--tr);}
+.gc-amt-pill:hover{border-color:var(--accent);color:var(--accent);}
+.gc-amt-pill.active{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 4px 14px var(--accent-glow);}
+.gc-custom-row{display:flex;align-items:center;gap:10px;}
+.gc-custom-row span{font-size:12.5px;color:var(--text3);font-weight:500;}
+
+/* ── Fields ── */
+.gc-field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.gc-field{margin-bottom:0;}
+.gc-field label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px;}
+.gc-field input, .gc-field textarea{
+    width:100%;border-radius:var(--radius-sm);border:1.5px solid var(--border2);
+    background:var(--surface2);padding:0 13px;height:40px;font-family:var(--font);
+    font-size:13px;color:var(--text);outline:none;transition:border-color var(--tr),box-shadow var(--tr),background var(--tr);
+}
+.gc-field textarea{height:auto;padding:10px 13px;line-height:1.6;resize:vertical;font-family:var(--font);}
+.gc-field input:focus, .gc-field textarea:focus{border-color:var(--accent);background:var(--surface);box-shadow:0 0 0 3px var(--accent-glow);}
+.gc-field input::placeholder, .gc-field textarea::placeholder{color:var(--text3);}
+
+/* ── Live preview ── */
+.gc-preview-card{border-radius:var(--radius);padding:22px;margin-bottom:12px;position:relative;overflow:hidden;box-shadow:var(--shadow);}
+.gc-preview-brand{font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:0.09em;margin-bottom:6px;}
+.gc-preview-amt{font-family:var(--font-mono);font-size:29px;font-weight:800;letter-spacing:-0.02em;}
+.gc-preview-to{font-size:12px;opacity:0.72;margin-top:4px;font-weight:500;}
+.gc-preview-code{font-family:var(--font-mono);font-size:10px;letter-spacing:0.13em;opacity:0.42;margin-top:9px;}
+.gc-preview-msg{font-size:12.5px;color:var(--text3);font-style:italic;line-height:1.65;}
+
+/* ── Buy button (matches rd-btn token) ── */
+.gc-buy-btn{
+    width:100%;padding:14px;border:none;border-radius:12px;
+    font-family:var(--font-mono);font-size:14px;font-weight:600;color:#fff;cursor:pointer;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    box-shadow:0 4px 18px var(--accent-glow);
+    transition:opacity var(--tr),transform var(--tr),box-shadow var(--tr);
+}
+.gc-buy-btn:hover:not(:disabled){opacity:0.92;transform:translateY(-1px);box-shadow:0 8px 26px var(--accent-glow);}
+.gc-buy-btn:disabled{cursor:not-allowed;opacity:0.75;}
+
+/* ── Trust badges (matches status-chip token) ── */
+.gc-trust-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px;}
+.gc-trust-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:100px;font-size:10.5px;font-weight:600;font-family:var(--font-mono);letter-spacing:0.02em;background:var(--surface2);border:1px solid var(--border2);color:var(--text3);}
+.gc-trust-chip svg{width:12px;height:12px;flex-shrink:0;color:var(--accent);}
+
+/* ── Footer link ── */
+.gc-foot{text-align:center;margin-top:18px;font-size:12px;color:var(--text3);}
+.gc-foot a{color:var(--accent);font-weight:600;text-decoration:none;}
+.gc-foot a:hover{text-decoration:underline;}
+
+/* ── Animations ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+.gc-card:nth-of-type(1){animation-delay:.05s;}
+.gc-card:nth-of-type(2){animation-delay:.10s;}
+.gc-card:nth-of-type(3){animation-delay:.15s;}
+.gc-card:nth-of-type(4){animation-delay:.20s;}
+
+@media (max-width:520px){
+    .gc-field-row{grid-template-columns:1fr;}
+    .gc-theme-grid{grid-template-columns:repeat(2,1fr);}
+}
+</style>
+
+<div class="gc-page">
+<div class="gc-wrap">
+
+    <div class="gc-head">
+        <div class="gc-eyebrow"><span class="dot"></span>DonateBazaar Gift Cards</div>
+        <h1>Gift the power of giving</h1>
+        <p>Send a digital gift card — the recipient donates to any campaign they love.</p>
     </div>
 
     {{-- Card theme picker --}}
-    <div style="background:#fff;border-radius:16px;border:1px solid rgba(0,0,0,0.07);padding:20px;margin-bottom:16px;">
-        <p style="font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;">Choose a card design</p>
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;" id="themeGrid">
+    <div class="gc-card">
+        <p class="gc-card-label">Choose a card design</p>
+        <div class="gc-theme-grid" id="themeGrid">
             @foreach(['purple'=>['bg'=>'#EEEDFE','text'=>'#26215C','brand'=>'#3C3489'],'teal'=>['bg'=>'#E1F5EE','text'=>'#04342C','brand'=>'#085041'],'coral'=>['bg'=>'#FAECE7','text'=>'#4A1B0C','brand'=>'#712B13'],'blue'=>['bg'=>'#E6F1FB','text'=>'#042C53','brand'=>'#0C447C']] as $theme => $t)
-            <div onclick="selectTheme('{{ $theme }}')" id="card-{{ $theme }}"
-                 style="border-radius:12px;padding:14px 12px;cursor:pointer;border:2px solid transparent;background:{{ $t['bg'] }};transition:border-color .15s,transform .15s;position:relative;">
-                <div style="font-size:9px;font-weight:600;letter-spacing:.06em;color:{{ $t['brand'] }};margin-bottom:6px;">DONATEBAZAAR</div>
-                <div style="font-size:18px;font-weight:700;color:{{ $t['text'] }};" id="preview-amt-{{ $theme }}">₹500</div>
-                <div style="font-size:9px;color:{{ $t['text'] }};opacity:.6;margin-top:4px;">Gift Card</div>
-                <div id="check-{{ $theme }}" style="display:none;position:absolute;top:7px;right:7px;width:16px;height:16px;border-radius:50%;background:#6366f1;align-items:center;justify-content:center;">
+            <div onclick="selectTheme('{{ $theme }}')" id="card-{{ $theme }}" class="gc-theme-swatch"
+                 style="background:{{ $t['bg'] }};">
+                <div class="gc-theme-brand" style="color:{{ $t['brand'] }};">DONATEBAZAAR</div>
+                <div class="gc-theme-amt" style="color:{{ $t['text'] }};" id="preview-amt-{{ $theme }}">₹500</div>
+                <div class="gc-theme-tag" style="color:{{ $t['text'] }};">Gift Card</div>
+                <div id="check-{{ $theme }}" class="gc-theme-check">
                     <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
                 </div>
             </div>
@@ -29,98 +135,91 @@
     </div>
 
     {{-- Amount --}}
-    <div style="background:#fff;border-radius:16px;border:1px solid rgba(0,0,0,0.07);padding:20px;margin-bottom:16px;">
-        <p style="font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;">Select amount</p>
-        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;" id="amtPills">
+    <div class="gc-card">
+        <p class="gc-card-label">Select amount</p>
+        <div class="gc-amt-pills" id="amtPills">
             @foreach([100,250,500,1000,2000,5000,10000,20000,30000,40000,50000] as $a)
-            <button onclick="setAmt({{ $a }}, this)"
-                    style="padding:8px 18px;border-radius:9px;border:1px solid rgba(0,0,0,0.10);background:#f4f5fb;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;{{ $a===500 ? 'background:#6366f1;color:#fff;border-color:#6366f1;' : 'color:#0f1117;' }}">
+            <button onclick="setAmt({{ $a }}, this)" class="gc-amt-pill {{ $a===500 ? 'active' : '' }}">
                 ₹{{ number_format($a) }}
             </button>
             @endforeach
         </div>
-        <div style="display:flex;align-items:center;gap:10px;">
-            <span style="font-size:13px;color:#6b7280;">Custom:</span>
-            <input type="number" id="customAmt" placeholder="Enter ₹ amount" min="100"
-                   style="flex:1;height:36px;border-radius:9px;border:1px solid rgba(0,0,0,0.10);padding:0 12px;font-size:13px;outline:none;"
-                   oninput="setCustomAmt(this.value)">
+        <div class="gc-custom-row">
+            <span>Custom:</span>
+            <div class="gc-field" style="flex:1;">
+                <input type="number" id="customAmt" placeholder="Enter ₹ amount" min="100" oninput="setCustomAmt(this.value)">
+            </div>
         </div>
     </div>
 
     {{-- Details --}}
-    <div style="background:#fff;border-radius:16px;border:1px solid rgba(0,0,0,0.07);padding:20px;margin-bottom:16px;">
-        <p style="font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;">Card details</p>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
-            <div>
-                <label style="font-size:12px;color:#6b7280;display:block;margin-bottom:5px;">Your name *</label>
-                <input type="text" id="senderName" placeholder="Your name"
-                       style="width:100%;height:38px;border-radius:9px;border:1px solid rgba(0,0,0,0.10);padding:0 12px;font-size:13px;outline:none;">
+    <div class="gc-card">
+        <p class="gc-card-label">Card details</p>
+        <div class="gc-field-row">
+            <div class="gc-field">
+                <label>Your name *</label>
+                <input type="text" id="senderName" placeholder="Your name">
             </div>
-            <div>
-                <label style="font-size:12px;color:#6b7280;display:block;margin-bottom:5px;">Your email *</label>
-                <input type="email" id="senderEmail" placeholder="your@email.com"
-                       style="width:100%;height:38px;border-radius:9px;border:1px solid rgba(0,0,0,0.10);padding:0 12px;font-size:13px;outline:none;">
+            <div class="gc-field">
+                <label>Your email *</label>
+                <input type="email" id="senderEmail" placeholder="your@email.com">
             </div>
-            <div>
-                <label style="font-size:12px;color:#6b7280;display:block;margin-bottom:5px;">Recipient name *</label>
-                <input type="text" id="recipientName" placeholder="Their name" oninput="updateLivePreview()"
-                       style="width:100%;height:38px;border-radius:9px;border:1px solid rgba(0,0,0,0.10);padding:0 12px;font-size:13px;outline:none;">
+            <div class="gc-field">
+                <label>Recipient name *</label>
+                <input type="text" id="recipientName" placeholder="Their name" oninput="updateLivePreview()">
             </div>
-            <div>
-                <label style="font-size:12px;color:#6b7280;display:block;margin-bottom:5px;">Recipient email *</label>
-                <input type="email" id="recipientEmail" placeholder="their@email.com"
-                       style="width:100%;height:38px;border-radius:9px;border:1px solid rgba(0,0,0,0.10);padding:0 12px;font-size:13px;outline:none;">
+            <div class="gc-field">
+                <label>Recipient email *</label>
+                <input type="email" id="recipientEmail" placeholder="their@email.com">
             </div>
         </div>
-        <div style="margin-bottom:12px;">
-            <label style="font-size:12px;color:#6b7280;display:block;margin-bottom:5px;">Personal message</label>
-            <textarea id="gcMessage" placeholder="Write a heartfelt message…" rows="3" oninput="updateLivePreview()"
-                      style="width:100%;border-radius:9px;border:1px solid rgba(0,0,0,0.10);padding:10px 12px;font-size:13px;outline:none;resize:vertical;font-family:inherit;"></textarea>
+        <div class="gc-field" style="margin-bottom:12px;">
+            <label>Personal message</label>
+            <textarea id="gcMessage" placeholder="Write a heartfelt message…" rows="3" oninput="updateLivePreview()"></textarea>
         </div>
-        <div>
-            <label style="font-size:12px;color:#6b7280;display:block;margin-bottom:5px;">Send on date</label>
-            <input type="date" id="sendAt"
-                   style="width:100%;height:38px;border-radius:9px;border:1px solid rgba(0,0,0,0.10);padding:0 12px;font-size:13px;outline:none;">
+        <div class="gc-field">
+            <label>Send on date</label>
+            <input type="date" id="sendAt">
         </div>
     </div>
 
     {{-- Live Preview --}}
-    <div style="background:#fff;border-radius:16px;border:1px solid rgba(0,0,0,0.07);padding:20px;margin-bottom:16px;">
-        <p style="font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;">Preview</p>
-        <div id="liveCard" style="border-radius:14px;padding:20px;background:#EEEDFE;margin-bottom:12px;">
-            <div style="font-size:10px;font-weight:600;letter-spacing:.08em;color:#3C3489;margin-bottom:6px;">DONATEBAZAAR</div>
-            <div id="liveAmt" style="font-size:28px;font-weight:700;color:#26215C;">₹500</div>
-            <div id="liveTo" style="font-size:12px;color:#26215C;opacity:.7;margin-top:4px;">For: —</div>
-            <div style="font-size:10px;font-family:monospace;letter-spacing:.12em;color:#26215C;opacity:.45;margin-top:8px;">DNBZ-XXXX-XXXX</div>
+    <div class="gc-card">
+        <p class="gc-card-label">Preview</p>
+        <div id="liveCard" class="gc-preview-card" style="background:#EEEDFE;">
+            <div class="gc-preview-brand" style="color:#3C3489;">DONATEBAZAAR</div>
+            <div id="liveAmt" class="gc-preview-amt" style="color:#26215C;">₹500</div>
+            <div id="liveTo" class="gc-preview-to" style="color:#26215C;">For: —</div>
+            <div class="gc-preview-code" style="color:#26215C;">DNBZ-XXXX-XXXX</div>
         </div>
-        <div id="liveMsg" style="font-size:13px;color:#6b7280;font-style:italic;line-height:1.6;">Your message will appear here.</div>
+        <div id="liveMsg" class="gc-preview-msg">Your message will appear here.</div>
     </div>
 
     {{-- Buy button --}}
-    <button id="buyBtn" onclick="initiatePurchase()"
-            style="width:100%;padding:14px;background:#6366f1;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;transition:opacity .15s;">
-        Purchase & Send Gift Card — ₹<span id="btnAmt">500</span>
+    <button id="buyBtn" onclick="initiatePurchase()" class="gc-buy-btn">
+        Purchase &amp; Send Gift Card — ₹<span id="btnAmt">500</span>
     </button>
 
-    <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:16px;">
-        @foreach(['Lock Secure payment','Mail Instant delivery','Refresh Never expires'] as $t)
-        @php [$icon,$label] = explode(' ',$t,2); @endphp
-        <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:#9ca3af;">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;">
-                @if($icon==='Lock')<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
-                @elseif($icon==='Mail')<path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                @else<polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-.71-8"/>
-                @endif
-            </svg>
-            {{ $label }}
-        </div>
-        @endforeach
+    <div class="gc-trust-row">
+        <span class="gc-trust-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            Secure payment
+        </span>
+        <span class="gc-trust-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            Instant delivery
+        </span>
+        <span class="gc-trust-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-.71-8"/></svg>
+            Never expires
+        </span>
     </div>
 
-    <p style="text-align:center;margin-top:16px;font-size:12px;color:#9ca3af;">
+    <p class="gc-foot">
         Already have a gift card?
-        <a href="{{ route('gift-cards.redeem') }}" style="color:#6366f1;font-weight:600;text-decoration:none;">Redeem it here</a>
+        <a href="{{ route('gift-cards.redeem') }}">Redeem it here</a>
     </p>
+
 </div>
 </div>
 
@@ -137,20 +236,17 @@ var themeStyles = {
 
 function selectTheme(t) {
     currentTheme = t;
-    document.querySelectorAll('#themeGrid > div').forEach(function(c){ c.style.borderColor='transparent'; c.style.transform='none'; });
+    document.querySelectorAll('.gc-theme-swatch').forEach(function(c){ c.style.borderColor='transparent'; c.style.transform='none'; });
     document.querySelectorAll('[id^="check-"]').forEach(function(c){ c.style.display='none'; });
     document.getElementById('card-'+t).style.borderColor='#6366f1';
-    document.getElementById('card-'+t).style.transform='translateY(-2px)';
     document.getElementById('check-'+t).style.display='flex';
     updateLivePreview();
 }
 
 function setAmt(amt, btn) {
     currentAmt = amt;
-    document.querySelectorAll('#amtPills button').forEach(function(b){
-        b.style.background='#f4f5fb'; b.style.color='#0f1117'; b.style.borderColor='rgba(0,0,0,0.10)';
-    });
-    btn.style.background='#6366f1'; btn.style.color='#fff'; btn.style.borderColor='#6366f1';
+    document.querySelectorAll('.gc-amt-pill').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
     document.getElementById('customAmt').value='';
     ['purple','teal','coral','blue'].forEach(function(t){
         document.getElementById('preview-amt-'+t).textContent='₹'+amt.toLocaleString('en-IN');
@@ -163,9 +259,7 @@ function setCustomAmt(val){
     var n=parseInt(val);
     if(!n||n<100) return;
     currentAmt=n;
-    document.querySelectorAll('#amtPills button').forEach(function(b){
-        b.style.background='#f4f5fb';b.style.color='#0f1117';b.style.borderColor='rgba(0,0,0,0.10)';
-    });
+    document.querySelectorAll('.gc-amt-pill').forEach(function(b){ b.classList.remove('active'); });
     ['purple','teal','coral','blue'].forEach(function(t){
         document.getElementById('preview-amt-'+t).textContent='₹'+n.toLocaleString('en-IN');
     });
@@ -221,7 +315,7 @@ function initiatePurchase(){
             order_id:      data.order_id,
             prefill:       {name:sName, email:sEmail},
             theme:         {color:'#6366f1'},
-            modal:         {ondismiss:function(){ btn.disabled=false; btn.innerHTML='Purchase & Send Gift Card — ₹'+currentAmt.toLocaleString('en-IN'); }},
+            modal:         {ondismiss:function(){ btn.disabled=false; btn.innerHTML='Purchase &amp; Send Gift Card — ₹'+currentAmt.toLocaleString('en-IN'); }},
             handler:function(response){
                 btn.textContent='Verifying…';
                 fetch('{{ route("gift-cards.verify") }}', {
@@ -237,7 +331,7 @@ function initiatePurchase(){
                 .then(function(r){ return r.json(); })
                 .then(function(d){
                     if(d.success){
-                        btn.style.background='#10b981';
+                        btn.style.background='linear-gradient(135deg,#10b981,#059669)';
                         btn.textContent='Gift card sent! Code: '+d.code;
                     } else {
                         btn.disabled=false;
