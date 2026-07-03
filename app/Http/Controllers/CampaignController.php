@@ -7,14 +7,12 @@ use App\Models\Category;
 use App\Models\CategoryProduct;
 use App\Models\CampaignUpdate;
 use App\Models\CampaignProduct;
-use App\Models\KycVerification;
 use App\Services\FundraiserLevelService;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Laravel\Facades\Image;
 
 class CampaignController extends Controller
@@ -23,7 +21,19 @@ class CampaignController extends Controller
         protected FundraiserLevelService $levelService
     ) {}
 
-    private const STORE_RULES = [
+    private const CREATE_RULES = [
+        'title'       => 'required|string|max:255',
+        'description' => 'required',
+        'goal_amount' => 'required|numeric|min:1',
+        'category_id' => 'required|exists:categories,id',
+        'cover_image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+        'location'    => 'nullable|string|max:255',
+        'start_date'  => 'required|date',
+        'end_date'    => 'required|date|after_or_equal:start_date',
+        'video_url'   => 'nullable|url',
+    ];
+
+    private const UPDATE_RULES = [
         'title'       => 'required|string|max:255',
         'description' => 'required',
         'goal_amount' => 'required|numeric|min:1',
@@ -31,14 +41,8 @@ class CampaignController extends Controller
         'cover_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         'location'    => 'nullable|string|max:255',
         'start_date'  => 'required|date',
-        'end_date'    => 'required|date',
+        'end_date'    => 'required|date|after_or_equal:start_date',
         'video_url'   => 'nullable|url',
-        'kyc_aadhaar' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:4096',
-        'kyc_pan'     => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:4096',
-        'kyc_selfie'  => 'nullable|image|mimes:jpg,jpeg,png|max:4096',
-        'kyc_account_number' => 'nullable|string|max:30',
-        'kyc_ifsc'           => 'nullable|string|max:20',
-        'kyc_bank_name'      => 'nullable|string|max:255',
     ];
 
     // -------------------------------------------------------------------------
@@ -81,7 +85,19 @@ class CampaignController extends Controller
             'goal_amount' => str_replace(',', '', $request->goal_amount),
         ]);
 
-        $request->validate(self::STORE_RULES);
+        $request->validate(self::CREATE_RULES);
+
+        $updates = $request->input('updates', []);
+        $hasValidUpdate = false;
+        foreach ($updates as $data) {
+            if (trim($data['title'] ?? '') !== '' && trim($data['body'] ?? '') !== '') {
+                $hasValidUpdate = true;
+                break;
+            }
+        }
+        if (! $hasValidUpdate) {
+            return back()->withErrors(['updates' => 'Please add at least one update with a title and description.'])->withInput();
+        }
 
         $campaign = Campaign::create([
             'user_id'           => Auth::id(),
@@ -104,14 +120,13 @@ class CampaignController extends Controller
 
         $this->storeCampaignUpdates($request, $campaign);
         $this->storeCampaignProducts($request, $campaign);
-        $this->storeKycData($request);
 
         // Clear categories cache when new campaign is created
         Cache::forget('active_categories');
 
         return redirect()
-            ->route('dashboard')
-            ->with('success', 'Campaign submitted successfully! Our team will review it within 24 hours.');
+            ->route('kyc.upload.form', $campaign->id)
+            ->with('success', 'Campaign submitted successfully! Now complete KYC verification to activate your campaign.');
     }
 
     // -------------------------------------------------------------------------
@@ -120,7 +135,10 @@ class CampaignController extends Controller
 
     public function show(Campaign $campaign)
     {
-        $campaign->load(['category', 'user', 'products', 'updates']);
+        $campaign->load([
+            'category', 'user', 'products', 'updates',
+            'donations' => fn($q) => $q->where('payment_status', 'completed')->orderBy('created_at', 'desc'),
+        ]);
 
         return view('campaigns.show', compact('campaign'));
     }
@@ -160,7 +178,7 @@ class CampaignController extends Controller
             'goal_amount' => str_replace(',', '', $request->goal_amount),
         ]);
 
-        $request->validate(self::STORE_RULES);
+        $request->validate(self::UPDATE_RULES);
 
         $campaign->update([
             'category_id' => $request->category_id,
@@ -319,57 +337,6 @@ class CampaignController extends Controller
     // -------------------------------------------------------------------------
     // PRIVATE HELPERS
     // -------------------------------------------------------------------------
-
-    private function storeKycData(Request $request): void
-    {
-        $user     = auth()->user();
-        $existing = $user->kycVerification;
-
-        $data = [
-            'document_type'      => null,
-            'document_number'    => null,
-            'kyc_account_name'   => $request->kyc_account_name,
-            'kyc_account_number' => $request->kyc_account_number,
-            'kyc_ifsc'           => $request->kyc_ifsc ? strtoupper($request->kyc_ifsc) : null,
-            'kyc_bank_name'      => $request->kyc_bank_name,
-        ];
-
-        if (! $existing || ! $existing->isApproved()) {
-            $data['status']           = KycVerification::STATUS_PENDING;
-            $data['rejection_reason'] = null;
-            $data['verified_by']      = null;
-            $data['verified_at']      = null;
-        }
-
-        if ($request->hasFile('kyc_aadhaar')) {
-            if ($existing?->aadhaar_url) {
-                Storage::disk('public')->delete($existing->aadhaar_url);
-            }
-            $data['aadhaar_url'] = $request->file('kyc_aadhaar')
-                ->store('kyc_documents', 'public');
-        }
-
-        if ($request->hasFile('kyc_pan')) {
-            if ($existing?->pan_url) {
-                Storage::disk('public')->delete($existing->pan_url);
-            }
-            $data['pan_url'] = $request->file('kyc_pan')
-                ->store('kyc_documents', 'public');
-        }
-
-        if ($request->hasFile('kyc_selfie')) {
-            if ($existing?->selfie_url) {
-                Storage::disk('public')->delete($existing->selfie_url);
-            }
-            $data['selfie_url'] = $request->file('kyc_selfie')
-                ->store('kyc_documents', 'public');
-        }
-
-        KycVerification::updateOrCreate(
-            ['user_id' => $user->id],
-            $data
-        );
-    }
 
     private function storeCampaignProducts(Request $request, Campaign $campaign): void
     {

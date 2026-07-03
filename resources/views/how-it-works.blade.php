@@ -2,9 +2,6 @@
 
 @section('content')
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&family=DM+Mono:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
-
 <style>
 /* ═══════════════════════════════════════════════
    DESIGN TOKENS — identical to all-campaigns page
@@ -38,7 +35,6 @@
     --transition:   0.25s cubic-bezier(0.4,0,0.2,1);
 }
 
-*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
 html { scroll-behavior:smooth; }
 body { font-family:var(--font); color:var(--text); background:var(--bg); -webkit-font-smoothing:antialiased; overflow-x:hidden; }
 img  { max-width:100%; display:block; }
@@ -69,6 +65,7 @@ a    { text-decoration:none; color:inherit; }
 .reveal-left { opacity:0; transform:translateX(-32px);  transition:opacity .7s ease, transform .7s ease; }
 .reveal-right{ opacity:0; transform:translateX(32px);   transition:opacity .7s ease, transform .7s ease; }
 .reveal.visible,.reveal-left.visible,.reveal-right.visible { opacity:1; transform:none; }
+html:not(.js-enabled) .reveal, html:not(.js-enabled) .reveal-left, html:not(.js-enabled) .reveal-right { opacity: 1; transform: none; }
 .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}.d5{transition-delay:.5s}.d6{transition-delay:.6s}
 
 
@@ -176,7 +173,7 @@ a    { text-decoration:none; color:inherit; }
 /* ═══════════════════════════════════════════════
    3. TAB SWITCHER
 ═══════════════════════════════════════════════ */
-.tabs-section { background:var(--surface); border-bottom:1px solid var(--border2); position:sticky; top:0; z-index:100; box-shadow:var(--shadow); }
+.tabs-section { background:var(--surface); border-bottom:1px solid var(--border2); position:sticky; top:64px; z-index:100; box-shadow:var(--shadow); }
 .tabs-inner { display:flex; align-items:center; gap:4px; max-width:1180px; margin:0 auto; padding:10px 24px; }
 .hiw-tab {
     display:flex; align-items:center; gap:8px;
@@ -432,6 +429,7 @@ a    { text-decoration:none; color:inherit; }
 .pf-text strong { color:#fff; font-weight:600; display:block; font-size:13.5px; margin-bottom:2px; }
 
 .product-cards-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+@media(max-width:480px){ .product-cards-grid { grid-template-columns:1fr; } }
 .product-sample-card {
     background:rgba(255,255,255,.12);
     border:1px solid rgba(255,255,255,.2);
@@ -453,7 +451,7 @@ a    { text-decoration:none; color:inherit; }
 .faq-header  { text-align:center; margin-bottom:48px; }
 .faq-header .eyebrow { justify-content:center; }
 
-.faq-tab-wrap { display:flex; gap:6px; justify-content:center; margin-bottom:36px; background:var(--surface); border:1px solid var(--border2); border-radius:var(--radius); padding:5px; max-width:400px; margin-left:auto; margin-right:auto; }
+.faq-tab-wrap { display:flex; gap:6px; justify-content:center; margin-bottom:36px; background:var(--surface); border:1px solid var(--border2); border-radius:var(--radius); padding:5px; max-width:400px; margin-left:auto; margin-right:auto; flex-wrap:wrap; }
 .faq-tab-btn { flex:1; padding:10px 20px; border-radius:var(--radius-sm); font-family:var(--font); font-size:13.5px; font-weight:600; cursor:pointer; border:none; background:transparent; color:var(--text3); transition:all var(--transition); }
 .faq-tab-btn.active { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; box-shadow:0 4px 14px rgba(99,102,241,.3); }
 
@@ -981,6 +979,9 @@ a    { text-decoration:none; color:inherit; }
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
+    /* ── Mark JS as enabled ── */
+    document.documentElement.classList.add('js-enabled');
+
     /* ── Scroll Reveal ── */
     var revEls = document.querySelectorAll('.reveal,.reveal-left,.reveal-right');
     var obs = new IntersectionObserver(function(entries){
@@ -1019,6 +1020,9 @@ function switchFaqTab(tab) {
         document.getElementById('faq-tab-'  + t).classList.toggle('active', t === tab);
         var pane = document.getElementById('faq-pane-' + t);
         pane.style.display = t === tab ? 'block' : 'none';
+    });
+    document.querySelectorAll('#faq-pane-' + tab + ' .faq-item.reveal').forEach(function(el){
+        el.classList.add('visible');
     });
 }
 

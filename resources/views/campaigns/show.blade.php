@@ -6,7 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $campaign->title }} — DonateBazaar</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
     --bg:           #f4f5fb;
@@ -391,15 +391,12 @@ body {
     $remaining   = max(0, $campaign->goal_amount - $raised);
     $surplus     = $isOverfunded ? ($raised - $campaign->goal_amount) : 0;
 
-    /* ── NEW: donor + timing stats ── */
-    $donorsList   = collect();
-    try {
-        $donorsList = $campaign->donations()->where('payment_status', 'completed')->get();
-    } catch (\Throwable $e) {}
+    /* ── Donor stats (eager-loaded via controller) ── */
+    $donorsList   = $campaign->donations ?? collect();
     $donorCount   = $donorsList->count();
     $avgDonation  = $donorCount > 0 ? $donorsList->avg('total_amount') : 0;
-    $lastDonation = $donorsList->sortByDesc('created_at')->first();
-    $recentDonors = $donorsList->sortByDesc('created_at')->take(3);
+    $lastDonation = $donorsList->first();
+    $recentDonors = $donorsList->take(3);
 
     $daysLeft = isset($campaign->end_date) && $campaign->end_date
                 ? now()->diffInDays($campaign->end_date, false)

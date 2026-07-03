@@ -279,37 +279,6 @@ textarea.field-input{resize:vertical;min-height:100px;line-height:1.6;}
 @keyframes confettiBounce{from{transform:translateY(0)}to{transform:translateY(-8px)}}
 </style>
 
-{{-- SUCCESS POPUP --}}
-<div class="success-overlay" id="successOverlay">
-  <div class="success-modal">
-    <div class="success-icon-ring">
-      <div class="success-icon-inner">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
-      </div>
-    </div>
-    <div class="success-badge"><span></span> Campaign submitted</div>
-    <h2 class="success-title">Almost there!</h2>
-    <p class="success-subtitle">Your campaign is saved. Now complete <strong>KYC verification</strong> to activate it and start receiving funds.</p>
-    <div class="success-confetti-row">
-      <div class="confetti-dot"></div><div class="confetti-dot"></div>
-      <div class="confetti-dot"></div><div class="confetti-dot"></div><div class="confetti-dot"></div>
-    </div>
-    <div class="success-steps">
-      <div class="success-step"><div class="success-step-num">1</div><div class="success-step-text"><strong>Submitted</strong>Campaign saved</div></div>
-      <div class="success-step"><div class="success-step-num">2</div><div class="success-step-text"><strong>KYC Now</strong>Upload your ID</div></div>
-      <div class="success-step"><div class="success-step-num">3</div><div class="success-step-text"><strong>Goes live</strong>After approval</div></div>
-    </div>
-    <div class="success-actions">
-      {{-- This href will be set dynamically by JS after form submit gives us the campaign id --}}
-      <button type="button" class="btn-kyc-now" id="btnKycNow" onclick="goToKyc()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        Complete KYC Verification
-      </button>
-      <button type="button" class="btn-close-popup" onclick="closeSuccessPopup()">Do it later from dashboard</button>
-    </div>
-  </div>
-</div>
-
 <div class="page-shell">
   <div class="shell-inner">
 
@@ -559,8 +528,8 @@ textarea.field-input{resize:vertical;min-height:100px;line-height:1.6;}
               Continue
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </button>
-            <button type="button" class="btn-next" id="btnSubmit" style="display:none;" onclick="handleSubmit()">
-              Submit &amp; verify identity
+            <button type="submit" class="btn-next" id="btnSubmit" style="display:none;">
+              Submit &amp; complete KYC
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             </button>
           </div>
@@ -594,8 +563,6 @@ var categoryProductsMap = {};
   @endif
 @endforeach
 
-/* KYC route base — controller will redirect here after store() */
-var kycRouteBase = '{{ url('/kyc/upload') }}';
 </script>
 
 <script>
@@ -716,38 +683,10 @@ function showToast(html, type, duration){
 }
 
 /* ── SUBMIT ── */
-/* After the form posts, the controller returns JSON {campaign_id: X}
-   OR does a redirect — we handle both approaches below.
-   If your controller returns JSON, use the fetch approach.
-   If your controller does a standard redirect to /kyc/upload/{id}, just submit normally. */
-function handleSubmit(){
-  document.getElementById('goalAmount').value =
-    document.getElementById('goalAmount').value.replace(/,/g,'');
-
-  /* Show the success popup immediately */
-  document.getElementById('successOverlay').classList.add('show');
-
-  /* Submit the form after a short delay so the modal is visible */
-  setTimeout(function(){
-    document.getElementById('campaignForm').submit();
-  }, 1800);
-}
-
-/* Called when user clicks "Complete KYC Verification" in the popup.
-   Since the page will have been redirected by the controller already,
-   this button is mainly a fallback. The controller handles the redirect. */
-function goToKyc(){
-  /* If controller redirected, this won't be reached.
-     If you want JS-side navigation as fallback: */
-  window.location.href = kycRouteBase;
-}
-
-function closeSuccessPopup(){
-  var o=document.getElementById('successOverlay');
-  o.style.opacity='0'; o.style.transition='opacity .3s';
-  setTimeout(function(){o.classList.remove('show');o.style.opacity='';o.style.transition='';},300);
-}
-document.getElementById('successOverlay').addEventListener('click',function(e){if(e.target===this)closeSuccessPopup();});
+document.getElementById('campaignForm').addEventListener('submit', function(){
+  var goal = document.getElementById('goalAmount');
+  goal.value = goal.value.replace(/,/g,'');
+});
 
 /* ── UPDATES ── */
 document.getElementById('addUpdateBtn').addEventListener('click',function(){addUpdate();});

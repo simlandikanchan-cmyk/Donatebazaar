@@ -23,7 +23,7 @@ class CampaignController extends Controller
             ->latest()
             ->paginate(15);
 
-        return view('admin.campaigns.index', [
+        return view('admin.campaign.index', [
             'campaigns'    => $campaigns,
             'cntActive'    => Campaign::active()->count(),
             'cntPending'   => Campaign::pending()->count(),

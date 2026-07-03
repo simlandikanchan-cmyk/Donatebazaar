@@ -96,7 +96,7 @@ function initHeroSlider() {
   }
 
   // Pause on hover / focus — better UX
-  const heroEl = $('.hero');
+  const heroEl = $('.hero-wrap');
   heroEl?.addEventListener('mouseenter', stopAuto);
   heroEl?.addEventListener('mouseleave', startAuto);
   heroEl?.addEventListener('focusin',    stopAuto);
@@ -435,8 +435,6 @@ function init() {
   initCampaigns();
   initInlineCounters();
   initTestimonialMarquee();
-  initHowSteps('dsteps', 'dprog', 'on-orange');
-  initHowSteps('fsteps', 'fprog', 'on-indigo');
   initImpactSection();
 }
 

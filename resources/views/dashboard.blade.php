@@ -690,7 +690,15 @@ a { text-decoration: none; color: inherit; }
 ════════════════════════════════════════ */
 @media (max-width: 1280px) { .stats-grid { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 1100px) { .analytics-row { grid-template-columns: 1fr; } .stats-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 860px)  { .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); } .main { margin-left: 0; } .hamburger { display: flex; } .search-wrap, .sort-sel { display: none; } .welcome-banner { flex-direction: column; align-items: flex-start; } }
+.sidebar-backdrop { display: none; }
+.sidebar-mobile-search { display: none; padding: 0 16px 12px; flex-direction: column; gap: 8px; }
+.sms-search { position: relative; }
+.sms-search svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 13px; height: 13px; color: var(--text3); pointer-events: none; }
+.sms-input { width: 100%; height: 36px; padding: 0 10px 0 30px; border: 1px solid var(--border2); border-radius: var(--r-sm); font-size: 12.5px; color: var(--text); font-family: var(--font); background: var(--surface2); outline: none; transition: border-color var(--ease); }
+.sms-input:focus { border-color: var(--accent); background: var(--surface); }
+.sms-sort { height: 36px; padding: 0 10px; border: 1px solid var(--border2); border-radius: var(--r-sm); font-size: 12.5px; color: var(--text); font-family: var(--font); background: var(--surface2); outline: none; cursor: pointer; transition: border-color var(--ease); }
+.sms-sort:focus { border-color: var(--accent); }
+@media (max-width: 860px)  { .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); } .sidebar-backdrop.open { display: block; position: fixed; inset: 0; z-index: 299; background: rgba(4,5,14,.55); backdrop-filter: blur(4px); } .main { margin-left: 0; } .hamburger { display: flex; } .search-wrap, .sort-sel { display: none; } .sidebar-mobile-search { display: flex; } .welcome-banner { flex-direction: column; align-items: flex-start; } }
 @media (max-width: 600px)  { .topbar { padding: 0 16px; } .body { padding: 14px 14px 48px; } .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; } .c-grid { grid-template-columns: 1fr; } .stat-val { font-size: 1.4rem; } .qnav { grid-template-columns: repeat(2, 1fr); } }
 </style>
 </head>
@@ -703,6 +711,7 @@ a { text-decoration: none; color: inherit; }
 {{-- ══════════════════════════════════════════
      SIDEBAR
 ══════════════════════════════════════════ --}}
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 <aside class="sidebar" id="sidebar">
 
     <div class="s-logo">
@@ -764,6 +773,21 @@ a { text-decoration: none; color: inherit; }
             </div>
         </div>
     @endif
+
+    {{-- Mobile search/sort (only visible ≤860px) --}}
+    <div class="sidebar-mobile-search">
+        <div class="sms-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input type="text" class="sms-input" id="mobileSearchInput" placeholder="Search campaigns…" autocomplete="off">
+        </div>
+        <select class="sms-sort" id="mobileSortSelect">
+            <option value="">Sort by…</option>
+            <option value="amount-desc">Amount ↓</option>
+            <option value="amount-asc">Amount ↑</option>
+            <option value="date-desc">Newest first</option>
+            <option value="date-asc">Oldest first</option>
+        </select>
+    </div>
 
     <div class="s-label">Overview</div>
     <nav class="s-nav">
@@ -866,7 +890,7 @@ a { text-decoration: none; color: inherit; }
 
     {{-- ── Blogs ── --}}
     @php
-        $userBlogs      = auth()->user()->blogs ?? collect();
+        $userBlogs      = \App\Models\Blog::where('author_id', auth()->id())->get();
         $blogTotal      = $userBlogs->count();
         $blogPublished  = $userBlogs->where('status','approved')->count();
         $blogDraft      = $userBlogs->where('status','draft')->count();
@@ -1484,14 +1508,22 @@ toggle.addEventListener('change', function(){
     setTimeout(renderChart, 50);
 });
 
-/* ── Hamburger ── */
+/* ── Hamburger + Backdrop ── */
 var sidebar = document.getElementById('sidebar');
+var backdrop = document.getElementById('sidebarBackdrop');
 document.getElementById('hamburger').addEventListener('click', function(){
     sidebar.classList.toggle('open');
+    if (backdrop) backdrop.classList.toggle('open');
 });
 document.addEventListener('click', function(e){
-    if (window.innerWidth <= 860 && !sidebar.contains(e.target) && !document.getElementById('hamburger').contains(e.target))
+    if (window.innerWidth <= 860 && !sidebar.contains(e.target) && !document.getElementById('hamburger').contains(e.target)) {
         sidebar.classList.remove('open');
+        if (backdrop) backdrop.classList.remove('open');
+    }
+});
+if (backdrop) backdrop.addEventListener('click', function(){
+    sidebar.classList.remove('open');
+    backdrop.classList.remove('open');
 });
 
 /* ── Avatar dropdown (was missing) ── */
@@ -1581,6 +1613,18 @@ document.getElementById('searchInput').addEventListener('input', function(){
 document.getElementById('sortSelect').addEventListener('change', function(){
     sortVal = this.value;
     applyFilters();
+});
+
+/* ── Mobile search/sort sync ── */
+var mobileSearch = document.getElementById('mobileSearchInput');
+var mobileSort = document.getElementById('mobileSortSelect');
+if (mobileSearch) mobileSearch.addEventListener('input', function(){
+    document.getElementById('searchInput').value = this.value;
+    document.getElementById('searchInput').dispatchEvent(new Event('input'));
+});
+if (mobileSort) mobileSort.addEventListener('change', function(){
+    document.getElementById('sortSelect').value = this.value;
+    document.getElementById('sortSelect').dispatchEvent(new Event('change'));
 });
 
 /* ── View toggle ── */

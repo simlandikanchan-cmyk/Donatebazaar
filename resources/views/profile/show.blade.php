@@ -5,9 +5,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="csrf-token" content="{{ csrf_token() }}">
+<link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
 <title>My Profile — DonateBazaar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 /* ─────────────────────────────────────────
    TOKENS
@@ -518,7 +519,8 @@ img{display:block;}
 ───────────────────────────────────────── */
 @media(max-width:1100px){.profile-grid{grid-template-columns:250px 1fr;}}
 @media(max-width:900px){.profile-grid{grid-template-columns:1fr;}.acct-grid{grid-template-columns:1fr;}.two-col{grid-template-columns:1fr;}}
-@media(max-width:860px){.sidebar{transform:translateX(-100%);}.sidebar.open{transform:translateX(0);}.main{margin-left:0;}.hamburger{display:flex;}}
+.sidebar-backdrop{display:none;}
+@media(max-width:860px){.sidebar{transform:translateX(-100%);}.sidebar.open{transform:translateX(0);}.sidebar-backdrop.open{display:block;position:fixed;inset:0;z-index:299;background:rgba(4,5,14,.55);backdrop-filter:blur(4px);}.main{margin-left:0;}.hamburger{display:flex;}}
 @media(max-width:640px){.topbar,.body{padding-left:14px;padding-right:14px;}.stat-pills{flex-wrap:wrap;}.stat-pill{flex:1 1 33%;}.hero-inner{padding:0 14px 16px;}.hero-name{font-size:18px;}.tab-btn span{display:none;}}
 </style>
 </head>
@@ -566,6 +568,7 @@ img{display:block;}
   {{-- ═══════════════════════════════════════
        SIDEBAR
   ═══════════════════════════════════════ --}}
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
   <aside class="sidebar" id="sidebar">
     <div class="s-logo">
       <div class="s-logo-mark">
@@ -735,7 +738,7 @@ img{display:block;}
         {{-- Cover strip --}}
         <div class="cover-bg" id="coverBg">
           @if($user->cover_image)
-            <img class="cover-img" src="{{ asset('storage/'.$user->cover_image) }}" id="coverImg" alt="Cover">
+            <img class="cover-img" src="{{ asset('storage/'.$user->cover_image) }}" id="coverImg" alt="Cover photo of {{ $user->name }}">
           @else
             <img class="cover-img" src="" id="coverImg" style="display:none;" alt="">
           @endif
@@ -772,7 +775,7 @@ img{display:block;}
             {{-- Name & badges --}}
             <div class="hero-meta">
               <div class="hero-name">{{ $user->name }}</div>
-              <div class="hero-handle">&#64;{{ strtolower(str_replace(' ','_',$user->name)) }} · Joined {{ $user->created_at->format('M Y') }}</div>
+              <div class="hero-handle">&#64;{{ strtolower(str_replace(' ','_',$user->name)) }} · Joined {{ $user->created_at?->format('M Y') }}</div>
               <div class="hero-badges">
                 <span class="hbadge hb-role">
                   <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
@@ -873,7 +876,7 @@ img{display:block;}
               </div>
               <div class="info-row">
                 <span class="ir-left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Joined</span>
-                <span class="ir-val">{{ $user->created_at->format('d M Y') }}</span>
+                <span class="ir-val">{{ $user->created_at?->format('d M Y') }}</span>
               </div>
               <div class="info-row">
                 <span class="ir-left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Verified</span>
@@ -1151,7 +1154,7 @@ img{display:block;}
                 <div class="acct-grid">
                   <div class="acct-item">
                     <div class="acct-lbl">Member Since</div>
-                    <div class="acct-val">{{ $user->created_at->format('d M Y') }}</div>
+                    <div class="acct-val">{{ $user->created_at?->format('d M Y') }}</div>
                   </div>
                   <div class="acct-item">
                     <div class="acct-lbl">Account Role</div>
@@ -1272,24 +1275,32 @@ img{display:block;}
 /* ── Theme ── */
 var html   = document.documentElement;
 var toggle = document.getElementById('themeToggle');
-var saved  = localStorage.getItem('adminTheme') || 'light';
+var saved  = localStorage.getItem('profileTheme') || 'light';
 if (saved === 'dark') { html.setAttribute('data-theme','dark'); toggle.checked = true; }
 toggle.addEventListener('change', function(){
   var t = this.checked ? 'dark' : 'light';
   html.setAttribute('data-theme', t);
-  localStorage.setItem('adminTheme', t);
+  localStorage.setItem('profileTheme', t);
 });
 
-/* ── Sidebar hamburger ── */
+/* ── Sidebar hamburger + backdrop ── */
 var sidebar = document.getElementById('sidebar');
+var backdrop = document.getElementById('sidebarBackdrop');
 document.getElementById('hamburger').addEventListener('click', function(e){
   e.stopPropagation();
   sidebar.classList.toggle('open');
+  if (backdrop) backdrop.classList.toggle('open');
 });
 document.addEventListener('click', function(e){
   if (window.innerWidth <= 860 && sidebar.classList.contains('open') &&
-      !sidebar.contains(e.target) && !document.getElementById('hamburger').contains(e.target))
+      !sidebar.contains(e.target) && !document.getElementById('hamburger').contains(e.target)) {
     sidebar.classList.remove('open');
+    if (backdrop) backdrop.classList.remove('open');
+  }
+});
+if (backdrop) backdrop.addEventListener('click', function(){
+  sidebar.classList.remove('open');
+  backdrop.classList.remove('open');
 });
 
 /* ── Avatar dropdown ── */

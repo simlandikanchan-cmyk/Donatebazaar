@@ -3,8 +3,6 @@
 @section('content')
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap');
-
 :root {
     --accent:      #7c6dfa;
     --accent2:     #9b59f5;
@@ -27,8 +25,6 @@
     --dark-bg:     linear-gradient(160deg, #0d0e1a 0%, #13122b 50%, #1a1040 100%);
     --dark-ring:   rgba(124,109,250,0.11);
 }
-
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
     font-family: var(--font);
@@ -659,7 +655,7 @@ textarea.field {
     line-height: 1.68;
     border-top: 1px solid var(--border);
 }
-.faq-item.open .faq-answer { max-height: 220px; }
+.faq-item.open .faq-answer { max-height: 400px; }
 
 /* ════════════════════════════════════════
    MAP STRIP
@@ -716,8 +712,11 @@ textarea.field {
     filter: grayscale(15%) hue-rotate(220deg) saturate(0.7);
 }
 
+/* ── No-JS fallback ── */
+html:not(.js-enabled) .anim { opacity: 1; animation: none; }
+
 /* ════════════════════════════════════════
-   ANIMATIONS
+    ANIMATIONS
 ════════════════════════════════════════ */
 @keyframes fadeUp {
     from { opacity: 0; transform: translateY(22px); }
@@ -1007,7 +1006,7 @@ textarea.field {
 </div><!-- /contact-page-root -->
 
 <script>
-
+document.documentElement.classList.add('js-enabled');
 
 function toggleFAQ(btn) {
     const item = btn.closest('.faq-item');

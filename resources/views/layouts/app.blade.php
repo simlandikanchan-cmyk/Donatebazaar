@@ -8,11 +8,14 @@
     {{-- Tailwind + JS --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    {{--  GOOGLE FONTS (ADDED HERE) --}} <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    {{-- Preconnects --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
 
-    {{-- External Libraries --}}
-    <!-- <script src="https://js.stripe.com/v3/"></script> -->
-    <!-- <script src="https://checkout.razorpay.com/v1/checkout.js"></script> -->
+    {{-- Google Fonts --}}
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     {{-- AOS --}}
     <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
@@ -28,7 +31,7 @@
 
 </head>
 
-<body class="flex flex-col min-h-screen bg-gray-100">
+<body class="flex flex-col min-h-screen" style="background:#f4f5fb">
 
     {{-- Navigation --}}
     @include('layouts.navigation')
@@ -107,6 +110,7 @@
     <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
 
     <script>
+        document.documentElement.classList.add('js-enabled');
         // AOS Init
         AOS.init({
             once: true,

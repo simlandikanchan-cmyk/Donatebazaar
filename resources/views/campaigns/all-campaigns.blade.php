@@ -2,9 +2,6 @@
 
 @section('content')
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&family=DM+Mono:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
-
 <style>
 /* ═══════════════════════════════════════════════════════════
    DESIGN SYSTEM
@@ -121,7 +118,7 @@ a    { text-decoration: none; color: inherit; }
 /* ═══════════════════════════════════════════════════════════
    2. FILTER + SORT TOOLBAR
 ═══════════════════════════════════════════════════════════ */
-.toolbar-section { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 200; box-shadow: var(--shadow); }
+.toolbar-section { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 64px; z-index: 200; box-shadow: var(--shadow); }
 .toolbar-inner { display: flex; align-items: center; gap: 12px; padding: 14px 24px; max-width: 1180px; margin: 0 auto; flex-wrap: wrap; }
 
 /* Category chips */
@@ -521,7 +518,7 @@ a    { text-decoration: none; color: inherit; }
    8. PAGINATION
 ═══════════════════════════════════════════════════════════ */
 .pagination-wrap { margin-top: 52px; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
-.pagination-wrap .page-link, .pagination-wrap a, .pagination-wrap span {
+.pagination-wrap .page-btn, .pagination-wrap a, .pagination-wrap span {
     display: inline-flex; align-items: center; justify-content: center;
     min-width: 40px; height: 40px; padding: 0 14px;
     border-radius: var(--radius-sm); font-size: 13.5px; font-weight: 600;
@@ -566,6 +563,9 @@ a    { text-decoration: none; color: inherit; }
 .scroll-top.visible { opacity: 1; transform: translateY(0); }
 .scroll-top:hover { transform: translateY(-2px); }
 .scroll-top svg { width: 18px; height: 18px; }
+
+/* ── No-JS fallback for reveal animations ── */
+html:not(.js-enabled) .reveal { opacity: 1; transform: none; }
 
 /* ── Responsive ── */
 @media(max-width:768px) {
@@ -1175,6 +1175,9 @@ a    { text-decoration: none; color: inherit; }
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+
+    /* ── Mark JS as enabled for no-JS fallback ── */
+    document.documentElement.classList.add('js-enabled');
 
     /* ── SCROLL REVEAL ── */
     var revealEls = document.querySelectorAll('.reveal');

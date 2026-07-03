@@ -1,21 +1,25 @@
 /* ==========================================================================
    DonateBazaar — Production CSS
-   Sections:
-   01. CSS Variables (Light + Dark)
-   02. Reset & Base
-   03. Hero
-   04. Marquee
-   05. Section Shared
-   06. Categories
-   07. Campaigns
-   08. How It Works
-   09. Testimonials
-   10. Why Us
-   11. CTA Banner
-   12. Impact Map
-   13. Hero Stat Bar
-   14. Keyframes
-   15. Media Queries
+    Sections:
+    01. CSS Variables (Light + Dark)
+    02. Reset & Base
+    03. Hero
+    04. Marquee
+    05. Section Shared
+    06. Categories
+    07. Campaigns
+    08. How It Works
+    09. Testimonials
+    10. Why Us
+    11. CTA Banner
+    12. Impact
+    13. Hero Stat Bar
+    14. Keyframes
+    15. Reveal
+    16. Testimonial Tabs
+    17. Media Queries
+    13. Keyframes
+    14. Media Queries
    ========================================================================== */
 
 
@@ -254,29 +258,8 @@ body {
 }
 .hero-dot.active { background:#fff; width:28px }
 
-/* Stat cards (floating) */
-
-
-
-.hero-stats { position:absolute; bottom:60px; right:6%; z-index:10; display:flex; gap:12px }
-.hero-stat-card {
-  background:     rgba(255,255,255,.1);
-  border:         1px solid rgba(255,255,255,.18);
-  backdrop-filter:blur(16px);
-  border-radius:  var(--radius);
-  padding:        16px 22px;
-  text-align:     center;
-  color:          #fff;
-}
-
-
-
-.hero-stat-card .num { font-size:22px; font-weight:700; font-family:var(--font-mono) }
-.hero-stat-card .lbl { font-size:11px; opacity:.65; margin-top:2px; font-family:var(--font); letter-spacing:.04em }
-
-
 /* ==========================================================================
-   04. MARQUEE
+    04. MARQUEE
    ========================================================================== */
 
 .marquee-wrap  { background:#0d0e1a; overflow:hidden; padding:14px 0 }
@@ -893,6 +876,7 @@ body {
 
 .testi-author { display:flex; align-items:center; gap:11px; padding-top:14px; border-top:1px solid var(--border) }
 .testi-avatar { width:36px; height:36px; border-radius:9px; object-fit:cover }
+.testi-avatar-initials { width:36px; height:36px; border-radius:9px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:14px; font-weight:700; font-family:var(--font-mono); flex-shrink:0 }
 .testi-name   { font-size:12.5px; font-weight:600; color:var(--text); font-family:var(--font) }
 .testi-role   { font-size:10.5px; color:var(--text3); font-family:var(--font-mono) }
 
@@ -949,41 +933,9 @@ body {
 
 
 /* ==========================================================================
-   12. IMPACT MAP
-   ========================================================================== */
+    12. IMPACT LAYOUT
+    ========================================================================== */
 
-/* .impact-section { background:var(--surface); padding:100px 0 }
-
-.impact-grid {
-  display:               grid;
-  grid-template-columns: 1fr 360px;
-  gap:                   48px;
-  align-items:           start;
-}
-
-.impact-map-img       { width:100%; border-radius:20px; transition:transform .5s; box-shadow:var(--shadow) }
-.impact-map-img:hover { transform:scale(1.02) }
-
-.impact-stats-card {
-  background:    var(--surface2);
-  border:        1px solid var(--border2);
-  border-radius: var(--radius);
-  padding:       28px;
-  position:      sticky;
-  top:           100px;
-  box-shadow:    var(--shadow);
-}
-.impact-stats-title { font-family:var(--font-display); font-size:19px; font-weight:700; color:var(--text); margin-bottom:22px }
-
-.impact-row { display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--border) }
-.impact-row:last-child { border-bottom:none }
-.impact-state { font-size:13.5px; color:var(--text2); font-family:var(--font); font-weight:400 }
-.impact-count { font-size:14px; font-weight:700; color:var(--accent); font-family:var(--font-mono) }
- */
-
-
-
- /* Impact layout: 2-col on desktop, single col on mobile/tablet */
 .impact-layout {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -1119,18 +1071,36 @@ body {
 
 
 /* ==========================================================================
-   15. MEDIA QUERIES
-   ========================================================================== */
+    15. REVEAL ANIMATIONS
+    ========================================================================== */
 
-@media (max-width: 900px) {
-  .impact-grid { grid-template-columns:1fr }
+.reveal {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity .6s ease, transform .6s ease;
+}
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+.reveal.d1 { transition-delay: .08s; }
+.reveal.d2 { transition-delay: .16s; }
+.reveal.d3 { transition-delay: .24s; }
+html:not(.js-enabled) .reveal {
+    opacity: 1;
+    transform: none;
 }
 
-@media (max-width: 768px) {
-  .how-grid { grid-template-columns:1fr }
-}
+/* ==========================================================================
+    16. TESTIMONIAL TABS
+    ========================================================================== */
 
+.testi-tab { display: none; }
+.testi-tab.active { display: block; }
 
+/* ==========================================================================
+    17. MEDIA QUERIES
+    ========================================================================== */
 
 .hbs-section {
     background: var(--bg, #f4f5fb);

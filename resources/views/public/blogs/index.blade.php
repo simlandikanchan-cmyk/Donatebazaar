@@ -4,10 +4,6 @@
 
 @section('content')
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
 <style>
 /* ═══════════════════════════════════════════════════════════════
    DESIGN SYSTEM — identical to home.blade.php + about.blade.php
@@ -52,7 +48,6 @@
     --shadow-lg:0 8px 40px rgba(0,0,0,0.5);
 }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: var(--font); color: var(--text); background: var(--bg); -webkit-font-smoothing: antialiased; }
 
 .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
@@ -67,6 +62,7 @@ body { font-family: var(--font); color: var(--text); background: var(--bg); -web
 .reveal-d1{transition-delay:.08s} .reveal-d2{transition-delay:.16s}
 .reveal-d3{transition-delay:.24s} .reveal-d4{transition-delay:.32s}
 .reveal-d5{transition-delay:.40s} .reveal-d6{transition-delay:.48s}
+html:not(.js-enabled) .reveal { opacity: 1; transform: none; }
 
 .blog-hero {
     position: relative;
@@ -150,7 +146,7 @@ body { font-family: var(--font); color: var(--text); background: var(--bg); -web
 @keyframes marquee { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
 
 .blog-filter-bar {
-    position: sticky; top: 0; z-index: 40;
+    position: sticky; top: 64px; z-index: 40;
     background: rgba(255,255,255,.96);
     backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border2);
@@ -205,7 +201,7 @@ body { font-family: var(--font); color: var(--text); background: var(--bg); -web
 .blog-body { padding: 40px 0 88px; background: var(--bg); }
 .blog-layout { display: flex; gap: 28px; align-items: flex-start; }
 .blog-main   { flex: 1; min-width: 0; }
-.blog-sidebar { width: 260px; flex-shrink: 0; position: sticky; top: 72px; }
+.blog-sidebar { width: 260px; flex-shrink: 0; position: sticky; top: 108px; }
 
 .cat-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
 .cat-pill {
@@ -866,6 +862,7 @@ body { font-family: var(--font); color: var(--text); background: var(--bg); -web
 
 {{-- ═══ SCRIPTS ═══ --}}
 <script>
+document.documentElement.classList.add('js-enabled');
 document.addEventListener('DOMContentLoaded', function () {
     var reveals = document.querySelectorAll('.reveal');
     if (!('IntersectionObserver' in window)) {

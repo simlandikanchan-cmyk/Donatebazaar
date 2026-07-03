@@ -1,7 +1,7 @@
 <div class="hero-wrap">
     {{-- Slide 1 --}}
     <div class="hero-slide active">
-        <img src="{{ asset('images/2149012198.jpg') }}" alt="Be Someone's Hope Today">
+        <img src="{{ asset('images/2149012198.jpg') }}" alt="Be Someone's Hope Today" fetchpriority="high">
         <div class="hero-overlay">
             <div class="hero-content">
                 <div class="hero-pill"><span class="hero-pill-dot"></span>Trusted by 50,000+ Donors Across India</div>
@@ -17,22 +17,13 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 4v16m8-8H4"/></svg>
                     </a>
                 </div>
-                <!-- <div class="hero-trust">
-                    <div class="hero-trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Verified Campaigns</div>
-                    <div class="hero-trust-sep"></div>
-                    <div class="hero-trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg> 256-bit SSL Secure</div>
-                    <div class="hero-trust-sep"></div>
-                    <div class="hero-trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> RBI Compliant</div>
-                    <div class="hero-trust-sep"></div>
-                    <div class="hero-trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 24×7 Support</div>
-                </div> -->
             </div>
         </div>
     </div>
 
     {{-- Slide 2 --}}
     <div class="hero-slide">
-        <img src="{{ asset('images/2149012178.jpg') }}" alt="Save Children's Lives">
+        <img src="{{ asset('images/2149012178.jpg') }}" alt="Save Children's Lives" loading="lazy">
         <div class="hero-overlay">
             <div class="hero-content">
                 <div class="hero-pill"><span class="hero-pill-dot"></span>Change a Child's Life</div>
@@ -48,7 +39,7 @@
 
     {{-- Slide 3 --}}
     <div class="hero-slide">
-        <img src="{{ asset('images/18576.jpg') }}" alt="Be the Change">
+        <img src="{{ asset('images/18576.jpg') }}" alt="Be the Change" loading="lazy">
         <div class="hero-overlay">
             <div class="hero-content">
                 <div class="hero-pill"><span class="hero-pill-dot"></span>Be the Change</div>
