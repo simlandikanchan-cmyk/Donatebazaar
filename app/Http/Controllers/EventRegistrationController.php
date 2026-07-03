@@ -41,6 +41,13 @@ class EventRegistrationController extends Controller
                 ->with('error', 'This event is fully booked.');
         }
 
+        // Block if registrations are disabled
+        if (! $event->allow_registrations) {
+            return redirect()
+                ->route('events.show', $event->id)
+                ->with('error', 'Registrations are currently disabled for this event.');
+        }
+
         return view('events.register', compact('event'));
     }
 
@@ -59,6 +66,10 @@ class EventRegistrationController extends Controller
 
         if ($event->isFull()) {
             return back()->with('error', 'Sorry, this event just became fully booked.');
+        }
+
+        if (! $event->allow_registrations) {
+            return back()->with('error', 'Registrations are currently disabled for this event.');
         }
 
         /*

@@ -382,14 +382,14 @@ body {
 
 @php
     // Status chip
-    if ($event->status === 'approved') {
-        $chipClass = 'chip-active'; $chipLabel = 'Approved';
+    if ($event->status === 'active') {
+        $chipClass = 'chip-active'; $chipLabel = 'Active';
     } elseif ($event->status === 'pending') {
         $chipClass = 'chip-pending'; $chipLabel = 'Pending';
     } elseif ($event->status === 'completed') {
         $chipClass = 'chip-completed'; $chipLabel = 'Completed';
-    } elseif ($event->status === 'rejected') {
-        $chipClass = 'chip-rejected'; $chipLabel = 'Rejected';
+    } elseif ($event->status === 'cancelled') {
+        $chipClass = 'chip-rejected'; $chipLabel = 'Cancelled';
     } else {
         $chipClass = 'chip-pending'; $chipLabel = ucfirst($event->status ?? 'Draft');
     }

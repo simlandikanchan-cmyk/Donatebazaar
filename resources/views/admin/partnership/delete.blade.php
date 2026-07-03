@@ -1,172 +1,37 @@
-@extends('layouts.app')
+@extends('layouts.admin')
+
+@section('page_title', 'Delete Partnership')
+@section('page_subtitle', 'Confirm removal')
+@section('sidebar_partnerships', 'active')
 
 @section('content')
-
-<style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
-
-:root {
-  --bg: #ffffffda; --surface: #f9f9faff;
-  --border: rgba(255,255,255,0.07);
-  --text: #000; --muted: #6b7280;
-  --danger: #ef4444; --danger-bg: rgba(239,68,68,0.1);
-  --accent: #6366f1; --accent-glow: rgba(99,102,241,0.25);
-  --font: 'DM Sans', sans-serif; --mono: 'DM Mono', monospace;
-}
-
-body { font-family: var(--font); background: var(--bg); color: var(--text); }
-
-.page {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
-/* Card */
-.card {
-  width: 100%;
-  max-width: 520px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 28px;
-}
-
-/* Header */
-.title {
-  font-size: 22px;
-  font-weight: 600;
-  color: var(--danger);
-}
-
-.sub {
-  font-size: 13px;
-  color: var(--muted);
-  margin-top: 4px;
-}
-
-/* Warning box */
-.warn {
-  margin-top: 20px;
-  background: var(--danger-bg);
-  color: var(--danger);
-  padding: 12px;
-  border-radius: 10px;
-  font-size: 12px;
-  font-family: var(--mono);
-}
-
-/* Info */
-.info {
-  margin-top: 18px;
-  background: #f3f4f6;
-  padding: 14px;
-  border-radius: 10px;
-  font-size: 13px;
-}
-
-.info strong {
-  display: inline-block;
-  width: 100px;
-  color: var(--muted);
-}
-
-/* Buttons */
-.actions {
-  margin-top: 24px;
-  display: flex;
-  gap: 10px;
-}
-
-.btn {
-  flex: 1;
-  padding: 11px;
-  border-radius: 10px;
-  font-size: 13px;
-  font-weight: 500;
-  border: none;
-  cursor: pointer;
-  transition: .15s;
-}
-
-/* Danger */
-.btn-danger {
-  background: var(--danger);
-  color: #fff;
-}
-
-.btn-danger:hover {
-  background: #dc2626;
-  transform: translateY(-1px);
-}
-
-/* Cancel */
-.btn-cancel {
-  background: #e5e7eb;
-  color: #374151;
-}
-
-.btn-cancel:hover {
-  background: #d1d5db;
-}
-
-/* Back link */
-.back {
-  font-size: 12px;
-  color: var(--accent);
-  text-decoration: none;
-  display: inline-block;
-  margin-bottom: 10px;
-}
-</style>
-
-<div class="page">
-
-  <div class="card">
-
-    <!-- Back -->
-    <a href="{{ route('admin.partnership.index') }}" class="back">
-      ← Back to list
-    </a>
-
-    <!-- Title -->
-    <div class="title">Delete Partnership</div>
-    <div class="sub">This action cannot be undone</div>
-
-    <!-- Warning -->
-    <div class="warn">
+<div class="delete-card" style="max-width:520px;margin:60px auto;">
+  <a href="{{ route('admin.partnership.index') }}" class="back-link" style="font-size:12px;color:var(--a);text-decoration:none;display:inline-block;margin-bottom:10px;">
+    ← Back to list
+  </a>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;">
+    <div style="font-size:22px;font-weight:600;color:var(--red);">Delete Partnership</div>
+    <div style="font-size:13px;color:var(--text3);margin-top:4px;">This action cannot be undone</div>
+    <div style="margin-top:20px;background:var(--red-lt);color:var(--red);padding:12px;border-radius:10px;font-size:12px;font-family:var(--mono);">
       ⚠️ You are about to permanently delete this partnership request.
     </div>
-
-    <!-- Info -->
-    <div class="info">
-      <p><strong>Name:</strong> {{ $partnership->name ?? '-' }}</p>
-      <p><strong>Email:</strong> {{ $partnership->email ?? '-' }}</p>
-      <p><strong>Organization</strong> {{ $partnership->organization_name ?? '-' }}</p>
+    <div style="margin-top:18px;background:var(--surface2);padding:14px;border-radius:10px;font-size:13px;">
+      <p><strong style="display:inline-block;width:100px;color:var(--text3);">Name:</strong> {{ $partnership->name ?? '-' }}</p>
+      <p><strong style="display:inline-block;width:100px;color:var(--text3);">Email:</strong> {{ $partnership->email ?? '-' }}</p>
+      <p><strong style="display:inline-block;width:100px;color:var(--text3);">Organization</strong> {{ $partnership->organization_name ?? '-' }}</p>
     </div>
-
-    <!-- Actions -->
-    <div class="actions">
-
+    <div style="margin-top:24px;display:flex;gap:10px;">
       <form method="POST" action="{{ route('admin.partnership.delete',$partnership->id) }}" style="flex:1;">
         @csrf
         @method('DELETE')
-
-        <button class="btn btn-danger">
+        <button style="flex:1;width:100%;padding:11px;border-radius:10px;font-size:13px;font-weight:500;border:none;cursor:pointer;background:var(--red);color:#fff;">
           Yes, Delete
         </button>
       </form>
-
-      <a href="{{ route('admin.partnership.index') }}" class="btn btn-cancel">
+      <a href="{{ route('admin.partnership.index') }}" style="flex:1;padding:11px;border-radius:10px;font-size:13px;font-weight:500;border:none;text-align:center;text-decoration:none;background:#e5e7eb;color:#374151;">
         Cancel
       </a>
-
     </div>
-
   </div>
-
 </div>
-
 @endsection

@@ -18,6 +18,10 @@ export default defineConfig({
                 'resources/js/home.js',
                 'resources/js/about.js',
                 'resources/js/contact.js',
+
+                // Admin
+                'resources/css/admin.css',
+                'resources/js/admin.js',
             ],
             
             refresh: true,

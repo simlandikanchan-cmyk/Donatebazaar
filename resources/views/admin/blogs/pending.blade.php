@@ -46,7 +46,7 @@
     </div>
   @endforelse
  
-  {{ $blogs->links() }}
+  {{ $blogs->links('vendor.pagination.admin') }}
 </div>
  
 @push('scripts')

@@ -1,7 +1,10 @@
 @extends('layouts.admin')
 
+@section('sidebar_gift_cards', 'active')
+@section('page_title', 'Gift Cards')
+@section('page_subtitle', 'Manage gift card orders')
+
 @section('content')
-<div class="body">
 
     {{-- Stats --}}
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:24px;">
@@ -125,8 +128,7 @@
             </table>
         </div>
         <div style="padding:12px 16px;border-top:1px solid var(--border);">
-            {{ $giftCards->appends(request()->query())->links() }}
+            {{ $giftCards->appends(request()->query())->links('vendor.pagination.admin') }}
         </div>
     </div>
-</div>
 @endsection

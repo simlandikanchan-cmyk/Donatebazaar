@@ -59,11 +59,14 @@ class Event extends Model
     */
 
     protected $casts = [
-        'event_date'       => 'date',
-        'goal_amount'      => 'decimal:2',
-        'raised_amount'    => 'decimal:2',
-        'max_participants' => 'integer',
-        'registered_count' => 'integer',
+        'event_date'           => 'date',
+        'goal_amount'          => 'decimal:2',
+        'raised_amount'        => 'decimal:2',
+        'max_participants'     => 'integer',
+        'registered_count'     => 'integer',
+        'allow_registrations'  => 'boolean',
+        'show_on_campaign'     => 'boolean',
+        'send_notification'    => 'boolean',
     ];
 
     /*
