@@ -50,13 +50,13 @@
     ========================== -->
 
     <!-- Floating Chat Button -->
-    <!-- <div class="fixed bottom-6 right-6 z-50">
+    <div class="fixed bottom-6 right-6 z-50">
         <button
             id="chatToggle"
             class="w-16 h-16 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg hover:scale-110 transition duration-300 flex items-center justify-center text-2xl">
             💬
         </button>
-    </div> -->
+    </div>
 
     <!-- Chat Window -->
      

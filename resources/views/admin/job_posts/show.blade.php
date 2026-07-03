@@ -173,13 +173,13 @@
   </div>
 </div>
 
-<div class="breadcrumb">
+<!-- <div class="breadcrumb">
   <a href="{{ route('admin.dashboard') }}">Dashboard</a>
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
   <a href="{{ route('admin.job_posts.index') }}">Job Posts</a>
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
   <span class="cur">{{ Str::limit($jobPost->title, 40) }}</span>
-</div>
+</div> -->
 
 <div class="page-actions">
   <a href="{{ route('admin.job_posts.index') }}" class="btn-back">
