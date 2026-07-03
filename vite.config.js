@@ -22,6 +22,10 @@ export default defineConfig({
                 // Admin
                 'resources/css/admin.css',
                 'resources/js/admin.js',
+
+                // User Portal
+                'resources/css/user.css',
+                'resources/js/user.js',
             ],
             
             refresh: true,
