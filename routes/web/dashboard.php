@@ -16,6 +16,8 @@ Route::middleware('auth')->group(function () {
         $recurringDonations = \App\Models\RecurringDonation::where('user_id', auth()->id())->latest()->get();
         $recurringCount = $recurringDonations->count();
 
-        return view('dashboard', compact('campaigns', 'monthlyData', 'recurringDonations', 'recurringCount'));
+        $kyc = auth()->user()->kycVerification;
+
+        return view('dashboard', compact('campaigns', 'monthlyData', 'recurringDonations', 'recurringCount', 'kyc'));
     })->name('dashboard');
 });

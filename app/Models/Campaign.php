@@ -163,6 +163,11 @@ class Campaign extends Model
         );
     }
 
+    public function kyc()
+    {
+        return $this->hasOne(KycVerification::class);
+    }
+
     // -------------------------------------------------------------------------
     // SCOPES
     // -------------------------------------------------------------------------
