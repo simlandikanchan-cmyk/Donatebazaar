@@ -1,0 +1,24 @@
+<?php
+
+use App\Http\Controllers\Admin\CampaignController as AdminCampaignController;
+use App\Http\Controllers\Admin\CampaignKycController;
+use App\Http\Controllers\Admin\KycController as AdminKycController;
+use Illuminate\Support\Facades\Route;
+
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
+
+    Route::get('/campaign',                       [AdminCampaignController::class, 'index'])->name('campaign.index');
+    Route::get('/campaign/{campaign}',            [AdminCampaignController::class, 'show'])->name('campaign.show');
+    Route::get('/campaign/{campaign}/edit',       [AdminCampaignController::class, 'edit'])->name('campaign.edit');
+    Route::put('/campaign/{campaign}/update',     [AdminCampaignController::class, 'update'])->name('campaign.update');
+    Route::post('/campaign/{campaign}/approve',   [AdminCampaignController::class, 'approve'])->name('campaign.approve');
+    Route::post('/campaign/{campaign}/reject',    [AdminCampaignController::class, 'reject'])->name('campaign.reject');
+    Route::post('/campaign/{campaign}/pause',     [AdminCampaignController::class, 'pause'])->name('campaign.pause');
+    Route::post('/campaign/{campaign}/resume',    [AdminCampaignController::class, 'resume'])->name('campaign.resume');
+
+    Route::post('/campaign/{campaign}/request-kyc', [CampaignKycController::class, 'requestKyc'])->name('campaign.request-kyc');
+    Route::post('/kyc/{kyc}/approve',  [AdminKycController::class, 'approve'])->name('kyc.approve');
+    Route::post('/kyc/{kyc}/reject',   [AdminKycController::class, 'reject'])->name('kyc.reject');
+    Route::get('/kyc/{kyc}/document',  [AdminKycController::class, 'showDocument'])->name('kyc.document');
+
+});
