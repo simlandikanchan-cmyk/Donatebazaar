@@ -132,9 +132,12 @@
     </div>
     <div class="activity-list">
         @foreach($recentDonations as $donation)
+        @php
+            $initial = $donation->is_anonymous ? '?' : strtoupper(substr($donation->donor_name ?? 'D', 0, 1));
+        @endphp
         <div class="activity-item">
             <div class="activity-dot-col">
-                <div class="activity-dot d-green"></div>
+                <div class="activity-dot d-green"><span class="ad-letter">{{ $initial }}</span></div>
                 <div class="activity-line"></div>
             </div>
             <div class="activity-body">
