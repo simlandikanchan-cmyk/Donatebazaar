@@ -150,7 +150,7 @@
                     <div class="activity-amt">+₹{{ number_format($donation->total_amount) }}</div>
                 </div>
                 <div class="activity-sub">
-                    to <span>{{ $donation->campaign->title ?? 'a campaign' }}</span>
+                    to <span>{{ $donation->campaign?->title ?? 'a campaign' }}</span>
                     @if($donation->message)
                         · "{{ Str::limit($donation->message, 60) }}"
                     @endif
@@ -170,10 +170,11 @@
     } else {
         $checklist[] = ['label' => 'KYC Verified', 'sub' => 'Identity confirmed', 'url' => '#', 'done' => true];
     }
-    if ($countAll === 0) {
+    $campaignCount = $campaigns->count();
+    if ($campaignCount === 0) {
         $checklist[] = ['label' => 'Create Your First Campaign', 'sub' => 'Start fundraising', 'url' => route('campaign.create'), 'done' => false];
     } else {
-        $checklist[] = ['label' => 'Campaigns Created', 'sub' => $countAll.' campaign(s) live', 'url' => '#', 'done' => true];
+        $checklist[] = ['label' => 'Campaigns Created', 'sub' => $campaignCount.' campaign(s) live', 'url' => '#', 'done' => true];
     }
     $pendingItems = array_filter($checklist, fn($i) => !$i['done']);
 @endphp
