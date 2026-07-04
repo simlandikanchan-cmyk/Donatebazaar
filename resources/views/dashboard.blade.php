@@ -29,7 +29,7 @@
             <span class="wb-tag-dot"></span>
             Good {{ $greeting }}, Fundraiser
         </div>
-        <div class="wb-name">{{ auth()->user()->name }} 👋</div>
+        <div class="wb-name">{{ auth()->user()->name }} <span class="wave">👋</span></div>
         <div class="wb-sub">Here's what's happening with your campaigns today.</div>
         <div class="wb-badges">
             @if($countActive > 0)

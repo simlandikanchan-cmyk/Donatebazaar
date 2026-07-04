@@ -677,6 +677,8 @@ svg { display: block; flex-shrink: 0; }
 
 @keyframes fadeUp  { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
 @keyframes toastIn { from { opacity:0; transform:translateX(16px) scale(.96); } to { opacity:1; transform:none; } }
+.wave{display:inline-block;animation:wave 2.5s ease-in-out infinite;transform-origin:70% 70%;}
+@keyframes wave{0%,100%{transform:rotate(0deg)}10%{transform:rotate(14deg)}20%{transform:rotate(-8deg)}30%{transform:rotate(14deg)}40%{transform:rotate(-4deg)}50%{transform:rotate(10deg)}60%{transform:rotate(0deg)}}
 
 /* ══ RECENT ACTIVITY ══ */
 .activity-card {

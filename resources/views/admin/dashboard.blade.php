@@ -34,7 +34,7 @@
 <div class="hero">
   <div class="hero-left">
     <div class="hero-tag"><span class="hero-tag-dot"></span>{{ $greeting }}, Administrator</div>
-    <div class="hero-name">{{ auth()->user()->name ?? 'Admin' }} 👋</div>
+    <div class="hero-name">{{ auth()->user()->name ?? 'Admin' }} <span class="wave">👋</span></div>
     <div class="hero-sub">Here's your platform overview for today. Manage campaigns, job posts, and keep DonateBazaar running smoothly.</div>
     <div class="hero-badges">
       @if($cntPending > 0)

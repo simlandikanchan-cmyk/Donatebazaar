@@ -252,6 +252,8 @@ svg{display:block;flex-shrink:0;}
 .hero-tag{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:600;color:var(--a);text-transform:uppercase;letter-spacing:.14em;font-family:var(--mono);margin-bottom:10px;}
 .hero-tag-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s ease infinite;}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(5,196,138,.5)}50%{box-shadow:0 0 0 6px rgba(5,196,138,0)}}
+.wave{display:inline-block;animation:wave 2.5s ease-in-out infinite;transform-origin:70% 70%;}
+@keyframes wave{0%,100%{transform:rotate(0deg)}10%{transform:rotate(14deg)}20%{transform:rotate(-8deg)}30%{transform:rotate(14deg)}40%{transform:rotate(-4deg)}50%{transform:rotate(10deg)}60%{transform:rotate(0deg)}}
 .hero-name{font-family:var(--mono);font-size:28px;font-weight:800;color:var(--text);letter-spacing:-.03em;line-height:1.1;background:linear-gradient(135deg,var(--a),var(--a2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .hero-sub{font-size:13.5px;color:var(--text3);margin-top:6px;max-width:380px;line-height:1.6;}
 .hero-badges{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;}
