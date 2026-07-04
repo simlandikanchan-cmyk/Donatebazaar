@@ -116,6 +116,17 @@
   </div>
 </div>
 
+{{-- ══ DOUGHNUT CHART ══ --}}
+<div class="chart-card doughnut-card">
+  <div class="chart-hdr">
+    <div>
+      <div class="chart-ttl">Campaign Status Distribution</div>
+      <div class="chart-sub">Current state of all campaigns on the platform</div>
+    </div>
+  </div>
+  <div class="doughnut-wrap"><canvas id="doughnutChart"></canvas></div>
+</div>
+
 <div class="qnav">
   @php
     $navItems = [
@@ -359,6 +370,83 @@ function loadChart(){
   });
 }
 setTimeout(loadChart,100);
+
+/* ── Animated stat counters ── */
+function animateCounter(el, target) {
+  var duration = 900, start = 0, startTime = null;
+  function step(timestamp) {
+    if (!startTime) startTime = timestamp;
+    var progress = Math.min((timestamp - startTime) / duration, 1);
+    var current = Math.floor((1 - Math.pow(1 - progress, 3)) * target);
+    el.textContent = current.toLocaleString('en-IN');
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+document.querySelectorAll('.stat .stat-val').forEach(function (el) {
+  var text = el.textContent.replace(/[%₹,]/g, '').trim();
+  var num = parseInt(text, 10);
+  if (!isNaN(num) && num > 0) {
+    var suffix = el.textContent.includes('%') ? '%' : '';
+    el.textContent = '0' + suffix;
+    animateCounter(el, num);
+  }
+});
+
+/* ── Doughnut chart ── */
+var doughnutChart;
+(function(){
+  var canvas = document.getElementById('doughnutChart');
+  if (!canvas || typeof Chart === 'undefined') return;
+  if (doughnutChart) { doughnutChart.destroy(); doughnutChart = null; }
+  var isDark = html.getAttribute('data-theme') === 'dark';
+  var tipBg = isDark ? '#1d1f35' : '#fff';
+  var tipTx = isDark ? '#eef0ff' : '#0a0b14';
+  var gridCol = isDark ? 'rgba(255,255,255,.05)' : 'rgba(0,0,0,.04)';
+
+  doughnutChart = new Chart(canvas, {
+    type: 'doughnut',
+    data: {
+      labels: ['Active', 'Pending', 'Paused', 'Rejected', 'Expired'],
+      datasets: [{
+        data: [{{ $cntActive }}, {{ $cntPending }}, {{ $cntPaused }}, {{ $cntRejected }}, {{ $cntExpired + $cntCompleted }}],
+        backgroundColor: ['#05c48a', '#f59e0b', '#6e56f7', '#f04444', '#94a3b8'],
+        borderColor: isDark ? '#1c1d36' : '#fff',
+        borderWidth: 3,
+        hoverOffset: 10
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      cutout: '68%',
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            padding: 16,
+            usePointStyle: true,
+            pointStyle: 'circle',
+            color: isDark ? '#9ba3c8' : '#454863',
+            font: { family: "'DM Sans', sans-serif", size: 11, weight: '500' },
+            boxWidth: 8, boxHeight: 8
+          }
+        },
+        tooltip: {
+          backgroundColor: tipBg, titleColor: tipTx, bodyColor: tipTx,
+          borderColor: gridCol, borderWidth: 1, padding: 13, cornerRadius: 11,
+          callbacks: {
+            label: function(c) {
+              var total = c.dataset.data.reduce(function(a,b){ return a + b; }, 0);
+              var pct = total > 0 ? Math.round((c.parsed / total) * 100) : 0;
+              return ' ' + c.label + ': ' + c.parsed + ' (' + pct + '%)';
+            }
+          }
+        }
+      },
+      animation: { animateRotate: true, duration: 1200, easing: 'easeOutQuart' }
+    }
+  });
+})();
 
 /* ── Filter / sort / search ── */
 var cards=Array.from(document.querySelectorAll('#campaignGrid .c-card'));
