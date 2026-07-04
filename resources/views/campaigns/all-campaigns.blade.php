@@ -47,13 +47,10 @@ a    { text-decoration: none; color: inherit; }
 /* ── Typography ── */
 .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); font-family: var(--font-mono); display: inline-flex; align-items: center; gap: 8px; margin-bottom: 14px; }
 .eyebrow::before { content: ''; width: 20px; height: 2px; background: var(--accent); border-radius: 2px; flex-shrink: 0; }
-.section-title { font-family: var(--font-display); font-size: clamp(2rem,3.5vw,2.8rem); font-weight: 700; line-height: 1.15; color: var(--text); margin-bottom: 16px; }
-.section-title em { font-style: normal; color: var(--accent); }
-
 /* ── Reveal animations ── */
 .reveal { opacity: 0; transform: translateY(32px); transition: opacity .7s ease, transform .7s ease; }
 .reveal.visible { opacity: 1; transform: translateY(0); }
-.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}.d5{transition-delay:.5s}.d6{transition-delay:.6s}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
 
 
 /* ═══════════════════════════════════════════════════════════
@@ -84,12 +81,6 @@ a    { text-decoration: none; color: inherit; }
 .hero-search input::placeholder { color: rgba(255,255,255,.45); }
 .hero-search-btn { padding: 10px 22px; border-radius: 10px; background: linear-gradient(135deg,var(--accent),var(--accent2)); color: #fff; font-weight: 600; font-size: 13px; font-family: var(--font); border: none; cursor: pointer; transition: opacity var(--transition), transform var(--transition); white-space: nowrap; }
 .hero-search-btn:hover { opacity: .9; transform: translateY(-1px); }
-
-/* Trust strip */
-.hero-trust { display: flex; align-items: center; gap: 0; flex-wrap: wrap; row-gap: 10px; }
-.hero-trust-item { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; color: rgba(255,255,255,.65); padding-right: 22px; white-space: nowrap; }
-.hero-trust-item svg { width: 15px; height: 15px; color: var(--green); flex-shrink: 0; }
-.hero-trust-sep { width: 1px; height: 16px; background: rgba(255,255,255,.18); margin-right: 22px; flex-shrink: 0; }
 
 /* Stat bar at bottom of hero */
 .hero-stat-bar { background: rgba(5,5,18,.92); backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,.07); display: flex; }
@@ -398,9 +389,6 @@ a    { text-decoration: none; color: inherit; }
 .filter-card-clear { font-size: 11px; color: var(--accent); cursor: pointer; font-weight: 600; letter-spacing: 0; text-transform: none; font-family: var(--font); }
 .filter-card-clear:hover { text-decoration: underline; }
 
-.filter-range { width: 100%; accent-color: var(--accent); cursor: pointer; margin: 10px 0 6px; }
-.filter-range-labels { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--text3); font-family: var(--font-mono); }
-
 .filter-checkbox { display: flex; align-items: center; gap: 10px; padding: 8px 0; cursor: pointer; }
 .filter-checkbox input { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
 .filter-checkbox-label { font-size: 13.5px; color: var(--text2); transition: color var(--transition); flex: 1; }
@@ -427,7 +415,7 @@ a    { text-decoration: none; color: inherit; }
 .camp-card { background: var(--surface); border-radius: var(--radius-lg); border: 1.5px solid var(--border2); overflow: hidden; transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition); position: relative; display: flex; flex-direction: column; }
 .camp-card:hover { transform: translateY(-6px); box-shadow: 0 24px 60px rgba(99,102,241,.13); border-color: rgba(99,102,241,.28); }
 
-.camp-img { position: relative; height: 210px; overflow: hidden; flex-shrink: 0; }
+.camp-img { position: relative; height: 200px; overflow: hidden; flex-shrink: 0; }
 .camp-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .55s ease; }
 .camp-card:hover .camp-img img { transform: scale(1.06); }
 
@@ -436,32 +424,23 @@ a    { text-decoration: none; color: inherit; }
 .camp-verified-badge { background: #ecfdf5; color: #065f46; font-size: 11px; font-weight: 600; padding: 4px 12px; border-radius: 100px; border: 1px solid #a7f3d0; display: flex; align-items: center; gap: 5px; font-family: var(--font); }
 .camp-verified-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #10b981; }
 
-.camp-urgency { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(5,5,20,.85) 0%, transparent 100%); padding: 16px 14px 10px; display: flex; align-items: center; gap: 6px; }
-.camp-urgency-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--yellow); flex-shrink: 0; animation: pulse-live 2s ease infinite; }
-.camp-urgency-text { font-size: 11px; color: rgba(255,255,255,.85); font-family: var(--font-mono); font-weight: 600; }
-
-.camp-body { padding: 22px 22px 24px; display: flex; flex-direction: column; flex: 1; }
-.camp-title { font-weight: 600; font-size: 15.5px; color: var(--text); margin-bottom: 6px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; transition: color var(--transition); }
+.camp-body { padding: 20px 22px 22px; display: flex; flex-direction: column; flex: 1; }
+.camp-title { font-weight: 600; font-size: 16px; color: var(--text); margin-bottom: 6px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; transition: color var(--transition); }
 .camp-card:hover .camp-title { color: var(--accent); }
-.camp-excerpt { font-size: 13px; color: var(--text3); line-height: 1.7; margin-bottom: 16px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-weight: 300; flex: 1; }
+.camp-excerpt { font-size: 13px; color: var(--text3); line-height: 1.7; margin-bottom: 14px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-weight: 300; flex: 1; }
 
 .camp-progress-wrap { margin-bottom: 12px; }
-.camp-progress-track { height: 5px; background: var(--surface3); border-radius: 3px; overflow: hidden; margin-bottom: 8px; }
+.camp-progress-track { height: 6px; background: var(--surface3); border-radius: 3px; overflow: hidden; margin-bottom: 8px; }
 .camp-progress-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width .9s cubic-bezier(.4,0,.2,1); }
 .camp-meta-row { display: flex; justify-content: space-between; font-size: 12.5px; }
 .camp-raised { color: var(--text); font-weight: 700; font-family: var(--font-mono); }
 .camp-pct { color: var(--accent); font-weight: 700; font-family: var(--font-mono); }
 .camp-goal { color: var(--text3); font-size: 11.5px; }
 
-.camp-info-strip { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; padding: 10px 5px; background: var(--surface2); border-radius: var(--radius-sm); border: 1px solid var(--border); }
+.camp-info-strip { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; padding: 10px 16px; background: var(--surface2); border-radius: var(--radius-sm); border: 1px solid var(--border); }
 .camp-info-item { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text3); font-family: var(--font-mono); }
 .camp-info-item svg { width: 13px; height: 13px; color: var(--accent); flex-shrink: 0; }
 .camp-info-sep { width: 1px; height: 14px; background: var(--border2); }
-
-.camp-btn { display: flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg,var(--accent),var(--accent2)); color: #fff; padding: 13px; border-radius: var(--radius); font-weight: 600; font-size: 13.5px; transition: opacity var(--transition), transform var(--transition); box-shadow: 0 4px 14px rgba(99,102,241,.35); }
-.camp-btn svg { width: 14px; height: 14px; flex-shrink: 0; transition: transform var(--transition); }
-.camp-btn:hover { opacity: .9; transform: translateY(-2px); }
-.camp-btn:hover svg { transform: translateX(2px); }
 
 /* ── LIST CARD ── */
 .camp-grid.list-view .camp-card { flex-direction: row; border-radius: var(--radius); }
@@ -494,10 +473,6 @@ a    { text-decoration: none; color: inherit; }
 .spotlight-stat-lbl { font-size: 11px; color: rgba(255,255,255,.6); margin-top: 3px; font-family: var(--font-mono); }
 .spotlight-progress-track { height: 6px; background: rgba(255,255,255,.2); border-radius: 3px; overflow: hidden; margin-bottom: 8px; }
 .spotlight-progress-fill { height: 100%; border-radius: 3px; background: rgba(255,255,255,.8); }
-.spotlight-btn { display: inline-flex; align-items: center; gap: 8px; background: #fff; color: var(--accent); padding: 13px 28px; border-radius: var(--radius); font-weight: 700; font-size: 14px; width: fit-content; transition: all var(--transition); }
-.spotlight-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.2); }
-.spotlight-btn svg { width: 15px; height: 15px; transition: transform var(--transition); }
-.spotlight-btn:hover svg { transform: translateX(3px); }
 .spotlight-img { position: relative; overflow: hidden; min-height: 260px; }
 .spotlight-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
 .spotlight-card:hover .spotlight-img img { transform: scale(1.05); }
@@ -977,7 +952,7 @@ html:not(.js-enabled) .reveal { opacity: 1; transform: none; }
     @php
         $raised = $campaign->donations_sum_amount ?? $campaign->raised_amount ?? 0;
         $goal        = $campaign->goal_amount ?? 0;
-        $percentage  = $goal > 0 ? min(100, round(($raised / $goal) * 100)) : 0;
+        $percentage  = $goal > 0 ? round(($raised / $goal) * 100) : 0;
         $donors      = $campaign->donations->count() ?? 0;
         $daysLeft    = isset($campaign->end_date)
             ? max(0, now()->diffInDays($campaign->end_date, false))
@@ -1011,7 +986,7 @@ html:not(.js-enabled) .reveal { opacity: 1; transform: none; }
                                 @endif
                             </div>
                             <div class="spotlight-progress-track">
-                                <div class="spotlight-progress-fill" style="width:{{ $percentage }}%"></div>
+                                <div class="spotlight-progress-fill" style="width:0%" data-w="{{ $percentage }}%"></div>
                             </div>
                             <div style="font-size:12px;color:rgba(255,255,255,.6);font-family:var(--font-mono);margin-bottom:24px">
                                 {{ $percentage }}% of ₹{{ number_format($goal) }} goal
@@ -1036,20 +1011,14 @@ html:not(.js-enabled) .reveal { opacity: 1; transform: none; }
                                 <span class="camp-cat-badge">{{ $campaign->category->name ?? 'General' }}</span>
                                 <span class="camp-verified-badge">Verified</span>
                             </div>
-                            @if($daysLeft !== null && $daysLeft <= 7)
-                            <div class="camp-urgency">
-                                <span class="camp-urgency-dot"></span>
-                                <span class="camp-urgency-text">{{ $daysLeft === 0 ? 'Last day!' : $daysLeft . ' days left' }}</span>
                             </div>
-                            @endif
-                        </div>
                         <div class="camp-body">
                             <h3 class="camp-title">{{ $campaign->title }}</h3>
                             <p class="camp-excerpt">{{ Str::limit(strip_tags($campaign->description), 100) }}</p>
 
                             <div class="camp-progress-wrap">
                                 <div class="camp-progress-track">
-                                    <div class="camp-progress-fill" style="width:{{ $percentage }}%"></div>
+                                    <div class="camp-progress-fill" style="width:0%" data-w="{{ $percentage }}%"></div>
                                 </div>
                                 <div class="camp-meta-row">
                                     <span class="camp-raised">₹{{ number_format($raised) }}</span>
@@ -1069,12 +1038,7 @@ html:not(.js-enabled) .reveal { opacity: 1; transform: none; }
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                                     {{ $daysLeft > 0 ? $daysLeft.'d left' : 'Ends today' }}
                                 </div>
-                                <div class="camp-info-sep"></div>
                                 @endif
-                                <div class="camp-info-item">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                                    Verified
-                                </div>
                             </div>
 
                             <a href="{{ route('campaign.public', [$categorySlug, $campaign->slug]) }}" class="btn btn-accent btn-block">
@@ -1162,281 +1126,9 @@ html:not(.js-enabled) .reveal { opacity: 1; transform: none; }
 </button>
 
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-
-    /* ── Mark JS as enabled for no-JS fallback ── */
-    document.documentElement.classList.add('js-enabled');
-
-    /* ── SCROLL REVEAL ── */
-    var revealEls = document.querySelectorAll('.reveal');
-    var obs = new IntersectionObserver(function(entries){
-        entries.forEach(function(e){
-            if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
-        });
-    },{ threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
-    revealEls.forEach(function(el){ obs.observe(el); });
-
-    /* ── SCROLL TO TOP ── */
-    var sBtn = document.getElementById('scrollTopBtn');
-    window.addEventListener('scroll', function(){ sBtn.classList.toggle('visible', window.scrollY > 600); },{ passive: true });
-
-    /* ── PROGRESS FILL ANIMATION ── */
-    var fills = document.querySelectorAll('.camp-progress-fill, .spotlight-progress-fill');
-    var fObs = new IntersectionObserver(function(entries){
-        entries.forEach(function(e){
-            if(e.isIntersecting){ e.target.style.width = e.target.getAttribute('data-w') || e.target.style.width; }
-        });
-    },{ threshold: 0.3 });
-    fills.forEach(function(el){
-        el.setAttribute('data-w', el.style.width);
-        el.style.width = '0%';
-        setTimeout(function(){ fObs.observe(el); }, 100);
-    });
-
-    /* ── VIEW TOGGLE persistence ── */
-    var savedView = localStorage.getItem('campView') || 'grid';
-    applyView(savedView);
-
-    /* ── Close dropdowns on outside click ── */
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('.custom-select')) {
-            document.querySelectorAll('.cs-dropdown.open').forEach(function(d){ d.classList.remove('open'); });
-            document.querySelectorAll('.cs-trigger.open').forEach(function(t){ t.classList.remove('open'); });
-        }
-    });
-
-    /* ── Sync modal dropdowns to current URL params on load ── */
-    var params = new URLSearchParams(window.location.search);
-
-    var locVal = params.get('location') || 'all';
-    var locOption = document.querySelector('#locationDropdown .cs-option[data-value="' + locVal + '"]');
-    if (locOption) document.getElementById('locationLabel').textContent = locOption.textContent.trim();
-
-    var typeVal = params.get('campaign_type') || 'active';
-    var typeOption = document.querySelector('#typeDropdown .cs-option[data-value="' + typeVal + '"]');
-    if (typeOption) document.getElementById('typeLabel').textContent = typeOption.textContent.trim();
-
-    /* ── Update filter badge on load ── */
-    updateFilterBadge();
-    renderActiveFilterChips();
-});
-
-/* ══════════════════════
-   VIEW TOGGLE
-══════════════════════ */
-function setView(v){
-    localStorage.setItem('campView', v);
-    applyView(v);
-}
-function applyView(v){
-    var grid = document.getElementById('campGrid');
-    var gBtn = document.getElementById('gridBtn');
-    var lBtn = document.getElementById('listBtn');
-    if(!grid) return;
-    if(v === 'list'){
-        grid.classList.add('list-view');
-        if(lBtn) lBtn.classList.add('active');
-        if(gBtn) gBtn.classList.remove('active');
-    } else {
-        grid.classList.remove('list-view');
-        if(gBtn) gBtn.classList.add('active');
-        if(lBtn) lBtn.classList.remove('active');
-    }
-}
-
-/* ══════════════════════
-   FILTER MODAL
-══════════════════════ */
-function openFilterModal() {
-    document.getElementById('filterModal').classList.add('open');
-    document.getElementById('filterBackdrop').classList.add('open');
-    document.body.style.overflow = 'hidden';
-}
-function closeFilterModal() {
-    document.getElementById('filterModal').classList.remove('open');
-    document.getElementById('filterBackdrop').classList.remove('open');
-    document.body.style.overflow = '';
-}
-
-/* ── FIX: Custom dropdown toggle ── */
-function toggleDropdown(dropdownId, triggerId) {
-    var dropdown = document.getElementById(dropdownId);
-    var trigger  = document.getElementById(triggerId);
-    var isOpen   = dropdown.classList.contains('open');
-    /* Close all first */
-    document.querySelectorAll('.cs-dropdown.open').forEach(function(d){ d.classList.remove('open'); });
-    document.querySelectorAll('.cs-trigger.open').forEach(function(t){ t.classList.remove('open'); });
-    if (!isOpen) {
-        dropdown.classList.add('open');
-        trigger.classList.add('open');
-    }
-}
-
-/* ── FIX: Use data-value for reliable selected-state detection ── */
-function selectOption(dropdownId, triggerId, labelId, value, label, hiddenId) {
-    document.getElementById(labelId).textContent = label;
-    document.getElementById(hiddenId).value = value;
-    document.querySelectorAll('#' + dropdownId + ' .cs-option').forEach(function(o){
-        o.classList.toggle('selected', o.dataset.value === value);
-    });
-    document.getElementById(dropdownId).classList.remove('open');
-    document.getElementById(triggerId).classList.remove('open');
-}
-
-/* ── Chip selection (single-select within a group) ── */
-function selectChip(el, groupId, hiddenId, value) {
-    document.querySelectorAll('#' + groupId + ' .type-chip').forEach(function(c){ c.classList.remove('selected'); });
-    el.classList.add('selected');
-    document.getElementById(hiddenId).value = value;
-}
-
-/* ── Apply modal filters — build query string and navigate ── */
-function applyModalFilters() {
-    var params = new URLSearchParams(window.location.search);
-
-    var location = document.getElementById('filterLocation').value;
-    var campType = document.getElementById('filterCampaignType').value;
-    var funding  = document.getElementById('filterFunding').value;
-    var category = document.getElementById('filterCategory').value;
-
-    if (location && location !== 'all')  params.set('location', location);      else params.delete('location');
-    if (campType && campType !== 'all')  params.set('campaign_type', campType); else params.delete('campaign_type');
-    if (funding  && funding !== 'any')   params.set('funding', funding);        else params.delete('funding');
-    if (category)                        params.set('category', category);      else params.delete('category');
-
-    params.delete('page');
-    closeFilterModal();
-    window.location.href = window.location.pathname + '?' + params.toString();
-}
-
-/* ── Clear all modal filters ── */
-function clearAllFilters() {
-    /* Reset location dropdown */
-    document.getElementById('locationLabel').textContent = 'All Locations';
-    document.getElementById('filterLocation').value = 'all';
-    document.querySelectorAll('#locationDropdown .cs-option').forEach(function(o){
-        o.classList.toggle('selected', o.dataset.value === 'all');
-    });
-
-    /* Reset type dropdown */
-    document.getElementById('typeLabel').textContent = 'All Types';
-    document.getElementById('filterCampaignType').value = 'all';
-    document.querySelectorAll('#typeDropdown .cs-option').forEach(function(o){
-        o.classList.toggle('selected', o.dataset.value === 'all');
-    });
-
-    /* Reset funding chips */
-    document.querySelectorAll('#fundingChips .type-chip').forEach(function(c){
-        c.classList.toggle('selected', c.dataset.value === 'any');
-    });
-    document.getElementById('filterFunding').value = 'any';
-
-    /* Reset category chips */
-    document.querySelectorAll('#categoryChips .type-chip').forEach(function(c){
-        c.classList.toggle('selected', c.dataset.value === '');
-    });
-    document.getElementById('filterCategory').value = '';
-}
-
-/* ── Count active filters and update badge ── */
-function updateFilterBadge() {
-    var params = new URLSearchParams(window.location.search);
-    var count = 0;
-    ['location','campaign_type','funding','category'].forEach(function(k){
-        var v = params.get(k);
-        if (v && v !== 'all' && v !== 'any' && v !== '') count++;
-    });
-    var badge = document.getElementById('filterBadge');
-    if (count > 0) {
-        badge.textContent = count;
-        badge.style.display = 'inline-flex';
-    } else {
-        badge.style.display = 'none';
-    }
-}
-
-/* ── Render active filter chips above grid ── */
-function renderActiveFilterChips() {
-    var params = new URLSearchParams(window.location.search);
-    var wrap = document.getElementById('activeFilters');
-    if (!wrap) return;
-    wrap.innerHTML = '';
-
-    var labels = {
-        location:      { label: 'Location', values: { pan_india:'PAN India', bengaluru:'Bengaluru', chennai:'Chennai', hyderabad:'Hyderabad', kolkata:'Kolkata', mumbai:'Mumbai', new_delhi:'New Delhi', agartala:'Agartala', ahmedabad:'Ahmedabad', bhopal:'Bhopal', bhubaneswar:'Bhubaneswar', chandigarh:'Chandigarh', coimbatore:'Coimbatore', guwahati:'Guwahati', indore:'Indore', jaipur:'Jaipur', lucknow:'Lucknow', nagpur:'Nagpur', patna:'Patna', pune:'Pune', surat:'Surat', vadodara:'Vadodara', visakhapatnam:'Visakhapatnam' } },
-        campaign_type: { label: 'Type',     values: { active:'Active', urgent:'Urgent', newly_launched:'Newly Launched', closed:'Closed', most_raised:'Most Raised' } },
-        funding:       { label: 'Funding',  values: { lt25:'Under 25%', '25to75':'25–75%', gt75:'75%+', '100':'Fully Funded' } },
-    };
-
-    ['location','campaign_type','funding','category'].forEach(function(key){
-        var val = params.get(key);
-        if (!val || val === 'all' || val === 'any' || val === '') return;
-        var displayVal = (labels[key] && labels[key].values[val]) ? labels[key].values[val] : val;
-        var displayKey = labels[key] ? labels[key].label : key;
-        var chip = document.createElement('span');
-        chip.className = 'active-filter-chip';
-        chip.innerHTML = displayKey + ': <strong>' + displayVal + '</strong>' +
-            '<button onclick="removeFilter(\'' + key + '\')" aria-label="Remove ' + displayKey + ' filter">' +
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 18L18 6M6 6l12 12"/></svg></button>';
-        wrap.appendChild(chip);
-    });
-
-    /* Search chip */
-    var s = params.get('search');
-    if (s) {
-        var chip = document.createElement('span');
-        chip.className = 'active-filter-chip';
-        chip.innerHTML = 'Search: <strong>' + s + '</strong>' +
-            '<button onclick="removeFilter(\'search\')" aria-label="Remove search filter">' +
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 18L18 6M6 6l12 12"/></svg></button>';
-        wrap.appendChild(chip);
-    }
-}
-
-function removeFilter(key) {
-    var params = new URLSearchParams(window.location.search);
-    params.delete(key);
-    params.delete('page');
-    window.location.href = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
-}
-
-/* ── FIX: Sidebar filters now actually navigate ── */
-function applySidebarFilters() {
-    var params = new URLSearchParams(window.location.search);
-
-    /* Funding — radio-like: only the last checked wins; "any" clears it */
-    var checkedFunding = document.querySelector('input[name="funding"]:checked');
-    if (checkedFunding && checkedFunding.value !== 'any') {
-        params.set('funding', checkedFunding.value);
-    } else {
-        params.delete('funding');
-    }
-
-    /* Category — first checked wins */
-    var checkedCat = document.querySelector('input[name="cat_sidebar"]:checked');
-    if (checkedCat) {
-        params.set('category', checkedCat.value);
-    } else {
-        params.delete('category');
-    }
-
-    params.delete('page');
-    window.location.href = window.location.pathname + '?' + params.toString();
-}
-
-function clearFundingFilter() {
-    document.querySelectorAll('input[name="funding"]').forEach(function(c){
-        c.checked = c.value === 'any';
-    });
-    applySidebarFilters();
-}
-
-/* ── Close modal on Escape ── */
-document.addEventListener('keydown', function(e){
-    if (e.key === 'Escape') closeFilterModal();
-});
-</script>
+@push('scripts')
+    @vite(['resources/js/campaigns.js'])
+@endpush
 
 @endsection
 

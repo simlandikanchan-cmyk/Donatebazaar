@@ -995,8 +995,6 @@ svg:not([width]):not([height]) {
   position:              relative;
   z-index:               1;
 }
-@media (max-width: 768px) { .how-grid { grid-template-columns: 1fr; } }
-
 .how-card-wrap {
   position:    relative;
   padding-top: 22px;
@@ -1127,6 +1125,45 @@ svg:not([width]):not([height]) {
   transition:    background .2s;
 }
 .how-card-wrap:hover .how-tag { background: rgba(99, 102, 241, .18); }
+
+.how-cta {
+    text-align: center;
+    margin-top: 52px;
+    position: relative;
+    z-index: 1;
+}
+
+/* ── How It Works Responsive ── */
+
+@media (max-width: 1100px) {
+    .how-section { padding: 80px 0; }
+    .how-grid { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+    .how-card-wrap:last-child { grid-column: 1 / -1; max-width: 460px; margin: 0 auto; width: 100%; }
+}
+
+@media (max-width: 768px) {
+    .how-grid { grid-template-columns: 1fr; gap: 14px; }
+    .how-card-wrap:last-child { grid-column: auto; max-width: none; margin: 0; }
+    .how-card { padding: 28px 20px 30px; }
+    .how-watermark { font-size: 72px; }
+    .how-title { font-size: 16px; }
+    .how-desc { font-size: 12.5px; margin-bottom: 18px; }
+    .how-step-num { right: 16px; width: 34px; height: 34px; font-size: 11px; }
+    .how-icon { width: 48px; height: 48px; margin-bottom: 18px; }
+    .how-icon svg { width: 22px; height: 22px; }
+    .how-tag { font-size: 10px; padding: 3px 10px; }
+}
+
+@media (max-width: 480px) {
+    .how-section { padding: 56px 0; }
+    .how-card { padding: 24px 16px 26px; }
+    .how-cta { margin-top: 36px; }
+    .how-cta .btn { width: 100%; max-width: 300px; justify-content: center; }
+    .how-icon { width: 42px; height: 42px; }
+    .how-icon svg { width: 20px; height: 20px; }
+    .how-title { font-size: 15px; }
+    .how-desc { font-size: 12px; }
+}
 
 /* ═══════════════════════════════════════════════════════════
    8. TRUST PILLARS
@@ -1657,7 +1694,6 @@ svg:not([width]):not([height]) {
   .stats-inner   { padding: 0 12px; }
   .stat-tile     { padding: 40px 20px; }
   .stat-tile-num { font-size: 36px; }
-  .how-grid      { gap: 14px; }
   .faq-layout,
   .purpose-grid,
   .journey-grid  { gap: 32px; }
@@ -1675,6 +1711,5 @@ svg:not([width]):not([height]) {
   .team-section,
   .impact-section { padding: 72px 0; }
 
-  .how-section    { padding: 72px 0; }
   .section-header { margin-bottom: 40px; }
 }

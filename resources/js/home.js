@@ -428,13 +428,38 @@ function initImpactSection() {
 
 
 /* ═══════════════════════════════════════════════════════════
-   9. BOOTSTRAP — wire everything up after DOM is ready
+   9. SCROLL REVEAL — adds .visible to .reveal elements on scroll
+═══════════════════════════════════════════════════════════ */
+function initScrollReveal() {
+  const els = $$('.reveal, .reveal-left, .reveal-right, .reveal-scale');
+  if (!els.length) return;
+
+  if (prefersReducedMotion()) {
+    els.forEach(el => el.classList.add('visible'));
+    return;
+  }
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(({ isIntersecting, target }) => {
+      if (!isIntersecting) return;
+      target.classList.add('visible');
+      obs.unobserve(target);
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  els.forEach(el => obs.observe(el));
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   10. BOOTSTRAP — wire everything up after DOM is ready
 ═══════════════════════════════════════════════════════════ */
 function init() {
   initHeroSlider();
   initCampaigns();
   initInlineCounters();
   initTestimonialMarquee();
+  initScrollReveal();
   initImpactSection();
 }
 

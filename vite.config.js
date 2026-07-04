@@ -18,6 +18,7 @@ export default defineConfig({
                 'resources/js/home.js',
                 'resources/js/about.js',
                 'resources/js/contact.js',
+                'resources/js/campaigns.js',
 
                 // Admin
                 'resources/css/admin.css',

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     {{-- Tailwind + JS --}}
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/css/footer.css', 'resources/js/app.js'])
 
     {{-- Preconnects --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -50,10 +50,10 @@
     ========================== -->
 
     <!-- Floating Chat Button -->
-    <div class="fixed bottom-6 right-6 z-50">
+    <div class="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 z-50">
         <button
             id="chatToggle"
-            class="w-16 h-16 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg hover:scale-110 transition duration-300 flex items-center justify-center text-2xl">
+            class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg hover:scale-110 transition duration-300 flex items-center justify-center text-xl sm:text-2xl">
             💬
         </button>
     </div>
@@ -62,7 +62,7 @@
      
     <div
         id="chatWindow"
-        class="hidden fixed bottom-24 right-6 w-96 bg-white rounded-2xl shadow-2xl overflow-hidden z-50">
+        class="hidden fixed bottom-20 sm:bottom-24 right-4 sm:right-6 w-96 max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden z-50">
 
         <!-- Header -->
         <div class="bg-gradient-to-r from-indigo-500 to-purple-500 text-white p-4">

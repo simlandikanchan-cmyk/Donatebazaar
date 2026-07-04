@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
-@section('content')
-
+@push('styles')
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&family=DM+Mono:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
 
@@ -46,12 +45,6 @@
     --p-lt:   rgba(110,86,247,0.12);
     --p-mid:  rgba(110,86,247,0.28);
 }
-
-*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
-html { scroll-behavior:smooth; }
-body { font-family:var(--font); color:var(--text); background:var(--bg); -webkit-font-smoothing:antialiased; overflow-x:hidden; }
-img  { max-width:100%; display:block; }
-a    { text-decoration:none; color:inherit; }
 
 .container { max-width:1180px; margin:0 auto; padding:0 24px; }
 @media(max-width:480px){ .container { padding:0 16px; } }
@@ -582,6 +575,9 @@ a    { text-decoration:none; color:inherit; }
     .response-section { padding: 64px 0; }
 }
 </style>
+@endpush
+
+@section('content')
 
 
 {{-- ═══ ALERT BANNER ═══ --}}
