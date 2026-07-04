@@ -21,6 +21,7 @@ Route::middleware('auth')->group(function () {
         $recentDonations = collect();
         if ($campaignIds->isNotEmpty()) {
             $recentDonations = Donation::whereIn('campaign_id', $campaignIds)
+                ->whereNotNull('paid_at')
                 ->latest()
                 ->take(6)
                 ->get();
