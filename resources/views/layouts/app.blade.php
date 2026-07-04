@@ -80,18 +80,16 @@
                     Online
                 </p>
             </div>
+            <button id="chatClear" class="text-white/50 hover:text-white transition p-1 mr-1" aria-label="Clear chat">
+                <i class="fa-solid fa-eraser text-sm"></i>
+            </button>
             <button id="chatClose" class="text-white/70 hover:text-white transition p-1" aria-label="Close chat">
                 <i class="fa-solid fa-xmark text-xl"></i>
             </button>
         </div>
 
         <!-- Messages -->
-        <div id="chatMessages" class="h-80 overflow-y-auto p-4 bg-gray-50/80">
-            <div class="chat-msg-bot">
-                <div class="avatar"><i class="fa-solid fa-robot"></i></div>
-                <div class="bubble">Hi! I'm the DonateBazaar AI assistant. How can I help you today?</div>
-            </div>
-        </div>
+        <div id="chatMessages" class="h-80 overflow-y-auto p-4 bg-gray-50/80"></div>
 
         <!-- Scroll to bottom -->
         <button id="scrollBottom" class="chat-scroll-bottom" aria-label="Scroll to bottom">
