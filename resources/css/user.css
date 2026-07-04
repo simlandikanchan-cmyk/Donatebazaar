@@ -455,7 +455,9 @@ svg { display: block; flex-shrink: 0; }
 .chart-legend { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text3); font-family: var(--mono); white-space: nowrap; }
 .chart-legend-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
 .chart-wrap { position: relative; height: 180px; }
-.bar-chart-card .chart-wrap { height: 220px; }
+.chart-wrap canvas { max-width: 100%; display: block; }
+.bar-chart-card { overflow: hidden; margin-bottom: 22px; }
+.bar-chart-card .chart-wrap { height: 260px; }
 
 .qs-panel {
     background: var(--surface); border: 1px solid var(--border);
