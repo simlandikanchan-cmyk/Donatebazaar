@@ -24,27 +24,15 @@ If you don't know something specific about a user's account or a specific campai
 say you don't have access to that yet and suggest contacting support.
 PROMPT;
     }
-
     public function chat(Request $request)
     {
-
-        //  \Log::info('Chatbot hit!', ['message' => $request->input('message')]);
-
-        \Log::info('Chatbot hit!', ['message' => $request->input('message')]);
-    \Log::info('Key length: ' . strlen(config('services.anthropic.key')));
-    \Log::info('Key starts with: ' . substr(config('services.anthropic.key'), 0, 10));
-
-
         $request->validate([
             'message' => 'required|string|max:1000',
         ]);
-
         $userMessage = $request->input('message');
-
         // conversation history — session e রাখা, per-user context এর জন্য
         $history = session('chat_history', []);
         $history[] = ['role' => 'user', 'content' => $userMessage];
-
         return new StreamedResponse(function () use ($history) {
             $response = Http::withHeaders([
                 'x-api-key' => config('services.anthropic.key'),
@@ -58,13 +46,6 @@ PROMPT;
                   'messages' => $history,
                   'stream' => true,
               ]);
-             
-            
-
-              \Log::info('Anthropic HTTP status: ' . $response->status()); // 
-
-
-
 
             $fullReply = '';
             $body = $response->toPsrResponse()->getBody();
