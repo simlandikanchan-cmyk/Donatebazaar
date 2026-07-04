@@ -121,6 +121,91 @@
     </div>
 </div>
 
+{{-- ══ RECENT DONOR ACTIVITY ══ --}}
+@if($recentDonations->isNotEmpty())
+<div class="activity-card">
+    <div class="activity-hdr">
+        <div class="activity-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+            Recent Donor Activity
+        </div>
+    </div>
+    <div class="activity-list">
+        @foreach($recentDonations as $donation)
+        <div class="activity-item">
+            <div class="activity-dot-col">
+                <div class="activity-dot d-green"></div>
+                <div class="activity-line"></div>
+            </div>
+            <div class="activity-body">
+                <div class="activity-body-top">
+                    <div class="activity-lbl">
+                        @if($donation->is_anonymous)
+                            <span>Someone</span>
+                        @else
+                            {{ $donation->donor_name ?? 'A donor' }}
+                        @endif
+                        donated
+                    </div>
+                    <div class="activity-amt">+₹{{ number_format($donation->total_amount) }}</div>
+                </div>
+                <div class="activity-sub">
+                    to <span>{{ $donation->campaign->title ?? 'a campaign' }}</span>
+                    @if($donation->message)
+                        · "{{ Str::limit($donation->message, 60) }}"
+                    @endif
+                </div>
+            </div>
+        </div>
+        @endforeach
+    </div>
+</div>
+@endif
+
+{{-- ══ ONBOARDING CHECKLIST (new users) ══ --}}
+@php
+    $checklist = [];
+    if (!$kyc || $kyc->status !== 'approved') {
+        $checklist[] = ['label' => 'Complete KYC Verification', 'sub' => 'Submit identity documents', 'url' => url('/user/kyc'), 'done' => false];
+    } else {
+        $checklist[] = ['label' => 'KYC Verified', 'sub' => 'Identity confirmed', 'url' => '#', 'done' => true];
+    }
+    if ($countAll === 0) {
+        $checklist[] = ['label' => 'Create Your First Campaign', 'sub' => 'Start fundraising', 'url' => route('campaign.create'), 'done' => false];
+    } else {
+        $checklist[] = ['label' => 'Campaigns Created', 'sub' => $countAll.' campaign(s) live', 'url' => '#', 'done' => true];
+    }
+    $pendingItems = array_filter($checklist, fn($i) => !$i['done']);
+@endphp
+@if(!empty($pendingItems))
+<div class="checklist-card">
+    <div class="checklist-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+        Getting Started
+    </div>
+    <div class="checklist-grid">
+        @foreach($checklist as $item)
+        <div class="checklist-item {{ $item['done'] ? 'done' : '' }}">
+            <div class="checklist-ico {{ $item['done'] ? 'done' : 'pending' }}">
+                @if($item['done'])
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                @else
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+                @endif
+            </div>
+            <div class="checklist-body">
+                <div class="checklist-lbl">{{ $item['label'] }}</div>
+                <div class="checklist-sub">{{ $item['sub'] }}</div>
+            </div>
+            @if(!$item['done'])
+            <a href="{{ $item['url'] }}" class="checklist-action">Go →</a>
+            @endif
+        </div>
+        @endforeach
+    </div>
+</div>
+@endif
+
 {{-- ══ ANALYTICS ROW ══ --}}
 <div class="analytics-row">
     <div class="chart-card">
@@ -477,6 +562,30 @@ document.addEventListener('DOMContentLoaded', function(){
 'use strict';
 
 var html = document.documentElement;
+
+/* ── Animated stat counters ── */
+function animateCounter(el, target, suffix) {
+    var duration = 900, start = 0, startTime = null;
+    suffix = suffix || '';
+    function step(timestamp) {
+        if (!startTime) startTime = timestamp;
+        var progress = Math.min((timestamp - startTime) / duration, 1);
+        var eased = 1 - Math.pow(1 - progress, 3);
+        var current = Math.floor(eased * target);
+        el.textContent = current.toLocaleString('en-IN') + suffix;
+        if (progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+}
+document.querySelectorAll('.stat-val').forEach(function (el) {
+    var raw = el.textContent.replace(/[₹,]/g, '').trim();
+    var num = parseInt(raw, 10);
+    if (!isNaN(num) && num > 0) {
+        var suffix = el.textContent.includes('%') ? '%' : '';
+        el.textContent = '0' + suffix;
+        animateCounter(el, num, suffix);
+    }
+});
 
 /* ── Animate overall funding bar ── */
 setTimeout(function(){
