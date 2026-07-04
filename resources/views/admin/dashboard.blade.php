@@ -395,7 +395,7 @@ document.querySelectorAll('.stat .stat-val').forEach(function (el) {
 
 /* ── Doughnut chart ── */
 var doughnutChart;
-(function(){
+function loadDoughnut(){
   var canvas = document.getElementById('doughnutChart');
   if (!canvas || typeof Chart === 'undefined') return;
   if (doughnutChart) { doughnutChart.destroy(); doughnutChart = null; }
@@ -446,7 +446,8 @@ var doughnutChart;
       animation: { animateRotate: true, duration: 1200, easing: 'easeOutQuart' }
     }
   });
-})();
+}
+setTimeout(loadDoughnut, 200);
 
 /* ── Filter / sort / search ── */
 var cards=Array.from(document.querySelectorAll('#campaignGrid .c-card'));
