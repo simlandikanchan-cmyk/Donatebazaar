@@ -256,6 +256,19 @@
     </div>
 </div>
 
+{{-- ══ CAMPAIGN COMPARISON BAR CHART ══ --}}
+@if($campaigns->count() > 1)
+<div class="chart-card bar-chart-card">
+    <div class="chart-card-hdr">
+        <div>
+            <div class="chart-title">Campaign Comparison</div>
+            <div class="chart-sub">Raised vs goal per campaign</div>
+        </div>
+    </div>
+    <div class="chart-wrap"><canvas id="campChart"></canvas></div>
+</div>
+@endif
+
 {{-- ══ QUICK NAV ══ --}}
 <div class="qnav">
     @php
@@ -749,6 +762,65 @@ window.renderChart = function(){
     });
 }
 renderChart();
+
+/* ── Campaign comparison bar chart ── */
+var campChart;
+(function(){
+    var ctx = document.getElementById('campChart');
+    if (!ctx) return;
+    if (campChart) campChart.destroy();
+
+    var isDark    = html.getAttribute('data-theme') === 'dark';
+    var gridColor = isDark ? 'rgba(255,255,255,.05)' : 'rgba(0,0,0,.04)';
+    var lblColor  = isDark ? 'rgba(255,255,255,.35)' : 'rgba(0,0,0,.35)';
+    var tipBg     = isDark ? '#1e2033' : '#fff';
+    var tipTx     = isDark ? '#eef0ff' : '#111';
+
+    var campaigns = @json($campaigns->map(fn($c) => ['title' => Str::limit($c->title, 22), 'raised' => (float)$c->raised_amount, 'goal' => (float)$c->goal_amount]));
+
+    campChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: campaigns.map(function(c){ return c.title; }),
+            datasets: [
+                {
+                    label: 'Raised (₹)',
+                    data: campaigns.map(function(c){ return c.raised; }),
+                    backgroundColor: '#6366f1',
+                    borderRadius: 4,
+                    barPercentage: .65,
+                },
+                {
+                    label: 'Goal (₹)',
+                    data: campaigns.map(function(c){ return c.goal; }),
+                    backgroundColor: isDark ? 'rgba(99,102,241,.2)' : 'rgba(99,102,241,.10)',
+                    borderRadius: 4,
+                    barPercentage: .65,
+                }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            interaction: { intersect: false, mode: 'index' },
+            plugins: {
+                legend: {
+                    position: 'top',
+                    align: 'end',
+                    labels: { boxWidth: 10, boxHeight: 10, borderRadius: 2, usePointStyle: true, padding: 16, color: lblColor, font: { family: "'DM Sans', sans-serif", size: 11 } }
+                },
+                tooltip: {
+                    backgroundColor: tipBg, titleColor: tipTx, bodyColor: tipTx,
+                    borderColor: gridColor, borderWidth: 1, padding: 12, cornerRadius: 10,
+                    callbacks: { label: function(c){ return c.dataset.label + ': ₹' + Number(c.parsed.y).toLocaleString('en-IN'); } }
+                }
+            },
+            scales: {
+                x: { grid:{ display:false }, ticks:{ color: lblColor, font:{ size:10 } } },
+                y: { grid:{ color:gridColor }, border:{ dash:[3,3] }, ticks:{ callback: function(v){ return '₹'+Number(v).toLocaleString('en-IN'); } } }
+            }
+        }
+    });
+})();
 
 });
 </script>
