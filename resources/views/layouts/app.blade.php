@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <title>@yield('title', 'FundRaise')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     {{-- Tailwind + JS --}}
-    @vite(['resources/css/app.css', 'resources/css/footer.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/css/footer.css', 'resources/js/app.js', 'resources/css/chatbot.css', 'resources/js/chatbot.js'])
 
     {{-- Preconnects --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -51,49 +52,68 @@
 
     <!-- Floating Chat Button -->
     <div class="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 z-50">
-        <button
-            id="chatToggle"
-            class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg hover:scale-110 transition duration-300 flex items-center justify-center text-xl sm:text-2xl">
-            💬
-        </button>
+        <div class="relative">
+            <button
+                id="chatToggle"
+                class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg hover:scale-110 transition duration-300 flex items-center justify-center text-xl sm:text-2xl chat-toggle-pulse"
+                aria-label="Open chat">
+                <i class="fa-solid fa-comment-dots"></i>
+            </button>
+            <span id="chatBadge" class="chat-badge">0</span>
+        </div>
     </div>
 
     <!-- Chat Window -->
-     
     <div
         id="chatWindow"
-        class="hidden fixed bottom-20 sm:bottom-24 right-4 sm:right-6 w-96 max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden z-50">
+        class="fixed bottom-20 sm:bottom-24 right-4 sm:right-6 w-96 max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden z-50">
 
         <!-- Header -->
-        <div class="bg-gradient-to-r from-indigo-500 to-purple-500 text-white p-4">
-            <h2 class="font-bold text-lg">DonateBazaar AI Assistant </h2>
-            <p class="text-sm opacity-80">
-                Ask about donations, campaigns, fundraising
-            </p>
+        <div class="bg-gradient-to-r from-indigo-500 to-purple-500 text-white p-4 flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-robot text-lg"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+                <h2 class="font-bold text-sm leading-tight">DonateBazaar AI</h2>
+                <p class="text-[11px] opacity-80 flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-green-400 inline-block"></span>
+                    Online
+                </p>
+            </div>
+            <button id="chatClose" class="text-white/70 hover:text-white transition p-1" aria-label="Close chat">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
         </div>
 
         <!-- Messages -->
-        <div
-            id="chatMessages"
-            class="h-80 overflow-y-auto p-4 space-y-3 bg-gray-50">
-
-            <div class="bg-gray-200 text-gray-800 p-3 rounded-lg w-fit max-w-xs">
-                Hi 👋 How can I help you today?
+        <div id="chatMessages" class="h-80 overflow-y-auto p-4 bg-gray-50/80">
+            <div class="chat-msg-bot">
+                <div class="avatar"><i class="fa-solid fa-robot"></i></div>
+                <div class="bubble">Hi! I'm the DonateBazaar AI assistant. How can I help you today?</div>
             </div>
         </div>
 
-        <!-- Input -->
-        <div class="border-t p-3 flex">
-            <input
-                type="text"
-                id="chatInput"
-                placeholder="Type your message..."
-                class="flex-1 border rounded-lg px-3 py-2 focus:outline-none">
+        <!-- Scroll to bottom -->
+        <button id="scrollBottom" class="chat-scroll-bottom" aria-label="Scroll to bottom">
+            <i class="fa-solid fa-chevron-down"></i>
+        </button>
 
+        <!-- Suggestions -->
+        <div id="chatSuggestions" class="px-4 pb-2 pt-0 bg-gray-50/80 border-t border-gray-100 flex flex-wrap gap-1.5"></div>
+
+        <!-- Input -->
+        <div class="border-t border-gray-200 p-3 flex items-end gap-2 bg-white">
+            <textarea
+                id="chatInput"
+                rows="1"
+                placeholder="Type a message..."
+                class="flex-1 border border-gray-300 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-indigo-400 transition"
+                style="scrollbar-width: thin"></textarea>
             <button
                 id="sendMessage"
-                class="ml-2 bg-indigo-500 text-white px-4 rounded-lg hover:bg-indigo-600">
-                Send
+                class="w-10 h-10 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white flex items-center justify-center hover:scale-105 transition disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+                aria-label="Send message">
+                <i class="fa-solid fa-paper-plane text-sm"></i>
             </button>
         </div>
     </div>
@@ -111,95 +131,9 @@
 
     <script>
         document.documentElement.classList.add('js-enabled');
-        // AOS Init
         AOS.init({
             once: true,
             duration: 1000
-        });
-
-        document.addEventListener("DOMContentLoaded", function () {
-
-            const chatToggle = document.getElementById("chatToggle");
-            const chatWindow = document.getElementById("chatWindow");
-            const sendBtn = document.getElementById("sendMessage");
-            const chatInput = document.getElementById("chatInput");
-            const chatMessages = document.getElementById("chatMessages");
-
-            // Open/Close chatbot
-            chatToggle.addEventListener("click", () => {
-                chatWindow.classList.toggle("hidden");
-            });
-
-            // Send button click
-            sendBtn.addEventListener("click", sendMessage);
-
-            // Enter key support
-            chatInput.addEventListener("keypress", function(e){
-                if(e.key === "Enter"){
-                    sendMessage();
-                }
-            });
-
-            async function sendMessage() {
-                let message = chatInput.value.trim();
-
-                if(message === "") return;
-
-                // User message
-                chatMessages.innerHTML += `
-                    <div class="flex justify-end">
-                        <div class="bg-indigo-500 text-white p-3 rounded-lg max-w-xs">
-                            ${message}
-                        </div>
-                    </div>
-                `;
-
-                chatInput.value = "";
-
-                try {
-            let response = await fetch('/chatbot', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-        'Accept': 'application/json'
-    },
-    body: JSON.stringify({
-        message: message
-    })
-});
-
-console.log(response.status);
-
-let data = await response.json();
-console.log(data);
-
-                    // Bot response
-                    chatMessages.innerHTML += `
-                        <div class="flex justify-start">
-                            <div class="bg-gray-200 text-gray-800 p-3 rounded-lg max-w-xs">
-                                ${data.reply}
-                            </div>
-                        </div>
-                    `;
-
-                } catch(error) {
-                    // console.log(error);
-                    console.log("Error:", error);
-                    console.log(await response.text());
-
-                    chatMessages.innerHTML += `
-                        <div class="flex justify-start">
-                            <div class="bg-red-100 text-red-600 p-3 rounded-lg max-w-xs">
-                                Something went wrong ❌
-                            </div>
-                        </div>
-                    `;
-                }
-
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
-
         });
     </script>
 

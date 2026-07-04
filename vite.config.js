@@ -27,6 +27,10 @@ export default defineConfig({
                 // User Portal
                 'resources/css/user.css',
                 'resources/js/user.js',
+
+                // Chatbot
+                'resources/css/chatbot.css',
+                'resources/js/chatbot.js',
             ],
             
             refresh: true,
