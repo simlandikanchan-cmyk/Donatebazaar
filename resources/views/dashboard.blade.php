@@ -258,6 +258,7 @@
 
 {{-- ══ CAMPAIGN COMPARISON BAR CHART ══ --}}
 @if($campaigns->count() > 1)
+@php $campChartData = $campaigns->map(fn($c) => ['title' => Str::limit($c->title, 22), 'raised' => (float)$c->raised_amount, 'goal' => (float)$c->goal_amount])->values(); @endphp
 <div class="chart-card bar-chart-card">
     <div class="chart-card-hdr">
         <div>
@@ -776,7 +777,7 @@ var campChart;
     var tipBg     = isDark ? '#1e2033' : '#fff';
     var tipTx     = isDark ? '#eef0ff' : '#111';
 
-    var campaigns = @json($campaigns->map(fn($c) => ['title' => Str::limit($c->title, 22), 'raised' => (float)$c->raised_amount, 'goal' => (float)$c->goal_amount]));
+    var campaigns = @json($campChartData);
 
     campChart = new Chart(ctx, {
         type: 'bar',
