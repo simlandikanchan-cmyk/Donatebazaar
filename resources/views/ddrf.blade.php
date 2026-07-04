@@ -62,19 +62,6 @@ a    { text-decoration:none; color:inherit; }
 .section-title { font-family:var(--font-display); font-size:clamp(1.9rem,3.2vw,2.6rem); font-weight:600; line-height:1.15; color:var(--text); margin-bottom:14px; }
 .section-title em { font-style:normal; color:var(--p1); }
 
-/* ── Buttons ── */
-.btn { display:inline-flex; align-items:center; gap:8px; padding:13px 28px; border-radius:var(--radius); font-weight:600; font-size:14px; font-family:var(--font); transition:all var(--transition); border:none; cursor:pointer; white-space:nowrap; }
-.btn svg { width:16px; height:16px; flex-shrink:0; transition:transform var(--transition); }
-.btn:hover svg { transform:translateX(3px); }
-.btn-accent  { background:linear-gradient(135deg,var(--p1),var(--p2)); color:#fff; box-shadow:0 6px 24px rgba(110,86,247,.40); }
-.btn-accent:hover  { transform:translateY(-2px); box-shadow:0 12px 32px rgba(110,86,247,.55); }
-.btn-purple  { background:linear-gradient(135deg,var(--p1),var(--p2)); color:#fff; box-shadow:0 6px 24px rgba(110,86,247,.40); }
-.btn-purple:hover  { transform:translateY(-2px); box-shadow:0 12px 32px rgba(110,86,247,.55); }
-.btn-white   { background:#fff; color:#1e1b4b; box-shadow:0 4px 20px rgba(0,0,0,.12); }
-.btn-white:hover   { transform:translateY(-2px); box-shadow:0 12px 32px rgba(0,0,0,.18); }
-.btn-outline { background:transparent; color:var(--text2); border:1.5px solid var(--border2); }
-.btn-outline:hover { border-color:var(--p1); color:var(--p1); background:var(--accent-glow); }
-
 /* ── Reveal ── */
 .reveal      { opacity:0; transform:translateY(32px);  transition:opacity .7s ease, transform .7s ease; }
 .reveal-left { opacity:0; transform:translateX(-32px); transition:opacity .7s ease, transform .7s ease; }
@@ -651,7 +638,7 @@ a    { text-decoration:none; color:inherit; }
                 </span>
             </div>
             <div class="ddrf-hero-btns">
-                <a href="{{ route('all.campaigns') }}?type=disaster" class="btn btn-purple" style="font-size:15px;padding:14px 32px">
+                <a href="{{ route('all.campaigns') }}?type=disaster" class="btn btn-accent" style="font-size:15px;padding:14px 32px">
                     Donate to Relief
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
                 </a>
@@ -752,7 +739,7 @@ a    { text-decoration:none; color:inherit; }
                 <div class="no-campaigns-icon">🆘</div>
                 <h3>No Active Campaigns Right Now</h3>
                 <p>There are currently no active disaster relief campaigns. Check back soon — new campaigns launch within hours of a disaster.</p>
-                <a href="{{ route('campaign.create') }}" class="btn btn-purple" style="font-size:14px;padding:12px 26px">
+                <a href="{{ route('campaign.create') }}" class="btn btn-accent" style="font-size:14px;padding:12px 26px">
                     Start a Relief Campaign
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 4v16m8-8H4"/></svg>
                 </a>
@@ -838,7 +825,7 @@ a    { text-decoration:none; color:inherit; }
                     <div class="hiw-step"><div class="hiw-step-num">3</div><div class="hiw-step-body"><div class="hiw-step-title">Track &amp; Get Your 80G</div><div class="hiw-step-desc">Receive real-time field updates, photo/video proof of delivery, and your 80G tax certificate — all from your donor dashboard.</div></div></div>
                 </div>
                 <div class="hiw-col-cta">
-                    <a href="{{ route('all.campaigns') }}?type=disaster" class="btn btn-purple" style="font-size:14px;padding:12px 26px">
+                    <a href="{{ route('all.campaigns') }}?type=disaster" class="btn btn-accent" style="font-size:14px;padding:12px 26px">
                         Donate Now
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                     </a>
@@ -998,7 +985,7 @@ a    { text-decoration:none; color:inherit; }
         <h2 class="ddrf-cta-title reveal d1">Together, We <em>Rebuild</em></h2>
         <p class="ddrf-cta-sub reveal d2">Donate, volunteer, partner with us for CSR — every action, big or small, brings us closer to a world where no community suffers alone.</p>
         <div class="ddrf-cta-btns reveal d3">
-            <a href="{{ route('all.campaigns') }}?type=disaster" class="btn btn-purple" style="font-size:15px;padding:15px 34px">
+            <a href="{{ route('all.campaigns') }}?type=disaster" class="btn btn-accent" style="font-size:15px;padding:15px 34px">
                 Donate to Relief
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
             </a>

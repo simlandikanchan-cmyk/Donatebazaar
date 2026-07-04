@@ -49,17 +49,6 @@ a    { text-decoration:none; color:inherit; }
 .section-title { font-family:var(--font-display); font-size:clamp(1.9rem,3.2vw,2.6rem); font-weight:600; line-height:1.15; color:var(--text); margin-bottom:14px; }
 .section-title em { font-style:normal; color:var(--accent); }
 
-/* ── Buttons ── */
-.btn { display:inline-flex; align-items:center; gap:8px; padding:13px 28px; border-radius:var(--radius); font-weight:600; font-size:14px; font-family:var(--font); transition:all var(--transition); border:none; cursor:pointer; white-space:nowrap; }
-.btn svg { width:16px; height:16px; flex-shrink:0; transition:transform var(--transition); }
-.btn:hover svg { transform:translateX(3px); }
-.btn-accent { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; box-shadow:0 6px 24px rgba(99,102,241,.4); }
-.btn-accent:hover { transform:translateY(-2px); box-shadow:0 12px 32px rgba(99,102,241,.5); }
-.btn-white  { background:#fff; color:#1e1b4b; box-shadow:0 4px 20px rgba(0,0,0,.12); }
-.btn-white:hover  { transform:translateY(-2px); box-shadow:0 12px 32px rgba(0,0,0,.18); }
-.btn-outline { background:transparent; color:var(--text2); border:1.5px solid var(--border2); }
-.btn-outline:hover { border-color:var(--accent); color:var(--accent); background:var(--accent-glow); }
-
 /* ── Reveal ── */
 .reveal      { opacity:0; transform:translateY(32px);   transition:opacity .7s ease, transform .7s ease; }
 .reveal-left { opacity:0; transform:translateX(-32px);  transition:opacity .7s ease, transform .7s ease; }
@@ -550,11 +539,11 @@ html:not(.js-enabled) .reveal, html:not(.js-enabled) .reveal-left, html:not(.js-
                 Learn how we keep donors and fundraisers safe, transparent, and accountable.
             </p>
             <div class="hiw-hero-btns">
-                <a href="{{ route('all.campaigns') }}" class="btn btn-accent" style="font-size:15px;padding:14px 32px">
+                <a href="{{ route('all.campaigns') }}" class="btn btn-accent btn-lg">
                     Browse Campaigns
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </a>
-                <a href="{{ route('campaign.create') }}" class="btn btn-white" style="font-size:15px;padding:14px 32px">
+                <a href="{{ route('campaign.create') }}" class="btn btn-white btn-lg">
                     Start Fundraiser
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 4v16m8-8H4"/></svg>
                 </a>
@@ -959,11 +948,11 @@ html:not(.js-enabled) .reveal, html:not(.js-enabled) .reveal-left, html:not(.js-
         <h2 class="cta-title reveal d1">Start Your Own <em>Campaign</em></h2>
         <p class="cta-sub reveal d2">Medical emergency, education, disaster relief — whatever the cause, we verify and support your fundraiser from day one. Free to start, 24×7 support.</p>
         <div class="cta-btns reveal d3">
-            <a href="{{ route('campaign.create') }}" class="btn btn-accent" style="font-size:15px;padding:15px 34px">
+            <a href="{{ route('campaign.create') }}" class="btn btn-accent btn-lg">
                 Start Fundraiser
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 4v16m8-8H4"/></svg>
             </a>
-            <a href="{{ route('all.campaigns') }}" class="btn btn-white" style="font-size:15px;padding:15px 34px">
+            <a href="{{ route('all.campaigns') }}" class="btn btn-white btn-lg">
                 Browse Campaigns
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </a>

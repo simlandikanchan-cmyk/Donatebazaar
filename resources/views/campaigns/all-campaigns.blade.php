@@ -50,17 +50,6 @@ a    { text-decoration: none; color: inherit; }
 .section-title { font-family: var(--font-display); font-size: clamp(2rem,3.5vw,2.8rem); font-weight: 700; line-height: 1.15; color: var(--text); margin-bottom: 16px; }
 .section-title em { font-style: normal; color: var(--accent); }
 
-/* ── Buttons ── */
-.btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 28px; border-radius: var(--radius); font-weight: 600; font-size: 14px; font-family: var(--font); transition: all var(--transition); border: none; cursor: pointer; white-space: nowrap; }
-.btn svg { width: 16px; height: 16px; flex-shrink: 0; transition: transform var(--transition); }
-.btn:hover svg { transform: translateX(2px); }
-.btn-accent { background: linear-gradient(135deg,var(--accent),var(--accent2)); color: #fff; box-shadow: 0 6px 24px rgba(99,102,241,0.45); }
-.btn-accent:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(99,102,241,0.55); opacity: .94; }
-.btn-white { background: #fff; color: #1e1b4b; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
-.btn-white:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,0,0,0.2); }
-.btn-outline-dark { background: transparent; color: var(--text2); border: 1.5px solid var(--border2); }
-.btn-outline-dark:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
-
 /* ── Reveal animations ── */
 .reveal { opacity: 0; transform: translateY(32px); transition: opacity .7s ease, transform .7s ease; }
 .reveal.visible { opacity: 1; transform: translateY(0); }
@@ -1027,7 +1016,7 @@ html:not(.js-enabled) .reveal { opacity: 1; transform: none; }
                             <div style="font-size:12px;color:rgba(255,255,255,.6);font-family:var(--font-mono);margin-bottom:24px">
                                 {{ $percentage }}% of ₹{{ number_format($goal) }} goal
                             </div>
-                            <a href="{{ route('campaign.public', [$categorySlug, $campaign->slug]) }}" class="spotlight-btn">
+                            <a href="{{ route('campaign.public', [$categorySlug, $campaign->slug]) }}" class="btn btn-white">
                                 Donate Now
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                             </a>
@@ -1088,7 +1077,7 @@ html:not(.js-enabled) .reveal { opacity: 1; transform: none; }
                                 </div>
                             </div>
 
-                            <a href="{{ route('campaign.public', [$categorySlug, $campaign->slug]) }}" class="camp-btn">
+                            <a href="{{ route('campaign.public', [$categorySlug, $campaign->slug]) }}" class="btn btn-accent btn-block">
                                 Donate Now
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                             </a>
@@ -1156,11 +1145,11 @@ html:not(.js-enabled) .reveal { opacity: 1; transform: none; }
         <h2 class="cta-title reveal d1">Start Your Own <em>Campaign</em></h2>
         <p class="cta-sub reveal d2">Medical emergency, education, disaster relief — whatever the cause, our team verifies and supports your fundraiser from day one.</p>
         <div class="cta-btns reveal d3">
-            <a href="/campaign/create" class="btn btn-accent" style="font-size:15px;padding:15px 34px">
+            <a href="/campaign/create" class="btn btn-accent btn-lg">
                 Start Fundraiser
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 4v16m8-8H4"/></svg>
             </a>
-            <a href="{{ url('/about') }}" class="btn btn-white" style="font-size:15px;padding:15px 34px">
+            <a href="{{ url('/about') }}" class="btn btn-white btn-lg">
                 How It Works
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </a>

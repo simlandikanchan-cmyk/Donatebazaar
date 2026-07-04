@@ -619,7 +619,7 @@ html:not(.js-enabled) .reveal { opacity: 1; transform: none; }
                 <option value="popular"  @selected(request('sort') === 'popular')>Most Popular</option>
                 <option value="trending" @selected(request('sort') === 'trending')>Trending</option>
             </select>
-            <button type="submit" class="bfb-submit">Search</button>
+            <button type="submit" class="btn btn-accent">Search</button>
             @if(request('q') || (request('sort') && request('sort') !== 'recent'))
                 <a href="{{ route('blogs.index') }}" class="bfb-clear">✕ Clear</a>
             @endif
@@ -706,7 +706,7 @@ html:not(.js-enabled) .reveal { opacity: 1; transform: none; }
                             @else Nothing published yet — check back soon!
                             @endif
                         </p>
-                        <a href="{{ route('blogs.index') }}" class="blog-empty-btn">
+                        <a href="{{ route('blogs.index') }}" class="btn btn-accent">
                             Browse all
                             <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                         </a>
@@ -850,7 +850,7 @@ html:not(.js-enabled) .reveal { opacity: 1; transform: none; }
                         </svg>
                     </div>
                     <p>Have something to share with the community? Write your story today.</p>
-                    <a href="{{ route('user.blogs.create') }}" class="sidebar-cta-btn">Write a Story</a>
+                    <a href="{{ route('user.blogs.create') }}" class="btn btn-accent btn-block">Write a Story</a>
                 </div>
                 @endauth
 

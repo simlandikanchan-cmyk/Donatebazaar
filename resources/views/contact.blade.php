@@ -445,39 +445,7 @@ textarea.field {
 }
 
 /* ── Submit button ── */
-.btn-send {
-    width: 100%;
-    height: 46px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    font-family: var(--font-mono);
-    font-size: 13.5px;
-    font-weight: 500;
-    color: white;
-    background: linear-gradient(135deg, #6c5ff5 0%, #9b59f5 100%);
-    border: none;
-    border-radius: 11px;
-    cursor: pointer;
-    letter-spacing: 0.01em;
-    box-shadow: 0 4px 22px rgba(124,109,250,0.38);
-    transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
-    margin-top: 4px;
-}
-.btn-send:hover {
-    opacity: 0.91;
-    transform: translateY(-1px);
-    box-shadow: 0 8px 30px rgba(124,109,250,0.50);
-}
-.btn-send:active { transform: translateY(0); }
-.btn-send svg {
-    width: 15px; height: 15px;
-    stroke: #fff; fill: none;
-    stroke-width: 2.2;
-    stroke-linecap: round; stroke-linejoin: round;
-    flex-shrink: 0;
-}
+
 
 .form-footer-note {
     display: flex;
@@ -930,7 +898,7 @@ html:not(.js-enabled) .anim { opacity: 1; animation: none; }
                                       required>{{ old('message') }}</textarea>
                         </div>
 
-                        <button type="submit" class="btn-send">
+                        <button type="submit" class="btn btn-accent btn-block">
                             <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                             Send Message
                         </button>

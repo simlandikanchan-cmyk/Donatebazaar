@@ -66,7 +66,7 @@
 
         <!-- Header -->
         <div class="bg-gradient-to-r from-indigo-500 to-purple-500 text-white p-4">
-            <h2 class="font-bold text-lg">DonateBazaar AI Assistant ❤️</h2>
+            <h2 class="font-bold text-lg">DonateBazaar AI Assistant </h2>
             <p class="text-sm opacity-80">
                 Ask about donations, campaigns, fundraising
             </p>

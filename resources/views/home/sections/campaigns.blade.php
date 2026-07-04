@@ -144,7 +144,7 @@
                                 'category' => $campaign->category?->slug ?? 'general',
                                 'slug'     => $campaign->slug
                             ]) }}"
-                            class="camp-btn"
+                            class="btn btn-accent btn-block"
                         >
                             Donate Now
                         </a>
