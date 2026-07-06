@@ -655,9 +655,15 @@ svg { display: block; flex-shrink: 0; }
 .rec-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .rec-sub   { font-size: 12px; color: var(--text3); font-family: var(--mono); }
 .rec-amount { text-align: right; flex-shrink: 0; }
-.rec-amt-val { font-size: 16px; font-weight: 700; color: var(--accent); font-family: var(--mono); display: block; }
+.rec-amt-val { font-size: 16px; font-weight: 700; color: var(--accent); font-family: var(--mono); }
 .rec-amt-freq { font-size: 10px; color: var(--text3); font-family: var(--mono); }
 .rec-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+@media (max-width: 640px) {
+    .rec-card { flex-wrap: wrap; gap: 10px; }
+    .rec-actions { flex-shrink: 1; width: 100%; justify-content: flex-end; }
+    .rec-amount { text-align: left; }
+}
 
 .empty-state { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 56px 24px; text-align: center; box-shadow: var(--sh); animation: fadeUp .4s ease both; }
 .empty-icon  { width: 60px; height: 60px; border-radius: var(--r); background: var(--accent-lt); border: 1px solid rgba(99,102,241,.15); display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; }

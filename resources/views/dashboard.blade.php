@@ -627,10 +627,13 @@
             <div class="rec-sub">Next: {{ $rd->next_billing_date ? \Carbon\Carbon::parse($rd->next_billing_date)->format('d M Y') : 'N/A' }} · {{ ucfirst($rd->status) }}</div>
         </div>
         <div class="rec-amount">
-            <span class="rec-amt-val">₹{{ number_format($rd->amount) }}</span>
-            <span class="rec-amt-freq">/ {{ $rd->frequency }}</span>
+            <span class="rec-amt-val">₹{{ number_format($rd->amount) }}/{{ $rd->frequency }}</span>
         </div>
         <div class="rec-actions">
+            <a href="{{ route('recurring.show', $rd->id) }}" class="btn btn-secondary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                View
+            </a>
             @if($rd->status === 'active')
             <form action="{{ route('recurring.pause', $rd->id) }}" method="POST">
                 @csrf @method('PATCH')
@@ -646,12 +649,6 @@
                 </button>
             </form>
             @endif
-            <form action="{{ route('recurring.cancel', $rd->id) }}" method="POST" onsubmit="return confirm('Cancel this recurring donation?')">
-                @csrf @method('PATCH')
-                <button class="btn btn-red">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>Cancel
-                </button>
-            </form>
         </div>
     </div>
     @endforeach

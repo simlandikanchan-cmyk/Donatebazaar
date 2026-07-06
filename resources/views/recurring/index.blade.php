@@ -109,6 +109,10 @@
                 </a>
 
                 <div class="rd-actions">
+                    <a href="{{ route('recurring.show', $donation->id) }}" class="btn btn-secondary">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                        View
+                    </a>
                     @if($donation->status === 'active')
                     <form action="{{ route('recurring.pause', $donation->id) }}" method="POST">
                         @csrf
@@ -127,17 +131,6 @@
                         <button type="submit" class="btn btn-green">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                             Resume
-                        </button>
-                    </form>
-                    @endif
-
-                    @if($donation->status !== 'cancelled')
-                    <form action="{{ route('recurring.cancel', $donation->id) }}" method="POST">
-                        @csrf
-                        @method('PATCH')
-                        <button type="submit" class="btn btn-red" onclick="return confirm('Cancel this recurring donation?')">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-                            Cancel
                         </button>
                     </form>
                     @endif

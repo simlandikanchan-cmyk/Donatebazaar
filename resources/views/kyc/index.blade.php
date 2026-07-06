@@ -61,6 +61,7 @@
 .empty-state h3{font-size:15px;font-weight:700;color:var(--text2);}
 .empty-state p{font-size:12px;color:var(--text3);max-width:320px;line-height:1.6;}
 .empty-state .btn{padding:10px 20px;font-size:12.5px;}
+.empty-state .btn svg{width:16px;height:16px;opacity:1;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
 @media(max-width:960px){.stat-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:600px){.filter-bar{flex-direction:column;align-items:stretch;}}

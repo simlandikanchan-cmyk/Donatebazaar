@@ -1,26 +1,10 @@
-@extends('layouts.app')
+@extends('layouts.user')
 
-@section('content')
+@section('page_title', 'Gift Cards')
+@section('page_subtitle', 'Buy & send gift cards')
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-
+@push('page_styles')
 <style>
-:root {
-    --bg:#f4f5fb; --surface:#ffffff; --surface2:#f0f2fa;
-    --border:rgba(0,0,0,0.07); --border2:rgba(0,0,0,0.11);
-    --text:#0f1117; --text2:#4b5563; --text3:#9ca3af;
-    --accent:#6366f1; --accent2:#8b5cf6; --accent-glow:rgba(99,102,241,0.16);
-    --green:#10b981; --green-glow:rgba(16,185,129,0.14);
-    --font:'DM Sans',sans-serif; --font-mono:'DM Mono',monospace;
-    --radius:14px; --radius-sm:9px;
-    --shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 16px rgba(0,0,0,0.04);
-    --shadow-lg:0 8px 40px rgba(0,0,0,0.12);
-    --tr:0.2s ease;
-}
-
-.gc-page{font-family:var(--font);background:var(--bg);min-height:100vh;padding:48px 16px 72px;color:var(--text);}
 .gc-wrap{max-width:560px;margin:0 auto;}
 
 /* ── Header ── */
@@ -106,8 +90,9 @@
     .gc-theme-grid{grid-template-columns:repeat(2,1fr);}
 }
 </style>
+@endpush
 
-<div class="gc-page">
+@section('content')
 <div class="gc-wrap">
 
     <div class="gc-head">
@@ -221,8 +206,9 @@
     </p>
 
 </div>
-</div>
+@endsection
 
+@push('page_scripts')
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
 var currentAmt = 500;
@@ -354,4 +340,4 @@ selectTheme('purple');
 var d=new Date(); d.setDate(d.getDate()+1);
 document.getElementById('sendAt').value=d.toISOString().split('T')[0];
 </script>
-@endsection
+@endpush
