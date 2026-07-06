@@ -260,8 +260,8 @@
 </div>
 
 {{-- ══ CAMPAIGN COMPARISON BAR CHART ══ --}}
+@php $campChartData = $campaigns->count() > 1 ? $campaigns->map(fn($c) => ['title' => Str::limit($c->title, 22), 'raised' => (float)$c->raised_amount, 'goal' => (float)$c->goal_amount])->values() : collect(); @endphp
 @if($campaigns->count() > 1)
-@php $campChartData = $campaigns->map(fn($c) => ['title' => Str::limit($c->title, 22), 'raised' => (float)$c->raised_amount, 'goal' => (float)$c->goal_amount])->values(); @endphp
 <div class="chart-card bar-chart-card">
     <div class="chart-card-hdr">
         <div>
