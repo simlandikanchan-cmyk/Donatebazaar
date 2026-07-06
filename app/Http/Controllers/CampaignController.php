@@ -122,7 +122,7 @@ class CampaignController extends Controller
         $this->storeCampaignProducts($request, $campaign);
 
         // Clear categories cache when new campaign is created
-        Cache::forget('active_categories');
+        Cache::forget('active_campaign_categories');
 
         return redirect()
             ->route('kyc.upload.form', $campaign->id)
@@ -195,7 +195,7 @@ class CampaignController extends Controller
         ]);
 
         // Clear categories cache on update
-        Cache::forget('active_categories');
+        Cache::forget('active_campaign_categories');
 
         return redirect()
             ->route('campaign.show', $campaign->id)
@@ -280,7 +280,7 @@ class CampaignController extends Controller
     {
         $query = Campaign::with(['category', 'user'])
             ->withCount('donations')
-            ->whereIn('campaign_state', ['active', 'completed', 'expired']);
+            ->whereIn('campaign_state', ['active', 'completed']);
 
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
@@ -309,7 +309,7 @@ class CampaignController extends Controller
         $categories = Cache::remember('active_campaign_categories', 3600, function () {
             return Category::where('is_active', 1)
                 ->withCount(['campaigns' => function ($q) {
-                    $q->whereIn('campaign_state', ['active', 'completed', 'expired']);
+                    $q->whereIn('campaign_state', ['active', 'completed']);
                 }])
                 ->get();
         });
@@ -329,7 +329,7 @@ class CampaignController extends Controller
 
         $campaigns = Campaign::with(['category', 'user', 'products'])
             ->where('category_id', $category->id)
-            ->whereIn('campaign_state', ['active', 'completed', 'expired'])
+            ->whereIn('campaign_state', ['active', 'completed'])
             ->latest()
             ->paginate(12);
 
