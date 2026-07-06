@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="csrf-token" content="{{ csrf_token() }}">
+<meta name="description" content="@yield('meta_description', 'Manage your DonateBazaar campaigns, track donations, and grow your fundraising impact.')">
+<link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
 <title>@yield('page_title', 'Dashboard') — DonateBazaar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -38,7 +40,7 @@
     <div class="s-user">
         <div class="s-avatar">
             @if(auth()->user()->avatar)
-                <img src="{{ asset('storage/'.auth()->user()->avatar) }}" alt="">
+                <img src="{{ asset('storage/'.auth()->user()->avatar) }}" alt="{{ auth()->user()->name ?? 'User' }}">
             @else
                 {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 1)) }}
             @endif
@@ -52,19 +54,18 @@
 
     @php
         $sidebarKyc = auth()->user()->kycVerification;
-        $sidebarCampaigns = \App\Models\Campaign::where('user_id', auth()->id())->get();
-        $sidebarAll      = $sidebarCampaigns->count();
-        $sidebarActive   = $sidebarCampaigns->where('campaign_state','active')->count();
-        $sidebarInactive = $sidebarCampaigns->where('campaign_state','inactive')->count();
-        $sidebarPending  = $sidebarCampaigns->where('campaign_state','pending')->count();
-        $sidebarPaused   = $sidebarCampaigns->where('campaign_state','paused')->count();
-        $sidebarRejected = $sidebarCampaigns->where('campaign_state','rejected')->count();
-        $sidebarExpired  = $sidebarCampaigns->where('campaign_state','expired')->count();
-        $sidebarBlogs    = \App\Models\Blog::where('author_id', auth()->id())->get();
-        $sidebarBlogTotal     = $sidebarBlogs->count();
-        $sidebarBlogPublished = $sidebarBlogs->where('status','approved')->count();
-        $sidebarBlogDraft     = $sidebarBlogs->where('status','draft')->count();
-        $sidebarBlogPending   = $sidebarBlogs->where('status','pending')->count();
+        $uid = auth()->id();
+        $sidebarAll      = \App\Models\Campaign::where('user_id', $uid)->count();
+        $sidebarActive   = \App\Models\Campaign::where('user_id', $uid)->where('campaign_state','active')->count();
+        $sidebarInactive = \App\Models\Campaign::where('user_id', $uid)->where('campaign_state','inactive')->count();
+        $sidebarPending  = \App\Models\Campaign::where('user_id', $uid)->where('campaign_state','pending')->count();
+        $sidebarPaused   = \App\Models\Campaign::where('user_id', $uid)->where('campaign_state','paused')->count();
+        $sidebarRejected = \App\Models\Campaign::where('user_id', $uid)->where('campaign_state','rejected')->count();
+        $sidebarExpired  = \App\Models\Campaign::where('user_id', $uid)->where('campaign_state','expired')->count();
+        $sidebarBlogTotal     = \App\Models\Blog::where('author_id', $uid)->count();
+        $sidebarBlogPublished = \App\Models\Blog::where('author_id', $uid)->where('status','approved')->count();
+        $sidebarBlogDraft     = \App\Models\Blog::where('author_id', $uid)->where('status','draft')->count();
+        $sidebarBlogPending   = \App\Models\Blog::where('author_id', $uid)->where('status','pending')->count();
     @endphp
 
     @if(!$sidebarKyc)
@@ -299,7 +300,7 @@
             <div class="av-wrap" id="avWrap">
                 <div class="t-avatar" title="Account">
                     @if(auth()->user()->avatar)
-                        <img src="{{ asset('storage/'.auth()->user()->avatar) }}" alt="">
+                        <img src="{{ asset('storage/'.auth()->user()->avatar) }}" alt="{{ auth()->user()->name ?? 'User' }}">
                     @else
                         {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 1)) }}
                     @endif

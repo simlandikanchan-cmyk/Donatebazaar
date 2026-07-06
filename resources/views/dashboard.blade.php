@@ -133,7 +133,7 @@
     <div class="activity-list">
         @foreach($recentDonations as $donation)
         @php
-            $initial = $donation->is_anonymous ? '?' : strtoupper(substr($donation->donor_name ?? 'D', 0, 1));
+            $initial = $donation->is_anonymous ? '?' : strtoupper(substr(trim($donation->donor_name) ?: 'D', 0, 1));
         @endphp
         <div class="activity-item">
             <div class="activity-dot-col">
@@ -290,7 +290,7 @@
     @foreach($navItems as $item)
     <a href="{{ $item['url'] }}" class="qnav-card" style="animation-delay:{{ $item['delay'] }};--qc:{{ $item['bg'] }};">
         <div class="qnav-ico" style="background:{{ $item['bg'] }};color:{{ $item['color'] }};">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">{!! $item['icon'] !!}</svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-icon="{{ $item['lbl'] }}">{!! $item['icon'] !!}</svg>
         </div>
         <div>
             <div class="qnav-lbl">{{ $item['lbl'] }}</div>
@@ -464,7 +464,7 @@
          style="animation-delay:{{ $i * .03 }}s">
         <div class="c-list-thumb">
             @if($campaign->cover_image)
-                <img src="{{ asset('storage/'.$campaign->cover_image) }}" alt="{{ $campaign->title }}">
+                <img src="{{ asset('storage/'.$campaign->cover_image) }}" alt="{{ $campaign->title }}" loading="lazy">
             @else
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
             @endif

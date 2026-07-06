@@ -14,7 +14,8 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // ── Register the 'admin' middleware alias ──
         $middleware->alias([
-            'admin' => \App\Http\Middleware\AdminMiddleware::class,
+            'admin'          => \App\Http\Middleware\AdminMiddleware::class,
+            'account.active' => \App\Http\Middleware\CheckAccountStatus::class,
         ]);
 
         // ── Auto-serve WebP images globally ──

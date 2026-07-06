@@ -65,7 +65,15 @@ window.Chart = Chart;
     };
     var el = document.createElement('div');
     el.className = 'toast toast-' + type;
-    el.innerHTML = (icons[type] || icons.success) + '<span>' + msg + '</span><button class="toast-close" onclick="this.parentElement.remove()">\u2715</button>';
+    el.insertAdjacentHTML('afterbegin', icons[type] || icons.success);
+    var span = document.createElement('span');
+    span.textContent = msg;
+    el.appendChild(span);
+    var close = document.createElement('button');
+    close.className = 'toast-close';
+    close.textContent = '\u2715';
+    close.addEventListener('click', function () { el.remove(); });
+    el.appendChild(close);
     if (toastContainer) {
       toastContainer.appendChild(el);
       setTimeout(function () { el.remove(); }, 4500);

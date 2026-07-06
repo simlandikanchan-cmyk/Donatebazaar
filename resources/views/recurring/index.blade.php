@@ -159,8 +159,9 @@
             <h3>No Recurring Donations Yet</h3>
             <p>Start supporting campaigns with recurring contributions and see them tracked here.</p>
             <a href="/all-campaigns" class="btn btn-primary">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                
                 Explore Campaigns
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
             </a>
         </div>
     </div>
@@ -222,6 +223,8 @@
 .empty-state svg{width:48px;height:48px;color:var(--text3);opacity:0.25;}
 .empty-state h3{font-size:15px;font-weight:700;color:var(--text2);}
 .empty-state p{font-size:12px;color:var(--text3);max-width:320px;line-height:1.6;}
+.empty-state .btn{padding:10px 20px;font-size:12.5px;}
+.empty-state .btn svg{width:13px;height:13px;opacity:1;}
 .rd-pagination{display:flex;justify-content:center;margin-top:22px;}
 .rd-pagination :is(.pagination){display:flex;gap:6px;list-style:none;flex-wrap:wrap;}
 .rd-pagination :is(.page-item .page-link){display:flex;align-items:center;justify-content:center;min-width:34px;height:34px;padding:0 10px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface);color:var(--text2);font-size:12px;font-weight:600;font-family:var(--mono);transition:all var(--tr);}
