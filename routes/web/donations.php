@@ -21,6 +21,7 @@ Route::post('/payment/webhook', [PaymentController::class, 'webhook'])
 
 Route::middleware('auth')->group(function () {
     Route::get('/my-recurring-donations', [RecurringDonationController::class, 'index'])->name('recurring.index');
+    Route::get('/my-recurring-donations/{recurringDonation}', [RecurringDonationController::class, 'show'])->name('recurring.show');
     Route::post('/campaign/{campaign}/recurring', [RecurringDonationController::class, 'store'])->name('recurring.store');
     Route::patch('/recurring/{recurringDonation}/cancel', [RecurringDonationController::class, 'cancel'])->name('recurring.cancel');
     Route::patch('/recurring/{recurringDonation}/pause',  [RecurringDonationController::class, 'pause'])->name('recurring.pause');

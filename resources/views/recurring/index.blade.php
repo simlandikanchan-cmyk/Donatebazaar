@@ -71,6 +71,7 @@
         @foreach($recurring as $donation)
             <div class="rd-row" data-status="{{ $donation->status }}" data-title="{{ strtolower($donation->campaign->title ?? 'campaign') }}">
 
+                <a href="{{ route('recurring.show', $donation->id) }}" class="rd-main-link">
                 <div class="rd-avatar">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21s-7-4.35-9-8.5C1 8 3.5 4 7.5 4c2.04 0 3.04 1 4.5 2.5C13.46 5 14.46 4 16.5 4 20.5 4 23 8 21 12.5 19 16.65 12 21 12 21z"/></svg>
                 </div>
@@ -85,7 +86,11 @@
                         </span>
                         <span class="rd-meta-item">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                            {{ $donation->billing_count }} payment{{ $donation->billing_count == 1 ? '' : 's' }} made
+                            @if($donation->billing_count > 0)
+                                {{ $donation->billing_count }} payment{{ $donation->billing_count == 1 ? '' : 's' }} made
+                            @else
+                                No payments yet
+                            @endif
                         </span>
                         @if($donation->status !== 'cancelled')
                         <span class="rd-meta-item">
@@ -101,6 +106,7 @@
                         <span class="dot"></span>{{ ucfirst($donation->status) }}
                     </span>
                 </div>
+                </a>
 
                 <div class="rd-actions">
                     @if($donation->status === 'active')
@@ -201,6 +207,8 @@
 .rd-list{display:flex;flex-direction:column;gap:10px;}
 .rd-row{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);box-shadow:var(--shadow);transition:border-color var(--tr),transform var(--tr);animation:fadeUp .4s both;}
 .rd-row:hover{border-color:var(--border2);transform:translateY(-1px);}
+.rd-main-link{display:flex;align-items:center;gap:14px;flex:1;min-width:0;text-decoration:none;color:inherit;cursor:pointer;}
+.rd-main-link:hover .rd-title{color:var(--accent);}
 .rd-avatar{width:42px;height:42px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .rd-avatar svg{width:18px;height:18px;}
 .rd-info{flex:1;min-width:0;}

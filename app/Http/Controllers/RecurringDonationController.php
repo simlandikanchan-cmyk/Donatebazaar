@@ -59,6 +59,18 @@ class RecurringDonationController extends Controller
         );
     }
 
+    // ── Show a single recurring donation ──
+    public function show(RecurringDonation $recurringDonation)
+    {
+        if ($recurringDonation->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $recurringDonation->load('campaign');
+
+        return view('recurring.show', compact('recurringDonation'));
+    }
+
     // ── List user's recurring donations ──
     public function index()
     {

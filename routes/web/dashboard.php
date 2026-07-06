@@ -6,9 +6,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'account.active'])->group(function () {
     Route::get('/user/dashboard', function () {
-        $user = auth()->user()->load(['kycVerification']);
+        $user = auth()->user()->load(['kycVerification', 'fundraiserLevel']);
 
         $campaigns = Campaign::where('user_id', $user->id)
+            ->with('category:id,name')
             ->withCount('donations')
             ->latest()
             ->paginate(20);
@@ -28,6 +29,7 @@ Route::middleware(['auth', 'account.active'])->group(function () {
 
         $campaignIds = $campaigns->pluck('id');
         $recentDonations = collect();
+        $totalDonationsCount = 0;
         if ($campaignIds->isNotEmpty()) {
             $recentDonations = Donation::whereIn('campaign_id', $campaignIds)
                 ->with('campaign:id,title')
@@ -35,10 +37,21 @@ Route::middleware(['auth', 'account.active'])->group(function () {
                 ->latest()
                 ->take(6)
                 ->get();
+            $totalDonationsCount = Donation::whereIn('campaign_id', $campaignIds)
+                ->whereNotNull('paid_at')
+                ->count();
         }
 
         $kyc = $user->kycVerification;
+        $level = $user->fundraiserLevel;
+        $levelName = $user->fundraiserLevelName();
+        $memberSince = $user->created_at;
+        $daysActive = $memberSince ? now()->diffInDays($memberSince) : 0;
 
-        return view('dashboard', compact('campaigns', 'monthlyData', 'recurringDonations', 'recurringCount', 'kyc', 'recentDonations'));
+        return view('dashboard', compact(
+            'campaigns', 'monthlyData', 'recurringDonations', 'recurringCount',
+            'kyc', 'recentDonations', 'totalDonationsCount', 'level', 'levelName',
+            'memberSince', 'daysActive'
+        ));
     })->name('dashboard');
 });

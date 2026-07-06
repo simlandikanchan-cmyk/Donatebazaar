@@ -28,9 +28,24 @@
         <div class="wb-tag">
             <span class="wb-tag-dot"></span>
             Good {{ $greeting }}, Fundraiser
+            @if($levelName !== 'Starter')
+                <span class="wb-badge wbb-purple" style="margin-left:8px;font-size:10px;">{{ $levelName }}</span>
+            @endif
         </div>
         <div class="wb-name">{{ auth()->user()->name }} <span class="wave">👋</span></div>
-        <div class="wb-sub">Here's what's happening with your campaigns today.</div>
+        <div class="wb-sub" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+            <span>Here's what's happening with your campaigns today.</span>
+            @if($daysActive > 0)
+                <span style="font-size:11.5px;color:var(--text3);font-family:var(--mono);">
+                    Member for {{ $daysActive }} day{{ $daysActive !== 1 ? 's' : '' }}
+                </span>
+            @endif
+            @if($level)
+                <span style="font-size:11.5px;color:var(--text3);font-family:var(--mono);">
+                    {{ $levelName }} · Max goal ₹{{ number_format($user->maxCampaignGoal()) }}
+                </span>
+            @endif
+        </div>
         <div class="wb-badges">
             @if($countActive > 0)
                 <span class="wb-badge wbb-green">✓ {{ $countActive }} live</span>
@@ -68,6 +83,7 @@
 </div>
 
 {{-- ══ STATS (5 cards) ══ --}}
+@php $avgDonation = $totalDonationsCount > 0 ? round($totalRaised / $totalDonationsCount) : 0; @endphp
 <div class="stats-grid">
     <div class="stat-card">
         <div class="stat-icon-wrap si-indigo">
@@ -101,12 +117,12 @@
     </div>
     <div class="stat-card">
         <div class="stat-icon-wrap si-yellow">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2 1 3 3 3h10c2 0 3-1 3-3V7c0-2-1-3-3-3H7C5 4 4 5 4 7z"/><polyline points="16 10 12 14 8 10"/></svg>
         </div>
         <div class="stat-info">
-            <div class="stat-label">Total Donors</div>
-            <div class="stat-val sv-yellow">{{ number_format($totalDonors) }}</div>
-            <div class="stat-foot">People who supported you</div>
+            <div class="stat-label">Total Donations</div>
+            <div class="stat-val sv-yellow">{{ number_format($totalDonationsCount) }}</div>
+            <div class="stat-foot">Avg ₹{{ number_format($avgDonation) }} per donation</div>
         </div>
     </div>
     <div class="stat-card">
@@ -302,7 +318,14 @@
 
 {{-- ══ CAMPAIGNS SECTION ══ --}}
 <div class="sec-hdr" id="cGrid">
-    <div class="sec-title">Your Campaigns</div>
+    <div class="sec-title">
+        Your Campaigns
+        @if($campaigns->total() > 0)
+            <span style="font-size:11px;font-weight:400;color:var(--text3);font-family:var(--mono);margin-left:8px;">
+                {{ $campaigns->firstItem() }}–{{ $campaigns->lastItem() }} of {{ $campaigns->total() }}
+            </span>
+        @endif
+    </div>
     <div class="sec-right">
         <div class="ftabs" id="ftabs">
             <button class="ftab on" data-filter="all">All <span class="cnt">{{ $countAll }}</span></button>
@@ -344,6 +367,10 @@
         $goal   = $campaign->goal_amount > 0 ? $campaign->goal_amount : 1;
         $pct    = min(100, round(($raised / $goal) * 100));
     @endphp
+    @php
+        $daysLeft = $campaign->end_date ? now()->startOfDay()->diffInDays(\Carbon\Carbon::parse($campaign->end_date)->startOfDay(), false) : null;
+        $campCats = $campaign->category;
+    @endphp
     <div class="c-card"
          data-filter="{{ $fv }}"
          data-title="{{ strtolower($campaign->title) }}"
@@ -359,10 +386,30 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                 </div>
             @endif
-            <div class="c-badge-wrap"><span class="badge {{ $bc }}">{{ $bl }}</span></div>
+            <div class="c-badge-wrap">
+                <span class="badge {{ $bc }}">{{ $bl }}</span>
+                @if($fv === 'active' && $daysLeft !== null && $daysLeft >= 0)
+                    <span class="badge b-active" style="margin-left:4px;">
+                        @if($daysLeft === 0)
+                            Ends today
+                        @elseif($daysLeft <= 3)
+                            {{ $daysLeft }} day{{ $daysLeft !== 1 ? 's' : '' }} left
+                        @else
+                            {{ $daysLeft }}d left
+                        @endif
+                    </span>
+                @elseif($fv === 'expired')
+                    <span class="badge b-expired" style="margin-left:4px;">Ended</span>
+                @endif
+            </div>
         </div>
         <div class="c-body">
-            <div class="c-title">{{ $campaign->title }}</div>
+            <div class="c-title">
+                {{ $campaign->title }}
+                @if($campCats)
+                    <span style="display:inline-block;font-size:10px;font-weight:500;color:var(--text3);font-family:var(--mono);margin-left:6px;">{{ $campCats->name }}</span>
+                @endif
+            </div>
 
             @if($fv === 'inactive')
             <div class="reason reason-b">
@@ -397,7 +444,12 @@
                     <span class="prog-goal">of ₹{{ number_format($campaign->goal_amount) }}</span>
                 </div>
                 <div class="prog-bar"><div class="prog-fill" style="width:{{ $pct }}%"></div></div>
-                <div class="prog-meta"><span class="prog-pct">{{ $pct }}% funded</span></div>
+                <div class="prog-meta">
+                    <span class="prog-pct">{{ $pct }}% funded</span>
+                    @if($campaign->donations_count > 0)
+                        <span style="margin-left:auto;font-size:10.5px;color:var(--text3);">{{ $campaign->donations_count }} donation{{ $campaign->donations_count !== 1 ? 's' : '' }}</span>
+                    @endif
+                </div>
             </div>
 
             <div class="c-actions">
@@ -456,6 +508,10 @@
         $goal   = $campaign->goal_amount > 0 ? $campaign->goal_amount : 1;
         $pct    = min(100, round(($raised / $goal) * 100));
     @endphp
+    @php
+        $daysLeft = $campaign->end_date ? now()->startOfDay()->diffInDays(\Carbon\Carbon::parse($campaign->end_date)->startOfDay(), false) : null;
+        $campCats = $campaign->category;
+    @endphp
     <div class="c-list-item"
          data-filter="{{ $fv }}"
          data-title="{{ strtolower($campaign->title) }}"
@@ -470,18 +526,41 @@
             @endif
         </div>
         <div class="c-list-info">
-            <div class="c-list-title">{{ $campaign->title }}</div>
+            <div class="c-list-title">
+                {{ $campaign->title }}
+                @if($campCats)
+                    <span style="font-size:10px;font-weight:500;color:var(--text3);font-family:var(--mono);margin-left:6px;">{{ $campCats->name }}</span>
+                @endif
+            </div>
             <div class="c-list-sub">
                 <span>₹{{ number_format($raised) }} raised</span>
                 <span class="c-list-dot"></span>
                 <span>of ₹{{ number_format($campaign->goal_amount) }}</span>
+                @if($campaign->donations_count > 0)
+                    <span class="c-list-dot"></span>
+                    <span>{{ $campaign->donations_count }} donation{{ $campaign->donations_count !== 1 ? 's' : '' }}</span>
+                @endif
+                @if($fv === 'active' && $daysLeft !== null && $daysLeft >= 0)
+                    <span class="c-list-dot"></span>
+                    <span style="color:var(--yellow);font-weight:600;">
+                        @if($daysLeft === 0) Ends today
+                        @elseif($daysLeft <= 3) {{ $daysLeft }}d left
+                        @else {{ $daysLeft }}d
+                        @endif
+                    </span>
+                @endif
             </div>
         </div>
         <div class="c-list-prog">
             <div class="c-list-pct">{{ $pct }}%</div>
             <div class="c-list-bar"><div class="c-list-fill" style="width:{{ $pct }}%"></div></div>
         </div>
-        <div class="c-list-badge"><span class="badge {{ $bc }}">{{ $bl }}</span></div>
+        <div class="c-list-badge">
+            <span class="badge {{ $bc }}">{{ $bl }}</span>
+            @if($fv === 'expired')
+                <span class="badge b-expired" style="margin-left:3px;">Ended</span>
+            @endif
+        </div>
         <div class="c-list-actions">
             <a href="{{ route('campaign.show', $campaign->id) }}" class="btn btn-secondary">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>View
@@ -508,6 +587,12 @@
     </div>
     @endforeach
 </div>
+
+@if($campaigns->hasPages())
+<div class="rd-pagination" style="margin-top:18px;">
+    {{ $campaigns->links() }}
+</div>
+@endif
 
 @else
 <div class="empty-state">
@@ -539,7 +624,7 @@
         </div>
         <div class="rec-info">
             <div class="rec-title">{{ $rd->campaign->title ?? 'Campaign' }}</div>
-            <div class="rec-sub">Next: {{ $rd->next_payment_at ? \Carbon\Carbon::parse($rd->next_payment_at)->format('d M Y') : 'N/A' }} · {{ ucfirst($rd->status) }}</div>
+            <div class="rec-sub">Next: {{ $rd->next_billing_date ? \Carbon\Carbon::parse($rd->next_billing_date)->format('d M Y') : 'N/A' }} · {{ ucfirst($rd->status) }}</div>
         </div>
         <div class="rec-amount">
             <span class="rec-amt-val">₹{{ number_format($rd->amount) }}</span>
