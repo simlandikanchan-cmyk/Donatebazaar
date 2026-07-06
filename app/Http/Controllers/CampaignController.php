@@ -306,10 +306,12 @@ class CampaignController extends Controller
         }
 
         //  Cache categories for 1 hour — they rarely change
-        $categories = Cache::remember('active_categories', 3600, function () {
-            return Category::withCount('campaigns')
-                           ->where('is_active', 1)
-                           ->get();
+        $categories = Cache::remember('active_campaign_categories', 3600, function () {
+            return Category::where('is_active', 1)
+                ->withCount(['campaigns' => function ($q) {
+                    $q->whereIn('campaign_state', ['active', 'completed', 'expired']);
+                }])
+                ->get();
         });
 
         $campaigns = $query->paginate(12)->withQueryString();
