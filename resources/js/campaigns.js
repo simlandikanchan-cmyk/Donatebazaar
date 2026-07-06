@@ -251,3 +251,16 @@ function clearFundingFilter() {
 document.addEventListener('keydown', function(e){
     if (e.key === 'Escape') closeFilterModal();
 });
+
+/* ── Expose to HTML onclick handlers (Vite module scope) ── */
+window.openFilterModal     = openFilterModal;
+window.closeFilterModal    = closeFilterModal;
+window.toggleDropdown      = toggleDropdown;
+window.selectOption        = selectOption;
+window.selectChip          = selectChip;
+window.applyModalFilters   = applyModalFilters;
+window.clearAllFilters     = clearAllFilters;
+window.removeFilter        = removeFilter;
+window.setView             = setView;
+window.applySidebarFilters = applySidebarFilters;
+window.clearFundingFilter  = clearFundingFilter;
