@@ -73,13 +73,16 @@ class Campaign extends Model
 
         'level_override_at',
 
+        'kyc_reminded_at',
+
     ];
 
 
      protected $casts = [
-        'start_date' => 'date',
-        'end_date'   => 'date',
-        'paused_at'  => 'datetime',
+        'start_date'      => 'date',
+        'end_date'        => 'date',
+        'paused_at'       => 'datetime',
+        'kyc_reminded_at' => 'datetime',
     ];
 
     // -------------------------------------------------------------------------
