@@ -1,7 +1,7 @@
 @extends('layouts.user')
 
 @section('page_title', 'Edit Profile')
-@section('page_subtitle', 'Update your account information')
+@section('page_subtitle', 'Update your Profile')
 
 @section('content')
 <div class="profile-grid">
@@ -22,7 +22,7 @@
       <div class="card-body">
         <form action="{{ route('profile.update') }}" method="POST">
           @csrf @method('PATCH')
-          <div class="two-col">
+          <div class="two-col" style="margin-bottom:14px;">
             <div class="field">
               <label>Full name</label>
               <input type="text" name="name" value="{{ old('name', $user->name) }}" placeholder="Your full name" required>
@@ -159,7 +159,28 @@
 .save-btn.ghost:hover{background:var(--surface3);transform:none;}
 .save-btn.danger{background:var(--red-lt);color:var(--red);border:1px solid rgba(240,68,68,.18);box-shadow:none;}
 .save-btn.danger:hover{background:var(--red);color:#fff;transform:none;}
-@media(max-width:600px){.two-col{grid-template-columns:1fr;}}
+@media(max-width:640px){
+  .card-head{padding:12px 14px;}
+  .card-body{padding:12px 14px;}
+  .card-ttl{font-size:12.5px;}
+  .two-col{grid-template-columns:1fr;}
+}
+@media(max-width:480px){
+  .card-head{padding:10px 12px;}
+  .card-body{padding:10px 12px;}
+  .card-ico{width:26px;height:26px;border-radius:7px;}
+  .card-ico svg{width:12px;height:12px;}
+  .card-ttl{font-size:12px;}
+  .card-sub{font-size:9px;}
+  .field label{font-size:9px;}
+  .field input,.field textarea{padding:8px 10px;font-size:12px;}
+  .save-btn{padding:9px;font-size:12px;}
+}
+@media(max-width:380px){
+  .card-head{padding:8px 10px;}
+  .card-body{padding:8px 10px;}
+  .profile-grid{grid-template-columns:1fr;}
+}
 </style>
 @endpush
 
