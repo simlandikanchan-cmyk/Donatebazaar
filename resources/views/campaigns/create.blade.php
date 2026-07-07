@@ -167,7 +167,12 @@ textarea.field-input{resize:vertical;min-height:100px;line-height:1.6;}
 .remove-product-btn{width:32px;height:32px;border-radius:50%;border:1.5px solid #fecaca;background:#fef2f2;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .2s,border-color .2s;flex-shrink:0;}
 .remove-product-btn:hover{background:#fee2e2;border-color:var(--danger);}
 .remove-product-btn svg{width:13px;height:13px;color:var(--danger);}
-.product-img-preview{width:72px;height:72px;border-radius:12px;object-fit:cover;border:1px solid var(--border);margin-bottom:14px;display:block;}
+.product-img-upload-wrap{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.product-img-label{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border:1.5px dashed var(--border);border-radius:10px;font-size:12px;font-weight:500;color:var(--purple-main);cursor:pointer;transition:border-color .2s,background .2s;}
+.product-img-label:hover{border-color:var(--purple-main);background:var(--purple-mist);}
+.product-img-label svg{width:16px;height:16px;}
+.product-img-preview-wrap{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.product-img-preview{width:60px;height:60px;border-radius:10px;object-fit:cover;border:1px solid var(--border);}
 .product-subtotal-row{display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:12px;border-top:1px dashed var(--border);}
 .product-subtotal-label{font-size:12px;color:var(--ink-soft);}
 .product-subtotal-value{font-size:14px;font-weight:600;color:var(--purple-main);}
@@ -752,17 +757,24 @@ function renderSuggestions(){
 
 function addProduct(categoryProductId, name, price, desc, stock, image){
   categoryProductId = categoryProductId || '';
-  image = image || '';
   productCount++;
   var id = productCount;
-  var imgPreviewHtml = image ? '<img src="'+image+'" class="product-img-preview" onerror="this.style.display=\'none\'">' : '';
+  var imgPreviewHtml = image
+    ? '<div class="product-img-preview-wrap"><img src="'+image+'" class="product-img-preview" onerror="this.style.display=\'none\'"></div>'
+    : '';
   var html='<div class="product-item" id="product-'+id+'">'+
     '<div class="product-item-header">'+
       '<span class="product-item-num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2zM16 3H8l-2 4h12l-2-4z"/></svg>Product '+id+'</span>'+
       '<button type="button" class="remove-product-btn" onclick="removeProduct('+id+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>'+
     '</div>'+
-    imgPreviewHtml+
-    '<input type="hidden" name="products['+id+'][category_product_id]" value="'+categoryProductId+'">'+
+    '<div class="product-img-upload-wrap">'+
+      '<label class="product-img-label" for="prodImg-'+id+'">'+
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>'+
+        '<span>Add Image</span>'+
+      '</label>'+
+      '<input type="file" id="prodImg-'+id+'" name="products['+id+'][image]" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="previewProdImg('+id+',this)">'+
+      '<div class="product-img-preview-wrap" id="prodImgPreview-'+id+'">'+imgPreviewHtml+'</div>'+
+    '</div>'+
     '<div class="field-stack">'+
       '<div class="field-wrap"><label class="field-label">Product name <span>*</span></label><input type="text" name="products['+id+'][name]" data-field="name" class="field-input" placeholder="e.g. Handmade bracelet" value="'+(name||'')+'"></div>'+
       '<div class="field-wrap"><label class="field-label">Description</label><textarea name="products['+id+'][description]" data-field="description" class="field-input" rows="2" placeholder="Brief description...">'+(desc||'')+'</textarea></div>'+
@@ -858,6 +870,19 @@ function populateReview(){
   var gsRow=document.getElementById('gs-products-row');
   if(productTotal>0){gsRow.style.display='flex';document.getElementById('gs-products').textContent='₹'+Math.round(productTotal).toLocaleString('en-IN');}
   else{gsRow.style.display='none';}
+}
+
+/* ── PRODUCT IMAGE PREVIEW ── */
+function previewProdImg(id,input){
+  var wrap=document.getElementById('prodImgPreview-'+id);
+  wrap.innerHTML='';
+  if(input.files&&input.files[0]){
+    var reader=new FileReader();
+    reader.onload=function(e){
+      wrap.innerHTML='<img src="'+e.target.result+'" class="product-img-preview">';
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
 }
 
 /* ── UTILITIES ── */

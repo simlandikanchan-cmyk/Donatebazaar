@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\CampaignController as AdminCampaignController;
 use App\Http\Controllers\Admin\CampaignKycController;
+use App\Http\Controllers\Admin\CampaignProductController;
 use App\Http\Controllers\Admin\KycController as AdminKycController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,5 +21,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::post('/kyc/{kyc}/approve',  [AdminKycController::class, 'approve'])->name('kyc.approve');
     Route::post('/kyc/{kyc}/reject',   [AdminKycController::class, 'reject'])->name('kyc.reject');
     Route::get('/kyc/{kyc}/document',  [AdminKycController::class, 'showDocument'])->name('kyc.document');
+
+    Route::get('/campaign-products',                    [CampaignProductController::class, 'index'])->name('campaign-products.index');
+    Route::post('/campaign-products/{product}/approve', [CampaignProductController::class, 'approve'])->name('campaign-products.approve');
+    Route::post('/campaign-products/{product}/reject',  [CampaignProductController::class, 'reject'])->name('campaign-products.reject');
 
 });

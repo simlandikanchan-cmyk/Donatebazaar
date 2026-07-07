@@ -350,14 +350,20 @@ class CampaignController extends Controller
 
         if (empty($products)) return;
 
-        foreach ($products as $data) {
+        foreach ($products as $index => $data) {
             $name = trim($data['name'] ?? '');
             if ($name === '') continue;
 
             $categoryProductId = $data['category_product_id'] ?? null;
             $source            = $categoryProductId ? 'admin' : 'user';
             $quantity          = (int) ($data['quantity'] ?? $data['stock'] ?? 1);
-            $image             = $data['image'] ?? null;
+            $image             = null;
+
+            // Handle uploaded image file
+            if ($request->hasFile("products.{$index}.image")) {
+                $image = $request->file("products.{$index}.image")
+                    ->store('campaign-products', 'public');
+            }
 
             if (empty($image) && $categoryProductId) {
                 $catProduct = CategoryProduct::find((int) $categoryProductId);
