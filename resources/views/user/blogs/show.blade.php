@@ -129,6 +129,7 @@
 .show-content { font-size: 15px; color: var(--text2); line-height: 1.8; font-weight: 300; }
 .show-content p { margin-bottom: 18px; }
 .show-content p:last-child { margin-bottom: 0; }
-@media (max-width: 860px) { .body { padding: 16px 16px 60px; } .show-cover { height: 220px; } .show-body { padding: 20px 20px 28px; } .show-title { font-size: 20px; } }
+@media (max-width: 860px) { .body { padding: 16px 16px 60px; } .show-cover { height: 220px; } .show-body { padding: 20px 20px 28px; } .show-title { font-size: 20px; } .breadcrumb-cur { max-width: 140px; } }
+@media (max-width: 480px) { .show-cover { height: 160px; } .show-body { padding: 14px 14px 20px; } .show-title { font-size: 17px; } .show-content { font-size: 14px; } .breadcrumb { font-size: 11px; gap: 4px; } .breadcrumb-cur { max-width: 100px; } }
 </style>
 @endpush

@@ -209,6 +209,7 @@
 .action-btns { display: flex; align-items: center; gap: 8px; }
 @media (max-width: 860px) { .body { padding: 16px 16px 60px; } }
 @media (max-width: 640px) { .field-grid { grid-template-columns: 1fr; } .action-bar { flex-direction: column; align-items: stretch; } .action-btns { justify-content: flex-end; } }
+@media (max-width: 480px) { .form-card { padding: 16px; } .page-hdr-left h2 { font-size: 18px; } .action-bar { padding: 12px 14px; } .action-btns { flex-direction: column; } .action-btns .btn { width: 100%; justify-content: center; } }
 </style>
 @endpush
 

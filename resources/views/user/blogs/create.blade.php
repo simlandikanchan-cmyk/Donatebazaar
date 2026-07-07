@@ -363,7 +363,20 @@
 .field-error { font-size: 11.5px; color: var(--red); margin-top: 5px; font-family: var(--font-mono); }
 .field-hint  { font-size: 11px; color: var(--text3); margin-top: 5px; }
 .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-@media(max-width:640px){ .field-grid { grid-template-columns: 1fr; } }
+@media(max-width:640px){
+  .field-grid { grid-template-columns: 1fr; }
+  .action-bar { flex-direction: column; align-items: stretch; text-align: center; }
+  .action-btns { justify-content: center; }
+  .content-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+}
+@media(max-width:480px){
+  .form-card { padding: 16px; }
+  .action-bar { padding: 12px 14px; }
+  .action-btns { flex-direction: column; }
+  .action-btns .btn { width: 100%; justify-content: center; }
+  .page-hdr-left h2 { font-size: 18px; }
+  .upload-zone { padding: 20px 14px; }
+}
 .field-select[multiple] { padding: 8px; background-image: none; height: 100px; }
 .field-select[multiple] option { padding: 5px 8px; border-radius: 5px; margin-bottom: 2px; }
 .upload-zone { border: 2px dashed var(--border2); border-radius: var(--radius-sm); padding: 28px 20px; text-align: center; cursor: pointer; transition: border-color var(--transition), background var(--transition); position: relative; }
@@ -385,7 +398,7 @@
 .desc-count { font-size: 11px; font-family: var(--font-mono); color: var(--text3); }
 .desc-count.over  { color: var(--red); }
 .desc-count.great { color: var(--green); }
-.action-bar { position: sticky; bottom: 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; box-shadow: 0 -4px 24px rgba(0,0,0,0.06); margin-top: 16px; animation: fadeUp 0.4s 0.2s ease both; z-index: 50; }
+.action-bar { position: sticky; bottom: 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; box-shadow: 0 -4px 24px rgba(0,0,0,0.06); margin-top: 16px; animation: fadeUp 0.4s 0.2s ease both; z-index: 50; flex-wrap: wrap; }
 .action-bar-hint { font-size: 12px; color: var(--text3); }
 .action-bar-hint strong { color: var(--text2); font-weight: 600; }
 .action-btns { display: flex; gap: 8px; }
