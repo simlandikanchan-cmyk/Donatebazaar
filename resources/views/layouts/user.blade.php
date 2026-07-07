@@ -36,12 +36,16 @@
             <button class="hamburger" id="hamburger" aria-label="Menu">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
             </button>
+            @yield('topbar_left_prefix')
             <div class="topbar-left">
                 <h1>@yield('page_title', 'Dashboard')</h1>
                 <p>@yield('page_subtitle')</p>
             </div>
         </div>
         <div class="topbar-right">
+            @hasSection('topbar_right')
+                @yield('topbar_right')
+            @else
             <div class="search-wrap">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
                 <input class="search-input" id="searchInput" type="text" placeholder="Search campaigns…" autocomplete="off">
@@ -102,6 +106,7 @@
                     </a>
                 </div>
             </div>
+            @endif
         </div>
     </header>
 

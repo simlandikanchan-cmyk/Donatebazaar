@@ -1,13 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Edit Campaign — DonateBazaar</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-    @vite('resources/css/user.css')
+@extends('layouts.user')
+
+@section('page_title', 'Edit Campaign')
+@section('page_subtitle', Str::limit($campaign->title, 45))
+
+@section('topbar_left_prefix')
+    <a href="{{ route('campaign.show', $campaign->id) }}" class="topbar-back" title="Back to Campaign">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    </a>
+@endsection
+
+@section('topbar_right')
+    @if($campaign->campaign_state === 'paused')
+        <span class="status-chip chip-paused"><span class="dot"></span> Paused</span>
+    @elseif($campaign->campaign_state === 'active')
+        <span class="status-chip chip-active"><span class="dot"></span> Active</span>
+    @elseif($campaign->campaign_state === 'pending')
+        <span class="status-chip chip-pending"><span class="dot"></span> Pending</span>
+    @elseif($campaign->campaign_state === 'rejected')
+        <span class="status-chip chip-rejected"><span class="dot"></span> Rejected</span>
+    @endif
+    <div class="theme-toggle" title="Toggle dark mode">
+        <input type="checkbox" id="themeToggle">
+        <label for="themeToggle">
+            <div class="theme-icons">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path stroke-linecap="round" d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+            </div>
+        </label>
+    </div>
+    <div class="t-avatar">{{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 1)) }}</div>
+@endsection
+
+@push('page_styles')
 <style>
 :root {
     --bg:           #f4f5fb;
@@ -58,12 +82,10 @@ body {
     overflow-x: hidden;
 }
 
-/* ══ TOPBAR EXTRAS (not in user.css) ══ */
 .topbar-back { display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--border2); background: var(--surface2); color: var(--text2); cursor: pointer; text-decoration: none; transition: all var(--transition); flex-shrink: 0; }
 .topbar-back:hover { background: var(--accent-glow); color: var(--accent); border-color: var(--accent); }
 .topbar-back svg { width: 13px; height: 13px; }
-.topbar-title h1 { font-size: 17px; font-weight: 700; color: var(--text); letter-spacing: -0.02em; }
-.topbar-title p  { font-size: 11px; color: var(--text3); margin-top: 1px; }
+
 .status-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 11px; border-radius: 100px; font-size: 10.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; font-family: var(--font-mono); }
 .status-chip .dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
 .chip-active   { background: rgba(16,185,129,0.12); color: #10b981; border: 1px solid rgba(16,185,129,0.25); }
@@ -71,22 +93,18 @@ body {
 .chip-pending  { background: rgba(245,158,11,0.12); color: #f59e0b; border: 1px solid rgba(245,158,11,0.25); }
 .chip-rejected { background: rgba(239,68,68,0.12);  color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
 
-/* ══ FLASH ══ */
 .flash { display: flex; align-items: flex-start; gap: 10px; padding: 12px 16px; border-radius: var(--radius); font-size: 13px; font-weight: 500; margin-bottom: 20px; border: 1px solid transparent; }
 .flash svg { width: 15px; height: 15px; flex-shrink: 0; margin-top: 1px; }
 .flash-error   { background: rgba(239,68,68,0.08);  color: var(--red);   border-color: rgba(239,68,68,0.2); }
 .flash-success { background: rgba(16,185,129,0.08); color: var(--green); border-color: rgba(16,185,129,0.2); }
 
-/* ══ VALIDATION ERRORS ══ */
 .validation-box { background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.2); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 20px; }
 .validation-box ul { list-style: none; display: flex; flex-direction: column; gap: 4px; }
 .validation-box li { font-size: 12.5px; color: var(--red); display: flex; align-items: flex-start; gap: 6px; }
 .validation-box li::before { content: '⚠'; flex-shrink: 0; }
 
-/* ══ FORM LAYOUT ══ */
 .form-layout { display: grid; grid-template-columns: 1fr 300px; gap: 18px; align-items: start; }
 
-/* ══ CARD ══ */
 .card { background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
 .card + .card { margin-top: 14px; }
 .card-header { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
@@ -100,7 +118,6 @@ body {
 .card-sub   { font-size: 11px; color: var(--text3); margin-top: 1px; }
 .card-body  { padding: 18px; }
 
-/* ══ FIELDS ══ */
 .field { margin-bottom: 16px; }
 .field:last-child { margin-bottom: 0; }
 .field label { display: block; font-size: 11px; font-weight: 600; color: var(--text2); margin-bottom: 6px; letter-spacing: 0.01em; text-transform: uppercase; font-family: var(--font-mono); }
@@ -118,7 +135,6 @@ body {
 .field-err { font-size: 11px; color: var(--red); margin-top: 5px; display: flex; align-items: flex-start; gap: 4px; font-family: var(--font-mono); }
 .field-err::before { content: '⚠'; flex-shrink: 0; }
 
-/* ══ COVER ══ */
 .cover-current { width: 100%; height: 170px; object-fit: cover; border-radius: var(--radius-sm); border: 1px solid var(--border); display: block; margin-bottom: 12px; }
 .cover-placeholder { width: 100%; height: 100px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
 .cover-placeholder svg { width: 30px; height: 30px; color: var(--text3); opacity: 0.4; }
@@ -131,13 +147,11 @@ body {
 .file-drop-hint  { font-size: 11px; color: var(--text3); margin-top: 3px; }
 #newPreview { display: none; width: 100%; height: 150px; object-fit: cover; border-radius: var(--radius-sm); margin-top: 10px; border: 1px solid var(--border); }
 
-/* ══ WARN BANNER ══ */
 .warn-banner { display: flex; align-items: flex-start; gap: 10px; padding: 11px 13px; border-radius: var(--radius-sm); margin-bottom: 14px; background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2); }
 .warn-banner svg { width: 14px; height: 14px; color: var(--yellow); flex-shrink: 0; margin-top: 1px; }
 .warn-banner-title { font-size: 11.5px; font-weight: 700; color: var(--yellow); margin-bottom: 2px; font-family: var(--font-mono); }
 .warn-banner-body  { font-size: 11.5px; color: var(--text2); }
 
-/* ══ BUTTONS ══ */
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 16px; border-radius: var(--radius-sm); font-size: 12.5px; font-weight: 600; cursor: pointer; border: 1px solid transparent; font-family: var(--font); transition: opacity var(--transition), transform var(--transition); text-decoration: none; white-space: nowrap; width: 100%; }
 .btn:hover  { opacity: 0.87; transform: translateY(-1px); }
 .btn:active { transform: translateY(0); }
@@ -149,13 +163,10 @@ body {
 .btn-ghost   { background: var(--surface2); color: var(--text2); border-color: var(--border2); }
 .btn + .btn  { margin-top: 8px; }
 
-/* ══ SIDEBAR STACK ══ */
 .sidebar-stack { display: flex; flex-direction: column; gap: 14px; position: sticky; top: 74px; }
 
-/* ══ CHAR COUNTER ══ */
 .char-counter { font-size: 10.5px; color: var(--text3); margin-top: 5px; text-align: right; font-family: var(--font-mono); }
 
-/* ══ MODAL ══ */
 .overlay { display: none; position: fixed; inset: 0; z-index: 9998; background: rgba(5,5,20,0.55); backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 20px; }
 .overlay.open { display: flex; }
 .modal { background: var(--surface); border: 1px solid var(--border2); border-radius: 18px; box-shadow: var(--shadow-lg); width: 100%; max-width: 400px; padding: 20px; position: relative; animation: modalIn 0.22s cubic-bezier(.4,0,.2,1); }
@@ -179,7 +190,6 @@ body {
 .modal-y-btn  { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; }
 .modal-g-btn  { background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
 
-/* ══ TOAST ══ */
 .toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
 .toast { display: flex; align-items: center; gap: 10px; padding: 12px 15px; border-radius: 12px; font-size: 13px; font-weight: 500; color: #fff; min-width: 240px; box-shadow: var(--shadow-lg); pointer-events: all; animation: toastIn 0.35s cubic-bezier(.4,0,.2,1) both; }
 .toast svg { width: 15px; height: 15px; flex-shrink: 0; }
@@ -189,390 +199,322 @@ body {
 @keyframes toastIn { from { opacity: 0; transform: translateX(20px) scale(0.96); } to { opacity: 1; transform: translateX(0) scale(1); } }
 @keyframes fadeUp  { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 
-/* ══ RESPONSIVE ══ */
 @media (max-width: 900px) { .form-layout { grid-template-columns: 1fr; } .sidebar-stack { position: static; } }
 </style>
-</head>
-<body>
+@endpush
 
-<div class="toast-container" id="toastContainer"></div>
+@section('content')
 
-<div class="shell">
+    @if ($errors->any())
+    <div class="validation-box">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
 
-@include('partials.user-sidebar')
+    @if(session('error'))
+    <div class="flash flash-error">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        {{ session('error') }}
+    </div>
+    @endif
+    @if(session('success'))
+    <div class="flash flash-success">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        {{ session('success') }}
+    </div>
+    @endif
 
-{{-- ══ MAIN ══ --}}
-<div class="main">
+    <form action="{{ route('campaign.update', $campaign->id) }}" method="POST" enctype="multipart/form-data" id="editForm">
+        @csrf
+        @method('PUT')
 
-    <header class="topbar">
-        <div class="topbar-left">
-            <button class="hamburger" id="hamburger" aria-label="Menu">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
-            </button>
-            <a href="{{ route('dashboard') }}" class="topbar-back" title="Back to Dashboard">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M12 5l-7 7 7 7"/></svg>
-            </a>
-            <div class="topbar-title">
-                <h1>Edit Campaign</h1>
-                <p>{{ Str::limit($campaign->title, 45) }}</p>
-            </div>
-        </div>
-        <div class="topbar-right">
-            {{-- ✅ FIX: use campaign_state not status --}}
-            @if($campaign->campaign_state === 'paused')
-                <span class="status-chip chip-paused"><span class="dot"></span> Paused</span>
-            @elseif($campaign->campaign_state === 'active')
-                <span class="status-chip chip-active"><span class="dot"></span> Active</span>
-            @elseif($campaign->campaign_state === 'pending')
-                <span class="status-chip chip-pending"><span class="dot"></span> Pending</span>
-            @elseif($campaign->campaign_state === 'rejected')
-                <span class="status-chip chip-rejected"><span class="dot"></span> Rejected</span>
-            @endif
+        <div class="form-layout">
 
-            <div class="theme-toggle" title="Toggle dark mode">
-                <input type="checkbox" id="themeToggle">
-                <label for="themeToggle">
-                    <div class="theme-icons">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path stroke-linecap="round" d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
-                    </div>
-                </label>
-            </div>
-            <div class="t-avatar">{{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 1)) }}</div>
-        </div>
-    </header>
+            {{-- ════ LEFT ════ --}}
+            <div>
 
-    <div class="body">
-
-        {{-- ✅ FIX: Show ALL validation errors at the top so user sees what failed --}}
-        @if ($errors->any())
-        <div class="validation-box">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-        @endif
-
-        @if(session('error'))
-        <div class="flash flash-error">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            {{ session('error') }}
-        </div>
-        @endif
-        @if(session('success'))
-        <div class="flash flash-success">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-            {{ session('success') }}
-        </div>
-        @endif
-
-        {{-- ✅ FIX: Correct form action — uses campaigns.update (resource route) --}}
-        <form action="{{ route('campaign.update', $campaign->id) }}" method="POST" enctype="multipart/form-data" id="editForm">
-            @csrf
-            @method('PUT')
-
-            <div class="form-layout">
-
-                {{-- ════ LEFT ════ --}}
-                <div>
-
-                    {{-- Basic Info --}}
-                    <div class="card" style="margin-bottom:14px;">
-                        <div class="card-header">
-                            <div class="card-icon ic-indigo">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                            </div>
-                            <div>
-                                <div class="card-title">Basic Information</div>
-                                <div class="card-sub">Campaign title, goal amount and description</div>
-                            </div>
+                {{-- Basic Info --}}
+                <div class="card" style="margin-bottom:14px;">
+                    <div class="card-header">
+                        <div class="card-icon ic-indigo">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                         </div>
-                        <div class="card-body">
-
-                            <div class="field">
-                                <label>Campaign Title</label>
-                                <input type="text" name="title"
-                                       value="{{ old('title', $campaign->title) }}"
-                                       placeholder="Give your campaign a strong title"
-                                       {{ $campaign->isPaused() ? 'disabled' : '' }}>
-                                @error('title')<div class="field-err">{{ $message }}</div>@enderror
-                            </div>
-
-                            {{-- ADD THIS after the title field, before goal_amount field --}}
-<div class="field">
-    <label>Category</label>
-    <select name="category_id" {{ $campaign->isPaused() ? 'disabled' : '' }}>
-        <option value="">Select a category…</option>
-        @foreach($categories as $cat)
-            <option value="{{ $cat->id }}"
-                {{ old('category_id', $campaign->category_id) == $cat->id ? 'selected' : '' }}>
-                {{ $cat->name }}
-            </option>
-        @endforeach
-    </select>
-    @error('category_id')<div class="field-err">{{ $message }}</div>@enderror
-</div>
-
-                            <div class="field">
-                                <label>Goal Amount (₹)</label>
-                                <input type="number" name="goal_amount"
-                                       value="{{ old('goal_amount', $campaign->goal_amount) }}"
-                                       placeholder="Enter target amount" min="1"
-                                       {{ $campaign->isPaused() ? 'disabled' : '' }}>
-                                @error('goal_amount')<div class="field-err">{{ $message }}</div>@enderror
-                                {{-- ✅ Show level info so user understands the cap --}}
-                                @php
-                                    $userLevel   = auth()->user()->fundraiserLevelName();
-                                    $userMaxGoal = auth()->user()->maxCampaignGoal();
-                                @endphp
-                                @if($userMaxGoal)
-                                <div style="font-size:11px;color:var(--text3);margin-top:5px;font-family:var(--font-mono);">
-                                    Level: <strong style="color:var(--accent);">{{ $userLevel }}</strong>
-                                    — Max goal: <strong>₹{{ number_format($userMaxGoal) }}</strong>
-                                </div>
-                                @endif
-                            </div>
-
-                            <div class="field">
-                                <label>Description</label>
-                                <textarea name="description" rows="7" id="descField" maxlength="3000"
-                                          placeholder="Tell your story — why this campaign matters..."
-                                          {{ $campaign->isPaused() ? 'disabled' : '' }}
-                                          oninput="countChars(this,'descCount',3000)">{{ old('description', $campaign->description) }}</textarea>
-                                <div class="char-counter"><span id="descCount">{{ strlen(old('description', $campaign->description ?? '')) }}</span>/3000</div>
-                                @error('description')<div class="field-err">{{ $message }}</div>@enderror
-                            </div>
-
+                        <div>
+                            <div class="card-title">Basic Information</div>
+                            <div class="card-sub">Campaign title, goal amount and description</div>
                         </div>
                     </div>
+                    <div class="card-body">
 
-                    {{-- Cover Image --}}
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-icon ic-indigo">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                            </div>
-                            <div>
-                                <div class="card-title">Cover Image</div>
-                                <div class="card-sub">JPG or PNG — max 2MB · Leave empty to keep current</div>
-                            </div>
+                        <div class="field">
+                            <label>Campaign Title</label>
+                            <input type="text" name="title"
+                                   value="{{ old('title', $campaign->title) }}"
+                                   placeholder="Give your campaign a strong title"
+                                   {{ $campaign->isPaused() ? 'disabled' : '' }}>
+                            @error('title')<div class="field-err">{{ $message }}</div>@enderror
                         </div>
-                        <div class="card-body">
 
-                            @if($campaign->cover_image)
-                                <img src="{{ asset('storage/' . $campaign->cover_image) }}"
-                                     class="cover-current" alt="Current cover" id="currentCover">
-                            @else
-                                <div class="cover-placeholder" id="currentCover">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                                </div>
+                        <div class="field">
+                            <label>Category</label>
+                            <select name="category_id" {{ $campaign->isPaused() ? 'disabled' : '' }}>
+                                <option value="">Select a category…</option>
+                                @foreach($categories as $cat)
+                                    <option value="{{ $cat->id }}"
+                                        {{ old('category_id', $campaign->category_id) == $cat->id ? 'selected' : '' }}>
+                                        {{ $cat->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('category_id')<div class="field-err">{{ $message }}</div>@enderror
+                        </div>
+
+                        <div class="field">
+                            <label>Goal Amount (₹)</label>
+                            <input type="number" name="goal_amount"
+                                   value="{{ old('goal_amount', $campaign->goal_amount) }}"
+                                   placeholder="Enter target amount" min="1"
+                                   {{ $campaign->isPaused() ? 'disabled' : '' }}>
+                            @error('goal_amount')<div class="field-err">{{ $message }}</div>@enderror
+                            @php
+                                $userLevel   = auth()->user()->fundraiserLevelName();
+                                $userMaxGoal = auth()->user()->maxCampaignGoal();
+                            @endphp
+                            @if($userMaxGoal)
+                            <div style="font-size:11px;color:var(--text3);margin-top:5px;font-family:var(--font-mono);">
+                                Level: <strong style="color:var(--accent);">{{ $userLevel }}</strong>
+                                — Max goal: <strong>₹{{ number_format($userMaxGoal) }}</strong>
+                            </div>
                             @endif
-
-                            <div class="file-drop" style="{{ $campaign->isPaused() ? 'pointer-events:none;opacity:0.45;' : '' }}">
-                                <input type="file" name="cover_image" accept="image/*"
-                                       {{ $campaign->isPaused() ? 'disabled' : '' }}
-                                       onchange="previewImage(event)">
-                                <div class="file-drop-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-                                </div>
-                                <div class="file-drop-label">Click to upload or drag & drop</div>
-                                <div class="file-drop-hint">JPG, JPEG or PNG · max 2MB · optional</div>
-                            </div>
-                            <img id="newPreview" alt="New cover preview">
-
                         </div>
-                    </div>
 
+                        <div class="field">
+                            <label>Description</label>
+                            <textarea name="description" rows="7" id="descField" maxlength="3000"
+                                      placeholder="Tell your story — why this campaign matters..."
+                                      {{ $campaign->isPaused() ? 'disabled' : '' }}
+                                      oninput="countChars(this,'descCount',3000)">{{ old('description', $campaign->description) }}</textarea>
+                            <div class="char-counter"><span id="descCount">{{ strlen(old('description', $campaign->description ?? '')) }}</span>/3000</div>
+                            @error('description')<div class="field-err">{{ $message }}</div>@enderror
+                        </div>
+
+                    </div>
                 </div>
 
-                {{-- ════ RIGHT ════ --}}
-                <div class="sidebar-stack">
-
-                    {{-- Campaign Controls --}}
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-icon {{ $campaign->isPaused() ? 'ic-yellow' : 'ic-green' }}">
-                                @if($campaign->isPaused())
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                @else
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                @endif
-                            </div>
-                            <div>
-                                <div class="card-title">Campaign Controls</div>
-                                <div class="card-sub">Manage campaign state</div>
-                            </div>
+                {{-- Cover Image --}}
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon ic-indigo">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                         </div>
-                        <div class="card-body">
+                        <div>
+                            <div class="card-title">Cover Image</div>
+                            <div class="card-sub">JPG or PNG — max 2MB · Leave empty to keep current</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+
+                        @if($campaign->cover_image)
+                            <img src="{{ asset('storage/' . $campaign->cover_image) }}"
+                                 class="cover-current" alt="Current cover" id="currentCover">
+                        @else
+                            <div class="cover-placeholder" id="currentCover">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                            </div>
+                        @endif
+
+                        <div class="file-drop" style="{{ $campaign->isPaused() ? 'pointer-events:none;opacity:0.45;' : '' }}">
+                            <input type="file" name="cover_image" accept="image/*"
+                                   {{ $campaign->isPaused() ? 'disabled' : '' }}
+                                   onchange="previewImage(event)">
+                            <div class="file-drop-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                            </div>
+                            <div class="file-drop-label">Click to upload or drag & drop</div>
+                            <div class="file-drop-hint">JPG, JPEG or PNG · max 2MB · optional</div>
+                        </div>
+                        <img id="newPreview" alt="New cover preview">
+
+                    </div>
+                </div>
+
+            </div>
+
+            {{-- ════ RIGHT ════ --}}
+            <div class="sidebar-stack">
+
+                {{-- Campaign Controls --}}
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon {{ $campaign->isPaused() ? 'ic-yellow' : 'ic-green' }}">
                             @if($campaign->isPaused())
-                            <div class="warn-banner">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
-                                <div>
-                                    <div class="warn-banner-title">Editing disabled while paused</div>
-                                    <div class="warn-banner-body">{{ $campaign->pause_reason }}</div>
-                                </div>
-                            </div>
-                            {{-- ✅ FIX: correct route name campaigns.resume --}}
-                            <button type="button" onclick="openModal('resumeModal')" class="btn btn-resume">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                Resume Campaign
-                            </button>
-                            @elseif($campaign->isActive())
-                            <button type="button" onclick="openModal('pauseModal')" class="btn btn-pause">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                Pause Campaign
-                            </button>
-                            @elseif($campaign->isPending())
-                            <div style="text-align:center;padding:8px 0;font-size:12px;color:var(--text3);">
-                                Campaign is awaiting admin approval. You can still edit content.
-                            </div>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            @else
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                             @endif
                         </div>
+                        <div>
+                            <div class="card-title">Campaign Controls</div>
+                            <div class="card-sub">Manage campaign state</div>
+                        </div>
                     </div>
-
-                    {{-- Save --}}
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-icon ic-indigo">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                            </div>
+                    <div class="card-body">
+                        @if($campaign->isPaused())
+                        <div class="warn-banner">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
                             <div>
-                                <div class="card-title">Save Changes</div>
-                                <div class="card-sub">{{ $campaign->isPaused() ? 'Resume campaign to save' : 'Updates saved immediately' }}</div>
+                                <div class="warn-banner-title">Editing disabled while paused</div>
+                                <div class="warn-banner-body">{{ $campaign->pause_reason }}</div>
                             </div>
                         </div>
-                        <div class="card-body">
-                            <button type="submit" class="btn btn-primary" id="saveBtn"
-                                    {{ $campaign->isPaused() ? 'disabled' : '' }}>
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
-                                Save Changes
-                            </button>
-                            <a href="{{ route('dashboard') }}" class="btn btn-ghost" style="margin-top:8px;display:inline-flex;">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                                Cancel
-                            </a>
+                        <button type="button" onclick="openModal('resumeModal')" class="btn btn-resume">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            Resume Campaign
+                        </button>
+                        @elseif($campaign->isActive())
+                        <button type="button" onclick="openModal('pauseModal')" class="btn btn-pause">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            Pause Campaign
+                        </button>
+                        @elseif($campaign->isPending())
+                        <div style="text-align:center;padding:8px 0;font-size:12px;color:var(--text3);">
+                            Campaign is awaiting admin approval. You can still edit content.
+                        </div>
+                        @endif
+                    </div>
+                </div>
+
+                {{-- Save --}}
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon ic-indigo">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                        </div>
+                        <div>
+                            <div class="card-title">Save Changes</div>
+                            <div class="card-sub">{{ $campaign->isPaused() ? 'Resume campaign to save' : 'Updates saved immediately' }}</div>
                         </div>
                     </div>
+                    <div class="card-body">
+                        <button type="submit" class="btn btn-primary" id="saveBtn"
+                                {{ $campaign->isPaused() ? 'disabled' : '' }}>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+                            Save Changes
+                        </button>
+                        <a href="{{ route('campaign.show', $campaign->id) }}" class="btn btn-ghost" style="margin-top:8px;display:inline-flex;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                            Cancel
+                        </a>
+                    </div>
+                </div>
 
-                    {{-- Progress --}}
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-icon ic-indigo">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-                            </div>
-                            <div>
-                                <div class="card-title">Progress</div>
-                                <div class="card-sub">Current fundraising status</div>
-                            </div>
+                {{-- Progress --}}
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon ic-indigo">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
                         </div>
-                        <div class="card-body">
-                            @php
-                                $raised = $campaign->raised_amount ?? 0;
-                                $goal   = $campaign->goal_amount > 0 ? $campaign->goal_amount : 1;
-                                $pct    = min(100, round(($raised / $goal) * 100));
-                            @endphp
-                            <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:6px;">
-                                <span style="font-weight:700;color:var(--accent);font-family:var(--font-mono);">₹{{ number_format($raised) }}</span>
-                                <span style="color:var(--text3);font-family:var(--font-mono);">of ₹{{ number_format($campaign->goal_amount) }}</span>
-                            </div>
-                            <div style="width:100%;background:var(--surface2);border-radius:100px;height:5px;overflow:hidden;margin-bottom:5px;">
-                                <div style="height:100%;border-radius:100px;width:{{ $pct }}%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width 1s ease;"></div>
-                            </div>
-                            <div style="font-size:10px;color:var(--text3);font-family:var(--font-mono);">{{ $pct }}% funded · {{ $campaign->donor_count ?? 0 }} donors</div>
+                        <div>
+                            <div class="card-title">Progress</div>
+                            <div class="card-sub">Current fundraising status</div>
                         </div>
                     </div>
+                    <div class="card-body">
+                        @php
+                            $raised = $campaign->raised_amount ?? 0;
+                            $goal   = $campaign->goal_amount > 0 ? $campaign->goal_amount : 1;
+                            $pct    = min(100, round(($raised / $goal) * 100));
+                        @endphp
+                        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:6px;">
+                            <span style="font-weight:700;color:var(--accent);font-family:var(--font-mono);">₹{{ number_format($raised) }}</span>
+                            <span style="color:var(--text3);font-family:var(--font-mono);">of ₹{{ number_format($campaign->goal_amount) }}</span>
+                        </div>
+                        <div style="width:100%;background:var(--surface2);border-radius:100px;height:5px;overflow:hidden;margin-bottom:5px;">
+                            <div style="height:100%;border-radius:100px;width:{{ $pct }}%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width 1s ease;"></div>
+                        </div>
+                        <div style="font-size:10px;color:var(--text3);font-family:var(--font-mono);">{{ $pct }}% funded · {{ $campaign->donor_count ?? 0 }} donors</div>
+                    </div>
+                </div>
 
-                </div>{{-- /.sidebar-stack --}}
+            </div>{{-- /.sidebar-stack --}}
 
-            </div>{{-- /.form-layout --}}
-        </form>
+        </div>{{-- /.form-layout --}}
+    </form>
 
-    </div>{{-- /.body --}}
-</div>{{-- /.main --}}
-</div>{{-- /.shell --}}
-
-{{-- ══ PAUSE MODAL ══ --}}
-<div id="pauseModal" class="overlay" role="dialog" aria-modal="true">
-    <div class="modal">
-        <button type="button" class="modal-x" onclick="closeModal('pauseModal')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-        </button>
-        <div class="modal-head">
-            <div class="modal-icon" style="background:rgba(245,158,11,0.12);color:var(--yellow);">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    {{-- ══ PAUSE MODAL ══ --}}
+    <div id="pauseModal" class="overlay" role="dialog" aria-modal="true">
+        <div class="modal">
+            <button type="button" class="modal-x" onclick="closeModal('pauseModal')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+            <div class="modal-head">
+                <div class="modal-icon" style="background:rgba(245,158,11,0.12);color:var(--yellow);">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <div>
+                    <div class="modal-ttl">Pause Campaign</div>
+                    <div class="modal-sub">Your campaign will stop appearing publicly</div>
+                </div>
             </div>
-            <div>
-                <div class="modal-ttl">Pause Campaign</div>
-                <div class="modal-sub">Your campaign will stop appearing publicly</div>
-            </div>
+            <form action="{{ route('campaign.pause', $campaign->id) }}" method="POST" id="pauseForm">
+                @csrf
+                <label class="modal-label">Reason for pausing <span style="color:var(--red);">*</span></label>
+                <textarea id="pauseReason" name="reason" rows="3"
+                          placeholder="Tell us why you're pausing (min 10 chars)..."
+                          class="modal-ta" minlength="10" maxlength="500"
+                          oninput="countChars(this,'pauseCount',500)"></textarea>
+                <div class="char-counter"><span id="pauseCount">0</span>/500</div>
+                <p id="pauseErr" class="modal-err">Please provide a reason (min 10 characters).</p>
+                <div class="modal-acts">
+                    <button type="button" onclick="closeModal('pauseModal')" class="modal-btn modal-cancel">Cancel</button>
+                    <button type="submit" id="pauseSubmitBtn" class="modal-btn modal-y-btn">⏸ Pause Campaign</button>
+                </div>
+            </form>
         </div>
-        {{-- ✅ FIX: correct route name campaigns.pause --}}
-        <form action="{{ route('campaign.pause', $campaign->id) }}" method="POST" id="pauseForm">
-            @csrf
-            <label class="modal-label">Reason for pausing <span style="color:var(--red);">*</span></label>
-            <textarea id="pauseReason" name="reason" rows="3"
-                      placeholder="Tell us why you're pausing (min 10 chars)..."
-                      class="modal-ta" minlength="10" maxlength="500"
-                      oninput="countChars(this,'pauseCount',500)"></textarea>
-            <div class="char-counter"><span id="pauseCount">0</span>/500</div>
-            <p id="pauseErr" class="modal-err">Please provide a reason (min 10 characters).</p>
-            <div class="modal-acts">
-                <button type="button" onclick="closeModal('pauseModal')" class="modal-btn modal-cancel">Cancel</button>
-                <button type="submit" id="pauseSubmitBtn" class="modal-btn modal-y-btn">⏸ Pause Campaign</button>
-            </div>
-        </form>
     </div>
-</div>
 
-{{-- ══ RESUME MODAL ══ --}}
-<div id="resumeModal" class="overlay" role="dialog" aria-modal="true">
-    <div class="modal">
-        <button type="button" class="modal-x" onclick="closeModal('resumeModal')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-        </button>
-        <div class="modal-head">
-            <div class="modal-icon" style="background:rgba(16,185,129,0.12);color:var(--green);">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    {{-- ══ RESUME MODAL ══ --}}
+    <div id="resumeModal" class="overlay" role="dialog" aria-modal="true">
+        <div class="modal">
+            <button type="button" class="modal-x" onclick="closeModal('resumeModal')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+            <div class="modal-head">
+                <div class="modal-icon" style="background:rgba(16,185,129,0.12);color:var(--green);">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <div>
+                    <div class="modal-ttl">Resume Campaign</div>
+                    <div class="modal-sub">Your campaign will become public again</div>
+                </div>
             </div>
-            <div>
-                <div class="modal-ttl">Resume Campaign</div>
-                <div class="modal-sub">Your campaign will become public again</div>
-            </div>
+            <form action="{{ route('campaign.resume', $campaign->id) }}" method="POST" id="resumeForm">
+                @csrf
+                <label class="modal-label">Reason for resuming <span style="color:var(--red);">*</span></label>
+                <textarea id="resumeReason" name="resume_reason" rows="3"
+                          placeholder="Tell us why you're resuming (min 10 chars)..."
+                          class="modal-ta" minlength="10" maxlength="500"
+                          oninput="countChars(this,'resumeCount',500)"></textarea>
+                <div class="char-counter"><span id="resumeCount">0</span>/500</div>
+                <p id="resumeErr" class="modal-err">Please provide a reason (min 10 characters).</p>
+                <div class="modal-acts">
+                    <button type="button" onclick="closeModal('resumeModal')" class="modal-btn modal-cancel">Cancel</button>
+                    <button type="submit" id="resumeSubmitBtn" class="modal-btn modal-g-btn">▶ Resume Campaign</button>
+                </div>
+            </form>
         </div>
-        {{-- ✅ FIX: correct route name campaigns.resume --}}
-        <form action="{{ route('campaign.resume', $campaign->id) }}" method="POST" id="resumeForm">
-            @csrf
-            <label class="modal-label">Reason for resuming <span style="color:var(--red);">*</span></label>
-            <textarea id="resumeReason" name="resume_reason" rows="3"
-                      placeholder="Tell us why you're resuming (min 10 chars)..."
-                      class="modal-ta" minlength="10" maxlength="500"
-                      oninput="countChars(this,'resumeCount',500)"></textarea>
-            <div class="char-counter"><span id="resumeCount">0</span>/500</div>
-            <p id="resumeErr" class="modal-err">Please provide a reason (min 10 characters).</p>
-            <div class="modal-acts">
-                <button type="button" onclick="closeModal('resumeModal')" class="modal-btn modal-cancel">Cancel</button>
-                <button type="submit" id="resumeSubmitBtn" class="modal-btn modal-g-btn">▶ Resume Campaign</button>
-            </div>
-        </form>
     </div>
-</div>
 
+@endsection
+
+@push('page_scripts')
 <script>
-/* ── Dark mode ── */
-var html   = document.documentElement;
-var toggle = document.getElementById('themeToggle');
-var saved  = localStorage.getItem('theme') || 'light';
-if (saved === 'dark') { html.setAttribute('data-theme','dark'); toggle.checked = true; }
-toggle.addEventListener('change', function(){
-    var t = this.checked ? 'dark' : 'light';
-    html.setAttribute('data-theme', t);
-    localStorage.setItem('theme', t);
-});
-
-/* ── Hamburger ── */
 var sidebar = document.getElementById('sidebar');
+
 document.getElementById('hamburger').addEventListener('click', function(){
     sidebar.classList.toggle('open');
 });
@@ -582,7 +524,6 @@ document.addEventListener('click', function(e){
     }
 });
 
-/* ── Toast ── */
 function toast(msg, type) {
     type = type || 'success';
     var t = document.createElement('div');
@@ -601,24 +542,20 @@ function toast(msg, type) {
     setTimeout(function(){ toast(@json(session('error')), 'error'); }, 200);
 @endif
 
-/* ── Cover preview ── */
 window.previewImage = function(event) {
     var file = event.target.files[0];
     if (!file) return;
     var preview = document.getElementById('newPreview');
     preview.src = URL.createObjectURL(file);
     preview.style.display = 'block';
-    // Hide the old cover so user sees the new one
     var old = document.getElementById('currentCover');
     if (old) old.style.opacity = '0.4';
 };
 
-/* ── Char counter ── */
 window.countChars = function(el, spanId) {
     document.getElementById(spanId).textContent = el.value.length;
 };
 
-/* ── Modal ── */
 window.openModal = function(id) {
     document.getElementById(id).classList.add('open');
     document.body.style.overflow = 'hidden';
@@ -640,7 +577,6 @@ document.addEventListener('keydown', function(e){
     if (e.key === 'Escape'){ closeModal('pauseModal'); closeModal('resumeModal'); }
 });
 
-/* ── Pause form validation ── */
 document.getElementById('pauseForm').addEventListener('submit', function(e){
     var v = document.getElementById('pauseReason').value.trim();
     var err = document.getElementById('pauseErr');
@@ -650,7 +586,6 @@ document.getElementById('pauseForm').addEventListener('submit', function(e){
     btn.disabled = true; btn.textContent = 'Pausing…';
 });
 
-/* ── Resume form validation ── */
 document.getElementById('resumeForm').addEventListener('submit', function(e){
     var v = document.getElementById('resumeReason').value.trim();
     var err = document.getElementById('resumeErr');
@@ -660,16 +595,12 @@ document.getElementById('resumeForm').addEventListener('submit', function(e){
     btn.disabled = true; btn.textContent = 'Resuming…';
 });
 
-/* ── Save loading state ── */
 document.getElementById('editForm').addEventListener('submit', function(){
     var btn = document.getElementById('saveBtn');
     if (!btn.disabled){ btn.disabled = true; btn.textContent = '⏳ Saving…'; }
 });
 
-/* ── Init char count ── */
 var desc = document.getElementById('descField');
 if (desc) document.getElementById('descCount').textContent = desc.value.length;
 </script>
-
-</body>
-</html>
+@endpush
