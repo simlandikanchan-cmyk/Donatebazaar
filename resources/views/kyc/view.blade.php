@@ -28,8 +28,8 @@
 .banner-rejected{background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.22);color:#7f1d1d;}
 .banner-none{background:rgba(99,102,241,0.06);border-color:rgba(99,102,241,0.18);color:#3730a3;}
 [data-theme="dark"] .banner-pending{color:#fcd34d;}
-[data-theme="dark"] .banner-approved{color:#6ee7b7;}
-[data-theme="dark"] .banner-rejected{color:#fca5a5;}
+[data-theme="dark"] .banner-approved{color:#189d68;}
+[data-theme="dark"] .banner-rejected{color:#a72a2a;}
 [data-theme="dark"] .banner-none{color:#a5b4fc;}
 .banner-pending .kyc-banner-icon{background:rgba(245,158,11,0.15);}
 .banner-approved .kyc-banner-icon{background:rgba(16,185,129,0.15);}

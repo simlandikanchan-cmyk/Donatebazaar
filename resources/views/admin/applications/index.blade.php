@@ -8,7 +8,7 @@
 @push('page_styles')
 <style>
 .alert-success{background:#ecfdf5;border:1px solid rgba(5,196,138,.3);color:#047857;padding:14px 18px;border-radius:var(--r-sm);margin-bottom:20px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:10px;animation:fadeUp .3s ease both}
-[data-theme="dark"] .alert-success{background:rgba(5,196,138,.1);border-color:rgba(5,196,138,.2);color:#6ee7b7}
+[data-theme="dark"] .alert-success{background:rgba(5,196,138,.1);border-color:rgba(5,196,138,.2);color:#189d68}
 .alert-success svg{width:16px;height:16px;flex-shrink:0;color:var(--green)}
 .table-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);animation:fadeUp .4s .15s ease both}
 .table-scroll{overflow-x:auto}
@@ -41,8 +41,8 @@ tbody tr:hover{background:var(--surface2)}
 .b-rejected{background:rgba(240,68,68,.15);color:#b91c1c;border:1px solid rgba(240,68,68,.25)}
 [data-theme="dark"] .b-pending{color:#fbbf24}
 [data-theme="dark"] .b-review{color:#93c5fd}
-[data-theme="dark"] .b-approved{color:#6ee7b7}
-[data-theme="dark"] .b-rejected{color:#fca5a5}
+[data-theme="dark"] .b-approved{color:#189d68}
+[data-theme="dark"] .b-rejected{color:#a72a2a}
 </style>
 @endpush
 

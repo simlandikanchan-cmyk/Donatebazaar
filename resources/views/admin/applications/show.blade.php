@@ -38,8 +38,8 @@
 .b-rejected{background:rgba(240,68,68,.15);color:#b91c1c;border:1px solid rgba(240,68,68,.25)}
 [data-theme="dark"] .b-pending{color:#fbbf24}
 [data-theme="dark"] .b-review{color:#93c5fd}
-[data-theme="dark"] .b-approved{color:#6ee7b7}
-[data-theme="dark"] .b-rejected{color:#fca5a5}
+[data-theme="dark"] .b-approved{color:#189d68}
+[data-theme="dark"] .b-rejected{color:#a72a2a}
 @media(max-width:1100px){.details-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:680px){.details-grid{grid-template-columns:1fr}.hero-card{flex-direction:column}.hero-right{flex-direction:row;align-items:center}.actions-card{flex-direction:column;align-items:flex-start}}
 @media(max-width:600px){.hero-left{flex-direction:column;align-items:flex-start}.hero-av{width:48px;height:48px;font-size:18px}.hero-title{font-size:18px}.c-btn{width:100%}.actions-right{width:100%;flex-direction:column}}

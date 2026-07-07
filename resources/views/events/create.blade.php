@@ -267,8 +267,8 @@ a{text-decoration:none;color:inherit;}
 .alert svg{width:15px;height:15px;flex-shrink:0;margin-top:1px;}
 .alert-success{background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.25);color:#065f46;}
 .alert-error  {background:rgba(239,68,68,0.08); border-color:rgba(239,68,68,0.25); color:#991b1b;}
-[data-theme="dark"] .alert-success{color:#6ee7b7;}
-[data-theme="dark"] .alert-error  {color:#fca5a5;}
+[data-theme="dark"] .alert-success{color:#189d68;}
+[data-theme="dark"] .alert-error  {color:#a72a2a;}
 .alert ul{list-style:disc;padding-left:16px;display:flex;flex-direction:column;gap:3px;}
 
 /* ── SUBMIT BTN ── */

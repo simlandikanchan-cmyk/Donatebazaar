@@ -8,7 +8,7 @@
 @push('page_styles')
 <style>
 .alert-ok{background:rgba(5,196,138,.08);border:1px solid rgba(5,196,138,.22);color:#065f46;padding:12px 16px;border-radius:var(--r-sm);font-size:13px;margin-bottom:16px;display:flex;align-items:center;gap:10px;animation:fadeUp .3s ease;}
-[data-theme="dark"] .alert-ok{color:#6ee7b7;}
+[data-theme="dark"] .alert-ok{color:#189d68;}
 .alert-ok svg{width:15px;height:15px;flex-shrink:0;}
 .back-btn{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--r-sm);font-size:12.5px;font-weight:600;color:var(--text2);cursor:pointer;font-family:var(--font);transition:all var(--ease);margin-bottom:20px;text-decoration:none;}
 .back-btn:hover{border-color:var(--a);color:var(--a);background:var(--a-lt);}

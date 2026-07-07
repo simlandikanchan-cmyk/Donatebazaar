@@ -850,7 +850,7 @@ button { font-family:var(--font); }
                 @if($campaign->is_urgent)
                 <span class="hero-pill" style="background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.3)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                    <span style="color:#fca5a5">Urgent</span>
+                    <span style="color:#a72a2a">Urgent</span>
                 </span>
                 @endif
                 <span class="hero-pill" style="background:rgba(99,102,241,.15);border-color:rgba(99,102,241,.25)">

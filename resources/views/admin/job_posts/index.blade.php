@@ -10,10 +10,10 @@
 .hero-badges { display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; }
 .hero-badge  { display:inline-flex; align-items:center; gap:5px; padding:5px 12px; border-radius:100px;
                font-size:11px; font-weight:600; font-family:var(--mono); }
-.hb-teal   { background:rgba(5,196,138,.2); color:#6ee7b7; border:1px solid rgba(5,196,138,.3); }
-.hb-green  { background:rgba(5,196,138,.2); color:#6ee7b7; border:1px solid rgba(5,196,138,.3); }
+.hb-teal   { background:rgba(5,196,138,.2); color:#189d68; border:1px solid rgba(5,196,138,.3); }
+.hb-green  { background:rgba(5,196,138,.2); color:#189d68; border:1px solid rgba(5,196,138,.3); }
 .hb-amber  { background:rgba(245,158,11,.2); color:#fde68a; border:1px solid rgba(245,158,11,.3); }
-.hb-red    { background:rgba(240,68,68,.2);  color:#fca5a5; border:1px solid rgba(240,68,68,.3); }
+.hb-red    { background:rgba(240,68,68,.2);  color:#a72a2a; border:1px solid rgba(240,68,68,.3); }
 .hb-gray   { background:rgba(107,114,128,.2); color:#d1d5db; border:1px solid rgba(107,114,128,.3); }
 .hero-btn-primary { background:linear-gradient(135deg,var(--a),var(--a2)); color:#fff; box-shadow:0 4px 20px rgba(110,86,247,.45); }
 .hero-btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(110,86,247,.55); }

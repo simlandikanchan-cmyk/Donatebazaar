@@ -102,7 +102,7 @@ label.lbl .req{color:var(--red);margin-left:2px;}
 .alert-err{background:var(--red-lt);border:1px solid rgba(240,68,68,.22);color:var(--red);padding:14px 16px;border-radius:var(--r-sm);font-size:13px;margin-bottom:16px;display:flex;align-items:flex-start;gap:12px;animation:fadeUp .3s ease;}
 .alert-err ul{padding-left:16px;margin-top:6px;}
 .alert-err ul li{margin-bottom:3px;font-size:12px;}
-[data-theme="dark"] .alert-ok{color:#6ee7b7;}
+[data-theme="dark"] .alert-ok{color:#189d68;}
 .alert-ok svg,.alert-err svg{width:15px;height:15px;flex-shrink:0;margin-top:1px;}
 
 /* ── PREVIEW CARD ── */

@@ -51,7 +51,7 @@ Route::middleware(['auth', 'account.active'])->group(function () {
         return view('dashboard', compact(
             'campaigns', 'monthlyData', 'recurringDonations', 'recurringCount',
             'kyc', 'recentDonations', 'totalDonationsCount', 'level', 'levelName',
-            'memberSince', 'daysActive'
+            'memberSince', 'daysActive', 'user'
         ));
     })->name('dashboard');
 });

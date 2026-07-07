@@ -846,7 +846,13 @@ function togglePwd(fieldId, btn) {
 }
 
 // Prevent double submission on slow networks
+
+
+
 document.querySelector('form').addEventListener('submit', function () {
+    
+    
+    
     const btn = this.querySelector('button[type="submit"]');
     if (btn.dataset.submitted === 'true') {
         event?.preventDefault?.();
@@ -856,8 +862,13 @@ document.querySelector('form').addEventListener('submit', function () {
     btn.disabled = true;
     btn.style.opacity = '0.7';
     btn.style.cursor = 'not-allowed';
-});
-</script>
 
+
+});
+
+
+
+
+</script>
 </body>
 </html>

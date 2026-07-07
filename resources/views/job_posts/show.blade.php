@@ -314,8 +314,8 @@
         }
 
         .flash { padding: 0.85rem 1rem; border-radius: 3px; font-size: 0.85rem; margin-bottom: 1rem; }
-        .flash-success { background: rgba(255,255,255,.08); color: #6ee7b7; border: 1px solid rgba(110,231,183,.2); }
-        .flash-error   { background: rgba(200,75,47,.15); color: #fca5a5; border: 1px solid rgba(200,75,47,.25); }
+        .flash-success { background: rgba(255,255,255,.08); color: #189d68; border: 1px solid rgba(110,231,183,.2); }
+        .flash-error   { background: rgba(200,75,47,.15); color: #a72a2a; border: 1px solid rgba(200,75,47,.25); }
 
         .field { margin-bottom: 1rem; }
         .field label {
@@ -343,7 +343,7 @@
             color: rgba(255,255,255,.5);
             padding: 0.5rem 0.75rem;
         }
-        .field-error { font-size: 0.75rem; color: #fca5a5; margin-top: 0.35rem; }
+        .field-error { font-size: 0.75rem; color: #a72a2a; margin-top: 0.35rem; }
 
         .submit-btn {
             width: 100%; padding: 0.9rem;

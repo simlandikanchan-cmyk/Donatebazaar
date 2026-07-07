@@ -75,7 +75,7 @@ td{padding:13px 18px;font-size:13px;vertical-align:middle;}
 
 /* ── ALERT ── */
 .alert-ok{background:rgba(5,196,138,.08);border:1px solid rgba(5,196,138,.22);color:#065f46;padding:12px 16px;border-radius:var(--r-sm);font-size:13px;margin-bottom:16px;display:flex;align-items:center;gap:10px;animation:fadeUp .3s ease;}
-[data-theme="dark"] .alert-ok{color:#6ee7b7;}
+[data-theme="dark"] .alert-ok{color:#189d68;}
 .alert-ok svg{width:15px;height:15px;flex-shrink:0;}
 
 /* ── OVERLAY / MODAL ── */
