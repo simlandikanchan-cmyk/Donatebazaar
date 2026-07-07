@@ -264,64 +264,7 @@ body {
 
 <div class="shell">
 
-{{-- ══ SIDEBAR ══ --}}
-<aside class="sidebar" id="sidebar">
-
-    <div class="s-logo">
-        <div class="s-logo-mark">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-        </div>
-        <div>
-            <div class="s-logo-name">DonateBazaar</div>
-            <div class="s-logo-tag">My Portal</div>
-        </div>
-    </div>
-
-    <div class="s-user">
-        <div class="s-avatar">{{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 1)) }}</div>
-        <div style="overflow:hidden;">
-            <div class="s-user-name">{{ auth()->user()->name ?? 'User' }}</div>
-            <div class="s-user-role">Fundraiser</div>
-        </div>
-    </div>
-
-    <div class="s-label">Navigation</div>
-    <nav class="s-nav">
-        {{-- ✅ FIX: use correct route names --}}
-        <a href="{{ route('dashboard') }}" class="s-link">
-            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
-            Dashboard
-        </a>
-        <a href="{{ route('campaign.create') }}" class="s-link">
-            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-            New Campaign
-        </a>
-    </nav>
-
-    <div class="s-divider"></div>
-
-    <div class="s-label">Editing</div>
-    <nav class="s-nav">
-        <a href="#" class="s-link active">
-            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-            Edit Campaign
-        </a>
-        {{-- ✅ FIX: correct route name for owner show --}}
-        <a href="{{ route('campaign.show', $campaign->id) }}" class="s-link">
-            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-            View Campaign
-        </a>
-    </nav>
-
-    <div class="s-bottom">
-        <a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('__lf').submit();" class="s-link" style="color:rgba(248,113,113,0.75);">
-            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-            Sign Out
-        </a>
-        <form id="__lf" action="{{ route('logout') }}" method="POST" style="display:none;">@csrf</form>
-    </div>
-
-</aside>
+@include('partials.user-sidebar')
 
 {{-- ══ MAIN ══ --}}
 <div class="main">

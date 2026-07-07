@@ -429,77 +429,7 @@ body {
     } catch (\Throwable $e) {}
 @endphp
 
-{{-- ══ SIDEBAR ══ --}}
-<aside class="sidebar" id="sidebar">
-
-    <div class="s-logo">
-        <div class="s-logo-mark">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-        </div>
-        <div>
-            <div class="s-logo-name">DonateBazaar</div>
-            <div class="s-logo-tag">My Portal</div>
-        </div>
-    </div>
-
-    <div class="s-user">
-        <div class="s-avatar">{{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 1)) }}</div>
-        <div style="overflow:hidden;">
-            <div class="s-user-name">{{ auth()->user()->name ?? 'User' }}</div>
-            <div class="s-user-role">Fundraiser</div>
-        </div>
-    </div>
-
-    <div class="s-label">Navigation</div>
-    <nav class="s-nav">
-        <a href="{{ url('/user/dashboard') }}" class="s-link">
-            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-            Dashboard
-        </a>
-        <a href="{{ route('campaign.create') }}" class="s-link">
-            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-            New Campaign
-        </a>
-    </nav>
-
-    <div class="s-divider"></div>
-
-    <div class="s-label">This Campaign</div>
-    <nav class="s-nav">
-        <a href="#" class="s-link active">
-            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-            Overview
-        </a>
-        <a href="{{ route('campaign.edit', $campaign->id) }}" class="s-link">
-            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-            Edit Campaign
-        </a>
-        <a href="{{ route('events.create', $campaign->id) }}" class="s-link">
-            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-            Add Event
-        </a>
-        @if($kyc)
-        <a href="{{ route('kyc.view', $campaign->id) }}" class="s-link">
-            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-            KYC Documents
-        </a>
-        @else
-        <a href="{{ route('kyc.upload.form', $campaign->id) }}" class="s-link">
-            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-            KYC Documents
-        </a>
-        @endif
-    </nav>
-
-    <div class="s-bottom">
-        <a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('__lf').submit();" class="s-link" style="color:rgba(248,113,113,0.75);">
-            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-            Sign Out
-        </a>
-        <form id="__lf" action="{{ route('logout') }}" method="POST" style="display:none;">@csrf</form>
-    </div>
-
-</aside>
+@include('partials.user-sidebar')
 
 {{-- ══ MAIN ══ --}}
 <div class="main">
