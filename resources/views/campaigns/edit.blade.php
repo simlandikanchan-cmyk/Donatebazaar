@@ -7,6 +7,7 @@
     <title>Edit Campaign — DonateBazaar</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    @vite('resources/css/user.css')
 <style>
 :root {
     --bg:           #f4f5fb;
@@ -17,9 +18,6 @@
     --text:         #0f1117;
     --text2:        #4b5563;
     --text3:        #9ca3af;
-    --sidebar-bg:   #0d0e1a;
-    --sidebar-text: rgba(255,255,255,0.65);
-    --sidebar-act:  rgba(120,119,255,0.18);
     --accent:       #6366f1;
     --accent2:      #8b5cf6;
     --accent-glow:  rgba(99,102,241,0.18);
@@ -43,9 +41,6 @@
     --text:         #f0f1ff;
     --text2:        #a5b4c8;
     --text3:        #5a6579;
-    --sidebar-bg:   #07080f;
-    --sidebar-text: rgba(255,255,255,0.55);
-    --sidebar-act:  rgba(120,119,255,0.22);
     --accent-glow:  rgba(99,102,241,0.25);
     --shadow:       0 1px 3px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.2);
     --shadow-lg:    0 8px 40px rgba(0,0,0,0.5);
@@ -63,76 +58,18 @@ body {
     overflow-x: hidden;
 }
 
-/* ══ SHELL ══ */
-.shell { display: flex; min-height: 100vh; }
-
-/* ══ SIDEBAR ══ */
-.sidebar {
-    width: 220px; flex-shrink: 0;
-    background: var(--sidebar-bg);
-    display: flex; flex-direction: column;
-    position: fixed; top: 0; left: 0; bottom: 0;
-    z-index: 200; overflow-y: auto; overflow-x: hidden;
-    border-right: 1px solid rgba(255,255,255,0.04);
-    transition: transform 0.3s ease;
-}
-.sidebar::-webkit-scrollbar { width: 3px; }
-.sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 3px; }
-
-.s-logo { display: flex; align-items: center; gap: 10px; padding: 20px 16px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
-.s-logo-mark { width: 34px; height: 34px; border-radius: 10px; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 4px 14px rgba(99,102,241,0.35); }
-.s-logo-mark svg { width: 17px; height: 17px; color: #fff; }
-.s-logo-name { font-size: 15px; font-weight: 700; color: #fff; letter-spacing: -0.01em; }
-.s-logo-tag  { font-size: 9px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.12em; margin-top: 1px; }
-
-.s-user { margin: 10px 8px 4px; padding: 9px 11px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-sm); display: flex; align-items: center; gap: 9px; flex-shrink: 0; }
-.s-avatar { width: 30px; height: 30px; border-radius: 7px; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.s-user-name { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.85); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.s-user-role { font-size: 10px; color: rgba(255,255,255,0.35); margin-top: 1px; }
-
-.s-label { font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.22); text-transform: uppercase; letter-spacing: 0.14em; padding: 14px 16px 4px; font-family: var(--font-mono); }
-.s-nav { padding: 0 6px; }
-.s-link { display: flex; align-items: center; gap: 9px; padding: 8px 10px; border-radius: 8px; color: var(--sidebar-text); font-size: 12.5px; font-weight: 500; text-decoration: none; transition: background var(--transition), color var(--transition); margin-bottom: 1px; border: none; background: transparent; width: 100%; text-align: left; cursor: pointer; position: relative; }
-.s-link:hover  { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.9); }
-.s-link.active { background: var(--sidebar-act); color: #a5b4fc; }
-.s-link.active::before { content: ''; position: absolute; left: 0; top: 20%; bottom: 20%; width: 3px; border-radius: 0 2px 2px 0; background: var(--accent); }
-.s-icon { width: 15px; height: 15px; flex-shrink: 0; opacity: 0.8; }
-.s-divider { height: 1px; background: rgba(255,255,255,0.05); margin: 6px 14px; }
-.s-bottom { margin-top: auto; padding: 10px 6px 14px; border-top: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
-
-/* ══ MAIN ══ */
-.main { margin-left: 220px; flex: 1; min-width: 0; display: flex; flex-direction: column; min-height: 100vh; }
-
-/* ── Topbar ── */
-.topbar { display: flex; align-items: center; justify-content: space-between; padding: 0 24px; height: 60px; background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; gap: 16px; flex-shrink: 0; }
-.topbar-left { display: flex; align-items: center; gap: 10px; }
+/* ══ TOPBAR EXTRAS (not in user.css) ══ */
 .topbar-back { display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--border2); background: var(--surface2); color: var(--text2); cursor: pointer; text-decoration: none; transition: all var(--transition); flex-shrink: 0; }
 .topbar-back:hover { background: var(--accent-glow); color: var(--accent); border-color: var(--accent); }
 .topbar-back svg { width: 13px; height: 13px; }
 .topbar-title h1 { font-size: 17px; font-weight: 700; color: var(--text); letter-spacing: -0.02em; }
 .topbar-title p  { font-size: 11px; color: var(--text3); margin-top: 1px; }
-.topbar-right { display: flex; align-items: center; gap: 8px; }
-
 .status-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 11px; border-radius: 100px; font-size: 10.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; font-family: var(--font-mono); }
 .status-chip .dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
 .chip-active   { background: rgba(16,185,129,0.12); color: #10b981; border: 1px solid rgba(16,185,129,0.25); }
 .chip-paused   { background: rgba(99,102,241,0.12); color: #818cf8; border: 1px solid rgba(99,102,241,0.25); }
 .chip-pending  { background: rgba(245,158,11,0.12); color: #f59e0b; border: 1px solid rgba(245,158,11,0.25); }
 .chip-rejected { background: rgba(239,68,68,0.12);  color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
-
-.theme-toggle { position: relative; }
-.theme-toggle input { position: absolute; opacity: 0; width: 0; height: 0; }
-.theme-toggle label { display: flex; align-items: center; justify-content: space-between; width: 50px; height: 26px; border-radius: 100px; background: var(--surface2); border: 1px solid var(--border2); cursor: pointer; padding: 3px 4px; position: relative; transition: background var(--transition); }
-.theme-toggle label::after { content: ''; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); position: absolute; left: 4px; transition: transform 0.3s cubic-bezier(.4,0,.2,1); box-shadow: 0 2px 6px rgba(99,102,241,0.4); }
-.theme-toggle input:checked + label::after { transform: translateX(22px); }
-.theme-icons { display: flex; justify-content: space-between; width: 100%; position: relative; z-index: 1; }
-.theme-icons svg { width: 11px; height: 11px; color: var(--text3); }
-.t-avatar { width: 32px; height: 32px; border-radius: 9px; background: linear-gradient(135deg,var(--accent),var(--accent2)); color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
-.hamburger { display: none; width: 32px; height: 32px; border-radius: 9px; border: 1px solid var(--border2); background: var(--surface2); cursor: pointer; color: var(--text2); align-items: center; justify-content: center; flex-shrink: 0; }
-.hamburger svg { width: 15px; height: 15px; }
-
-/* ── Body ── */
-.body { padding: 24px 28px 60px; flex: 1; }
 
 /* ══ FLASH ══ */
 .flash { display: flex; align-items: flex-start; gap: 10px; padding: 12px 16px; border-radius: var(--radius); font-size: 13px; font-weight: 500; margin-bottom: 20px; border: 1px solid transparent; }
@@ -254,8 +191,6 @@ body {
 
 /* ══ RESPONSIVE ══ */
 @media (max-width: 900px) { .form-layout { grid-template-columns: 1fr; } .sidebar-stack { position: static; } }
-@media (max-width: 820px) { .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); } .main { margin-left: 0; } .hamburger { display: flex; } .body { padding: 14px 14px 60px; } }
-@media (max-width: 600px) { .topbar { padding: 0 14px; } }
 </style>
 </head>
 <body>

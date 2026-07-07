@@ -79,8 +79,10 @@ svg { display: block; flex-shrink: 0; }
     transition: transform .3s cubic-bezier(.4,0,.2,1);
 }
 .sidebar::-webkit-scrollbar { width: 0; }
-.sidebar-overlay { display: none; position: fixed; inset:0; z-index:299; background:rgba(4,5,14,.55); backdrop-filter:blur(4px); }
-.sidebar-overlay.open { display: block; }
+.sidebar-overlay,
+.sidebar-backdrop { display: none; position: fixed; inset:0; z-index:299; background:rgba(4,5,14,.55); backdrop-filter:blur(4px); }
+.sidebar-overlay.open,
+.sidebar-backdrop.open { display: block; }
 
 .s-logo {
     display: flex; align-items: center; gap: 11px;
