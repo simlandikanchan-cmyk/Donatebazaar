@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Mail\BlogStatusMail;
 use App\Http\Controllers\Controller;
 use App\Models\Blog;
 use App\Models\BlogReport;
@@ -12,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -324,6 +326,8 @@ public function index(Request $request)
 
         $blog->transitionTo(Blog::STATUS_PUBLISHED, Auth::id(), $request->get('note'));
 
+        Mail::to($blog->author)->send(new BlogStatusMail($blog, 'published'));
+
         return back()->with('success', "Blog \"{$blog->title}\" approved and published.");
     }
 
@@ -340,6 +344,8 @@ public function index(Request $request)
         );
 
         $blog->transitionTo(Blog::STATUS_REJECTED, Auth::id(), $request->reason);
+
+        Mail::to($blog->author)->send(new BlogStatusMail($blog, 'rejected', $request->reason));
 
         return back()->with('success', "Blog \"{$blog->title}\" rejected.");
     }

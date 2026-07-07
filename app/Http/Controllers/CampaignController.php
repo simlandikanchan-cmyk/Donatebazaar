@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\CampaignCreatedMail;
 use App\Models\Campaign;
 use App\Models\Category;
 use App\Models\CategoryProduct;
@@ -13,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Mail;
 use Intervention\Image\Laravel\Facades\Image;
 
 class CampaignController extends Controller
@@ -123,6 +125,8 @@ class CampaignController extends Controller
 
         // Clear categories cache when new campaign is created
         Cache::forget('active_campaign_categories');
+
+        Mail::to($campaign->user)->send(new CampaignCreatedMail($campaign));
 
         return redirect()
             ->route('kyc.upload.form', $campaign->id)

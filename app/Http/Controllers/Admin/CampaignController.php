@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Mail\CampaignStatusMail;
 use App\Http\Controllers\Controller;
 use App\Models\Campaign;
 use App\Notifications\KycRequestedNotification;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class CampaignController extends Controller
 {
@@ -140,6 +142,8 @@ public function edit(Campaign $campaign)
             );
         });
 
+        Mail::to($campaign->user)->send(new CampaignStatusMail($campaign, 'approved'));
+
         return back()->with('success', 'Campaign approved and live.');
     }
 
@@ -166,6 +170,8 @@ public function edit(Campaign $campaign)
                 'Rejected: ' . $data['reason']
             );
         });
+
+        Mail::to($campaign->user)->send(new CampaignStatusMail($campaign, 'rejected', $data['reason']));
 
         return back()->with('success', 'Campaign rejected.');
     }

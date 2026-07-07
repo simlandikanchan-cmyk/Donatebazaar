@@ -2,10 +2,12 @@
 
 namespace App\Services\Blog;
 
+use App\Mail\BlogCreatedMail;
 use App\Models\Blog;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class BlogService
@@ -97,6 +99,8 @@ class BlogService
             'to_status' => $blog->status,
             'note' => 'Blog created.',
         ]);
+
+        Mail::to($blog->author)->send(new BlogCreatedMail($blog));
 
         return $blog;
     }
