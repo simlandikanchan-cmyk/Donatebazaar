@@ -94,7 +94,7 @@
   </a>
 </div>
 
-@php $isRead = isset($message->read_at) && $message->read_at; @endphp
+@php $isRead = (bool) $message->is_read; @endphp
 <div class="detail-grid">
 
   <div class="detail-card">
@@ -181,12 +181,6 @@
           <div class="sc-key">Relative</div>
           <div class="sc-val muted">{{ $message->created_at->diffForHumans() }}</div>
         </div>
-        @if($isRead)
-        <div class="sc-row">
-          <div class="sc-key">Read At</div>
-          <div class="sc-val muted">{{ \Carbon\Carbon::parse($message->read_at)->format('d M Y, h:i A') }}</div>
-        </div>
-        @endif
       </div>
     </div>
 
@@ -199,6 +193,12 @@
           </span>
           Reply via Email
         </a>
+        <button type="button" class="qa-btn" id="toggleReadBtn">
+          <span class="qa-icon qi-gray">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9l9 6 9-6"/></svg>
+          </span>
+          Mark as Unread
+        </button>
         <a href="{{ route('admin.messages') }}" class="qa-btn">
           <span class="qa-icon qi-gray">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
@@ -219,4 +219,43 @@
 
   </div>
 </div>
+
+@push('page_scripts')
+<script>
+(function(){
+  'use strict';
+  var btn = document.getElementById('toggleReadBtn');
+  if(!btn) return;
+  var csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+  var url  = "{{ route('admin.messages.toggle-read', $message->id) }}";
+
+  btn.addEventListener('click', function(){
+    fetch(url, {
+      method: 'POST',
+      headers: { 'X-CSRF-TOKEN': csrf, 'Accept':'application/json' }
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(!d.ok) return;
+      var badges = document.querySelectorAll('.badge');
+      badges.forEach(function(b){
+        b.className = 'badge b-' + (d.is_read ? 'read' : 'new');
+        b.innerHTML = '<span class="badge-dot"></span>' + (d.is_read ? 'Read' : 'New');
+      });
+      btn.querySelector('span.qa-icon').innerHTML = d.is_read
+        ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9l9 6 9-6"/></svg>'
+        : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
+      btn.childNodes[btn.childNodes.length-1].textContent = d.is_read ? ' Mark as Unread' : ' Mark as Read';
+
+      var chip = document.getElementById('sidebarUnread');
+      if(chip){
+        var cur = parseInt(chip.textContent, 10) || 0;
+        cur = d.is_read ? Math.max(0, cur - 1) : cur + 1;
+        if(cur > 0){ chip.textContent = cur; chip.style.display = ''; } else { chip.style.display = 'none'; }
+      }
+    });
+  });
+})();
+</script>
+@endpush
 @endsection
