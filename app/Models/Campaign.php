@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Campaign extends Model
 {
@@ -92,6 +93,20 @@ class Campaign extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Users who follow this campaign (polymorphic followers table).
+     */
+    public function followers()
+    {
+        return $this->morphToMany(
+            User::class,
+            'following',
+            'followers',
+            'following_id',
+            'follower_id'
+        );
     }
 
     public function category()

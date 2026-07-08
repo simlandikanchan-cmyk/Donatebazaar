@@ -3,13 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Event;
-use App\Models\Category;
+use App\Mail\EventPublishedMail;
 use App\Models\Campaign;
+use App\Models\Category;
+use App\Models\Event;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -98,6 +100,7 @@ class EventController extends Controller
             // draft = saved but not live, active = published/live
             'status'          => ['nullable', 'in:draft,active'],
             'location' => ['nullable', 'string', 'max:255'],
+            'send_notification' => ['nullable', 'boolean'],
         ]);
 
         // Build unique slug
@@ -111,6 +114,7 @@ class EventController extends Controller
         // Respect the button the admin clicked (draft or active)
         // Default to draft if nothing sent
         $validated['status']           = $request->input('status', 'draft');
+        $validated['send_notification'] = $request->boolean('send_notification');
         $validated['slug']             = $slug;
         $validated['raised_amount']    = 0;
         $validated['registered_count'] = 0;
@@ -129,6 +133,11 @@ class EventController extends Controller
             'admin_id' => auth()->id(),
             'status'   => $event->status,
         ]);
+
+        // Notify campaign followers + creator if published with notifications on
+        if ($event->status === Event::STATUS_ACTIVE) {
+            $this->notifyEventPublished($event);
+        }
 
         $message = $event->status === 'active'
             ? 'Event published successfully!'
@@ -275,6 +284,7 @@ if (
     public function publish(Event $event): RedirectResponse
 {
     $event->update(['status' => Event::STATUS_ACTIVE]);
+    $this->notifyEventPublished($event);
     return back()->with('success', 'Event published successfully.');
 }
 
@@ -319,6 +329,7 @@ public function toggleSetting(Request $request, Event $event): RedirectResponse
 public function approve(Event $event): RedirectResponse
 {
     $event->update(['status' => Event::STATUS_ACTIVE]);
+    $this->notifyEventPublished($event);
 
     Log::info('Admin approved event', [
         'event_id' => $event->id,
@@ -346,6 +357,67 @@ public function reject(Event $event): RedirectResponse
 
     return back()->with('success', 'Event has been rejected.');
 }
+
+
+    /* ─────────────────────────────────────────
+     | NOTIFY CAMPAIGN FOLLOWERS + CREATOR
+     | Sends the "event published" email when the
+     | event's send_notification flag is enabled.
+     ───────────────────────────────────────── */
+    protected function notifyEventPublished(Event $event): void
+    {
+        if (! $event->send_notification) {
+            return;
+        }
+
+        $campaign = $event->campaign;
+        if (! $campaign) {
+            return;
+        }
+
+        // Recipients: campaign creator + anyone following the campaign.
+        $recipients = collect();
+
+        if ($campaign->user && $campaign->user->email) {
+            $recipients->push($campaign->user);
+        }
+
+        try {
+            foreach ($campaign->followers as $follower) {
+                if ($follower->email) {
+                    $recipients->push($follower);
+                }
+            }
+        } catch (\Throwable $e) {
+            // Followers relation unavailable — creator still gets notified.
+            Log::warning('Could not load campaign followers for event notification', [
+                'event_id' => $event->id,
+                'error'    => $e->getMessage(),
+            ]);
+        }
+
+        $recipients = $recipients->unique(fn($user) => $user->email);
+
+        foreach ($recipients as $user) {
+            try {
+                Mail::to($user->email)->send(new EventPublishedMail($event, $user));
+            } catch (\Throwable $e) {
+                Log::error('Failed to send event published notification', [
+                    'event_id' => $event->id,
+                    'user_id'  => $user->id,
+                    'email'    => $user->email,
+                    'error'    => $e->getMessage(),
+                ]);
+            }
+        }
+
+        if ($recipients->isNotEmpty()) {
+            Log::info('Event published notifications sent', [
+                'event_id'   => $event->id,
+                'recipients' => $recipients->count(),
+            ]);
+        }
+    }
 
 
 }
