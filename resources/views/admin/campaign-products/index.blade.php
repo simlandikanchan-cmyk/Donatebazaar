@@ -48,6 +48,14 @@
             <option value="user" {{ $source === 'user' ? 'selected' : '' }}>User</option>
         </select>
 
+        <select name="category" onchange="this.form.submit()"
+                style="padding:9px 14px;border:1px solid var(--border2);border-radius:var(--r-xs);background:var(--bg);color:var(--text);font-size:13px;outline:none;min-width:150px;">
+            <option value="">All Categories</option>
+            @foreach($categories as $cat)
+                <option value="{{ $cat->id }}" {{ (string)$categoryId === (string)$cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
+            @endforeach
+        </select>
+
         <input type="date" name="from" value="{{ $from }}"
                onchange="this.form.submit()"
                style="padding:9px 14px;border:1px solid var(--border2);border-radius:var(--r-xs);background:var(--bg);color:var(--text);font-size:13px;outline:none;">
@@ -58,7 +66,7 @@
                onchange="this.form.submit()"
                style="padding:9px 14px;border:1px solid var(--border2);border-radius:var(--r-xs);background:var(--bg);color:var(--text);font-size:13px;outline:none;">
 
-        @if($search || $source || $from || $to)
+        @if($search || $source || $categoryId || $from || $to)
             <a href="{{ route('admin.campaign-products.index', ['status' => $status]) }}"
                style="padding:9px 14px;border:1px solid var(--border2);border-radius:var(--r-xs);color:var(--text3);font-size:13px;text-decoration:none;">
                 &#10005; Clear
@@ -69,7 +77,7 @@
         <input type="hidden" name="direction" value="{{ $dir }}">
     </form>
 
-    <a href="{{ route('admin.campaign-products.export', request()->only(['status', 'search', 'source'])) }}"
+    <a href="{{ route('admin.campaign-products.export', request()->only(['status', 'search', 'source', 'category'])) }}"
        style="display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border:1px solid var(--border2);border-radius:var(--r-xs);color:var(--text2);font-size:13px;text-decoration:none;white-space:nowrap;">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
         Export CSV
@@ -136,6 +144,7 @@
                         </a>
                     </th>
                     <th>Remaining</th>
+                    <th>Category</th>
                     <th>Source</th>
                     <th>
                         <a href="{{ route('admin.campaign-products.index', array_merge(request()->except(['sort', 'direction', 'page']), ['sort' => 'approval_status', 'direction' => ($sort === 'approval_status' && $dir === 'asc') ? 'desc' : 'asc'])) }}"
@@ -202,6 +211,11 @@
                         @else
                             &mdash;
                         @endif
+                    </td>
+                    <td>
+                        <span style="font-size:12px;color:var(--text2);">
+                            {{ $product->categoryProduct?->category?->name ?? $product->categoryProduct?->name ?? '—' }}
+                        </span>
                     </td>
                     <td>
                         <span class="badge {{ $product->source === 'admin' ? 'b-active' : 'b-paused' }}">

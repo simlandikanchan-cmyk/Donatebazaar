@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Mail\CampaignProductStatusMail;
 use App\Models\CampaignProduct;
+use App\Models\Category;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,13 +17,14 @@ class CampaignProductController extends Controller
 {
     public function index(Request $request): View
     {
-        $status   = $request->input('status', 'pending');
-        $search   = $request->input('search');
-        $source   = $request->input('source');
-        $from     = $request->input('from');
-        $to       = $request->input('to');
-        $sort     = $request->input('sort', 'created_at');
-        $dir      = $request->input('direction', 'desc');
+        $status     = $request->input('status', 'pending');
+        $search     = $request->input('search');
+        $source     = $request->input('source');
+        $categoryId = $request->input('category');
+        $from       = $request->input('from');
+        $to         = $request->input('to');
+        $sort       = $request->input('sort', 'created_at');
+        $dir        = $request->input('direction', 'desc');
 
         $allowedSorts = ['name', 'price', 'quantity', 'created_at', 'approval_status'];
         if (!in_array($sort, $allowedSorts)) {
@@ -33,7 +35,8 @@ class CampaignProductController extends Controller
         $query = CampaignProduct::with([
             'campaign:id,title,slug',
             'user:id,name,email',
-            'categoryProduct:id,name',
+            'categoryProduct:id,name,category_id',
+            'categoryProduct.category:id,name',
         ]);
 
         if ($status !== 'all') {
@@ -53,6 +56,10 @@ class CampaignProductController extends Controller
             $query->where('source', $source);
         }
 
+        if ($categoryId) {
+            $query->whereHas('categoryProduct.category', fn($cq) => $cq->where('id', $categoryId));
+        }
+
         if ($from) {
             $query->whereDate('created_at', '>=', $from);
         }
@@ -68,9 +75,12 @@ class CampaignProductController extends Controller
         $cntRejected = CampaignProduct::where('approval_status', 'rejected')->count();
         $cntTotal    = CampaignProduct::count();
 
+        $categories = Category::orderBy('name')->get();
+
         return view('admin.campaign-products.index', compact(
-            'products', 'status', 'search', 'source', 'from', 'to',
-            'sort', 'dir', 'cntPending', 'cntApproved', 'cntRejected', 'cntTotal'
+            'products', 'status', 'search', 'source', 'categoryId', 'categories',
+            'from', 'to', 'sort', 'dir',
+            'cntPending', 'cntApproved', 'cntRejected', 'cntTotal'
         ));
     }
 
@@ -195,14 +205,16 @@ class CampaignProductController extends Controller
 
     public function exportCsv(Request $request): \Symfony\Component\HttpFoundation\StreamedResponse
     {
-        $status   = $request->input('status', 'all');
-        $search   = $request->input('search');
-        $source   = $request->input('source');
+        $status     = $request->input('status', 'all');
+        $search     = $request->input('search');
+        $source     = $request->input('source');
+        $categoryId = $request->input('category');
 
         $query = CampaignProduct::with([
             'campaign:id,title,slug',
             'user:id,name,email',
-            'categoryProduct:id,name',
+            'categoryProduct:id,name,category_id',
+            'categoryProduct.category:id,name',
             'approver:id,name',
         ]);
 
@@ -223,6 +235,10 @@ class CampaignProductController extends Controller
             $query->where('source', $source);
         }
 
+        if ($categoryId) {
+            $query->whereHas('categoryProduct.category', fn($cq) => $cq->where('id', $categoryId));
+        }
+
         $products = $query->latest()->get();
 
         $headers = [
@@ -236,7 +252,7 @@ class CampaignProductController extends Controller
             fputcsv($file, [
                 'ID', 'Name', 'Description', 'Price', 'Quantity', 'Remaining',
                 'Source', 'Status', 'Campaign', 'Owner', 'Category Product',
-                'Approved By', 'Approved At', 'Created At'
+                'Category', 'Approved By', 'Approved At', 'Created At'
             ]);
 
             foreach ($products as $p) {
@@ -252,6 +268,7 @@ class CampaignProductController extends Controller
                     $p->campaign?->title,
                     $p->user?->name . ' (' . $p->user?->email . ')',
                     $p->categoryProduct?->name,
+                    $p->categoryProduct?->category?->name,
                     $p->approver?->name,
                     $p->approved_at?->format('Y-m-d H:i:s'),
                     $p->created_at->format('Y-m-d H:i:s'),
