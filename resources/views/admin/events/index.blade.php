@@ -94,7 +94,7 @@ tbody tr:hover{background:var(--surface2);}
 .act-reject{color:var(--red);background:var(--red-lt);border-color:rgba(240,68,68,.25);}
 .act-reject:hover{background:var(--red);color:#fff;border-color:var(--red);}
 .act-form{display:inline;}
-.act-form button{all:unset;}
+.act-form button{font-family:var(--font);line-height:normal;}
 
 /* empty */
 .empty-row td{text-align:center;padding:56px 20px;}
