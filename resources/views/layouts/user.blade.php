@@ -24,7 +24,9 @@
 {{-- ══════════════════════════════════════════
      SIDEBAR
 ══════════════════════════════════════════ --}}
+@auth
 @include('partials.user-sidebar')
+@endauth
 
 {{-- ══════════════════════════════════════════
      MAIN
@@ -74,6 +76,7 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
                 New Campaign
             </a>
+            @auth
             <div class="av-wrap" id="avWrap">
                 <div class="t-avatar" title="Account">
                     @if(auth()->user()->avatar)
@@ -106,6 +109,7 @@
                     </a>
                 </div>
             </div>
+            @endauth
             @endif
         </div>
     </header>
