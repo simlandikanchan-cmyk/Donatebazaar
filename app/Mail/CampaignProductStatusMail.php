@@ -17,12 +17,14 @@ class CampaignProductStatusMail extends Mailable
     public CampaignProduct $product;
     public string $status;
     public ?string $reason;
+    public ?\Illuminate\Contracts\Auth\Authenticatable $admin;
 
-    public function __construct(CampaignProduct $product, string $status, ?string $reason = null)
+    public function __construct(CampaignProduct $product, string $status, ?string $reason = null, ?\Illuminate\Contracts\Auth\Authenticatable $admin = null)
     {
         $this->product = $product;
         $this->status  = $status;
         $this->reason  = $reason;
+        $this->admin   = $admin ?? auth()->user();
     }
 
     public function envelope(): Envelope
@@ -38,6 +40,12 @@ class CampaignProductStatusMail extends Mailable
                     $this->product->user->name,
                 ),
             ],
+            replyTo: [
+                new Address(
+                    $this->admin?->email ?? config('mail.from.address'),
+                    $this->admin?->name ?? config('mail.from.name'),
+                ),
+            ],
             subject: $subject,
         );
     }
@@ -51,6 +59,7 @@ class CampaignProductStatusMail extends Mailable
                 'user'    => $this->product->user,
                 'status'  => $this->status,
                 'reason'  => $this->reason,
+                'admin'   => $this->admin,
             ],
         );
     }

@@ -752,7 +752,7 @@ button { font-family:var(--font); }
     $products = collect();
     try {
         if (method_exists($campaign, 'products')) {
-            $products = $campaign->products()->where('is_active', 1)->with('categoryProduct')->get();
+            $products = $campaign->products()->where('is_active', 1)->where('approval_status', 'approved')->with('categoryProduct')->get();
         }
     } catch (\Throwable $e) {}
 

@@ -39,6 +39,10 @@
               Hi {{ $user->name }},
             </h1>
 
+            <p style="font-size:13px;color:#9ca3af;margin:0 0 16px;">
+              Reviewed by <strong>{{ $admin->name ?? 'Admin' }}</strong> &mdash; {{ now()->format('d M Y, h:i A') }}
+            </p>
+
             @if($status === 'approved')
               <p style="font-size:14.5px;color:#6b7280;line-height:1.7;margin:0 0 24px;">
                 Your product <strong>"{{ $product->name }}"</strong> has been reviewed and

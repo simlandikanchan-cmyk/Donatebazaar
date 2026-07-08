@@ -52,8 +52,10 @@ class CampaignProductController extends Controller
             'is_active'       => true,
         ]);
 
+        $admin = Auth::user();
+
         Mail::to($product->user)->queue(
-            new CampaignProductStatusMail($product, 'approved')
+            new CampaignProductStatusMail($product, 'approved', null, $admin)
         );
 
         return back()->with('success', "Product \"{$product->name}\" approved.");
@@ -76,8 +78,10 @@ class CampaignProductController extends Controller
             'is_active'       => false,
         ]);
 
+        $admin = Auth::user();
+
         Mail::to($product->user)->queue(
-            new CampaignProductStatusMail($product, 'rejected', $data['reason'])
+            new CampaignProductStatusMail($product, 'rejected', $data['reason'], $admin)
         );
 
         return back()->with('success', "Product \"{$product->name}\" rejected.");
