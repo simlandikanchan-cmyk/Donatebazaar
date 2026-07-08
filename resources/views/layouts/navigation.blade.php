@@ -271,6 +271,9 @@
 
     </div>
 
+    {{-- ── Mobile drawer backdrop ── --}}
+    <div id="db-backdrop" class="db-backdrop"></div>
+
     {{-- ── Mobile drawer ── --}}
     <div id="mobile-drawer"
          class="db-mobile"
@@ -357,27 +360,3 @@
     </div>
 
 </header>
-
-@once
-<style>
-/* / Dropdown header avatar */
-.db-dropdown__avatar {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    object-fit: cover;
-    flex-shrink: 0;
-}
-
-/* / Mobile drawer avatar */
-.db-mobile__avatar {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    object-fit: cover; 
-    flex-shrink: 0;
-}
-</style>
-<link rel="stylesheet" href="{{ asset('css/navbar.css') }}">
-<script src="{{ asset('js/navbar.js') }}" defer></script>
-@endonce

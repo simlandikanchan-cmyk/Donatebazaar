@@ -49,6 +49,8 @@
 }
 
 .db-navbar__inner {
+    position: relative;
+    z-index: 2;
     display: flex;
     align-items: center;
     max-width: 1240px;
@@ -589,7 +591,10 @@
 }
 
 .db-mobile.is-open {
-    max-height: 640px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    z-index: 2;
 }
 
 .db-mobile__nav {
@@ -745,4 +750,37 @@
     bottom: 50%;
     width: 0;
     border-left: 1.5px solid #d1d5db;
+}
+
+/* ─── Mobile drawer backdrop ──────────────────────────────────────── */
+.db-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(17, 24, 39, 0.45);
+    opacity: 0;
+    visibility: hidden;
+    z-index: 1;
+    transition: opacity var(--db-transition), visibility var(--db-transition);
+}
+
+.db-backdrop.is-open {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ─── Avatar (dropdown header + mobile drawer) ─────────────────────── */
+.db-dropdown__avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.db-mobile__avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
 }

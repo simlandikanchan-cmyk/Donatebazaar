@@ -34,6 +34,10 @@ export default defineConfig({
                 // Chatbot
                 'resources/css/chatbot.css',
                 'resources/js/chatbot.js',
+
+                // Navbar
+                'resources/css/navbar.css',
+                'resources/js/navbar.js',
             ],
             
             refresh: true,

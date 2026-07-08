@@ -136,7 +136,7 @@
     function openMobileDrawer() {
         mobileDrawer.classList.add('is-open');
         mobileDrawer.setAttribute('aria-hidden', 'false');
-        backdrop.classList.add('is-open');
+        backdrop?.classList.add('is-open');
         mobileToggle.setAttribute('aria-expanded', 'true');
         mobileToggle.setAttribute('aria-label', 'Close navigation menu');
         document.body.style.overflow = 'hidden';
@@ -150,7 +150,7 @@
         if (!mobileDrawer?.classList.contains('is-open')) return;
         mobileDrawer.classList.remove('is-open');
         mobileDrawer.setAttribute('aria-hidden', 'true');
-        backdrop.classList.remove('is-open');
+        backdrop?.classList.remove('is-open');
         mobileToggle?.setAttribute('aria-expanded', 'false');
         mobileToggle?.setAttribute('aria-label', 'Open navigation menu');
         document.body.style.overflow = '';

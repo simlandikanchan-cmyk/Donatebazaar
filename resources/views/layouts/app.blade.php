@@ -7,7 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     {{-- Tailwind + JS --}}
-    @vite(['resources/css/app.css', 'resources/css/footer.css', 'resources/js/app.js', 'resources/css/chatbot.css', 'resources/js/chatbot.js'])
+    @vite(['resources/css/app.css', 'resources/css/footer.css', 'resources/js/app.js', 'resources/css/chatbot.css', 'resources/js/chatbot.js', 'resources/css/navbar.css', 'resources/js/navbar.js'])
 
     {{-- Preconnects --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
