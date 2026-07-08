@@ -22,8 +22,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::post('/kyc/{kyc}/reject',   [AdminKycController::class, 'reject'])->name('kyc.reject');
     Route::get('/kyc/{kyc}/document',  [AdminKycController::class, 'showDocument'])->name('kyc.document');
 
-    Route::get('/campaign-products',                    [CampaignProductController::class, 'index'])->name('campaign-products.index');
-    Route::post('/campaign-products/{product}/approve', [CampaignProductController::class, 'approve'])->name('campaign-products.approve');
-    Route::post('/campaign-products/{product}/reject',  [CampaignProductController::class, 'reject'])->name('campaign-products.reject');
+    Route::get('/campaign-products',                      [CampaignProductController::class, 'index'])->name('campaign-products.index');
+    Route::get('/campaign-products/export',               [CampaignProductController::class, 'exportCsv'])->name('campaign-products.export');
+    Route::post('/campaign-products/bulk-approve',        [CampaignProductController::class, 'bulkApprove'])->name('campaign-products.bulk-approve');
+    Route::post('/campaign-products/bulk-reject',         [CampaignProductController::class, 'bulkReject'])->name('campaign-products.bulk-reject');
+    Route::post('/campaign-products/{product}/approve',   [CampaignProductController::class, 'approve'])->name('campaign-products.approve');
+    Route::post('/campaign-products/{product}/reject',    [CampaignProductController::class, 'reject'])->name('campaign-products.reject');
+    Route::delete('/campaign-products/{product}',         [CampaignProductController::class, 'destroy'])->name('campaign-products.destroy');
 
 });
