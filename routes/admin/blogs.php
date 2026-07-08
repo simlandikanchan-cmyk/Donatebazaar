@@ -20,6 +20,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
         Route::post('/restore/{id}',     [AdminBlogController::class, 'restore'])->name('restore');
         Route::delete('/force/{id}',     [AdminBlogController::class, 'forceDestroy'])->name('force-destroy');
         Route::post('/carousel/reorder', [AdminBlogController::class, 'reorder'])->name('carousel.reorder');
+        Route::post('/bulk',             [AdminBlogController::class, 'bulk'])->name('bulk');
 
         Route::get('/{blog}',          [AdminBlogController::class, 'show'])->name('show');
         Route::get('/{blog}/edit',     [AdminBlogController::class, 'edit'])->name('edit');

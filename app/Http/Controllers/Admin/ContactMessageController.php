@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\ContactMessage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class ContactMessageController extends Controller
 {
@@ -40,6 +41,33 @@ class ContactMessageController extends Controller
         return response()->json([
             'ok'      => true,
             'is_read' => (bool) $message->is_read,
+        ]);
+    }
+
+    public function reply(Request $request, $id)
+    {
+        $message = ContactMessage::findOrFail($id);
+
+        $request->validate([
+            'subject' => 'required|string|max:255',
+            'body'    => 'required|string',
+        ]);
+
+        try {
+            Mail::raw($request->body, function ($mail) use ($message, $request) {
+                $mail->to($message->email, $message->name)
+                     ->subject($request->subject);
+            });
+        } catch (\Exception $e) {
+            return response()->json([
+                'ok'      => false,
+                'message' => 'Could not send email: ' . $e->getMessage(),
+            ], 422);
+        }
+
+        return response()->json([
+            'ok'      => true,
+            'message' => 'Reply sent to ' . $message->email,
         ]);
     }
 

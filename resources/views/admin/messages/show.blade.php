@@ -69,6 +69,32 @@
 .qi-purple{background:var(--a-lt);color:var(--a)}
 .qi-gray{background:var(--surface3);color:var(--text3)}
 .qi-red{background:var(--red-lt);color:var(--red)}
+.reply-modal{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px}
+.reply-backdrop{position:absolute;inset:0;background:rgba(10,11,20,.55);backdrop-filter:blur(2px);animation:fadeIn .2s ease both}
+.reply-card{position:relative;width:100%;max-width:560px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh-lg,0 20px 60px rgba(0,0,0,.3));overflow:hidden;animation:fadeUp .25s ease both}
+.reply-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border);background:var(--surface2)}
+.reply-head h3{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--text)}
+.reply-x{width:30px;height:30px;border-radius:8px;border:none;background:var(--surface3);color:var(--text3);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all var(--ease)}
+.reply-x:hover{background:var(--red-lt);color:var(--red)}
+.reply-body{padding:18px 20px;display:flex;flex-direction:column;gap:14px;max-height:60vh;overflow-y:auto}
+.r-field{display:flex;flex-direction:column;gap:6px}
+.r-field label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.09em;font-family:var(--mono)}
+.r-field input,.r-field textarea{width:100%;padding:10px 12px;border-radius:var(--r-xs);border:1px solid var(--border2);background:var(--surface2);color:var(--text);font-size:13px;font-family:var(--font);outline:none;transition:border-color var(--ease),box-shadow var(--ease);resize:vertical}
+.r-field input:focus,.r-field textarea:focus{border-color:var(--a);box-shadow:0 0 0 3px var(--a-glow);background:var(--surface)}
+.r-field input[readonly]{color:var(--text3);font-family:var(--mono)}
+.reply-quote{background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--a);border-radius:var(--r-xs);padding:12px 14px}
+.rq-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;font-family:var(--mono);color:var(--text3);margin-bottom:6px}
+.rq-text{font-size:12.5px;line-height:1.6;color:var(--text2);white-space:pre-line;max-height:140px;overflow-y:auto}
+.reply-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 20px;border-top:1px solid var(--border);background:var(--surface2);flex-wrap:wrap}
+.reply-mailto{font-size:12px;font-weight:600;color:var(--a);text-decoration:none}
+.reply-mailto:hover{text-decoration:underline}
+.reply-actions{display:flex;align-items:center;gap:8px}
+.reply-cancel{height:38px;padding:0 16px;border-radius:var(--r-xs);border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:12.5px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all var(--ease)}
+.reply-cancel:hover{background:var(--surface3);color:var(--text)}
+.reply-send{height:38px;padding:0 18px;border-radius:var(--r-xs);border:none;background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;font-size:12.5px;font-weight:600;cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:6px;box-shadow:0 4px 14px rgba(110,86,247,.35);transition:all var(--ease)}
+.reply-send:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(110,86,247,.45)}
+.reply-send svg{width:14px;height:14px;flex-shrink:0}
+.reply-send:disabled{opacity:.6;cursor:not-allowed;transform:none}
 @media(max-width:960px){.detail-grid{grid-template-columns:1fr}.side-panel{flex-direction:row;flex-wrap:wrap}.side-card{flex:1;min-width:240px}}
 @media(max-width:600px){.info-grid{grid-template-columns:1fr}.dc-foot{flex-direction:column;align-items:stretch}.act-btn{justify-content:center}}
 </style>
@@ -138,10 +164,10 @@
     </div>
 
     <div class="dc-foot">
-      <a href="mailto:{{ $message->email }}" class="act-btn ab-reply">
+      <button type="button" class="act-btn ab-reply reply-open">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
         Reply via Email
-      </a>
+      </button>
       <form action="{{ route('admin.messages.delete', $message->id) }}" method="POST" style="display:inline;">
         @csrf @method('DELETE')
         <button type="submit" class="act-btn ab-delete" onclick="return confirm('Delete this message permanently?')">
@@ -187,12 +213,12 @@
     <div class="side-card">
       <div class="sc-head">Quick Actions</div>
       <div class="sc-body">
-        <a href="mailto:{{ $message->email }}" class="qa-btn">
+        <button type="button" class="qa-btn reply-open">
           <span class="qa-icon qi-purple">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
           </span>
           Reply via Email
-        </a>
+        </button>
         <button type="button" class="qa-btn" id="toggleReadBtn">
           <span class="qa-icon qi-gray">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9l9 6 9-6"/></svg>
@@ -220,39 +246,151 @@
   </div>
 </div>
 
+<div class="reply-modal" id="replyModal" style="display:none;">
+  <div class="reply-backdrop" data-reply-close></div>
+  <div class="reply-card">
+    <div class="reply-head">
+      <h3>Reply to {{ $message->name }}</h3>
+      <button type="button" class="reply-x" data-reply-close aria-label="Close">✕</button>
+    </div>
+    <div class="reply-body">
+      <div class="r-field">
+        <label>To</label>
+        <input type="text" value="{{ $message->email }}" readonly>
+      </div>
+      <div class="r-field">
+        <label>Subject</label>
+        <input type="text" id="replySubject" value="Re: {{ $message->subject ?? 'Your message' }}">
+      </div>
+      <div class="r-field">
+        <label>Message</label>
+        <textarea id="replyBody" rows="6" placeholder="Write your reply…"></textarea>
+      </div>
+      <div class="reply-quote">
+        <div class="rq-lbl">Original message</div>
+        <div class="rq-text">{{ $message->message }}</div>
+      </div>
+    </div>
+    <div class="reply-foot">
+      <a class="reply-mailto" href="mailto:{{ $message->email }}">Open in email app instead</a>
+      <div class="reply-actions">
+        <button type="button" class="reply-cancel" data-reply-close>Cancel</button>
+        <button type="button" class="reply-send" id="replySend">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+          Send Reply
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 @push('page_scripts')
 <script>
 (function(){
   'use strict';
-  var btn = document.getElementById('toggleReadBtn');
-  if(!btn) return;
+
   var csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-  var url  = "{{ route('admin.messages.toggle-read', $message->id) }}";
 
-  btn.addEventListener('click', function(){
-    fetch(url, {
-      method: 'POST',
-      headers: { 'X-CSRF-TOKEN': csrf, 'Accept':'application/json' }
-    })
-    .then(function(r){ return r.json(); })
-    .then(function(d){
-      if(!d.ok) return;
-      var badges = document.querySelectorAll('.badge');
-      badges.forEach(function(b){
-        b.className = 'badge b-' + (d.is_read ? 'read' : 'new');
-        b.innerHTML = '<span class="badge-dot"></span>' + (d.is_read ? 'Read' : 'New');
+  function toast(msg, type){
+    var icons = {
+      success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+      error:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>'
+    };
+    var el = document.createElement('div');
+    el.className = 'toast ' + (type === 'error' ? 'toast-err' : 'toast-ok');
+    el.innerHTML = (icons[type]||icons.success) + '<span>' + msg + '</span><button class="toast-x" onclick="this.parentElement.remove()">✕</button>';
+    document.getElementById('toastWrap').appendChild(el);
+    setTimeout(function(){
+      el.style.transition = 'opacity .3s,transform .3s';
+      el.style.opacity = '0';
+      el.style.transform = 'translateX(20px)';
+      setTimeout(function(){ el.remove(); }, 300);
+    }, 4200);
+  }
+
+  /* mark as read / unread */
+  var btn = document.getElementById('toggleReadBtn');
+  if(btn){
+    var url = "{{ route('admin.messages.toggle-read', $message->id) }}";
+    btn.addEventListener('click', function(){
+      fetch(url, { method: 'POST', headers: { 'X-CSRF-TOKEN': csrf, 'Accept':'application/json' } })
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        if(!d.ok) return;
+        var badges = document.querySelectorAll('.badge');
+        badges.forEach(function(b){
+          b.className = 'badge b-' + (d.is_read ? 'read' : 'new');
+          b.innerHTML = '<span class="badge-dot"></span>' + (d.is_read ? 'Read' : 'New');
+        });
+        btn.querySelector('span.qa-icon').innerHTML = d.is_read
+          ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9l9 6 9-6"/></svg>'
+          : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
+        btn.childNodes[btn.childNodes.length-1].textContent = d.is_read ? ' Mark as Unread' : ' Mark as Read';
+
+        var chip = document.getElementById('sidebarUnread');
+        if(chip){
+          var cur = parseInt(chip.textContent, 10) || 0;
+          cur = d.is_read ? Math.max(0, cur - 1) : cur + 1;
+          if(cur > 0){ chip.textContent = cur; chip.style.display = ''; } else { chip.style.display = 'none'; }
+        }
       });
-      btn.querySelector('span.qa-icon').innerHTML = d.is_read
-        ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9l9 6 9-6"/></svg>'
-        : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
-      btn.childNodes[btn.childNodes.length-1].textContent = d.is_read ? ' Mark as Unread' : ' Mark as Read';
+    });
+  }
 
-      var chip = document.getElementById('sidebarUnread');
-      if(chip){
-        var cur = parseInt(chip.textContent, 10) || 0;
-        cur = d.is_read ? Math.max(0, cur - 1) : cur + 1;
-        if(cur > 0){ chip.textContent = cur; chip.style.display = ''; } else { chip.style.display = 'none'; }
+  /* reply composer */
+  var modal = document.getElementById('replyModal');
+  var sendBtn = document.getElementById('replySend');
+  var sendHtml = sendBtn.innerHTML;
+
+  document.querySelectorAll('.reply-open').forEach(function(b){
+    b.addEventListener('click', function(){
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+      setTimeout(function(){ var t = document.getElementById('replyBody'); if(t) t.focus(); }, 60);
+    });
+  });
+
+  function closeReply(){
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+    sendBtn.disabled = false;
+    sendBtn.innerHTML = sendHtml;
+  }
+  modal.querySelectorAll('[data-reply-close]').forEach(function(el){
+    el.addEventListener('click', closeReply);
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && modal.style.display === 'flex') closeReply();
+  });
+
+  sendBtn.addEventListener('click', function(){
+    var subject = document.getElementById('replySubject').value.trim();
+    var body    = document.getElementById('replyBody').value.trim();
+    if(!body){ toast('Please write a reply message.', 'error'); return; }
+
+    sendBtn.disabled = true;
+    sendBtn.textContent = 'Sending…';
+
+    fetch("{{ route('admin.messages.reply', $message->id) }}", {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', 'X-CSRF-TOKEN': csrf, 'Accept':'application/json' },
+      body: JSON.stringify({ subject: subject, body: body })
+    })
+    .then(function(r){ return r.json().then(function(d){ return { ok: r.ok, d: d }; }); })
+    .then(function(res){
+      if(res.ok && res.d && res.d.ok){
+        closeReply();
+        toast(res.d.message || 'Reply sent.', 'success');
+      } else {
+        sendBtn.disabled = false;
+        sendBtn.innerHTML = sendHtml;
+        toast((res.d && res.d.message) || 'Failed to send reply.', 'error');
       }
+    })
+    .catch(function(){
+      sendBtn.disabled = false;
+      sendBtn.innerHTML = sendHtml;
+      toast('Network error.', 'error');
     });
   });
 })();

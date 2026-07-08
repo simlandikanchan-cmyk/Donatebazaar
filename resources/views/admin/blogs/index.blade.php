@@ -43,19 +43,37 @@
 [data-theme="dark"] .flash-success{color:var(--green);}
 .sec-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;animation:fadeUp .4s .2s ease both;}
 .sec-title{font-family:var(--mono);font-size:15px;font-weight:800;color:var(--text);letter-spacing:-.02em;}
-.sec-right{display:flex;align-items:center;gap:8px;}
+.sec-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .fcnt{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;border-radius:100px;font-size:9.5px;padding:0 3px;background:var(--a-lt);color:var(--a);font-weight:700;font-family:var(--mono);}
+
+/* bulk bar */
+.bulk-bar{display:none;align-items:center;justify-content:space-between;gap:12px;background:linear-gradient(135deg,var(--a-lt),rgba(155,89,245,.12));border:1px solid rgba(110,86,247,.3);border-radius:var(--r);padding:10px 16px;margin-bottom:14px;animation:fadeUp .25s ease both;flex-wrap:wrap}
+.bulk-bar.show{display:flex}
+.bulk-left{font-size:12.5px;color:var(--text);font-weight:500}
+.bulk-left strong{font-family:var(--mono);font-size:13px;color:var(--a)}
+.bulk-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.bb-btn{display:inline-flex;align-items:center;gap:5px;height:32px;padding:0 14px;border-radius:var(--r-xs);font-size:12px;font-weight:600;cursor:pointer;border:1px solid transparent;transition:all var(--ease);font-family:var(--font)}
+.bb-btn svg{width:12px;height:12px}
+.bb-publish{background:var(--surface);color:var(--green);border-color:rgba(5,196,138,.25)}
+.bb-publish:hover{background:var(--green);color:#fff}
+.bb-delete{background:var(--surface);color:var(--red);border-color:rgba(240,68,68,.25)}
+.bb-delete:hover{background:var(--red);color:#fff}
+.bb-clear{background:transparent;color:var(--text3);border-color:transparent}
+.bb-clear:hover{color:var(--text)}
+
 .table-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;animation:fadeUp .4s .25s ease both;}
 .table-scroll{overflow-x:auto;}
 .table-scroll::-webkit-scrollbar{height:5px;}
 .table-scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:100px;}
-table{width:100%;min-width:860px;border-collapse:collapse;}
+table{width:100%;min-width:920px;border-collapse:collapse;}
 thead tr{border-bottom:2px solid var(--border);}
 thead th{padding:11px 14px;text-align:left;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.09em;font-family:var(--mono);background:var(--surface2);white-space:nowrap;}
+.col-check{width:42px;text-align:center!important;padding-left:14px!important;padding-right:0!important;}
 tbody tr{border-bottom:1px solid var(--border);transition:background var(--ease);}
 tbody tr:last-child{border-bottom:none;}
 tbody tr:hover{background:var(--surface2);}
 tbody tr.row-hidden{display:none;}
+.row-select{width:16px;height:16px;accent-color:var(--a);cursor:pointer;}
 tbody td{padding:13px 14px;font-size:13px;color:var(--text2);vertical-align:middle;}
 .title-cell{display:flex;align-items:center;gap:10px;}
 .blog-thumb{width:44px;height:34px;border-radius:7px;overflow:hidden;flex-shrink:0;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;}
@@ -78,22 +96,45 @@ tbody td{padding:13px 14px;font-size:13px;color:var(--text2);vertical-align:midd
 [data-theme="dark"] .b-archived{color:var(--blue);}
 [data-theme="dark"] .b-flagged{color:#f9a8d4;}
 .cat-tag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:500;background:var(--a-lt);color:var(--a);border:1px solid rgba(110,86,247,.18);}
-td.date-cell{font-family:var(--mono);font-size:11.5px;color:var(--text3);}
+td.date-cell{font-family:var(--mono);font-size:11.5px;color:var(--text3);white-space:nowrap;}
 .date-ago{font-size:10.5px;margin-top:2px;}
-.actions{display:flex;align-items:center;gap:5px;}
-.act-btn{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid transparent;transition:opacity var(--ease),transform var(--ease);white-space:nowrap;font-family:var(--font);text-decoration:none;}
+.actions{display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
+.act-btn{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid transparent;transition:opacity var(--ease),transform var(--ease);white-space:nowrap;font-family:var(--font);text-decoration:none;background:none;}
 .act-btn:hover{opacity:.82;transform:scale(.97);}
-.act-btn svg{width:11px;height:11px;}
+.act-btn svg{width:11px;height:11px;flex-shrink:0;}
 .ab-view{background:var(--a-lt);color:var(--a);border-color:rgba(110,86,247,.2);}
 .ab-edit{background:var(--amber-lt);color:var(--amber);border-color:rgba(245,158,11,.2);}
 .ab-delete{background:var(--red-lt);color:var(--red);border-color:rgba(240,68,68,.2);padding:5px 8px;}
+.ab-approve{background:var(--green-lt);color:var(--green);border-color:rgba(5,196,138,.2);}
+.ab-archive{background:var(--blue-lt);color:var(--blue);border-color:rgba(59,130,246,.2);}
+.ab-feature{background:var(--amber-lt);color:var(--amber);border-color:rgba(245,158,11,.2);}
+/* contextual inline actions */
+tbody tr:not([data-status="pending"]) .js-approve{display:none}
+tbody tr:not([data-status="published"]) .js-archive,
+tbody tr:not([data-status="published"]) .js-feature{display:none}
 .empty-row td{padding:56px 20px;text-align:center;}
 .empty-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--text3);}
 .empty-wrap svg{width:40px;height:40px;opacity:.25;}
 .empty-wrap p{font-size:13px;}
-.table-footer{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;border-top:1px solid var(--border);background:var(--surface2);}
+.table-footer{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;border-top:1px solid var(--border);background:var(--surface2);flex-wrap:wrap;gap:6px;}
 .tfoot-count{font-size:11.5px;color:var(--text3);font-family:var(--mono);}
 .tfoot-count strong{color:var(--text);font-weight:600;}
+
+@media(max-width:760px){
+  .sec-right{width:100%}
+  .sort-select,.sec-right .sort-select{flex:1;min-width:120px}
+  table{min-width:0}
+  thead{display:none}
+  tbody tr{display:block;border:1px solid var(--border);border-radius:var(--r-sm);margin-bottom:12px;padding:6px 2px;background:var(--surface)}
+  tbody tr.row-hidden{display:none}
+  tbody td{display:flex;align-items:flex-start;gap:10px;padding:9px 14px;border:none!important;text-align:left;white-space:normal}
+  tbody td.col-check{display:none}
+  tbody td::before{content:attr(data-label);font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-family:var(--mono);min-width:84px;padding-top:2px}
+  tbody td.title-cell::before{display:none}
+  tbody td.actions::before{display:none}
+  tbody td.actions{justify-content:flex-start;flex-wrap:wrap}
+  .title-primary{max-width:none}
+}
 </style>
 @endpush
 @section('content')
@@ -112,7 +153,7 @@ td.date-cell{font-family:var(--mono);font-size:11.5px;color:var(--text3);}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
     </div>
     <div>
-      <div class="stat-num sv-blue">{{ $cntTotal }}</div>
+      <div class="stat-num sv-blue" id="statTotal">{{ $cntTotal }}</div>
       <div class="stat-name">Total</div>
     </div>
   </div>
@@ -121,7 +162,7 @@ td.date-cell{font-family:var(--mono);font-size:11.5px;color:var(--text3);}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
     </div>
     <div>
-      <div class="stat-num sv-amber">{{ $cntPending }}</div>
+      <div class="stat-num sv-amber" id="statPending">{{ $cntPending }}</div>
       <div class="stat-name">Pending</div>
     </div>
   </div>
@@ -130,7 +171,7 @@ td.date-cell{font-family:var(--mono);font-size:11.5px;color:var(--text3);}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
     </div>
     <div>
-      <div class="stat-num sv-green">{{ $cntPublished }}</div>
+      <div class="stat-num sv-green" id="statPublished">{{ $cntPublished }}</div>
       <div class="stat-name">Published</div>
     </div>
   </div>
@@ -139,7 +180,7 @@ td.date-cell{font-family:var(--mono);font-size:11.5px;color:var(--text3);}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
     </div>
     <div>
-      <div class="stat-num sv-red">{{ $cntRejected }}</div>
+      <div class="stat-num sv-red" id="statRejected">{{ $cntRejected }}</div>
       <div class="stat-name">Rejected</div>
     </div>
   </div>
@@ -155,17 +196,35 @@ td.date-cell{font-family:var(--mono);font-size:11.5px;color:var(--text3);}
 <div class="sec-header">
   <div class="sec-title">All Blog Posts</div>
   <div class="sec-right">
+    <select class="sort-select" id="catFilter">
+      <option value="all">All categories</option>
+    </select>
     <select class="sort-select" id="sortSelect">
       <option value="latest" {{ $activeSort === 'latest' ? 'selected' : '' }}>Latest first</option>
       <option value="oldest" {{ $activeSort === 'oldest' ? 'selected' : '' }}>Oldest first</option>
       <option value="title"  {{ $activeSort === 'title'  ? 'selected' : '' }}>Title A–Z</option>
     </select>
     <div class="ftabs" id="ftabs">
-      <button class="ftab {{ $activeStatus === 'all'       ? 'on' : '' }}" data-status="all">All <span class="fcnt">{{ $cntTotal }}</span></button>
-      <button class="ftab {{ $activeStatus === 'pending'   ? 'on' : '' }}" data-status="pending">Pending <span class="fcnt">{{ $cntPending }}</span></button>
-      <button class="ftab {{ $activeStatus === 'published' ? 'on' : '' }}" data-status="published">Published <span class="fcnt">{{ $cntPublished }}</span></button>
-      <button class="ftab {{ $activeStatus === 'rejected'  ? 'on' : '' }}" data-status="rejected">Rejected <span class="fcnt">{{ $cntRejected }}</span></button>
+      <button class="ftab {{ $activeStatus === 'all'       ? 'on' : '' }}" data-status="all"><span class="fcnt" id="fcntAll">{{ $cntTotal }}</span> All</button>
+      <button class="ftab {{ $activeStatus === 'pending'   ? 'on' : '' }}" data-status="pending"><span class="fcnt" id="fcntPending">{{ $cntPending }}</span> Pending</button>
+      <button class="ftab {{ $activeStatus === 'published' ? 'on' : '' }}" data-status="published"><span class="fcnt" id="fcntPublished">{{ $cntPublished }}</span> Published</button>
+      <button class="ftab {{ $activeStatus === 'rejected'  ? 'on' : '' }}" data-status="rejected"><span class="fcnt" id="fcntRejected">{{ $cntRejected }}</span> Rejected</button>
     </div>
+  </div>
+</div>
+
+<div class="bulk-bar" id="bulkBar">
+  <div class="bulk-left"><strong id="bulkCount">0</strong> selected</div>
+  <div class="bulk-actions">
+    <button class="bb-btn bb-publish" id="bulkPublish">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      Publish
+    </button>
+    <button class="bb-btn bb-delete" id="bulkDelete">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
+      Delete
+    </button>
+    <button class="bb-btn bb-clear" id="bulkClear">Clear</button>
   </div>
 </div>
 
@@ -174,6 +233,7 @@ td.date-cell{font-family:var(--mono);font-size:11.5px;color:var(--text3);}
     <table>
       <thead>
         <tr>
+          <th class="col-check"><input type="checkbox" id="selectAll" class="row-select" aria-label="Select all"></th>
           <th>Post</th>
           <th>Author</th>
           <th>Category</th>
@@ -198,9 +258,16 @@ td.date-cell{font-family:var(--mono);font-size:11.5px;color:var(--text3);}
             }
           }
           $srch = strtolower(($blog->title ?? '') . ' ' . ($blog->author->name ?? '') . ' ' . ($catName ?? '') . ' ' . $status);
+          $dateVal = ($status === 'published' && $blog->published_at) ? $blog->published_at : $blog->created_at;
         @endphp
-        <tr data-status="{{ $status }}" data-search="{{ $srch }}">
-          <td>
+        <tr data-id="{{ $blog->id }}"
+            data-status="{{ $status }}"
+            data-category="{{ $catName ?? '' }}"
+            data-search="{{ $srch }}">
+          <td class="col-check">
+            <input type="checkbox" class="row-select row-check" value="{{ $blog->id }}" aria-label="Select post">
+          </td>
+          <td data-label="Post">
             <div class="title-cell">
               <div class="blog-thumb">
                 @if(!empty($blog->cover_image))
@@ -215,29 +282,29 @@ td.date-cell{font-family:var(--mono);font-size:11.5px;color:var(--text3);}
               </div>
             </div>
           </td>
-          <td>
+          <td data-label="Author">
             <div class="author-cell">
               <div class="author-av">{{ strtoupper(substr($blog->author->name ?? 'U', 0, 2)) }}</div>
               <span style="font-size:12.5px;font-weight:500;color:var(--text);">{{ $blog->author->name ?? 'Unknown' }}</span>
             </div>
           </td>
-          <td>
+          <td data-label="Category">
             @if($catName)
               <span class="cat-tag">{{ $catName }}</span>
             @else
               <span style="color:var(--text3);font-size:12px;">—</span>
             @endif
           </td>
-          <td>
+          <td data-label="Status">
             <span class="badge b-{{ $status }}">
               <span class="badge-dot"></span>{{ ucfirst($status) }}
             </span>
           </td>
-          <td class="date-cell">
-            {{ $blog->created_at->format('d M Y') }}
-            <div class="date-ago">{{ $blog->created_at->diffForHumans() }}</div>
+          <td class="date-cell" data-label="Published">
+            {{ $dateVal->format('d M Y') }}
+            <div class="date-ago">{{ $dateVal->diffForHumans() }}</div>
           </td>
-          <td>
+          <td data-label="Actions">
             <div class="actions">
               <a href="{{ route('admin.blogs.show', $blog) }}" class="act-btn ab-view">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
@@ -247,6 +314,18 @@ td.date-cell{font-family:var(--mono);font-size:11.5px;color:var(--text3);}
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path stroke-linecap="round" stroke-linejoin="round" d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                 Edit
               </a>
+              <button type="button" class="act-btn ab-approve js-approve" data-id="{{ $blog->id }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                Approve
+              </button>
+              <button type="button" class="act-btn ab-feature js-feature" data-id="{{ $blog->id }}" data-featured="{{ $blog->is_featured ? '1' : '0' }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                {{ $blog->is_featured ? 'Unfeature' : 'Feature' }}
+              </button>
+              <button type="button" class="act-btn ab-archive js-archive" data-id="{{ $blog->id }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8v13H3V8m2-4h14a2 2 0 012 2v2H3V6a2 2 0 012-2z"/></svg>
+                Archive
+              </button>
               <form method="POST" action="{{ route('admin.blogs.destroy', $blog) }}" style="display:inline;" onsubmit="return confirm('Delete \'{{ addslashes($blog->title) }}\'?')">
                 @csrf @method('DELETE')
                 <button type="submit" class="act-btn ab-delete" title="Delete">
@@ -258,7 +337,7 @@ td.date-cell{font-family:var(--mono);font-size:11.5px;color:var(--text3);}
         </tr>
         @empty
         <tr class="empty-row">
-          <td colspan="6">
+          <td colspan="7">
             <div class="empty-wrap">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
               <p>No blog posts found.</p>
@@ -267,10 +346,10 @@ td.date-cell{font-family:var(--mono);font-size:11.5px;color:var(--text3);}
         </tr>
         @endforelse
         <tr id="noResultsRow" style="display:none;">
-          <td colspan="6">
+          <td colspan="7">
             <div class="empty-wrap">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-              <p>No results match your search.</p>
+              <p>No results match your filters.</p>
             </div>
           </td>
         </tr>
@@ -278,7 +357,7 @@ td.date-cell{font-family:var(--mono);font-size:11.5px;color:var(--text3);}
     </table>
   </div>
   <div class="table-footer">
-    <div class="tfoot-count">Showing <strong id="cntVisF">{{ $blogs->total() }}</strong> of <strong>{{ $cntTotal }}</strong> results</div>
+    <div class="tfoot-count">Showing <strong id="cntVisF">{{ $blogs->total() }}</strong> of <strong id="cntTotalF">{{ $cntTotal }}</strong> results</div>
     <div style="font-size:11px;color:var(--text3);font-family:var(--mono);">Total {{ $cntTotal }} posts</div>
   </div>
 </div>
@@ -291,48 +370,260 @@ td.date-cell{font-family:var(--mono);font-size:11.5px;color:var(--text3);}
 @push('page_scripts')
 <script>
 (function(){
-'use strict';
+  'use strict';
 
-var rows = Array.from(document.querySelectorAll('#tbody tr[data-status]'));
-var noRow = document.getElementById('noResultsRow');
+  var csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-function applySearch(){
-  var q = document.getElementById('searchInput').value.toLowerCase().trim();
-  var vis = 0;
-  rows.forEach(function(r){
-    var show = !q || (r.dataset.search || '').includes(q);
-    r.classList.toggle('row-hidden', !show);
-    if(show) vis++;
+  /* live counts (server-provided, adjusted on actions) */
+  var counts = {
+    total:     parseInt(document.getElementById('statTotal').textContent, 10) || 0,
+    pending:   parseInt(document.getElementById('statPending').textContent, 10) || 0,
+    published: parseInt(document.getElementById('statPublished').textContent, 10) || 0,
+    rejected:  parseInt(document.getElementById('statRejected').textContent, 10) || 0
+  };
+  var activeStatus = '{{ $activeStatus }}';
+
+  function writeCounts(){
+    document.getElementById('statTotal').textContent     = counts.total;
+    document.getElementById('statPending').textContent   = counts.pending;
+    document.getElementById('statPublished').textContent = counts.published;
+    document.getElementById('statRejected').textContent  = counts.rejected;
+    document.getElementById('fcntAll').textContent       = counts.total;
+    document.getElementById('fcntPending').textContent   = counts.pending;
+    document.getElementById('fcntPublished').textContent = counts.published;
+    document.getElementById('fcntRejected').textContent  = counts.rejected;
+  }
+
+  function toast(msg, type){
+    var icons = {
+      success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+      error:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>'
+    };
+    var el = document.createElement('div');
+    el.className = 'toast ' + (type === 'error' ? 'toast-err' : 'toast-ok');
+    el.innerHTML = (icons[type]||icons.success) + '<span>' + msg + '</span><button class="toast-x" onclick="this.parentElement.remove()">✕</button>';
+    document.getElementById('toastWrap').appendChild(el);
+    setTimeout(function(){
+      el.style.transition = 'opacity .3s,transform .3s';
+      el.style.opacity = '0';
+      el.style.transform = 'translateX(20px)';
+      setTimeout(function(){ el.remove(); }, 300);
+    }, 4200);
+  }
+
+  var rows = Array.from(document.querySelectorAll('#tbody tr[data-id]'));
+  var noRow = document.getElementById('noResultsRow');
+  var bulkBar = document.getElementById('bulkBar');
+
+  /* build category filter options from rendered rows */
+  (function(){
+    var cats = {};
+    rows.forEach(function(r){ var c = r.dataset.category || ''; if(c) cats[c] = true; });
+    var sel = document.getElementById('catFilter');
+    Object.keys(cats).sort().forEach(function(c){
+      var o = document.createElement('option'); o.value = c; o.textContent = c; sel.appendChild(o);
+    });
+  })();
+
+  function applyFilters(){
+    var q   = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+    var cat = document.getElementById('catFilter').value;
+    var vis = 0;
+    rows.forEach(function(r){
+      var mS  = !q   || (r.dataset.search || '').includes(q);
+      var mC  = cat === 'all' || (r.dataset.category || '') === cat;
+      var mSt = activeStatus === 'all' || r.dataset.status === activeStatus;
+      var show = mS && mC && mSt;
+      r.classList.toggle('row-hidden', !show);
+      if(show) vis++;
+    });
+    var e = document.getElementById('cntVisF');
+    if(e) e.textContent = vis;
+    if(noRow) noRow.style.display = (vis === 0 && rows.length > 0) ? '' : 'none';
+  }
+
+  var st;
+  document.getElementById('searchInput').addEventListener('input', function(){
+    clearTimeout(st);
+    st = setTimeout(applyFilters, 180);
   });
-  var e2 = document.getElementById('cntVisF');
-  if(e2) e2.textContent = vis;
-  if(noRow) noRow.style.display = (vis === 0 && rows.length > 0) ? '' : 'none';
-}
-applySearch();
+  document.getElementById('catFilter').addEventListener('change', applyFilters);
 
-var st;
-document.getElementById('searchInput').addEventListener('input', function(){
-  clearTimeout(st);
-  st = setTimeout(applySearch, 180);
-});
+  document.querySelectorAll('.ftab').forEach(function(tab){
+    tab.addEventListener('click', function(){
+      var url = new URL(window.location.href);
+      url.searchParams.set('status', this.dataset.status);
+      url.searchParams.set('page', 1);
+      window.location.href = url.toString();
+    });
+  });
 
-document.querySelectorAll('.ftab').forEach(function(tab){
-  tab.addEventListener('click', function(){
+  document.getElementById('sortSelect').addEventListener('change', function(){
     var url = new URL(window.location.href);
-    url.searchParams.set('status', this.dataset.status);
+    url.searchParams.set('sort', this.value);
+    url.searchParams.set('status', '{{ $activeStatus }}');
     url.searchParams.set('page', 1);
     window.location.href = url.toString();
   });
-});
 
-document.getElementById('sortSelect').addEventListener('change', function(){
-  var url = new URL(window.location.href);
-  url.searchParams.set('sort', this.value);
-  url.searchParams.set('status', '{{ $activeStatus }}');
-  url.searchParams.set('page', 1);
-  window.location.href = url.toString();
-});
+  /* selection + bulk */
+  function selectedIds(){
+    return Array.from(document.querySelectorAll('.row-check:checked')).map(function(c){ return c.value; });
+  }
+  function syncBulkBar(){
+    var ids = selectedIds();
+    document.getElementById('bulkCount').textContent = ids.length;
+    bulkBar.classList.toggle('show', ids.length > 0);
+    var all = document.querySelectorAll('.row-check').length;
+    var checked = ids.length;
+    document.getElementById('selectAll').checked = all > 0 && checked === all;
+    document.getElementById('selectAll').indeterminate = checked > 0 && checked < all;
+  }
+  document.getElementById('selectAll').addEventListener('change', function(){
+    document.querySelectorAll('.row-check').forEach(function(c){ c.checked = document.getElementById('selectAll').checked; });
+    syncBulkBar();
+  });
+  document.querySelectorAll('.row-check').forEach(function(c){
+    c.addEventListener('change', syncBulkBar);
+  });
+  document.getElementById('bulkClear').addEventListener('click', function(){
+    document.querySelectorAll('.row-check').forEach(function(c){ c.checked = false; });
+    syncBulkBar();
+  });
 
+  function postBulk(action, ids, onDone){
+    fetch("{{ route('admin.blogs.bulk') }}", {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', 'X-CSRF-TOKEN': csrf, 'Accept':'application/json' },
+      body: JSON.stringify({ ids: ids, action: action })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(d){ if(d.ok && onDone) onDone(d); else toast('Something went wrong.', 'error'); })
+    .catch(function(){ toast('Network error.', 'error'); });
+  }
+
+  document.getElementById('bulkPublish').addEventListener('click', function(){
+    var ids = selectedIds();
+    if(!ids.length) return;
+    postBulk('publish', ids, function(d){
+      ids.forEach(function(id){
+        var tr = document.querySelector('#tbody tr[data-id="'+id+'"]');
+        if(!tr) return;
+        var old = tr.dataset.status;
+        setRowStatus(tr, 'published', false);
+        counts.published++;
+        if(old === 'pending') counts.pending = Math.max(0, counts.pending - 1);
+        else if(old === 'rejected') counts.rejected = Math.max(0, counts.rejected - 1);
+        else if(old !== 'published') counts.total++; /* draft/archived/flagged were not in total */
+      });
+      writeCounts();
+      syncBulkBar();
+      applyFilters();
+      toast(d.msg || 'Published.', 'success');
+    });
+  });
+
+  document.getElementById('bulkDelete').addEventListener('click', function(){
+    var ids = selectedIds();
+    if(!ids.length) return;
+    if(!confirm('Delete ' + ids.length + ' selected post(s)?')) return;
+    ids.forEach(function(id){
+      var tr = document.querySelector('#tbody tr[data-id="'+id+'"]');
+      if(tr){
+        if(tr.dataset.status === 'pending') counts.pending = Math.max(0, counts.pending - 1);
+        else if(tr.dataset.status === 'published') counts.published = Math.max(0, counts.published - 1);
+        else if(tr.dataset.status === 'rejected') counts.rejected = Math.max(0, counts.rejected - 1);
+        counts.total = Math.max(0, counts.total - 1);
+      }
+    });
+    postBulk('delete', ids, function(d){
+      ids.forEach(function(id){
+        var tr = document.querySelector('#tbody tr[data-id="'+id+'"]');
+        if(tr) tr.remove();
+      });
+      rows = Array.from(document.querySelectorAll('#tbody tr[data-id]'));
+      writeCounts();
+      syncBulkBar();
+      applyFilters();
+      toast(d.msg || 'Deleted.', 'success');
+    });
+  });
+
+  /* status / featured helpers */
+  function setRowStatus(tr, status, featured){
+    tr.dataset.status = status;
+    var badge = tr.querySelector('.badge');
+    if(badge){
+      badge.className = 'badge b-' + status;
+      badge.innerHTML = '<span class="badge-dot"></span>' + (status.charAt(0).toUpperCase() + status.slice(1));
+    }
+    if(typeof featured !== 'undefined'){
+      var fBtn = tr.querySelector('.js-feature');
+      if(fBtn){ fBtn.dataset.featured = featured ? '1' : '0'; fBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> ' + (featured ? 'Unfeature' : 'Feature'); }
+    }
+  }
+
+  function ajaxAction(url, tr, onOk){
+    fetch(url, { method:'POST', headers:{ 'X-CSRF-TOKEN': csrf, 'Accept':'application/json' } })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(!d.ok){ toast((d.message)||'Action failed.', 'error'); return; }
+      if(onOk) onOk(d);
+    })
+    .catch(function(){ toast('Network error.', 'error'); });
+  }
+
+  document.querySelectorAll('.js-approve').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var id = btn.dataset.id;
+      var tr = document.querySelector('#tbody tr[data-id="'+id+'"]');
+      if(!tr) return;
+      ajaxAction("{{ route('admin.blogs.approve', '__ID__') }}".replace('__ID__', id), tr, function(d){
+        setRowStatus(tr, 'published', false);
+        counts.pending = Math.max(0, counts.pending - 1);
+        counts.published++;
+        writeCounts();
+        applyFilters();
+        toast(d.message || 'Approved.', 'success');
+      });
+    });
+  });
+
+  document.querySelectorAll('.js-archive').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var id = btn.dataset.id;
+      var tr = document.querySelector('#tbody tr[data-id="'+id+'"]');
+      if(!tr) return;
+      ajaxAction("{{ route('admin.blogs.archive', '__ID__') }}".replace('__ID__', id), tr, function(d){
+        setRowStatus(tr, 'archived', false);
+        counts.published = Math.max(0, counts.published - 1);
+        counts.total = Math.max(0, counts.total - 1);
+        writeCounts();
+        applyFilters();
+        toast(d.message || 'Archived.', 'success');
+      });
+    });
+  });
+
+  document.querySelectorAll('.js-feature').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var id = btn.dataset.id;
+      var tr = document.querySelector('#tbody tr[data-id="'+id+'"]');
+      if(!tr) return;
+      ajaxAction("{{ route('admin.blogs.feature', '__ID__') }}".replace('__ID__', id), tr, function(d){
+        var featured = !!(d.is_featured);
+        setRowStatus(tr, tr.dataset.status, featured);
+        toast(d.message || (featured ? 'Featured.' : 'Unfeatured.'), 'success');
+      });
+    });
+  });
+
+@if(session('success'))
+  setTimeout(function(){ toast(@json(session('success')), 'success'); }, 200);
+@endif
+
+  syncBulkBar();
+  applyFilters();
 })();
 </script>
 @endpush

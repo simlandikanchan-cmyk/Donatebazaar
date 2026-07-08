@@ -33,6 +33,21 @@
 .pill-pending{background:var(--a-lt);color:var(--a);}.pill-pending .sp-dot{background:var(--a);}
 [data-theme="dark"] .pill-active{color:#34d399;}
 [data-theme="dark"] .pill-pending{color:#c4b5fd;}
+
+/* ---------- Status banner (was missing — caused the raw unstyled SVG icon to render full-size) ---------- */
+.status-banner{display:flex;align-items:center;gap:14px;padding:16px 20px;border-radius:var(--r);margin-bottom:20px;border:1px solid var(--border);box-shadow:var(--sh);animation:fadeUp .35s ease both;flex-wrap:wrap;}
+.status-banner svg{width:28px;height:28px;flex-shrink:0;}
+.status-banner .sb-text{flex:1;min-width:200px;}
+.status-banner .sb-title{font-size:14px;font-weight:700;color:var(--text);font-family:var(--mono);line-height:1.3;}
+.status-banner .sb-sub{font-size:12px;color:var(--text3);margin-top:2px;}
+.sb-pending{background:var(--a-lt);border-color:rgba(110,86,247,.25);}
+.sb-draft{background:var(--amber-lt);border-color:rgba(245,158,11,.25);}
+.sb-active{background:var(--green-lt);border-color:rgba(5,196,138,.25);}
+.sb-completed{background:var(--blue-lt);border-color:rgba(59,130,246,.25);}
+.sb-cancelled{background:var(--red-lt);border-color:rgba(240,68,68,.25);}
+.sb-expired{background:var(--surface2);border-color:var(--border2);}
+@media(max-width:560px){.status-banner{flex-direction:column;align-items:flex-start;}.status-banner > div[style]{margin-left:0 !important;width:100%;}.status-banner > div[style] form{flex:1;}.status-banner > div[style] .btn{width:100%;justify-content:center;}}
+
 .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;}
 .detail-item{padding:13px 0;border-bottom:1px solid var(--border);}
 .detail-item:nth-last-child(-n+2){border-bottom:none;}
@@ -242,7 +257,7 @@
     {{-- Cover + Title --}}
     <div class="card">
       @if($event->cover_image)
-        <img src="{{ asset('storage/'.$event->cover_image) }}" class="event-cover" alt="">
+        <img src="{{ asset('storage/'.$event->cover_image) }}" class="event-cover" alt="" onerror="this.style.display='none'">
       @else
         <div class="event-cover-placeholder">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
@@ -339,7 +354,7 @@
         @if($event->campaign)
           <div class="campaign-mini">
             @if($event->campaign->cover_image)
-              <img src="{{ asset('storage/'.$event->campaign->cover_image) }}" class="campaign-mini-thumb" alt="">
+              <img src="{{ asset('storage/'.$event->campaign->cover_image) }}" class="campaign-mini-thumb" alt="" onerror="this.style.display='none'">
             @else
               <div class="campaign-mini-placeholder">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
@@ -510,7 +525,8 @@
             @csrf
             <button type="submit" class="btn btn-draft" style="width:100%;justify-content:center;">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
-            Revert to Draft
+              Revert to Draft
+            </button>
           </form>
           <a href="{{ route('admin.events.edit', $event) }}" class="btn btn-edit" style="width:100%;justify-content:center;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>

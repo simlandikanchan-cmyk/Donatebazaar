@@ -291,6 +291,54 @@ public function index(Request $request)
             ->with('success', 'Blog soft-deleted.');
     }
 
+    // ── Bulk Actions ──────────────────────────────────────────────────────────
+
+    public function bulk(Request $request)
+    {
+        $request->validate([
+            'ids'    => 'required|array',
+            'ids.*'  => 'integer',
+            'action' => 'required|in:publish,delete',
+        ]);
+
+        $ids    = $request->input('ids');
+        $action = $request->input('action');
+
+        if ($action === 'delete') {
+            $count = Blog::whereIn('id', $ids)->delete(); // soft delete
+            $msg   = $count . ' blog' . ($count === 1 ? '' : 's') . ' deleted.';
+        } else {
+            $pending = Blog::whereIn('id', $ids)
+                ->where('status', Blog::STATUS_PENDING)
+                ->get();
+
+            Blog::whereIn('id', $ids)->update([
+                'status'       => Blog::STATUS_PUBLISHED,
+                'published_at' => now(),
+                'reviewed_by'  => Auth::id(),
+                'reviewed_at'  => now(),
+            ]);
+
+            $count = count($ids);
+
+            foreach ($pending as $blog) {
+                try {
+                    Mail::to($blog->author)->send(new BlogStatusMail($blog, 'published'));
+                } catch (\Throwable $e) {
+                    Log::warning('Bulk publish mail failed: ' . $e->getMessage());
+                }
+            }
+
+            $msg = $count . ' blog' . ($count === 1 ? '' : 's') . ' published.';
+        }
+
+        return response()->json([
+            'ok'   => true,
+            'done' => $count,
+            'msg'  => $msg,
+        ]);
+    }
+
     // ── CRUD: Force Delete ────────────────────────────────────────────────────
 
     public function forceDestroy(int $id)
@@ -326,7 +374,19 @@ public function index(Request $request)
 
         $blog->transitionTo(Blog::STATUS_PUBLISHED, Auth::id(), $request->get('note'));
 
-        Mail::to($blog->author)->send(new BlogStatusMail($blog, 'published'));
+        try {
+            Mail::to($blog->author)->send(new BlogStatusMail($blog, 'published'));
+        } catch (\Throwable $e) {
+            Log::warning('Blog approve mail failed: ' . $e->getMessage());
+        }
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'ok'      => true,
+                'message' => "Blog \"{$blog->title}\" approved and published.",
+                'status'  => $blog->status,
+            ]);
+        }
 
         return back()->with('success', "Blog \"{$blog->title}\" approved and published.");
     }
@@ -352,7 +412,7 @@ public function index(Request $request)
 
     // ── Workflow: Feature / Unfeature ─────────────────────────────────────────
 
-    public function feature(Blog $blog)
+    public function feature(Request $request, Blog $blog)
     {
         abort_unless($blog->is_publicly_visible, 422, 'Only visible blogs can be featured.');
 
@@ -369,14 +429,30 @@ public function index(Request $request)
             $msg = 'Blog added to carousel.';
         }
 
+        if ($request->wantsJson()) {
+            return response()->json([
+                'ok'          => true,
+                'message'     => $msg,
+                'is_featured' => $blog->is_featured,
+            ]);
+        }
+
         return back()->with('success', $msg);
     }
 
     // ── Workflow: Archive ─────────────────────────────────────────────────────
 
-    public function archive(Blog $blog)
+    public function archive(Request $request, Blog $blog)
     {
         $blog->transitionTo(Blog::STATUS_ARCHIVED, Auth::id(), 'Archived by admin.');
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'ok'      => true,
+                'message' => "Blog \"{$blog->title}\" archived.",
+                'status'  => $blog->status,
+            ]);
+        }
 
         return back()->with('success', "Blog \"{$blog->title}\" archived.");
     }
@@ -390,6 +466,14 @@ public function index(Request $request)
             Auth::id(),
             $request->get('note', 'Manually flagged by admin.')
         );
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'ok'      => true,
+                'message' => 'Blog flagged for review.',
+                'status'  => $blog->status,
+            ]);
+        }
 
         return back()->with('success', 'Blog flagged for review.');
     }
