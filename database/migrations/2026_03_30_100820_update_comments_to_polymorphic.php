@@ -9,7 +9,7 @@ return new class extends Migration
 {
     public function up()
     {
-        // ✅ 1. ADD NEW COLUMNS
+        // / 1. ADD NEW COLUMNS
         Schema::table('comments', function (Blueprint $table) {
             if (!Schema::hasColumn('comments', 'reference_id')) {
                 $table->unsignedBigInteger('reference_id')->nullable()->after('user_id');
@@ -20,18 +20,18 @@ return new class extends Migration
             }
         });
 
-        // ✅ 2. COPY DATA
+        // / 2. COPY DATA
         DB::statement("UPDATE comments SET reference_id = post_id, reference_type = 'post'");
 
-        // ✅ 3. DROP FOREIGN KEY (IMPORTANT)
+        // / 3. DROP FOREIGN KEY (IMPORTANT)
         DB::statement("ALTER TABLE comments DROP FOREIGN KEY comments_post_id_foreign");
 
-        // ✅ 4. DROP OLD COLUMN
+        // / 4. DROP OLD COLUMN
         Schema::table('comments', function (Blueprint $table) {
             $table->dropColumn('post_id');
         });
 
-        // ✅ 5. ADD INDEX
+        // / 5. ADD INDEX
         Schema::table('comments', function (Blueprint $table) {
             $table->index(['reference_id', 'reference_type'], 'comments_ref_index');
         });

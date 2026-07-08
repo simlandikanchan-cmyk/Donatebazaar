@@ -385,7 +385,7 @@ body {
 @php
     $kyc = auth()->user()->kycVerification ?? null;
 
-    // ✅ Use campaign_state only — same as dashboard
+    // / Use campaign_state only — same as dashboard
     $state = $campaign->campaign_state;
 
     if ($state === 'active') {
@@ -756,7 +756,7 @@ body {
                                 </p>
                             </div>
                             <div class="kyc-doc-row">
-                                <div class="kyc-doc-icon">✅</div>
+                                <div class="kyc-doc-icon">/</div>
                                 <div>
                                     <div class="kyc-doc-type">{{ ucfirst($kyc->document_type) }}</div>
                                     <div class="kyc-doc-num">{{ $kyc->document_number }}</div>

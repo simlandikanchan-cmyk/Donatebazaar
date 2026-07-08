@@ -538,7 +538,7 @@
                             </div>
                         </div>
 
-                        {{-- ✅ Grand Summary Card --}}
+                        {{-- / Grand Summary Card --}}
                         <div class="grand-summary-card" id="grandSummaryCard">
                             <div class="grand-summary-header">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 7H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-3M9 7V5a2 2 0 012-2h2a2 2 0 012 2v2M9 7h6"/></svg>
@@ -882,7 +882,7 @@ function populateReview() {
         rvCard.style.display = 'none';
     }
 
-    // ✅ Grand Summary Card
+    // / Grand Summary Card
     const combined = goalRaw + productTotal;
     document.getElementById('gs-goal').textContent = goalRaw ? '₹' + Math.round(goalRaw).toLocaleString('en-IN') : '—';
     document.getElementById('gs-combined').textContent = '₹' + Math.round(combined).toLocaleString('en-IN');

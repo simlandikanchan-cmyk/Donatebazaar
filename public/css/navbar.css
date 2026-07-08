@@ -713,3 +713,36 @@
         transition-duration: 0.01ms !important;
     }
 }
+
+
+.db-mobile__link--sub {
+    position: relative;
+    padding-left: 34px;
+    font-size: 13.5px;
+    color: var(--text2, #6b7280);
+    font-weight: 500;
+}
+
+.db-mobile__link--sub::before {
+    content: '';
+    position: absolute;
+    left: 16px;
+    top: 0;
+    bottom: 50%;
+    width: 14px;
+    border-left: 1.5px solid #d1d5db;
+    border-bottom: 1.5px solid #d1d5db;
+    border-bottom-left-radius: 6px;
+}
+
+/* Last sub-item under a group shouldn't need special treatment,
+   but if you want the connecting line to only span between items: */
+.db-mobile__link--sub + .db-mobile__link--sub::after {
+    content: '';
+    position: absolute;
+    left: 16px;
+    top: -100%;
+    bottom: 50%;
+    width: 0;
+    border-left: 1.5px solid #d1d5db;
+}

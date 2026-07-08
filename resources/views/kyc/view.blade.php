@@ -192,7 +192,7 @@
     </div>
 @elseif($kycStatus === 'approved')
     <div class="kyc-banner banner-approved">
-        <div class="kyc-banner-icon">✅</div>
+        <div class="kyc-banner-icon">/</div>
         <div class="kyc-banner-text">
             <h3>Identity Verified</h3>
             <p>KYC approved{{ $kyc->verified_at ? ' on ' . \Carbon\Carbon::parse($kyc->verified_at)->format('d M Y') : '' }}. Your campaign is eligible for approval.</p>

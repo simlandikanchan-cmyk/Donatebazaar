@@ -9,7 +9,7 @@ return new class extends Migration
 {
     public function up()
     {
-        // ✅ 1. ADD NEW COLUMNS FIRST
+        // / 1. ADD NEW COLUMNS FIRST
         Schema::table('likes', function (Blueprint $table) {
             if (!Schema::hasColumn('likes', 'reference_id')) {
                 $table->unsignedBigInteger('reference_id')->nullable()->after('user_id');
@@ -20,18 +20,18 @@ return new class extends Migration
             }
         });
 
-        // ✅ 2. COPY OLD DATA (IMPORTANT)
+        // / 2. COPY OLD DATA (IMPORTANT)
         DB::statement("UPDATE likes SET reference_id = post_id, reference_type = 'post'");
 
-        // ✅ 3. DROP FOREIGN KEY FIRST (MANDATORY)
+        // / 3. DROP FOREIGN KEY FIRST (MANDATORY)
         DB::statement("ALTER TABLE likes DROP FOREIGN KEY likes_post_id_foreign");
 
-        // ✅ 4. NOW DROP COLUMN
+        // / 4. NOW DROP COLUMN
         Schema::table('likes', function (Blueprint $table) {
             $table->dropColumn('post_id');
         });
 
-        // ✅ 5. ADD INDEX
+        // / 5. ADD INDEX
         Schema::table('likes', function (Blueprint $table) {
             $table->index(['reference_id', 'reference_type'], 'likes_ref_index');
         });

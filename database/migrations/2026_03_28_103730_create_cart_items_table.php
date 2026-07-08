@@ -34,7 +34,7 @@ public function up(): void
 
         $table->timestamps();
 
-        // ✅ prevent duplicates
+        // / prevent duplicates
         $table->unique(['cart_id', 'product_id']);
         $table->unique(['cart_id', 'user_product_id']);
     });

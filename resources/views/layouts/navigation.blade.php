@@ -156,7 +156,7 @@
                          aria-hidden="true">
 
                         <div class="db-dropdown__header" role="none">
-                            {{-- ✅ FIXED: Show actual avatar image instead of initials --}}
+                            {{-- / FIXED: Show actual avatar image instead of initials --}}
                             <img src="{{ auth()->user()->avatar
                                     ? asset('storage/' . auth()->user()->avatar)
                                     : asset('images/default-avatar.png') }}"
@@ -304,7 +304,7 @@
 
         @auth
             <div class="db-mobile__user">
-                {{-- ✅ FIXED: Show actual avatar image in mobile drawer too --}}
+                {{-- / FIXED: Show actual avatar image in mobile drawer too --}}
                 <img src="{{ auth()->user()->avatar
                         ? asset('storage/' . auth()->user()->avatar)
                         : asset('images/default-avatar.png') }}"
@@ -360,7 +360,7 @@
 
 @once
 <style>
-/* ✅ Dropdown header avatar */
+/* / Dropdown header avatar */
 .db-dropdown__avatar {
     width: 38px;
     height: 38px;
@@ -369,12 +369,12 @@
     flex-shrink: 0;
 }
 
-/* ✅ Mobile drawer avatar */
+/* / Mobile drawer avatar */
 .db-mobile__avatar {
     width: 38px;
     height: 38px;
     border-radius: 50%;
-    object-fit: cover;
+    object-fit: cover; 
     flex-shrink: 0;
 }
 </style>

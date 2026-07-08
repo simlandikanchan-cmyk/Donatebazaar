@@ -1,103 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Registration Confirmed</title>
-    <style>
-        body        { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
-        .wrapper    { max-width: 600px; margin: 40px auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
-        .header     { background: #16a34a; padding: 32px 40px; text-align: center; }
-        .header h1  { color: #ffffff; margin: 0; font-size: 22px; letter-spacing: .5px; }
-        .body       { padding: 32px 40px; }
-        .body p     { color: #374151; line-height: 1.7; margin: 0 0 16px; }
-        .card       { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; padding: 20px 24px; margin: 24px 0; }
-        .card table { width: 100%; border-collapse: collapse; }
-        .card td    { padding: 6px 0; color: #374151; font-size: 14px; vertical-align: top; }
-        .card td:first-child { font-weight: 600; width: 140px; color: #111827; }
-        .badge      { display: inline-block; background: #dcfce7; color: #15803d; padding: 4px 12px; border-radius: 99px; font-size: 13px; font-weight: 600; }
-        .footer     { background: #f9fafb; border-top: 1px solid #e5e7eb; padding: 20px 40px; text-align: center; }
-        .footer p   { color: #9ca3af; font-size: 12px; margin: 0; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Registration Confirmed</title>
 </head>
-<body>
-<div class="wrapper">
+<body style="margin:0;padding:0;background:#eef1f8;font-family:Arial,Helvetica,sans-serif;-webkit-text-size-adjust:100%;">
 
-    {{-- Header --}}
-    <div class="header">
-        <h1>✅ You're Registered!</h1>
-    </div>
+<span style="display:none;font-size:1px;color:#eef1f8;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">
+    You're registered for {{ $event->title }} &mdash; here are your details, {{ $registration->name }}.
+</span>
 
-    {{-- Body --}}
-    <div class="body">
-        <p>Hi <strong>{{ $registration->name }}</strong>,</p>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#eef1f8;">
+<tr><td align="center" style="padding:32px 16px;">
 
-        <p>
-            Thank you for registering for <strong>{{ $event->title }}</strong>.
-            Your spot has been confirmed. Here's a summary of your registration:
-        </p>
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
 
-        {{-- Registration Details --}}
-        <div class="card">
-            <table>
-                <tr>
-                    <td>Event</td>
-                    <td>{{ $event->title }}</td>
-                </tr>
-                <tr>
-                    <td>Date</td>
-                    <td>{{ \Carbon\Carbon::parse($event->event_date)->format('l, F j, Y') }}</td>
-                </tr>
-                @if($event->start_time)
-                <tr>
-                    <td>Time</td>
-                    <td>
-                        {{ \Carbon\Carbon::parse($event->start_time)->format('g:i A') }}
-                        @if($event->end_time)
-                            – {{ \Carbon\Carbon::parse($event->end_time)->format('g:i A') }}
-                        @endif
-                    </td>
-                </tr>
-                @endif
-                <tr>
-                    <td>Name</td>
-                    <td>{{ $registration->name }}</td>
-                </tr>
-                <tr>
-                    <td>Email</td>
-                    <td>{{ $registration->email }}</td>
-                </tr>
-                <tr>
-                    <td>Phone</td>
-                    <td>{{ $registration->phone }}</td>
-                </tr>
-                <tr>
-                    <td>Status</td>
-                    <td><span class="badge">Registered</span></td>
-                </tr>
+  <!-- Main card -->
+  <tr>
+    <td style="background:#ffffff;border-radius:18px;overflow:hidden;border:1px solid #e9ecf5;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+
+        <!-- Header -->
+        <tr>
+          <td bgcolor="#059669" style="background-image:linear-gradient(135deg,#059669,#34d399);background-color:#059669;padding:38px 30px 34px;text-align:center;">
+            <table role="presentation" align="center" cellpadding="0" cellspacing="0" style="margin:0 auto 16px;">
+              <tr><td style="width:54px;height:54px;border-radius:50%;background:rgba(255,255,255,.16);text-align:center;vertical-align:middle;font-size:26px;line-height:54px;color:#ffffff;">&#10003;</td></tr>
             </table>
-        </div>
+            <p style="color:#ffffff;font-size:21px;font-weight:700;margin:0 0 4px;">You're Registered!</p>
+            <p style="color:rgba(255,255,255,.8);font-size:13px;margin:0;">Your spot has been confirmed</p>
+          </td>
+        </tr>
 
-        @if($registration->message)
-        <p><strong>Your note:</strong><br>{{ $registration->message }}</p>
-        @endif
+        <!-- Body -->
+        <tr>
+          <td style="padding:34px 30px 8px;">
 
-        <p>
-            We look forward to seeing you there! If you have any questions,
-            please don't hesitate to reach out to the event organiser.
-        </p>
+            <h1 style="font-size:22px;color:#111827;margin:0 0 10px;font-weight:700;">
+              Hi {{ $registration->name }},
+            </h1>
+            <p style="font-size:14.5px;color:#6b7280;line-height:1.7;margin:0 0 24px;">
+              Thank you for registering for <strong>{{ $event->title }}</strong>. Your spot has been
+              confirmed. Here's a summary of your registration:
+            </p>
 
-        <p>Warm regards,<br><strong>{{ config('app.name') }}</strong></p>
-    </div>
+            <!-- Details card -->
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e5e7eb;border-radius:14px;margin-bottom:24px;">
 
-    {{-- Footer --}}
-    <div class="footer">
-        <p>
-            This email was sent because you registered for an event on
-            <a href="{{ config('app.url') }}" style="color:#6b7280;">{{ config('app.name') }}</a>.
-        </p>
-    </div>
+              @php
+                $rows = [
+                    ['Event', $event->title],
+                    ['Date', \Carbon\Carbon::parse($event->event_date)->format('l, F j, Y')],
+                ];
+                if ($event->start_time) {
+                    $time = \Carbon\Carbon::parse($event->start_time)->format('g:i A');
+                    if ($event->end_time) {
+                        $time .= ' &ndash; ' . \Carbon\Carbon::parse($event->end_time)->format('g:i A');
+                    }
+                    $rows[] = ['Time', $time];
+                }
+                $rows[] = ['Name', $registration->name];
+                $rows[] = ['Email', $registration->email];
+                $rows[] = ['Phone', $registration->phone];
+              @endphp
 
-</div>
+              @foreach ($rows as $i => $row)
+              <tr>
+                <td style="padding:{{ $i === 0 ? '18px' : '0' }} 20px 0;{{ $i > 0 ? 'border-top:1px solid #f1f5f9;' : '' }}">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                      <td style="padding:12px 0;font-size:13.5px;color:#6b7280;width:140px;">{{ $row[0] }}</td>
+                      <td style="padding:12px 0;font-size:13.5px;color:#111827;font-weight:600;">{!! $row[1] !!}</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              @endforeach
+
+              <tr>
+                <td style="padding:0 20px 18px;border-top:1px solid #f1f5f9;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                      <td style="padding:12px 0;font-size:13.5px;color:#6b7280;width:140px;">Status</td>
+                      <td style="padding:12px 0;">
+                        <span style="display:inline-block;background:#dcfce7;color:#15803d;padding:4px 12px;border-radius:99px;font-size:12.5px;font-weight:600;">Registered</span>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+
+            @if($registration->message)
+            <p style="color:#111827;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin:0 0 10px;">Your Note</p>
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+              <tr>
+                <td style="background:#f8fafc;border-left:4px solid #059669;border-radius:8px;padding:16px 18px;">
+                  <p style="color:#374151;font-size:13.5px;line-height:1.7;margin:0;">{{ $registration->message }}</p>
+                </td>
+              </tr>
+            </table>
+            @endif
+
+            <p style="font-size:14.5px;color:#6b7280;line-height:1.7;margin:0 0 6px;">
+              We look forward to seeing you there! If you have any questions, please don't hesitate
+              to reach out to the event organiser.
+            </p>
+
+          </td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+
+  <!-- Footer -->
+  <tr>
+    <td align="center" style="padding:26px 20px 8px;">
+      <p style="color:#6b7280;font-size:12px;margin:0 0 10px;line-height:1.7;">
+        &copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.
+      </p>
+      <p style="color:#6b7280;font-size:12px;margin:0 0 4px;">
+        This email was sent because you registered for an event on
+        <a href="{{ config('app.url') }}" style="color:#4f46e5;text-decoration:none;">{{ config('app.name') }}</a>.
+      </p>
+    </td>
+  </tr>
+
+</table>
+
+</td></tr>
+</table>
+
 </body>
 </html>
