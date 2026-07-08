@@ -19,6 +19,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/campaign/{campaign}',            [CampaignController::class, 'update'])->name('campaign.update');
     Route::post('/campaign/{campaign}/pause',     [CampaignController::class, 'pause'])->name('campaign.pause');
     Route::post('/campaign/{campaign}/resume',    [CampaignController::class, 'resume'])->name('campaign.resume');
+    Route::post('/campaign/{campaign}/follow',    [CampaignController::class, 'toggleFollow'])->name('campaign.follow');
     Route::post('/campaigns/{campaign}/resubmit', [CampaignController::class, 'resubmit'])->name('campaign.resubmit');
 
     Route::get('/kyc/upload/{campaign}',   [KycUploadController::class, 'show'])->name('kyc.upload.form');

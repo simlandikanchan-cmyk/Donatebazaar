@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\CampaignCreatedMail;
 use App\Models\Campaign;
+use App\Models\User;
 use App\Models\Category;
 use App\Models\CategoryProduct;
 use App\Models\CampaignUpdate;
@@ -266,6 +267,25 @@ class CampaignController extends Controller
         $campaign->update(['campaign_state' => Campaign::STATE_ACTIVE]);
 
         return back()->with('success', 'Campaign resumed.');
+    }
+
+    // -------------------------------------------------------------------------
+    // TOGGLE FOLLOW
+    // -------------------------------------------------------------------------
+
+    public function toggleFollow(Campaign $campaign)
+    {
+        $user = Auth::user();
+
+        if ($campaign->isFollowedBy($user)) {
+            $campaign->unfollow($user);
+            $message = 'You unfollowed this campaign.';
+        } else {
+            $campaign->follow($user);
+            $message = 'You are now following this campaign — you\'ll be notified about new events.';
+        }
+
+        return back()->with('success', $message);
     }
 
     // -------------------------------------------------------------------------

@@ -496,6 +496,17 @@ button { font-family:var(--font); }
 }
 .share-btn:hover { border-color:var(--accent); color:var(--accent); background:var(--accent-glow); }
 .share-btn svg { width:14px; height:14px; }
+.btn-follow {
+    width:100%; display:flex; align-items:center; justify-content:center; gap:8px;
+    padding:11px; border:1.5px solid var(--accent); border-radius:var(--radius-sm);
+    background:var(--accent); font-size:13px; font-weight:700; color:#fff;
+    cursor:pointer; transition:all var(--transition); margin-top:14px;
+}
+.btn-follow:hover { opacity:.9; transform:translateY(-1px); }
+.btn-follow svg { width:14px; height:14px; }
+.btn-follow.is-following { background:var(--surface2); color:var(--text2); border-color:var(--border2); }
+.btn-follow.is-following:hover { border-color:var(--red); color:var(--red); background:var(--red-lt); }
+.follow-count { font-size:11.5px; color:var(--text3); margin-top:8px; text-align:center; font-family:var(--font-mono); }
 .action-card {
     background:linear-gradient(135deg,var(--accent),var(--accent2));
     border-radius:var(--radius); padding:20px; color:#fff;
@@ -1584,6 +1595,18 @@ button { font-family:var(--font); }
                 </div>
                 @endif
             </div>
+
+            @auth
+            @php $isFollowing = $campaign->isFollowedBy(auth()->user()); @endphp
+            <form method="POST" action="{{ route('campaign.follow', $campaign) }}">
+                @csrf
+                <button type="submit" class="btn-follow {{ $isFollowing ? 'is-following' : '' }}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                    {{ $isFollowing ? 'Following' : 'Follow' }}
+                </button>
+            </form>
+            <div class="follow-count">{{ $campaign->followers()->count() }} follower{{ $campaign->followers()->count() !== 1 ? 's' : '' }}</div>
+            @endauth
         </div>
 
         {{-- ── Share ── --}}

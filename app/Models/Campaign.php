@@ -109,6 +109,21 @@ class Campaign extends Model
         );
     }
 
+    public function isFollowedBy(User $user): bool
+    {
+        return $this->followers()->where('follower_id', $user->id)->exists();
+    }
+
+    public function follow(User $user): void
+    {
+        $this->followers()->syncWithoutDetaching([$user->id]);
+    }
+
+    public function unfollow(User $user): void
+    {
+        $this->followers()->detach($user->id);
+    }
+
     public function category()
     {
         return $this->belongsTo(Category::class);
