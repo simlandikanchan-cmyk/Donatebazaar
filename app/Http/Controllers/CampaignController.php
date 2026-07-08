@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use Intervention\Image\Laravel\Facades\Image;
+use Carbon\Carbon;
 
 class CampaignController extends Controller
 {
@@ -144,6 +145,18 @@ class CampaignController extends Controller
             'donations' => fn($q) => $q->where('payment_status', 'completed')->orderBy('created_at', 'desc'),
         ]);
 
+        // Real-time expiry: end_date has no time component, so compare against
+        // its end of day. Keeps the displayed state accurate on this page too
+        // (the scheduled command can lag up to 24h).
+        if (
+            $campaign->campaign_state === Campaign::STATE_ACTIVE &&
+            $campaign->end_date &&
+            Carbon::parse($campaign->end_date)->endOfDay()->isPast()
+        ) {
+            $campaign->update(['campaign_state' => Campaign::STATE_EXPIRED]);
+            $campaign->campaign_state = Campaign::STATE_EXPIRED;
+        }
+
         return view('campaigns.show', compact('campaign'));
     }
 
@@ -197,6 +210,17 @@ class CampaignController extends Controller
             'is_urgent'   => $request->boolean('is_urgent'),
             'cover_image' => $this->uploadCoverImage($request) ?? $campaign->cover_image,
         ]);
+
+        // If the campaign was expired but the end date was just extended into
+        // the future, reactivate it so it isn't stuck in the expired state.
+        if (
+            $campaign->wasChanged('end_date') &&
+            $campaign->campaign_state === Campaign::STATE_EXPIRED &&
+            $request->end_date &&
+            ! Carbon::parse($request->end_date)->endOfDay()->isPast()
+        ) {
+            $campaign->update(['campaign_state' => Campaign::STATE_ACTIVE]);
+        }
 
         // Clear categories cache on update
         Cache::forget('active_campaign_categories');

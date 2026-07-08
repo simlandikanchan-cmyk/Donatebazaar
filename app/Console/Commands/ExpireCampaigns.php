@@ -13,26 +13,18 @@ class ExpireCampaigns extends Command
 
     public function handle()
     {
+        // end_date is a date (no time). Compare against the start of today so a
+        // campaign stays active through its entire end_date calendar day and is
+        // only expired once that day is fully over. (Using Carbon::now() would
+        // mark it expired at 00:00 of the end date — a full day early.)
         $count = Campaign::whereIn('campaign_state', ['active', 'paused'])
-            ->whereNotNull('end_date')
-            ->where('end_date', '<', Carbon::now())
-            ->update([
-                'campaign_state' => 'expired',
-            ]);
-
-        $this->info("Expired {$count} campaign(s).");
-
-        // Also fix any active campaigns that slipped through (e.g. end_date = today midnight)
-        $countToday = Campaign::where('campaign_state', 'active')
             ->whereNotNull('end_date')
             ->whereDate('end_date', '<', Carbon::today())
             ->update([
                 'campaign_state' => 'expired',
             ]);
 
-        if ($countToday > 0) {
-            $this->info("Fixed {$countToday} additional campaign(s) missed by date boundary.");
-        }
+        $this->info("Expired {$count} campaign(s).");
 
         return Command::SUCCESS;
     }
