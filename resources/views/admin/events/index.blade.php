@@ -93,6 +93,10 @@ tbody tr:hover{background:var(--surface2);}
 .act-approve:hover{background:var(--green);color:#fff;border-color:var(--green);}
 .act-reject{color:var(--red);background:var(--red-lt);border-color:rgba(240,68,68,.25);}
 .act-reject:hover{background:var(--red);color:#fff;border-color:var(--red);}
+.act-bell{color:var(--text3);background:var(--surface2);border-color:var(--border2);}
+.act-bell:hover{color:var(--text2);background:var(--surface3);}
+.act-bell.is-on{color:#059669;background:var(--green-lt);border-color:rgba(5,196,138,.3);}
+.act-bell.is-on:hover{color:#059669;background:var(--green-lt);}
 .act-form{display:inline;}
 .act-form button{font-family:var(--font);line-height:normal;}
 
@@ -372,6 +376,14 @@ tbody tr:hover{background:var(--surface2);}
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                   Edit
                 </a>
+                <form class="act-form" method="POST" action="{{ route('admin.events.toggleSetting', $event->id) }}" title="{{ $event->send_notification ? 'Notifications ON — campaign followers emailed when published' : 'Notifications OFF — toggle to email followers on publish' }}">
+                  @csrf
+                  <input type="hidden" name="field" value="send_notification">
+                  <button type="submit" class="act-link act-bell {{ $event->send_notification ? 'is-on' : '' }}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                    {{ $event->send_notification ? 'Notify On' : 'Notify' }}
+                  </button>
+                </form>
                 @if($event->status === 'pending')
                   <form class="act-form" method="POST" action="{{ route('admin.events.approve', $event->id) }}" onsubmit="return confirm('Approve and publish this event?')">
                     @csrf
@@ -483,6 +495,14 @@ tbody tr:hover{background:var(--surface2);}
       <div class="ev-card-actions">
         <a href="{{ route('admin.events.show', $event->id) }}" class="act-link">View</a>
         <a href="{{ route('admin.events.edit', $event->id) }}" class="act-link act-edit">Edit</a>
+        <form class="act-form" method="POST" action="{{ route('admin.events.toggleSetting', $event->id) }}">
+          @csrf
+          <input type="hidden" name="field" value="send_notification">
+          <button type="submit" class="act-link act-bell {{ $event->send_notification ? 'is-on' : '' }}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+            {{ $event->send_notification ? 'Notify On' : 'Notify' }}
+          </button>
+        </form>
         @if($event->status === 'pending')
           <form class="act-form" method="POST" action="{{ route('admin.events.approve', $event->id) }}">@csrf<button type="submit" class="act-link act-approve">Approve</button></form>
           <form class="act-form" method="POST" action="{{ route('admin.events.reject', $event->id) }}">@csrf<button type="submit" class="act-link act-reject">Reject</button></form>

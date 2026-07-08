@@ -282,11 +282,16 @@ if (
 
 
     public function publish(Event $event): RedirectResponse
-{
-    $event->update(['status' => Event::STATUS_ACTIVE]);
-    $this->notifyEventPublished($event);
-    return back()->with('success', 'Event published successfully.');
-}
+    {
+        $event->update(['status' => Event::STATUS_ACTIVE]);
+        $this->notifyEventPublished($event);
+
+        $message = $event->send_notification
+            ? 'Event published — notification email sent to campaign followers.'
+            : 'Event published successfully.';
+
+        return back()->with('success', $message);
+    }
 
 public function draft(Event $event): RedirectResponse
 {
@@ -326,18 +331,22 @@ public function toggleSetting(Request $request, Event $event): RedirectResponse
     /* ─────────────────────────────────────────
  | APPROVE  (pending → active)
  ───────────────────────────────────────── */
-public function approve(Event $event): RedirectResponse
-{
-    $event->update(['status' => Event::STATUS_ACTIVE]);
-    $this->notifyEventPublished($event);
+    public function approve(Event $event): RedirectResponse
+    {
+        $event->update(['status' => Event::STATUS_ACTIVE]);
+        $this->notifyEventPublished($event);
 
-    Log::info('Admin approved event', [
-        'event_id' => $event->id,
-        'admin_id' => auth()->id(),
-    ]);
+        Log::info('Admin approved event', [
+            'event_id' => $event->id,
+            'admin_id' => auth()->id(),
+        ]);
 
-    return back()->with('success', 'Event approved and is now live!');
-}
+        $message = $event->send_notification
+            ? 'Event approved and is now live — notification email sent to campaign followers.'
+            : 'Event approved and is now live!';
+
+        return back()->with('success', $message);
+    }
 
 
 
