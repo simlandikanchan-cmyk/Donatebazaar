@@ -376,7 +376,7 @@ tbody tr:hover{background:var(--surface2);}
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                   Edit
                 </a>
-                <form class="act-form" method="POST" action="{{ route('admin.events.toggleSetting', $event->id) }}" title="{{ $event->send_notification ? 'Notifications ON — campaign followers emailed when published' : 'Notifications OFF — toggle to email followers on publish' }}">
+                <form class="act-form" method="POST" action="{{ route('admin.events.toggleSetting', $event->id) }}"                   title="{{ $event->send_notification ? 'Notifications ON — also emails the campaign creator when published (followers are always notified)' : 'Notifications OFF — toggle to also email the campaign creator on publish' }}">
                   @csrf
                   <input type="hidden" name="field" value="send_notification">
                   <button type="submit" class="act-link act-bell {{ $event->send_notification ? 'is-on' : '' }}">

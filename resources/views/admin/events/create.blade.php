@@ -467,7 +467,7 @@
               <div class="toggle-row">
                 <div class="toggle-info">
                   <div class="toggle-name">Send Notification Email</div>
-                  <div class="toggle-desc">Notify campaign followers when published</div>
+                  <div class="toggle-desc">Also email the campaign creator when published</div>
                 </div>
                 <label class="toggle">
                   <input type="checkbox" name="send_notification" value="1">

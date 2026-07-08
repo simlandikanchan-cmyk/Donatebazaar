@@ -424,7 +424,7 @@
           </div>
           <div class="setting-info">
             <div class="setting-name">Send Notification Email</div>
-            <div class="setting-desc">Notify campaign followers when this event is published</div>
+              <div class="setting-desc">Also email the campaign creator when published (followers are always notified)</div>
           </div>
           <form method="POST" action="{{ route('admin.events.toggleSetting', $event) }}" id="form_send_notif">
             @csrf

@@ -286,9 +286,11 @@ if (
         $event->update(['status' => Event::STATUS_ACTIVE]);
         $this->notifyEventPublished($event);
 
-        $message = $event->send_notification
-            ? 'Event published — notification email sent to campaign followers.'
-            : 'Event published successfully.';
+        $message = 'Event published';
+        if ($event->campaign && ($fc = $event->campaign->followers()->count()) > 0) {
+            $message .= " — notification email sent to {$fc} follower" . ($fc !== 1 ? 's' : '');
+        }
+        $message .= '.';
 
         return back()->with('success', $message);
     }
@@ -341,9 +343,11 @@ public function toggleSetting(Request $request, Event $event): RedirectResponse
             'admin_id' => auth()->id(),
         ]);
 
-        $message = $event->send_notification
-            ? 'Event approved and is now live — notification email sent to campaign followers.'
-            : 'Event approved and is now live!';
+        $message = 'Event approved and is now live';
+        if ($event->campaign && ($fc = $event->campaign->followers()->count()) > 0) {
+            $message .= " — notification email sent to {$fc} follower" . ($fc !== 1 ? 's' : '');
+        }
+        $message .= '.';
 
         return back()->with('success', $message);
     }
@@ -375,22 +379,15 @@ public function reject(Event $event): RedirectResponse
      ───────────────────────────────────────── */
     protected function notifyEventPublished(Event $event): void
     {
-        if (! $event->send_notification) {
-            return;
-        }
-
         $campaign = $event->campaign;
         if (! $campaign) {
             return;
         }
 
-        // Recipients: campaign creator + anyone following the campaign.
         $recipients = collect();
 
-        if ($campaign->user && $campaign->user->email) {
-            $recipients->push($campaign->user);
-        }
-
+        // Anyone following the campaign opted in, so they are ALWAYS notified
+        // when a new event is published — independent of the admin toggle.
         try {
             foreach ($campaign->followers as $follower) {
                 if ($follower->email) {
@@ -398,14 +395,22 @@ public function reject(Event $event): RedirectResponse
                 }
             }
         } catch (\Throwable $e) {
-            // Followers relation unavailable — creator still gets notified.
             Log::warning('Could not load campaign followers for event notification', [
                 'event_id' => $event->id,
                 'error'    => $e->getMessage(),
             ]);
         }
 
+        // The "Send Notification Email" toggle controls notifying the creator.
+        if ($event->send_notification && $campaign->user && $campaign->user->email) {
+            $recipients->push($campaign->user);
+        }
+
         $recipients = $recipients->unique(fn($user) => $user->email);
+
+        if ($recipients->isEmpty()) {
+            return;
+        }
 
         foreach ($recipients as $user) {
             try {
@@ -420,12 +425,11 @@ public function reject(Event $event): RedirectResponse
             }
         }
 
-        if ($recipients->isNotEmpty()) {
-            Log::info('Event published notifications sent', [
-                'event_id'   => $event->id,
-                'recipients' => $recipients->count(),
-            ]);
-        }
+        Log::info('Event published notifications sent', [
+            'event_id'   => $event->id,
+            'recipients' => $recipients->count(),
+            'followers'  => $campaign->followers()->count(),
+        ]);
     }
 
 
