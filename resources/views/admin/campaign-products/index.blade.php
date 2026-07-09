@@ -120,12 +120,6 @@
            class="ftab {{ $status === 'rejected' ? 'on' : '' }}">Rejected <span class="cnt">{{ $cntRejected }}</span></a>
       </div>
     </div>
-    <div class="card-head-right">
-      <a href="{{ route('admin.campaign-products.export', request()->only(['status', 'search', 'source', 'category'])) }}" class="export-btn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-        Export CSV
-      </a>
-    </div>
   </div>
 
   {{-- FILTER TOOLBAR --}}
@@ -172,6 +166,13 @@
 
         <input type="hidden" name="sort" value="{{ $sort }}">
         <input type="hidden" name="direction" value="{{ $dir }}">
+      </div>
+
+      <div class="toolbar-right">
+        <a href="{{ route('admin.campaign-products.export', request()->only(['status', 'search', 'source', 'category'])) }}" class="export-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          Export CSV
+        </a>
       </div>
     </form>
   </div>
