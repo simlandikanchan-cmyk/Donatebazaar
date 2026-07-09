@@ -6,140 +6,185 @@
 
 @push('page_styles')
 <style>
-/* ── PAGE ACTIONS ── */
-.page-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px;flex-wrap:wrap;animation:fadeUp .35s ease both;}
-.page-actions-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
-.btn-back{display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border-radius:var(--r-sm);font-size:12.5px;font-weight:600;border:1px solid var(--border2);background:var(--surface);color:var(--text2);cursor:pointer;transition:all var(--ease);text-decoration:none;font-family:var(--font);}
-.btn-back:hover{background:var(--surface2);color:var(--text);}
-.btn-back svg{width:13px;height:13px;}
+/* ── page actions ── */
+.page-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px;flex-wrap:wrap;animation:fadeUp .35s ease both}
+.page-actions-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn-back{display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border-radius:var(--r-sm);font-size:12.5px;font-weight:600;border:1px solid var(--border2);background:var(--surface);color:var(--text2);cursor:pointer;transition:all var(--ease);text-decoration:none;font-family:var(--font)}
+.btn-back:hover{background:var(--surface2);color:var(--text)}
+.btn-back svg{width:13px;height:13px}
 
-/* ── HERO META ── */
-.hero-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
-.hero-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:100px;font-size:11px;font-weight:600;font-family:var(--mono);}
-.hc-type{background:var(--a-lt);border:1px solid rgba(110,86,247,.3);color:#c4b5fd;}
-.hc-loc{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:rgba(255,255,255,.75);}
-.hc-sal{background:rgba(5,196,138,.2);border:1px solid rgba(5,196,138,.3);color:#189d68;}
-.hc-exp{background:rgba(59,130,246,.2);border:1px solid rgba(59,130,246,.3);color:#93c5fd;}
-.hc-vac{background:rgba(245,158,11,.2);border:1px solid rgba(245,158,11,.3);color:#fde68a;}
-.hero-chip svg{width:11px;height:11px;}
-.hero-badge.hb-active{background:rgba(5,196,138,.2);color:#189d68;border:1px solid rgba(5,196,138,.3);}
-.hero-badge.hb-draft{background:rgba(107,114,128,.2);color:#d1d5db;border:1px solid rgba(107,114,128,.3);}
-.hero-badge.hb-closed{background:rgba(240,68,68,.2);color:#a72a2a;border:1px solid rgba(240,68,68,.3);}
-.hero-stat-card{padding:14px 20px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:var(--r-sm);text-align:center;min-width:96px;}
-.hsc-val{font-family:var(--mono);font-size:26px;font-weight:800;line-height:1;letter-spacing:-.02em;}
-.hsc-lbl{font-size:10px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-top:4px;color:rgba(255,255,255,.5);}
+/* ── hero meta chips ── */
+.hero-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.hero-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:100px;font-size:11px;font-weight:600;font-family:var(--mono)}
+.hero-chip svg{width:11px;height:11px}
+.hc-type{background:var(--a-lt);color:var(--a);border:1px solid rgba(110,86,247,.3)}
+.hc-loc{background:var(--green-lt);color:#059669;border:1px solid rgba(5,196,138,.3)}
+.hc-sal{background:rgba(5,196,138,.2);color:#059669;border:1px solid rgba(5,196,138,.3)}
+.hc-exp{background:var(--blue-lt);color:#2563eb;border:1px solid rgba(59,130,246,.3)}
+.hc-vac{background:var(--amber-lt);color:#d97706;border:1px solid rgba(245,158,11,.3)}
 
-/* ── STAT STRIP ── */
-.stat-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
-.stat-strip .stat{animation-delay:0s;}
-.stat-strip .stat:nth-child(1)::after{background:linear-gradient(90deg,var(--amber),#f97316);}
-.stat-strip .stat:nth-child(2)::after{background:linear-gradient(90deg,var(--green),#34d399);}
-.stat-strip .stat:nth-child(3)::after{background:linear-gradient(90deg,var(--red),#f87171);}
-.stat-strip .stat:nth-child(4)::after{background:linear-gradient(90deg,var(--blue),#6366f1);}
+/* ── hero stat cards ── */
+.hero-stat-card{padding:14px 20px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm);text-align:center;min-width:96px}
+.hsc-val{font-family:var(--mono);font-size:26px;font-weight:800;line-height:1;letter-spacing:-.02em}
+.hsc-lbl{font-size:10px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-top:4px;color:var(--text3)}
 
-/* ── CONTENT GRID ── */
-.content-grid{display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start;}
+/* ── stat strip ── */
+.stat-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
 
-/* ── CARDS ── */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;animation:fadeUp .4s ease both;}
-.card+.card{margin-top:16px;}
-.card-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 22px;border-bottom:1px solid var(--border);}
-.card-header-left{display:flex;align-items:center;gap:10px;}
-.card-hico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.card-hico svg{width:16px;height:16px;}
-.ci-purple{background:var(--a-lt);color:var(--a);}
-.ci-green{background:var(--green-lt);color:var(--green);}
-.ci-blue{background:var(--blue-lt);color:var(--blue);}
-.ci-amber{background:var(--amber-lt);color:var(--amber);}
-.ci-red{background:var(--red-lt);color:var(--red);}
-.card-title{font-family:var(--mono);font-size:13.5px;font-weight:700;color:var(--text);letter-spacing:-.01em;}
-.card-sub{font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:1px;}
-.card-body{padding:22px;}
+/* ── content grid ── */
+.content-grid{display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start}
 
-/* ── DESCRIPTION ── */
-.desc-body{font-size:14px;color:var(--text2);line-height:1.85;white-space:pre-wrap;word-break:break-word;}
+/* ── cards ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;animation:fadeUp .4s ease both}
+.card+.card{margin-top:16px}
+.card-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 22px;border-bottom:1px solid var(--border)}
+.card-header-left{display:flex;align-items:center;gap:10px}
+.card-hico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.card-hico svg{width:16px;height:16px}
+.ci-purple{background:var(--a-lt);color:var(--a)}
+.ci-green{background:var(--green-lt);color:var(--green)}
+.ci-blue{background:var(--blue-lt);color:var(--blue)}
+.ci-amber{background:var(--amber-lt);color:var(--amber)}
+.ci-red{background:var(--red-lt);color:var(--red)}
+.ci-gray{background:var(--surface2);color:var(--text3)}
+.card-title{font-family:var(--mono);font-size:13.5px;font-weight:700;color:var(--text);letter-spacing:-.01em}
+.card-sub{font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:1px}
+.card-body{padding:22px}
 
-/* ── TABLE ── */
-.table-wrap{overflow-x:auto;}
-.table-wrap table{width:100%;border-collapse:collapse;}
-.table-wrap thead{background:var(--surface2);border-bottom:1px solid var(--border);}
-.table-wrap thead th{padding:10px 14px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--text3);font-family:var(--mono);white-space:nowrap;}
-.table-wrap thead th:first-child{padding-left:22px;}
-.table-wrap thead th:last-child{padding-right:22px;text-align:right;}
-.table-wrap tbody td{padding:13px 14px;border-bottom:1px solid var(--border);vertical-align:middle;font-size:13px;}
-.table-wrap tbody td:first-child{padding-left:22px;}
-.table-wrap tbody td:last-child{padding-right:22px;text-align:right;}
-.table-wrap tbody tr:last-child td{border-bottom:none;}
-.table-wrap tbody tr{transition:background var(--ease);}
-.table-wrap tbody tr:hover{background:var(--surface2);}
-.td-mono{font-family:var(--mono);font-size:11.5px;color:var(--text3);}
-.td-name{font-weight:600;color:var(--text);}
-.td-sub{font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:1px;}
+/* ── description ── */
+.desc-body{font-size:14px;color:var(--text2);line-height:1.85;white-space:pre-wrap;word-break:break-word}
 
-/* ── EMPTY STATE ── */
-.empty-state{padding:48px 20px;text-align:center;}
-.empty-icon{width:52px;height:52px;border-radius:14px;background:var(--surface2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;}
-.empty-icon svg{width:22px;height:22px;color:var(--text3);}
-.empty-ttl{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--text2);margin-bottom:5px;}
-.empty-sub{font-size:13px;color:var(--text3);}
+/* ── skill tags ── */
+.skill-tags{display:flex;flex-wrap:wrap;gap:6px}
+.skill-tag{display:inline-flex;padding:4px 12px;border-radius:100px;font-size:11px;font-weight:600;font-family:var(--mono);background:var(--surface2);color:var(--text2);border:1px solid var(--border2)}
+.skill-tag:hover{border-color:var(--a);color:var(--a);background:var(--a-lt)}
 
-/* ── SIDE STACK ── */
-.side-stack{position:sticky;top:80px;display:flex;flex-direction:column;gap:16px;}
+/* ── table ── */
+.table-wrap{overflow-x:auto}
+.table-wrap table{width:100%;border-collapse:collapse}
+.table-wrap thead{background:var(--surface2);border-bottom:1px solid var(--border)}
+.table-wrap thead th{padding:10px 14px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--text3);font-family:var(--mono);white-space:nowrap}
+.table-wrap thead th:first-child{padding-left:22px}
+.table-wrap thead th:last-child{padding-right:22px;text-align:right}
+.table-wrap tbody td{padding:13px 14px;border-bottom:1px solid var(--border);vertical-align:middle;font-size:13px}
+.table-wrap tbody td:first-child{padding-left:22px}
+.table-wrap tbody td:last-child{padding-right:22px;text-align:right}
+.table-wrap tbody tr:last-child td{border-bottom:none}
+.table-wrap tbody tr{transition:background var(--ease)}
+.table-wrap tbody tr:hover{background:var(--surface2)}
+.td-mono{font-family:var(--mono);font-size:11.5px;color:var(--text3)}
+.td-name{font-weight:600;color:var(--text)}
+.td-sub{font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:1px}
 
-/* ── BUTTONS ── */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 20px;border-radius:var(--r-sm);font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all var(--ease);font-family:var(--font);width:100%;}
-.btn:active{transform:scale(.97);}
-.btn svg{width:14px;height:14px;}
-.btn-primary{background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;box-shadow:0 4px 18px rgba(110,86,247,.35);}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(110,86,247,.45);}
-.btn-secondary{background:var(--surface2);color:var(--text2);border:1px solid var(--border2);}
-.btn-secondary:hover{background:var(--surface3);color:var(--text);}
-.btn-danger{background:var(--red-lt);color:var(--red);border:1px solid rgba(240,68,68,.2);}
-.btn-danger:hover{background:var(--red);color:#fff;border-color:var(--red);}
-.btn-edit{background:var(--a-lt);color:var(--a);border:1px solid rgba(110,86,247,.2);}
-.btn-edit:hover{background:var(--a);color:#fff;border-color:var(--a);}
+/* ── action buttons (compact for table) ── */
+.act-btns{display:flex;align-items:center;gap:4px;justify-content:flex-end}
+.act-btn{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:7px;font-size:11.5px;font-weight:500;cursor:pointer;border:1px solid transparent;transition:all var(--ease);text-decoration:none;font-family:var(--font);white-space:nowrap}
+.act-btn svg{width:11px;height:11px}
+.act-btn:active{transform:scale(.96)}
+.ab-view{background:var(--surface2);color:var(--text2);border-color:var(--border2)}
+.ab-view:hover{background:var(--a-lt);color:var(--a);border-color:rgba(110,86,247,.2)}
+.ab-download{background:var(--green-lt);color:var(--green);border-color:rgba(5,196,138,.2)}
+.ab-download:hover{background:var(--green);color:#fff;border-color:var(--green)}
+.ab-shortlist{background:var(--amber-lt);color:var(--amber);border-color:rgba(245,158,11,.2)}
+.ab-shortlist:hover{background:var(--amber);color:#fff;border-color:var(--amber)}
 
-/* ── ACTION BUTTONS ── */
-.act-btns{display:flex;align-items:center;gap:4px;}
-.act-btn{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:7px;font-size:11.5px;font-weight:500;cursor:pointer;border:1px solid transparent;transition:all var(--ease);text-decoration:none;font-family:var(--font);white-space:nowrap;}
-.act-btn svg{width:11px;height:11px;}
-.act-btn:active{transform:scale(0.96);}
-.ab-view{background:var(--surface2);color:var(--text2);border-color:var(--border2);}
-.ab-view:hover{background:var(--a-lt);color:var(--a);border-color:rgba(110,86,247,.2);}
-.ab-download{background:var(--green-lt);color:var(--green);border-color:rgba(5,196,138,.2);}
-.ab-download:hover{background:var(--green);color:#fff;border-color:var(--green);}
+/* ── badge sub-classes (not in admin.css) ── */
+.b-shortlisted{background:rgba(5,196,138,.85);color:#fff}
+.b-hired{background:rgba(110,86,247,.85);color:#fff}
 
-/* ── BADGE SUB-CLASSES ── */
-.b-shortlisted{background:rgba(5,196,138,.85);color:#fff;}
-.b-hired{background:rgba(110,86,247,.85);color:#fff;}
+/* ── side card ── */
+.side-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;animation:fadeUp .4s ease both}
 
-/* ── SIDE CARD ── */
-.side-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;animation:fadeUp .4s ease both;}
+/* ── info rows ── */
+.info-list{padding:0 18px}
+.info-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.info-row:last-child{border-bottom:none}
+.info-lbl{font-size:11.5px;color:var(--text3);font-family:var(--mono);flex-shrink:0}
+.info-val{font-size:12.5px;font-weight:600;color:var(--text2);text-align:right;font-family:var(--mono)}
+.info-val.green{color:var(--green)}
+.info-val.amber{color:var(--amber)}
+.info-val.red{color:var(--red)}
 
-/* ── INFO ROWS ── */
-.info-list{padding:0 18px;}
-.info-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
-.info-row:last-child{border-bottom:none;}
-.info-lbl{font-size:11.5px;color:var(--text3);font-family:var(--mono);}
-.info-val{font-size:12.5px;font-weight:600;color:var(--text2);text-align:right;}
-.info-val.green{color:var(--green);}
-.info-val.amber{color:var(--amber);}
-.info-val.red{color:var(--red);}
+/* ── side stack ── */
+.side-stack{position:sticky;top:80px;display:flex;flex-direction:column;gap:16px}
 
-/* ── BUTTON STACK ── */
-.btn-stack{display:flex;flex-direction:column;gap:8px;padding:18px;}
+/* ── button stack ── */
+.btn-stack{display:flex;flex-direction:column;gap:8px;padding:18px}
 
-/* ── DANGER ZONE ── */
-.danger-zone{background:linear-gradient(135deg,rgba(240,68,68,.05),rgba(240,68,68,.02));border:1px solid rgba(240,68,68,.18);border-radius:var(--r);padding:18px;animation:fadeUp .4s .18s ease both;}
-.danger-hdr{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
-.danger-hdr svg{width:14px;height:14px;color:var(--red);}
-.danger-hdr span{font-size:11px;font-weight:700;color:var(--red);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;}
-.danger-desc{font-size:12px;color:var(--text3);line-height:1.5;margin-bottom:12px;}
+/* ── inline btn variants ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 20px;border-radius:var(--r-sm);font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all var(--ease);font-family:var(--font);width:100%}
+.btn:active{transform:scale(.97)}
+.btn svg{width:14px;height:14px}
+.btn-primary{background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;box-shadow:0 4px 18px rgba(110,86,247,.35)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(110,86,247,.45)}
+.btn-secondary{background:var(--surface2);color:var(--text2);border:1px solid var(--border2)}
+.btn-secondary:hover{background:var(--surface3);color:var(--text)}
+.btn-danger{background:var(--red-lt);color:var(--red);border:1px solid rgba(240,68,68,.2)}
+.btn-danger:hover{background:var(--red);color:#fff;border-color:var(--red)}
+.btn-edit{background:var(--a-lt);color:var(--a);border:1px solid rgba(110,86,247,.2)}
+.btn-edit:hover{background:var(--a);color:#fff;border-color:var(--a)}
 
-/* ── RESPONSIVE ── */
+/* ── engagement metric ── */
+.eng-row{display:flex;align-items:center;gap:10px;padding:10px 18px}
+.eng-row+.eng-row{border-top:1px solid var(--border)}
+.eng-ico{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.eng-ico svg{width:14px;height:14px}
+.eng-body{flex:1;min-width:0}
+.eng-val{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--text);line-height:1}
+.eng-lbl{font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:2px}
+.eng-pct{font-family:var(--mono);font-size:13px;font-weight:700}
+.eng-bar-wrap{width:100%;height:4px;background:var(--surface3);border-radius:100px;overflow:hidden;margin-top:6px}
+.eng-bar-fill{height:100%;border-radius:100px;transition:width .9s ease}
+
+/* ── timeline ── */
+.timeline{display:flex;flex-direction:column;gap:0}
+.tl-item{display:flex;align-items:flex-start;gap:14px;padding:14px 0;position:relative}
+.tl-item:not(:last-child)::after{content:'';position:absolute;left:11px;top:40px;bottom:-2px;width:2px;background:var(--border2);border-radius:2px}
+.tl-dot{width:24px;height:24px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff}
+.tl-dot-done{background:var(--green)}
+.tl-dot-current{background:var(--a)}
+.tl-dot-pending{background:var(--amber)}
+.tl-dot-muted{background:var(--surface3);color:var(--text3)}
+.tl-body{flex:1;min-width:0}
+.tl-title{font-size:13px;font-weight:600;color:var(--text);font-family:var(--mono)}
+.tl-sub{font-size:11.5px;color:var(--text3);margin-top:2px;font-family:var(--mono)}
+
+/* ── danger zone ── */
+.danger-zone{background:linear-gradient(135deg,rgba(240,68,68,.05),rgba(240,68,68,.02));border:1px solid rgba(240,68,68,.18);border-radius:var(--r);padding:18px;animation:fadeUp .4s .18s ease both}
+.danger-hdr{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.danger-hdr svg{width:14px;height:14px;color:var(--red)}
+.danger-hdr span{font-size:11px;font-weight:700;color:var(--red);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em}
+.danger-desc{font-size:12px;color:var(--text3);line-height:1.5;margin-bottom:12px}
+
+/* ── empty state ── */
+.empty-state{padding:48px 20px;text-align:center}
+.empty-icon{width:52px;height:52px;border-radius:14px;background:var(--surface2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.empty-icon svg{width:22px;height:22px;color:var(--text3)}
+.empty-ttl{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--text2);margin-bottom:5px}
+.empty-sub{font-size:13px;color:var(--text3)}
+
+/* ── flash ── */
+.flash-ok{background:rgba(5,196,138,.09);border:1px solid rgba(5,196,138,.25);color:#065f46;padding:12px 16px;border-radius:var(--r-sm);font-size:13px;font-weight:500;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.flash-ok svg{width:15px;height:15px;flex-shrink:0}
+
+/* ── responsive ── */
 @media(max-width:1100px){.content-grid{grid-template-columns:1fr}.side-stack{position:static}}
 @media(max-width:860px){.stat-strip{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:600px){.stat-strip{grid-template-columns:1fr 1fr}.hero{flex-direction:column}.hero-right{width:100%;flex-direction:row}.hero-stat-card{flex:1}}
+@media(max-width:600px){
+  .stat-strip{grid-template-columns:1fr 1fr}
+  .hero-meta{gap:6px}
+  .hero-stat-card{padding:10px 12px;min-width:70px}
+  .hsc-val{font-size:20px}
+  .page-actions{flex-direction:column;align-items:stretch}
+  .page-actions-right{flex-direction:column}
+  .page-actions-right .btn,.page-actions-right .btn-back{width:100%}
+  .card-header{flex-direction:column;align-items:flex-start}
+}
+@media(max-width:480px){
+  .stat-strip{grid-template-columns:1fr 1fr}
+  .card-body{padding:14px}
+  .hero-meta .hero-chip{width:100%}
+}
 </style>
 @endpush
 
@@ -151,8 +196,8 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
     </button>
     <div class="modal-head">
-      <div class="modal-ico">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+      <div class="modal-ico" style="background:var(--red-lt);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
       </div>
       <div>
         <div class="modal-ttl">Delete Job Post</div>
@@ -161,7 +206,7 @@
     </div>
     <div class="modal-body">
       Are you sure you want to permanently delete <strong>"{{ $jobPost->title }}"</strong>?
-      All <strong>{{ $jobPost->applications()->count() }} application(s)</strong> linked to this post will also be removed.
+      All <strong>{{ $appCount }} application(s)</strong> linked to this post will also be removed.
     </div>
     <div class="modal-acts">
       <button type="button" onclick="closeDelete()" class="modal-btn modal-cancel">Cancel</button>
@@ -172,14 +217,6 @@
     </div>
   </div>
 </div>
-
-<!-- <div class="breadcrumb">
-  <a href="{{ route('admin.dashboard') }}">Dashboard</a>
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-  <a href="{{ route('admin.job_posts.index') }}">Job Posts</a>
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-  <span class="cur">{{ Str::limit($jobPost->title, 40) }}</span>
-</div> -->
 
 <div class="page-actions">
   <a href="{{ route('admin.job_posts.index') }}" class="btn-back">
@@ -203,8 +240,12 @@
   $statusKey = ($jobPost->status === 'closed' || $isExpired) ? 'closed' : ($jobPost->status === 'draft' ? 'draft' : 'active');
   $appCount  = $jobPost->applications()->count();
   $pendCount = $jobPost->applications()->where('status','pending')->count();
-  $accCount  = $jobPost->applications()->where('status','shortlisted')->orWhere('status','accepted')->count();
+  $accCount  = $jobPost->applications()->whereIn('status',['shortlisted','accepted'])->count();
   $rejCount  = $jobPost->applications()->where('status','rejected')->count();
+  $skills    = is_array($jobPost->skills) ? $jobPost->skills : [];
+  $views     = $jobPost->views_count ?? 0;
+  $apps      = $jobPost->applications_count ?? 0;
+  $convRate  = $views > 0 ? round(($apps / $views) * 100, 1) : 0;
 @endphp
 
 <div class="hero">
@@ -245,15 +286,15 @@
     </div>
     <div class="hero-badges">
       @if($statusKey === 'active')
-        <span class="hero-badge hb-active">● Active</span>
+        <span class="hero-badge hb-green">● Active</span>
       @elseif($statusKey === 'draft')
-        <span class="hero-badge hb-draft">✎ Draft</span>
+        <span class="hero-badge hb-amber">✎ Draft</span>
       @else
-        <span class="hero-badge hb-closed">✕ Closed</span>
+        <span class="hero-badge hb-red">✕ Closed</span>
       @endif
-      @if($jobPost->featured)<span class="hero-badge" style="background:rgba(245,158,11,.2);color:#fde68a;border:1px solid rgba(245,158,11,.3);">★ Featured</span>@endif
-      @if($jobPost->is_remote)<span class="hero-badge" style="background:rgba(110,86,247,.2);color:#c4b5fd;border:1px solid rgba(110,86,247,.3);">🌐 Remote</span>@endif
-      <span class="hero-badge" style="background:rgba(255,255,255,.06);color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.1);">Posted {{ $jobPost->created_at->format('d M Y') }}</span>
+      @if($jobPost->featured)<span class="hero-badge hb-amber">★ Featured</span>@endif
+      @if($jobPost->is_remote)<span class="hero-badge hb-purple">🌐 Remote</span>@endif
+      <span class="hero-badge" style="background:var(--surface2);color:var(--text3);border:1px solid var(--border2);">Posted {{ $jobPost->created_at->format('d M Y') }}</span>
     </div>
   </div>
   <div class="hero-right">
@@ -269,7 +310,7 @@
 </div>
 
 <div class="stat-strip">
-  <div class="stat" style="animation-delay:.08s;">
+  <div class="stat">
     <div class="stat-icon si-amber">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg>
     </div>
@@ -279,7 +320,7 @@
       <div class="stat-foot">All applications</div>
     </div>
   </div>
-  <div class="stat" style="animation-delay:.13s;">
+  <div class="stat">
     <div class="stat-icon si-green">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
     </div>
@@ -289,7 +330,7 @@
       <div class="stat-foot">Moving forward</div>
     </div>
   </div>
-  <div class="stat" style="animation-delay:.18s;">
+  <div class="stat">
     <div class="stat-icon si-red">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
     </div>
@@ -299,7 +340,7 @@
       <div class="stat-foot">Not selected</div>
     </div>
   </div>
-  <div class="stat" style="animation-delay:.23s;">
+  <div class="stat">
     <div class="stat-icon si-blue">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
     </div>
@@ -311,11 +352,18 @@
   </div>
 </div>
 
+@if(session('success'))
+<div class="flash-ok">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+  {{ session('success') }}
+</div>
+@endif
+
 <div class="content-grid">
 
   <div>
 
-    <div class="card" style="animation-delay:.10s;">
+    <div class="card">
       <div class="card-header">
         <div class="card-header-left">
           <div class="card-hico ci-purple">
@@ -336,7 +384,30 @@
       </div>
     </div>
 
-    <div class="card" style="animation-delay:.14s;margin-top:16px;">
+    @if(!empty($skills))
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left">
+          <div class="card-hico ci-blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+          </div>
+          <div>
+            <div class="card-title">Skills Required</div>
+            <div class="card-sub">{{ count($skills) }} skill{{ count($skills) !== 1 ? 's' : '' }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="skill-tags">
+          @foreach($skills as $skill)
+            <span class="skill-tag">{{ $skill }}</span>
+          @endforeach
+        </div>
+      </div>
+    </div>
+    @endif
+
+    <div class="card">
       <div class="card-header">
         <div class="card-header-left">
           <div class="card-hico ci-amber">
@@ -428,7 +499,7 @@
 
   <div class="side-stack">
 
-    <div class="side-card" style="animation-delay:.10s;">
+    <div class="side-card">
       <div class="card-header">
         <div class="card-header-left">
           <div class="card-hico ci-purple">
@@ -454,7 +525,7 @@
       </div>
     </div>
 
-    <div class="side-card" style="animation-delay:.14s;">
+    <div class="side-card">
       <div class="card-header">
         <div class="card-header-left">
           <div class="card-hico ci-blue">
@@ -466,11 +537,15 @@
       <div class="info-list">
         <div class="info-row">
           <span class="info-lbl">Status</span>
-          <span class="badge {{ $statusKey === 'active' ? 'b-active' : ($statusKey === 'draft' ? 'b-draft' : 'b-closed') }}">{{ ucfirst($jobPost->status ?? 'draft') }}</span>
+          <span class="badge {{ $statusKey === 'active' ? 'b-active' : ($statusKey === 'draft' ? 'b-draft' : 'b-closed') }}">{{ ucfirst($statusKey) }}</span>
         </div>
         <div class="info-row">
           <span class="info-lbl">Post ID</span>
           <span class="info-val">#{{ $jobPost->id }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-lbl">Slug</span>
+          <span class="info-val" style="font-size:11px;">/{{ $jobPost->slug }}</span>
         </div>
         <div class="info-row">
           <span class="info-lbl">Type</span>
@@ -519,9 +594,141 @@
           <span class="info-lbl">Posted</span>
           <span class="info-val">{{ $jobPost->created_at->format('d M Y') }}</span>
         </div>
+        @if($jobPost->published_at)
+        <div class="info-row">
+          <span class="info-lbl">Published</span>
+          <span class="info-val green">{{ $jobPost->published_at->format('d M Y') }}</span>
+        </div>
+        @endif
         <div class="info-row">
           <span class="info-lbl">Updated</span>
           <span class="info-val">{{ $jobPost->updated_at->diffForHumans() }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-card">
+      <div class="card-header">
+        <div class="card-header-left">
+          <div class="card-hico ci-green">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          </div>
+          <div class="card-title">Engagement</div>
+        </div>
+      </div>
+      <div>
+        <div class="eng-row">
+          <div class="eng-ico si-blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+          </div>
+          <div class="eng-body">
+            <div class="eng-val">{{ number_format($views) }}</div>
+            <div class="eng-lbl">Total views</div>
+          </div>
+        </div>
+        <div class="eng-row">
+          <div class="eng-ico si-amber">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <div class="eng-body">
+            <div class="eng-val">{{ number_format($apps) }}</div>
+            <div class="eng-lbl">Applications received</div>
+          </div>
+        </div>
+        <div class="eng-row">
+          <div class="eng-ico" style="background:var(--surface2);color:var(--text2);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          </div>
+          <div class="eng-body">
+            <div class="eng-val">{{ $convRate }}%</div>
+            <div class="eng-lbl">Application rate</div>
+            <div class="eng-bar-wrap">
+              <div class="eng-bar-fill" style="width:{{ min($convRate * 5, 100) }}%;background:linear-gradient(90deg,var(--a),var(--a2));"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    @if($jobPost->meta_title || $jobPost->meta_description)
+    <div class="side-card">
+      <div class="card-header">
+        <div class="card-header-left">
+          <div class="card-hico ci-gray">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+          </div>
+          <div class="card-title">SEO &amp; Meta</div>
+        </div>
+      </div>
+      <div style="padding:14px 18px;">
+        @if($jobPost->meta_title)
+        <div style="margin-bottom:10px;">
+          <div style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.14em;margin-bottom:4px;font-family:var(--mono);">Meta Title</div>
+          <div style="font-size:12px;color:var(--text2);font-family:var(--mono);">{{ $jobPost->meta_title }}</div>
+        </div>
+        @endif
+        @if($jobPost->meta_description)
+        <div>
+          <div style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.14em;margin-bottom:4px;font-family:var(--mono);">Meta Description</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.5;">{{ $jobPost->meta_description }}</div>
+        </div>
+        @endif
+      </div>
+    </div>
+    @endif
+
+    <div class="side-card">
+      <div class="card-header">
+        <div class="card-header-left">
+          <div class="card-hico ci-amber">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <div class="card-title">Timeline</div>
+        </div>
+      </div>
+      <div style="padding:0 18px;">
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-dot tl-dot-done">
+              <svg style="width:12px;height:12px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            </div>
+            <div class="tl-body">
+              <div class="tl-title">Post Created</div>
+              <div class="tl-sub">{{ $jobPost->created_at->format('d M Y · h:i A') }}</div>
+            </div>
+          </div>
+          @if($jobPost->published_at)
+          <div class="tl-item">
+            <div class="tl-dot tl-dot-done">
+              <svg style="width:12px;height:12px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            </div>
+            <div class="tl-body">
+              <div class="tl-title">Published</div>
+              <div class="tl-sub">{{ $jobPost->published_at->format('d M Y · h:i A') }}</div>
+            </div>
+          </div>
+          @endif
+          <div class="tl-item">
+            <div class="tl-dot {{ $statusKey === 'active' ? 'tl-dot-current' : ($statusKey === 'draft' ? 'tl-dot-pending' : 'tl-dot-muted') }}">
+              @if($statusKey === 'active')
+              <svg style="width:12px;height:12px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              @elseif($statusKey === 'draft')
+              <svg style="width:12px;height:12px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+              @else
+              <svg style="width:12px;height:12px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+              @endif
+            </div>
+            <div class="tl-body">
+              <div class="tl-title">{{ $statusKey === 'active' ? 'Currently Active' : ($statusKey === 'draft' ? 'In Draft' : 'Closed / Expired') }}</div>
+              @if($isExpired)
+              <div class="tl-sub">Deadline passed · {{ \Carbon\Carbon::parse($jobPost->application_deadline)->diffForHumans() }}</div>
+              @elseif($jobPost->application_deadline)
+              <div class="tl-sub">Deadline: {{ \Carbon\Carbon::parse($jobPost->application_deadline)->format('d M Y') }}</div>
+              @else
+              <div class="tl-sub">No deadline set</div>
+              @endif
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -541,12 +748,27 @@
   </div>
 </div>
 
+<div id="toastWrap" class="toast-wrap"></div>
+
 @endsection
 
 @push('page_scripts')
 <script>
 (function(){
 'use strict';
+
+function toast(msg,type){
+  var icons={
+    success:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+    error:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+  };
+  var t=document.createElement('div');
+  t.className='toast toast-'+(type==='success'?'ok':'err');
+  t.innerHTML=(icons[type]||'')+'<span>'+msg+'</span><button class="toast-x" onclick="this.parentElement.remove()">✕</button>';
+  document.getElementById('toastWrap').appendChild(t);
+  setTimeout(function(){t.style.transition='opacity .3s,transform .3s';t.style.opacity='0';t.style.transform='translateX(20px)';setTimeout(function(){t.remove();},300);},4200);
+}
+@if(session('success')) setTimeout(function(){toast(@json(session('success')),'success');},200); @endif
 
 window.openDelete  = function(){ document.getElementById('deleteOverlay').classList.add('open'); };
 window.closeDelete = function(){ document.getElementById('deleteOverlay').classList.remove('open'); };
