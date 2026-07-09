@@ -16,17 +16,41 @@ class CampaignController extends Controller
     // -------------------------------------------------------------------------
     // INDEX
     // -------------------------------------------------------------------------
-    public function index()
+    public function index(Request $request)
     {
-        $campaigns = Campaign::with([
-                'user:id,name',
-                'category:id,name'
-            ])
-            ->latest()
-            ->paginate(15);
+        $status = $request->input('status', 'all');
+        $search = $request->input('search');
+        $sort   = $request->input('sort', 'created_at');
+        $dir    = $request->input('direction', 'desc');
+
+        $allowedSorts = ['title', 'goal_amount', 'raised_amount', 'created_at'];
+        if (!in_array($sort, $allowedSorts)) {
+            $sort = 'created_at';
+        }
+        $dir = $dir === 'asc' ? 'asc' : 'desc';
+
+        $query = Campaign::with(['user:id,name,email', 'category:id,name']);
+
+        if ($status !== 'all') {
+            $query->where('campaign_state', $status);
+        }
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhereHas('user', fn($uq) => $uq->where('name', 'like', "%{$search}%")
+                      ->orWhere('email', 'like', "%{$search}%"));
+            });
+        }
+
+        $campaigns = $query->orderBy($sort, $dir)->paginate(15);
 
         return view('admin.campaign.index', [
             'campaigns'    => $campaigns,
+            'status'       => $status,
+            'search'       => $search,
+            'sort'         => $sort,
+            'dir'          => $dir,
             'cntActive'    => Campaign::active()->count(),
             'cntPending'   => Campaign::pending()->count(),
             'cntPaused'    => Campaign::paused()->count(),

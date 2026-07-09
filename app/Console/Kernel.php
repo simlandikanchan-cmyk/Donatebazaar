@@ -11,7 +11,7 @@ class Kernel extends ConsoleKernel
     {
 
 
-        // $schedule->command('campaigns:expire')->hourly();
+        $schedule->command('campaigns:expire')->hourly();
 
         
 
