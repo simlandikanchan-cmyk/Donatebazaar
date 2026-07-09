@@ -73,9 +73,19 @@
                         How It Works
                     </a>
                     <a href="{{ route('blogs.index') }}"
-                       class="db-nav__dropdown-item"
-                       role="menuitem">
+                        class="db-nav__dropdown-item"
+                        role="menuitem">
                         Blog
+                    </a>
+                    <a href="{{ route('partnership') }}"
+                        class="db-nav__dropdown-item"
+                        role="menuitem">
+                        Partnership
+                    </a>
+                    <a href="{{ route('ddrf.index') }}"
+                        class="db-nav__dropdown-item"
+                        role="menuitem">
+                        Disaster Relief
                     </a>
                 </div>
             </div>
@@ -296,6 +306,8 @@
             <a href="{{ route('about') }}" class="db-mobile__link">About</a>
             <a href="{{ route('how.it.works') }}" class="db-mobile__link db-mobile__link--sub">└ How It Works</a>
             <a href="{{ route('blogs.index') }}" class="db-mobile__link db-mobile__link--sub">└ Blog</a>
+            <a href="{{ route('partnership') }}" class="db-mobile__link db-mobile__link--sub">└ Partnership</a>
+            <a href="{{ route('ddrf.index') }}" class="db-mobile__link db-mobile__link--sub">└ Disaster Relief</a>
             <a href="{{ route('contact') }}"
                class="db-mobile__link {{ request()->routeIs('contact') ? 'db-mobile__link--active' : '' }}"
                @if(request()->routeIs('contact')) aria-current="page" @endif>
