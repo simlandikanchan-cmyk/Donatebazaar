@@ -185,6 +185,64 @@
   .card-body{padding:14px}
   .hero-meta .hero-chip{width:100%}
 }
+@media(max-width:375px){
+  .hero-name{font-size:17px}
+  .hero-sub{font-size:11px}
+  .hero-meta{gap:4px}
+  .hero-chip{font-size:10px;padding:4px 9px}
+  .hero-stat-card{padding:8px 10px;min-width:60px}
+  .hsc-val{font-size:17px}
+  .hsc-lbl{font-size:9px}
+  .hero-badge{font-size:10px;padding:4px 10px}
+  .stat-strip{grid-template-columns:1fr;gap:10px}
+  .stat{padding:12px 14px;gap:10px}
+  .stat-icon{width:32px;height:32px}
+  .stat-icon svg{width:13px;height:13px}
+  .stat-val{font-size:1.2rem}
+  .stat-lbl{font-size:9px}
+  .stat-foot{font-size:10px}
+  .card-body{padding:12px}
+  .card-header{padding:12px 14px;gap:8px}
+  .card-title{font-size:12px}
+  .card-sub{font-size:10px}
+  .card-hico{width:30px;height:30px}
+  .card-hico svg{width:13px;height:13px}
+  .desc-body{font-size:13px}
+  .skill-tag{font-size:10px;padding:3px 9px}
+  .info-list{padding:0 12px}
+  .info-row{padding:8px 0;flex-direction:column;align-items:flex-start;gap:2px}
+  .info-lbl{font-size:10px}
+  .info-val{font-size:11px;text-align:left}
+  .btn{padding:9px 14px;font-size:12px}
+  .btn-stack{gap:6px;padding:12px}
+  .eng-row{padding:8px 12px;gap:8px}
+  .eng-ico{width:28px;height:28px}
+  .eng-ico svg{width:12px;height:12px}
+  .eng-val{font-size:13px}
+  .eng-lbl{font-size:9px}
+  .tl-item{padding:10px 0;gap:10px}
+  .tl-dot{width:20px;height:20px}
+  .tl-dot svg{width:10px;height:10px}
+  .tl-title{font-size:11.5px}
+  .tl-sub{font-size:10.5px}
+  .danger-zone{padding:14px}
+  .danger-desc{font-size:11px}
+  .empty-state{padding:32px 14px}
+  .empty-icon{width:40px;height:40px}
+  .empty-icon svg{width:17px;height:17px}
+  .empty-ttl{font-size:13px}
+  .empty-sub{font-size:11.5px}
+  .table-wrap table{font-size:12px}
+  .table-wrap thead th{padding:7px 8px;font-size:9px}
+  .table-wrap tbody td{padding:8px 8px;font-size:11.5px}
+  .table-wrap thead th:first-child{padding-left:10px}
+  .table-wrap thead th:last-child{padding-right:10px}
+  .table-wrap tbody td:first-child{padding-left:10px}
+  .table-wrap tbody td:last-child{padding-right:10px}
+  .td-mono{font-size:10px}
+  .act-btn{padding:4px 7px;font-size:10px}
+  .act-btn svg{width:9px;height:9px}
+}
 </style>
 @endpush
 
@@ -419,7 +477,7 @@
           </div>
         </div>
         @if($appCount > 0)
-        <a href="{{ route('admin.job_post_applications.index', ['job_id' => $jobPost->id]) }}" class="btn btn-secondary" style="width:auto;padding:7px 14px;font-size:12px;">
+        <a href="{{ route('admin.job_post_applications.index', ['job_id' => $jobPost->id]) }}" class="btn btn-secondary" style="width:auto;padding:9px 18px;font-size:12.5px;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
           View All
         </a>
