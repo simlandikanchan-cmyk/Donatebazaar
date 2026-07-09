@@ -382,7 +382,53 @@ a    { text-decoration: none; color: inherit; }
    5. SIDEBAR FILTERS
 ═══════════════════════════════════════════════════════════ */
 .sidebar { position: sticky; top: 70px; height: fit-content; display: flex; flex-direction: column; gap: 16px; }
-@media(max-width:960px) { .sidebar { display: none; } }
+
+/* ── Mobile/tablet sidebar toggle + drawer ── */
+.sidebar-toggle-btn { display: none; }
+.sidebar-backdrop { display: none; }
+.sidebar-close { display: none; }
+
+@media(max-width:960px) {
+    /* Drawer toggle button (sits above the grid) */
+    .sidebar-toggle-btn {
+        display: inline-flex; align-items: center; gap: 7px;
+        padding: 9px 16px; border-radius: var(--radius-sm);
+        border: 1.5px solid var(--border2); background: var(--surface2);
+        color: var(--text2); font-family: var(--font); font-size: 13px; font-weight: 500;
+        cursor: pointer; margin-bottom: 16px;
+    }
+    .sidebar-toggle-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
+    .sidebar-toggle-btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+    /* Backdrop behind the drawer */
+    .sidebar-backdrop {
+        display: block; position: fixed; inset: 0; z-index: 850;
+        background: rgba(7,8,15,.45); opacity: 0; pointer-events: none;
+        transition: opacity .28s ease;
+    }
+    .sidebar-backdrop.open { opacity: 1; pointer-events: all; }
+
+    /* Off-canvas drawer */
+    .sidebar {
+        position: fixed; top: 0; left: 0; z-index: 860;
+        width: min(340px, 86vw); height: 100%;
+        background: var(--bg); padding: 22px; overflow-y: auto; overscroll-behavior: contain;
+        transform: translateX(-100%); transition: transform .3s cubic-bezier(.4,0,.2,1);
+        box-shadow: var(--shadow-xl);
+    }
+    .sidebar.open { transform: translateX(0); }
+
+    /* Close button at top-right of drawer */
+    .sidebar-close {
+        display: flex; align-items: center; justify-content: center;
+        position: absolute; top: 14px; right: 14px;
+        width: 32px; height: 32px; border-radius: 50%;
+        border: 1.5px solid var(--border2); background: var(--surface);
+        color: var(--text2); cursor: pointer;
+    }
+    .sidebar-close:hover { color: var(--text); border-color: var(--accent); }
+    .sidebar-close svg { width: 16px; height: 16px; }
+}
 
 .filter-card { background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow); }
 .filter-card-title { font-size: 12px; font-weight: 700; color: var(--text3); letter-spacing: .1em; text-transform: uppercase; font-family: var(--font-mono); margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
@@ -833,10 +879,15 @@ html:not(.js-enabled) .reveal { opacity: 1; transform: none; }
 {{-- ═══ MAIN CONTENT ═══ --}}
 <section class="campaigns-section">
     <div class="container">
+        <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
+
         <div class="campaigns-layout">
 
             {{-- ── SIDEBAR ── --}}
-            <aside class="sidebar">
+            <aside class="sidebar" id="sidebarDrawer">
+                <button class="sidebar-close" onclick="closeSidebar()" aria-label="Close filters">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
 
                 {{-- Quick Stats --}}
                 <div class="filter-card">
@@ -931,6 +982,12 @@ html:not(.js-enabled) .reveal { opacity: 1; transform: none; }
 
             {{-- ── CAMPAIGN GRID ── --}}
             <div>
+
+                {{-- Mobile/tablet drawer toggle --}}
+                <button class="sidebar-toggle-btn" onclick="openSidebar()" aria-label="Open filters and stats">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4h18M7 12h10M11 20h2"/></svg>
+                    Filters &amp; Stats
+                </button>
 
                 {{-- Active filter chips --}}
                 <div class="active-filters" id="activeFilters"></div>

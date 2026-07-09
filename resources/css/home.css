@@ -1,4 +1,4 @@
-/* ==========================================================================
+  /* ==========================================================================
    DonateBazaar — Production CSS
     Sections:
     01. CSS Variables (Light + Dark)
@@ -1015,23 +1015,23 @@ body {
     }
 
     /* Map card and stats card padding */
-    .impact-layout .reveal[style*="padding:28px"] {
+    .impact-section .impact-map-card {
         padding: 18px !important;
     }
 
-    /* Counter text smaller on very small screens */
-    .counter {
+    /* Counter text smaller on very small screens (scoped to impact only) */
+    .impact-section .counter {
         font-size: 12px !important;
         width: 56px !important;
     }
 
     /* State name slightly smaller */
-    .impact-layout [style*="font-size:13.5px"] {
+    .impact-section .impact-state-label {
         font-size: 12.5px !important;
     }
 
     /* Mini stat numbers */
-    .mini-stats-grid [style*="font-size:22px"] {
+    .mini-stats-grid .impact-mini-num {
         font-size: 18px !important;
     }
 

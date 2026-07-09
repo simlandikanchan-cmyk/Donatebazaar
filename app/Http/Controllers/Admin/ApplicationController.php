@@ -65,7 +65,7 @@ class ApplicationController extends Controller
 
     public function show($id)
 {
-    $application = OrganizationApplication::with('user')
+    $application = OrganizationApplication::with('user', 'reviewer')
         ->findOrFail($id);
 
     return view('admin.applications.show', compact('application'));

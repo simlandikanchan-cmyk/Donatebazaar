@@ -249,8 +249,29 @@ function clearFundingFilter() {
 }
 
 document.addEventListener('keydown', function(e){
-    if (e.key === 'Escape') closeFilterModal();
+    if (e.key === 'Escape') { closeFilterModal(); closeSidebar(); }
 });
+
+/* ═══════════════════════════════════════════════════════════
+   SIDEBAR DRAWER (mobile/tablet)
+═══════════════════════════════════════════════════════════ */
+function openSidebar() {
+    var drawer = document.getElementById('sidebarDrawer');
+    var backdrop = document.getElementById('sidebarBackdrop');
+    if (!drawer || !backdrop) return;
+    drawer.classList.add('open');
+    backdrop.classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+function closeSidebar() {
+    var drawer = document.getElementById('sidebarDrawer');
+    var backdrop = document.getElementById('sidebarBackdrop');
+    if (drawer) drawer.classList.remove('open');
+    if (backdrop) backdrop.classList.remove('open');
+    if (!document.getElementById('filterModal') || !document.getElementById('filterModal').classList.contains('open')) {
+        document.body.style.overflow = '';
+    }
+}
 
 /* ── Expose to HTML onclick handlers (Vite module scope) ── */
 window.openFilterModal     = openFilterModal;
@@ -264,3 +285,5 @@ window.removeFilter        = removeFilter;
 window.setView             = setView;
 window.applySidebarFilters = applySidebarFilters;
 window.clearFundingFilter  = clearFundingFilter;
+window.openSidebar         = openSidebar;
+window.closeSidebar        = closeSidebar;

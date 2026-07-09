@@ -17,7 +17,7 @@
             <div style="display:flex;flex-direction:column;gap:16px">
 
                 {{-- Map card --}}
-                <div class="reveal" style="background:var(--surface);border:1.5px solid var(--border2);border-radius:var(--radius-lg);padding:28px;text-align:center">
+                <div class="reveal impact-map-card" style="background:var(--surface);border:1.5px solid var(--border2);border-radius:var(--radius-lg);padding:28px;text-align:center">
                     <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);font-family:var(--font-mono);margin-bottom:20px;text-align:left">Coverage Map</div>
                     <img src="{{ asset('images/map2.png') }}" alt="Impact Map"
                          style="width:100%;max-width:280px;margin:0 auto;display:block;filter:hue-rotate(230deg) saturate(1.4)">
@@ -46,7 +46,7 @@
                         ['val'=>'500+', 'lbl'=>'NGO Partners'],
                     ] as $ms)
                     <div style="background:var(--surface);border:1.5px solid var(--border2);border-radius:var(--radius);padding:18px">
-                        <div style="font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--accent);margin-bottom:4px">{{ $ms['val'] }}</div>
+                        <div class="impact-mini-num" style="font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--accent);margin-bottom:4px">{{ $ms['val'] }}</div>
                         <div style="font-size:11px;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;font-family:var(--font-mono)">{{ $ms['lbl'] }}</div>
                     </div>
                     @endforeach
@@ -66,7 +66,7 @@
                 <div style="display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:{{ !$loop->last ? '1px solid var(--border)' : 'none' }}">
                     <span style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--text3);width:18px;flex-shrink:0">{{ $rank++ }}</span>
                     <div style="flex:1;min-width:0">
-                        <div style="font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:7px">{{ $state }}</div>
+                        <div class="impact-state-label" style="font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:7px">{{ $state }}</div>
                         <div style="height:5px;background:var(--surface3);border-radius:100px;overflow:hidden">
                             <div class="impact-bar"
                                  data-width="{{ round($count / $maxVal * 100) }}"
