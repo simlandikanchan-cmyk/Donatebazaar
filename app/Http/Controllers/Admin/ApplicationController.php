@@ -6,7 +6,10 @@ use Illuminate\Http\Request;
 use App\Models\OrganizationApplication;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use App\Mail\OrganizationApplicationSubmitted;
+use App\Mail\OrganizationApplicationStatus;
 
 class ApplicationController extends Controller
 {
@@ -50,6 +53,18 @@ class ApplicationController extends Controller
         return null;
     }
 
+    /**
+     * Notify the applicant/contact person about an approval or rejection.
+     */
+    private function notifyStatus(OrganizationApplication $application): void
+    {
+        $recipient = $application->user?->email ?? $application->contact_email;
+
+        if ($recipient) {
+            Mail::to($recipient)->send(new OrganizationApplicationStatus($application));
+        }
+    }
+
     // ── Admin: List & Review ───────────────────────────────────────────────
 
     public function index()
@@ -59,7 +74,14 @@ class ApplicationController extends Controller
             ->latest('submitted_at')
             ->paginate(20);
 
-        return view('admin.applications.index', compact('applications'));
+        $cntPending    = OrganizationApplication::where('status', 'pending')->count();
+        $cntReview     = OrganizationApplication::where('status', 'under_review')->count();
+        $cntApproved   = OrganizationApplication::where('status', 'approved')->count();
+        $cntRejected   = OrganizationApplication::where('status', 'rejected')->count();
+
+        return view('admin.applications.index', compact(
+            'applications', 'cntPending', 'cntReview', 'cntApproved', 'cntRejected'
+        ));
     }
 
 
@@ -81,6 +103,8 @@ class ApplicationController extends Controller
             'admin_notes' => $request->admin_notes,
         ]);
 
+        $this->notifyStatus($application);
+
         return back()->with('success', 'Application approved.');
     }
 
@@ -96,6 +120,8 @@ class ApplicationController extends Controller
             'rejection_reason' => $request->rejection_reason,
             'admin_notes'      => $request->admin_notes,
         ]);
+
+        $this->notifyStatus($application);
 
         return back()->with('success', 'Application rejected.');
     }
@@ -261,6 +287,11 @@ class ApplicationController extends Controller
             'current_step' => 4,
             'submitted_at' => now(),
         ]));
+
+        $recipient = $application->user?->email ?? $application->contact_email;
+        if ($recipient) {
+            Mail::to($recipient)->send(new OrganizationApplicationSubmitted($application));
+        }
 
         return redirect()->route('dashboard')
             ->with('success', 'Application submitted successfully!');

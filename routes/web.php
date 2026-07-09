@@ -35,6 +35,7 @@ require __DIR__.'/web/dashboard.php';
 */
 
 require __DIR__.'/admin/dashboard.php';
+require __DIR__.'/admin/organizations.php';
 require __DIR__.'/admin/campaigns.php';
 require __DIR__.'/admin/categories.php';
 require __DIR__.'/admin/blogs.php';

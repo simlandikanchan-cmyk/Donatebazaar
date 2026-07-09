@@ -66,12 +66,6 @@ tbody tr:hover{background:var(--surface2)}
 @endpush
 
 @section('content')
-@php
-$cntPending     = $applications->where('status','pending')->count();
-$cntReview      = $applications->where('status','under_review')->count();
-$cntApproved    = $applications->where('status','approved')->count();
-$cntRejected    = $applications->where('status','rejected')->count();
-@endphp
 
 {{-- STATS --}}
 <div class="stats-grid">
