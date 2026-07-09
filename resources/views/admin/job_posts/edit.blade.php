@@ -192,6 +192,33 @@ label.lbl span{color:var(--red);margin-left:2px;}
 .toast-err{background:linear-gradient(135deg,#dc2626,#f04444);}
 .toast-x{margin-left:auto;width:18px;height:18px;border-radius:5px;background:rgba(255,255,255,.22);border:none;cursor:pointer;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;}
 
+/* ── NUMBER INPUT ── */
+.inp.num{appearance:textfield;}
+.inp.num::-webkit-outer-spin-button,.inp.num::-webkit-inner-spin-button{appearance:none;margin:0;}
+
+/* ── SKILLS PREVIEW ── */
+.skill-preview{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.skill-preview:empty{display:none;margin-top:0;}
+.skill-tag-prev{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:100px;font-size:11px;font-weight:600;font-family:var(--mono);background:var(--surface2);border:1px solid var(--border2);color:var(--text2);animation:fadeUp .2s ease both;}
+.skill-tag-prev svg{width:9px;height:9px;color:var(--text3);cursor:pointer;transition:color var(--ease);}
+.skill-tag-prev svg:hover{color:var(--red);}
+
+/* ── UNCHANGED PREVIEW SKILLS ── */
+.prev-skills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
+.prev-skills:empty{display:none;margin-bottom:0;}
+
+/* ── UNSAVED BADGE ── */
+.unsaved-badge{display:none;align-items:center;gap:6px;padding:6px 14px;border-radius:100px;font-size:11px;font-weight:700;font-family:var(--mono);background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);color:#d97706;}
+.unsaved-badge.show{display:inline-flex;animation:fadeUp .2s ease both;}
+.unsaved-badge .ud-dot{width:7px;height:7px;border-radius:50%;background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.18);}
+
+/* ── STICKY SAVE (mobile) ── */
+@media(max-width:600px){
+  .submit-row{position:sticky;bottom:0;background:var(--surface);z-index:5;margin:16px -26px -26px;padding:16px 26px;}
+  .submit-btns{flex:1;}
+  .submit-btns .btn{flex:1;justify-content:center;}
+}
+
 /* ── RESPONSIVE ── */
 @media(max-width:1100px){.form-layout{grid-template-columns:1fr;}.side-stack{position:static;}}
 @media(max-width:600px){.field-row{grid-template-columns:1fr;}}
@@ -222,6 +249,25 @@ label.lbl span{color:var(--red);margin-left:2px;}
   </div>
 </div>
 
+{{-- DISCARD MODAL --}}
+<div class="modal-overlay" id="discardModal">
+  <div class="modal">
+    <div class="modal-ico" style="background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.22);">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+    </div>
+    <div class="modal-ttl">Discard Changes?</div>
+    <div class="modal-desc">You have <strong>unsaved changes</strong> to this job post. If you leave now, your edits will be lost.</div>
+    <div class="modal-btns">
+      <button class="btn btn-modal-cancel" onclick="closeDiscardModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>Keep Editing
+      </button>
+      <a href="{{ route('admin.job_posts.index') }}" class="btn btn-modal-delete" style="background:linear-gradient(135deg,#f59e0b,#fbbf24);box-shadow:0 4px 18px rgba(245,158,11,.30);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 17l-5-5 5-5m7 5l-5-5 5-5"/></svg>Discard &amp; Leave
+      </a>
+    </div>
+  </div>
+</div>
+
 <div class="breadcrumb">
   <a href="{{ route('admin.dashboard') }}">Dashboard</a>
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
@@ -238,6 +284,7 @@ label.lbl span{color:var(--red);margin-left:2px;}
   </div>
   <div class="page-hdr-right">
     <div class="edit-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/></svg>ID #{{ $jobPost->id }}</div>
+    <span class="unsaved-badge" id="unsavedBadge"><span class="ud-dot"></span>Unsaved changes</span>
     <a href="{{ route('admin.job_posts.index') }}" class="btn-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>Back to Listings</a>
   </div>
 </div>
@@ -270,7 +317,7 @@ label.lbl span{color:var(--red);margin-left:2px;}
           <label class="lbl" for="title">Job Title <span>*</span></label>
           <div class="inp-wrap">
             <svg class="inp-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-            <input type="text" id="title" name="title" class="inp @error('title') err @enderror" placeholder="e.g. Senior Product Designer" value="{{ old('title', $jobPost->title) }}" maxlength="150" autocomplete="off" required>
+            <input type="text" id="title" name="title" class="inp @error('title') err @enderror" placeholder="e.g. Senior Product Designer" value="{{ old('title', $jobPost->title) }}" maxlength="150" autocomplete="off">
           </div>
           <span class="char-counter" id="titleCounter">{{ strlen(old('title', $jobPost->title)) }} / 150</span>
           @error('title')<p class="field-error show">{{ $message }}</p>@enderror
@@ -297,7 +344,7 @@ label.lbl span{color:var(--red);margin-left:2px;}
         <div class="field-row field">
           <div>
             <label class="lbl" for="type">Job Type <span>*</span></label>
-            <select id="type" name="type" class="sel @error('type') err @enderror" required>
+              <select id="type" name="type" class="sel @error('type') err @enderror">
               <option value="" disabled>Select type…</option>
               @foreach(['full-time','part-time','contract','internship','volunteer','freelance','remote'] as $t)
                 <option value="{{ $t }}" {{ old('type', $jobPost->type) === $t ? 'selected' : '' }}>{{ ucfirst($t) }}</option>
@@ -365,9 +412,97 @@ label.lbl span{color:var(--red);margin-left:2px;}
           <label class="lbl" for="description">Description <span>*</span>
             <span class="char-counter" id="descCounter" style="text-transform:none;letter-spacing:0;">{{ strlen(old('description', $jobPost->description)) }} chars</span>
           </label>
-          <textarea id="description" name="description" class="ta @error('description') err @enderror" rows="10" placeholder="Describe the role, key responsibilities, required qualifications, benefits…" required>{{ old('description', $jobPost->description) }}</textarea>
+          <textarea id="description" name="description" class="ta @error('description') err @enderror" rows="10" placeholder="Describe the role, key responsibilities, required qualifications, benefits…">{{ old('description', $jobPost->description) }}</textarea>
           @error('description')<p class="field-error show">{{ $message }}</p>@enderror
           <div class="field-hint">Tip: Use plain text. Include sections like "About the Role", "Responsibilities", "Requirements", and "Benefits".</div>
+        </div>
+      </div>{{-- /.card --}}
+
+      {{-- CARD: ROLE DETAILS & REQUIREMENTS --}}
+      <div class="card" style="animation-delay:.12s">
+        <div class="card-hdr">
+          <div class="card-ico ci-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg></div>
+          <div><div class="card-ttl">Role Details &amp; Requirements</div><div class="card-sub">Department, experience, vacancies &amp; skills</div></div>
+        </div>
+
+        {{-- Department + Experience --}}
+        <div class="field-row field">
+          <div>
+            <label class="lbl" for="department">Department</label>
+            <div class="inp-wrap">
+              <svg class="inp-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/></svg>
+              <input type="text" id="department" name="department" class="inp @error('department') err @enderror" placeholder="e.g. Engineering" value="{{ old('department', $jobPost->department) }}" autocomplete="off">
+            </div>
+            @error('department')<p class="field-error show">{{ $message }}</p>@enderror
+          </div>
+          <div>
+            <label class="lbl" for="experience_required">Experience Required</label>
+            <div class="inp-wrap">
+              <svg class="inp-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              <input type="text" id="experience_required" name="experience_required" class="inp @error('experience_required') err @enderror" placeholder="e.g. 3+ years" value="{{ old('experience_required', $jobPost->experience_required) }}" autocomplete="off">
+            </div>
+            @error('experience_required')<p class="field-error show">{{ $message }}</p>@enderror
+          </div>
+        </div>
+
+        {{-- Vacancies --}}
+        <div class="field">
+          <label class="lbl" for="vacancies">Number of Vacancies</label>
+          <div class="inp-wrap" style="max-width:200px;">
+            <svg class="inp-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg>
+            <input type="number" id="vacancies" name="vacancies" class="inp num @error('vacancies') err @enderror" placeholder="1" min="1" value="{{ old('vacancies', $jobPost->vacancies) }}">
+          </div>
+          @error('vacancies')<p class="field-error show">{{ $message }}</p>@enderror
+          <div class="field-hint">How many open positions are available for this role.</div>
+        </div>
+
+        {{-- Featured toggle --}}
+        <div class="field">
+          <label class="lbl">Featured Listing</label>
+          <label class="toggle-row" id="featuredToggleRow">
+            <div class="toggle-row-info">
+              <div class="toggle-row-title">Show on homepage &amp; featured sections</div>
+              <div class="toggle-row-sub">Highlights this post across the site</div>
+            </div>
+            <div class="toggle-switch">
+              <input type="checkbox" id="featured" name="featured" value="1" {{ old('featured', $jobPost->featured) ? 'checked' : '' }}>
+              <label for="featured"></label>
+            </div>
+          </label>
+          @error('featured')<p class="field-error show">{{ $message }}</p>@enderror
+        </div>
+
+        {{-- Skills --}}
+        <div class="field">
+          <label class="lbl" for="skills">Skills</label>
+          <div class="inp-wrap">
+            <svg class="inp-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+            <input type="text" id="skills" name="skills" class="inp @error('skills') err @enderror" placeholder="React, Node.js, Figma" value="{{ old('skills', is_array($jobPost->skills) ? implode(', ', $jobPost->skills) : $jobPost->skills) }}" autocomplete="off">
+          </div>
+          <div class="skill-preview" id="skillPreview"></div>
+          @error('skills')<p class="field-error show">{{ $message }}</p>@enderror
+          <div class="field-hint">Comma-separated. Each becomes a tag on the public listing.</div>
+        </div>
+      </div>{{-- /.card --}}
+
+      {{-- CARD: SEO & META --}}
+      <div class="card" style="animation-delay:.13s">
+        <div class="card-hdr">
+          <div class="card-ico ci-gray"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg></div>
+          <div><div class="card-ttl">SEO &amp; Meta</div><div class="card-sub">Optimise how this listing appears in search</div></div>
+        </div>
+        <div class="field">
+          <label class="lbl" for="meta_title">Meta Title <span class="char-counter" id="metaTitleCounter" style="text-transform:none;letter-spacing:0;">{{ strlen(old('meta_title', $jobPost->meta_title ?? '')) }} / 255</span></label>
+          <div class="inp-wrap">
+            <svg class="inp-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7V5a1 1 0 011-1h14a1 1 0 011 1v2M9 20h6M12 5v15"/></svg>
+            <input type="text" id="meta_title" name="meta_title" class="inp @error('meta_title') err @enderror" placeholder="Optional search title" maxlength="255" value="{{ old('meta_title', $jobPost->meta_title) }}" autocomplete="off">
+          </div>
+          @error('meta_title')<p class="field-error show">{{ $message }}</p>@enderror
+        </div>
+        <div class="field">
+          <label class="lbl" for="meta_description">Meta Description <span class="char-counter" id="metaDescCounter" style="text-transform:none;letter-spacing:0;">{{ strlen(old('meta_description', $jobPost->meta_description ?? '')) }} / 500</span></label>
+          <textarea id="meta_description" name="meta_description" class="ta @error('meta_description') err @enderror" rows="3" placeholder="Optional summary shown in search results" maxlength="500">{{ old('meta_description', $jobPost->meta_description) }}</textarea>
+          @error('meta_description')<p class="field-error show">{{ $message }}</p>@enderror
         </div>
       </div>{{-- /.card --}}
 
@@ -401,7 +536,7 @@ label.lbl span{color:var(--red);margin-left:2px;}
         <div class="submit-row">
           <div class="submit-info">Fields marked <span>*</span> are required</div>
           <div class="submit-btns">
-            <a href="{{ route('admin.job_posts.index') }}" class="btn btn-secondary">
+            <a href="{{ route('admin.job_posts.index') }}" class="btn btn-secondary" id="discardBtn">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>Discard
             </a>
             <button type="submit" class="btn btn-primary" id="saveBtn">
@@ -436,6 +571,7 @@ label.lbl span{color:var(--red);margin-left:2px;}
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             <span id="prevSalVal">{{ $jobPost->salary ?? '—' }}</span>
           </span>
+          <div class="prev-skills" id="prevSkills"></div>
           <span class="prev-chip remote-chip" id="prevRemote" style="{{ $jobPost->is_remote ? '' : 'display:none;' }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064"/><circle cx="12" cy="12" r="9"/></svg>
             Remote
@@ -549,9 +685,38 @@ function updateRemoteRow(){remoteToggleRow.classList.toggle('active-toggle',remo
 remoteToggle.addEventListener('change',updateRemoteRow);
 updateRemoteRow();
 
+/* Featured toggle */
+var featuredToggle=document.getElementById('featured'),featuredRow=document.getElementById('featuredToggleRow');
+function updateFeaturedRow(){featuredRow.classList.toggle('active-toggle',featuredToggle.checked);}
+featuredToggle.addEventListener('change',function(){updateFeaturedRow();markDirty();});
+updateFeaturedRow();
+
+/* Skills preview */
+var skillsInp=document.getElementById('skills'),skillPreview=document.getElementById('skillPreview');
+function renderSkills(){
+  var arr=skillsInp.value.split(',').map(function(s){return s.trim();}).filter(Boolean);
+  skillPreview.innerHTML='';
+  arr.forEach(function(s,i){
+    var span=document.createElement('span');span.className='skill-tag-prev';span.textContent=s;
+    var x=document.createElementNS('http://www.w3.org/2000/svg','svg');
+    x.setAttribute('viewBox','0 0 24 24');x.setAttribute('fill','none');x.setAttribute('stroke','currentColor');x.setAttribute('stroke-width','2');
+    x.innerHTML='<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>';
+    x.addEventListener('click',function(){removeSkill(i);});
+    span.appendChild(x);skillPreview.appendChild(span);
+  });
+}
+function removeSkill(i){var arr=skillsInp.value.split(',').map(function(s){return s.trim();}).filter(Boolean);arr.splice(i,1);skillsInp.value=arr.join(', ');renderSkills();markDirty();}
+skillsInp.addEventListener('input',function(){renderSkills();markDirty();});
+renderSkills();
+
+/* SEO counters */
+var metaTitleInp=document.getElementById('meta_title'),metaTitleCounter=document.getElementById('metaTitleCounter'),metaDescInp=document.getElementById('meta_description'),metaDescCounter=document.getElementById('metaDescCounter');
+metaTitleInp.addEventListener('input',function(){var len=this.value.length;metaTitleCounter.textContent=len+' / 255';metaTitleCounter.className='char-counter'+(len>230?(len>=255?' over':' warn'):'');});
+metaDescInp.addEventListener('input',function(){var len=this.value.length;metaDescCounter.textContent=len+' / 500';metaDescCounter.className='char-counter'+(len>460?(len>=500?' over':' warn'):'');});
+
 /* Live Preview */
 var typeInp=document.getElementById('type'),locationInp=document.getElementById('location'),salaryInp=document.getElementById('salary'),deadlineInp=document.getElementById('application_deadline'),descInp=document.getElementById('description');
-var prevTitle=document.getElementById('prevTitle'),prevTypeEl=document.getElementById('prevType'),prevTypeVal=document.getElementById('prevTypeVal'),prevLocEl=document.getElementById('prevLoc'),prevLocVal=document.getElementById('prevLocVal'),prevSalEl=document.getElementById('prevSal'),prevSalVal=document.getElementById('prevSalVal'),prevRemoteEl=document.getElementById('prevRemote'),prevDeadlineEl=document.getElementById('prevDeadline'),prevDeadlineVal=document.getElementById('prevDeadlineVal'),prevDesc=document.getElementById('prevDesc'),prevDot=document.getElementById('prevDot'),prevStatus=document.getElementById('prevStatus');
+var prevTitle=document.getElementById('prevTitle'),prevTypeEl=document.getElementById('prevType'),prevTypeVal=document.getElementById('prevTypeVal'),prevLocEl=document.getElementById('prevLoc'),prevLocVal=document.getElementById('prevLocVal'),prevSalEl=document.getElementById('prevSal'),prevSalVal=document.getElementById('prevSalVal'),prevRemoteEl=document.getElementById('prevRemote'),prevDeadlineEl=document.getElementById('prevDeadline'),prevDeadlineVal=document.getElementById('prevDeadlineVal'),prevDesc=document.getElementById('prevDesc'),prevDot=document.getElementById('prevDot'),prevStatus=document.getElementById('prevStatus'),prevSkills=document.getElementById('prevSkills');
 var statusColors={draft:'#6b7280',active:'#05c48a',closed:'#f04444'},statusLabels={draft:'Draft',active:'Active',closed:'Closed'};
 
 function formatDate(val){if(!val)return'';var d=new Date(val+'T00:00:00');return d.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});}
@@ -566,6 +731,8 @@ function updatePreview(){
   var d=descInp.value.trim();prevDesc.textContent=d?(d.length>160?d.slice(0,160)+'…':d):'Description preview will appear here…';prevDesc.style.color=d?'var(--text2)':'';
   var sel=document.querySelector('input[name="status"]:checked'),sv=sel?sel.value:'draft';
   prevDot.style.background=statusColors[sv];prevStatus.textContent=statusLabels[sv];prevStatus.style.color=statusColors[sv];
+  var sk=skillsInp.value.split(',').map(function(s){return s.trim();}).filter(Boolean);
+  if(sk.length){prevSkills.innerHTML=sk.map(function(s){return '<span class="prev-chip">'+escapeHtml(s)+'</span>';}).join('');prevSkills.style.display='flex';}else{prevSkills.style.display='none';}
 }
 titleInp.addEventListener('input',updatePreview);typeInp.addEventListener('change',updatePreview);locationInp.addEventListener('input',updatePreview);salaryInp.addEventListener('input',updatePreview);remoteToggle.addEventListener('change',updatePreview);deadlineInp.addEventListener('change',updatePreview);descInp.addEventListener('input',updatePreview);
 document.querySelectorAll('input[name="status"]').forEach(function(r){r.addEventListener('change',updatePreview);});
@@ -575,15 +742,63 @@ var titleCounter=document.getElementById('titleCounter'),descCounter=document.ge
 titleInp.addEventListener('input',function(){var len=this.value.length;titleCounter.textContent=len+' / 150';titleCounter.className='char-counter'+(len>130?(len>=150?' over':' warn'):'');});
 descInp.addEventListener('input',function(){descCounter.textContent=this.value.length+' chars';});
 
+/* Dirty state + unsaved badge */
+var formDirty=false,submitting=false;
+var unsavedBadge=document.getElementById('unsavedBadge');
+function markDirty(){if(!formDirty){formDirty=true;unsavedBadge.classList.add('show');}}
+function clearDirty(){formDirty=false;unsavedBadge.classList.remove('show');}
+
+/* Inline validation helpers */
+function escapeHtml(str){return String(str).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function setFieldError(input,msg){
+  input.classList.add('err');
+  var f=input.closest('.field');if(!f)return;
+  var el=f.querySelector('.field-error');
+  if(!el){el=document.createElement('p');el.className='field-error';f.appendChild(el);}
+  el.textContent=msg;el.classList.add('show');
+}
+function clearFieldError(input){
+  input.classList.remove('err');
+  var f=input.closest('.field');if(f){var el=f.querySelector('.field-error');if(el)el.classList.remove('show');}
+}
+[titleInp,slugInp,typeInp,descInp].forEach(function(inp){
+  inp.addEventListener('input',function(){if(inp.classList.contains('err'))clearFieldError(inp);});
+});
+typeInp.addEventListener('change',function(){if(typeInp.classList.contains('err'))clearFieldError(typeInp);});
+
+/* Discard confirm */
+window.openDiscardModal=function(){document.getElementById('discardModal').classList.add('open');};
+window.closeDiscardModal=function(){document.getElementById('discardModal').classList.remove('open');};
+document.getElementById('discardModal').addEventListener('click',function(e){if(e.target===this)closeDiscardModal();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDiscardModal();});
+var discardBtn=document.getElementById('discardBtn');
+discardBtn.addEventListener('click',function(e){if(formDirty){e.preventDefault();openDiscardModal();}});
+var discardLeave=document.querySelector('#discardModal a.btn-modal-delete');
+if(discardLeave)discardLeave.addEventListener('click',function(){window.__leaving=true;});
+
+/* Unsaved-changes guard */
+window.addEventListener('beforeunload',function(e){if(formDirty&&!submitting&&!window.__leaving){e.preventDefault();e.returnValue='';}});
+
+/* Ctrl/Cmd+S to save */
+document.addEventListener('keydown',function(e){
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();if(!submitting)jobForm.requestSubmit();}
+});
+
+/* Track edits */
+var jobForm=document.getElementById('jobForm');
+jobForm.addEventListener('input',markDirty);
+jobForm.addEventListener('change',markDirty);
+
 /* Form submit */
-var jobForm=document.getElementById('jobForm'),saveBtn=document.getElementById('saveBtn');
+var saveBtn=document.getElementById('saveBtn');
 jobForm.addEventListener('submit',function(e){
   var valid=true;
-  if(!titleInp.value.trim()){titleInp.classList.add('err');valid=false;}else{titleInp.classList.remove('err');}
-  if(!slugInp.value.trim()){slugInp.classList.add('err');valid=false;}else{slugInp.classList.remove('err');}
-  if(!typeInp.value){typeInp.classList.add('err');valid=false;}else{typeInp.classList.remove('err');}
-  if(!descInp.value.trim()){descInp.classList.add('err');valid=false;}else{descInp.classList.remove('err');}
-  if(!valid){e.preventDefault();toast('Please fill in all required fields.','error');return;}
+  if(!titleInp.value.trim()){setFieldError(titleInp,'Job title is required.');valid=false;}else{clearFieldError(titleInp);}
+  if(!slugInp.value.trim()){setFieldError(slugInp,'URL slug is required.');valid=false;}else{clearFieldError(slugInp);}
+  if(!typeInp.value){setFieldError(typeInp,'Please select a job type.');valid=false;}else{clearFieldError(typeInp);}
+  if(!descInp.value.trim()){setFieldError(descInp,'Job description is required.');valid=false;}else{clearFieldError(descInp);}
+  if(!valid){e.preventDefault();toast('Please fix the highlighted fields.','error');jobForm.scrollIntoView({behavior:'smooth',block:'start'});return;}
+  submitting=true;clearDirty();
   saveBtn.disabled=true;
   saveBtn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin .7s linear infinite"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> Saving…';
 });

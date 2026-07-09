@@ -4,78 +4,86 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Campaign;
+use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function index()
+    /**
+     * Campaign-state query scope shared by the page and the AJAX grid.
+     */
+    private function scopeState($query, string $state)
     {
-        // ─────────────────────────────────────────────────────────
-        // Counts
-        // ─────────────────────────────────────────────────────────
+        $startOfDay = now()->startOfDay();
 
-        $totalCampaigns = Campaign::count();
+        switch ($state) {
+            case 'pending':
+                return $query->where('campaign_state', 'pending');
+            case 'active':
+                return $query->where('campaign_state', 'active')
+                    ->where(function ($q) use ($startOfDay) {
+                        $q->whereNull('end_date')->orWhere('end_date', '>=', $startOfDay);
+                    });
+            case 'paused':
+                return $query->where('campaign_state', 'paused');
+            case 'rejected':
+                return $query->where('campaign_state', 'rejected');
+            case 'inactive':
+                return $query->where(function ($q) use ($startOfDay) {
+                    $q->whereIn('campaign_state', ['expired', 'completed'])
+                      ->orWhere(function ($q2) use ($startOfDay) {
+                          $q2->where('campaign_state', 'active')
+                             ->whereNotNull('end_date')
+                             ->where('end_date', '<', $startOfDay);
+                      });
+                });
+            default: // 'all'
+                return $query;
+        }
+    }
+
+    /**
+     * Compute the status counts used by the stat cards, filter tabs and doughnut.
+     */
+    private function computeCounts(): array
+    {
+        $startOfDay = now()->startOfDay();
 
         $cntPending   = Campaign::where('campaign_state', 'pending')->count();
         $cntPaused    = Campaign::where('campaign_state', 'paused')->count();
         $cntRejected  = Campaign::where('campaign_state', 'rejected')->count();
         $cntCompleted = Campaign::where('campaign_state', 'completed')->count();
 
-        // Active = state is active AND not yet expired by date
-        // FIX (30-06-2026): end_date has no time component, so comparing
-        // against now() (which includes the current time) marked campaigns
-        // as expired hours before their end_date calendar day actually
-        // ended. Using now()->startOfDay() keeps the campaign active
-        // through the entire end_date day.
         $cntActive = Campaign::where('campaign_state', 'active')
-            ->where(function ($q) {
-                $q->whereNull('end_date')
-                  ->orWhere('end_date', '>=', now()->startOfDay());
+            ->where(function ($q) use ($startOfDay) {
+                $q->whereNull('end_date')->orWhere('end_date', '>=', $startOfDay);
             })->count();
 
-        // Expired = state is 'expired' OR state is 'active' but end_date has passed
         $cntExpired = Campaign::where('campaign_state', 'expired')
-            ->orWhere(function ($q) {
+            ->orWhere(function ($q) use ($startOfDay) {
                 $q->where('campaign_state', 'active')
                   ->whereNotNull('end_date')
-                  ->where('end_date', '<', now()->startOfDay());
+                  ->where('end_date', '<', $startOfDay);
             })->count();
 
-        // ─────────────────────────────────────────────────────────
-        // Campaign Lists
-        // ─────────────────────────────────────────────────────────
+        $totalCampaigns = Campaign::count();
+        $approvalRate = $totalCampaigns > 0 ? round(($cntActive / $totalCampaigns) * 100) : 0;
 
-        $pendingCampaigns = Campaign::with('user', 'category')
-            ->where('campaign_state', 'pending')
-            ->latest()
-            ->get();
+        return compact(
+            'totalCampaigns', 'cntPending', 'cntActive', 'cntPaused',
+            'cntExpired', 'cntRejected', 'cntCompleted', 'approvalRate'
+        );
+    }
 
-        // Active + Paused — exclude date-expired campaigns
-        $activeCampaigns = Campaign::with('user', 'category')
-            ->whereIn('campaign_state', ['active', 'paused'])
-            ->where(function ($q) {
-                $q->whereNull('end_date')
-                  ->orWhere('end_date', '>=', now()->startOfDay());
-            })
-            ->latest()
-            ->paginate(12, ['*'], 'active_page');
+    public function index()
+    {
+        $counts = $this->computeCounts();
+        extract($counts);
 
-        $rejectedCampaigns = Campaign::with('user', 'category')
-            ->where('campaign_state', 'rejected')
-            ->latest()
-            ->get();
-
-        // Inactive = expired state + completed state + active-but-date-passed
-        $inactiveCampaigns = Campaign::with('user', 'category')
-            ->where(function ($q) {
-                $q->whereIn('campaign_state', ['expired', 'completed'])
-                  ->orWhere(function ($q2) {
-                      $q2->where('campaign_state', 'active')
-                         ->whereNotNull('end_date')
-                         ->where('end_date', '<', now()->startOfDay());
-                  });
-            })
-            ->latest()
-            ->get();
+        // Initial grid shows the Active (+ Paused) list, matching the default tab.
+        $activeCampaigns = $this->scopeState(
+            Campaign::with('user', 'category')->whereIn('campaign_state', ['active', 'paused']),
+            'active'
+        )->latest()->paginate(12, ['*'], 'cpage');
 
         // ─────────────────────────────────────────────────────────
         // Monthly Chart
@@ -103,25 +111,60 @@ class DashboardController extends Controller
             $chartActive[] = $row ? (int) $row->active : 0;
         }
 
-        // ─────────────────────────────────────────────────────────
-        // Return
-        // ─────────────────────────────────────────────────────────
-
-        return view('admin.dashboard', compact(
-            'totalCampaigns',
-            'cntPending',
-            'cntActive',
-            'cntPaused',
-            'cntExpired',
-            'cntRejected',
-            'cntCompleted',
-            'pendingCampaigns',
+        return view('admin.dashboard', array_merge($counts, compact(
             'activeCampaigns',
-            'rejectedCampaigns',
-            'inactiveCampaigns',
             'chartLabels',
             'chartTotal',
             'chartActive'
-        ));
+        )));
+    }
+
+    /**
+     * AJAX endpoint powering the server-driven campaign grid
+     * (filter / search / sort / pagination across every state).
+     */
+    public function campaigns(Request $request)
+    {
+        $state  = $request->input('state', 'active');
+        $search = trim((string) $request->input('search', ''));
+        $sort   = $request->input('sort', '');
+
+        $query = Campaign::with('user', 'category');
+        $query = $this->scopeState($query, $state);
+
+        if ($search !== '') {
+            $query->where('title', 'like', '%' . $search . '%');
+        }
+
+        switch ($sort) {
+            case 'amount-desc':
+                $query->orderByDesc('goal_amount');
+                break;
+            case 'amount-asc':
+                $query->orderBy('goal_amount');
+                break;
+            case 'date-asc':
+                $query->oldest();
+                break;
+            case 'date-desc':
+            default:
+                $query->latest();
+                break;
+        }
+
+        $perPage = 12;
+        $campaigns = $query->paginate($perPage, ['*'], 'cpage');
+
+        $cards = view('admin._campaign_cards', compact('campaigns'))->render();
+        $pagination = $campaigns->hasPages()
+            ? $campaigns->links('vendor.pagination.admin')->render()
+            : '';
+
+        return response()->json([
+            'cards'      => $cards,
+            'pagination' => $pagination,
+            'total'      => $campaigns->total(),
+            'counts'     => $this->computeCounts(),
+        ]);
     }
 }

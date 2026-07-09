@@ -168,8 +168,8 @@
 .flash-ok svg{width:15px;height:15px;flex-shrink:0}
 
 /* ── responsive ── */
-@media(max-width:1100px){.content-grid{grid-template-columns:1fr}.side-stack{position:static}}
-@media(max-width:860px){.stat-strip{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:1100px){.stat-strip{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:1000px){.content-grid{grid-template-columns:1fr}.side-stack{position:static}}
 @media(max-width:600px){
   .stat-strip{grid-template-columns:1fr 1fr}
   .hero-meta{gap:6px}
@@ -242,6 +242,82 @@
   .td-mono{font-size:10px}
   .act-btn{padding:4px 7px;font-size:10px}
   .act-btn svg{width:9px;height:9px}
+}
+@media(max-width:360px){
+  .hero-name{font-size:15px}
+  .hero-sub{font-size:10px}
+  .hero-chip{font-size:9px;padding:3px 7px}
+  .hero-stat-card{padding:6px 8px;min-width:50px}
+  .hsc-val{font-size:15px}
+  .hsc-lbl{font-size:8px}
+  .hero-badge{font-size:9px;padding:3px 8px}
+  .stat{padding:10px 12px;gap:8px}
+  .stat-icon{width:28px;height:28px}
+  .stat-icon svg{width:11px;height:11px}
+  .stat-val{font-size:1rem}
+  .stat-lbl{font-size:8px}
+  .stat-foot{font-size:9px}
+  .hero{padding:14px 12px}
+  .card-body{padding:10px}
+  .card-header{padding:10px 12px;gap:6px}
+  .card-title{font-size:11px}
+  .card-sub{font-size:9px}
+  .card-hico{width:26px;height:26px}
+  .card-hico svg{width:11px;height:11px}
+  .desc-body{font-size:12px}
+  .skill-tag{font-size:9px;padding:2px 7px}
+  .info-list{padding:0 10px}
+  .info-lbl{font-size:9px}
+  .info-val{font-size:10px}
+  .btn{padding:8px 12px;font-size:11px}
+  .btn-stack{gap:5px;padding:10px}
+  .eng-row{padding:6px 10px;gap:6px}
+  .eng-ico{width:24px;height:24px}
+  .eng-ico svg{width:10px;height:10px}
+  .eng-val{font-size:12px}
+  .eng-lbl{font-size:8px}
+  .tl-item{padding:8px 0;gap:8px}
+  .tl-dot{width:18px;height:18px}
+  .tl-dot svg{width:9px;height:9px}
+  .tl-title{font-size:10.5px}
+  .tl-sub{font-size:9.5px}
+  .danger-zone{padding:12px}
+  .danger-desc{font-size:10px}
+  .empty-state{padding:24px 12px}
+  .empty-icon{width:34px;height:34px}
+  .empty-icon svg{width:14px;height:14px}
+  .empty-ttl{font-size:12px}
+  .empty-sub{font-size:10.5px}
+  .table-wrap table{font-size:11px}
+  .table-wrap thead th{padding:5px 6px;font-size:8px}
+  .table-wrap tbody td{padding:6px 6px;font-size:10.5px}
+  .table-wrap thead th:first-child{padding-left:8px}
+  .table-wrap thead th:last-child{padding-right:8px}
+  .table-wrap tbody td:first-child{padding-left:8px}
+  .table-wrap tbody td:last-child{padding-right:8px}
+  .td-mono{font-size:9px}
+  .act-btn{padding:3px 5px;font-size:9px}
+  .act-btn svg{width:8px;height:8px}
+}
+
+
+.hero-name {
+    font-family: var(--mono);
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -0.03em;
+    line-height: 2.1;
+    background-image: ;
+    background-position-x: ;
+    background-position-y: ;
+    background-size: ;
+    background-repeat: ;
+    background-attachment: ;
+    background-origin: ;
+    background-color: ;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 </style>
 @endpush
@@ -701,7 +777,7 @@
             <div class="eng-val">{{ $convRate }}%</div>
             <div class="eng-lbl">Application rate</div>
             <div class="eng-bar-wrap">
-              <div class="eng-bar-fill" style="width:{{ min($convRate * 5, 100) }}%;background:linear-gradient(90deg,var(--a),var(--a2));"></div>
+              <div class="eng-bar-fill" style="width:{{ max(min($convRate * 3, 100), 4) }}%;background:linear-gradient(90deg,var(--a),var(--a2));"></div>
             </div>
           </div>
         </div>

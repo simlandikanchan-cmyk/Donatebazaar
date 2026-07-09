@@ -12,4 +12,8 @@ Route::prefix('admin')
             [DashboardController::class, 'index']
         )->name('dashboard');
 
+        Route::get('/dashboard/campaigns',
+            [DashboardController::class, 'campaigns']
+        )->name('dashboard.campaigns');
+
     });

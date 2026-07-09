@@ -114,6 +114,18 @@ tbody tr:hover .cat-icon-box{transform:scale(1.08) rotate(-3deg);}
 .act-del{background:var(--red-lt);color:var(--red);border-color:rgba(240,68,68,.18);}
 .act-del:hover{background:var(--red);color:#fff;transform:translateY(-1px);}
 
+/* ── STATUS TOGGLE ── */
+.cat-toggle{display:inline-flex;align-items:center;gap:9px;cursor:pointer;user-select:none;}
+.cat-toggle .sw{position:relative;flex-shrink:0;}
+.cat-toggle .sw input{position:absolute;opacity:0;width:0;height:0;}
+.cat-toggle .sw label{display:block;width:42px;height:23px;border-radius:100px;background:var(--border2);cursor:pointer;position:relative;transition:background .25s;margin:0;}
+.cat-toggle .sw label::after{content:'';position:absolute;width:17px;height:17px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .28s cubic-bezier(.4,0,.2,1);box-shadow:0 1px 3px rgba(0,0,0,.22);}
+.cat-toggle .sw input:checked+label{background:var(--green);}
+.cat-toggle .sw input:checked+label::after{transform:translateX(19px);}
+.cat-toggle-txt{font-size:11px;font-weight:700;font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;line-height:1;}
+.cat-toggle-txt.active{color:var(--green);}
+.cat-toggle-txt.inactive{color:var(--text3);}
+
 .cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;padding:20px;}
 .cat-grid-item{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:20px 16px;display:flex;flex-direction:column;align-items:center;text-align:center;transition:all .2s;cursor:default;position:relative;overflow:hidden;animation:fadeUp .4s ease both;}
 .cat-grid-item::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--item-color,var(--a));opacity:0;transition:opacity .2s;}
@@ -298,7 +310,7 @@ tbody tr:hover .cat-icon-box{transform:scale(1.08) rotate(-3deg);}
         </thead>
         <tbody id="tableBody">
           @forelse($categories as $category)
-          <tr class="cat-row" data-id="{{ $category->id }}" data-name="{{ strtolower($category->name) }}" data-status="{{ $category->is_active?'active':'inactive' }}" data-campaigns="{{ $category->campaigns_count??0 }}" data-delete-url="{{ route('admin.categories.destroy',$category->id) }}" style="animation:fadeUp 0.35s {{ $loop->index*0.04 }}s ease both;opacity:0;animation-fill-mode:both;">
+           <tr class="cat-row" data-id="{{ $category->id }}" data-name="{{ strtolower($category->name) }}" data-status="{{ $category->is_active?'active':'inactive' }}" data-campaigns="{{ $category->campaigns_count??0 }}" data-delete-url="{{ route('admin.categories.destroy',$category->id) }}" data-toggle-url="{{ route('admin.categories.toggle',$category->id) }}" style="animation:fadeUp 0.35s {{ $loop->index*0.04 }}s ease both;opacity:0;animation-fill-mode:both;">
             <td class="td-check"><input type="checkbox" class="chk row-check" onchange="toggleRowSelect(this)" aria-label="Select {{ $category->name }}"></td>
             <td><span class="serial">{{ str_pad($loop->iteration,2,'0',STR_PAD_LEFT) }}</span></td>
             <td>
@@ -306,14 +318,18 @@ tbody tr:hover .cat-icon-box{transform:scale(1.08) rotate(-3deg);}
                 <div class="cat-icon-box" style="background:{{ $category->color??'#6e56f7' }};"><i class="fa {{ $category->icon??'fa-tag' }}"></i></div>
                 <div>
                   <div class="cat-name-text">{{ $category->name }}</div>
-                  <div class="cat-name-sub">{{ $category->color??'#6e56f7' }}</div>
+                  <div class="cat-name-sub">Added {{ $category->created_at->format('M d, Y') }}</div>
                 </div>
               </div>
             </td>
             <td><span class="slug-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101"/><path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 015.656 0l4-4a4 4 0 01-5.656-5.656l-1.1 1.1"/></svg>{{ $category->slug }}</span></td>
             <td>
-              @if($category->is_active)<span class="status-pill s-active"><span class="status-dot"></span> Active</span>
-              @else<span class="status-pill s-inactive"><span class="status-dot"></span> Inactive</span>@endif
+              <label class="cat-toggle" title="Toggle active status">
+                <span class="sw">
+                  <input type="checkbox" {{ $category->is_active?'checked':'' }} onchange="toggleStatus('{{ $category->id }}',this.checked)" aria-label="Toggle status for {{ $category->name }}">
+                </span>
+                <span class="cat-toggle-txt {{ $category->is_active?'active':'inactive' }}" id="statusTxt-{{ $category->id }}">{{ $category->is_active?'Active':'Inactive' }}</span>
+              </label>
             </td>
             <td><span class="campaign-count {{ ($category->campaigns_count??0)==0?'zero':'' }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>{{ $category->campaigns_count??0 }}</span></td>
             <td>
@@ -369,13 +385,17 @@ tbody tr:hover .cat-icon-box{transform:scale(1.08) rotate(-3deg);}
     @if(!$categories->isEmpty())
     <div class="cat-grid" id="gridBody">
       @foreach($categories as $category)
-      <div class="cat-grid-item" data-id="{{ $category->id }}" style="--item-color:{{ $category->color??'#6e56f7' }};animation-delay:{{ $loop->index*0.04 }}s;" data-name="{{ strtolower($category->name) }}" data-status="{{ $category->is_active?'active':'inactive' }}" data-campaigns="{{ $category->campaigns_count??0 }}" data-delete-url="{{ route('admin.categories.destroy',$category->id) }}">
+      <div class="cat-grid-item" data-id="{{ $category->id }}" style="--item-color:{{ $category->color??'#6e56f7' }};animation-delay:{{ $loop->index*0.04 }}s;" data-name="{{ strtolower($category->name) }}" data-status="{{ $category->is_active?'active':'inactive' }}" data-campaigns="{{ $category->campaigns_count??0 }}" data-delete-url="{{ route('admin.categories.destroy',$category->id) }}" data-toggle-url="{{ route('admin.categories.toggle',$category->id) }}">
         <input type="checkbox" class="chk row-check grid-check" onchange="toggleRowSelect(this)" aria-label="Select {{ $category->name }}">
         <div class="grid-icon-box" style="background:{{ $category->color??'#6e56f7' }};"><i class="fa {{ $category->icon??'fa-tag' }}" style="color:#fff;"></i></div>
         <div class="grid-cat-name">{{ $category->name }}</div>
         <div class="grid-cat-slug">{{ $category->slug }}</div>
-        @if($category->is_active)<div class="status-pill s-active" style="margin-bottom:12px;"><span class="status-dot"></span> Active</div>
-        @else<div class="status-pill s-inactive" style="margin-bottom:12px;"><span class="status-dot"></span> Inactive</div>@endif
+        <label class="cat-toggle" style="margin-bottom:12px;" title="Toggle active status">
+          <span class="sw">
+            <input type="checkbox" {{ $category->is_active?'checked':'' }} onchange="toggleStatus('{{ $category->id }}',this.checked)" aria-label="Toggle status for {{ $category->name }}">
+          </span>
+          <span class="cat-toggle-txt {{ $category->is_active?'active':'inactive' }}" id="statusTxt-{{ $category->id }}">{{ $category->is_active?'Active':'Inactive' }}</span>
+        </label>
         <div class="grid-count-badge">{{ $category->campaigns_count??0 }} campaigns</div>
         <div class="grid-actions">
           <a href="{{ route('admin.categories.edit',$category->id) }}" class="act-btn act-edit" style="font-size:11px;padding:4px 10px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</a>
@@ -414,6 +434,47 @@ tbody tr:hover .cat-icon-box{transform:scale(1.08) rotate(-3deg);}
 <script>
 (function(){
 'use strict';
+
+// ---------- Toast ----------
+function toast(msg,type){
+  var t=document.createElement('div');
+  t.style.cssText='position:fixed;top:20px;right:20px;z-index:9999;display:flex;align-items:center;gap:10px;padding:13px 16px;border-radius:14px;font-size:13px;font-weight:500;color:#fff;min-width:240px;box-shadow:0 10px 30px rgba(0,0,0,.25);animation:fadeUp .3s ease both;'+(type==='error'?'background:linear-gradient(135deg,#dc2626,#f04444);':'background:linear-gradient(135deg,#059669,#10b981);');
+  t.innerHTML=(type==='error'?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:15px;height:15px;"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:15px;height:15px;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>')+'<span>'+msg+'</span><button style="margin-left:auto;background:transparent;border:none;color:inherit;opacity:.7;cursor:pointer;font-size:14px;" onclick="this.parentElement.remove()">✕</button>';
+  document.body.appendChild(t);
+  setTimeout(function(){t.style.transition='opacity .3s,transform .3s';t.style.opacity='0';t.style.transform='translateX(20px)';setTimeout(function(){t.remove();},300);},3800);
+}
+
+// ---------- Inline status toggle ----------
+function updateStatusStat(toActive){
+  var a=document.getElementById('statActive'),i=document.getElementById('statInactive');
+  if(a&&i){
+    var av=parseInt(a.querySelector('.stat-val').textContent||'0',10);
+    var iv=parseInt(i.querySelector('.stat-val').textContent||'0',10);
+    a.querySelector('.stat-val').textContent=toActive?av+1:av-1;
+    i.querySelector('.stat-val').textContent=toActive?iv-1:iv+1;
+  }
+}
+
+window.toggleStatus=function(id,toActive){
+  var row=document.querySelector('[data-id="'+id+'"]');
+  var url=row?row.getAttribute('data-toggle-url'):null;
+  var txt=document.getElementById('statusTxt-'+id);
+  if(!url)return;
+  // optimistic UI
+  if(row)row.setAttribute('data-status',toActive?'active':'inactive');
+  if(txt){txt.textContent=toActive?'Active':'Inactive';txt.className='cat-toggle-txt '+(toActive?'active':'inactive');}
+  updateStatusStat(toActive);
+  var token=document.querySelector('#deleteForm input[name="_token"]').value;
+  var fd=new FormData();fd.append('_token',token);
+  fetch(url,{method:'POST',body:fd,headers:{'X-Requested-With':'XMLHttpRequest'}})
+    .then(function(r){if(!r.ok)throw new Error('Failed');toast('Status updated','ok');})
+    .catch(function(){ // rollback
+      if(row)row.setAttribute('data-status',toActive?'inactive':'active');
+      if(txt){txt.textContent=toActive?'Inactive':'Active';txt.className='cat-toggle-txt '+(toActive?'inactive':'active');}
+      updateStatusStat(!toActive);
+      toast('Could not update status','error');
+    });
+};
 
 // ---------- View toggle ----------
 var currentView=localStorage.getItem('catView')||'table';
@@ -641,8 +702,17 @@ window.openModal=function(id,name,url){
 
 window.openBulkModal=function(){
   bulkMode=true;
-  document.getElementById('modalTitle').textContent='Delete '+selected.size+' Categories?';
-  document.getElementById('modalMsg').innerHTML='This will permanently remove <strong>'+selected.size+' selected categories</strong>. Campaigns using these categories may be affected.';
+  var ids=Array.from(selected);
+  var withCamp=0;
+  ids.forEach(function(id){
+    var row=document.querySelector('[data-id="'+id+'"]');
+    if(row&&parseInt(row.getAttribute('data-campaigns')||'0',10)>0)withCamp++;
+  });
+  var deletable=ids.length-withCamp;
+  document.getElementById('modalTitle').textContent='Delete '+deletable+' Categor'+(deletable===1?'y':'ies')+'?';
+  var msg='This will permanently remove <strong>'+deletable+' selected categor'+(deletable===1?'y':'ies')+'</strong>.';
+  if(withCamp>0)msg+=' <span style="color:var(--amber);font-weight:600;">'+withCamp+' linked to campaigns will be skipped.</span>';
+  document.getElementById('modalMsg').innerHTML=msg;
   document.getElementById('deleteOverlay').classList.add('open');
 };
 
@@ -656,15 +726,18 @@ window.confirmDelete=function(){
   if(bulkMode){
     var token=document.querySelector('#deleteForm input[name="_token"]').value;
     var ids=Array.from(selected);
-    var reqs=ids.map(function(id){
-      var row=document.querySelector('.cat-row[data-id="'+id+'"], .cat-grid-item[data-id="'+id+'"]');
+    var reqs=ids.filter(function(id){
+      var row=document.querySelector('[data-id="'+id+'"]');
+      return row && parseInt(row.getAttribute('data-campaigns')||'0',10)===0;
+    }).map(function(id){
+      var row=document.querySelector('[data-id="'+id+'"]');
       var url=row?row.getAttribute('data-delete-url'):null;
-      if(!url)return Promise.resolve();
+      if(!url)return null;
       var fd=new FormData();
       fd.append('_token',token);
       fd.append('_method','DELETE');
       return fetch(url,{method:'POST',body:fd,headers:{'X-Requested-With':'XMLHttpRequest'}});
-    });
+    }).filter(Boolean);
     Promise.all(reqs).then(function(){window.location.reload();}).catch(function(){window.location.reload();});
     return;
   }

@@ -148,14 +148,13 @@
   @endforeach
 </div>
 
-@php $cntAll = $cntPending + $cntActive + $cntPaused + $cntRejected + $cntExpired + $cntCompleted; @endphp
 <div class="sec-hdr" id="cGrid">
   <div class="sec-ttl">All Campaigns</div>
   <div class="sec-right">
     <div class="ftabs" id="ftabs">
-      <button class="ftab on" data-filter="all">All <span class="cnt">{{ $cntAll }}</span></button>
+      <button class="ftab" data-filter="all">All <span class="cnt">{{ $totalCampaigns }}</span></button>
       <button class="ftab" data-filter="pending">Pending <span class="cnt">{{ $cntPending }}</span></button>
-      <button class="ftab" data-filter="active">Active <span class="cnt">{{ $cntActive }}</span></button>
+      <button class="ftab on" data-filter="active">Active <span class="cnt">{{ $cntActive }}</span></button>
       <button class="ftab" data-filter="paused">Paused <span class="cnt">{{ $cntPaused }}</span></button>
       <button class="ftab" data-filter="inactive">Inactive <span class="cnt">{{ $cntExpired + $cntCompleted }}</span></button>
       <button class="ftab" data-filter="rejected">Rejected <span class="cnt">{{ $cntRejected }}</span></button>
@@ -170,95 +169,46 @@
 </div>
 
 <div class="c-grid" id="campaignGrid">
-
-  @foreach($pendingCampaigns as $i => $c)
-  @php $raised=$c->raised_amount??0;$goal=$c->goal_amount>0?$c->goal_amount:1;$pct=min(100,round(($raised/$goal)*100));$uName=$c->user?->name??'Unknown';$uEmail=$c->user?->email??'';$uInit=strtoupper(substr($uName,0,1)); @endphp
-  <div class="c-card" data-filter="pending" data-title="{{ strtolower($c->title) }}" data-amount="{{ $c->goal_amount }}" data-date="{{ $c->created_at }}" style="animation-delay:{{ $i*0.04 }}s">
-    <div class="c-thumb">
-      @if($c->cover_image)<img src="{{ asset('storage/'.$c->cover_image) }}" alt="{{ $c->title }}" loading="lazy"><div class="c-overlay"></div>
-      @else<div class="c-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>@endif
-      <div class="c-badge-pos"><span class="badge b-pending">Pending</span></div>
-    </div>
-    <div class="c-user"><div class="c-uav">{{ $uInit }}</div><div><div class="c-uname">{{ $uName }}</div>@if($uEmail)<div class="c-uemail">{{ $uEmail }}</div>@endif</div></div>
-    <div class="c-body">
-      <div class="c-title">{{ $c->title }}</div>
-      <div class="prog"><div class="prog-nums"><span class="prog-raised">₹{{ number_format($raised) }}</span><span class="prog-goal">of ₹{{ number_format($c->goal_amount) }}</span></div><div class="prog-bar"><div class="prog-fill" style="width:{{ $pct }}%"></div></div><div class="prog-pct">{{ $pct }}% funded</div></div>
-      <div class="c-actions">
-        <form action="{{ route('admin.campaign.approve',$c->id) }}" method="POST" style="flex:1;" onsubmit="return handleSub(this,'Approving…')">@csrf<button class="c-btn c-btn-approve" style="width:100%;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Approve</button></form>
-        <button type="button" onclick="openReject({{ $c->id }})" class="c-btn c-btn-reject"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>Reject</button>
-        <a href="{{ route('admin.campaign.show',$c->id) }}" class="c-btn c-btn-view"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></a>
-      </div>
-    </div>
-  </div>
-  @endforeach
-
-  @foreach($activeCampaigns as $i => $c)
-  @php $raised=$c->raised_amount??0;$goal=$c->goal_amount>0?$c->goal_amount:1;$pct=min(100,round(($raised/$goal)*100));$isPaused=($c->campaign_state==='paused');$fv=$isPaused?'paused':'active';$uName=$c->user?->name??'Unknown';$uEmail=$c->user?->email??'';$uInit=strtoupper(substr($uName,0,1)); @endphp
-  <div class="c-card" data-filter="{{ $fv }}" data-title="{{ strtolower($c->title) }}" data-amount="{{ $c->goal_amount }}" data-date="{{ $c->created_at }}" style="animation-delay:{{ $i*0.04 }}s">
-    <div class="c-thumb">
-      @if($c->cover_image)<img src="{{ asset('storage/'.$c->cover_image) }}" alt="{{ $c->title }}" loading="lazy"><div class="c-overlay"></div>
-      @else<div class="c-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>@endif
-      <div class="c-badge-pos"><span class="badge {{ $isPaused?'b-paused':'b-active' }}">{{ $isPaused?'Paused':'Active' }}</span></div>
-    </div>
-    <div class="c-user"><div class="c-uav">{{ $uInit }}</div><div><div class="c-uname">{{ $uName }}</div>@if($uEmail)<div class="c-uemail">{{ $uEmail }}</div>@endif</div></div>
-    <div class="c-body">
-      <div class="c-title">{{ $c->title }}</div>
-      @if($isPaused && $c->pause_reason)<div class="reason reason-amber"><div class="reason-lbl">⏸ PAUSE REASON</div><div class="reason-txt">{{ $c->pause_reason }}</div></div>@endif
-      <div class="prog"><div class="prog-nums"><span class="prog-raised">₹{{ number_format($raised) }}</span><span class="prog-goal">of ₹{{ number_format($c->goal_amount) }}</span></div><div class="prog-bar"><div class="prog-fill" style="width:{{ $pct }}%"></div></div><div class="prog-pct">{{ $pct }}% funded</div></div>
-      <div class="c-actions">
-        @if(!$isPaused)
-        <button type="button" onclick="openPause({{ $c->id }})" class="c-btn c-btn-pause" style="flex:1;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Pause</button>
-        @else
-        <form action="{{ route('admin.campaign.resume',$c->id) }}" method="POST" style="flex:1;" onsubmit="return handleSub(this,'Resuming…')">@csrf<button class="c-btn c-btn-resume" style="width:100%;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Resume</button></form>
-        @endif
-        <a href="{{ route('admin.campaign.show',$c->id) }}" class="c-btn c-btn-view" style="flex:1;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>View</a>
-      </div>
-    </div>
-  </div>
-  @endforeach
-
-  @foreach($rejectedCampaigns as $i => $c)
-  @php $raised=$c->raised_amount??0;$goal=$c->goal_amount>0?$c->goal_amount:1;$pct=min(100,round(($raised/$goal)*100));$uName=$c->user?->name??'Unknown';$uEmail=$c->user?->email??'';$uInit=strtoupper(substr($uName,0,1)); @endphp
-  <div class="c-card" data-filter="rejected" data-title="{{ strtolower($c->title) }}" data-amount="{{ $c->goal_amount }}" data-date="{{ $c->created_at }}" style="animation-delay:{{ $i*0.04 }}s">
-    <div class="c-thumb">
-      @if($c->cover_image)<img src="{{ asset('storage/'.$c->cover_image) }}" alt="{{ $c->title }}" loading="lazy"><div class="c-overlay"></div>
-      @else<div class="c-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>@endif
-      <div class="c-badge-pos"><span class="badge b-rejected">Rejected</span></div>
-    </div>
-    <div class="c-user"><div class="c-uav" style="background:linear-gradient(135deg,#f04444,#dc2626);">{{ $uInit }}</div><div><div class="c-uname">{{ $uName }}</div>@if($uEmail)<div class="c-uemail">{{ $uEmail }}</div>@endif</div></div>
-    <div class="c-body">
-      <div class="c-title">{{ $c->title }}</div>
-      @if($c->rejection_reason)<div class="reason reason-red"><div class="reason-lbl">✕ REJECTION REASON</div><div class="reason-txt">{{ $c->rejection_reason }}</div></div>@endif
-      <div class="prog"><div class="prog-nums"><span class="prog-raised">₹{{ number_format($raised) }}</span><span class="prog-goal">of ₹{{ number_format($c->goal_amount) }}</span></div><div class="prog-bar"><div class="prog-fill prog-fill-red" style="width:{{ $pct }}%"></div></div><div class="prog-pct" style="color:var(--red)">{{ $pct }}% funded</div></div>
-      <div class="c-actions">
-        <a href="{{ route('admin.campaign.show',$c->id) }}" class="c-btn c-btn-view" style="flex:1;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>View Details</a>
-      </div>
-    </div>
-  </div>
-  @endforeach
-
-  @foreach($inactiveCampaigns as $i => $c)
-  @php $raised=$c->raised_amount??0;$goal=$c->goal_amount>0?$c->goal_amount:1;$pct=min(100,round(($raised/$goal)*100));$uName=$c->user?->name??'Unknown';$uEmail=$c->user?->email??'';$uInit=strtoupper(substr($uName,0,1)); @endphp
-  <div class="c-card" data-filter="inactive" data-title="{{ strtolower($c->title) }}" data-amount="{{ $c->goal_amount }}" data-date="{{ $c->created_at }}" style="animation-delay:{{ $i*0.04 }}s">
-    <div class="c-thumb">
-      @if($c->cover_image)<img src="{{ asset('storage/'.$c->cover_image) }}" alt="{{ $c->title }}" loading="lazy"><div class="c-overlay"></div>
-      @else<div class="c-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>@endif
-      <div class="c-badge-pos"><span class="badge b-inactive">{{ $c->status==='completed'?'Completed':'Inactive' }}</span></div>
-    </div>
-    <div class="c-user"><div class="c-uav" style="background:linear-gradient(135deg,#64748b,#475569);">{{ $uInit }}</div><div><div class="c-uname">{{ $uName }}</div>@if($uEmail)<div class="c-uemail">{{ $uEmail }}</div>@endif</div></div>
-    <div class="c-body">
-      <div class="c-title">{{ $c->title }}</div>
-      <div class="prog"><div class="prog-nums"><span class="prog-raised">₹{{ number_format($raised) }}</span><span class="prog-goal">of ₹{{ number_format($c->goal_amount) }}</span></div><div class="prog-bar"><div class="prog-fill prog-fill-gray" style="width:{{ $pct }}%"></div></div><div class="prog-pct" style="color:#64748b">{{ $pct }}% funded</div></div>
-      <div class="c-actions">
-        <a href="{{ route('admin.campaign.show',$c->id) }}" class="c-btn c-btn-view" style="flex:1;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>View Details</a>
-      </div>
-    </div>
-  </div>
-  @endforeach
-
+  @include('admin._campaign_cards', ['campaigns' => $activeCampaigns])
 </div>
 
-<div class="pagination-wrap">{{ $activeCampaigns->links('vendor.pagination.admin') }}</div>
+<div class="pagination-wrap" id="paginationWrap">{{ $activeCampaigns->links('vendor.pagination.admin') }}</div>
+
+{{-- BULK ACTION BAR --}}
+<div class="bulk-bar" id="bulkBar" role="region" aria-label="Bulk actions">
+  <div class="bb-info"><span id="bbCount">0</span> campaign(s) selected</div>
+  <div class="bb-acts">
+    <button type="button" class="bb-btn bb-approve" id="bbApprove">✓ Approve</button>
+    <button type="button" class="bb-btn bb-pause" id="bbPause">⏸ Pause</button>
+    <button type="button" class="bb-btn bb-reject" id="bbReject">✕ Reject</button>
+    <button type="button" class="bb-clear" id="bbClear">Clear</button>
+  </div>
+</div>
+
+{{-- QUICK VIEW SLIDE-OVER --}}
+<div class="slide-over-backdrop" id="quickBackdrop" onclick="closeQuick()"></div>
+<aside class="slide-over" id="quickPanel" role="dialog" aria-modal="true" aria-labelledby="quickTitle">
+  <button type="button" class="modal-x" onclick="closeQuick()" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
+  <div id="quickContent" aria-live="polite"></div>
+  <div class="qk-loading" id="quickLoading"><span class="spin"></span> Loading…</div>
+</aside>
+
+{{-- BULK REASON MODAL --}}
+<div id="bulkOverlay" class="overlay" role="dialog" aria-modal="true">
+  <div class="modal">
+    <button type="button" class="modal-x" onclick="closeBulk()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
+    <div class="modal-head">
+      <div class="modal-ico" id="bulkIco" style="background:var(--red-lt);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+      <div><div class="modal-ttl" id="bulkTtl">Bulk Action</div><div class="modal-sub" id="bulkSub"></div></div>
+    </div>
+    <form id="bulkForm" method="POST">@csrf
+      <div class="modal-lbl">Reason <span id="bulkReq">*</span></div>
+      <textarea id="bulkReason" name="reason" rows="3" class="modal-ta" placeholder="Provide a reason for the campaign owner…"></textarea>
+      <p id="bulkErr" class="modal-err">⚠ Please provide a reason.</p>
+      <div class="modal-acts"><button type="button" onclick="closeBulk()" class="modal-btn modal-cancel">Cancel</button><button type="submit" id="bulkBtn" class="modal-btn modal-red">Confirm</button></div>
+    </form>
+  </div>
+</div>
 
 {{-- PAUSE MODAL --}}
 <div id="pauseOverlay" class="overlay" role="dialog" aria-modal="true">
@@ -449,48 +399,161 @@ function loadDoughnut(){
 }
 setTimeout(loadDoughnut, 200);
 
-/* ── Filter / sort / search ── */
-var cards=Array.from(document.querySelectorAll('#campaignGrid .c-card'));
-var activeFilter='all',searchQ='',sortVal='';
+/* ── AJAX Campaign grid (filter / search / sort / pagination) ── */
+var grid=document.getElementById('campaignGrid');
+var paginationWrap=document.getElementById('paginationWrap');
+var noResults=document.getElementById('noResults');
+var state='active',searchQ='',sortVal='',isFetching=false,currentPage=1;
 
-function applyFilters(){
-  var sorted=cards.slice();
-  if(sortVal==='amount-desc')sorted.sort((a,b)=>+b.dataset.amount - +a.dataset.amount);
-  else if(sortVal==='amount-asc')sorted.sort((a,b)=>+a.dataset.amount - +b.dataset.amount);
-  else if(sortVal==='date-desc')sorted.sort((a,b)=>new Date(b.dataset.date)-new Date(a.dataset.date));
-  else if(sortVal==='date-asc')sorted.sort((a,b)=>new Date(a.dataset.date)-new Date(b.dataset.date));
-  var grid=document.getElementById('campaignGrid');
-  sorted.forEach(function(c){grid.appendChild(c);});
-  var visible=0;
-  cards.forEach(function(c){
-    var mf=activeFilter==='all'||c.dataset.filter===activeFilter;
-    var ms=!searchQ||(c.dataset.title||'').includes(searchQ);
-    c.style.display=(mf&&ms)?'':'none';
-    if(mf&&ms)visible++;
-  });
-  document.getElementById('noResults').style.display=visible>0?'none':'block';
+function csrfToken(){var m=document.querySelector('meta[name=csrf-token]');return m?m.getAttribute('content'):'';}
+
+function setTab(f,v){var el=document.querySelector('.ftab[data-filter="'+f+'"] .cnt');if(el)el.textContent=v;}
+
+function fetchGrid(page){
+  page=page||1;currentPage=page;
+  if(isFetching)return;
+  isFetching=true;grid.classList.add('loading');
+  var params=new URLSearchParams({state:state,search:searchQ,sort:sortVal,cpage:page});
+  fetch('{{ route('admin.dashboard.campaigns') }}?'+params.toString(),{headers:{'X-Requested-With':'XMLHttpRequest'}})
+    .then(function(r){return r.json();})
+    .then(function(data){
+      grid.innerHTML=data.cards;
+      paginationWrap.innerHTML=data.pagination;
+      noResults.style.display=data.total>0?'none':'block';
+      if(data.counts){
+        setTab('all',data.counts.totalCampaigns);
+        setTab('pending',data.counts.cntPending);
+        setTab('active',data.counts.cntActive);
+        setTab('paused',data.counts.cntPaused);
+        setTab('inactive',data.counts.cntExpired+data.counts.cntCompleted);
+        setTab('rejected',data.counts.cntRejected);
+      }
+      bindCardInteractions();
+    })
+    .catch(function(){window.toast('Failed to load campaigns.','error');})
+    .finally(function(){isFetching=false;grid.classList.remove('loading');});
 }
 
 document.querySelectorAll('.ftab').forEach(function(tab){
   tab.addEventListener('click',function(){
     document.querySelectorAll('.ftab').forEach(function(t){t.classList.remove('on');});
-    this.classList.add('on');activeFilter=this.dataset.filter;applyFilters();
+    this.classList.add('on');state=this.dataset.filter;fetchGrid(1);
   });
 });
 
 window.setFilter=function(f){
-  activeFilter=f;
+  state=f;
   document.querySelectorAll('.ftab').forEach(function(t){t.classList.toggle('on',t.dataset.filter===f);});
-  applyFilters();
+  fetchGrid(1);
   var el=document.getElementById('cGrid');
   if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
 };
 
 var st;
-document.getElementById('searchInput').addEventListener('input',function(){
-  clearTimeout(st);searchQ=this.value.toLowerCase().trim();st=setTimeout(applyFilters,180);
+var searchInput=document.getElementById('searchInput');
+if(searchInput)searchInput.addEventListener('input',function(){
+  clearTimeout(st);searchQ=this.value.toLowerCase().trim();st=setTimeout(function(){fetchGrid(1);},180);
 });
-document.getElementById('sortSelect').addEventListener('change',function(){sortVal=this.value;applyFilters();});
+var sortSelect=document.getElementById('sortSelect');
+if(sortSelect)sortSelect.addEventListener('change',function(){sortVal=this.value;fetchGrid(1);});
+
+if(paginationWrap)paginationWrap.addEventListener('click',function(e){
+  var a=e.target.closest('a');if(!a)return;
+  e.preventDefault();
+  var url=new URL(a.href,location.href);
+  fetchGrid(parseInt(url.searchParams.get('cpage'))||1);
+});
+
+/* ── Card interactions: quick view + selection ── */
+function bindCardInteractions(){
+  grid.querySelectorAll('.c-card').forEach(function(card){
+    card.addEventListener('click',function(e){
+      if(e.target.closest('a,button,form,label,input,textarea'))return;
+      openQuick(card.dataset.id);
+    });
+  });
+  grid.querySelectorAll('.c-checkbox').forEach(function(cb){
+    cb.addEventListener('change',updateBulkBar);
+  });
+}
+bindCardInteractions();
+
+/* ── Bulk actions ── */
+var bulkBar=document.getElementById('bulkBar');
+function getSelectedIds(){return Array.from(grid.querySelectorAll('.c-checkbox:checked')).map(function(c){return +c.value;});}
+function updateBulkBar(){
+  var n=getSelectedIds().length;
+  document.getElementById('bbCount').textContent=n;
+  bulkBar.classList.toggle('open',n>0);
+}
+function clearSelection(){
+  grid.querySelectorAll('.c-checkbox:checked').forEach(function(c){c.checked=false;});
+  updateBulkBar();
+}
+document.getElementById('bbClear').addEventListener('click',clearSelection);
+
+function postBulk(url,body,done){
+  fetch(url,{method:'POST',headers:{'X-Requested-With':'XMLHttpRequest','X-CSRF-TOKEN':csrfToken(),'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(body)})
+    .then(function(r){return r.json();})
+    .then(function(d){if(d.message)window.toast(d.message,d.type||'success');if(done)done();})
+    .catch(function(){window.toast('Bulk action failed.','error');});
+}
+document.getElementById('bbApprove').addEventListener('click',function(){
+  var ids=getSelectedIds();if(!ids.length)return;
+  postBulk('{{ route('admin.campaigns.bulk-approve') }}',{ids:ids},function(){clearSelection();fetchGrid(currentPage);});
+});
+
+/* Bulk reason modal (reject / pause) */
+var bulkMode=null;
+document.getElementById('bbReject').addEventListener('click',function(){openBulk('reject');});
+document.getElementById('bbPause').addEventListener('click',function(){openBulk('pause');});
+function openBulk(mode){
+  bulkMode=mode;
+  var form=document.getElementById('bulkForm');
+  form.action=mode==='reject'?'{{ route('admin.campaigns.bulk-reject') }}':'{{ route('admin.campaigns.bulk-pause') }}';
+  document.getElementById('bulkTtl').textContent=mode==='reject'?'Reject Campaigns':'Pause Campaigns';
+  document.getElementById('bulkSub').textContent='Action applies to '+getSelectedIds().length+' selected campaign(s).';
+  document.getElementById('bulkReason').value='';
+  document.getElementById('bulkErr').style.display='none';
+  document.getElementById('bulkReq').style.display=mode==='reject'?'inline':'none';
+  var btn=document.getElementById('bulkBtn');
+  btn.className='modal-btn '+(mode==='reject'?'modal-red':'modal-amber');
+  btn.textContent=mode==='reject'?'✕ Reject':'⏸ Pause';
+  document.getElementById('bulkOverlay').classList.add('open');
+  setTimeout(function(){document.getElementById('bulkReason').focus();},80);
+}
+function closeBulk(){document.getElementById('bulkOverlay').classList.remove('open');}
+window.closeBulk=closeBulk;
+document.getElementById('bulkForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  if(bulkMode==='reject'&&!document.getElementById('bulkReason').value.trim()){document.getElementById('bulkErr').style.display='block';return;}
+  var ids=getSelectedIds();
+  var fd=new FormData(this);ids.forEach(function(id){fd.append('ids[]',id);});
+  var btn=document.getElementById('bulkBtn');btn.disabled=true;btn.textContent='Processing…';
+  fetch(this.action,{method:'POST',headers:{'X-Requested-With':'XMLHttpRequest','X-CSRF-TOKEN':csrfToken(),'Accept':'application/json'},body:fd})
+    .then(function(r){return r.json();})
+    .then(function(d){if(d.message)window.toast(d.message,d.type||'success');closeBulk();clearSelection();fetchGrid(currentPage);})
+    .catch(function(){window.toast('Bulk action failed.','error');})
+    .finally(function(){btn.disabled=false;btn.textContent=bulkMode==='reject'?'✕ Reject':'⏸ Pause';});
+});
+
+/* ── Quick view slide-over ── */
+var quickPanel=document.getElementById('quickPanel');
+var quickBackdrop=document.getElementById('quickBackdrop');
+function openQuick(id){
+  document.getElementById('quickContent').innerHTML='';
+  document.getElementById('quickLoading').style.display='flex';
+  quickPanel.classList.add('open');quickBackdrop.classList.add('open');
+  fetch('{{ route('admin.campaign.quick','__ID__') }}'.replace('__ID__',id),{headers:{'X-Requested-With':'XMLHttpRequest'}})
+    .then(function(r){return r.text();})
+    .then(function(html){document.getElementById('quickContent').innerHTML=html;document.getElementById('quickLoading').style.display='none';})
+    .catch(function(){document.getElementById('quickLoading').style.display='none';window.toast('Failed to load details.','error');});
+}
+function closeQuick(){quickPanel.classList.remove('open');quickBackdrop.classList.remove('open');}
+window.closeQuick=closeQuick;
+
+/* ── Re-render charts when theme toggles ── */
+window.addEventListener('themechange',function(){loadChart();loadDoughnut();});
 
 /* ── Pause modal ── */
 function openPause(id){

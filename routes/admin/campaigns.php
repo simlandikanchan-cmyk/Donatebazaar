@@ -16,6 +16,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::post('/campaign/{campaign}/reject',    [AdminCampaignController::class, 'reject'])->name('campaign.reject');
     Route::post('/campaign/{campaign}/pause',     [AdminCampaignController::class, 'pause'])->name('campaign.pause');
     Route::post('/campaign/{campaign}/resume',    [AdminCampaignController::class, 'resume'])->name('campaign.resume');
+    Route::get('/campaign/{campaign}/quick',       [AdminCampaignController::class, 'quick'])->name('campaign.quick');
+
+    Route::post('/campaigns/bulk-approve',         [AdminCampaignController::class, 'bulkApprove'])->name('campaigns.bulk-approve');
+    Route::post('/campaigns/bulk-reject',          [AdminCampaignController::class, 'bulkReject'])->name('campaigns.bulk-reject');
+    Route::post('/campaigns/bulk-pause',           [AdminCampaignController::class, 'bulkPause'])->name('campaigns.bulk-pause');
 
     Route::post('/campaign/{campaign}/request-kyc', [CampaignKycController::class, 'requestKyc'])->name('campaign.request-kyc');
     Route::post('/kyc/{kyc}/approve',  [AdminKycController::class, 'approve'])->name('kyc.approve');

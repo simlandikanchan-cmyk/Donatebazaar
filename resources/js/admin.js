@@ -27,6 +27,7 @@ window.Chart = Chart;
       const t = this.checked ? 'dark' : 'light';
       html.setAttribute('data-theme', t);
       localStorage.setItem('adminTheme', t);
+      window.dispatchEvent(new Event('themechange'));
     });
   }
 

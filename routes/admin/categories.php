@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
 
     Route::resource('categories', CategoryController::class);
+    Route::post('categories/{category}/toggle', [CategoryController::class, 'toggle'])->name('categories.toggle');
 
     Route::prefix('category-products')->controller(AdminCategoryProductController::class)->group(function () {
         Route::get('export', 'exportCsv')->name('category-products.export');

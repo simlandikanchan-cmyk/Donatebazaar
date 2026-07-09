@@ -283,6 +283,170 @@ public function edit(Campaign $campaign)
     }
 
     // -------------------------------------------------------------------------
+    // BULK APPROVE
+    // -------------------------------------------------------------------------
+    public function bulkApprove(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'ids'   => ['required', 'array'],
+            'ids.*' => ['integer', 'exists:campaigns,id'],
+        ]);
+
+        $done = 0;
+        $skipped = 0;
+
+        foreach ($data['ids'] as $id) {
+            $campaign = Campaign::find($id);
+            if (! $campaign || ! $campaign->isPending() || $campaign->isExpired()) {
+                $skipped++;
+                continue;
+            }
+
+            $kyc = optional($campaign->user)->kycVerification;
+            if (! $kyc || $kyc->status !== 'approved') {
+                $skipped++;
+                continue;
+            }
+
+            DB::transaction(function () use ($campaign) {
+                $campaign->approve();
+                $this->log($campaign, 'approved', 'Campaign approved (bulk).');
+            });
+
+            Mail::to($campaign->user)->send(new CampaignStatusMail($campaign, 'approved'));
+            $done++;
+        }
+
+        if ($skipped > 0 && $done === 0) {
+            $type = 'warning';
+            $msg = "No campaigns approved ({$skipped} skipped: not pending / KYC unverified).";
+        } else {
+            $type = 'success';
+            $msg = "{$done} campaign(s) approved.";
+            if ($skipped > 0) {
+                $msg .= " {$skipped} skipped (not pending / KYC unverified).";
+            }
+        }
+
+        if ($request->expectsJson()) {
+            return response()->json(['message' => $msg, 'type' => $type]);
+        }
+
+        return back()->with($type, $msg);
+    }
+
+    // -------------------------------------------------------------------------
+    // BULK REJECT
+    // -------------------------------------------------------------------------
+    public function bulkReject(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'ids'    => ['required', 'array'],
+            'ids.*'  => ['integer', 'exists:campaigns,id'],
+            'reason' => ['required', 'string', 'min:10', 'max:500'],
+        ]);
+
+        $done = 0;
+        $skipped = 0;
+
+        foreach ($data['ids'] as $id) {
+            $campaign = Campaign::find($id);
+            if (! $campaign || ! $campaign->isPending()) {
+                $skipped++;
+                continue;
+            }
+
+            DB::transaction(function () use ($campaign, $data) {
+                $campaign->reject($data['reason']);
+                $this->log($campaign, 'rejected', 'Rejected (bulk): ' . $data['reason']);
+            });
+
+            Mail::to($campaign->user)
+                ->send(new CampaignStatusMail($campaign, 'rejected', $data['reason']));
+            $done++;
+        }
+
+        if ($skipped > 0 && $done === 0) {
+            $type = 'warning';
+            $msg = "No campaigns rejected ({$skipped} skipped: not pending).";
+        } else {
+            $type = 'success';
+            $msg = "{$done} campaign(s) rejected.";
+            if ($skipped > 0) {
+                $msg .= " {$skipped} skipped (not pending).";
+            }
+        }
+
+        if ($request->expectsJson()) {
+            return response()->json(['message' => $msg, 'type' => $type]);
+        }
+
+        return back()->with($type, $msg);
+    }
+
+    // -------------------------------------------------------------------------
+    // BULK PAUSE
+    // -------------------------------------------------------------------------
+    public function bulkPause(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'ids'    => ['required', 'array'],
+            'ids.*'  => ['integer', 'exists:campaigns,id'],
+            'reason' => ['nullable', 'string', 'max:500'],
+        ]);
+
+        $done = 0;
+        $skipped = 0;
+
+        foreach ($data['ids'] as $id) {
+            $campaign = Campaign::find($id);
+            if (! $campaign || ! $campaign->isActive() || $campaign->isExpired() || $campaign->isPaused()) {
+                $skipped++;
+                continue;
+            }
+
+            DB::transaction(function () use ($campaign, $data) {
+                $campaign->pause($data['reason'] ?? 'Paused by admin (bulk)');
+                $this->log($campaign, 'paused', 'Campaign paused (bulk).');
+            });
+
+            $done++;
+        }
+
+        if ($skipped > 0 && $done === 0) {
+            $type = 'warning';
+            $msg = "No campaigns paused ({$skipped} skipped: not active).";
+        } else {
+            $type = 'success';
+            $msg = "{$done} campaign(s) paused.";
+            if ($skipped > 0) {
+                $msg .= " {$skipped} skipped (not active).";
+            }
+        }
+
+        if ($request->expectsJson()) {
+            return response()->json(['message' => $msg, 'type' => $type]);
+        }
+
+        return back()->with($type, $msg);
+    }
+
+    // -------------------------------------------------------------------------
+    // QUICK VIEW (AJAX fragment)
+    // -------------------------------------------------------------------------
+    public function quick(Campaign $campaign)
+    {
+        $campaign->load([
+            'user.kycVerification',
+            'category',
+            'events',
+            'logs',
+        ]);
+
+        return view('admin._campaign_quick', compact('campaign'));
+    }
+
+    // -------------------------------------------------------------------------
     // REQUEST KYC
     // -------------------------------------------------------------------------
     public function requestKyc(Request $request, Campaign $campaign): RedirectResponse
