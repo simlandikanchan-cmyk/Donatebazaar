@@ -190,6 +190,19 @@
 
 @section('content')
 
+@php
+  $isExpired = $jobPost->application_deadline && \Carbon\Carbon::parse($jobPost->application_deadline)->isPast();
+  $statusKey = ($jobPost->status === 'closed' || $isExpired) ? 'closed' : ($jobPost->status === 'draft' ? 'draft' : 'active');
+  $appCount  = $jobPost->applications()->count();
+  $pendCount = $jobPost->applications()->where('status','pending')->count();
+  $accCount  = $jobPost->applications()->whereIn('status',['shortlisted','accepted'])->count();
+  $rejCount  = $jobPost->applications()->where('status','rejected')->count();
+  $skills    = is_array($jobPost->skills) ? $jobPost->skills : [];
+  $views     = $jobPost->views_count ?? 0;
+  $apps      = $jobPost->applications_count ?? 0;
+  $convRate  = $views > 0 ? round(($apps / $views) * 100, 1) : 0;
+@endphp
+
 <div id="deleteOverlay" class="overlay" role="dialog" aria-modal="true">
   <div class="modal">
     <button type="button" class="modal-x" onclick="closeDelete()">
@@ -234,19 +247,6 @@
     </button>
   </div>
 </div>
-
-@php
-  $isExpired = $jobPost->application_deadline && \Carbon\Carbon::parse($jobPost->application_deadline)->isPast();
-  $statusKey = ($jobPost->status === 'closed' || $isExpired) ? 'closed' : ($jobPost->status === 'draft' ? 'draft' : 'active');
-  $appCount  = $jobPost->applications()->count();
-  $pendCount = $jobPost->applications()->where('status','pending')->count();
-  $accCount  = $jobPost->applications()->whereIn('status',['shortlisted','accepted'])->count();
-  $rejCount  = $jobPost->applications()->where('status','rejected')->count();
-  $skills    = is_array($jobPost->skills) ? $jobPost->skills : [];
-  $views     = $jobPost->views_count ?? 0;
-  $apps      = $jobPost->applications_count ?? 0;
-  $convRate  = $views > 0 ? round(($apps / $views) * 100, 1) : 0;
-@endphp
 
 <div class="hero">
   <div class="hero-left">
