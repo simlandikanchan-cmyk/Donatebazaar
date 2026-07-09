@@ -24,6 +24,7 @@ require __DIR__.'/web/categories.php';
 require __DIR__.'/web/career.php';
 require __DIR__.'/web/gift-cards.php';
 require __DIR__.'/web/volunteer.php';
+require __DIR__.'/web/application.php';
 require __DIR__.'/web/profile.php';
 require __DIR__.'/web/dashboard.php';
 

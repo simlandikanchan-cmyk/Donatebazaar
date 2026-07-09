@@ -87,6 +87,16 @@
                         role="menuitem">
                         Disaster Relief
                     </a>
+                    <a href="{{ route('volunteer.apply') }}"
+                        class="db-nav__dropdown-item"
+                        role="menuitem">
+                        Volunteer
+                    </a>
+                    <a href="{{ route('application.step1') }}"
+                        class="db-nav__dropdown-item"
+                        role="menuitem">
+                        Become an Organization
+                    </a>
                 </div>
             </div>
 
@@ -308,6 +318,8 @@
             <a href="{{ route('blogs.index') }}" class="db-mobile__link db-mobile__link--sub">└ Blog</a>
             <a href="{{ route('partnership') }}" class="db-mobile__link db-mobile__link--sub">└ Partnership</a>
             <a href="{{ route('ddrf.index') }}" class="db-mobile__link db-mobile__link--sub">└ Disaster Relief</a>
+            <a href="{{ route('volunteer.apply') }}" class="db-mobile__link db-mobile__link--sub">└ Volunteer</a>
+            <a href="{{ route('application.step1') }}" class="db-mobile__link db-mobile__link--sub">└ Become an Organization</a>
             <a href="{{ route('contact') }}"
                class="db-mobile__link {{ request()->routeIs('contact') ? 'db-mobile__link--active' : '' }}"
                @if(request()->routeIs('contact')) aria-current="page" @endif>

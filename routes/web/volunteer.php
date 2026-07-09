@@ -3,7 +3,9 @@
 use App\Http\Controllers\VolunteerController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/volunteer/apply', [VolunteerController::class, 'apply'])->name('volunteer.apply');
+Route::get('/volunteer/apply', [VolunteerController::class, 'create'])->name('volunteer.apply');
+
+Route::post('/volunteer/apply', [VolunteerController::class, 'store'])->name('volunteer.apply.store');
 
 Route::middleware('auth')->group(function () {
     Route::get('/campaign/{id}/volunteers', [VolunteerController::class, 'campaignVolunteers'])->name('volunteers.campaign');
