@@ -37,6 +37,7 @@ class CampaignProductController extends Controller
             'user:id,name,email',
             'categoryProduct:id,name,category_id',
             'categoryProduct.category:id,name',
+            'approver:id,name',
         ]);
 
         if ($status !== 'all') {
