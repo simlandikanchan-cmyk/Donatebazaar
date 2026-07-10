@@ -806,14 +806,19 @@
     width: 34px;
     height: 34px;
     border-radius: 10px;
-    background: var(--drawer-primary);
+    background: var(--db-accent-grad);
     color: #fff;
 }
 
 .db-drawer__brand-name {
-    font-size: 18px;
-    font-weight: 600;
-    letter-spacing: -0.01em;
+    font-family: var(--db-font-mono);
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    background: var(--db-accent-grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .db-drawer__close {
@@ -1065,7 +1070,7 @@
     font-size: 16px;
     font-weight: 600;
     text-decoration: none;
-    transition: background 0.18s ease, opacity 0.18s ease;
+    transition: background 0.18s ease, opacity 0.18s ease, transform 0.18s ease;
 }
 
 .db-drawer__auth-btn--ghost {
@@ -1078,12 +1083,13 @@
 }
 
 .db-drawer__auth-btn--primary {
-    background: var(--drawer-primary);
+    background: var(--db-accent-grad);
     color: #fff;
 }
 
 .db-drawer__auth-btn--primary:hover {
-    background: #1D4ED8;
+    opacity: 0.92;
+    transform: translateY(-1px);
 }
 
 /* Reduced motion */
