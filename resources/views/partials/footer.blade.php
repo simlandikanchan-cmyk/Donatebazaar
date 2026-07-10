@@ -3,11 +3,6 @@
 ══════════════════════════════ -->
 <footer class="site-footer" id="site-footer">
 
-    <!-- Decorative geometry -->
-    <div class="footer-ring footer-ring-1"></div>
-    <div class="footer-ring footer-ring-2"></div>
-    <div class="footer-ring footer-ring-3"></div>
-
     <div class="footer-inner">
 
         <!-- CTA Banner -->
@@ -154,13 +149,13 @@
                             <input
                                 type="email"
                                 name="email"
-                                placeholder="Enter your email"
+                                placeholder="Your email"
                                 aria-label="Email for newsletter"
                                 value="{{ old('email') }}"
                                 required
                             >
                             <button type="submit" id="nl-submit">
-                                <span class="btn-label">Join</span>
+                                <span class="btn-label">Subscribe</span>
                                 <span class="btn-spinner" aria-hidden="true"></span>
                             </button>
                         </div>
