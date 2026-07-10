@@ -20,7 +20,7 @@
 .hc-type{background:var(--a-lt);color:var(--a);border:1px solid rgba(37,99,235,.3)}
 .hc-loc{background:var(--green-lt);color:#059669;border:1px solid rgba(5,196,138,.3)}
 .hc-sal{background:rgba(5,196,138,.2);color:#059669;border:1px solid rgba(5,196,138,.3)}
-.hc-exp{background:var(--blue-lt);color:#2563eb;border:1px solid rgba(59,130,246,.3)}
+.hc-exp{background:var(--blue-lt);color:#2563eb ;border:1px solid rgba(59,130,246,.3)}
 .hc-vac{background:var(--amber-lt);color:#d97706;border:1px solid rgba(245,158,11,.3)}
 
 /* ── hero stat cards ── */

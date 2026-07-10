@@ -108,7 +108,7 @@ html:not(.js-enabled) .reveal { opacity: 1; transform: none; }
     font-size: clamp(2.6rem, 4vw, 3.4rem); font-weight: 700;
     line-height: 1.1; color: #fff; margin-bottom: 18px;
 }
-.blog-hero-title em { font-style: normal; color: #a5b4fc; }
+.blog-hero-title em { font-style: normal; color: #2563eb ; }
 
 .blog-hero-sub {
     font-size: clamp(.95rem, 1.5vw, 1.1rem); font-weight: 300;
@@ -125,7 +125,7 @@ html:not(.js-enabled) .reveal { opacity: 1; transform: none; }
     backdrop-filter: blur(8px); border-radius: var(--radius-sm);
     padding: 8px 16px; font-family: var(--font-mono); font-size: 11.5px;
 }
-.blog-hero-stat strong { color: #a5b4fc; font-weight: 700; }
+.blog-hero-stat strong { color: #2563eb ; font-weight: 700; }
 .blog-hero-stat span   { color: rgba(255,255,255,.45); }
 .blog-hero-stat svg { width: 13px; height: 13px; stroke: rgba(165,180,252,.6); fill: none; stroke-width: 2; flex-shrink: 0; }
 
@@ -486,7 +486,7 @@ html:not(.js-enabled) .reveal { opacity: 1; transform: none; }
     background: rgba(37,99,235,.15); border: 1px solid rgba(37,99,235,.25);
     display: flex; align-items: center; justify-content: center; margin: 0 auto 14px;
 }
-.sidebar-cta-icon svg { width: 20px; height: 20px; stroke: #a5b4fc; fill: none; stroke-width: 2; }
+.sidebar-cta-icon svg { width: 20px; height: 20px; stroke: #2563eb ; fill: none; stroke-width: 2; }
 .sidebar-cta p {
     font-size: 12.5px; color: rgba(255,255,255,.5); margin-bottom: 16px;
     line-height: 1.65; font-family: var(--font); position: relative; z-index: 1;

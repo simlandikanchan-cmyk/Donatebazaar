@@ -132,24 +132,49 @@
 
                 {{-- Notification bell --}}
                 @php $unread = (int) auth()->user()->unreadNotifications()->count(); @endphp
-                <button class="db-icon-btn"
-                        id="notif-btn"
-                        aria-label="Notifications{{ $unread > 0 ? " — {$unread} unread" : '' }}"
-                        aria-haspopup="true"
-                        aria-expanded="false">
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
-                         stroke="currentColor" stroke-width="1.8"
-                         stroke-linecap="round" stroke-linejoin="round"
-                         aria-hidden="true" focusable="false">
-                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-                        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-                    </svg>
-                    @if($unread > 0)
-                        <span class="db-badge" aria-hidden="true">
-                            {{ $unread > 9 ? '9+' : $unread }}
-                        </span>
-                    @endif
-                </button>
+                <div class="db-notif" id="notif-wrapper">
+                    <button class="db-icon-btn"
+                            id="notif-btn"
+                            aria-label="Notifications{{ $unread > 0 ? " — {$unread} unread" : '' }}"
+                            aria-haspopup="true"
+                            aria-expanded="false"
+                            aria-controls="notif-panel">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                              stroke="currentColor" stroke-width="1.8"
+                              stroke-linecap="round" stroke-linejoin="round"
+                              aria-hidden="true" focusable="false">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                        </svg>
+                        @if($unread > 0)
+                            <span class="db-badge" id="notif-badge" aria-hidden="true">
+                                {{ $unread > 9 ? '9+' : $unread }}
+                            </span>
+                        @else
+                            <span class="db-badge" id="notif-badge" hidden aria-hidden="true">0</span>
+                        @endif
+                    </button>
+
+                    {{-- Notification panel --}}
+                    <div class="db-dropdown db-notif__panel"
+                         id="notif-panel"
+                         role="menu"
+                         aria-labelledby="notif-btn"
+                         aria-hidden="true">
+                        <div class="db-notif__header" role="none">
+                            <span class="db-notif__title">Notifications</span>
+                            <button type="button"
+                                    class="db-notif__mark-all"
+                                    id="notif-mark-all">
+                                Mark all read
+                            </button>
+                        </div>
+                        <div class="db-notif__divider" role="separator"></div>
+                        <div class="db-notif__list" id="notif-list" role="none">
+                            <p class="db-notif__empty" id="notif-empty" hidden>No notifications yet.</p>
+                        </div>
+                    </div>
+                </div>
 
                 {{-- Profile dropdown --}}
                 <div class="db-profile" id="db-profile-wrapper">

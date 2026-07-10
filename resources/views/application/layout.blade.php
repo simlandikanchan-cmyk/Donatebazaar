@@ -11,7 +11,7 @@
 
 :root{
   --purple-deep:#3b0764;
-  --purple-main:#2563eb;
+  --purple-main:#2563eb ;
   --purple-mid:#0d9488;
   --purple-light:#60a5fa;
   --purple-pale:#dbeafe;
@@ -541,10 +541,10 @@ select.field-input{
 
 .confetti-row{display:flex;justify-content:center;gap:7px;margin-bottom:28px}
 .cdot{width:8px;height:8px;border-radius:50%;animation:cbounce .6s ease infinite alternate}
-.cdot:nth-child(1){background:#2563eb;animation-delay:0s}
+.cdot:nth-child(1){background:#2563eb ;animation-delay:0s}
 .cdot:nth-child(2){background:#0d9488;animation-delay:.1s}
 .cdot:nth-child(3){background:#60a5fa;animation-delay:.2s}
-.cdot:nth-child(4){background:#2563eb;animation-delay:.3s}
+.cdot:nth-child(4){background:#2563eb ;animation-delay:.3s}
 .cdot:nth-child(5){background:#0d9488;animation-delay:.4s}
 @keyframes cbounce{from{transform:translateY(0)}to{transform:translateY(-8px)}}
 

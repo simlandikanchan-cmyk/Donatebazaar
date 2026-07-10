@@ -14,7 +14,7 @@
     --sb-bg:        #ffffff;
     --sb-txt:       #64748b;
     --sb-act:       #eef2ff;
-    --accent:       #2563eb;
+    --accent:       #2563eb ;
     --accent2:      #0d9488;
     --accent-lt:    rgba(37,99,235,.10);
     --accent-glow:  rgba(37,99,235,.20);
@@ -171,7 +171,7 @@ svg { display: block; flex-shrink: 0; }
 }
 .s-badge.ok   { background: #d1fae5;  color: #15803d; }
 .s-badge.warn { background: #fef3c7;  color: #d97706; }
-.s-badge.info { background: #dbeafe;  color: #2563eb; }
+.s-badge.info { background: #dbeafe;  color: #2563eb ; }
 .s-badge.err  { background: #fee2e2;  color: #dc2626; }
 
 .s-sub { padding: 2px 10px 2px 28px; }
@@ -357,7 +357,7 @@ svg { display: block; flex-shrink: 0; }
     content: ''; position: absolute;
     left: 0; top: 0; bottom: 0;
     width: 5px;
-    background: linear-gradient(to bottom, #2563eb, #38bdf8, #0d9488);
+    background: linear-gradient(to bottom, #2563eb , #38bdf8, #0d9488);
     border-radius: 5px 0 0 5px;
 }
 .welcome-banner::after {
@@ -370,7 +370,7 @@ svg { display: block; flex-shrink: 0; }
 .wb-left { position: relative; z-index: 1; }
 .wb-tag  {
     display: inline-flex; align-items: center; gap: 6px;
-    font-size: 10px; font-weight: 600; color: #2563eb;
+    font-size: 10px; font-weight: 600; color: #2563eb ;
     text-transform: uppercase; letter-spacing: .1em; margin-bottom: 10px;
     font-family: var(--mono);
 }
@@ -439,11 +439,11 @@ svg { display: block; flex-shrink: 0; }
 }
 .stat-card:hover { transform: translateY(-5px); box-shadow: 0 8px 28px rgba(0,0,0,.08), 0 2px 8px rgba(0,0,0,.04); border-color: var(--accent-glow); }
 .stat-card:hover::before { opacity: 1; }
-.stat-card:nth-child(1){ animation-delay:.05s } .stat-card:nth-child(1)::before { background: linear-gradient(90deg, #2563eb, #38bdf8); }
+.stat-card:nth-child(1){ animation-delay:.05s } .stat-card:nth-child(1)::before { background: linear-gradient(90deg, #2563eb , #38bdf8); }
 .stat-card:nth-child(2){ animation-delay:.10s } .stat-card:nth-child(2)::before { background: linear-gradient(90deg, #ec4899, #f472b6); }
 .stat-card:nth-child(3){ animation-delay:.15s } .stat-card:nth-child(3)::before { background: linear-gradient(90deg, #16a34a, #22c55e); }
 .stat-card:nth-child(4){ animation-delay:.20s } .stat-card:nth-child(4)::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
-.stat-card:nth-child(5){ animation-delay:.25s } .stat-card:nth-child(5)::before { background: linear-gradient(90deg, #1d4ed8, #2563eb); }
+.stat-card:nth-child(5){ animation-delay:.25s } .stat-card:nth-child(5)::before { background: linear-gradient(90deg, #1d4ed8, #2563eb ); }
 
 .stat-icon-wrap {
     width: 46px; height: 46px; border-radius: 13px;
@@ -464,11 +464,11 @@ svg { display: block; flex-shrink: 0; }
 .stat-foot  { font-size: 11px; color: var(--text3); margin-top: 5px; }
 .stat-foot a { color: var(--green); font-weight: 600; }
 .stat-foot a:hover { text-decoration: underline; }
-.sv-indigo { background: linear-gradient(135deg, #2563eb, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.sv-indigo { background: linear-gradient(135deg, #2563eb , #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 .sv-pink   { background: linear-gradient(135deg, #ec4899, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 .sv-green  { background: linear-gradient(135deg, #16a34a, #22c55e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 .sv-yellow { background: linear-gradient(135deg, #f59e0b, #fbbf24); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-.sv-blue   { background: linear-gradient(135deg, #1d4ed8, #2563eb); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.sv-blue   { background: linear-gradient(135deg, #1d4ed8, #2563eb ); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 
 .analytics-row { display: grid; grid-template-columns: 1fr 280px; gap: 14px; margin-bottom: 22px; }
 .chart-card {
@@ -725,7 +725,7 @@ svg { display: block; flex-shrink: 0; }
 .activity-dot.d-green  { background: linear-gradient(135deg, #16a34a, #22c55e); }
 .activity-dot.d-yellow { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
 .activity-dot.d-red    { background: linear-gradient(135deg, #ef4444, #f87171); }
-.activity-dot.d-accent { background: linear-gradient(135deg, #2563eb, #38bdf8); }
+.activity-dot.d-accent { background: linear-gradient(135deg, #2563eb , #38bdf8); }
 .activity-dot .ad-letter { line-height: 1; }
 .activity-line {
     width: 2px; flex: 1; background: linear-gradient(to bottom, var(--border), transparent);

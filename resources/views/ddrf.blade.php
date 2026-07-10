@@ -34,7 +34,7 @@
     --transition:   0.25s cubic-bezier(0.4,0,0.2,1);
 
     /* Blue/Teal theme */
-    --p1: #2563eb;
+    --p1: #2563eb ;
     --p2: #0d9488;
     --p3: #bfdbfe;
     --p-glow: rgba(37,99,235,0.22);

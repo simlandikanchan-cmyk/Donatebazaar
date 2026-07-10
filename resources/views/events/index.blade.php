@@ -13,7 +13,7 @@
     --ink:#0f0d0a;
     --ink2:#3d3830;
     --ink3:#8c8478;
-    --accent:#2563eb;
+    --accent:#2563eb ;
     --accent2:#c8502a;
     --accent-lt:rgba(37,99,235,.08);
     --green-lt:rgba(26,122,82,.09);

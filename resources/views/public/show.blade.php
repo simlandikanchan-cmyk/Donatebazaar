@@ -678,7 +678,7 @@ button { font-family:var(--font); }
 .btn-donate-new { width:100%; display:flex; align-items:center; justify-content:center; gap:9px; padding:14px; border:none; border-radius:var(--radius); font-size:14.5px; font-weight:700; cursor:pointer; transition:all var(--transition); letter-spacing:.01em; font-family:var(--font); }
 .btn-once    { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; box-shadow:0 6px 22px rgba(99,102,241,.4); }
 .btn-once:hover    { opacity:.9; transform:translateY(-2px); box-shadow:0 10px 28px rgba(99,102,241,.5); }
-.btn-weekly  { background:linear-gradient(135deg,#2563eb,#3b82f6); color:#fff; box-shadow:0 6px 22px rgba(37,99,235,.35); }
+.btn-weekly  { background:linear-gradient(135deg,#2563eb ,#3b82f6); color:#fff; box-shadow:0 6px 22px rgba(37,99,235,.35); }
 .btn-weekly:hover  { opacity:.9; transform:translateY(-2px); }
 .btn-monthly { background:linear-gradient(135deg,var(--accent2),#7c3aed); color:#fff; box-shadow:0 6px 22px rgba(139,92,246,.35); }
 .btn-monthly:hover { opacity:.9; transform:translateY(-2px); }
@@ -1132,7 +1132,7 @@ button { font-family:var(--font); }
                 $whys = [
                     ['bg'=>'#fff7ed','color'=>'#ea580c','wi'=>'#ea580c','title'=>'Product Giving',    'desc'=>'Donate products and make your impact tangible.',               'svg'=>'<path d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/>'],
                     ['bg'=>'#f0fdf4','color'=>'#16a34a','wi'=>'#16a34a','title'=>'Verified & Trusted', 'desc'=>'100% verified charities via strict multi-step KYC process.',      'svg'=>'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/>'],
-                    ['bg'=>'#eff6ff','color'=>'#2563eb','wi'=>'#2563eb','title'=>'Guaranteed Updates','desc'=>'Regular photo and video updates sent directly to you.',            'svg'=>'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>'],
+                    ['bg'=>'#eff6ff','color'=>'#2563eb ','wi'=>'#2563eb ','title'=>'Guaranteed Updates','desc'=>'Regular photo and video updates sent directly to you.',            'svg'=>'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>'],
                     ['bg'=>'#faf5ff','color'=>'#7c3aed','wi'=>'#7c3aed','title'=>'Easy Setup',         'desc'=>'Launch a fundraiser in just a few minutes — no hassle.',          'svg'=>'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>'],
                     ['bg'=>'#fff1f2','color'=>'#dc2626','wi'=>'#dc2626','title'=>'Secure & Private',   'desc'=>'256-bit SSL encrypted payments, your data is never stored.',      'svg'=>'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>'],
                     ['bg'=>'#f0f9ff','color'=>'#0284c7','wi'=>'#0284c7','title'=>'24×7 Support',       'desc'=>'Our dedicated team is always here to help you succeed.',          'svg'=>'<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>'],

@@ -23,8 +23,8 @@
     --sidebar-bg:   #ffffff;
     --sidebar-text: #6b7080;
     --sidebar-act-bg: #f0f1fd;
-    --sidebar-act:  #2563eb;
-    --accent:       #2563eb;
+    --sidebar-act:  #2563eb ;
+    --accent:       #2563eb ;
     --accent2:      #0d9488;
     --accent-lt:    #eef0fd;
     --accent-glow:  rgba(79,70,229,0.15);
@@ -34,7 +34,7 @@
     --yellow-lt:    #fef3c7;
     --red:          #dc2626;
     --red-lt:       #fee2e2;
-    --blue:         #2563eb;
+    --blue:         #2563eb ;
     --blue-lt:      #dbeafe;
     --pink:         #db2777;
     --pink-lt:      #fce7f3;
@@ -220,7 +220,7 @@ body {
 .s-upgrade {
     margin: 12px 10px;
     padding: 14px;
-    background: linear-gradient(135deg, #2563eb, #0d9488);
+    background: linear-gradient(135deg, #2563eb , #0d9488);
     border-radius: var(--r);
     color: #fff;
 }
@@ -442,7 +442,7 @@ body {
 }
 .stat-icon-wrap svg { width: 18px; height: 18px; }
 .si-pink   { background: #fce7f3; color: #db2777; }
-.si-blue   { background: #dbeafe; color: #2563eb; }
+.si-blue   { background: #dbeafe; color: #2563eb ; }
 .si-orange { background: #ffedd5; color: #ea580c; }
 .si-teal   { background: #ccfbf1; color: #0d9488; }
 .stat-label { font-size: 11px; font-weight: 500; color: var(--text3); margin-bottom: 4px; }
@@ -1432,7 +1432,7 @@ body {
                     </div>
                     <div class="cat-list">
                         @php
-                            $catColors = ['#2563eb','#3b82f6','#16a34a','#9ca3af'];
+                            $catColors = ['#2563eb ','#3b82f6','#16a34a','#9ca3af'];
                             $catNames  = ['Community & Environment','Education & Empowerment','Health & Medical Aid','Others'];
                             $catPcts   = [34, 27, 23, 16];
                         @endphp
@@ -1472,7 +1472,7 @@ body {
                             <span class="sp-val">{{ $cntPending }}</span>
                         </div>
                         <div class="sp-row">
-                            <div class="sp-row-left"><div class="sp-dot" style="background:#2563eb"></div><span class="sp-label">Paused</span></div>
+                            <div class="sp-row-left"><div class="sp-dot" style="background:#2563eb "></div><span class="sp-label">Paused</span></div>
                             <span class="sp-val">{{ $cntPaused }}</span>
                         </div>
                         <div class="sp-row">
@@ -1808,7 +1808,7 @@ function renderCharts() {
         data: {
             labels: months,
             datasets: [
-                { label:'Campaigns', data:[3,5,4,8,6,10,9,14,11,16,13,{{ $totalCampaigns }}], borderColor:'#2563eb', backgroundColor:grad1, borderWidth:2, pointRadius:3, pointBackgroundColor:'#2563eb', tension:0.4, fill:true },
+                { label:'Campaigns', data:[3,5,4,8,6,10,9,14,11,16,13,{{ $totalCampaigns }}], borderColor:'#2563eb ', backgroundColor:grad1, borderWidth:2, pointRadius:3, pointBackgroundColor:'#2563eb ', tension:0.4, fill:true },
                 { label:'Approved',  data:[2,3,3,6,5,7,7,11,9,13,10,{{ $approvedCampaigns }}], borderColor:'#db2777', backgroundColor:grad2, borderWidth:2, pointRadius:3, pointBackgroundColor:'#db2777', tension:0.4, fill:true }
             ]
         },
@@ -1859,7 +1859,7 @@ function renderCharts() {
         type: 'doughnut',
         data: {
             labels: ['Community & Environment','Education & Empowerment','Health & Medical Aid','Others'],
-            datasets: [{ data:[34,27,23,16], backgroundColor:['#2563eb','#3b82f6','#16a34a','#9ca3af'], borderWidth:0, hoverOffset:4 }]
+            datasets: [{ data:[34,27,23,16], backgroundColor:['#2563eb ','#3b82f6','#16a34a','#9ca3af'], borderWidth:0, hoverOffset:4 }]
         },
         options: {
             responsive:false, cutout:'72%',

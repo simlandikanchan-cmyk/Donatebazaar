@@ -5,7 +5,7 @@
 :root {
     --db-font:          'Sora', 'Inter', system-ui, sans-serif;
     --db-font-mono:     'Fira Code', 'DM Mono', monospace;
-    --db-accent-from:   #2563eb;
+    --db-accent-from:   #2563eb ;
     --db-accent-to:     #0d9488;
     --db-accent-mid:    #1d4ed8;
     --db-text-primary:  #111827;
@@ -350,6 +350,163 @@
 @keyframes db-pulse {
     0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.40); }
     50%       { box-shadow: 0 0 0 4px rgba(239, 68, 68, 0); }
+}
+
+/* ─── Notification dropdown ──────────────────────────────────────── */
+.db-notif {
+    position: relative;
+}
+
+.db-dropdown.db-notif__panel {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    width: 340px;
+    max-width: calc(100vw - 24px);
+    padding: 0;
+    border-radius: var(--db-radius);
+    z-index: 60;
+}
+
+.db-notif__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    gap: 8px;
+}
+
+.db-notif__title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--db-text);
+}
+
+.db-notif__mark-all {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--db-accent-from);
+    padding: 2px 4px;
+    border-radius: var(--db-radius-sm);
+    transition: background var(--db-transition), color var(--db-transition);
+}
+
+.db-notif__mark-all:hover {
+    background: var(--db-hover-bg);
+    color: var(--db-accent-to);
+}
+
+.db-notif__divider {
+    height: 1px;
+    background: var(--db-border);
+    margin: 0;
+}
+
+.db-notif__list {
+    max-height: 320px;
+    overflow-y: auto;
+    padding: 4px;
+}
+
+.db-notif__empty {
+    text-align: center;
+    font-size: 0.82rem;
+    color: var(--db-text-muted);
+    padding: 24px 12px;
+    margin: 0;
+}
+
+.db-notif__item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: var(--db-radius-sm);
+    text-decoration: none;
+    color: var(--db-text);
+    position: relative;
+    transition: background var(--db-transition);
+}
+
+.db-notif__item:hover {
+    background: var(--db-hover-bg);
+}
+
+.db-notif__item.is-unread {
+    background: rgba(59, 111, 232, 0.06);
+}
+
+.db-notif__item.is-unread:hover {
+    background: rgba(59, 111, 232, 0.10);
+}
+
+.db-notif__icon {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--db-hover-bg);
+    color: var(--db-accent-from);
+    margin-top: 1px;
+}
+
+.db-notif__icon svg {
+    width: 15px;
+    height: 15px;
+}
+
+.db-notif__body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    flex: 1;
+}
+
+.db-notif__msg {
+    font-size: 0.8rem;
+    line-height: 1.35;
+    color: var(--db-text);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.db-notif__time {
+    font-size: 0.68rem;
+    color: var(--db-text-muted);
+}
+
+.db-notif__dot {
+    flex-shrink: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--db-accent-from);
+    margin-top: 7px;
+}
+
+.db-notif__view-all {
+    display: block;
+    text-align: center;
+    padding: 11px 14px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--db-accent-from);
+    text-decoration: none;
+    transition: background var(--db-transition), color var(--db-transition);
+}
+
+.db-notif__view-all:hover {
+    background: var(--db-hover-bg);
+    color: var(--db-accent-to);
 }
 
 /* ─── Profile trigger ────────────────────────────────────────────── */

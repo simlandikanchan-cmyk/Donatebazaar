@@ -175,9 +175,9 @@
 
 @php
   $curIcon=old('icon',$category->icon??'fa-heart');
-  $curColor=old('color',$category->color??'#2563eb');
+  $curColor=old('color',$category->color??'#2563eb ');
   $icons=['fa-heart'=>'Heart','fa-book'=>'Book','fa-paw'=>'Paw','fa-user'=>'Person','fa-hand-holding-heart'=>'Giving','fa-stethoscope'=>'Medical','fa-graduation-cap'=>'Education','fa-globe'=>'Global','fa-child'=>'Child','fa-hands-helping'=>'Helping','fa-tree'=>'Nature','fa-home'=>'Housing','fa-water'=>'Water','fa-fire'=>'Emergency','fa-church'=>'Religion','fa-bread-slice'=>'Food','fa-wheelchair'=>'Disability','fa-music'=>'Arts'];
-  $colors=['#2563eb'=>'Purple','#0d9488'=>'Violet','#ec4899'=>'Pink','#f04444'=>'Red','#f59e0b'=>'Amber','#05c48a'=>'Emerald','#3b82f6'=>'Blue','#06b6d4'=>'Cyan','#84cc16'=>'Lime','#f97316'=>'Orange','#64748b'=>'Slate','#0f172a'=>'Dark'];
+  $colors=['#2563eb '=>'Purple','#0d9488'=>'Violet','#ec4899'=>'Pink','#f04444'=>'Red','#f59e0b'=>'Amber','#05c48a'=>'Emerald','#3b82f6'=>'Blue','#06b6d4'=>'Cyan','#84cc16'=>'Lime','#f97316'=>'Orange','#64748b'=>'Slate','#0f172a'=>'Dark'];
 @endphp
 
 <div class="page-grid">
@@ -260,7 +260,7 @@
         <div class="custom-color-row" style="margin-top:16px;">
           <label style="font-size:11.5px;font-weight:600;color:var(--text2);font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;">Custom hex</label>
           <input type="color" id="colorPicker" value="{{ $curColor }}" class="color-picker-input" oninput="selectCustomColor(this.value)">
-          <input type="text" id="hexInput" class="f-input" value="{{ $curColor }}" style="font-family:var(--mono);font-size:12px;max-width:110px;" placeholder="#2563eb" oninput="syncHexInput(this.value)">
+          <input type="text" id="hexInput" class="f-input" value="{{ $curColor }}" style="font-family:var(--mono);font-size:12px;max-width:110px;" placeholder="#2563eb " oninput="syncHexInput(this.value)">
         </div>
       </div>
     </div>
@@ -346,7 +346,7 @@
 
 var state={
   icon:'{{ old("icon",$category->icon??'fa-heart') }}',
-  color:'{{ old("color",$category->color??'#2563eb') }}',
+  color:'{{ old("color",$category->color??'#2563eb ') }}',
   name:'{{ old("name",$category->name) }}',
   active:{{ old('is_active',$category->is_active)?'true':'false' }}
 };

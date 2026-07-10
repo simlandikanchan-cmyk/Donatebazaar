@@ -822,9 +822,9 @@ window.renderChart = function(){
             datasets: [{
                 label: 'Amount Raised (₹)',
                 data: values,
-                borderColor: '#2563eb', backgroundColor: grad,
+                borderColor: '#2563eb ', backgroundColor: grad,
                 borderWidth: 2.5, fill: true, tension: .45,
-                pointBackgroundColor: '#2563eb',
+                pointBackgroundColor: '#2563eb ',
                 pointBorderColor: tipBg, pointBorderWidth: 2,
                 pointRadius: 4, pointHoverRadius: 6,
             }]
@@ -872,7 +872,7 @@ var campChart;
                 {
                     label: 'Raised (₹)',
                     data: campaigns.map(function(c){ return c.raised; }),
-                    backgroundColor: '#2563eb',
+                    backgroundColor: '#2563eb ',
                     borderRadius: 4,
                     barPercentage: .65,
                 },

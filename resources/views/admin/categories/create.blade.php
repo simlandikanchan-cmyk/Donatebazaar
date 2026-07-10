@@ -195,18 +195,18 @@
         <span class="card-head-title">Color</span>
       </div>
       <div class="card-body">
-        <input type="hidden" name="color" id="colorInput" value="{{ old('color','#2563eb') }}">
+        <input type="hidden" name="color" id="colorInput" value="{{ old('color','#2563eb ') }}">
         <p class="f-hint" style="margin-bottom:14px;">Used for the category icon background</p>
-        @php $colors=['#2563eb'=>'Purple','#0d9488'=>'Violet','#ec4899'=>'Pink','#f04444'=>'Red','#f59e0b'=>'Amber','#05c48a'=>'Emerald','#3b82f6'=>'Blue','#06b6d4'=>'Cyan','#84cc16'=>'Lime','#f97316'=>'Orange','#64748b'=>'Slate','#0f172a'=>'Dark']; @endphp
+        @php $colors=['#2563eb '=>'Purple','#0d9488'=>'Violet','#ec4899'=>'Pink','#f04444'=>'Red','#f59e0b'=>'Amber','#05c48a'=>'Emerald','#3b82f6'=>'Blue','#06b6d4'=>'Cyan','#84cc16'=>'Lime','#f97316'=>'Orange','#64748b'=>'Slate','#0f172a'=>'Dark']; @endphp
         <div class="color-grid">
           @foreach($colors as $hex=>$label)
-          <div class="c-swatch {{ old('color','#2563eb')===$hex?'selected':'' }}" style="background:{{ $hex }};" onclick="selectColor(this,'{{ $hex }}')" title="{{ $label }}"></div>
+          <div class="c-swatch {{ old('color','#2563eb ')===$hex?'selected':'' }}" style="background:{{ $hex }};" onclick="selectColor(this,'{{ $hex }}')" title="{{ $label }}"></div>
           @endforeach
         </div>
         <div class="custom-color-row" style="margin-top:16px;">
           <label style="font-size:11.5px;font-weight:600;color:var(--text2);font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;">Custom hex</label>
-          <input type="color" id="colorPicker" value="{{ old('color','#2563eb') }}" class="color-picker-input" oninput="selectCustomColor(this.value)">
-          <input type="text" id="hexInput" class="f-input" value="{{ old('color','#2563eb') }}" style="font-family:var(--mono);font-size:12px;max-width:110px;" placeholder="#2563eb" oninput="syncHexInput(this.value)">
+          <input type="color" id="colorPicker" value="{{ old('color','#2563eb ') }}" class="color-picker-input" oninput="selectCustomColor(this.value)">
+          <input type="text" id="hexInput" class="f-input" value="{{ old('color','#2563eb ') }}" style="font-family:var(--mono);font-size:12px;max-width:110px;" placeholder="#2563eb " oninput="syncHexInput(this.value)">
         </div>
       </div>
     </div>
@@ -225,7 +225,7 @@
         <span class="card-head-title">Live Preview</span>
       </div>
       <div class="preview-live">
-        <div class="prev-icon-box" id="previewBox" style="background:#2563eb;"><i class="fa fa-heart" id="previewIcon"></i></div>
+        <div class="prev-icon-box" id="previewBox" style="background:#2563eb ;"><i class="fa fa-heart" id="previewIcon"></i></div>
         <div class="prev-name empty" id="previewName">Category name…</div>
         <div style="margin-top:8px;">
           <span class="prev-badge pb-active" id="previewBadge"><span style="width:5px;height:5px;border-radius:50%;background:currentColor;display:inline-block;"></span> Active</span>
@@ -238,7 +238,7 @@
         </div>
         <div class="prev-row">
           <span class="prev-row-lbl">Color</span>
-          <span class="prev-row-val"><span class="prev-color-dot" id="prevColorDot" style="background:#2563eb;"></span><span id="prevColorHex" style="font-family:var(--mono);font-size:11.5px;">#2563eb</span></span>
+          <span class="prev-row-val"><span class="prev-color-dot" id="prevColorDot" style="background:#2563eb ;"></span><span id="prevColorHex" style="font-family:var(--mono);font-size:11.5px;">#2563eb </span></span>
         </div>
         <div class="prev-row">
           <span class="prev-row-lbl">Status</span>
@@ -248,7 +248,7 @@
       <div class="pub-card-wrap">
         <div class="pub-card-lbl">Public site card</div>
         <div class="pub-card-inner">
-          <div class="pub-icon" id="pubIconBox" style="background:#2563eb;"><i class="fa fa-heart" id="pubIcon"></i></div>
+          <div class="pub-icon" id="pubIconBox" style="background:#2563eb ;"><i class="fa fa-heart" id="pubIcon"></i></div>
           <div>
             <div style="font-size:13px;font-weight:600;color:var(--text);" id="pubName">Category name</div>
             <div style="font-size:11.5px;color:var(--text3);margin-top:2px;">0 campaigns</div>
@@ -267,7 +267,7 @@
 (function(){
 'use strict';
 
-var state={icon:'{{ old("icon","fa-heart") }}',color:'{{ old("color","#2563eb") }}',name:'',active:true};
+var state={icon:'{{ old("icon","fa-heart") }}',color:'{{ old("color","#2563eb ") }}',name:'',active:true};
 
 function updatePreview(){
   var c=state.color,ic=state.icon,nm=state.name||'';

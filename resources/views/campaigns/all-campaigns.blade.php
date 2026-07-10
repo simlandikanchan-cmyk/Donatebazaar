@@ -66,7 +66,7 @@ a    { text-decoration: none; color: inherit; }
 @keyframes pulse-live { 0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(16,185,129,.5)} 50%{opacity:.8;box-shadow:0 0 0 6px rgba(16,185,129,0)} }
 
 .hero-title { font-family: var(--font-display); font-size: clamp(2.8rem,5.5vw,4.2rem); font-weight: 500; line-height: 1.05; color: #fff; margin-bottom: 20px; max-width: 680px; }
-.hero-title em { font-style: normal; color: #a5b4fc; }
+.hero-title em { font-style: normal; color: #2563eb ; }
 .hero-desc { font-size: clamp(15px,1.8vw,17px); color: rgba(255,255,255,.65); font-weight: 300; line-height: 1.8; max-width: 520px; margin-bottom: 36px; }
 
 /* Search bar in hero */
@@ -561,7 +561,7 @@ a    { text-decoration: none; color: inherit; }
 .cta-bg-img img { width: 100%; height: 100%; object-fit: cover; opacity: .15; }
 .cta-inner { position: relative; z-index: 1; max-width: 600px; margin: 0 auto; padding: 0 24px; }
 .cta-title { font-family: var(--font-display); font-size: clamp(2rem,4vw,3rem); font-weight: 700; color: #fff; margin-bottom: 14px; line-height: 1.1; }
-.cta-title em { font-style: normal; color: #a5b4fc; }
+.cta-title em { font-style: normal; color: #2563eb ; }
 .cta-sub { font-size: 15px; color: rgba(255,255,255,.52); font-weight: 300; line-height: 1.8; max-width: 460px; margin: 0 auto 32px; }
 .cta-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
@@ -890,7 +890,7 @@ html:not(.js-enabled) .reveal { opacity: 1; transform: none; }
                     <div class="filter-card-title">Platform Stats</div>
                     <div class="sidebar-stat">
                         <div class="sidebar-stat-icon" style="background:rgba(37,99,235,.1)">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb " stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
                         </div>
                         <div>
                             <div class="sidebar-stat-num">2,000+</div>
@@ -963,7 +963,7 @@ html:not(.js-enabled) .reveal { opacity: 1; transform: none; }
                 <div class="filter-card" style="background:linear-gradient(135deg,rgba(37,99,235,.06),rgba(13,148,136,.06));border-color:rgba(37,99,235,.18)">
                     <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
                         <div style="width:36px;height:36px;border-radius:10px;background:rgba(37,99,235,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb " stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                         </div>
                         <div style="font-size:13px;font-weight:700;color:var(--text)">Donor Protection</div>
                     </div>
@@ -1158,7 +1158,7 @@ html:not(.js-enabled) .reveal { opacity: 1; transform: none; }
 <section class="cta-section">
     <div class="cta-bg-img"><img src="{{ asset('images/banner2.jpeg') }}" alt=""></div>
     <div class="cta-inner">
-        <div class="eyebrow reveal" style="justify-content:center;color:#a5b4fc">Want to raise funds?</div>
+        <div class="eyebrow reveal" style="justify-content:center;color:#2563eb ">Want to raise funds?</div>
         <h2 class="cta-title reveal d1">Start Your Own <em>Campaign</em></h2>
         <p class="cta-sub reveal d2">Medical emergency, education, disaster relief — whatever the cause, our team verifies and supports your fundraiser from day one.</p>
         <div class="cta-btns reveal d3">

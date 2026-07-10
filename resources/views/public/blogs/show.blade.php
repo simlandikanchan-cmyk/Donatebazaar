@@ -305,7 +305,7 @@
                                         style="
                                             padding:11px 18px;
                                             font-family:'DM Sans', sans-serif;
-                                            background: linear-gradient(135deg, #2563eb, #0d9488);
+                                            background: linear-gradient(135deg, #2563eb , #0d9488);
                                             box-shadow: 0 4px 14px rgba(37,99,235,.4);
                                         ">
                                         Post Comment
@@ -493,7 +493,7 @@
                        style="
                             padding:11px 18px;
                             font-family:'DM Sans', sans-serif;
-                            background: linear-gradient(135deg, #2563eb, #0d9488);
+                            background: linear-gradient(135deg, #2563eb , #0d9488);
                             box-shadow: 0 4px 14px rgba(37,99,235,.4);
                        ">
                        Start Writing

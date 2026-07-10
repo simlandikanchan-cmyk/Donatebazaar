@@ -9,7 +9,7 @@
 
     :root {
         --purple-deep:   #0f766e;
-        --purple-main:   #2563eb;
+        --purple-main:   #2563eb ;
         --purple-mid:    #0d9488;
         --purple-light:  #60a5fa;
         --purple-pale:   #dbeafe;

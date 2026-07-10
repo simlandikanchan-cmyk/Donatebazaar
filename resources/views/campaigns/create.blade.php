@@ -8,7 +8,7 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 
 :root{
-  --purple-deep:#0f766e;--purple-main:#2563eb;--purple-mid:#0d9488;
+  --purple-deep:#0f766e;--purple-main:#2563eb ;--purple-mid:#0d9488;
   --purple-light:#60a5fa;--purple-pale:#dbeafe;--purple-mist:#eff6ff;
   --indigo-main:#0d9488;--indigo-light:#99f6e4;--indigo-pale:#ccfbf1;
   --white:#ffffff;--ink:#1e1b4b;--ink-mid:#3730a3;--ink-soft:#6d6aaf;
@@ -276,10 +276,10 @@ textarea.field-input{resize:vertical;min-height:100px;line-height:1.6;}
 .btn-close-popup:hover{border-color:var(--purple-light);color:var(--purple-main);background:var(--purple-mist);}
 .success-confetti-row{display:flex;justify-content:center;gap:6px;margin-bottom:28px;}
 .confetti-dot{width:8px;height:8px;border-radius:50%;animation:confettiBounce .6s ease infinite alternate;}
-.confetti-dot:nth-child(1){background:#2563eb;animation-delay:0s;}
+.confetti-dot:nth-child(1){background:#2563eb ;animation-delay:0s;}
 .confetti-dot:nth-child(2){background:#0d9488;animation-delay:.1s;}
 .confetti-dot:nth-child(3){background:#99f6e4;animation-delay:.2s;}
-.confetti-dot:nth-child(4){background:#2563eb;animation-delay:.3s;}
+.confetti-dot:nth-child(4){background:#2563eb ;animation-delay:.3s;}
 .confetti-dot:nth-child(5){background:#0d9488;animation-delay:.4s;}
 @keyframes confettiBounce{from{transform:translateY(0)}to{transform:translateY(-8px)}}
 </style>

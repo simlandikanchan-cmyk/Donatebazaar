@@ -315,7 +315,7 @@ tbody tr:hover .cat-icon-box{transform:scale(1.08) rotate(-3deg);}
             <td><span class="serial">{{ str_pad($loop->iteration,2,'0',STR_PAD_LEFT) }}</span></td>
             <td>
               <div class="cat-cell">
-                <div class="cat-icon-box" style="background:{{ $category->color??'#2563eb' }};"><i class="fa {{ $category->icon??'fa-tag' }}"></i></div>
+                <div class="cat-icon-box" style="background:{{ $category->color??'#2563eb ' }};"><i class="fa {{ $category->icon??'fa-tag' }}"></i></div>
                 <div>
                   <div class="cat-name-text">{{ $category->name }}</div>
                   <div class="cat-name-sub">Added {{ $category->created_at->format('M d, Y') }}</div>
@@ -385,9 +385,9 @@ tbody tr:hover .cat-icon-box{transform:scale(1.08) rotate(-3deg);}
     @if(!$categories->isEmpty())
     <div class="cat-grid" id="gridBody">
       @foreach($categories as $category)
-      <div class="cat-grid-item" data-id="{{ $category->id }}" style="--item-color:{{ $category->color??'#2563eb' }};animation-delay:{{ $loop->index*0.04 }}s;" data-name="{{ strtolower($category->name) }}" data-status="{{ $category->is_active?'active':'inactive' }}" data-campaigns="{{ $category->campaigns_count??0 }}" data-delete-url="{{ route('admin.categories.destroy',$category->id) }}" data-toggle-url="{{ route('admin.categories.toggle',$category->id) }}">
+      <div class="cat-grid-item" data-id="{{ $category->id }}" style="--item-color:{{ $category->color??'#2563eb ' }};animation-delay:{{ $loop->index*0.04 }}s;" data-name="{{ strtolower($category->name) }}" data-status="{{ $category->is_active?'active':'inactive' }}" data-campaigns="{{ $category->campaigns_count??0 }}" data-delete-url="{{ route('admin.categories.destroy',$category->id) }}" data-toggle-url="{{ route('admin.categories.toggle',$category->id) }}">
         <input type="checkbox" class="chk row-check grid-check" onchange="toggleRowSelect(this)" aria-label="Select {{ $category->name }}">
-        <div class="grid-icon-box" style="background:{{ $category->color??'#2563eb' }};"><i class="fa {{ $category->icon??'fa-tag' }}" style="color:#fff;"></i></div>
+        <div class="grid-icon-box" style="background:{{ $category->color??'#2563eb ' }};"><i class="fa {{ $category->icon??'fa-tag' }}" style="color:#fff;"></i></div>
         <div class="grid-cat-name">{{ $category->name }}</div>
         <div class="grid-cat-slug">{{ $category->slug }}</div>
         <label class="cat-toggle" style="margin-bottom:12px;" title="Toggle active status">

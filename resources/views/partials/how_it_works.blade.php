@@ -1,7 +1,7 @@
 <section class="how-section">
     <div class="container" style="position:relative;z-index:1">
         <div class="section-header">
-            <div class="eyebrow reveal" style="color:#a5b4fc;justify-content:center">Simple, Transparent, Secure</div>
+            <div class="eyebrow reveal" style="color:#2563eb ;justify-content:center">Simple, Transparent, Secure</div>
             <h2 class="section-title reveal d1" style="color:#fff">How It Works</h2>
             <p class="section-sub reveal d2" style="color:rgba(255,255,255,.45);margin:0 auto">Giving should feel good — not complicated. Here is how DonateBazaar makes it effortless in three steps.</p>
         </div>

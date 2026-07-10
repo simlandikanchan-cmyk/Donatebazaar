@@ -18,7 +18,7 @@
                     <span class="testi-badge badge-blue">Contributed {{ $i+2 }} Times</span>
                     <p class="testi-text">Donating here makes me happy. Helping others is the greatest joy I have experienced on this platform.</p>
                     <div class="testi-author">
-                        <div class="testi-avatar-initials" style="background:{{ ['#6366f1','#10b981','#f59e0b','#ef4444','#8b5cf6','#ec4899','#14b8a6','#f97316','#06b6d4','#84cc16'][($i-1)%10] }}">D</div>
+                        <div class="testi-avatar-initials" style="background:{{ ['#6366f1','#10b981','#f59e0b','#ef4444','#2563eb ','#ec4899','#14b8a6','#f97316','#06b6d4','#84cc16'][($i-1)%10] }}">D</div>
                         <div><div class="testi-name">Donor {{ $i }}</div><div class="testi-role">Supporter</div></div>
                     </div>
                 </div>
@@ -34,7 +34,7 @@
                     <span class="testi-badge badge-green">NGO Partner</span>
                     <p class="testi-text">This platform helps NGOs reach donors easily. The verification process builds genuine trust with supporters.</p>
                     <div class="testi-author">
-                        <div class="testi-avatar-initials" style="background:{{ ['#6366f1','#10b981','#f59e0b','#ef4444','#8b5cf6','#ec4899','#14b8a6','#f97316','#06b6d4','#84cc16'][($i-1)%10] }}">N</div>
+                        <div class="testi-avatar-initials" style="background:{{ ['#6366f1','#10b981','#f59e0b','#ef4444','#2563eb ','#ec4899','#14b8a6','#f97316','#06b6d4','#84cc16'][($i-1)%10] }}">N</div>
                         <div><div class="testi-name">NGO {{ $i }}</div><div class="testi-role">Organization</div></div>
                     </div>
                 </div>
@@ -50,7 +50,7 @@
                     <span class="testi-badge badge-purple">Celebrity Supporter</span>
                     <p class="testi-text">Giving back to society is important. This platform makes it easy to contribute meaningfully.</p>
                     <div class="testi-author">
-                        <div class="testi-avatar-initials" style="background:{{ ['#6366f1','#10b981','#f59e0b','#ef4444','#8b5cf6','#ec4899','#14b8a6','#f97316','#06b6d4','#84cc16'][($i-1)%10] }}">C</div>
+                        <div class="testi-avatar-initials" style="background:{{ ['#6366f1','#10b981','#f59e0b','#ef4444','#2563eb ','#ec4899','#14b8a6','#f97316','#06b6d4','#84cc16'][($i-1)%10] }}">C</div>
                         <div><div class="testi-name">Celebrity {{ $i }}</div><div class="testi-role">Influencer</div></div>
                     </div>
                 </div>

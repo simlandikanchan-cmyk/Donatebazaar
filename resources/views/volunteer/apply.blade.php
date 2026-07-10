@@ -7,7 +7,7 @@
 
 :root{
   --purple-deep:#0f766e;
-  --purple-main:#2563eb;
+  --purple-main:#2563eb ;
   --purple-soft:#dbeafe;
   --ink:#1f2233;
   --muted:#6b7188;
