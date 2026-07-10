@@ -6,14 +6,15 @@
 @section('content')
 
 <style>
-/* ── FONTS ── */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
 
 :root {
     --cream:#faf8f4;
     --ink:#0f0d0a;
     --ink2:#3d3830;
     --ink3:#8c8478;
+    --accent:#2563eb;
+    --accent2:#c8502a;
     --accent-lt:rgba(37,99,235,.08);
     --green-lt:rgba(26,122,82,.09);
     --gold:#b8963e;
@@ -76,7 +77,7 @@
     50%{opacity:.5;transform:scale(1.4);}
 }
 .ev-hero h1 {
-    font-family:'DM MONO',Monospace;
+    font-family:'DM Mono',monospace;
     font-size:clamp(2.4rem,5vw,4rem);
     font-weight:900;
     color:#fff;
@@ -107,7 +108,7 @@
     gap:3px;
 }
 .ev-stat-num {
-    font-family:;
+    font-family:'DM Sans',sans-serif;
     font-size:2rem;
     font-weight:800;
     color:#fff;
@@ -133,15 +134,104 @@
     padding:0 24px;
 }
 
+/* ── TOOLBAR (search + sort) ── */
+.ev-toolbar {
+    display:flex;
+    gap:12px;
+    align-items:center;
+    padding:24px 0 4px;
+    flex-wrap:wrap;
+}
+.ev-search {
+    position:relative;
+    flex:1;
+    min-width:220px;
+}
+.ev-search svg {
+    position:absolute;
+    left:14px;
+    top:50%;
+    transform:translateY(-50%);
+    width:16px;height:16px;
+    color:var(--ink3);
+    pointer-events:none;
+}
+.ev-search input {
+    width:100%;
+    padding:12px 38px 12px 42px;
+    border-radius:100px;
+    border:1.5px solid var(--border2);
+    background:var(--surface);
+    font-family:'DM Sans',sans-serif;
+    font-size:14px;
+    color:var(--ink);
+    outline:none;
+    transition:all var(--ease);
+    box-shadow:var(--sh);
+}
+.ev-search input::placeholder{color:var(--ink3);}
+.ev-search input:focus {
+    border-color:var(--accent);
+    box-shadow:0 0 0 4px var(--accent-lt);
+}
+.ev-search-clear {
+    position:absolute;
+    right:10px;
+    top:50%;
+    transform:translateY(-50%);
+    width:24px;height:24px;
+    border-radius:50%;
+    border:none;
+    background:var(--surface2);
+    color:var(--ink2);
+    font-size:16px;
+    line-height:1;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:all var(--ease);
+}
+.ev-search-clear:hover{background:var(--border2);color:var(--ink);}
+
+.ev-sort {
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:var(--surface);
+    border:1.5px solid var(--border2);
+    border-radius:100px;
+    padding:6px 14px;
+    box-shadow:var(--sh);
+}
+.ev-sort-label {
+    font-family:'DM Mono',monospace;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.1em;
+    color:var(--ink3);
+}
+.ev-sort select {
+    border:none;
+    background:transparent;
+    font-family:'DM Sans',sans-serif;
+    font-size:13px;
+    font-weight:500;
+    color:var(--ink);
+    outline:none;
+    cursor:pointer;
+    padding-right:4px;
+}
+
 /* ── CATEGORY FILTER ── */
 .ev-filter-wrap {
-    padding:28px 0 32px;
+    padding:20px 0 24px;
     position:sticky;
     top:0;
     z-index:100;
     background:var(--cream);
     border-bottom:1px solid var(--border);
-    margin-bottom:40px;
+    margin-bottom:12px;
 }
 .ev-filter-scroll {
     display:flex;
@@ -193,15 +283,24 @@
     color:var(--ink3);
 }
 
+.ev-result-count {
+    font-family:'DM Mono',monospace;
+    font-size:11px;
+    color:var(--ink3);
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    padding:8px 2px 0;
+}
+
 /* ── SECTION HEADING ── */
 .ev-section-head {
     display:flex;
     align-items:center;
     gap:16px;
-    margin-bottom:24px;
+    margin:32px 0 24px;
 }
 .ev-section-title {
-    font-family:;
+    font-family:'Playfair Display',serif;
     font-size:1.5rem;
     font-weight:800;
     color:var(--ink);
@@ -223,7 +322,7 @@
     display:grid;
     grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
     gap:24px;
-    margin-bottom:56px;
+    margin-bottom:24px;
 }
 
 /* ── CARD ── */
@@ -233,12 +332,14 @@
     border-radius:var(--r);
     overflow:hidden;
     box-shadow:var(--sh);
-    transition:all var(--ease);
+    transition:transform var(--ease), box-shadow var(--ease), border-color var(--ease), opacity .3s ease;
     display:flex;
     flex-direction:column;
     text-decoration:none;
     color:inherit;
     animation:cardIn .4s ease both;
+    cursor:pointer;
+    outline:none;
 }
 @keyframes cardIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 .ev-card:hover {
@@ -246,6 +347,12 @@
     transform:translateY(-4px);
     border-color:rgba(15,13,10,.16);
 }
+.ev-card:focus-visible {
+    border-color:var(--accent);
+    box-shadow:0 0 0 4px var(--accent-lt), var(--sh-hover);
+}
+.ev-card--hidden{display:none;}
+.ev-section--empty{display:none;}
 
 /* cover */
 .ev-card-cover {
@@ -283,22 +390,28 @@
     border-radius:10px;
     padding:8px 12px;
     text-align:center;
-    min-width:52px;
+    min-width:54px;
     box-shadow:0 4px 14px rgba(0,0,0,.25);
 }
 .ev-date-day {
-    font-family:;
-    font-size:1.4rem;
+    font-family:'Playfair Display',serif;
+    font-size:1.5rem;
     font-weight:900;
     line-height:1;
 }
 .ev-date-mon {
     font-family:'DM Mono',monospace;
-    font-size:9px;
+    font-size:10px;
     text-transform:uppercase;
-    letter-spacing:.1em;
-    opacity:.65;
-    margin-top:2px;
+    letter-spacing:.12em;
+    opacity:.85;
+    margin-top:3px;
+}
+.ev-date-yr {
+    font-family:'DM Mono',monospace;
+    font-size:9px;
+    opacity:.6;
+    margin-top:1px;
 }
 
 /* status badge */
@@ -332,7 +445,7 @@
     margin-bottom:10px;
 }
 .ev-card-title {
-    font-family:;
+    font-family:'DM Sans',sans-serif;
     font-size:1.1rem;
     font-weight:800;
     color:var(--ink);
@@ -353,10 +466,17 @@
     font-size:12px;
     color:var(--ink3);
     font-family:'DM Sans',sans-serif;
+    min-width:0;
 }
 .ev-card-meta-item svg {
     width:13px;height:13px;
     flex-shrink:0;
+}
+.ev-card-meta-item .ev-loc {
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    max-width:160px;
 }
 
 /* goal bar */
@@ -434,26 +554,27 @@
     pointer-events:none;
 }
 
-/* ── EMPTY STATE ── */
-.ev-empty {
+/* ── EMPTY / NO RESULTS ── */
+.ev-empty, .ev-no-results {
     grid-column:1/-1;
     text-align:center;
     padding:60px 20px;
     color:var(--ink3);
 }
-.ev-empty svg {
+.ev-empty svg, .ev-no-results svg {
     width:48px;height:48px;
     opacity:.25;
     margin:0 auto 16px;
     display:block;
 }
 .ev-empty-title {
-    font-family:;
+    font-family:'Playfair Display',serif;
     font-size:1.2rem;
     color:var(--ink2);
     margin-bottom:6px;
 }
 .ev-empty-sub { font-size:13px; }
+.ev-no-results .ev-reg-btn { display:inline-flex; margin-top:18px; }
 
 /* ── HIDDEN CLASS for JS filter ── */
 .ev-category-section.hidden { display:none; }
@@ -462,6 +583,8 @@
     .ev-hero{padding:56px 0 40px;}
     .ev-grid{grid-template-columns:1fr;}
     .ev-hero-stats{gap:20px;}
+    .ev-toolbar{flex-direction:column;align-items:stretch;}
+    .ev-sort{justify-content:space-between;}
 }
 </style>
 
@@ -497,6 +620,25 @@
 <div class="ev-body">
     <div class="ev-container">
 
+        {{-- ── TOOLBAR: SEARCH + SORT ── --}}
+        <div class="ev-toolbar">
+            <div class="ev-search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="7"/>
+                    <path stroke-linecap="round" d="M21 21l-4.3-4.3"/>
+                </svg>
+                <input type="search" id="evSearch" placeholder="Search events or locations…" aria-label="Search events">
+                <button type="button" id="evClear" class="ev-search-clear" aria-label="Clear search" hidden>&times;</button>
+            </div>
+            <div class="ev-sort">
+                <label for="evSort" class="ev-sort-label">Sort</label>
+                <select id="evSort" aria-label="Sort events">
+                    <option value="date-asc">Soonest first</option>
+                    <option value="date-desc">Latest first</option>
+                </select>
+            </div>
+        </div>
+
         {{-- ── FILTER TABS ── --}}
         <div class="ev-filter-wrap">
             <div class="ev-filter-scroll">
@@ -512,6 +654,9 @@
                     </button>
                     @endif
                 @endforeach
+            </div>
+            <div class="ev-result-count" aria-live="polite">
+                <span id="evCount"></span>
             </div>
         </div>
 
@@ -538,7 +683,16 @@
                             : 0;
                         $canRegister = $event->isActive() && !$event->hasEnded() && !$event->isFull();
                     @endphp
-                    <div class="ev-card" style="animation-delay:{{ $loop->index * 0.06 }}s;">
+                    <div class="ev-card"
+                         data-url="{{ route('events.show', $event->id) }}"
+                         data-title="{{ strtolower($event->title) }}"
+                         data-location="{{ strtolower($event->location ?? '') }}"
+                         data-date="{{ $event->event_date?->format('Y-m-d') ?? '' }}"
+                         data-time="{{ $event->start_time ?? '' }}"
+                         tabindex="0"
+                         role="link"
+                         aria-label="View event: {{ $event->title }}"
+                         style="animation-delay:{{ $loop->index * 0.06 }}s;">
 
                         {{-- Cover --}}
                         <div class="ev-card-cover">
@@ -555,7 +709,8 @@
                             {{-- Date badge --}}
                             <div class="ev-date-badge">
                                 <div class="ev-date-day">{{ $event->event_date?->format('d') ?? '—' }}</div>
-                                <div class="ev-date-mon">{{ $event->event_date?->format('M Y') ?? '' }}</div>
+                                <div class="ev-date-mon">{{ $event->event_date?->format('M') ?? '' }}</div>
+                                <div class="ev-date-yr">{{ $event->event_date?->format('Y') ?? '' }}</div>
                             </div>
 
                             {{-- Status badge --}}
@@ -582,6 +737,16 @@
                                     @if($event->end_time)
                                         – {{ \Carbon\Carbon::parse($event->end_time)->format('g:i A') }}
                                     @endif
+                                </div>
+                                @endif
+
+                                @if($event->location)
+                                <div class="ev-card-meta-item" title="{{ e($event->location) }}">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    </svg>
+                                    <span class="ev-loc">{{ $event->location }}</span>
                                 </div>
                                 @endif
 
@@ -668,27 +833,111 @@
             </div>
         @endforelse
 
+        {{-- ── NO SEARCH RESULTS (client-side) ── --}}
+        <div class="ev-no-results" id="evNoResults" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="11" cy="11" r="7"/>
+                <path stroke-linecap="round" d="M21 21l-4.3-4.3"/>
+            </svg>
+            <div class="ev-empty-title">No matching events</div>
+            <div class="ev-empty-sub">Try a different search term or category.</div>
+            <button type="button" class="ev-reg-btn" onclick="resetFilters()">Clear filters</button>
+        </div>
+
     </div>
 </div>
 
 <script>
-function filterCat(catId, btn) {
-    // Update active button
-    document.querySelectorAll('.ev-filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+(function () {
+    const searchInput = document.getElementById('evSearch');
+    const clearBtn    = document.getElementById('evClear');
+    const sortSel     = document.getElementById('evSort');
+    const countEl     = document.getElementById('evCount');
+    const noResults   = document.getElementById('evNoResults');
+    let activeCategory = 'all';
 
-    // Show/hide sections
-    document.querySelectorAll('.ev-category-section').forEach(section => {
-        if (catId === 'all' || section.dataset.cat === catId) {
+    function sortKey(el) {
+        return (el.dataset.date || '0000-00-00') + ' ' + (el.dataset.time || '00:00');
+    }
+
+    function applyFilters() {
+        const term = (searchInput.value || '').trim().toLowerCase();
+        let total = 0;
+
+        document.querySelectorAll('.ev-category-section').forEach(section => {
+            if (activeCategory !== 'all' && section.dataset.cat !== activeCategory) {
+                section.classList.add('hidden');
+                return;
+            }
             section.classList.remove('hidden');
-        } else {
-            section.classList.add('hidden');
-        }
+
+            const grid  = section.querySelector('.ev-grid');
+            const cards = Array.from(grid.querySelectorAll('.ev-card'));
+            const dir   = sortSel.value;
+
+            cards.sort((a, b) => {
+                const cmp = sortKey(a).localeCompare(sortKey(b));
+                return dir === 'date-desc' ? -cmp : cmp;
+            });
+            cards.forEach(c => grid.appendChild(c));
+
+            let visible = 0;
+            cards.forEach(card => {
+                const hay = (card.dataset.title + ' ' + card.dataset.location).toLowerCase();
+                const match = !term || hay.includes(term);
+                card.classList.toggle('ev-card--hidden', !match);
+                if (match) visible++;
+            });
+
+            section.classList.toggle('ev-section--empty', visible === 0);
+            total += visible;
+        });
+
+        countEl.textContent = total + (total === 1 ? ' event' : ' events');
+        noResults.hidden = total !== 0;
+        clearBtn.hidden = term === '';
+    }
+
+    window.filterCat = function (catId, btn) {
+        document.querySelectorAll('.ev-filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeCategory = catId;
+        applyFilters();
+    };
+
+    window.resetFilters = function () {
+        searchInput.value = '';
+        activeCategory = 'all';
+        sortSel.value = 'date-asc';
+        document.querySelectorAll('.ev-filter-btn').forEach(b =>
+            b.classList.toggle('active', b.dataset.cat === 'all'));
+        applyFilters();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    if (searchInput) searchInput.addEventListener('input', applyFilters);
+    if (sortSel)     sortSel.addEventListener('change', applyFilters);
+    if (clearBtn)    clearBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        applyFilters();
+        searchInput.focus();
     });
 
-    // Scroll to top of content
-    document.querySelector('.ev-filter-wrap').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}
+    document.querySelectorAll('.ev-card').forEach(card => {
+        card.addEventListener('click', e => {
+            if (e.target.closest('a, button, select, input')) return;
+            window.location.href = card.dataset.url;
+        });
+        card.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                window.location.href = card.dataset.url;
+            }
+        });
+    });
+
+    applyFilters();
+})();
 </script>
 
 @endsection

@@ -73,10 +73,15 @@
                         How It Works
                     </a>
                     <a href="{{ route('blogs.index') }}"
-                        class="db-nav__dropdown-item"
+                         class="db-nav__dropdown-item"
+                         role="menuitem">
+                         Blog
+                     </a>
+                     <a href="{{ route('events.index') }}"
+                        class="db-nav__dropdown-item {{ request()->routeIs('events.index*') ? 'db-nav__dropdown-item--active' : '' }}"
                         role="menuitem">
-                        Blog
-                    </a>
+                         Events
+                     </a>
                     <a href="{{ route('partnership') }}"
                         class="db-nav__dropdown-item"
                         role="menuitem">
@@ -316,6 +321,7 @@
             <a href="{{ route('about') }}" class="db-mobile__link">About</a>
             <a href="{{ route('how.it.works') }}" class="db-mobile__link db-mobile__link--sub">└ How It Works</a>
             <a href="{{ route('blogs.index') }}" class="db-mobile__link db-mobile__link--sub">└ Blog</a>
+            <a href="{{ route('events.index') }}" class="db-mobile__link db-mobile__link--sub {{ request()->routeIs('events.index*') ? 'db-mobile__link--active' : '' }}">└ Events</a>
             <a href="{{ route('partnership') }}" class="db-mobile__link db-mobile__link--sub">└ Partnership</a>
             <a href="{{ route('ddrf.index') }}" class="db-mobile__link db-mobile__link--sub">└ Disaster Relief</a>
             <a href="{{ route('volunteer.apply') }}" class="db-mobile__link db-mobile__link--sub">└ Volunteer</a>
