@@ -16,10 +16,6 @@
     --text:         #0f1117;
     --text2:        #4b5563;
     --text3:        #9ca3af;
-    --accent:       #6366f1;
-    --accent2:      #8b5cf6;
-    --accent-glow:  rgba(99,102,241,0.18);
-    --green:        #10b981;
     --yellow:       #f59e0b;
     --red:          #ef4444;
     --blue:         #3b82f6;
@@ -73,7 +69,7 @@ html:not(.js-enabled) .reveal, html:not(.js-enabled) .reveal-left, html:not(.js-
 }
 .hiw-hero-grid {
     position:absolute; inset:0; z-index:1;
-    background-image:linear-gradient(rgba(99,102,241,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,.06) 1px,transparent 1px);
+    background-image:linear-gradient(rgba(37,99,235,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(37,99,235,.06) 1px,transparent 1px);
     background-size:60px 60px; opacity:.5; pointer-events:none;
 }
 /* Animated concentric rings in hero */
@@ -84,7 +80,7 @@ html:not(.js-enabled) .reveal, html:not(.js-enabled) .reveal-left, html:not(.js-
     opacity:.18;
 }
 .hiw-ring {
-    position:absolute; border-radius:50%; border:1.5px solid rgba(99,102,241,.6);
+    position:absolute; border-radius:50%; border:1.5px solid rgba(37,99,235,.6);
     top:50%; left:50%; transform:translate(-50%,-50%);
     animation:ring-pulse 4s ease-in-out infinite;
 }
@@ -173,7 +169,7 @@ html:not(.js-enabled) .reveal, html:not(.js-enabled) .reveal-left, html:not(.js-
 }
 .hiw-tab svg { width:15px; height:15px; flex-shrink:0; }
 .hiw-tab:hover { color:var(--text); background:var(--surface2); }
-.hiw-tab.active { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; box-shadow:0 4px 14px rgba(99,102,241,.35); }
+.hiw-tab.active { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; box-shadow:0 4px 14px rgba(37,99,235,.35); }
 .hiw-tab-pane { display:none; }
 .hiw-tab-pane.active { display:block; }
 
@@ -237,7 +233,7 @@ html:not(.js-enabled) .reveal, html:not(.js-enabled) .reveal-left, html:not(.js-
     background:linear-gradient(135deg,var(--accent),var(--accent2));
     color:#fff; font-family:var(--font-mono); font-size:11px; font-weight:700;
     display:flex; align-items:center; justify-content:center;
-    box-shadow:0 4px 12px rgba(99,102,241,.4);
+    box-shadow:0 4px 12px rgba(37,99,235,.4);
     border:2px solid var(--bg);
 }
 
@@ -247,7 +243,7 @@ html:not(.js-enabled) .reveal, html:not(.js-enabled) .reveal-left, html:not(.js-
 /* Arrow between steps (desktop) */
 .step-arrow {
     position:absolute; right:-18px; top:50px;
-    z-index:2; color:rgba(99,102,241,.35);
+    z-index:2; color:rgba(37,99,235,.35);
 }
 .step-arrow svg { width:28px; height:28px; }
 .step-card:last-child .step-arrow { display:none; }
@@ -267,7 +263,7 @@ html:not(.js-enabled) .reveal, html:not(.js-enabled) .reveal-left, html:not(.js-
     position:absolute; top:50%; left:50%;
     transform:translate(-50%,-50%);
     width:800px; height:800px; border-radius:50%;
-    background:radial-gradient(circle,rgba(99,102,241,.07) 0%,transparent 70%);
+    background:radial-gradient(circle,rgba(37,99,235,.07) 0%,transparent 70%);
     pointer-events:none;
 }
 
@@ -295,25 +291,25 @@ html:not(.js-enabled) .reveal, html:not(.js-enabled) .reveal-left, html:not(.js-
     position:absolute;
     top:28px; right:0; left:50%;
     height:2px;
-    background:linear-gradient(90deg,rgba(99,102,241,.5),rgba(139,92,246,.5));
+    background:linear-gradient(90deg,rgba(37,99,235,.5),rgba(13,148,136,.5));
     z-index:0;
 }
 @media(max-width:768px){
     .journey-step { flex-direction:row; align-items:flex-start; text-align:left; padding:0 0 36px 0; gap:18px; width:100%; }
-    .journey-step:not(:last-child)::after { top:auto; left:19px; right:auto; top:56px; width:2px; height:calc(100% - 56px); background:linear-gradient(180deg,rgba(99,102,241,.5),rgba(139,92,246,.3)); }
+    .journey-step:not(:last-child)::after { top:auto; left:19px; right:auto; top:56px; width:2px; height:calc(100% - 56px); background:linear-gradient(180deg,rgba(37,99,235,.5),rgba(13,148,136,.3)); }
 }
 
 .journey-dot {
     width:56px; height:56px; border-radius:50%; flex-shrink:0;
     background:linear-gradient(135deg,var(--accent),var(--accent2));
     display:flex; align-items:center; justify-content:center;
-    box-shadow:0 8px 24px rgba(99,102,241,.4);
+    box-shadow:0 8px 24px rgba(37,99,235,.4);
     position:relative; z-index:1;
     border:3px solid rgba(255,255,255,.08);
     transition:all .35s ease;
     margin-bottom:20px;
 }
-.journey-step:hover .journey-dot { transform:scale(1.1); box-shadow:0 12px 32px rgba(99,102,241,.55); }
+.journey-step:hover .journey-dot { transform:scale(1.1); box-shadow:0 12px 32px rgba(37,99,235,.55); }
 .journey-dot svg { width:22px; height:22px; color:#fff; }
 @media(max-width:768px){ .journey-dot { margin-bottom:0; } }
 
@@ -333,7 +329,7 @@ html:not(.js-enabled) .reveal, html:not(.js-enabled) .reveal-left, html:not(.js-
 }
 .rf-item { display:flex; align-items:center; gap:8px; font-size:13px; font-weight:500; color:rgba(255,255,255,.7); }
 .rf-item svg { width:16px; height:16px; color:var(--green); flex-shrink:0; }
-.rf-arrow { color:rgba(99,102,241,.5); font-size:18px; font-weight:300; }
+.rf-arrow { color:rgba(37,99,235,.5); font-size:18px; font-weight:300; }
 
 
 /* ═══════════════════════════════════════════════
@@ -363,7 +359,7 @@ html:not(.js-enabled) .reveal, html:not(.js-enabled) .reveal-left, html:not(.js-
     background:var(--tc-color, var(--accent));
     transform:scaleX(0); transition:transform .35s; transform-origin:left;
 }
-.trust-card:hover { transform:translateY(-6px); box-shadow:var(--shadow-lg); border-color:rgba(99,102,241,.25); }
+.trust-card:hover { transform:translateY(-6px); box-shadow:var(--shadow-lg); border-color:rgba(37,99,235,.25); }
 .trust-card:hover::before { transform:scaleX(1); }
 
 .trust-icon {
@@ -407,7 +403,7 @@ html:not(.js-enabled) .reveal, html:not(.js-enabled) .reveal-left, html:not(.js-
 .product-left .eyebrow { color:rgba(255,255,255,.7); }
 .product-left .eyebrow::before { background:rgba(255,255,255,.5); }
 .product-left .section-title { color:#fff; }
-.product-left .section-title em { color:#c7d2fe; }
+.product-left .section-title em { color:#99f6e4; }
 .product-left p { font-size:15px; color:rgba(255,255,255,.7); line-height:1.8; font-weight:300; margin-bottom:28px; }
 
 .product-features { display:flex; flex-direction:column; gap:14px; margin-bottom:32px; }
@@ -429,7 +425,7 @@ html:not(.js-enabled) .reveal, html:not(.js-enabled) .reveal-left, html:not(.js-
 .product-sample-card:hover { background:rgba(255,255,255,.18); transform:translateY(-3px); }
 .psc-emoji { font-size:24px; margin-bottom:10px; }
 .psc-name  { font-size:13px; font-weight:700; color:#fff; margin-bottom:4px; }
-.psc-price { font-family:var(--font-mono); font-size:15px; font-weight:700; color:#c7d2fe; }
+.psc-price { font-family:var(--font-mono); font-size:15px; font-weight:700; color:#99f6e4; }
 .psc-desc  { font-size:11.5px; color:rgba(255,255,255,.6); margin-top:4px; line-height:1.5; }
 
 
@@ -442,7 +438,7 @@ html:not(.js-enabled) .reveal, html:not(.js-enabled) .reveal-left, html:not(.js-
 
 .faq-tab-wrap { display:flex; gap:6px; justify-content:center; margin-bottom:36px; background:var(--surface); border:1px solid var(--border2); border-radius:var(--radius); padding:5px; max-width:400px; margin-left:auto; margin-right:auto; flex-wrap:wrap; }
 .faq-tab-btn { flex:1; padding:10px 20px; border-radius:var(--radius-sm); font-family:var(--font); font-size:13.5px; font-weight:600; cursor:pointer; border:none; background:transparent; color:var(--text3); transition:all var(--transition); }
-.faq-tab-btn.active { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; box-shadow:0 4px 14px rgba(99,102,241,.3); }
+.faq-tab-btn.active { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; box-shadow:0 4px 14px rgba(37,99,235,.3); }
 
 .faq-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; max-width:1000px; margin:0 auto; }
 @media(max-width:768px){ .faq-grid { grid-template-columns:1fr; } }
@@ -452,7 +448,7 @@ html:not(.js-enabled) .reveal, html:not(.js-enabled) .reveal-left, html:not(.js-
     border-radius:var(--radius); overflow:hidden;
     transition:border-color var(--transition), box-shadow var(--transition);
 }
-.faq-item.open { border-color:rgba(99,102,241,.3); box-shadow:0 4px 20px rgba(99,102,241,.08); }
+.faq-item.open { border-color:rgba(37,99,235,.3); box-shadow:0 4px 20px rgba(37,99,235,.08); }
 .faq-q {
     display:flex; align-items:center; justify-content:space-between;
     padding:18px 22px; cursor:pointer; gap:14px;
@@ -484,7 +480,7 @@ html:not(.js-enabled) .reveal, html:not(.js-enabled) .reveal-left, html:not(.js-
     content:''; position:absolute; top:50%; left:50%;
     transform:translate(-50%,-50%);
     width:700px; height:700px; border-radius:50%;
-    background:radial-gradient(circle,rgba(99,102,241,.12) 0%,transparent 70%);
+    background:radial-gradient(circle,rgba(37,99,235,.12) 0%,transparent 70%);
     pointer-events:none;
 }
 .cta-inner { position:relative; z-index:1; max-width:600px; margin:0 auto; padding:0 24px; }
@@ -495,7 +491,7 @@ html:not(.js-enabled) .reveal, html:not(.js-enabled) .reveal-left, html:not(.js-
 
 /* Scroll to top */
 
-.scroll-top { position:fixed; bottom:24px; right:24px; width:44px; height:44px; border-radius:50%; background:var(--accent); color:#fff; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 6px 20px rgba(99,102,241,.45); opacity:0; transform:translateY(16px); transition:all var(--transition); z-index:999; }
+.scroll-top { position:fixed; bottom:24px; right:24px; width:44px; height:44px; border-radius:50%; background:var(--accent); color:#fff; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 6px 20px rgba(37,99,235,.45); opacity:0; transform:translateY(16px); transition:all var(--transition); z-index:999; }
 .scroll-top.visible { opacity:1; transform:translateY(0); }
 .scroll-top:hover { transform:translateY(-2px); }
 .scroll-top svg { width:18px; height:18px; }
@@ -767,8 +763,8 @@ html:not(.js-enabled) .reveal, html:not(.js-enabled) .reveal-left, html:not(.js-
             'name' => 'School Kit',
             'price' => '₹250',
             'desc' => 'Notebook, pens, ruler set',
-            'bg' => 'bg-indigo-100',
-            'color' => 'text-indigo-600',
+            'bg' => 'bg-blue-100',
+            'color' => 'text-blue-600',
         ],
         [
             'icon' => 'heart',

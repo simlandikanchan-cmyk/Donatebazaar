@@ -55,7 +55,7 @@
         <div class="relative">
             <button
                 id="chatToggle"
-                class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg hover:scale-110 transition duration-300 flex items-center justify-center text-xl sm:text-2xl chat-toggle-pulse"
+                class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-r from-blue-600 to-teal-600 text-white shadow-lg hover:scale-110 transition duration-300 flex items-center justify-center text-xl sm:text-2xl chat-toggle-pulse"
                 aria-label="Open chat">
                 <i class="fa-solid fa-comment-dots"></i>
             </button>
@@ -69,7 +69,7 @@
         class="fixed bottom-20 sm:bottom-24 right-4 sm:right-6 w-96 max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden z-50">
 
         <!-- Header -->
-        <div class="bg-gradient-to-r from-indigo-500 to-purple-500 text-white p-4 flex items-center gap-3">
+        <div class="bg-gradient-to-r from-blue-600 to-teal-600 text-white p-4 flex items-center gap-3">
             <div class="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
                 <i class="fa-solid fa-robot text-lg"></i>
             </div>
@@ -109,7 +109,7 @@
                 style="scrollbar-width: thin"></textarea>
             <button
                 id="sendMessage"
-                class="w-10 h-10 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white flex items-center justify-center hover:scale-105 transition disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+                class="w-10 h-10 rounded-xl bg-gradient-to-r from-blue-600 to-teal-600 text-white flex items-center justify-center hover:scale-105 transition disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
                 aria-label="Send message">
                 <i class="fa-solid fa-paper-plane text-sm"></i>
             </button>

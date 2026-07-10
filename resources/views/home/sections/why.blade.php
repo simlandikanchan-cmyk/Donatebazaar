@@ -1,4 +1,4 @@
-<section class="why-section">
+<section class="why-section section-gradient">
     <div class="container">
         <div class="section-header">
             <div class="section-eyebrow">6 Reasons of assurance</div>

@@ -12,26 +12,23 @@
 
 <style>
 :root {
-    --accent:      #7c6dfa;
-    --accent2:     #9b59f5;
-    --accent-soft: rgba(124,109,250,0.12);
-    --accent-border: rgba(124,109,250,0.22);
-    --green:       #7effc4;
-    --green-soft:  rgba(126,255,196,0.10);
-    --green-border:rgba(126,255,196,0.20);
+    --accent-soft: rgba(37,99,235,0.12);
+    --accent-border: rgba(37,99,235,0.22);
+    --green-soft:  rgba(34,197,94,0.10);
+    --green-border:rgba(34,197,94,0.20);
     --ink:         #1a1a2e;
     --ink2:        #4a4870;
     --ink3:        #9896c0;
     --bg:          #f0f2f8;
     --surface:     #ffffff;
-    --border:      rgba(124,109,250,0.14);
-    --border-hover:rgba(124,109,250,0.30);
+    --border:      rgba(37,99,235,0.14);
+    --border-hover:rgba(37,99,235,0.30);
     --radius:      18px;
     --radius-sm:   12px;
     --font-mono:   'DM Mono', monospace;
     --font:        'DM Sans', sans-serif;
-    --dark-bg:     linear-gradient(160deg, #0d0e1a 0%, #13122b 50%, #1a1040 100%);
-    --dark-ring:   rgba(124,109,250,0.11);
+    --dark-bg:     linear-gradient(160deg, #0d0e1a 0%, #0f172a 50%, #042f2e 100%);
+    --dark-ring:   rgba(37,99,235,0.11);
 }
 
 body {
@@ -59,7 +56,7 @@ body {
 .c-hero {
     position: relative;
     overflow: hidden;
-    background: linear-gradient(160deg, #0d0e1a 0%, #13122b 50%, #1a1040 100%);
+    background: linear-gradient(160deg, #0d0e1a 0%, #0f172a 50%, #042f2e 100%);
     padding: 88px 24px 76px;
     text-align: center;
     width: 100%;
@@ -71,8 +68,8 @@ body {
     position: absolute;
     inset: 0;
     background-image:
-        linear-gradient(rgba(124,109,250,0.045) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(124,109,250,0.045) 1px, transparent 1px);
+        linear-gradient(rgba(37,99,235,0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(37,99,235,0.045) 1px, transparent 1px);
     background-size: 36px 36px;
     pointer-events: none;
     z-index: 0;
@@ -83,8 +80,8 @@ body {
     position: absolute;
     inset: 0;
     background:
-        radial-gradient(ellipse 55% 60% at 15% 50%, rgba(124,109,250,0.26) 0%, transparent 65%),
-        radial-gradient(ellipse 45% 55% at 85% 30%, rgba(155,89,245,0.20) 0%, transparent 65%);
+        radial-gradient(ellipse 55% 60% at 15% 50%, rgba(37,99,235,0.26) 0%, transparent 65%),
+        radial-gradient(ellipse 45% 55% at 85% 30%, rgba(13,148,136,0.20) 0%, transparent 65%);
     pointer-events: none;
     z-index: 0;
 }
@@ -108,8 +105,8 @@ body {
     z-index: 1;
 }
 .hero-ring-1 { width: 440px; height: 440px; top: -140px; right: -120px; }
-.hero-ring-2 { width: 290px; height: 290px; top:  -70px; right:  -50px; border-color: rgba(124,109,250,0.07); }
-.hero-ring-3 { width: 360px; height: 360px; bottom: -130px; left: -120px; border-color: rgba(155,89,245,0.07); }
+.hero-ring-2 { width: 290px; height: 290px; top:  -70px; right:  -50px; border-color: rgba(37,99,235,0.07); }
+.hero-ring-3 { width: 360px; height: 360px; bottom: -130px; left: -120px; border-color: rgba(13,148,136,0.07); }
 
 .hero-inner {
     position: relative;
@@ -120,8 +117,8 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 7px;
-    background: rgba(124,109,250,0.14);
-    border: 1px solid rgba(124,109,250,0.28);
+    background: rgba(37,99,235,0.14);
+    border: 1px solid rgba(37,99,235,0.28);
     border-radius: 50px;
     padding: 5px 16px;
     font-family: var(--font-mono);
@@ -204,7 +201,7 @@ body {
 }
 .trust-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 10px 32px rgba(124,109,250,0.14);
+    box-shadow: 0 10px 32px rgba(37,99,235,0.14);
     border-color: var(--border-hover);
 }
 .trust-card:hover::before { opacity: 1; }
@@ -269,15 +266,15 @@ body {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    box-shadow: 0 4px 28px rgba(124,109,250,0.08);
+    box-shadow: 0 4px 28px rgba(37,99,235,0.08);
     overflow: hidden;
     transition: box-shadow 0.2s;
 }
-.c-card:hover { box-shadow: 0 8px 40px rgba(124,109,250,0.14); }
+.c-card:hover { box-shadow: 0 8px 40px rgba(37,99,235,0.14); }
 
 .card-top-bar {
     height: 3px;
-    background: linear-gradient(90deg, var(--accent) 0%, var(--accent2) 60%, #c084fc 100%);
+    background: linear-gradient(90deg, var(--accent) 0%, var(--accent2) 60%, #14b8a6 100%);
 }
 
 .c-card-body { padding: 30px 28px 28px; }
@@ -313,7 +310,7 @@ body {
     flex-shrink: 0;
     transition: background 0.2s;
 }
-.info-row:hover .info-icon { background: rgba(124,109,250,0.2); }
+.info-row:hover .info-icon { background: rgba(37,99,235,0.2); }
 .info-icon svg {
     width: 16px; height: 16px;
     stroke: var(--accent);
@@ -444,7 +441,7 @@ body {
 .field:focus {
     border-color: var(--accent);
     background: #fff;
-    box-shadow: 0 0 0 3px rgba(124,109,250,0.12);
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
 }
 textarea.field {
     resize: vertical;
@@ -566,12 +563,12 @@ textarea.field {
     transition: box-shadow 0.2s, border-color 0.2s;
 }
 .faq-item:hover {
-    box-shadow: 0 4px 22px rgba(124,109,250,0.11);
+    box-shadow: 0 4px 22px rgba(37,99,235,0.11);
     border-color: var(--border-hover);
 }
 .faq-item.open {
-    border-color: rgba(124,109,250,0.32);
-    box-shadow: 0 4px 22px rgba(124,109,250,0.13);
+    border-color: rgba(37,99,235,0.32);
+    box-shadow: 0 4px 22px rgba(37,99,235,0.13);
 }
 
 .faq-q {
@@ -591,7 +588,7 @@ textarea.field {
     text-align: left;
     transition: background 0.15s;
 }
-.faq-q:hover { background: #f9f8ff; }
+.faq-q:hover { background: #eff6ff; }
 
 .faq-icon {
     width: 26px; height: 26px;
@@ -641,7 +638,7 @@ textarea.field {
     border-radius: var(--radius);
     overflow: hidden;
     border: 1px solid var(--border);
-    box-shadow: 0 4px 28px rgba(124,109,250,0.08);
+    box-shadow: 0 4px 28px rgba(37,99,235,0.08);
     position: relative;
 }
 .map-header {

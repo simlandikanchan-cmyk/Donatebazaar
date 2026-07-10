@@ -102,6 +102,12 @@
         <span class="hero-dot"></span>
     </div>
 
+    {{-- Scroll-down indicator --}}
+    <a href="#campaigns" class="hero-scroll" aria-label="Scroll to campaigns">
+        <span class="hero-scroll-mouse"><span class="hero-scroll-dot"></span></span>
+        <span class="hero-scroll-text">Explore Causes</span>
+    </a>
+
     {{-- Stat bar --}}
     <div class="hero-stat-bar">
         <div class="hero-stat-item">

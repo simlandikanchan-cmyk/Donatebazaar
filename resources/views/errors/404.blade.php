@@ -3,19 +3,16 @@
 @push('styles')
 <style>
 :root {
-    --accent:      #7c6dfa;
-    --accent2:     #9b59f5;
-    --green:       #7effc4;
     --ink:         #1a1a2e;
     --ink2:        #4a4870;
     --ink3:        #9896c0;
     --bg:          #f0f2f8;
     --surface:     #ffffff;
-    --border:      rgba(124,109,250,0.14);
+    --border:      rgba(37,99,235,0.14);
     --font-mono:   'DM Mono', monospace;
     --font:        'DM Sans', sans-serif;
-    --dark-bg:     linear-gradient(160deg, #0d0e1a 0%, #13122b 50%, #1a1040 100%);
-    --dark-ring:   rgba(124,109,250,0.11);
+    --dark-bg:     linear-gradient(160deg, #0d0e1a 0%, #0f172a 50%, #042f2e 100%);
+    --dark-ring:   rgba(37,99,235,0.11);
 }
 
 #error-root {
@@ -43,8 +40,8 @@
     position: absolute;
     inset: 0;
     background-image:
-        linear-gradient(rgba(124,109,250,0.045) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(124,109,250,0.045) 1px, transparent 1px);
+        linear-gradient(rgba(37,99,235,0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(37,99,235,0.045) 1px, transparent 1px);
     background-size: 36px 36px;
     pointer-events: none;
     z-index: 0;
@@ -54,8 +51,8 @@
     position: absolute;
     inset: 0;
     background:
-        radial-gradient(ellipse 55% 60% at 15% 50%, rgba(124,109,250,0.26) 0%, transparent 65%),
-        radial-gradient(ellipse 45% 55% at 85% 30%, rgba(155,89,245,0.20) 0%, transparent 65%);
+        radial-gradient(ellipse 55% 60% at 15% 50%, rgba(37,99,235,0.26) 0%, transparent 65%),
+        radial-gradient(ellipse 45% 55% at 85% 30%, rgba(13,148,136,0.20) 0%, transparent 65%);
     pointer-events: none;
     z-index: 0;
 }
@@ -68,8 +65,8 @@
     z-index: 1;
 }
 .e-ring-1 { width: 500px; height: 500px; top: -200px; right: -180px; }
-.e-ring-2 { width: 340px; height: 340px; top: -120px; right: -80px; border-color: rgba(124,109,250,0.07); }
-.e-ring-3 { width: 400px; height: 400px; bottom: -160px; left: -150px; border-color: rgba(155,89,245,0.07); }
+.e-ring-2 { width: 340px; height: 340px; top: -120px; right: -80px; border-color: rgba(37,99,235,0.07); }
+.e-ring-3 { width: 400px; height: 400px; bottom: -160px; left: -150px; border-color: rgba(13,148,136,0.07); }
 
 .e-inner {
     position: relative;
@@ -143,7 +140,7 @@
 }
 .btn-home:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 28px rgba(124,109,250,0.35);
+    box-shadow: 0 8px 28px rgba(37,99,235,0.35);
 }
 
 .btn-back {
@@ -159,7 +156,7 @@
     text-decoration: none;
     transition: all 0.25s;
     cursor: pointer;
-    border: 1px solid rgba(124,109,250,0.30);
+    border: 1px solid rgba(37,99,235,0.30);
     background: transparent;
     color: rgba(255,255,255,0.70);
 }

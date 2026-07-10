@@ -49,7 +49,7 @@
 .cmp-progress > span{display:block;height:100%;border-radius:100px;background:linear-gradient(90deg,var(--green),#34d399);}
 .cmp-pct{font-size:10.5px;color:var(--text3);margin-top:3px;font-family:var(--mono);}
 
-.cmp-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.cmp-actions{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;white-space:nowrap;}
 .cmp-view,.cmp-edit{display:inline-flex;align-items:center;gap:5px;height:32px;padding:0 12px;border-radius:var(--r-sm);font-size:12px;font-weight:500;text-decoration:none;transition:all var(--ease);}
 .cmp-view{background:var(--surface);border:1px solid var(--border2);color:var(--text2);}
 .cmp-view:hover{border-color:var(--a);color:var(--a);background:var(--a-lt);}
@@ -83,6 +83,11 @@
 .table-wrap{overflow-x:auto;}
 .pagination-wrap{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-top:1px solid var(--border);flex-wrap:wrap;gap:10px;background:var(--surface2);}
 .pagination-info{font-size:12px;color:var(--text3);}
+.pagination-links{display:flex;gap:4px;flex-wrap:wrap;}
+.pagination-links a,.pagination-links span{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:30px;padding:0 9px;border-radius:6px;font-size:12px;font-weight:600;border:1px solid var(--border2);background:var(--surface);color:var(--text2);transition:all var(--ease);}
+.pagination-links a:hover{background:var(--a-lt);color:var(--a);border-color:var(--a);}
+.pagination-links .active{background:var(--a);color:#fff;border-color:var(--a);}
+.pagination-links .disabled{color:var(--text3);opacity:.5;cursor:default;}
 .si-paused{background:rgba(107,114,128,.12);color:#6b7280;}
 .sv-paused{color:#6b7280;}
 .sv-red{color:var(--red);}
@@ -287,7 +292,7 @@ $sortUrl = function($column) use ($sort, $dir) {
               @if($sort === 'created_at')<svg class="sort-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="{{ $dir === 'asc' ? 'M12 5l7 7H5l7-7z' : 'M12 19l7-7H5l7 7z' }}"/></svg>@endif
             </a>
           </th>
-          <th style="width:170px;">Actions</th>
+          <th style="width:200px;">Actions</th>
         </tr>
       </thead>
       <tbody>

@@ -16,8 +16,12 @@ class NewsletterController extends Controller
 
         $email = $request->input('email');
 
-        // Send welcome email to subscriber
-        Mail::to($email)->send(new NewsletterWelcome($email));
+        // Send welcome email to subscriber (non-fatal if mail is misconfigured)
+        try {
+            Mail::to($email)->send(new NewsletterWelcome($email));
+        } catch (\Throwable $e) {
+            report($e);
+        }
 
         return back()->with('newsletter_success', 'You have subscribed successfully!');
     }

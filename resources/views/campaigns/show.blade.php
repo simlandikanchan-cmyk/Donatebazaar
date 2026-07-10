@@ -96,10 +96,10 @@
     --text:         #0f1117;
     --text2:        #4b5563;
     --text3:        #9ca3af;
-    --accent:       #6366f1;
-    --accent2:      #8b5cf6;
-    --accent-glow:  rgba(99,102,241,0.18);
-    --green:        #10b981;
+
+
+
+
     --yellow:       #f59e0b;
     --red:          #ef4444;
     --font:         'DM Sans', sans-serif;
@@ -119,7 +119,7 @@
     --text:         #f0f1ff;
     --text2:        #a5b4c8;
     --text3:        #5a6579;
-    --accent-glow:  rgba(99,102,241,0.25);
+
     --shadow:       0 1px 3px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.2);
     --shadow-lg:    0 8px 40px rgba(0,0,0,0.5);
 }

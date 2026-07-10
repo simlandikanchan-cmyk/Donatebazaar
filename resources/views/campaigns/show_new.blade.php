@@ -20,10 +20,10 @@
     --sidebar-bg:   #0d0e1a;
     --sidebar-text: rgba(255,255,255,0.65);
     --sidebar-act:  rgba(120,119,255,0.18);
-    --accent:       #6366f1;
-    --accent2:      #8b5cf6;
-    --accent-glow:  rgba(99,102,241,0.18);
-    --green:        #10b981;
+
+
+
+
     --yellow:       #f59e0b;
     --red:          #ef4444;
     --font:         'DM Sans', sans-serif;
@@ -46,7 +46,7 @@
     --sidebar-bg:   #07080f;
     --sidebar-text: rgba(255,255,255,0.55);
     --sidebar-act:  rgba(120,119,255,0.22);
-    --accent-glow:  rgba(99,102,241,0.25);
+
     --shadow:       0 1px 3px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.2);
     --shadow-lg:    0 8px 40px rgba(0,0,0,0.5);
 }

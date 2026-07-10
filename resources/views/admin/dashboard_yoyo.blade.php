@@ -23,12 +23,12 @@
     --sidebar-bg:   #ffffff;
     --sidebar-text: #6b7080;
     --sidebar-act-bg: #f0f1fd;
-    --sidebar-act:  #4f46e5;
-    --accent:       #4f46e5;
-    --accent2:      #7c3aed;
+    --sidebar-act:  #2563eb;
+    --accent:       #2563eb;
+    --accent2:      #0d9488;
     --accent-lt:    #eef0fd;
     --accent-glow:  rgba(79,70,229,0.15);
-    --green:        #059669;
+    --green:        #15803d;
     --green-lt:     #d1fae5;
     --yellow:       #d97706;
     --yellow-lt:    #fef3c7;
@@ -220,7 +220,7 @@ body {
 .s-upgrade {
     margin: 12px 10px;
     padding: 14px;
-    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    background: linear-gradient(135deg, #2563eb, #0d9488);
     border-radius: var(--r);
     color: #fff;
 }
@@ -387,7 +387,7 @@ body {
     animation: toastIn 0.3s ease both;
     position: relative; overflow: hidden;
 }
-.toast-success { background: linear-gradient(135deg, #059669, #10b981); }
+.toast-success { background: linear-gradient(135deg, #15803d, #16a34a); }
 .toast-error   { background: linear-gradient(135deg, #dc2626, #ef4444); }
 .toast-warn    { background: linear-gradient(135deg, #d97706, #f59e0b); }
 .toast svg { width: 15px; height: 15px; flex-shrink: 0; }
@@ -619,7 +619,7 @@ body {
 .prog-goal   { font-size: 10.5px; color: var(--text3); }
 .prog-bar    { width: 100%; background: var(--surface3); border-radius: 100px; height: 5px; overflow: hidden; margin-bottom: 3px; }
 .prog-fill   { height: 100%; border-radius: 100px; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width 0.8s ease; }
-.prog-fill.ok     { background: linear-gradient(90deg, #059669, #10b981); }
+.prog-fill.ok     { background: linear-gradient(90deg, #15803d, #16a34a); }
 .prog-fill.danger { background: linear-gradient(90deg, #f87171, var(--red)); }
 .prog-meta { display: flex; justify-content: space-between; align-items: center; }
 .prog-pct  { font-size: 10.5px; color: var(--text3); font-weight: 500; }
@@ -1432,7 +1432,7 @@ body {
                     </div>
                     <div class="cat-list">
                         @php
-                            $catColors = ['#4f46e5','#3b82f6','#10b981','#9ca3af'];
+                            $catColors = ['#2563eb','#3b82f6','#16a34a','#9ca3af'];
                             $catNames  = ['Community & Environment','Education & Empowerment','Health & Medical Aid','Others'];
                             $catPcts   = [34, 27, 23, 16];
                         @endphp
@@ -1464,7 +1464,7 @@ body {
                     @endphp
                     <div class="sp-rows">
                         <div class="sp-row">
-                            <div class="sp-row-left"><div class="sp-dot" style="background:#059669"></div><span class="sp-label">Active</span></div>
+                            <div class="sp-row-left"><div class="sp-dot" style="background:#15803d"></div><span class="sp-label">Active</span></div>
                             <span class="sp-val">{{ $cntActive }}</span>
                         </div>
                         <div class="sp-row">
@@ -1472,7 +1472,7 @@ body {
                             <span class="sp-val">{{ $cntPending }}</span>
                         </div>
                         <div class="sp-row">
-                            <div class="sp-row-left"><div class="sp-dot" style="background:#4f46e5"></div><span class="sp-label">Paused</span></div>
+                            <div class="sp-row-left"><div class="sp-dot" style="background:#2563eb"></div><span class="sp-label">Paused</span></div>
                             <span class="sp-val">{{ $cntPaused }}</span>
                         </div>
                         <div class="sp-row">
@@ -1520,7 +1520,7 @@ body {
                             </div>
                         </div>
                         <div class="act-row">
-                            <div class="act-icon" style="background:#d1fae5;color:#059669;">
+                            <div class="act-icon" style="background:#d1fae5;color:#15803d;">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                             </div>
                             <div>
@@ -1808,7 +1808,7 @@ function renderCharts() {
         data: {
             labels: months,
             datasets: [
-                { label:'Campaigns', data:[3,5,4,8,6,10,9,14,11,16,13,{{ $totalCampaigns }}], borderColor:'#4f46e5', backgroundColor:grad1, borderWidth:2, pointRadius:3, pointBackgroundColor:'#4f46e5', tension:0.4, fill:true },
+                { label:'Campaigns', data:[3,5,4,8,6,10,9,14,11,16,13,{{ $totalCampaigns }}], borderColor:'#2563eb', backgroundColor:grad1, borderWidth:2, pointRadius:3, pointBackgroundColor:'#2563eb', tension:0.4, fill:true },
                 { label:'Approved',  data:[2,3,3,6,5,7,7,11,9,13,10,{{ $approvedCampaigns }}], borderColor:'#db2777', backgroundColor:grad2, borderWidth:2, pointRadius:3, pointBackgroundColor:'#db2777', tension:0.4, fill:true }
             ]
         },
@@ -1859,7 +1859,7 @@ function renderCharts() {
         type: 'doughnut',
         data: {
             labels: ['Community & Environment','Education & Empowerment','Health & Medical Aid','Others'],
-            datasets: [{ data:[34,27,23,16], backgroundColor:['#4f46e5','#3b82f6','#10b981','#9ca3af'], borderWidth:0, hoverOffset:4 }]
+            datasets: [{ data:[34,27,23,16], backgroundColor:['#2563eb','#3b82f6','#16a34a','#9ca3af'], borderWidth:0, hoverOffset:4 }]
         },
         options: {
             responsive:false, cutout:'72%',

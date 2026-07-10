@@ -461,6 +461,30 @@ function init() {
   initTestimonialMarquee();
   initScrollReveal();
   initImpactSection();
+  initStickyFilter();
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   11. STICKY CAMPAIGN FILTER — add shadow when pinned
+   ═══════════════════════════════════════════════════════════ */
+function initStickyFilter() {
+  const sticky = document.querySelector('.camp-filter-sticky');
+  if (!sticky) return;
+
+  const TOP = 72;
+  let ticking = false;
+  function update() {
+    const stuck = sticky.getBoundingClientRect().top <= TOP + 1;
+    sticky.classList.toggle('is-stuck', stuck);
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) { ticking = true; requestAnimationFrame(update); }
+  }, { passive: true });
+
+  update();
 }
 
 if (document.readyState === 'loading') {

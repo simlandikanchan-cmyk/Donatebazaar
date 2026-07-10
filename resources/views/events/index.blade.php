@@ -14,10 +14,7 @@
     --ink:#0f0d0a;
     --ink2:#3d3830;
     --ink3:#8c8478;
-    --accent:#c8502a;
-    --accent2:#e8855f;
-    --accent-lt:rgba(200,80,42,.08);
-    --green:#1a7a52;
+    --accent-lt:rgba(37,99,235,.08);
     --green-lt:rgba(26,122,82,.09);
     --gold:#b8963e;
     --gold-lt:rgba(184,150,62,.1);

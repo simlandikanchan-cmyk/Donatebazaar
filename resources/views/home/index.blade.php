@@ -14,6 +14,7 @@
 @include('home.sections.marquee')
 @include('home.sections.categories')
 @include('home.sections.campaigns')
+@include('home.sections.story')
 @include('home.sections.how')
 @include('home.sections.testimonials')
 @include('home.sections.why')

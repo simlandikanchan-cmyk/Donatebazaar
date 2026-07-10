@@ -42,10 +42,6 @@
     --text:         #0f1117;
     --text2:        #4b5563;
     --text3:        #9ca3af;
-    --accent:       #6366f1;
-    --accent2:      #8b5cf6;
-    --accent-glow:  rgba(99,102,241,0.18);
-    --green:        #10b981;
     --yellow:       #f59e0b;
     --red:          #ef4444;
     --font:         'DM Sans', sans-serif;
@@ -65,7 +61,7 @@
     --text:         #f0f1ff;
     --text2:        #a5b4c8;
     --text3:        #5a6579;
-    --accent-glow:  rgba(99,102,241,0.25);
+    --accent-glow:  rgba(37,99,235,0.25);
     --shadow:       0 1px 3px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.2);
     --shadow-lg:    0 8px 40px rgba(0,0,0,0.5);
 }
@@ -88,8 +84,8 @@ body {
 
 .status-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 11px; border-radius: 100px; font-size: 10.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; font-family: var(--font-mono); }
 .status-chip .dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
-.chip-active   { background: rgba(16,185,129,0.12); color: #10b981; border: 1px solid rgba(16,185,129,0.25); }
-.chip-paused   { background: rgba(99,102,241,0.12); color: #818cf8; border: 1px solid rgba(99,102,241,0.25); }
+.chip-active   { background: rgba(16,185,129,0.12); color: #16a34a; border: 1px solid rgba(16,185,129,0.25); }
+.chip-paused   { background: rgba(37,99,235,0.12); color: #60a5fa; border: 1px solid rgba(37,99,235,0.25); }
 .chip-pending  { background: rgba(245,158,11,0.12); color: #f59e0b; border: 1px solid rgba(245,158,11,0.25); }
 .chip-rejected { background: rgba(239,68,68,0.12);  color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
 
@@ -110,7 +106,7 @@ body {
 .card-header { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
 .card-icon { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .card-icon svg { width: 14px; height: 14px; }
-.ic-indigo { background: rgba(99,102,241,0.12); color: var(--accent); }
+.ic-indigo { background: rgba(37,99,235,0.12); color: var(--accent); }
 .ic-green  { background: rgba(16,185,129,0.12); color: var(--green); }
 .ic-yellow { background: rgba(245,158,11,0.12); color: var(--yellow); }
 .ic-red    { background: rgba(239,68,68,0.12);  color: var(--red); }
@@ -141,7 +137,7 @@ body {
 .file-drop { border: 1.5px dashed var(--border2); border-radius: var(--radius-sm); padding: 18px 14px; text-align: center; cursor: pointer; position: relative; transition: border-color var(--transition), background var(--transition); overflow: hidden; }
 .file-drop:hover { border-color: var(--accent); background: var(--accent-glow); }
 .file-drop input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
-.file-drop-icon { width: 34px; height: 34px; border-radius: 10px; background: rgba(99,102,241,0.1); color: var(--accent); display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; }
+.file-drop-icon { width: 34px; height: 34px; border-radius: 10px; background: rgba(37,99,235,0.1); color: var(--accent); display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; }
 .file-drop-icon svg { width: 15px; height: 15px; }
 .file-drop-label { font-size: 12px; font-weight: 600; color: var(--text); }
 .file-drop-hint  { font-size: 11px; color: var(--text3); margin-top: 3px; }
@@ -157,7 +153,7 @@ body {
 .btn:active { transform: translateY(0); }
 .btn[disabled] { opacity: 0.38; cursor: not-allowed; transform: none; pointer-events: none; }
 .btn svg { width: 13px; height: 13px; }
-.btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 4px 14px rgba(99,102,241,0.3); }
+.btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 4px 14px rgba(37,99,235,0.3); }
 .btn-pause   { background: rgba(245,158,11,0.10); color: var(--yellow); border-color: rgba(245,158,11,0.25); }
 .btn-resume  { background: rgba(16,185,129,0.10); color: var(--green);  border-color: rgba(16,185,129,0.25); }
 .btn-ghost   { background: var(--surface2); color: var(--text2); border-color: var(--border2); }
@@ -188,12 +184,12 @@ body {
 .modal-btn:hover { opacity: 0.88; }
 .modal-cancel { background: var(--surface2); color: var(--text2); border: 1px solid var(--border2); }
 .modal-y-btn  { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; }
-.modal-g-btn  { background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
+.modal-g-btn  { background: linear-gradient(135deg, #16a34a, #15803d); color: #fff; }
 
 .toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
 .toast { display: flex; align-items: center; gap: 10px; padding: 12px 15px; border-radius: 12px; font-size: 13px; font-weight: 500; color: #fff; min-width: 240px; box-shadow: var(--shadow-lg); pointer-events: all; animation: toastIn 0.35s cubic-bezier(.4,0,.2,1) both; }
 .toast svg { width: 15px; height: 15px; flex-shrink: 0; }
-.toast-success { background: linear-gradient(135deg, #059669, #10b981); }
+.toast-success { background: linear-gradient(135deg, #15803d, #16a34a); }
 .toast-error   { background: linear-gradient(135deg, #dc2626, #ef4444); }
 .toast-close { margin-left: auto; width: 18px; height: 18px; border-radius: 4px; background: rgba(255,255,255,0.2); border: none; cursor: pointer; color: #fff; font-size: 12px; display: flex; align-items: center; justify-content: center; }
 @keyframes toastIn { from { opacity: 0; transform: translateX(20px) scale(0.96); } to { opacity: 1; transform: translateX(0) scale(1); } }

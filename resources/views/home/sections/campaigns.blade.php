@@ -1,5 +1,5 @@
 {{-- ═══ CAMPAIGNS ═══ --}}
-<section class="campaigns-section">
+<section class="campaigns-section" id="campaigns">
     <div class="container">
 
         <div class="section-header">
@@ -14,22 +14,24 @@
             </p>
         </div>
 
-        {{-- ═══ CATEGORY FILTERS ═══ --}}
-        <div class="camp-filter-wrap" id="campFilterWrap">
+        {{-- ═══ CATEGORY FILTERS (sticky on scroll) ═══ --}}
+        <div class="camp-filter-sticky">
+            <div class="camp-filter-wrap" id="campFilterWrap">
 
-            <button class="camp-filter-btn active" data-cat="all">
-                All
-            </button>
-
-            @foreach($categories as $category)
-                <button
-                    class="camp-filter-btn"
-                    data-cat="{{ $category->slug }}"
-                >
-                    {{ $category->name }}
+                <button class="camp-filter-btn active" data-cat="all">
+                    All
                 </button>
-            @endforeach
 
+                @foreach($categories as $category)
+                    <button
+                        class="camp-filter-btn"
+                        data-cat="{{ $category->slug }}"
+                    >
+                        {{ $category->name }}
+                    </button>
+                @endforeach
+
+            </div>
         </div>
 
         {{-- ═══ CAMPAIGN GRID ═══ --}}
@@ -42,34 +44,40 @@
             @foreach($campaigns as $index => $campaign)
 
                 @php
-                    /*
-                    |--------------------------------------------------------------------------
-                    | Raised / Goal / Donors
-                    |--------------------------------------------------------------------------
-                    | raised_amount is a cached column on campaigns, read directly —
-                    | not recomputed from donations, so it stays consistent with
-                    | total_settled / pending_settlement / platform_earnings.
-                    | donors_count comes pre-aggregated from the controller (withCount).
-                    | Expiry + active-state filtering also already happened in the
-                    | controller, so there is no need to re-check $isExpired in this view.
-                    */
                     $raised = $campaign->raised_amount ?? 0;
                     $goal   = $campaign->goal_amount ?? 0;
                     $donors = $campaign->donors_count ?? 0;
 
-                    // Use the model's own `progress` accessor (uncapped — can exceed
-                    // 100% for an overfunded campaign) for the displayed badge text,
-                    // but cap a separate value at 100 for the progress-bar width so an
-                    // overfunded campaign never visually overflows the track.
                     $percentage = $campaign->progress;
                     $progressBarWidth = min($percentage, 100);
+
+                    // Urgency: days remaining until the campaign closes.
+                    $endDate  = $campaign->end_date;
+                    $daysLeft = $endDate ? now()->diffInDays($endDate, false) : null;
+                    $endingSoon = $daysLeft !== null && $daysLeft >= 0 && $daysLeft <= 7;
+
+                    $ownerAvatar = $campaign->user?->avatar
+                        ? asset('storage/' . $campaign->user->avatar)
+                        : asset('images/default-avatar.png');
+
+                    $isFeatured = (bool) $campaign->is_featured;
+
+                    $campUrl = route('campaign.public', [
+                        'category' => $campaign->category?->slug ?? 'general',
+                        'slug'     => $campaign->slug,
+                    ]);
                 @endphp
 
                 {{-- ═══ CAMPAIGN CARD ═══ --}}
                 <div
-                    class="camp-card hidden"
+                    class="camp-card hidden{{ $isFeatured ? ' is-featured' : '' }}"
                     data-cat="{{ $campaign->category?->slug ?? 'uncategorized' }}"
                 >
+
+                    {{-- Featured ribbon --}}
+                    @if($isFeatured)
+                        <div class="camp-ribbon">Featured</div>
+                    @endif
 
                     {{-- IMAGE --}}
                     <div class="camp-img">
@@ -84,25 +92,31 @@
                             {{ $percentage }}% Funded
                         </div>
 
-                        {{--
-                            KYC is verified per fundraiser (user), not per campaign —
-                            see kyc_verifications table (status: pending/approved/rejected).
-                            Reuses Campaign::ownerKycApproved() so the check stays
-                            consistent with the rest of the app (e.g. resume()).
-                        --}}
                         @if($campaign->ownerKycApproved())
                             <div class="camp-verified">
                                 Verified
                             </div>
                         @endif
 
+                        {{-- Urgency pill --}}
+                        @if($daysLeft !== null && $daysLeft >= 0)
+                            <div class="camp-urgency{{ $endingSoon ? ' is-urgent' : '' }}">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11" aria-hidden="true">
+                                    <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>
+                                </svg>
+                                {{ $daysLeft == 0 ? 'Ends today' : $daysLeft . ' days left' }}
+                            </div>
+                        @endif
+
+                        {{-- Whole-card clickable overlay --}}
+                        <a class="camp-card-overlay" href="{{ $campUrl }}" aria-label="View {{ $campaign->title }}"></a>
                     </div>
 
                     {{-- BODY --}}
                     <div class="camp-body">
 
                         <h3 class="camp-title">
-                            {{ $campaign->title }}
+                            <a href="{{ $campUrl }}">{{ $campaign->title }}</a>
                         </h3>
 
                         {{-- PROGRESS BAR --}}
@@ -115,7 +129,6 @@
 
                         {{-- META --}}
                         <div class="camp-meta">
-
                             <span>
                                 <strong>
                                     ₹{{ number_format($raised) }}
@@ -129,24 +142,26 @@
                                     ₹{{ number_format($goal) }}
                                 </strong>
                             </span>
-
                         </div>
 
-                        {{-- DONORS --}}
+                        {{-- DONORS + OWNER --}}
                         <div class="camp-donors">
-                            {{ number_format($donors) }}
-                            donors · Active Campaign
+                            <span class="camp-avatars" aria-hidden="true">
+                                <img class="camp-avatar" src="{{ $ownerAvatar }}" alt="">
+                                <span class="camp-avatar camp-avatar--ring">+{{ number_format($donors) }}</span>
+                            </span>
+                            <span class="camp-donors-text">
+                                {{ number_format($donors) }} donors
+                            </span>
                         </div>
 
                         {{-- BUTTON --}}
                         <a
-                            href="{{ route('campaign.public', [
-                                'category' => $campaign->category?->slug ?? 'general',
-                                'slug'     => $campaign->slug
-                            ]) }}"
-                            class="btn btn-accent btn-block"
+                            href="{{ $campUrl }}"
+                            class="btn btn-accent btn-block camp-donate-btn"
                         >
                             Donate Now
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                         </a>
 
                     </div>

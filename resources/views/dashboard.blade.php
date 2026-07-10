@@ -812,8 +812,8 @@ window.renderChart = function(){
 
     var cctx = ctx.getContext('2d');
     var grad = cctx.createLinearGradient(0, 0, 0, 180);
-    grad.addColorStop(0, 'rgba(99,102,241,.20)');
-    grad.addColorStop(1, 'rgba(99,102,241,0)');
+    grad.addColorStop(0, 'rgba(37,99,235,.20)');
+    grad.addColorStop(1, 'rgba(37,99,235,0)');
 
     fundChart = new Chart(ctx, {
         type: 'line',
@@ -822,9 +822,9 @@ window.renderChart = function(){
             datasets: [{
                 label: 'Amount Raised (₹)',
                 data: values,
-                borderColor: '#6366f1', backgroundColor: grad,
+                borderColor: '#2563eb', backgroundColor: grad,
                 borderWidth: 2.5, fill: true, tension: .45,
-                pointBackgroundColor: '#6366f1',
+                pointBackgroundColor: '#2563eb',
                 pointBorderColor: tipBg, pointBorderWidth: 2,
                 pointRadius: 4, pointHoverRadius: 6,
             }]
@@ -872,14 +872,14 @@ var campChart;
                 {
                     label: 'Raised (₹)',
                     data: campaigns.map(function(c){ return c.raised; }),
-                    backgroundColor: '#6366f1',
+                    backgroundColor: '#2563eb',
                     borderRadius: 4,
                     barPercentage: .65,
                 },
                 {
                     label: 'Goal (₹)',
                     data: campaigns.map(function(c){ return c.goal; }),
-                    backgroundColor: isDark ? 'rgba(99,102,241,.2)' : 'rgba(99,102,241,.10)',
+                    backgroundColor: isDark ? 'rgba(37,99,235,.2)' : 'rgba(37,99,235,.10)',
                     borderRadius: 4,
                     barPercentage: .65,
                 }

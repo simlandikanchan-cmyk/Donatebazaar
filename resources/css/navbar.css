@@ -5,9 +5,9 @@
 :root {
     --db-font:          'Sora', 'Inter', system-ui, sans-serif;
     --db-font-mono:     'Fira Code', 'DM Mono', monospace;
-    --db-accent-from:   #3B6FE8;
-    --db-accent-to:     #6C48C5;
-    --db-accent-mid:    #5258D6;
+    --db-accent-from:   #2563eb;
+    --db-accent-to:     #0d9488;
+    --db-accent-mid:    #1d4ed8;
     --db-text-primary:  #111827;
     --db-text-muted:    #6B7280;
     --db-text-subtle:   #9CA3AF;
