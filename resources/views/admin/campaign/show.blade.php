@@ -71,8 +71,8 @@
 .kyc-doc-preview-header-left{display:flex;align-items:center;gap:6px;}
 .kyc-doc-preview-actions{display:flex;gap:6px;}
 .kyc-doc-btn{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:6px;font-family:var(--font);transition:background var(--ease);border:none;cursor:pointer;text-decoration:none;}
-.kyc-doc-btn-view{background:var(--a-lt);color:var(--a);border:1px solid rgba(110,86,247,.20);}
-.kyc-doc-btn-view:hover{background:rgba(110,86,247,.20);}
+.kyc-doc-btn-view{background:var(--a-lt);color:var(--a);border:1px solid rgba(37,99,235,.20);}
+.kyc-doc-btn-view:hover{background:rgba(37,99,235,.20);}
 .kyc-doc-btn-dl{background:var(--green-lt);color:var(--green);border:1px solid rgba(5,196,138,.20);}
 .kyc-doc-btn-dl:hover{background:rgba(5,196,138,.20);}
 .kyc-doc-btn svg{width:10px;height:10px;flex-shrink:0;}
@@ -93,7 +93,7 @@
 .status-chips{display:flex;align-items:center;gap:7px;margin-bottom:12px;flex-wrap:wrap;}
 .status-chip-lg{display:inline-flex;align-items:center;gap:5px;padding:5px 13px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;font-family:var(--mono);}
 .chip-active   {background:rgba(16,185,129,.12);color:#10b981;border:1px solid rgba(16,185,129,.25);}
-.chip-paused   {background:rgba(110,86,247,.12);color:#818cf8;border:1px solid rgba(110,86,247,.25);}
+.chip-paused   {background:rgba(37,99,235,.12);color:#818cf8;border:1px solid rgba(37,99,235,.25);}
 .chip-pending  {background:rgba(245,158,11,.12);color:#f59e0b;border:1px solid rgba(245,158,11,.25);}
 .chip-rejected {background:rgba(239,68,68,.12);color:#ef4444;border:1px solid rgba(239,68,68,.25);}
 .chip-expired  {background:rgba(107,114,128,.12);color:#6b7280;border:1px solid rgba(107,114,128,.25);}
@@ -103,7 +103,7 @@
 .action-btn:hover{opacity:.88;transform:translateY(-1px);}
 .action-btn svg{width:13px;height:13px;}
 .action-btn+.action-btn{margin-top:8px;}
-.btn-accent{background:var(--a);color:#fff;border-color:var(--a);box-shadow:0 4px 14px rgba(110,86,247,.28);}
+.btn-accent{background:var(--a);color:#fff;border-color:var(--a);box-shadow:0 4px 14px rgba(37,99,235,.28);}
 .btn-green {background:var(--green);color:#fff;border-color:var(--green);box-shadow:0 4px 14px rgba(5,196,138,.28);}
 .btn-red   {background:rgba(240,68,68,.1);color:#b91c1c;border-color:rgba(240,68,68,.25);}
 .btn-yellow{background:rgba(245,158,11,.08);color:var(--amber);border-color:rgba(245,158,11,.3);}
@@ -112,7 +112,7 @@
 [data-theme="dark"] .btn-red{color:#f87171;}
 .events-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:13px;}
 .event-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:15px;transition:transform var(--ease),box-shadow var(--ease),border-color var(--ease);}
-.event-card:hover{transform:translateY(-3px);box-shadow:0 10px 32px rgba(110,86,247,.10);border-color:rgba(110,86,247,.2);}
+.event-card:hover{transform:translateY(-3px);box-shadow:0 10px 32px rgba(37,99,235,.10);border-color:rgba(37,99,235,.2);}
 .event-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:3px 8px;border-radius:100px;text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);margin-bottom:9px;}
 .ev-approved{background:rgba(16,185,129,.12);color:#10b981;border:1px solid rgba(16,185,129,.25);}
 .ev-pending {background:rgba(245,158,11,.12);color:#f59e0b;border:1px solid rgba(245,158,11,.25);}
@@ -165,16 +165,72 @@
 .bank-field-val.empty{color:var(--text3);font-style:italic;font-family:var(--font);font-weight:400;font-size:12px;}
 .updates-list{display:flex;flex-direction:column;gap:10px;}
 .update-item{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:13px 15px;transition:border-color var(--tr);}
-.update-item:hover{border-color:rgba(110,86,247,.2);}
+.update-item:hover{border-color:rgba(37,99,235,.2);}
 .update-item-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;}
 .update-item-title{font-size:13px;font-weight:700;color:var(--text);font-family:var(--mono);}
 .update-item-date{font-size:10px;color:var(--text3);font-family:var(--mono);}
 .update-item-body{font-size:12.5px;color:var(--text2);line-height:1.65;margin-bottom:8px;}
-.update-doc-pill{display:inline-flex;align-items:center;gap:5px;background:var(--a-lt);color:var(--a);border:1px solid rgba(110,86,247,.15);border-radius:100px;padding:3px 10px;font-size:10.5px;font-weight:600;text-decoration:none;font-family:var(--mono);transition:background var(--ease);}
-.update-doc-pill:hover{background:rgba(110,86,247,.18);}
+.update-doc-pill{display:inline-flex;align-items:center;gap:5px;background:var(--a-lt);color:var(--a);border:1px solid rgba(37,99,235,.15);border-radius:100px;padding:3px 10px;font-size:10.5px;font-weight:600;text-decoration:none;font-family:var(--mono);transition:background var(--ease);}
+.update-doc-pill:hover{background:rgba(37,99,235,.18);}
 .update-doc-pill svg{width:10px;height:10px;}
 @media(max-width:960px){.page-grid{grid-template-columns:1fr;}.right-col{position:static;}}
 @media(max-width:600px){.events-grid{grid-template-columns:1fr;}}
+
+/* ── Top toolbar / breadcrumb ── */
+.detail-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:18px;}
+.crumbs{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text3);font-family:var(--mono);flex-wrap:wrap;}
+.crumbs a{color:var(--text3);transition:color var(--ease);display:inline-flex;align-items:center;gap:5px;}
+.crumbs a:hover{color:var(--a);}
+.crumbs svg{width:12px;height:12px;}
+.crumb-sep{opacity:.5;}
+.crumb-current{color:var(--text);font-weight:600;}
+.crumb-id{display:inline-flex;align-items:center;gap:4px;background:var(--a-lt);color:var(--a);border:1px solid rgba(37,99,235,.18);border-radius:100px;padding:2px 9px;font-size:10.5px;font-weight:700;}
+.top-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.tb-action{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--r-sm);font-size:12px;font-weight:600;font-family:var(--font);cursor:pointer;text-decoration:none;border:1px solid var(--border2);background:var(--surface);color:var(--text2);transition:all var(--ease);}
+.tb-action:hover{border-color:var(--a);color:var(--a);background:var(--a-lt);transform:translateY(-1px);}
+.tb-action svg{width:13px;height:13px;}
+.tb-action.primary{background:var(--a);color:#fff;border-color:var(--a);box-shadow:0 4px 14px rgba(37,99,235,.22);}
+.tb-action.primary:hover{color:#fff;opacity:.9;}
+
+/* ── card entrance animation ── */
+@keyframes cardUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+.card{animation:cardUp .4s ease both;}
+.card:hover{box-shadow:var(--sh-md);}
+
+/* ── Fundraising ring ── */
+.fund-ring-row{display:flex;align-items:center;gap:16px;margin-bottom:16px;}
+.fund-ring-wrap{position:relative;width:104px;height:104px;flex-shrink:0;}
+.fund-ring{width:104px;height:104px;transform:rotate(-90deg);}
+.fund-ring-bg{fill:none;stroke:var(--surface3);stroke-width:9;}
+.fund-ring-fill{fill:none;stroke:url(#ringGrad);stroke-width:9;stroke-linecap:round;transition:stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1);}
+.fund-ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.fund-ring-pct{font-size:22px;font-weight:800;color:var(--text);font-family:var(--mono);letter-spacing:-.03em;line-height:1;}
+.fund-ring-lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;font-family:var(--mono);margin-top:3px;}
+.fund-ring-side{flex:1;min-width:0;}
+.fund-raised{font-size:22px;font-weight:800;color:var(--a);font-family:var(--mono);letter-spacing:-.03em;line-height:1.1;}
+.fund-goal{font-size:11.5px;color:var(--text3);font-family:var(--mono);margin-top:3px;}
+.fund-stats-3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+
+/* ── Fundraiser mini-profile ── */
+.fundraiser-box{display:flex;align-items:center;gap:12px;}
+.fundraiser-av{width:44px;height:44px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:#fff;font-family:var(--mono);background:linear-gradient(135deg,var(--a),var(--a2));overflow:hidden;}
+.fundraiser-av img{width:100%;height:100%;object-fit:cover;}
+.fundraiser-meta{flex:1;min-width:0;}
+.fundraiser-name{font-size:13.5px;font-weight:700;color:var(--text);font-family:var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fundraiser-email{font-size:11px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;}
+.fundraiser-kyc{display:inline-flex;align-items:center;gap:4px;font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:100px;margin-top:5px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;}
+
+/* ── Zoomable image hint ── */
+.zoomable{cursor:zoom-in;}
+
+/* ── Lightbox ── */
+.lightbox{position:fixed;inset:0;z-index:600;background:rgba(4,5,14,.88);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:32px;opacity:0;pointer-events:none;transition:opacity var(--ease);}
+.lightbox.show{opacity:1;pointer-events:all;}
+.lightbox img{max-width:92vw;max-height:88vh;border-radius:12px;box-shadow:0 24px 80px rgba(0,0,0,.6);transform:scale(.96);transition:transform var(--ease);}
+.lightbox.show img{transform:scale(1);}
+.lightbox-close{position:absolute;top:20px;right:22px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background var(--ease),transform var(--ease);}
+.lightbox-close:hover{background:rgba(255,255,255,.25);transform:rotate(90deg);}
+.lightbox-close svg{width:18px;height:18px;}
 </style>
 @endpush
 
@@ -196,6 +252,14 @@
             </div>
         </form>
     </div>
+</div>
+
+{{-- Image Lightbox --}}
+<div class="lightbox" id="lightbox">
+    <button type="button" class="lightbox-close" onclick="closeLightbox()" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+    <img src="" alt="Preview" id="lightboxImg">
 </div>
 
 @php
@@ -248,6 +312,18 @@
 
     /* campaign updates */
     $updates = $campaign->updates ?? collect();
+
+    /* fundraiser + donor stats */
+    $fundraiser  = $campaign->user ?? null;
+    $donorCount  = 0;
+    try { $donorCount = $campaign->donations()->count(); } catch (\Throwable $e) {}
+    $avgDonation = $donorCount > 0 ? round($raised / $donorCount) : 0;
+
+    /* progress ring geometry (r = 46) */
+    $ringCirc   = 2 * M_PI * 46;
+    $ringOffset = $ringCirc * (1 - ($percentage / 100));
+
+    $kycStatus = $kyc?->status ?? 'none';
 @endphp
 
 @if(session('success'))
@@ -262,6 +338,38 @@
     {{ session('error') }}
 </div>
 @endif
+
+<div class="detail-toolbar">
+    <div class="crumbs">
+        <a href="{{ route('admin.dashboard') }}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            Dashboard
+        </a>
+        <span class="crumb-sep">/</span>
+        <a href="{{ route('admin.campaign.index') }}">Campaigns</a>
+        <span class="crumb-sep">/</span>
+        <span class="crumb-current">{{ Str::limit($campaign->title, 34) }}</span>
+        <span class="crumb-id">#{{ $campaign->id }}</span>
+    </div>
+    <div class="top-actions">
+        @if(Route::has('campaigns.show'))
+        <a href="{{ route('campaigns.show', $campaign->id) }}" target="_blank" class="tb-action">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+            View live
+        </a>
+        @endif
+        <button type="button" class="tb-action" onclick="copyCampaignLink(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+            Copy link
+        </button>
+        @if(Route::has('admin.campaign.edit'))
+        <a href="{{ route('admin.campaign.edit', $campaign->id) }}" class="tb-action primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+            Edit
+        </a>
+        @endif
+    </div>
+</div>
 
 <div class="page-grid">
 
@@ -762,6 +870,46 @@
             </div>
         </div>
 
+        {{-- Fundraiser --}}
+        <div class="card">
+            <div class="card-header">
+                <div class="card-header-left">
+                    <div class="card-icon ic-blue">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                    </div>
+                    <div>
+                        <div class="card-title">Fundraiser</div>
+                        <div class="card-sub">Campaign owner</div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="fundraiser-box">
+                    <div class="fundraiser-av">
+                        @if($fundraiser?->avatar)
+                            <img src="{{ asset('storage/'.$fundraiser->avatar) }}" alt="">
+                        @else
+                            {{ strtoupper(substr($fundraiser->name ?? 'U', 0, 1)) }}
+                        @endif
+                    </div>
+                    <div class="fundraiser-meta">
+                        <div class="fundraiser-name">{{ $fundraiser->name ?? '—' }}</div>
+                        <div class="fundraiser-email">{{ $fundraiser->email ?? 'No email' }}</div>
+                        @php
+                            $kycPillMap = [
+                                'approved' => ['kyc-pill-approved','✓ KYC Verified'],
+                                'pending'  => ['kyc-pill-pending','● KYC Pending'],
+                                'rejected' => ['kyc-pill-rejected','✗ KYC Rejected'],
+                                'none'     => ['kyc-pill-none','⚠ No KYC'],
+                            ];
+                            [$fkCls,$fkLbl] = $kycPillMap[$kycStatus] ?? $kycPillMap['none'];
+                        @endphp
+                        <span class="fundraiser-kyc {{ $fkCls }}">{{ $fkLbl }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         {{-- Fundraising --}}
         <div class="card">
             <div class="card-header">
@@ -776,22 +924,36 @@
                 </div>
             </div>
             <div class="card-body">
-                <div class="prog-numbers">
-                    <div class="prog-raised">₹{{ number_format($raised) }}</div>
-                    <div class="prog-goal">of ₹{{ number_format($campaign->goal_amount) }}</div>
+                <svg width="0" height="0" style="position:absolute;"><defs><linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#2563eb"/><stop offset="100%" stop-color="#0d9488"/></linearGradient></defs></svg>
+                <div class="fund-ring-row">
+                    <div class="fund-ring-wrap">
+                        <svg class="fund-ring" viewBox="0 0 104 104">
+                            <circle class="fund-ring-bg" cx="52" cy="52" r="46"/>
+                            <circle class="fund-ring-fill" cx="52" cy="52" r="46"
+                                    style="stroke-dasharray:{{ $ringCirc }};stroke-dashoffset:{{ $ringOffset }};"/>
+                        </svg>
+                        <div class="fund-ring-center">
+                            <div class="fund-ring-pct">{{ $percentage }}%</div>
+                            <div class="fund-ring-lbl">funded</div>
+                        </div>
+                    </div>
+                    <div class="fund-ring-side">
+                        <div class="fund-raised">₹{{ number_format($raised) }}</div>
+                        <div class="fund-goal">raised of ₹{{ number_format($campaign->goal_amount) }} goal</div>
+                    </div>
                 </div>
-                <div class="prog-bar">
-                    <div class="prog-fill" style="width:{{ $percentage }}%"></div>
-                </div>
-                <div class="prog-pct">{{ $percentage }}% funded</div>
-                <div class="mini-stats">
+                <div class="fund-stats-3">
                     <div class="mini-stat">
-                        <div class="mini-stat-val">{{ $percentage }}%</div>
-                        <div class="mini-stat-lbl">Completed</div>
+                        <div class="mini-stat-val">{{ number_format($donorCount) }}</div>
+                        <div class="mini-stat-lbl">Donors</div>
                     </div>
                     <div class="mini-stat">
-                        <div class="mini-stat-val" style="font-size:14px;">₹{{ number_format($remaining) }}</div>
+                        <div class="mini-stat-val" style="font-size:13px;">₹{{ number_format($remaining) }}</div>
                         <div class="mini-stat-lbl">Remaining</div>
+                    </div>
+                    <div class="mini-stat">
+                        <div class="mini-stat-val" style="font-size:13px;">₹{{ number_format($avgDonation) }}</div>
+                        <div class="mini-stat-lbl">Avg gift</div>
                     </div>
                 </div>
             </div>
@@ -875,7 +1037,48 @@ document.getElementById('rejectModal').addEventListener('click', function(e){
     if (e.target === this) closeRejectModal();
 });
 document.addEventListener('keydown', function(e){
-    if (e.key === 'Escape') closeRejectModal();
+    if (e.key === 'Escape') { closeRejectModal(); closeLightbox(); }
+});
+
+/* ── Copy campaign link ── */
+function copyCampaignLink(btn){
+    var url = @json(Route::has('campaigns.show') ? route('campaigns.show', $campaign->id) : url('/admin/campaign/'.$campaign->id));
+    var done = function(){
+        var original = btn.innerHTML;
+        btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> Copied!';
+        setTimeout(function(){ btn.innerHTML = original; }, 1600);
+        if (typeof showToast === 'function') showToast('Campaign link copied', 'success');
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(done).catch(function(){ window.prompt('Copy link:', url); });
+    } else {
+        window.prompt('Copy link:', url);
+    }
+}
+
+/* ── Image lightbox ── */
+var lightbox = document.getElementById('lightbox');
+var lightboxImg = document.getElementById('lightboxImg');
+function openLightbox(src){
+    if (!src) return;
+    lightboxImg.src = src;
+    lightbox.classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+function closeLightbox(){
+    if (!lightbox.classList.contains('show')) return;
+    lightbox.classList.remove('show');
+    document.body.style.overflow = '';
+}
+lightbox.addEventListener('click', function(e){ if (e.target === lightbox) closeLightbox(); });
+
+document.querySelectorAll('.cover-wrap img, .kyc-doc-tile-img, .kyc-selfie-img, .kyc-doc-preview-img').forEach(function(img){
+    img.classList.add('zoomable');
+    img.addEventListener('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        openLightbox(img.getAttribute('src'));
+    });
 });
 
 @if(session('success'))

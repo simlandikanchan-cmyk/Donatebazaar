@@ -69,7 +69,7 @@
 .icon-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;}
 .icon-tile{aspect-ratio:1;border-radius:var(--r-xs);border:1.5px solid var(--border2);background:var(--surface2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:var(--text2);transition:all .15s;position:relative;}
 .icon-tile:hover{border-color:var(--a);color:var(--a);background:var(--a-lt);transform:translateY(-2px);}
-.icon-tile.selected{border-color:var(--a);background:var(--a);color:#fff;box-shadow:0 4px 12px rgba(110,86,247,.35);}
+.icon-tile.selected{border-color:var(--a);background:var(--a);color:#fff;box-shadow:0 4px 12px rgba(37,99,235,.35);}
 .icon-tile.selected::after{content:'';position:absolute;top:3px;right:3px;width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.7);}
 .icon-tile i{pointer-events:none;}
 .icon-sel-row{margin-top:12px;padding:10px 13px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);display:flex;align-items:center;gap:10px;}
@@ -83,7 +83,7 @@
 .custom-color-row{display:flex;align-items:center;gap:8px;margin-top:14px;}
 .color-picker-input{width:38px;height:38px;border:1px solid var(--border2);border-radius:var(--r-xs);cursor:pointer;padding:3px;background:var(--surface2);}
 
-.submit-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px 20px;background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;border:none;border-radius:var(--r-sm);font-size:14px;font-weight:700;cursor:pointer;font-family:var(--mono);letter-spacing:-.01em;transition:opacity .2s,transform .15s;box-shadow:0 4px 18px rgba(110,86,247,.35);animation:fadeUp .4s .2s ease both;}
+.submit-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px 20px;background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;border:none;border-radius:var(--r-sm);font-size:14px;font-weight:700;cursor:pointer;font-family:var(--mono);letter-spacing:-.01em;transition:opacity .2s,transform .15s;box-shadow:0 4px 18px rgba(37,99,235,.35);animation:fadeUp .4s .2s ease both;}
 .submit-btn:hover{opacity:.88;transform:translateY(-1px);}
 .submit-btn:active{transform:scale(.98);}
 .submit-btn:disabled{opacity:.6;cursor:not-allowed;transform:none;}
@@ -175,9 +175,9 @@
 
 @php
   $curIcon=old('icon',$category->icon??'fa-heart');
-  $curColor=old('color',$category->color??'#6e56f7');
+  $curColor=old('color',$category->color??'#2563eb');
   $icons=['fa-heart'=>'Heart','fa-book'=>'Book','fa-paw'=>'Paw','fa-user'=>'Person','fa-hand-holding-heart'=>'Giving','fa-stethoscope'=>'Medical','fa-graduation-cap'=>'Education','fa-globe'=>'Global','fa-child'=>'Child','fa-hands-helping'=>'Helping','fa-tree'=>'Nature','fa-home'=>'Housing','fa-water'=>'Water','fa-fire'=>'Emergency','fa-church'=>'Religion','fa-bread-slice'=>'Food','fa-wheelchair'=>'Disability','fa-music'=>'Arts'];
-  $colors=['#6e56f7'=>'Purple','#9b6dff'=>'Violet','#ec4899'=>'Pink','#f04444'=>'Red','#f59e0b'=>'Amber','#05c48a'=>'Emerald','#3b82f6'=>'Blue','#06b6d4'=>'Cyan','#84cc16'=>'Lime','#f97316'=>'Orange','#64748b'=>'Slate','#0f172a'=>'Dark'];
+  $colors=['#2563eb'=>'Purple','#0d9488'=>'Violet','#ec4899'=>'Pink','#f04444'=>'Red','#f59e0b'=>'Amber','#05c48a'=>'Emerald','#3b82f6'=>'Blue','#06b6d4'=>'Cyan','#84cc16'=>'Lime','#f97316'=>'Orange','#64748b'=>'Slate','#0f172a'=>'Dark'];
 @endphp
 
 <div class="page-grid">
@@ -260,7 +260,7 @@
         <div class="custom-color-row" style="margin-top:16px;">
           <label style="font-size:11.5px;font-weight:600;color:var(--text2);font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;">Custom hex</label>
           <input type="color" id="colorPicker" value="{{ $curColor }}" class="color-picker-input" oninput="selectCustomColor(this.value)">
-          <input type="text" id="hexInput" class="f-input" value="{{ $curColor }}" style="font-family:var(--mono);font-size:12px;max-width:110px;" placeholder="#6e56f7" oninput="syncHexInput(this.value)">
+          <input type="text" id="hexInput" class="f-input" value="{{ $curColor }}" style="font-family:var(--mono);font-size:12px;max-width:110px;" placeholder="#2563eb" oninput="syncHexInput(this.value)">
         </div>
       </div>
     </div>
@@ -346,7 +346,7 @@
 
 var state={
   icon:'{{ old("icon",$category->icon??'fa-heart') }}',
-  color:'{{ old("color",$category->color??'#6e56f7') }}',
+  color:'{{ old("color",$category->color??'#2563eb') }}',
   name:'{{ old("name",$category->name) }}',
   active:{{ old('is_active',$category->is_active)?'true':'false' }}
 };

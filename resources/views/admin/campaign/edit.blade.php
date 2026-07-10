@@ -74,7 +74,7 @@
 .action-btn:hover{opacity:.88;transform:translateY(-1px);}
 .action-btn svg{width:13px;height:13px;}
 .action-btn+.action-btn{margin-top:8px;}
-.btn-accent{background:var(--a);color:#fff;border-color:var(--a);box-shadow:0 4px 14px rgba(110,86,247,.28);}
+.btn-accent{background:var(--a);color:#fff;border-color:var(--a);box-shadow:0 4px 14px rgba(37,99,235,.28);}
 .btn-green{background:var(--green);color:#fff;border-color:var(--green);box-shadow:0 4px 14px rgba(5,196,138,.28);}
 .btn-red{background:rgba(240,68,68,.1);color:#b91c1c;border-color:rgba(240,68,68,.25);}
 .btn-ghost{background:var(--surface2);color:var(--text2);border-color:var(--border2);}

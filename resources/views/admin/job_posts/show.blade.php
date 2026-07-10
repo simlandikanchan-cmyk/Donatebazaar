@@ -17,7 +17,7 @@
 .hero-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
 .hero-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:100px;font-size:11px;font-weight:600;font-family:var(--mono)}
 .hero-chip svg{width:11px;height:11px}
-.hc-type{background:var(--a-lt);color:var(--a);border:1px solid rgba(110,86,247,.3)}
+.hc-type{background:var(--a-lt);color:var(--a);border:1px solid rgba(37,99,235,.3)}
 .hc-loc{background:var(--green-lt);color:#059669;border:1px solid rgba(5,196,138,.3)}
 .hc-sal{background:rgba(5,196,138,.2);color:#059669;border:1px solid rgba(5,196,138,.3)}
 .hc-exp{background:var(--blue-lt);color:#2563eb;border:1px solid rgba(59,130,246,.3)}
@@ -82,7 +82,7 @@
 .act-btn svg{width:11px;height:11px}
 .act-btn:active{transform:scale(.96)}
 .ab-view{background:var(--surface2);color:var(--text2);border-color:var(--border2)}
-.ab-view:hover{background:var(--a-lt);color:var(--a);border-color:rgba(110,86,247,.2)}
+.ab-view:hover{background:var(--a-lt);color:var(--a);border-color:rgba(37,99,235,.2)}
 .ab-download{background:var(--green-lt);color:var(--green);border-color:rgba(5,196,138,.2)}
 .ab-download:hover{background:var(--green);color:#fff;border-color:var(--green)}
 .ab-shortlist{background:var(--amber-lt);color:var(--amber);border-color:rgba(245,158,11,.2)}
@@ -90,7 +90,7 @@
 
 /* ── badge sub-classes (not in admin.css) ── */
 .b-shortlisted{background:rgba(5,196,138,.85);color:#fff}
-.b-hired{background:rgba(110,86,247,.85);color:#fff}
+.b-hired{background:rgba(37,99,235,.85);color:#fff}
 
 /* ── side card ── */
 .side-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;animation:fadeUp .4s ease both}
@@ -115,13 +115,13 @@
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 20px;border-radius:var(--r-sm);font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all var(--ease);font-family:var(--font);width:100%}
 .btn:active{transform:scale(.97)}
 .btn svg{width:14px;height:14px}
-.btn-primary{background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;box-shadow:0 4px 18px rgba(110,86,247,.35)}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(110,86,247,.45)}
+.btn-primary{background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;box-shadow:0 4px 18px rgba(37,99,235,.35)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(37,99,235,.45)}
 .btn-secondary{background:var(--surface2);color:var(--text2);border:1px solid var(--border2)}
 .btn-secondary:hover{background:var(--surface3);color:var(--text)}
 .btn-danger{background:var(--red-lt);color:var(--red);border:1px solid rgba(240,68,68,.2)}
 .btn-danger:hover{background:var(--red);color:#fff;border-color:var(--red)}
-.btn-edit{background:var(--a-lt);color:var(--a);border:1px solid rgba(110,86,247,.2)}
+.btn-edit{background:var(--a-lt);color:var(--a);border:1px solid rgba(37,99,235,.2)}
 .btn-edit:hover{background:var(--a);color:#fff;border-color:var(--a)}
 
 /* ── engagement metric ── */

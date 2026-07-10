@@ -62,7 +62,7 @@ tbody tr:hover{background:var(--surface2)}
 
 /* ── feature / remote pills ── */
 .featured-star{display:inline-flex;align-items:center;gap:3px;font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:100px;background:var(--amber-lt);color:var(--amber);border:1px solid rgba(245,158,11,.25);font-family:var(--mono);white-space:nowrap;margin-top:3px}
-.remote-pill{display:inline-flex;align-items:center;gap:3px;font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:100px;background:var(--a-lt);color:var(--a);border:1px solid rgba(110,86,247,.2);font-family:var(--mono);white-space:nowrap}
+.remote-pill{display:inline-flex;align-items:center;gap:3px;font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:100px;background:var(--a-lt);color:var(--a);border:1px solid rgba(37,99,235,.2);font-family:var(--mono);white-space:nowrap}
 .remote-pill svg{width:9px;height:9px}
 
 /* ── compact detail cells ── */
@@ -85,8 +85,8 @@ tbody tr:hover{background:var(--surface2)}
 .act-btn svg{width:11px;height:11px}
 .act-btn:active{transform:scale(.96)}
 .ab-view{background:var(--surface2);color:var(--text2);border-color:var(--border2)}
-.ab-view:hover{background:var(--a-lt);color:var(--a);border-color:rgba(110,86,247,.2)}
-.ab-edit{background:var(--a-lt);color:var(--a);border-color:rgba(110,86,247,.18)}
+.ab-view:hover{background:var(--a-lt);color:var(--a);border-color:rgba(37,99,235,.2)}
+.ab-edit{background:var(--a-lt);color:var(--a);border-color:rgba(37,99,235,.18)}
 .ab-edit:hover{background:var(--a);color:#fff;border-color:var(--a)}
 .ab-delete{background:var(--red-lt);color:var(--red);border-color:rgba(240,68,68,.18)}
 .ab-delete:hover{background:var(--red);color:#fff;border-color:var(--red)}

@@ -21,7 +21,7 @@
 .detail-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;animation:fadeUp .4s .10s ease both}
 .dc-head{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--surface2)}
 .dc-head-left{display:flex;align-items:center;gap:13px}
-.sender-av{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--mono);box-shadow:0 4px 14px rgba(110,86,247,.3)}
+.sender-av{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--mono);box-shadow:0 4px 14px rgba(37,99,235,.3)}
 .sender-name{font-size:15px;font-weight:700;color:var(--text);line-height:1.3}
 .sender-email{font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:2px}
 .dc-body{padding:24px 22px}
@@ -39,8 +39,8 @@
 .act-btn:hover{transform:translateY(-1px)}
 .act-btn:active{transform:scale(.96)}
 .act-btn svg{width:13px;height:13px}
-.ab-reply{background:var(--a-lt);color:var(--a);border-color:rgba(110,86,247,.2)}
-.ab-reply:hover{background:var(--a);color:#fff;box-shadow:0 4px 14px rgba(110,86,247,.35)}
+.ab-reply{background:var(--a-lt);color:var(--a);border-color:rgba(37,99,235,.2)}
+.ab-reply:hover{background:var(--a);color:#fff;box-shadow:0 4px 14px rgba(37,99,235,.35)}
 .ab-delete{background:var(--red-lt);color:var(--red);border-color:rgba(240,68,68,.2)}
 .ab-delete:hover{background:var(--red);color:#fff;box-shadow:0 4px 14px rgba(240,68,68,.3)}
 .badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:4px 9px;border-radius:7px;text-transform:uppercase;letter-spacing:.07em;font-family:var(--mono)}
@@ -91,8 +91,8 @@
 .reply-actions{display:flex;align-items:center;gap:8px}
 .reply-cancel{height:38px;padding:0 16px;border-radius:var(--r-xs);border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:12.5px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all var(--ease)}
 .reply-cancel:hover{background:var(--surface3);color:var(--text)}
-.reply-send{height:38px;padding:0 18px;border-radius:var(--r-xs);border:none;background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;font-size:12.5px;font-weight:600;cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:6px;box-shadow:0 4px 14px rgba(110,86,247,.35);transition:all var(--ease)}
-.reply-send:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(110,86,247,.45)}
+.reply-send{height:38px;padding:0 18px;border-radius:var(--r-xs);border:none;background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;font-size:12.5px;font-weight:600;cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:6px;box-shadow:0 4px 14px rgba(37,99,235,.35);transition:all var(--ease)}
+.reply-send:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(37,99,235,.45)}
 .reply-send svg{width:14px;height:14px;flex-shrink:0}
 .reply-send:disabled{opacity:.6;cursor:not-allowed;transform:none}
 @media(max-width:960px){.detail-grid{grid-template-columns:1fr}.side-panel{flex-direction:row;flex-wrap:wrap}.side-card{flex:1;min-width:240px}}

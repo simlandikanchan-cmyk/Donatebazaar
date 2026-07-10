@@ -13,7 +13,7 @@
 
 @push('page_styles')
 <style>
-.add-btn{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 16px;background:var(--a);color:#fff;border:none;border-radius:var(--r-sm);font-size:12.5px;font-weight:600;text-decoration:none;cursor:pointer;transition:opacity .2s,transform .15s;font-family:var(--font);box-shadow:0 4px 14px rgba(110,86,247,.3);}
+.add-btn{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 16px;background:var(--a);color:#fff;border:none;border-radius:var(--r-sm);font-size:12.5px;font-weight:600;text-decoration:none;cursor:pointer;transition:opacity .2s,transform .15s;font-family:var(--font);box-shadow:0 4px 14px rgba(37,99,235,.3);}
 .add-btn:hover{opacity:.88;transform:translateY(-1px);}
 .add-btn svg{width:13px;height:13px;}
 
@@ -58,8 +58,8 @@
 .active-filters{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px;animation:fadeUp .25s ease both;}
 .active-filters.hide{display:none;}
 .af-label{font-size:11px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;}
-.filter-chip{display:inline-flex;align-items:center;gap:6px;background:var(--a-lt);color:var(--a);border:1px solid rgba(110,86,247,.25);padding:4px 6px 4px 11px;border-radius:100px;font-size:11.5px;font-weight:600;}
-.chip-x{width:16px;height:16px;border-radius:50%;border:none;background:rgba(110,86,247,.15);color:var(--a);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s;}
+.filter-chip{display:inline-flex;align-items:center;gap:6px;background:var(--a-lt);color:var(--a);border:1px solid rgba(37,99,235,.25);padding:4px 6px 4px 11px;border-radius:100px;font-size:11.5px;font-weight:600;}
+.chip-x{width:16px;height:16px;border-radius:50%;border:none;background:rgba(37,99,235,.15);color:var(--a);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s;}
 .chip-x:hover{background:var(--a);color:#fff;}
 .chip-x svg{width:8px;height:8px;}
 .clear-all-btn{font-size:11.5px;font-weight:600;color:var(--text3);background:none;border:none;cursor:pointer;text-decoration:underline;text-underline-offset:2px;}
@@ -315,7 +315,7 @@ tbody tr:hover .cat-icon-box{transform:scale(1.08) rotate(-3deg);}
             <td><span class="serial">{{ str_pad($loop->iteration,2,'0',STR_PAD_LEFT) }}</span></td>
             <td>
               <div class="cat-cell">
-                <div class="cat-icon-box" style="background:{{ $category->color??'#6e56f7' }};"><i class="fa {{ $category->icon??'fa-tag' }}"></i></div>
+                <div class="cat-icon-box" style="background:{{ $category->color??'#2563eb' }};"><i class="fa {{ $category->icon??'fa-tag' }}"></i></div>
                 <div>
                   <div class="cat-name-text">{{ $category->name }}</div>
                   <div class="cat-name-sub">Added {{ $category->created_at->format('M d, Y') }}</div>
@@ -385,9 +385,9 @@ tbody tr:hover .cat-icon-box{transform:scale(1.08) rotate(-3deg);}
     @if(!$categories->isEmpty())
     <div class="cat-grid" id="gridBody">
       @foreach($categories as $category)
-      <div class="cat-grid-item" data-id="{{ $category->id }}" style="--item-color:{{ $category->color??'#6e56f7' }};animation-delay:{{ $loop->index*0.04 }}s;" data-name="{{ strtolower($category->name) }}" data-status="{{ $category->is_active?'active':'inactive' }}" data-campaigns="{{ $category->campaigns_count??0 }}" data-delete-url="{{ route('admin.categories.destroy',$category->id) }}" data-toggle-url="{{ route('admin.categories.toggle',$category->id) }}">
+      <div class="cat-grid-item" data-id="{{ $category->id }}" style="--item-color:{{ $category->color??'#2563eb' }};animation-delay:{{ $loop->index*0.04 }}s;" data-name="{{ strtolower($category->name) }}" data-status="{{ $category->is_active?'active':'inactive' }}" data-campaigns="{{ $category->campaigns_count??0 }}" data-delete-url="{{ route('admin.categories.destroy',$category->id) }}" data-toggle-url="{{ route('admin.categories.toggle',$category->id) }}">
         <input type="checkbox" class="chk row-check grid-check" onchange="toggleRowSelect(this)" aria-label="Select {{ $category->name }}">
-        <div class="grid-icon-box" style="background:{{ $category->color??'#6e56f7' }};"><i class="fa {{ $category->icon??'fa-tag' }}" style="color:#fff;"></i></div>
+        <div class="grid-icon-box" style="background:{{ $category->color??'#2563eb' }};"><i class="fa {{ $category->icon??'fa-tag' }}" style="color:#fff;"></i></div>
         <div class="grid-cat-name">{{ $category->name }}</div>
         <div class="grid-cat-slug">{{ $category->slug }}</div>
         <label class="cat-toggle" style="margin-bottom:12px;" title="Toggle active status">

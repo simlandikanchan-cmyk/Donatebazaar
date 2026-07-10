@@ -223,7 +223,7 @@
 .filter-inp:focus,.filter-sel:focus{border-color:var(--a);box-shadow:0 0 0 3px var(--a-glow);}
 .filter-inp::placeholder{color:var(--text3);}
 .filter-sel{cursor:pointer;min-width:140px;}
-.filter-btn{height:36px;padding:0 18px;background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;border:none;border-radius:var(--r-sm);font-size:12.5px;font-weight:600;font-family:var(--font);cursor:pointer;transition:opacity var(--ease),transform var(--ease);box-shadow:0 3px 10px rgba(110,86,247,.3);}
+.filter-btn{height:36px;padding:0 18px;background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;border:none;border-radius:var(--r-sm);font-size:12.5px;font-weight:600;font-family:var(--font);cursor:pointer;transition:opacity var(--ease),transform var(--ease);box-shadow:0 3px 10px rgba(37,99,235,.3);}
 .filter-btn:hover{opacity:.88;transform:translateY(-1px);}
 .filter-clear{height:36px;padding:0 14px;background:transparent;border:1px solid var(--border2);border-radius:var(--r-sm);font-size:12px;color:var(--text3);font-family:var(--font);cursor:pointer;transition:all var(--ease);text-decoration:none;display:inline-flex;align-items:center;gap:5px;}
 .filter-clear:hover{border-color:var(--red);color:var(--red);}
@@ -249,10 +249,10 @@ tbody tr:hover{background:var(--surface2);}
 
 /* ── BADGES ── */
 .b-shortlisted{background:rgba(5,196,138,.85);color:#fff;}
-.b-hired{background:rgba(110,86,247,.85);color:#fff;}
+.b-hired{background:rgba(37,99,235,.85);color:#fff;}
 
 /* ── ACTION BUTTONS ── */
-.act-link{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:7px;font-size:11.5px;font-weight:500;color:var(--a);background:var(--a-lt);border:1px solid rgba(110,86,247,.2);transition:all var(--ease);text-decoration:none;}
+.act-link{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:7px;font-size:11.5px;font-weight:500;color:var(--a);background:var(--a-lt);border:1px solid rgba(37,99,235,.2);transition:all var(--ease);text-decoration:none;}
 .act-link:hover{background:var(--a);color:#fff;border-color:var(--a);transform:translateY(-1px);}
 .act-link svg{width:11px;height:11px;}
 .cv-link{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:7px;font-size:11.5px;font-weight:500;color:var(--green);background:var(--green-lt);border:1px solid rgba(5,196,138,.2);transition:all var(--ease);text-decoration:none;}

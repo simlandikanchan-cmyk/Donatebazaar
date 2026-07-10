@@ -34,7 +34,7 @@ tbody tr:hover{background:var(--surface2)}
 .u-cell .u-av{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;font-size:11px;font-weight:700;font-family:var(--mono);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .u-cell .u-name{font-weight:600;color:var(--text);font-size:13px;display:block}
 .u-cell .u-email{font-size:10.5px;color:var(--text3);margin-top:1px;font-family:var(--mono)}
-.type-chip{display:inline-flex;padding:4px 11px;border-radius:100px;font-size:10.5px;font-weight:600;font-family:var(--mono);background:var(--a-lt);color:var(--a);border:1px solid rgba(110,86,247,.15)}
+.type-chip{display:inline-flex;padding:4px 11px;border-radius:100px;font-size:10.5px;font-weight:600;font-family:var(--mono);background:var(--a-lt);color:var(--a);border:1px solid rgba(37,99,235,.15)}
 .contact-cell .u-name{font-weight:600;color:var(--text);font-size:12.5px;display:block}
 .contact-cell .u-email{font-size:10.5px;color:var(--text3);margin-top:2px;font-family:var(--mono)}
 .date-cell{font-family:var(--mono);font-size:12px;color:var(--text2);white-space:nowrap}

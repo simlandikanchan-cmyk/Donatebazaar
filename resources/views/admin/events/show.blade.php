@@ -40,7 +40,7 @@
 .status-banner .sb-text{flex:1;min-width:200px;}
 .status-banner .sb-title{font-size:14px;font-weight:700;color:var(--text);font-family:var(--mono);line-height:1.3;}
 .status-banner .sb-sub{font-size:12px;color:var(--text3);margin-top:2px;}
-.sb-pending{background:var(--a-lt);border-color:rgba(110,86,247,.25);}
+.sb-pending{background:var(--a-lt);border-color:rgba(37,99,235,.25);}
 .sb-draft{background:var(--amber-lt);border-color:rgba(245,158,11,.25);}
 .sb-active{background:var(--green-lt);border-color:rgba(5,196,138,.25);}
 .sb-completed{background:var(--blue-lt);border-color:rgba(59,130,246,.25);}
@@ -84,12 +84,12 @@
 .btn-sm{padding:7px 14px;font-size:12px;}
 .btn-approve{background:linear-gradient(135deg,var(--green),#059669);color:#fff;box-shadow:0 4px 18px rgba(5,196,138,.4);}
 .btn-approve:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(5,196,138,.5);}
-.btn-publish{background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;box-shadow:0 4px 18px rgba(110,86,247,.4);}
-.btn-publish:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(110,86,247,.5);}
+.btn-publish{background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;box-shadow:0 4px 18px rgba(37,99,235,.4);}
+.btn-publish:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(37,99,235,.5);}
 .btn-draft{background:var(--amber-lt);color:#b45309;border:1px solid rgba(245,158,11,.3);}
 .btn-draft:hover{background:rgba(245,158,11,.2);}
 .btn-edit{background:var(--surface2);color:var(--text2);border:1px solid var(--border2);}
-.btn-edit:hover{background:var(--a-lt);color:var(--a);border-color:rgba(110,86,247,.3);}
+.btn-edit:hover{background:var(--a-lt);color:var(--a);border-color:rgba(37,99,235,.3);}
 .btn-danger{background:var(--red-lt);color:var(--red);border:1px solid rgba(240,68,68,.2);}
 .btn-danger:hover{background:rgba(240,68,68,.16);}
 .btn-reject{background:var(--red-lt);color:var(--red);border:1px solid rgba(240,68,68,.2);}
@@ -269,7 +269,7 @@
             <h2 style="font-family:var(--mono);font-size:20px;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2;margin-bottom:8px;">{{ $event->title }}</h2>
             <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
               @if($event->campaign?->category)
-                <span style="display:inline-flex;align-items:center;gap:5px;padding:3px 10px;background:var(--a-lt);border:1px solid rgba(110,86,247,.2);border-radius:100px;font-size:11px;font-weight:700;color:var(--a);font-family:var(--mono);">
+                <span style="display:inline-flex;align-items:center;gap:5px;padding:3px 10px;background:var(--a-lt);border:1px solid rgba(37,99,235,.2);border-radius:100px;font-size:11px;font-weight:700;color:var(--a);font-family:var(--mono);">
                   {{ $event->campaign->category->emoji ?? '' }} {{ $event->campaign->category->name }}
                 </span>
               @endif

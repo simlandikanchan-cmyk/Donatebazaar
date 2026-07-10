@@ -65,7 +65,7 @@
 [data-theme="dark"] .b-pending{color:var(--amber);}
 [data-theme="dark"] .b-approved{color:#34d399;}
 [data-theme="dark"] .b-rejected{color:#f87171;}
-.cat-tag{display:inline-block;padding:3px 10px;border-radius:7px;font-size:11px;font-weight:600;background:var(--a-lt);color:var(--a);border:1px solid rgba(110,86,247,.18);}
+.cat-tag{display:inline-block;padding:3px 10px;border-radius:7px;font-size:11px;font-weight:600;background:var(--a-lt);color:var(--a);border:1px solid rgba(37,99,235,.18);}
 .eng-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .eng-box{background:var(--surface2);border:1px solid var(--border);border-radius:11px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;transition:transform var(--ease),box-shadow var(--ease);}
 .eng-box:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.08);}

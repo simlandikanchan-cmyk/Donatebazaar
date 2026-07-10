@@ -23,8 +23,8 @@
 .btn{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 16px;border-radius:var(--r-sm);font-size:12.5px;font-weight:600;border:none;transition:opacity var(--ease),transform var(--ease),box-shadow var(--ease);cursor:pointer;font-family:var(--font);white-space:nowrap;text-decoration:none;}
 .btn:hover{opacity:.88;transform:translateY(-1px);}
 .btn svg{width:13px;height:13px;}
-.btn-primary{background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;box-shadow:0 4px 14px rgba(110,86,247,.35);}
-.btn-primary:hover{box-shadow:0 8px 22px rgba(110,86,247,.45);}
+.btn-primary{background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;box-shadow:0 4px 14px rgba(37,99,235,.35);}
+.btn-primary:hover{box-shadow:0 8px 22px rgba(37,99,235,.45);}
 .btn-ghost{background:var(--surface2);color:var(--text2);border:1px solid var(--border2);}
 .btn-ghost:hover{border-color:var(--a);color:var(--a);}
 .btn-danger{background:rgba(240,68,68,.10);color:var(--red);border:1px solid rgba(240,68,68,.22);}
@@ -68,9 +68,9 @@
 .editor-footer{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-top:1px solid var(--border);background:var(--surface2);}
 .editor-footer span{font-size:11px;color:var(--text3);font-family:var(--mono);}
 .cover-drop{border:2px dashed var(--border2);border-radius:var(--r-sm);background:var(--surface2);padding:28px 20px;text-align:center;cursor:pointer;transition:border-color var(--ease),background var(--ease);position:relative;overflow:hidden;}
-.cover-drop:hover,.cover-drop.drag-over{border-color:var(--a);background:rgba(110,86,247,.04);}
+.cover-drop:hover,.cover-drop.drag-over{border-color:var(--a);background:rgba(37,99,235,.04);}
 .cover-drop input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
-.cover-drop-icon{width:44px;height:44px;border-radius:12px;background:var(--a-lt);border:1px solid rgba(110,86,247,.2);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;}
+.cover-drop-icon{width:44px;height:44px;border-radius:12px;background:var(--a-lt);border:1px solid rgba(37,99,235,.2);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;}
 .cover-drop-icon svg{width:20px;height:20px;stroke:var(--a);fill:none;stroke-width:1.5;}
 .cover-drop p{font-size:13px;font-weight:500;color:var(--text2);margin-bottom:4px;}
 .cover-drop span{font-size:11.5px;color:var(--text3);}
@@ -93,7 +93,7 @@
 .status-option-desc{font-size:11px;color:var(--text3);margin-top:1px;}
 .tags-input-wrap{display:flex;flex-wrap:wrap;gap:6px;padding:8px 10px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm);min-height:42px;cursor:text;transition:border-color var(--ease),box-shadow var(--ease);}
 .tags-input-wrap:focus-within{border-color:var(--a);box-shadow:0 0 0 3px var(--a-glow);}
-.tag-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:100px;background:var(--a-lt);border:1px solid rgba(110,86,247,.25);color:var(--a);font-size:11.5px;font-weight:500;font-family:var(--mono);}
+.tag-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:100px;background:var(--a-lt);border:1px solid rgba(37,99,235,.25);color:var(--a);font-size:11.5px;font-weight:500;font-family:var(--mono);}
 .tag-chip button{background:none;border:none;color:var(--a);font-size:13px;cursor:pointer;line-height:1;padding:0;display:flex;align-items:center;transition:opacity var(--ease);}
 .tag-chip button:hover{opacity:.7;}
 .tags-real-input{border:none;background:transparent;outline:none;font-size:12.5px;color:var(--text);font-family:var(--font);min-width:100px;flex:1;}

@@ -54,7 +54,7 @@
 .cmp-view{background:var(--surface);border:1px solid var(--border2);color:var(--text2);}
 .cmp-view:hover{border-color:var(--a);color:var(--a);background:var(--a-lt);}
 .cmp-view svg{width:13px;height:13px;}
-.cmp-edit{background:var(--a-lt);color:var(--a);border:1px solid rgba(110,86,247,.2);}
+.cmp-edit{background:var(--a-lt);color:var(--a);border:1px solid rgba(37,99,235,.2);}
 .cmp-edit:hover{filter:brightness(.97);}
 .cmp-edit svg{width:13px;height:13px;}
 

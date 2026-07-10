@@ -74,7 +74,7 @@ label.lbl .counter.over{color:var(--red);}
 .toggle-switch input:checked+label{background:var(--a);}
 .toggle-switch input:checked+label::after{transform:translateX(20px);}
 .toggle-switch input.amber-tog:checked+label{background:var(--amber);}
-.toggle-row.active-toggle{background:var(--a-lt);border-color:rgba(110,86,247,.25);}
+.toggle-row.active-toggle{background:var(--a-lt);border-color:rgba(37,99,235,.25);}
 .toggle-row.active-toggle-amber{background:var(--amber-lt);border-color:rgba(245,158,11,.25);}
 
 /* ── STATUS PILLS ── */
@@ -98,9 +98,9 @@ label.lbl .counter.over{color:var(--red);}
 /* ── TAGS INPUT ── */
 .tags-wrap{display:flex;flex-wrap:wrap;gap:6px;padding:9px 12px;min-height:46px;border:1px solid var(--border2);border-radius:var(--r-sm);background:var(--surface2);cursor:text;transition:border-color var(--ease),box-shadow var(--ease),background var(--ease);}
 .tags-wrap:focus-within{border-color:var(--a);box-shadow:0 0 0 3px var(--a-glow);background:var(--surface);}
-.tag-item{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:100px;background:var(--a-lt);border:1px solid rgba(110,86,247,.2);color:var(--a);font-size:12px;font-weight:600;font-family:var(--mono);animation:tagIn .15s ease;}
+.tag-item{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:100px;background:var(--a-lt);border:1px solid rgba(37,99,235,.2);color:var(--a);font-size:12px;font-weight:600;font-family:var(--mono);animation:tagIn .15s ease;}
 @keyframes tagIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:none}}
-.tag-remove{width:14px;height:14px;border-radius:50%;background:rgba(110,86,247,.2);border:none;color:var(--a);cursor:pointer;font-size:9px;display:flex;align-items:center;justify-content:center;transition:background var(--ease);flex-shrink:0;}
+.tag-remove{width:14px;height:14px;border-radius:50%;background:rgba(37,99,235,.2);border:none;color:var(--a);cursor:pointer;font-size:9px;display:flex;align-items:center;justify-content:center;transition:background var(--ease);flex-shrink:0;}
 .tag-remove:hover{background:rgba(240,68,68,.2);color:var(--red);}
 .tag-input{border:none;outline:none;background:transparent;font-size:13px;color:var(--text);font-family:var(--font);min-width:120px;flex:1;padding:2px 0;}
 .tag-input::placeholder{color:var(--text3);}
@@ -140,7 +140,7 @@ label.lbl .counter.over{color:var(--red);}
 .prev-meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
 .prev-chip{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:4px 10px;border-radius:100px;font-family:var(--mono);background:var(--surface2);border:1px solid var(--border2);color:var(--text3);}
 .prev-chip svg{width:10px;height:10px;}
-.prev-chip.remote-chip{background:var(--a-lt);border-color:rgba(110,86,247,.25);color:var(--a);}
+.prev-chip.remote-chip{background:var(--a-lt);border-color:rgba(37,99,235,.25);color:var(--a);}
 .prev-chip.featured-chip{background:var(--amber-lt);border-color:rgba(245,158,11,.25);color:var(--amber);}
 .prev-desc{font-size:12px;color:var(--text3);line-height:1.6;min-height:36px;}
 .prev-status-row{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}
@@ -148,7 +148,7 @@ label.lbl .counter.over{color:var(--red);}
 .prev-lbl{font-size:11px;font-weight:600;font-family:var(--mono);}
 
 /* ── TIPS ── */
-.tips-card{background:linear-gradient(135deg,rgba(110,86,247,.06),rgba(155,109,255,.03));border:1px solid rgba(110,86,247,.15);border-radius:var(--r);padding:18px;animation:fadeUp .4s .12s ease both;}
+.tips-card{background:linear-gradient(135deg,rgba(37,99,235,.06),rgba(13,148,136,.03));border:1px solid rgba(37,99,235,.15);border-radius:var(--r);padding:18px;animation:fadeUp .4s .12s ease both;}
 .tips-hdr{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
 .tips-hdr svg{width:15px;height:15px;color:var(--a);}
 .tips-hdr span{font-size:12px;font-weight:700;color:var(--a);font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;}

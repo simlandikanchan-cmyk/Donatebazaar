@@ -96,7 +96,7 @@
         <div class="chart-sub">Monthly overview — last 12 months</div>
       </div>
       <div class="chart-legend">
-        <div class="leg-item"><div class="leg-dot" style="background:#6e56f7"></div>Total</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#2563eb"></div>Total</div>
         <div class="leg-item"><div class="leg-dot" style="background:#05c48a"></div>Approved</div>
       </div>
     </div>
@@ -293,7 +293,7 @@ function loadChart(){
   if(lineChart){lineChart.destroy();lineChart=null;}
   var ctx=canvas.getContext('2d');
   var g1=ctx.createLinearGradient(0,0,0,190);
-  g1.addColorStop(0,'rgba(110,86,247,.22)');g1.addColorStop(1,'rgba(110,86,247,0)');
+  g1.addColorStop(0,'rgba(37,99,235,.22)');g1.addColorStop(1,'rgba(37,99,235,0)');
   var g2=ctx.createLinearGradient(0,0,0,190);
   g2.addColorStop(0,'rgba(5,196,138,.18)');g2.addColorStop(1,'rgba(5,196,138,0)');
   lineChart=new Chart(ctx,{
@@ -301,7 +301,7 @@ function loadChart(){
     data:{
       labels:chartLabels,
       datasets:[
-        {label:'Total Campaigns',data:chartTotal,borderColor:'#6e56f7',backgroundColor:g1,borderWidth:2.5,pointRadius:4,tension:.45,fill:true,pointBackgroundColor:'#6e56f7',pointBorderColor:tipBg,pointBorderWidth:2,pointHoverRadius:6},
+        {label:'Total Campaigns',data:chartTotal,borderColor:'#2563eb',backgroundColor:g1,borderWidth:2.5,pointRadius:4,tension:.45,fill:true,pointBackgroundColor:'#2563eb',pointBorderColor:tipBg,pointBorderWidth:2,pointHoverRadius:6},
         {label:'Approved',data:chartApproved,borderColor:'#05c48a',backgroundColor:g2,borderWidth:2.5,pointRadius:4,tension:.45,fill:true,pointBackgroundColor:'#05c48a',pointBorderColor:tipBg,pointBorderWidth:2,pointHoverRadius:6}
       ]
     },
@@ -361,7 +361,7 @@ function loadDoughnut(){
       labels: ['Active', 'Pending', 'Paused', 'Rejected', 'Expired'],
       datasets: [{
         data: [{{ $cntActive }}, {{ $cntPending }}, {{ $cntPaused }}, {{ $cntRejected }}, {{ $cntExpired + $cntCompleted }}],
-        backgroundColor: ['#05c48a', '#f59e0b', '#6e56f7', '#f04444', '#94a3b8'],
+        backgroundColor: ['#05c48a', '#f59e0b', '#2563eb', '#f04444', '#94a3b8'],
         borderColor: isDark ? '#1c1d36' : '#fff',
         borderWidth: 3,
         hoverOffset: 10

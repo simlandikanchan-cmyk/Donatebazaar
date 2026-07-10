@@ -70,7 +70,7 @@
 .img-remove:hover{background:var(--red-lt);}
 
 /* ── SUBMIT ── */
-.submit-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px 20px;background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;border:none;border-radius:var(--r-sm);font-size:14px;font-weight:700;cursor:pointer;font-family:var(--mono);letter-spacing:-.01em;transition:opacity .2s,transform .15s;box-shadow:0 4px 18px rgba(110,86,247,.35);animation:fadeUp .4s .25s ease both;}
+.submit-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px 20px;background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;border:none;border-radius:var(--r-sm);font-size:14px;font-weight:700;cursor:pointer;font-family:var(--mono);letter-spacing:-.01em;transition:opacity .2s,transform .15s;box-shadow:0 4px 18px rgba(37,99,235,.35);animation:fadeUp .4s .25s ease both;}
 .submit-btn:hover{opacity:.88;transform:translateY(-1px);}
 .submit-btn:active{transform:scale(.98);}
 .submit-btn:disabled{opacity:.6;cursor:not-allowed;transform:none;}

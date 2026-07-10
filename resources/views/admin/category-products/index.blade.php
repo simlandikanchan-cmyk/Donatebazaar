@@ -55,7 +55,7 @@ td{padding:13px 18px;font-size:13px;vertical-align:middle;}
 .serial{font-size:11.5px;color:var(--text3);font-family:var(--mono);}
 .prod-img{width:52px;height:52px;border-radius:12px;object-fit:cover;border:1px solid var(--border);cursor:pointer;transition:opacity .2s;}
 .prod-img:hover{opacity:.8;}
-.prod-placeholder{width:52px;height:52px;border-radius:12px;background:var(--a-lt);display:flex;align-items:center;justify-content:center;color:var(--a);font-size:18px;flex-shrink:0;border:1px solid rgba(110,86,247,.15);}
+.prod-placeholder{width:52px;height:52px;border-radius:12px;background:var(--a-lt);display:flex;align-items:center;justify-content:center;color:var(--a);font-size:18px;flex-shrink:0;border:1px solid rgba(37,99,235,.15);}
 .prod-name{font-weight:600;color:var(--text);font-size:13.5px;margin-bottom:2px;}
 .prod-desc{font-size:11.5px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px;}
 .type-pill{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:100px;font-size:10.5px;font-weight:600;font-family:var(--mono);text-transform:uppercase;letter-spacing:.04em;background:var(--blue-lt);color:var(--blue);border:1px solid rgba(59,130,246,.18);}
@@ -100,7 +100,7 @@ td{padding:13px 18px;font-size:13px;vertical-align:middle;}
 .empty-state p{font-size:13px;color:var(--text3);margin-bottom:20px;}
 
 /* ── ADD BUTTON ── */
-.add-btn{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 16px;background:var(--a);color:#fff;border:none;border-radius:var(--r-sm);font-size:12.5px;font-weight:600;text-decoration:none;cursor:pointer;transition:opacity .2s,transform .15s;font-family:var(--font);box-shadow:0 4px 14px rgba(110,86,247,.3);}
+.add-btn{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 16px;background:var(--a);color:#fff;border:none;border-radius:var(--r-sm);font-size:12.5px;font-weight:600;text-decoration:none;cursor:pointer;transition:opacity .2s,transform .15s;font-family:var(--font);box-shadow:0 4px 14px rgba(37,99,235,.3);}
 .add-btn:hover{opacity:.88;transform:translateY(-1px);}
 .add-btn svg{width:13px;height:13px;}
 
