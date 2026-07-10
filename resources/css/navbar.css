@@ -594,8 +594,7 @@
 }
 
 /* CSS initials avatar — no external request, no user-controlled URL */
-.db-dropdown__initials,
-.db-mobile__initials {
+.db-dropdown__initials {
     width: 38px;
     height: 38px;
     border-radius: 50%;
@@ -737,114 +736,363 @@
     transform: translateY(-7px) rotate(-45deg);
 }
 
-/* ─── Mobile drawer ──────────────────────────────────────────────── */
-.db-mobile {
+/* ─── Mobile drawer (premium slide-in) ──────────────────────────── */
+.db-drawer {
+    --drawer-text:    #111827;
+    --drawer-text-2:  #6B7280;
+    --drawer-border:  #E5E7EB;
+    --drawer-hover:   #F7F8FA;
+    --drawer-primary: #2563EB;
+    --drawer-success: #16A34A;
+    --drawer-radius:  20px;
+
     display: none;
-    background: var(--db-surface-solid);
-    border-top: 1px solid var(--db-border);
-    overflow: hidden;
-    max-height: 0;
-    transition: max-height 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    height: 100dvh;
+    width: 85%;
+    max-width: 380px;
+    background: #FFFFFF;
+    color: var(--drawer-text);
+    z-index: 1100;
+    flex-direction: column;
+    box-shadow: 24px 0 60px rgba(17, 24, 39, 0.18);
+    border-top-right-radius: var(--drawer-radius);
+    border-bottom-right-radius: var(--drawer-radius);
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                visibility 0s linear 0.25s;
+    font-family: 'Inter', var(--db-font);
 }
 
-.db-mobile.is-open {
-    max-height: 90vh;
+.db-drawer.is-open {
+    transform: translateX(0);
+    visibility: visible;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                visibility 0s;
+}
+
+.db-drawer i,
+.db-drawer svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+/* Header */
+.db-drawer__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px;
+    flex-shrink: 0;
+}
+
+.db-drawer__brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--drawer-text);
+}
+
+.db-drawer__brand-mark {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: var(--drawer-primary);
+    color: #fff;
+}
+
+.db-drawer__brand-name {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+.db-drawer__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin-right: -8px;
+    border: none;
+    background: transparent;
+    border-radius: 10px;
+    color: var(--drawer-text-2);
+    cursor: pointer;
+    transition: background 0.18s ease, color 0.18s ease;
+}
+
+.db-drawer__close:hover {
+    background: var(--drawer-hover);
+    color: var(--drawer-text);
+}
+
+.db-drawer__close:focus-visible {
+    outline: 2px solid var(--drawer-primary);
+    outline-offset: 2px;
+}
+
+/* Scroll area */
+.db-drawer__scroll {
+    flex: 1;
     overflow-y: auto;
-    position: relative;
-    z-index: 2;
+    padding: 8px 16px 16px;
+    -webkit-overflow-scrolling: touch;
 }
 
-.db-mobile__nav {
+/* Primary nav */
+.db-drawer__nav {
     display: flex;
     flex-direction: column;
     gap: 2px;
-    padding: 8px 12px;
 }
 
-.db-mobile__link {
+.db-drawer__item {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 11px 14px;
-    font-family: var(--db-font);
-    font-size: 14.5px;
-    font-weight: 500;
-    color: var(--db-text-muted);
-    text-decoration: none;
-    border-radius: var(--db-radius-sm);
-    background: none;
+    gap: 14px;
+    height: 56px;
+    padding: 0 12px;
     border: none;
+    background: transparent;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--drawer-text);
+    text-decoration: none;
     cursor: pointer;
     text-align: left;
     width: 100%;
-    transition: background var(--db-transition), color var(--db-transition);
+    transition: background 0.18s ease, color 0.18s ease;
 }
 
-.db-mobile__link:hover,
-.db-mobile__link--active {
-    background: var(--db-hover-bg);
-    color: var(--db-accent-from);
+.db-drawer__item:hover,
+.db-drawer__item:active {
+    background: var(--drawer-hover);
 }
 
-.db-mobile__link--sub {
-    font-size: 13.5px;
-    padding-left: 24px;
-    color: var(--db-text-subtle);
-}
-
-.db-mobile__link--cta {
-    color: var(--db-accent-from);
+.db-drawer__item.is-active {
+    color: var(--drawer-primary);
+    background: rgba(37, 99, 235, 0.08);
     font-weight: 600;
-    background: var(--db-hover-bg);
 }
 
-.db-mobile__link--danger {
-    color: var(--db-danger);
+.db-drawer__item-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    color: var(--drawer-text-2);
 }
 
-.db-mobile__link--danger:hover {
-    background: var(--db-danger-bg);
-    color: var(--db-danger);
+.db-drawer__item.is-active .db-drawer__item-icon {
+    color: var(--drawer-primary);
 }
 
-.db-mobile__divider {
+.db-drawer__item-label {
+    flex: 1;
+}
+
+.db-drawer__chevron {
+    display: flex;
+    color: var(--drawer-text-2);
+    transition: transform 0.25s ease;
+}
+
+.db-drawer__item--toggle[aria-expanded="true"] .db-drawer__chevron {
+    transform: rotate(90deg);
+}
+
+/* Expandable submenu (accordion via grid-rows) */
+.db-drawer__sub {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.25s ease;
+}
+
+.db-drawer__sub.is-open {
+    grid-template-rows: 1fr;
+}
+
+.db-drawer__subinner {
+    overflow: hidden;
+}
+
+.db-drawer__subitem {
+    display: flex;
+    align-items: center;
+    height: 48px;
+    margin-left: 36px;
+    padding: 0 12px;
+    font-size: 15.5px;
+    font-weight: 500;
+    color: var(--drawer-text-2);
+    text-decoration: none;
+    border-left: 1px solid var(--drawer-border);
+    transition: color 0.18s ease, background 0.18s ease;
+}
+
+.db-drawer__subitem:hover {
+    color: var(--drawer-text);
+    background: var(--drawer-hover);
+}
+
+/* Divider + user card */
+.db-drawer__divider {
     height: 1px;
-    background: var(--db-border);
-    margin: 0 12px;
+    background: var(--drawer-border);
+    margin: 16px 8px;
 }
 
-.db-mobile__user {
+.db-drawer__user {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 14px 24px;
+    padding: 8px 12px 4px;
 }
 
-.db-mobile__initials {
-    width: 40px;
-    height: 40px;
+.db-drawer__avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid var(--drawer-border);
 }
 
-.db-mobile__user-name {
+.db-drawer__user-meta {
+    min-width: 0;
+}
+
+.db-drawer__user-name {
     font-size: 15px;
     font-weight: 600;
-    color: var(--db-text-primary);
+    color: var(--drawer-text);
+    line-height: 1.3;
 }
 
-.db-mobile__user-email {
-    font-size: 12px;
-    color: var(--db-text-subtle);
-    margin-top: 1px;
+.db-drawer__user-email {
+    font-size: 13px;
+    color: var(--drawer-text-2);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 220px;
 }
 
-.db-mobile__auth {
+/* Quick actions */
+.db-drawer__actions {
     display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 8px;
+}
+
+.db-drawer__cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 52px;
+    margin: 6px 0 8px;
+    background: var(--drawer-primary);
+    color: #fff;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.18s ease, transform 0.1s ease;
+}
+
+.db-drawer__cta:hover {
+    background: #1D4ED8;
+}
+
+.db-drawer__cta:active {
+    transform: scale(0.99);
+}
+
+/* Footer */
+.db-drawer__footer {
+    flex-shrink: 0;
+    padding: 12px 16px 20px;
+    border-top: 1px solid var(--drawer-border);
+}
+
+.db-drawer__signout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 50px;
+    width: 100%;
+    background: transparent;
+    border: 1px solid var(--drawer-border);
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--db-danger, #DC2626);
+    cursor: pointer;
+    transition: background 0.18s ease;
+}
+
+.db-drawer__signout:hover {
+    background: var(--db-danger-bg, rgba(220, 38, 38, 0.06));
+}
+
+/* Guest auth buttons */
+.db-drawer__auth {
+    display: flex;
+    flex-direction: column;
     gap: 10px;
-    padding: 14px 12px;
+}
+
+.db-drawer__auth-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.18s ease, opacity 0.18s ease;
+}
+
+.db-drawer__auth-btn--ghost {
+    border: 1px solid var(--drawer-border);
+    color: var(--drawer-text);
+}
+
+.db-drawer__auth-btn--ghost:hover {
+    background: var(--drawer-hover);
+}
+
+.db-drawer__auth-btn--primary {
+    background: var(--drawer-primary);
+    color: #fff;
+}
+
+.db-drawer__auth-btn--primary:hover {
+    background: #1D4ED8;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .db-drawer,
+    .db-drawer__chevron,
+    .db-drawer__sub {
+        transition: none !important;
+    }
 }
 
 /* ─── Responsive breakpoints ─────────────────────────────────────── */
@@ -856,7 +1104,7 @@
     .db-navbar__nav,
     .db-navbar__actions { display: none; }
     .db-hamburger       { display: flex; }
-    .db-mobile          { display: block; }
+    .db-drawer          { display: flex; }
     .db-navbar__inner   { gap: 0; }
 }
 
@@ -877,64 +1125,8 @@
 }
 
 
-.db-mobile__link--sub {
-    position: relative;
-    padding-left: 34px;
-    font-size: 13.5px;
-    color: var(--text2, #6b7280);
-    font-weight: 500;
-}
-
-.db-mobile__link--sub::before {
-    content: '';
-    position: absolute;
-    left: 16px;
-    top: 0;
-    bottom: 50%;
-    width: 14px;
-    border-left: 1.5px solid #d1d5db;
-    border-bottom: 1.5px solid #d1d5db;
-    border-bottom-left-radius: 6px;
-}
-
-/* Last sub-item under a group shouldn't need special treatment,
-   but if you want the connecting line to only span between items: */
-.db-mobile__link--sub + .db-mobile__link--sub::after {
-    content: '';
-    position: absolute;
-    left: 16px;
-    top: -100%;
-    bottom: 50%;
-    width: 0;
-    border-left: 1.5px solid #d1d5db;
-}
-
-/* ─── Mobile drawer backdrop ──────────────────────────────────────── */
-.db-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(17, 24, 39, 0.45);
-    opacity: 0;
-    visibility: hidden;
-    z-index: 1;
-    transition: opacity var(--db-transition), visibility var(--db-transition);
-}
-
-.db-backdrop.is-open {
-    opacity: 1;
-    visibility: visible;
-}
-
 /* ─── Avatar (dropdown header + mobile drawer) ─────────────────────── */
 .db-dropdown__avatar {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    object-fit: cover;
-    flex-shrink: 0;
-}
-
-.db-mobile__avatar {
     width: 38px;
     height: 38px;
     border-radius: 50%;

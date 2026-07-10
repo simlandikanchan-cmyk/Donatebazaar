@@ -324,93 +324,167 @@
     {{-- ── Mobile drawer backdrop ── --}}
     <div id="db-backdrop" class="db-backdrop"></div>
 
-    {{-- ── Mobile drawer ── --}}
+    {{-- ── Mobile drawer (premium slide-in) ── --}}
     <div id="mobile-drawer"
-         class="db-mobile"
+         class="db-drawer"
          role="dialog"
-         aria-label="Mobile navigation"
-         aria-hidden="true"
-         aria-modal="false">
+         aria-modal="true"
+         aria-label="Menu"
+         aria-hidden="true">
 
-        <nav class="db-mobile__nav" aria-label="Mobile primary navigation">
-            <a href="{{ route('home') }}"
-               class="db-mobile__link {{ request()->routeIs('home') ? 'db-mobile__link--active' : '' }}"
-               @if(request()->routeIs('home')) aria-current="page" @endif>
-                Home
+        {{-- Header --}}
+        <header class="db-drawer__header">
+            <a href="{{ route('home') }}" class="db-drawer__brand" aria-label="DonateBazaar — Go to homepage">
+                <span class="db-drawer__brand-mark" aria-hidden="true">
+                    <i data-lucide="heart"></i>
+                </span>
+                <span class="db-drawer__brand-name">DonateBazaar</span>
             </a>
-            <a href="{{ route('all.campaigns') }}"
-               class="db-mobile__link {{ request()->routeIs('all.campaigns*') ? 'db-mobile__link--active' : '' }}"
-               @if(request()->routeIs('all.campaigns*')) aria-current="page" @endif>
-                Campaigns
-            </a>
-            <a href="{{ route('about') }}" class="db-mobile__link">About</a>
-            <a href="{{ route('how.it.works') }}" class="db-mobile__link db-mobile__link--sub">└ How It Works</a>
-            <a href="{{ route('blogs.index') }}" class="db-mobile__link db-mobile__link--sub">└ Blog</a>
-            <a href="{{ route('events.index') }}" class="db-mobile__link db-mobile__link--sub {{ request()->routeIs('events.index*') ? 'db-mobile__link--active' : '' }}">└ Events</a>
-            <a href="{{ route('partnership') }}" class="db-mobile__link db-mobile__link--sub">└ Partnership</a>
-            <a href="{{ route('ddrf.index') }}" class="db-mobile__link db-mobile__link--sub">└ Disaster Relief</a>
-            <a href="{{ route('volunteer.apply') }}" class="db-mobile__link db-mobile__link--sub">└ Volunteer</a>
-            <a href="{{ route('application.step1') }}" class="db-mobile__link db-mobile__link--sub">└ Become an Organization</a>
-            <a href="{{ route('contact') }}"
-               class="db-mobile__link {{ request()->routeIs('contact') ? 'db-mobile__link--active' : '' }}"
-               @if(request()->routeIs('contact')) aria-current="page" @endif>
-                Contact
-            </a>
-        </nav>
+            <button id="mobile-close" class="db-drawer__close" type="button" aria-label="Close menu">
+                <i data-lucide="x"></i>
+            </button>
+        </header>
 
-        <div class="db-mobile__divider" role="separator"></div>
+        {{-- Scrollable content --}}
+        <div class="db-drawer__scroll">
 
-        @auth
-            <div class="db-mobile__user">
-                {{-- / FIXED: Show actual avatar image in mobile drawer too --}}
-                <img src="{{ auth()->user()->avatar
-                        ? asset('storage/' . auth()->user()->avatar)
-                        : asset('images/default-avatar.png') }}"
-                     alt="{{ e(auth()->user()->name) }}"
-                     class="db-mobile__avatar"
-                     width="38" height="38"
-                     loading="eager"
-                     style="border-radius:50%;object-fit:cover;flex-shrink:0;">
-                <div>
-                    <p class="db-mobile__user-name">{{ e(auth()->user()->name) }}</p>
-                    <p class="db-mobile__user-email">{{ e(auth()->user()->email) }}</p>
-                </div>
-            </div>
+            {{-- Primary navigation --}}
+            <nav class="db-drawer__nav" aria-label="Primary">
 
-            <nav class="db-mobile__nav" aria-label="Account navigation">
-                <a href="{{ Route::has('campaign.create') ? route('campaign.create') : '/campaign/create' }}"
-                   class="db-mobile__link db-mobile__link--cta">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
-                         stroke="currentColor" stroke-width="2.8" stroke-linecap="round"
-                         aria-hidden="true" focusable="false">
-                        <line x1="12" y1="5" x2="12" y2="19"/>
-                        <line x1="5" y1="12" x2="19" y2="12"/>
-                    </svg>
-                    Start Fundraise
+                <a href="{{ route('home') }}"
+                   class="db-drawer__item {{ request()->routeIs('home') ? 'is-active' : '' }}"
+                   @if(request()->routeIs('home')) aria-current="page" @endif>
+                    <span class="db-drawer__item-icon" aria-hidden="true"><i data-lucide="home"></i></span>
+                    <span class="db-drawer__item-label">Home</span>
                 </a>
 
-                @if(auth()->user()->role === 'admin')
-                    <a href="{{ route('admin.dashboard') }}" class="db-mobile__link">Admin Dashboard</a>
-                @else
-                    <a href="{{ route('dashboard') }}" class="db-mobile__link">Dashboard</a>
-                @endif
+                {{-- Campaigns (expandable) --}}
+                <button type="button"
+                        class="db-drawer__item db-drawer__item--toggle"
+                        aria-expanded="false"
+                        aria-controls="drawer-sub-campaigns"
+                        data-drawer-toggle="drawer-sub-campaigns">
+                    <span class="db-drawer__item-icon" aria-hidden="true"><i data-lucide="megaphone"></i></span>
+                    <span class="db-drawer__item-label">Campaigns</span>
+                    <span class="db-drawer__chevron" aria-hidden="true"><i data-lucide="chevron-right"></i></span>
+                </button>
+                <div id="drawer-sub-campaigns" class="db-drawer__sub" inert>
+                    <div class="db-drawer__subinner">
+                        <a href="{{ route('all.campaigns') }}" class="db-drawer__subitem">All Campaigns</a>
+                        <a href="{{ route('all.campaigns') }}" class="db-drawer__subitem">Medical</a>
+                        <a href="{{ route('all.campaigns') }}" class="db-drawer__subitem">Education</a>
+                        <a href="{{ route('all.campaigns') }}" class="db-drawer__subitem">Animal Welfare</a>
+                        <a href="{{ route('ddrf.index') }}" class="db-drawer__subitem">Disaster Relief</a>
+                    </div>
+                </div>
 
-                <a href="{{ route('profile.show') }}" class="db-mobile__link">My Profile</a>
-                <a href="{{ Route::has('my.campaigns') ? route('my.campaigns') : route('dashboard') }}" class="db-mobile__link">My Campaigns</a>
+                <a href="{{ route('all.campaigns') }}"
+                   class="db-drawer__item">
+                    <span class="db-drawer__item-icon" aria-hidden="true"><i data-lucide="layout-grid"></i></span>
+                    <span class="db-drawer__item-label">Categories</span>
+                </a>
 
+                {{-- About (expandable) --}}
+                <button type="button"
+                        class="db-drawer__item db-drawer__item--toggle"
+                        aria-expanded="false"
+                        aria-controls="drawer-sub-about"
+                        data-drawer-toggle="drawer-sub-about">
+                    <span class="db-drawer__item-icon" aria-hidden="true"><i data-lucide="info"></i></span>
+                    <span class="db-drawer__item-label">About</span>
+                    <span class="db-drawer__chevron" aria-hidden="true"><i data-lucide="chevron-right"></i></span>
+                </button>
+                <div id="drawer-sub-about" class="db-drawer__sub" inert>
+                    <div class="db-drawer__subinner">
+                        <a href="{{ route('about') }}" class="db-drawer__subitem">About Us</a>
+                        <a href="{{ route('how.it.works') }}" class="db-drawer__subitem">How It Works</a>
+                        <a href="{{ route('blogs.index') }}" class="db-drawer__subitem">Blog</a>
+                        <a href="{{ route('events.index') }}" class="db-drawer__subitem">Events</a>
+                        <a href="{{ route('partnership') }}" class="db-drawer__subitem">Partnerships</a>
+                        <a href="{{ route('volunteer.apply') }}" class="db-drawer__subitem">Volunteer</a>
+                        <a href="{{ route('application.step1') }}" class="db-drawer__subitem">Become an Organization</a>
+                    </div>
+                </div>
+
+                <a href="{{ route('contact') }}"
+                   class="db-drawer__item {{ request()->routeIs('contact') ? 'is-active' : '' }}"
+                   @if(request()->routeIs('contact')) aria-current="page" @endif>
+                    <span class="db-drawer__item-icon" aria-hidden="true"><i data-lucide="phone"></i></span>
+                    <span class="db-drawer__item-label">Contact</span>
+                </a>
+
+            </nav>
+
+            @auth
+                <div class="db-drawer__divider" role="separator"></div>
+
+                {{-- User card --}}
+                <div class="db-drawer__user">
+                    <img src="{{ auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : asset('images/default-avatar.png') }}"
+                         alt="{{ e(auth()->user()->name) }}"
+                         class="db-drawer__avatar"
+                         width="44" height="44" loading="eager">
+                    <div class="db-drawer__user-meta">
+                        <p class="db-drawer__user-name">{{ e(auth()->user()->name) }}</p>
+                        <p class="db-drawer__user-email">{{ e(auth()->user()->email) }}</p>
+                    </div>
+                </div>
+
+                {{-- Quick actions --}}
+                <nav class="db-drawer__actions" aria-label="Account">
+                    <a href="{{ Route::has('campaign.create') ? route('campaign.create') : '/campaign/create' }}"
+                       class="db-drawer__cta">
+                        <i data-lucide="plus"></i>
+                        <span>Start Fundraiser</span>
+                    </a>
+
+                    <a href="{{ auth()->user()->role === 'admin' ? route('admin.dashboard') : route('dashboard') }}"
+                       class="db-drawer__item">
+                        <span class="db-drawer__item-icon" aria-hidden="true"><i data-lucide="layout-dashboard"></i></span>
+                        <span class="db-drawer__item-label">Dashboard</span>
+                    </a>
+                    <a href="{{ route('profile.show') }}" class="db-drawer__item">
+                        <span class="db-drawer__item-icon" aria-hidden="true"><i data-lucide="user"></i></span>
+                        <span class="db-drawer__item-label">My Profile</span>
+                    </a>
+                    <a href="{{ Route::has('my.campaigns') ? route('my.campaigns') : route('dashboard') }}" class="db-drawer__item">
+                        <span class="db-drawer__item-icon" aria-hidden="true"><i data-lucide="folder"></i></span>
+                        <span class="db-drawer__item-label">My Campaigns</span>
+                    </a>
+                    <a href="{{ Route::has('saved.campaigns') ? route('saved.campaigns') : route('dashboard') }}" class="db-drawer__item">
+                        <span class="db-drawer__item-icon" aria-hidden="true"><i data-lucide="bookmark"></i></span>
+                        <span class="db-drawer__item-label">Saved Campaigns</span>
+                    </a>
+                    <a href="{{ route('recurring.index') }}" class="db-drawer__item">
+                        <span class="db-drawer__item-icon" aria-hidden="true"><i data-lucide="receipt"></i></span>
+                        <span class="db-drawer__item-label">Donation History</span>
+                    </a>
+                    <a href="{{ route('profile.edit') }}" class="db-drawer__item">
+                        <span class="db-drawer__item-icon" aria-hidden="true"><i data-lucide="settings"></i></span>
+                        <span class="db-drawer__item-label">Settings</span>
+                    </a>
+                </nav>
+            @endauth
+
+        </div>
+
+        {{-- Footer --}}
+        <div class="db-drawer__footer">
+            @auth
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="db-mobile__link db-mobile__link--danger">
-                        Sign Out
+                    <button type="submit" class="db-drawer__signout">
+                        <i data-lucide="log-out"></i>
+                        <span>Sign Out</span>
                     </button>
                 </form>
-            </nav>
-        @else
-            <div class="db-mobile__auth">
-                <a href="{{ route('login') }}" class="db-btn db-btn--ghost db-btn--full">Log in</a>
-                <a href="{{ route('register') }}" class="db-btn db-btn--primary db-btn--full">Get Started</a>
-            </div>
-        @endauth
+            @else
+                <div class="db-drawer__auth">
+                    <a href="{{ route('login') }}" class="db-drawer__auth-btn db-drawer__auth-btn--ghost">Log in</a>
+                    <a href="{{ route('register') }}" class="db-drawer__auth-btn db-drawer__auth-btn--primary">Get Started</a>
+                </div>
+            @endauth
+        </div>
 
     </div>
 
