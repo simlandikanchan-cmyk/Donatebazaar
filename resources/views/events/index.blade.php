@@ -6,100 +6,140 @@
 @section('content')
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
 
 :root {
-    --cream:#faf8f4;
-    --ink:#0f0d0a;
-    --ink2:#3d3830;
-    --ink3:#8c8478;
-    --accent:#2563eb ;
-    --accent2:#c8502a;
-    --accent-lt:rgba(37,99,235,.08);
-    --green-lt:rgba(26,122,82,.09);
-    --gold:#b8963e;
-    --gold-lt:rgba(184,150,62,.1);
-    --surface:#ffffff;
-    --surface2:#f5f2ed;
-    --border:rgba(15,13,10,.08);
-    --border2:rgba(15,13,10,.14);
-    --r:16px;
-    --r-sm:10px;
-    --sh:0 2px 12px rgba(15,13,10,.06),0 1px 3px rgba(15,13,10,.04);
-    --sh-hover:0 12px 40px rgba(15,13,10,.14),0 4px 12px rgba(15,13,10,.08);
-    --ease:.22s cubic-bezier(.4,0,.2,1);
+    --bg:           #f4f5fb;
+    --surface:      #ffffff;
+    --surface2:     #f8f9fe;
+    --surface3:     #f0f1fa;
+    --border:       rgba(0,0,0,0.06);
+    --border2:      rgba(0,0,0,0.10);
+    --text:         #0f1117;
+    --text2:        #4b5563;
+    --text3:        #9ca3af;
+    --accent:       #2563eb;
+    --accent2:      #0d9488;
+    --accent-glow:  rgba(37,99,235,0.18);
+    --green:        #16a34a;
+    --yellow:       #f59e0b;
+    --red:          #ef4444;
+    --blue:         #3b82f6;
+    --font:         'DM Sans', sans-serif;
+    --font-mono:    'DM Mono', monospace;
+    --radius:       14px;
+    --radius-sm:    10px;
+    --radius-lg:    24px;
+    --shadow:       0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+    --shadow-md:    0 4px 24px rgba(0,0,0,0.08);
+    --shadow-lg:    0 8px 40px rgba(0,0,0,0.12);
+    --transition:   0.22s cubic-bezier(0.4,0,0.2,1);
 }
 
 /* ── HERO ── */
 .ev-hero {
-    background: var(--ink);
-    padding: 80px 0 60px;
-    position: relative;
-    overflow: hidden;
+    position:relative;
+    width:100%;
+    min-height:68vh;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
 }
-.ev-hero::before {
-    content:'';
+.ev-hero-bg {
     position:absolute;
     inset:0;
-    background:
-        radial-gradient(ellipse 60% 80% at 80% 20%, rgba(200,80,42,.18) 0%, transparent 60%),
-        radial-gradient(ellipse 40% 60% at 10% 80%, rgba(184,150,62,.12) 0%, transparent 55%);
+    z-index:0;
+}
+.ev-hero-bg img {
+    width:100%;height:100%;
+    object-fit:cover;
+    object-position:center 30%;
+}
+.ev-hero-overlay {
+    position:absolute;
+    inset:0;
+    z-index:1;
+    background:linear-gradient(110deg, rgba(5,5,20,.95) 0%, rgba(10,10,35,.88) 50%, rgba(15,15,40,.65) 100%);
+}
+.ev-hero-grid {
+    position:absolute;
+    inset:0;
+    z-index:1;
+    background-image:linear-gradient(rgba(37,99,235,.06) 1px,transparent 1px), linear-gradient(90deg,rgba(37,99,235,.06) 1px,transparent 1px);
+    background-size:60px 60px;
+    opacity:.5;
+    pointer-events:none;
 }
 .ev-hero-inner {
-    max-width:1200px;
-    margin:0 auto;
-    padding:0 24px;
     position:relative;
-    z-index:1;
+    z-index:2;
+    display:flex;
+    flex-direction:column;
+    min-height:68vh;
+}
+.ev-hero-content {
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    max-width:1180px;
+    margin:0 auto;
+    padding:100px 24px 80px;
+    width:100%;
 }
 .ev-hero-tag {
     display:inline-flex;
     align-items:center;
-    gap:8px;
-    background:rgba(255,255,255,.06);
-    border:1px solid rgba(255,255,255,.12);
+    gap:10px;
+    background:rgba(255,255,255,.09);
+    border:1px solid rgba(255,255,255,.2);
+    backdrop-filter:blur(12px);
     border-radius:100px;
-    padding:6px 16px;
-    font-family:'DM Mono',monospace;
-    font-size:11px;
-    color:rgba(255,255,255,.55);
-    letter-spacing:.12em;
+    padding:8px 20px;
+    font-size:11.5px;
+    font-weight:600;
+    letter-spacing:.1em;
     text-transform:uppercase;
-    margin-bottom:20px;
+    color:rgba(255,255,255,.85);
+    width:fit-content;
+    margin-bottom:24px;
+    font-family:var(--font-mono);
 }
 .ev-hero-tag span {
-    width:6px;height:6px;border-radius:50%;
-    background:var(--accent2);
-    animation:pulse 2s ease infinite;
+    width:7px;height:7px;border-radius:50%;
+    background:var(--green);
+    animation:pulse-live 2s ease infinite;
+    flex-shrink:0;
 }
-@keyframes pulse {
-    0%,100%{opacity:1;transform:scale(1);}
-    50%{opacity:.5;transform:scale(1.4);}
+@keyframes pulse-live {
+    0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(16,185,129,.5)}
+    50%{opacity:.8;box-shadow:0 0 0 6px rgba(16,185,129,0)}
 }
 .ev-hero h1 {
-    font-family:'DM Mono',monospace;
-    font-size:clamp(2.4rem,5vw,4rem);
-    font-weight:900;
+    font-family:var(--font-mono);
+    font-size:clamp(2.8rem,5.5vw,4.2rem);
+    font-weight:500;
     color:#fff;
-    line-height:1.1;
-    letter-spacing:-.02em;
-    margin-bottom:16px;
+    line-height:1.05;
+    margin-bottom:20px;
+    max-width:680px;
+    letter-spacing:0;
 }
 .ev-hero h1 em {
     font-style:normal;
-    color:var(--accent2);
+    color:var(--accent);
 }
 .ev-hero-sub {
-    font-family:'DM Sans',sans-serif;
-    font-size:16px;
-    color:rgba(255,255,255,.5);
-    max-width:480px;
-    line-height:1.65;
+    font-size:clamp(15px,1.8vw,17px);
+    color:rgba(255,255,255,.65);
+    font-weight:300;
+    line-height:1.8;
+    max-width:520px;
+    margin-bottom:36px;
 }
 .ev-hero-stats {
     display:flex;
     gap:32px;
-    margin-top:40px;
     flex-wrap:wrap;
 }
 .ev-stat {
@@ -108,9 +148,9 @@
     gap:3px;
 }
 .ev-stat-num {
-    font-family:'DM Sans',sans-serif;
+    font-family:var(--font-mono);
     font-size:2rem;
-    font-weight:800;
+    font-weight:700;
     color:#fff;
     line-height:1;
 }
@@ -124,7 +164,7 @@
 
 /* ── MAIN BODY ── */
 .ev-body {
-    background:var(--cream);
+    background:var(--bg);
     min-height:60vh;
     padding:0 0 80px;
 }
@@ -153,7 +193,7 @@
     top:50%;
     transform:translateY(-50%);
     width:16px;height:16px;
-    color:var(--ink3);
+    color:var(--text3);
     pointer-events:none;
 }
 .ev-search input {
@@ -164,15 +204,15 @@
     background:var(--surface);
     font-family:'DM Sans',sans-serif;
     font-size:14px;
-    color:var(--ink);
+    color:var(--text);
     outline:none;
-    transition:all var(--ease);
-    box-shadow:var(--sh);
+    transition:all var(--transition);
+    box-shadow:var(--shadow);
 }
-.ev-search input::placeholder{color:var(--ink3);}
+.ev-search input::placeholder{color:var(--text3);}
 .ev-search input:focus {
     border-color:var(--accent);
-    box-shadow:0 0 0 4px var(--accent-lt);
+    box-shadow:0 0 0 4px var(--accent-glow);
 }
 .ev-search-clear {
     position:absolute;
@@ -183,16 +223,16 @@
     border-radius:50%;
     border:none;
     background:var(--surface2);
-    color:var(--ink2);
+    color:var(--text2);
     font-size:16px;
     line-height:1;
     cursor:pointer;
     display:flex;
     align-items:center;
     justify-content:center;
-    transition:all var(--ease);
+    transition:all var(--transition);
 }
-.ev-search-clear:hover{background:var(--border2);color:var(--ink);}
+.ev-search-clear:hover{background:var(--border2);color:var(--text);}
 
 .ev-sort {
     display:flex;
@@ -202,14 +242,14 @@
     border:1.5px solid var(--border2);
     border-radius:100px;
     padding:6px 14px;
-    box-shadow:var(--sh);
+    box-shadow:var(--shadow);
 }
 .ev-sort-label {
     font-family:'DM Mono',monospace;
     font-size:10px;
     text-transform:uppercase;
     letter-spacing:.1em;
-    color:var(--ink3);
+    color:var(--text3);
 }
 .ev-sort select {
     border:none;
@@ -217,7 +257,7 @@
     font-family:'DM Sans',sans-serif;
     font-size:13px;
     font-weight:500;
-    color:var(--ink);
+    color:var(--text);
     outline:none;
     cursor:pointer;
     padding-right:4px;
@@ -229,7 +269,7 @@
     position:sticky;
     top:0;
     z-index:100;
-    background:var(--cream);
+    background:var(--bg);
     border-bottom:1px solid var(--border);
     margin-bottom:12px;
 }
@@ -252,9 +292,9 @@
     font-family:'DM Sans',sans-serif;
     font-size:13px;
     font-weight:500;
-    color:var(--ink2);
+    color:var(--text2);
     cursor:pointer;
-    transition:all var(--ease);
+    transition:all var(--transition);
     white-space:nowrap;
     text-decoration:none;
     flex-shrink:0;
@@ -262,12 +302,13 @@
 .ev-filter-btn:hover {
     border-color:var(--accent);
     color:var(--accent);
-    background:var(--accent-lt);
+    background:var(--accent-glow);
 }
 .ev-filter-btn.active {
-    background:var(--ink);
-    border-color:var(--ink);
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    border-color:transparent;
     color:#fff;
+    box-shadow:0 4px 14px rgba(37,99,235,.35);
 }
 .ev-filter-count {
     font-family:'DM Mono',monospace;
@@ -280,17 +321,89 @@
 }
 .ev-filter-btn:not(.active) .ev-filter-count {
     background:var(--surface2);
-    color:var(--ink3);
+    color:var(--text3);
 }
 
 .ev-result-count {
     font-family:'DM Mono',monospace;
     font-size:11px;
-    color:var(--ink3);
+    color:var(--text3);
     text-transform:uppercase;
     letter-spacing:.08em;
     padding:8px 2px 0;
 }
+
+/* ── PERIOD FILTER ── */
+.ev-period-wrap {
+    display:flex;
+    gap:6px;
+    padding:0 0 4px;
+    flex-wrap:wrap;
+}
+.ev-period-btn {
+    padding:7px 18px;
+    border-radius:100px;
+    border:1.5px solid var(--border2);
+    background:var(--surface);
+    font-family:'DM Sans',sans-serif;
+    font-size:12.5px;
+    font-weight:500;
+    color:var(--text2);
+    cursor:pointer;
+    transition:all var(--transition);
+    white-space:nowrap;
+}
+.ev-period-btn:hover {
+    border-color:var(--accent);
+    color:var(--accent);
+    background:var(--accent-glow);
+}
+.ev-period-btn.active {
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    border-color:transparent;
+    color:#fff;
+    box-shadow:0 4px 14px rgba(37,99,235,.35);
+}
+
+/* ── SMOOTH CARD TRANSITIONS ── */
+.ev-card {
+    transition:transform var(--transition), box-shadow var(--transition), border-color var(--transition), opacity .35s ease, transform .35s ease;
+}
+.ev-card--hidden {
+    display:none;
+}
+.ev-card--fade {
+    opacity:0;
+    transform:translateY(12px) scale(.97);
+    pointer-events:none;
+}
+
+/* ── DESCRIPTION PREVIEW ── */
+.ev-card-desc {
+    font-size:13px;
+    color:var(--text3);
+    line-height:1.5;
+    margin-bottom:12px;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+}
+
+/* ── TIME REMAINING ── */
+.ev-time-remaining {
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    font-size:10.5px;
+    font-family:'DM Mono',monospace;
+    color:var(--accent2);
+    padding:3px 10px;
+    border-radius:100px;
+    background:rgba(13,148,136,.08);
+    margin-top:4px;
+}
+.ev-time-remaining svg{width:10px;height:10px;}
 
 /* ── SECTION HEADING ── */
 .ev-section-head {
@@ -300,11 +413,11 @@
     margin:32px 0 24px;
 }
 .ev-section-title {
-    font-family:'Playfair Display',serif;
-    font-size:1.5rem;
-    font-weight:800;
-    color:var(--ink);
-    letter-spacing:-.02em;
+    font-family:var(--font-mono);
+    font-size:1.2rem;
+    font-weight:700;
+    color:var(--text);
+    letter-spacing:-.01em;
 }
 .ev-section-line {
     flex:1;
@@ -314,7 +427,7 @@
 .ev-section-count {
     font-family:'DM Mono',monospace;
     font-size:11px;
-    color:var(--ink3);
+    color:var(--text3);
 }
 
 /* ── GRID ── */
@@ -328,11 +441,11 @@
 /* ── CARD ── */
 .ev-card {
     background:var(--surface);
-    border:1px solid var(--border);
-    border-radius:var(--r);
+    border:1.5px solid var(--border2);
+    border-radius:var(--radius-lg);
     overflow:hidden;
-    box-shadow:var(--sh);
-    transition:transform var(--ease), box-shadow var(--ease), border-color var(--ease), opacity .3s ease;
+    box-shadow:var(--shadow);
+    transition:transform var(--transition), box-shadow var(--transition), border-color var(--transition), opacity .3s ease;
     display:flex;
     flex-direction:column;
     text-decoration:none;
@@ -343,13 +456,13 @@
 }
 @keyframes cardIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 .ev-card:hover {
-    box-shadow:var(--sh-hover);
-    transform:translateY(-4px);
-    border-color:rgba(15,13,10,.16);
+    box-shadow:0 24px 60px rgba(37,99,235,.13);
+    transform:translateY(-6px);
+    border-color:rgba(37,99,235,.28);
 }
 .ev-card:focus-visible {
     border-color:var(--accent);
-    box-shadow:0 0 0 4px var(--accent-lt), var(--sh-hover);
+    box-shadow:var(--shadow-lg);
 }
 .ev-card--hidden{display:none;}
 .ev-section--empty{display:none;}
@@ -361,6 +474,13 @@
     overflow:hidden;
     background:var(--surface2);
     flex-shrink:0;
+}
+.ev-card-cover::after {
+    content:'';
+    position:absolute;
+    inset:0;
+    background:linear-gradient(135deg, rgba(0,0,0,.35) 0%, transparent 60%);
+    pointer-events:none;
 }
 .ev-card-cover img {
     width:100%;height:100%;
@@ -377,7 +497,7 @@
 }
 .ev-card-cover-placeholder svg {
     width:40px;height:40px;
-    color:var(--ink3);
+    color:var(--text3);
     opacity:.3;
 }
 
@@ -385,18 +505,20 @@
 .ev-date-badge {
     position:absolute;
     top:14px;left:14px;
-    background:var(--ink);
-    color:#fff;
+    background:rgba(255,255,255,.93);
+    backdrop-filter:blur(8px);
+    color:var(--text);
     border-radius:10px;
     padding:8px 12px;
     text-align:center;
     min-width:54px;
-    box-shadow:0 4px 14px rgba(0,0,0,.25);
+    box-shadow:0 4px 14px rgba(0,0,0,.12);
+    border:1px solid rgba(37,99,235,.15);
 }
 .ev-date-day {
-    font-family:'Playfair Display',serif;
-    font-size:1.5rem;
-    font-weight:900;
+    font-family:var(--font-mono);
+    font-size:1.3rem;
+    font-weight:700;
     line-height:1;
 }
 .ev-date-mon {
@@ -426,7 +548,7 @@
     letter-spacing:.06em;
 }
 .ev-status-active  {background:rgba(26,122,82,.9);color:#fff;}
-.ev-status-pending {background:rgba(184,150,62,.9);color:#fff;}
+.ev-status-pending {background:var(--yellow);color:#fff;}
 .ev-status-expired {background:rgba(100,100,100,.8);color:#fff;}
 
 /* card body */
@@ -448,7 +570,7 @@
     font-family:'DM Sans',sans-serif;
     font-size:1.1rem;
     font-weight:800;
-    color:var(--ink);
+    color:var(--text);
     line-height:1.3;
     margin-bottom:10px;
     letter-spacing:-.01em;
@@ -464,7 +586,7 @@
     align-items:center;
     gap:5px;
     font-size:12px;
-    color:var(--ink3);
+    color:var(--text3);
     font-family:'DM Sans',sans-serif;
     min-width:0;
 }
@@ -486,21 +608,21 @@
     justify-content:space-between;
     font-size:11px;
     font-family:'DM Mono',monospace;
-    color:var(--ink3);
+    color:var(--text3);
     margin-bottom:5px;
 }
-.ev-goal-label span:first-child { color:var(--ink2); font-weight:500; }
+.ev-goal-label span:first-child { color:var(--text2); font-weight:500; }
 .ev-goal-bar {
-    height:4px;
-    background:var(--surface2);
-    border-radius:100px;
+    height:6px;
+    background:var(--surface3);
+    border-radius:3px;
     overflow:hidden;
 }
 .ev-goal-fill {
     height:100%;
-    border-radius:100px;
-    background:linear-gradient(90deg,var(--accent),var(--gold));
-    transition:width .8s ease;
+    border-radius:3px;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    transition:width .9s cubic-bezier(.4,0,.2,1);
 }
 
 /* card footer */
@@ -515,7 +637,7 @@
 }
 .ev-spots {
     font-size:12px;
-    color:var(--ink3);
+    color:var(--text3);
     font-family:'DM Sans',sans-serif;
     display:flex;
     align-items:center;
@@ -530,26 +652,27 @@
     gap:6px;
     padding:8px 18px;
     border-radius:100px;
-    background:var(--ink);
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
     color:#fff;
     font-family:'DM Sans',sans-serif;
     font-size:12px;
     font-weight:600;
     text-decoration:none;
-    transition:all var(--ease);
+    transition:all var(--transition);
     border:none;
     cursor:pointer;
     white-space:nowrap;
+    box-shadow:0 4px 14px rgba(37,99,235,.35);
 }
 .ev-reg-btn:hover {
-    background:var(--accent);
-    transform:translateY(-1px);
-    box-shadow:0 4px 14px rgba(200,80,42,.35);
+    opacity:.94;
+    transform:translateY(-2px);
+    box-shadow:0 12px 32px rgba(37,99,235,.55);
 }
 .ev-reg-btn svg{width:12px;height:12px;}
 .ev-reg-btn.disabled {
     background:var(--surface2);
-    color:var(--ink3);
+    color:var(--text3);
     cursor:not-allowed;
     pointer-events:none;
 }
@@ -559,7 +682,7 @@
     grid-column:1/-1;
     text-align:center;
     padding:60px 20px;
-    color:var(--ink3);
+    color:var(--text3);
 }
 .ev-empty svg, .ev-no-results svg {
     width:48px;height:48px;
@@ -568,9 +691,10 @@
     display:block;
 }
 .ev-empty-title {
-    font-family:'Playfair Display',serif;
-    font-size:1.2rem;
-    color:var(--ink2);
+    font-family:var(--font-mono);
+    font-size:1.1rem;
+    font-weight:600;
+    color:var(--text2);
     margin-bottom:6px;
 }
 .ev-empty-sub { font-size:13px; }
@@ -580,37 +704,49 @@
 .ev-category-section.hidden { display:none; }
 
 @media(max-width:640px){
-    .ev-hero{padding:56px 0 40px;}
+    .ev-hero-content{padding:64px 20px 48px;}
     .ev-grid{grid-template-columns:1fr;}
     .ev-hero-stats{gap:20px;}
     .ev-toolbar{flex-direction:column;align-items:stretch;}
     .ev-sort{justify-content:space-between;}
+    .ev-period-wrap{flex-wrap:nowrap;overflow-x:auto;padding-bottom:6px;scrollbar-width:none;}
+    .ev-period-wrap::-webkit-scrollbar{display:none;}
+    .ev-period-btn{flex-shrink:0;}
 }
 </style>
 
 {{-- ── HERO ── --}}
 <section class="ev-hero">
+    <div class="ev-hero-bg">
+        @if(isset($heroImage) && $heroImage)
+            <img src="{{ asset('storage/'.$heroImage) }}" alt="">
+        @endif
+    </div>
+    <div class="ev-hero-overlay"></div>
+    <div class="ev-hero-grid"></div>
     <div class="ev-hero-inner">
-        <div class="ev-hero-tag">
-            <span></span>
-            Live Events
-        </div>
-        <h1>Make an <em>Impact</em><br>in Person</h1>
-        <p class="ev-hero-sub">
-            Join events that matter. Every registration brings real change to real communities.
-        </p>
-        <div class="ev-hero-stats">
-            <div class="ev-stat">
-                <div class="ev-stat-num">{{ $totalEvents }}</div>
-                <div class="ev-stat-lbl">Total Events</div>
+        <div class="ev-hero-content">
+            <div class="ev-hero-tag">
+                <span></span>
+                Live Events
             </div>
-            <div class="ev-stat">
-                <div class="ev-stat-num">{{ $activeEvents }}</div>
-                <div class="ev-stat-lbl">Active Now</div>
-            </div>
-            <div class="ev-stat">
-                <div class="ev-stat-num">{{ $categories->count() }}</div>
-                <div class="ev-stat-lbl">Categories</div>
+            <h1>Make an <em>Impact</em><br>in Person</h1>
+            <p class="ev-hero-sub">
+                Join events that matter. Every registration brings real change to real communities.
+            </p>
+            <div class="ev-hero-stats">
+                <div class="ev-stat">
+                    <div class="ev-stat-num">{{ $totalEvents }}</div>
+                    <div class="ev-stat-lbl">Total Events</div>
+                </div>
+                <div class="ev-stat">
+                    <div class="ev-stat-num">{{ $activeEvents }}</div>
+                    <div class="ev-stat-lbl">Active Now</div>
+                </div>
+                <div class="ev-stat">
+                    <div class="ev-stat-num">{{ $categories->count() }}</div>
+                    <div class="ev-stat-lbl">Categories</div>
+                </div>
             </div>
         </div>
     </div>
@@ -637,6 +773,14 @@
                     <option value="date-desc">Latest first</option>
                 </select>
             </div>
+        </div>
+
+        {{-- ── PERIOD FILTER ── --}}
+        <div class="ev-period-wrap">
+            <button class="ev-period-btn" data-period="today" onclick="filterPeriod('today', this)">Today</button>
+            <button class="ev-period-btn" data-period="week" onclick="filterPeriod('week', this)">This Week</button>
+            <button class="ev-period-btn" data-period="month" onclick="filterPeriod('month', this)">This Month</button>
+            <button class="ev-period-btn active" data-period="all" onclick="filterPeriod('all', this)">All Upcoming</button>
         </div>
 
         {{-- ── FILTER TABS ── --}}
@@ -683,12 +827,18 @@
                             : 0;
                         $canRegister = $event->isActive() && !$event->hasEnded() && !$event->isFull();
                     @endphp
+                    @php
+                        $diffNow = $event->event_date ? now()->diffInDays($event->event_date, false) : 999;
+                        $period = $diffNow < 0 ? 'past' : ($diffNow == 0 ? 'today' : ($diffNow <= 7 ? 'week' : ($diffNow <= 30 ? 'month' : 'future')));
+                        $descPreview = $event->description ? strip_tags(substr($event->description, 0, 120)) : '';
+                    @endphp
                     <div class="ev-card"
                          data-url="{{ route('events.show', $event->id) }}"
                          data-title="{{ strtolower($event->title) }}"
                          data-location="{{ strtolower($event->location ?? '') }}"
                          data-date="{{ $event->event_date?->format('Y-m-d') ?? '' }}"
                          data-time="{{ $event->start_time ?? '' }}"
+                         data-period="{{ $period }}"
                          tabindex="0"
                          role="link"
                          aria-label="View event: {{ $event->title }}"
@@ -726,6 +876,17 @@
                             </div>
 
                             <div class="ev-card-title">{{ $event->title }}</div>
+
+                            @if($descPreview)
+                                <div class="ev-card-desc">{{ $descPreview }}@if(strlen($event->description) > 120)&hellip;@endif</div>
+                            @endif
+
+                            @if($diffNow >= 0 && $diffNow <= 7)
+                                <div class="ev-time-remaining">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    @if($diffNow == 0) Today @elseif($diffNow == 1) Tomorrow @else In {{ $diffNow }} days @endif
+                                </div>
+                            @endif
 
                             <div class="ev-card-meta">
                                 @if($event->start_time)
@@ -810,7 +971,7 @@
                             @elseif($event->isFull())
                                 <span class="ev-reg-btn disabled">Full</span>
                             @else
-                                <a href="{{ route('events.show', $event->id) }}" class="ev-reg-btn" style="background:var(--surface2);color:var(--ink2);">
+                                <a href="{{ route('events.show', $event->id) }}" class="ev-reg-btn" style="background:var(--surface2);color:var(--text2);">
                                     View Details
                                 </a>
                             @endif
@@ -840,7 +1001,7 @@
                 <path stroke-linecap="round" d="M21 21l-4.3-4.3"/>
             </svg>
             <div class="ev-empty-title">No matching events</div>
-            <div class="ev-empty-sub">Try a different search term or category.</div>
+            <div class="ev-empty-sub">Try adjusting your search, category, or time period.</div>
             <button type="button" class="ev-reg-btn" onclick="resetFilters()">Clear filters</button>
         </div>
 
@@ -855,9 +1016,25 @@
     const countEl     = document.getElementById('evCount');
     const noResults   = document.getElementById('evNoResults');
     let activeCategory = 'all';
+    let activePeriod = 'all';
 
     function sortKey(el) {
         return (el.dataset.date || '0000-00-00') + ' ' + (el.dataset.time || '00:00');
+    }
+
+    function animateCard(card, show) {
+        if (show) {
+            card.classList.remove('ev-card--hidden');
+            requestAnimationFrame(function() {
+                card.classList.remove('ev-card--fade');
+            });
+        } else {
+            card.classList.add('ev-card--fade');
+            setTimeout(function() {
+                card.classList.add('ev-card--hidden');
+                card.classList.remove('ev-card--fade');
+            }, 300);
+        }
     }
 
     function applyFilters() {
@@ -882,11 +1059,13 @@
             cards.forEach(c => grid.appendChild(c));
 
             let visible = 0;
-            cards.forEach(card => {
+            cards.forEach(function(card) {
                 const hay = (card.dataset.title + ' ' + card.dataset.location).toLowerCase();
-                const match = !term || hay.includes(term);
-                card.classList.toggle('ev-card--hidden', !match);
-                if (match) visible++;
+                const matchesSearch = !term || hay.includes(term);
+                const matchesPeriod = activePeriod === 'all' || card.dataset.period === activePeriod;
+                const show = matchesSearch && matchesPeriod;
+                animateCard(card, show);
+                if (show) visible++;
             });
 
             section.classList.toggle('ev-section--empty', visible === 0);
@@ -905,30 +1084,40 @@
         applyFilters();
     };
 
+    window.filterPeriod = function (period, btn) {
+        document.querySelectorAll('.ev-period-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activePeriod = period;
+        applyFilters();
+    };
+
     window.resetFilters = function () {
         searchInput.value = '';
         activeCategory = 'all';
+        activePeriod = 'all';
         sortSel.value = 'date-asc';
         document.querySelectorAll('.ev-filter-btn').forEach(b =>
             b.classList.toggle('active', b.dataset.cat === 'all'));
+        document.querySelectorAll('.ev-period-btn').forEach(b =>
+            b.classList.toggle('active', b.dataset.period === 'all'));
         applyFilters();
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     if (searchInput) searchInput.addEventListener('input', applyFilters);
     if (sortSel)     sortSel.addEventListener('change', applyFilters);
-    if (clearBtn)    clearBtn.addEventListener('click', () => {
+    if (clearBtn)    clearBtn.addEventListener('click', function () {
         searchInput.value = '';
         applyFilters();
         searchInput.focus();
     });
 
-    document.querySelectorAll('.ev-card').forEach(card => {
-        card.addEventListener('click', e => {
+    document.querySelectorAll('.ev-card').forEach(function (card) {
+        card.addEventListener('click', function (e) {
             if (e.target.closest('a, button, select, input')) return;
             window.location.href = card.dataset.url;
         });
-        card.addEventListener('keydown', e => {
+        card.addEventListener('keydown', function (e) {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
                 window.location.href = card.dataset.url;
