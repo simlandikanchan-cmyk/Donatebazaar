@@ -741,6 +741,103 @@ button { font-family:var(--font); }
 }
 .goal-reached-pill svg { width:11px; height:11px; }
 .overfund-note { font-size:11.5px; line-height:1.55; margin-top:8px; }
+
+/* ─── Top Scroll Progress ─── */
+.scroll-progress {
+    position:fixed; top:0; left:0; right:0; height:3px; z-index:900;
+    background:transparent; pointer-events:none;
+}
+.scroll-progress-fill {
+    height:100%; width:0%;
+    background:linear-gradient(90deg,var(--accent),var(--accent2),var(--orange));
+    box-shadow:0 0 12px rgba(99,102,241,.5);
+    transition:width .12s linear;
+}
+
+/* ─── Hero CTA ─── */
+.hero-cta { display:flex; flex-wrap:wrap; gap:12px; margin-top:26px; position:relative; z-index:1; }
+.hero-donate-btn {
+    display:inline-flex; align-items:center; gap:9px;
+    padding:14px 30px; border:none; border-radius:100px;
+    background:linear-gradient(135deg,var(--orange),var(--orange2));
+    color:#fff; font-size:14.5px; font-weight:700; cursor:pointer;
+    box-shadow:0 10px 30px rgba(249,115,22,.45);
+    transition:transform var(--transition), box-shadow var(--transition);
+}
+.hero-donate-btn:hover { transform:translateY(-2px); box-shadow:0 14px 38px rgba(249,115,22,.55); }
+.hero-donate-btn svg { width:17px; height:17px; }
+.hero-share-btn {
+    display:inline-flex; align-items:center; gap:9px;
+    padding:14px 26px; border-radius:100px;
+    background:rgba(255,255,255,.1); border:1.5px solid rgba(255,255,255,.25);
+    backdrop-filter:blur(12px); color:#fff; font-size:14.5px; font-weight:600; cursor:pointer;
+    transition:all var(--transition);
+}
+.hero-share-btn:hover { background:rgba(255,255,255,.18); border-color:rgba(255,255,255,.45); }
+.hero-share-btn svg { width:16px; height:16px; }
+
+/* ─── Story Typography ─── */
+.story { font-size:15px; line-height:1.95; color:var(--text2); font-weight:300; max-width:680px; }
+.story p { margin-bottom:16px; }
+.story a { color:var(--accent); font-weight:600; text-decoration:underline; text-underline-offset:2px; text-decoration-color:var(--accent-glow); }
+.story a:hover { text-decoration-color:var(--accent); }
+.story strong { color:var(--text); font-weight:600; }
+.story ul, .story ol { margin:0 0 16px 22px; }
+.story li { margin-bottom:7px; }
+.story-dropcap::first-letter {
+    font-family:var(--font-display); font-weight:700;
+    font-size:3.4rem; line-height:.8; float:left;
+    margin:6px 14px 0 0; color:var(--accent);
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+}
+
+/* ─── Social Share ─── */
+.share-social { display:grid; grid-template-columns:repeat(4,1fr); gap:9px; margin-top:14px; }
+.share-soc-btn {
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
+    padding:12px 6px; border:1.5px solid var(--border2); border-radius:var(--radius-sm);
+    background:var(--surface2); cursor:pointer; transition:all var(--transition);
+    font-size:10.5px; font-weight:600; color:var(--text2); text-align:center;
+}
+.share-soc-btn:hover { transform:translateY(-2px); border-color:var(--accent); color:var(--accent); background:var(--accent-glow); }
+.share-soc-btn svg { width:18px; height:18px; }
+.share-soc-btn.s-wa:hover   { border-color:#25d366; color:#25d366; background:rgba(37,211,102,.08); }
+.share-soc-btn.s-fb:hover   { border-color:#1877f2; color:#1877f2; background:rgba(24,119,242,.08); }
+.share-soc-btn.s-x:hover    { border-color:#0f1419; color:#0f1419; background:rgba(15,20,25,.06); }
+.share-soc-btn.s-copy:hover { border-color:var(--accent); color:var(--accent); background:var(--accent-glow); }
+.share-copy-row {
+    display:flex; align-items:center; gap:8px; margin-top:11px;
+    padding:9px 12px; background:var(--surface2); border:1px solid var(--border2);
+    border-radius:var(--radius-sm); font-size:12px; color:var(--text3);
+    font-family:var(--font-mono); cursor:pointer; transition:all var(--transition);
+}
+.share-copy-row:hover { border-color:var(--accent); color:var(--accent); }
+.share-copy-row svg { width:13px; height:13px; flex-shrink:0; }
+
+/* ─── Donor Top Supporter ─── */
+.donor-row.top-supporter {
+    background:linear-gradient(120deg,rgba(245,158,11,.1),rgba(249,115,22,.06));
+    border-color:rgba(245,158,11,.3);
+}
+.donor-row.top-supporter::before {
+    content:''; position:absolute; left:0; top:0; bottom:0; width:3px;
+    background:linear-gradient(180deg,#f59e0b,#f97316); border-radius:3px 0 0 3px;
+}
+.donor-row { position:relative; }
+.top-supporter-badge {
+    display:inline-flex; align-items:center; gap:4px; margin-top:4px;
+    font-size:9px; font-weight:700; letter-spacing:.05em; text-transform:uppercase;
+    color:#b45309; background:rgba(245,158,11,.14); padding:2px 8px; border-radius:100px;
+}
+.top-supporter-badge svg { width:10px; height:10px; }
+
+@media(max-width:480px){
+    .share-social { grid-template-columns:repeat(4,1fr); gap:7px; }
+    .share-soc-btn { font-size:9.5px; padding:10px 4px; }
+    .hero-cta { flex-direction:column; }
+    .hero-donate-btn, .hero-share-btn { width:100%; justify-content:center; }
+}
 </style>
 
 
@@ -788,7 +885,12 @@ button { font-family:var(--font); }
 
     // Recent donations for sticky bar ticker
     $latestDonation = $campaign->donations->sortByDesc('created_at')->first();
+    $topAmount = $campaign->donations->max('total_amount') ?? 0;
 @endphp
+
+
+{{-- Top scroll progress --}}
+<div class="scroll-progress"><div class="scroll-progress-fill" id="scrollProgressFill"></div></div>
 
 
 {{-- ═══ HERO ═══ --}}
@@ -899,6 +1001,17 @@ button { font-family:var(--font); }
 </div>
 @endif
             </div>
+
+            <div class="hero-cta">
+                <button type="button" class="hero-donate-btn" onclick="scrollToDonate()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                    Donate Now
+                </button>
+                <button type="button" class="hero-share-btn" onclick="shareCampaign()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                    Share
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -914,8 +1027,8 @@ button { font-family:var(--font); }
         <div class="sec-card reveal">
             <div class="sec-body-pad">
                 <div class="eyebrow">About this Campaign</div>
-                <h2 class="sec-title">{{ $campaign->title }}</h2>
-                <div class="sec-text">{!! nl2br(e($campaign->description)) !!}</div>
+                <h2 class="sec-title">The Story Behind <em>This Cause</em></h2>
+                <div class="story story-dropcap">{!! nl2br(e($campaign->description)) !!}</div>
 
                 <div class="mission-chips">
                     <span class="mission-chip chip-verified">
@@ -954,6 +1067,9 @@ button { font-family:var(--font); }
             </div>
 
             {{-- ── Stats Strip — Total / Cash / Products ── --}}
+            <div style="padding:22px 30px 4px;border-top:1px solid var(--border2);">
+                <div class="eyebrow" style="margin-bottom:0">Campaign at a Glance</div>
+            </div>
             <div class="stats-strip">
                 <div class="stat-cell">
                     <span class="stat-val">₹{{ number_format($raised) }}</span>
@@ -1201,7 +1317,7 @@ button { font-family:var(--font); }
                 </div>
                 <div style="display:flex;flex-direction:column;gap:10px;">
                     @foreach($campaign->donations->where('payment_status','completed')->sortByDesc('created_at')->take(10) as $donation)
-                    <div class="donor-row">
+                    <div class="donor-row{{ $topAmount > 0 && $donation->total_amount == $topAmount ? ' top-supporter' : '' }}">
                         <div class="donor-row-left">
 <div class="donor-avatar-new"
      style="{{ $donation->donation_type === 'product' 
@@ -1226,6 +1342,12 @@ button { font-family:var(--font); }
                             <div>
                                 <div class="donor-info-name">{{ $donation->is_anonymous ? 'Anonymous Donor' : ($donation->donor_name ?? 'Anonymous') }}</div>
                                 <div class="donor-info-time">{{ $donation->created_at->diffForHumans() }}</div>
+                                @if($topAmount > 0 && $donation->total_amount == $topAmount)
+                                <span class="top-supporter-badge">
+                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm0 2h14v2H5v-2z"/></svg>
+                                    Top Supporter
+                                </span>
+                                @endif
                                 <span class="donor-type-badge {{ $donation->donation_type === 'product' ? 'donor-type-product' : 'donor-type-money' }}">
                                     {{ $donation->donation_type === 'product' ? 'Product' : 'Cash' }}
                                 </span>
@@ -1596,8 +1718,12 @@ button { font-family:var(--font); }
                 @endif
             </div>
 
+            @php
+                $followerCount = $campaign->followers()->count();
+                $isFollowing = auth()->check() ? $campaign->isFollowedBy(auth()->user()) : false;
+            @endphp
+
             @auth
-            @php $isFollowing = $campaign->isFollowedBy(auth()->user()); @endphp
             <form method="POST" action="{{ route('campaign.follow', $campaign) }}">
                 @csrf
                 <button type="submit" class="btn-follow {{ $isFollowing ? 'is-following' : '' }}">
@@ -1605,9 +1731,15 @@ button { font-family:var(--font); }
                     {{ $isFollowing ? 'Following' : 'Follow' }}
                 </button>
             </form>
-            <div class="follow-count">{{ $campaign->followers()->count() }} follower{{ $campaign->followers()->count() !== 1 ? 's' : '' }}</div>
+            @else
+            <a href="{{ route('login') . '?redirect=' . urlencode(url()->current()) }}" class="btn-follow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                Follow
+            </a>
             @endauth
-        </div>
+            <div class="follow-count">{{ $followerCount }} follower{{ $followerCount !== 1 ? 's' : '' }}</div>
+            <br>
+
 
         {{-- ── Share ── --}}
         <div class="share-card reveal-right d2">
@@ -1615,10 +1747,28 @@ button { font-family:var(--font); }
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
                 Spread the Word
             </div>
-            <button onclick="shareCampaign()" class="share-btn">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-                Share This Campaign
-            </button>
+            <div class="share-social">
+                <button type="button" class="share-soc-btn s-wa" onclick="shareTo('whatsapp')" aria-label="Share on WhatsApp">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.71.306 1.263.489 1.694.626.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.245-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.885-9.885 9.885M20.52 3.449C18.24 1.245 15.24 0 12.045 0 5.463 0 .104 5.358.101 11.942c0 2.096.547 4.142 1.588 5.945L0 24l6.237-1.633a11.9 11.9 0 005.808 1.48h.002c6.583 0 11.943-5.36 11.946-11.943 0-3.18-1.235-6.17-3.473-8.425"/></svg>
+                    WhatsApp
+                </button>
+                <button type="button" class="share-soc-btn s-fb" onclick="shareTo('facebook')" aria-label="Share on Facebook">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 10-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.78-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0022 12z"/></svg>
+                    Facebook
+                </button>
+                <button type="button" class="share-soc-btn s-x" onclick="shareTo('x')" aria-label="Share on X">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                    X
+                </button>
+                <button type="button" class="share-soc-btn s-copy" onclick="copyLink()" aria-label="Copy link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+                    Copy
+                </button>
+            </div>
+            <!-- <div class="share-copy-row" onclick="copyLink()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h12v4M4 4v12h12M20 4v16H4"/></svg>
+                <span id="shareCopyUrl">{{ url()->current() }}</span>
+            </div> -->
         </div>
 
         {{-- ── Ask Update ── --}}
@@ -1688,8 +1838,12 @@ window.addEventListener('DOMContentLoaded', function(){
 });
 
 var scrollTopBtn = document.getElementById('scrollTopBtn');
+var scrollProgressFill = document.getElementById('scrollProgressFill');
 window.addEventListener('scroll', function(){
     scrollTopBtn.classList.toggle('visible', window.scrollY > 600);
+    var docH = document.documentElement.scrollHeight - window.innerHeight;
+    var pct  = docH > 0 ? (window.scrollY / docH) * 100 : 0;
+    if(scrollProgressFill) scrollProgressFill.style.width = pct + '%';
 }, {passive:true});
 
 (function(){
@@ -1917,6 +2071,37 @@ document.addEventListener('DOMContentLoaded', function(){
         q.setAttribute('tabindex','0');
     });
 });
+
+function copyLink(){
+    var url = window.location.href;
+    if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(url).then(showCopied).catch(function(){ fallbackCopy(url); });
+    } else { fallbackCopy(url); }
+}
+function fallbackCopy(text){
+    var t = document.createElement('textarea');
+    t.value = text; document.body.appendChild(t); t.select();
+    try { document.execCommand('copy'); showCopied(); } catch(e){ alert('Copy this link: ' + text); }
+    document.body.removeChild(t);
+}
+function showCopied(){
+    var row = document.querySelector('.share-copy-row');
+    if(!row) return;
+    var orig = row.innerHTML;
+    row.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span style="color:#10b981">Link copied to clipboard!</span>';
+    setTimeout(function(){ row.innerHTML = orig; }, 2000);
+}
+
+function shareTo(network){
+    var url   = encodeURIComponent(window.location.href);
+    var title = encodeURIComponent('{{ addslashes($campaign->title) }}');
+    var links = {
+        whatsapp: 'https://api.whatsapp.com/send?text=' + title + '%20' + url,
+        facebook: 'https://www.facebook.com/sharer/sharer.php?u=' + url,
+        x:        'https://twitter.com/intent/tweet?text=' + title + '&url=' + url
+    };
+    if(links[network]){ window.open(links[network], '_blank', 'noopener,width=600,height=540'); }
+}
 
 function shareCampaign(){
     var title = '{{ addslashes($campaign->title) }}';
