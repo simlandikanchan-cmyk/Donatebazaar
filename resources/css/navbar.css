@@ -3,8 +3,8 @@
 
 /* ─── Design tokens ──────────────────────────────────────────────── */
 :root {
-    --db-font:          'Sora', 'Inter', system-ui, sans-serif;
-    --db-font-mono:     'Fira Code', 'DM Mono', monospace;
+    --db-font:          'DM Sans', 'Inter', system-ui, sans-serif;
+    --db-font-mono:     'DM Mono', monospace;
     --db-accent-from:   #2563eb ;
     --db-accent-to:     #0d9488;
     --db-accent-mid:    #1d4ed8;
