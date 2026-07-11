@@ -282,7 +282,7 @@
 .card-header-left{display:flex;align-items:center;gap:10px;}
 .card-hico{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .card-hico svg{width:14px;height:14px;}
-.card-title{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--text);letter-spacing:-.01em;}
+.card-title{font-family:var(--font);font-size:12px;font-weight:700;color:var(--text);letter-spacing:-.01em;}
 .card-title-sm{font-size:10px;color:var(--text3);font-family:var(--mono);font-weight:600;text-transform:uppercase;letter-spacing:.1em;}
 .card-link{font-size:12px;color:var(--a);font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:opacity var(--ease);}
 .card-link:hover{opacity:.75;}

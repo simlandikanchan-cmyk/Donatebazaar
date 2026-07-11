@@ -35,7 +35,7 @@
 .ci-green{background:var(--green-lt);color:var(--green);}
 .ci-amber{background:var(--amber-lt);color:var(--amber);}
 .ci-blue{background:var(--blue-lt);color:var(--blue);}
-.card-title{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--text);letter-spacing:-.01em;}
+.card-title{font-family:var(--font);font-size:14px;font-weight:700;color:var(--text);letter-spacing:-.01em;}
 .card-subtitle{font-size:11px;color:var(--text3);margin-top:2px;}
 .card-body{padding:22px;}
 .cat-search-wrap{position:relative;margin-bottom:16px;}

@@ -58,7 +58,7 @@
 
   /* Typography */
   --font:         'DM Sans', sans-serif;
-  --font-display: 'DM Mono', serif;
+  --font-display: 'DM Mono', 'Courier New', monospace;
   --font-mono:    'DM Mono', monospace;
 
   /* Shape */
@@ -139,9 +139,8 @@ body {
   display:         inline-flex;
   align-items:     center;
   gap:             10px;
-  background:      rgba(255, 255, 255, .08);
+  background:      rgba(255, 255, 255, .12);
   border:          1px solid rgba(255, 255, 255, .18);
-  backdrop-filter: blur(12px);
   border-radius:   100px;
   padding:         8px 20px;
   font-size:       11.5px;
@@ -183,6 +182,8 @@ body {
 }
 
 .hero-btns { display:flex; gap:12px; flex-wrap:wrap }
+/* Prevent backdrop-filter shimmer over the scaling hero image */
+.hero-btns .btn-outline { backdrop-filter:none; -webkit-backdrop-filter:none; }
 
 /* ── Premium hero motion ─────────────────────────────── */
 /* Cinematic slow zoom on the active slide's image */
@@ -192,22 +193,8 @@ body {
   to   { transform: scale(1.16); }
 }
 
-/* Staggered blur-up entrance for hero copy on each slide */
-.hero-slide.active .hero-pill,
-.hero-slide.active .hero-title,
-.hero-slide.active .hero-desc,
-.hero-slide.active .hero-btns {
-  animation: heroRise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-.hero-slide.active .hero-pill  { animation-delay: 0.12s; }
-.hero-slide.active .hero-title { animation-delay: 0.26s; }
-.hero-slide.active .hero-desc  { animation-delay: 0.42s; }
-.hero-slide.active .hero-btns  { animation-delay: 0.58s; }
-
-@keyframes heroRise {
-  from { opacity: 0; transform: translateY(32px); filter: blur(6px); }
-  to   { opacity: 1; transform: translateY(0);    filter: blur(0); }
-}
+/* Staggered blur-up entrance removed: it re-triggered on every auto-advance,
+   which read as a recurring "vibration". Slides still cross-fade via opacity. */
 
 /* Accessibility: honour reduced-motion preference */
 @media (prefers-reduced-motion: reduce) {
@@ -233,9 +220,8 @@ body {
   position:       absolute;
   top:            50%;
   transform:      translateY(-50%);
-  background:     rgba(255,255,255,.12);
+  background:     rgba(255,255,255,.14);
   border:         1px solid rgba(255,255,255,.25);
-  backdrop-filter:blur(8px);
   color:          #fff;
   width:          48px;
   height:         48px;
@@ -286,14 +272,12 @@ body {
 @media (max-width: 1024px) { .hero-float-cards { display: none; } }
 
 .hero-float-card {
-  background:      rgba(255, 255, 255, .09);
+  background:      rgba(255, 255, 255, .10);
   border:          1px solid rgba(255, 255, 255, .15);
-  backdrop-filter: blur(20px);
   border-radius:   var(--radius);
   padding:         16px 20px;
   min-width:       190px;
   will-change:     transform;
-  animation:       float-card 4s ease-in-out infinite;
 }
 .hero-float-card:nth-child(2) { animation-delay: 1.3s; }
 .hero-float-card:nth-child(3) { animation-delay: 2.6s; }
@@ -1522,7 +1506,6 @@ body {
   display:        grid;
   grid-template-columns: repeat(4, 1fr);
   background:     rgba(5, 5, 18, .92);
-  backdrop-filter: blur(20px);
   border-top:     1px solid rgba(255, 255, 255, .07);
 }
 .hero-stat-item {

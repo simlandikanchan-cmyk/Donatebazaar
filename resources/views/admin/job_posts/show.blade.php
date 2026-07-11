@@ -47,7 +47,7 @@
 .ci-amber{background:var(--amber-lt);color:var(--amber)}
 .ci-red{background:var(--red-lt);color:var(--red)}
 .ci-gray{background:var(--surface2);color:var(--text3)}
-.card-title{font-family:var(--mono);font-size:13.5px;font-weight:700;color:var(--text);letter-spacing:-.01em}
+.card-title{font-family:var(--font);font-size:13.5px;font-weight:700;color:var(--text);letter-spacing:-.01em}
 .card-sub{font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:1px}
 .card-body{padding:22px}
 

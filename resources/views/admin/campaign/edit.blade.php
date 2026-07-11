@@ -22,7 +22,7 @@
 .ic-pink{background:var(--pink-lt);color:var(--pink);}
 .ic-red{background:var(--red-lt);color:var(--red);}
 .ic-blue{background:var(--blue-lt);color:var(--blue);}
-.card-title{font-size:13px;font-weight:700;color:var(--text);letter-spacing:-.01em;font-family:var(--mono);}
+.card-title{font-size:13px;font-weight:700;color:var(--text);letter-spacing:-.01em;font-family:var(--font);}
 .card-sub{font-size:11px;color:var(--text3);margin-top:1px;}
 .card-body{padding:18px;}
 .badge-dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0;}
@@ -94,7 +94,7 @@
 .modal-overlay.show{opacity:1;pointer-events:all;}
 .modal{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);padding:24px;max-width:380px;width:90%;box-shadow:var(--sh-lg);transform:scale(.95);transition:transform var(--ease);}
 .modal-overlay.show .modal{transform:scale(1);}
-.modal-title{font-family:var(--mono);font-size:16px;font-weight:800;color:var(--text);margin-bottom:7px;}
+.modal-title{font-family:var(--font);font-size:16px;font-weight:800;color:var(--text);margin-bottom:7px;}
 .modal-body{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:18px;}
 .modal-actions{display:flex;gap:8px;}
 .modal-actions .action-btn{flex:1;margin:0;}

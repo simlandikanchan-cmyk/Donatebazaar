@@ -20,7 +20,7 @@
   --blue:         #3b82f6;
 
   --font:         'DM Sans', sans-serif;
-  --font-display: 'DM Mono', serif;
+  --font-display: 'DM Mono', 'Courier New', monospace;
   --font-mono:    'DM Mono', monospace;
 
   --radius:    16px;

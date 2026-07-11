@@ -17,7 +17,7 @@
 .form-card:nth-child(1){animation-delay:.05s}.form-card:nth-child(2){animation-delay:.10s}.form-card:nth-child(3){animation-delay:.15s}.form-card:nth-child(4){animation-delay:.20s}.form-card:nth-child(5){animation-delay:.25s}.form-card:nth-child(6){animation-delay:.30s}.form-card:nth-child(7){animation-delay:.35s}
 .form-card.admin-only{border-color:rgba(37,99,235,.2);background:linear-gradient(135deg,var(--surface),rgba(37,99,235,.02));}
 .form-card.admin-only .card-title{color:var(--a);}
-.card-title{font-size:11.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.10em;font-family:var(--mono);margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
+.card-title{font-size:11.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.10em;font-family:var(--font);margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
 .card-title svg{width:13px;height:13px;opacity:.7;}
 .card-title-badge{font-size:9px;font-weight:700;padding:2px 8px;border-radius:100px;background:var(--a-lt);color:var(--a);border:1px solid rgba(37,99,235,.2);letter-spacing:.05em;margin-left:auto;}
 .card-title-badge.green{background:var(--green-lt);color:#059669;border-color:rgba(5,196,138,.2);}

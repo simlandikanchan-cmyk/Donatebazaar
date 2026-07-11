@@ -35,7 +35,7 @@
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;animation:fadeUp .4s both;}
 .card:nth-child(1){animation-delay:.05s;}.card:nth-child(2){animation-delay:.10s;}.card:nth-child(3){animation-delay:.12s;}.card:nth-child(4){animation-delay:.14s;}.card:nth-child(5){animation-delay:.16s;}.card:nth-child(6){animation-delay:.18s;}
 .card-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border);background:var(--surface2);}
-.card-title{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:.06em;}
+.card-title{display:flex;align-items:center;gap:8px;font-family:var(--font);font-size:11px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:.06em;}
 .card-title-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;background:var(--a-lt);}
 .card-title-icon svg{width:13px;height:13px;stroke:var(--a);fill:none;stroke-width:2;}
 .card-body{padding:20px 18px;}

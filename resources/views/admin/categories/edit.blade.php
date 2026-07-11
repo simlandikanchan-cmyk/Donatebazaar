@@ -101,7 +101,7 @@
 .preview-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;position:sticky;top:82px;animation:fadeUp .4s .15s ease both;margin-bottom:16px;z-index:1;}
 .preview-live{padding:32px 24px;display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--surface2);border-bottom:1px solid var(--border);min-height:190px;}
 .prev-icon-box{width:72px;height:72px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:28px;color:#fff;margin-bottom:14px;transition:all .3s cubic-bezier(.4,0,.2,1);box-shadow:0 8px 28px rgba(0,0,0,.18);}
-.prev-name{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--text);letter-spacing:-.01em;margin-bottom:6px;transition:all .2s;}
+.prev-name{font-family:var(--font);font-size:15px;font-weight:700;color:var(--text);letter-spacing:-.01em;margin-bottom:6px;transition:all .2s;}
 .prev-name.empty{color:var(--text3);font-weight:400;font-style:italic;}
 .prev-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:100px;font-size:10.5px;font-weight:700;font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;}
 .pb-active{background:rgba(5,196,138,.12);color:var(--green);border:1px solid rgba(5,196,138,.22);}
@@ -120,7 +120,7 @@
 
 .modal-ico{width:48px;height:48px;border-radius:14px;background:var(--red-lt);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
 .modal-ico svg{width:22px;height:22px;color:var(--red);}
-.modal h3{font-size:16px;font-weight:700;color:var(--text);text-align:center;margin-bottom:8px;font-family:var(--mono);}
+.modal h3{font-size:16px;font-weight:700;color:var(--text);text-align:center;margin-bottom:8px;font-family:var(--font);}
 .modal p{font-size:13px;color:var(--text3);text-align:center;line-height:1.6;margin-bottom:22px;}
 .modal-del{flex:1;height:40px;border-radius:var(--r-sm);border:none;background:linear-gradient(135deg,var(--red),#dc2626);font-size:13px;font-weight:600;color:#fff;cursor:pointer;font-family:var(--font);transition:opacity var(--ease);box-shadow:0 4px 16px rgba(240,68,68,.3);}
 .modal-del:hover{opacity:.88;}

@@ -17,7 +17,7 @@
 .ci-amber{background:var(--amber-lt);color:var(--amber);}
 .ci-blue{background:var(--blue-lt);color:var(--blue);}
 .ci-red{background:var(--red-lt);color:var(--red);}
-.card-title{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--text);letter-spacing:-.01em;}
+.card-title{font-family:var(--font);font-size:14px;font-weight:700;color:var(--text);letter-spacing:-.01em;}
 .card-subtitle{font-size:11px;color:var(--text3);margin-top:2px;}
 .card-body{padding:22px;}
 .event-cover{width:100%;height:260px;object-fit:cover;display:block;}
