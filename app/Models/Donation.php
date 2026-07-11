@@ -20,6 +20,11 @@ class Donation extends Model
         'platform_fee',
         'net_amount',
 
+        'original_amount',
+        'discount_amount',
+        'coupon_id',
+        'coupon_code',
+
         'order_id',
         'payment_gateway',
 
@@ -32,9 +37,11 @@ class Donation extends Model
     ];
 
     protected $casts = [
-        'total_amount' => 'decimal:2',
-        'platform_fee' => 'decimal:2',
-        'net_amount'   => 'decimal:2',
+        'total_amount'    => 'decimal:2',
+        'platform_fee'    => 'decimal:2',
+        'net_amount'      => 'decimal:2',
+        'original_amount' => 'decimal:2',
+        'discount_amount' => 'decimal:2',
         'paid_at'      => 'datetime',
         'refunded_at'  => 'datetime',
         'is_refunded'  => 'boolean',
@@ -49,5 +56,10 @@ class Donation extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function coupon()
+    {
+        return $this->belongsTo(Coupon::class);
     }
 }

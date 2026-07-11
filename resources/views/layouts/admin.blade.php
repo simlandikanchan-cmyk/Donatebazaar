@@ -119,6 +119,14 @@
     </a>
   </nav>
 
+  <div class="s-section">Coupons</div>
+  <nav class="s-nav">
+    <a href="{{ route('admin.coupons.index') }}" class="s-link @yield('sidebar_coupons')">
+      <svg class="s-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2M15 11v2M15 17v2M5 5h14a2 2 0 012 2v3a2 2 0 010 4v3a2 2 0 01-2 2H5a2 2 0 01-2-2v-3a2 2 0 010-4V7a2 2 0 012-2z"/></svg>
+      All Coupons
+    </a>
+  </nav>
+
   <div class="s-section">Job Board</div>
   <nav class="s-nav">
     <a href="{{ route('admin.job_posts.index') }}" class="s-link @yield('sidebar_job_posts')">

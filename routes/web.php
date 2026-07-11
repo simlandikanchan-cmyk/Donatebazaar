@@ -49,6 +49,7 @@ require __DIR__.'/admin/gift-cards.php';
 require __DIR__.'/admin/chatbot.php';
 require __DIR__.'/admin/profile.php';
 require __DIR__.'/admin/volunteers.php';
+require __DIR__.'/admin/coupons.php';
 // require __DIR__.'/admin/users.php';     // stub — add routes when ready
 // require __DIR__.'/admin/reports.php';   // stub
 // require __DIR__.'/admin/settings.php';  // stub

@@ -181,6 +181,28 @@
                     </span>
                 </div>
 
+                @if($donation->discount_amount > 0)
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-500 text-sm">
+                        Original Amount
+                    </span>
+
+                    <span class="font-medium text-gray-800">
+                        ₹{{ number_format($donation->original_amount, 2) }}
+                    </span>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-500 text-sm">
+                        Coupon ({{ $donation->coupon_code }})
+                    </span>
+
+                    <span class="font-semibold text-green-600">
+                        − ₹{{ number_format($donation->discount_amount, 2) }}
+                    </span>
+                </div>
+                @endif
+
                 <div class="flex items-center justify-between">
                     <span class="text-gray-500 text-sm">
                         Receipt No.

@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Mail\DonationReceiptMail;
 use App\Models\Campaign;
 use App\Models\CampaignProduct;
+use App\Models\Coupon;
+use App\Models\CouponRedemption;
 use App\Models\Donation;
 use App\Models\DonationItem;
+use App\Services\CouponService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -158,6 +161,10 @@ class PaymentController extends Controller
     {
         session()->forget([
             'donation_amount',
+            'donation_original_amount',
+            'donation_discount',
+            'donation_coupon_code',
+            'donation_coupon_id',
             'donation_campaign',
             'donation_session_at',
             'donation_cart',
@@ -211,6 +218,65 @@ class PaymentController extends Controller
         Log::info('Product stock decremented after payment', [
             'donation_id' => $donation->id,
             'items'       => $items->count(),
+        ]);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Helper — redeem a coupon once a donation is successfully paid
+    |
+    | Called inside the DB transaction in verify() / handlePaymentCaptured(),
+    | so the coupon row is locked and the redemption is atomic. Idempotent:
+    | skips if a redemption already exists for this donation.
+    |--------------------------------------------------------------------------
+    */
+
+    private function redeemCoupon(Donation $donation): void
+    {
+        if (! $donation->coupon_id) {
+            return;
+        }
+
+        $coupon = Coupon::lockForUpdate()->find($donation->coupon_id);
+
+        if (! $coupon) {
+            return;
+        }
+
+        // Never redeem the same coupon twice for the same donation.
+        if (CouponRedemption::where('donation_id', $donation->id)->exists()) {
+            return;
+        }
+
+        [$valid] = $coupon->isValidFor(
+            $donation->user,
+            $donation->campaign,
+            (float) $donation->original_amount
+        );
+
+        if (! $valid) {
+            return;
+        }
+
+        $coupon->increment('used_count');
+
+        if ($coupon->user_id) {
+            $coupon->redeemed_at = now();
+            $coupon->save();
+        }
+
+        CouponRedemption::create([
+            'coupon_id'       => $coupon->id,
+            'user_id'         => $donation->user_id,
+            'donation_id'     => $donation->id,
+            'discount_amount' => $donation->discount_amount,
+            'created_at'      => now(),
+        ]);
+
+        Log::info('Coupon redeemed', [
+            'coupon_id'   => $coupon->id,
+            'donation_id' => $donation->id,
+            'discount'    => $donation->discount_amount,
         ]);
     }
 
@@ -292,6 +358,40 @@ class PaymentController extends Controller
 
         /*
         |----------------------------------------------------------------------
+        | Optional Coupon
+        |
+        | The entered amount is the "original" amount. If a valid coupon is
+        | applied, the discounted amount becomes what the donor actually pays.
+        | The discount is always recomputed server-side from the coupon record.
+        |----------------------------------------------------------------------
+        */
+
+        $enteredAmount = $amount;
+        $couponData    = null;
+
+        $code = trim((string) $request->input('coupon_code', ''));
+
+        if ($code !== '') {
+            $couponResult = app(CouponService::class)
+                ->validate($code, Auth::user(), $campaign, $enteredAmount);
+
+            if ($couponResult['valid']) {
+                $amount     = $couponResult['discounted_total'];
+                $couponData = [
+                    'id'       => $couponResult['coupon']->id,
+                    'code'     => $couponResult['coupon']->code,
+                    'discount' => $couponResult['discount_amount'],
+                    'original' => $enteredAmount,
+                ];
+            }
+        }
+
+        if ($amount < self::MIN_AMOUNT || $amount > self::MAX_AMOUNT) {
+            return $this->backToCampaign($campaign, 'Invalid donation amount.');
+        }
+
+        /*
+        |----------------------------------------------------------------------
         | Campaign State Check
         |----------------------------------------------------------------------
         */
@@ -322,10 +422,14 @@ class PaymentController extends Controller
         */
 
         session([
-            'donation_amount'     => $amount,
-            'donation_campaign'   => (string) $campaign->id,
-            'donation_session_at' => now()->timestamp,
-            'donation_cart'       => [
+            'donation_amount'        => $amount,
+            'donation_original_amount' => $enteredAmount,
+            'donation_discount'      => $couponData ? $couponData['discount'] : 0,
+            'donation_coupon_code'   => $couponData ? $couponData['code'] : null,
+            'donation_coupon_id'     => $couponData ? $couponData['id'] : null,
+            'donation_campaign'      => (string) $campaign->id,
+            'donation_session_at'    => now()->timestamp,
+            'donation_cart'          => [
                 'ids'  => $request->input('product_ids', ''),
                 'qtys' => $request->input('product_qtys', ''),
                 'type' => $request->input('donation_type', 'money'),
@@ -421,6 +525,40 @@ class PaymentController extends Controller
 
         /*
         |----------------------------------------------------------------------
+        | Resolve Coupon (re-validate from session)
+        |
+        | Never trust the session discount value — recompute from the coupon.
+        | If the coupon is no longer valid (expired / used / scope mismatch),
+        | fall back to the original (undiscounted) amount so the donor can
+        | still complete the payment.
+        |----------------------------------------------------------------------
+        */
+
+        $originalAmount = (float) session('donation_original_amount', $amount);
+        $discountAmount = (float) session('donation_discount', 0);
+        $couponCode     = session('donation_coupon_code');
+        $couponId       = session('donation_coupon_id');
+
+        $coupon = null;
+
+        if ($couponCode) {
+            $coupon = Coupon::find($couponId);
+
+            if ($coupon && $coupon->isValidFor(Auth::user(), $campaign, $originalAmount)[0]) {
+                $discountAmount = $coupon->computeDiscount($originalAmount);
+                $amount         = round($originalAmount - $discountAmount, 2);
+            } else {
+                // Coupon invalid at payment time → fall back to full amount.
+                $amount         = $originalAmount;
+                $discountAmount = 0;
+                $couponCode     = null;
+                $couponId       = null;
+                $coupon         = null;
+            }
+        }
+
+        /*
+        |----------------------------------------------------------------------
         | Calculate Platform Fee
         |----------------------------------------------------------------------
         */
@@ -488,6 +626,10 @@ class PaymentController extends Controller
             'donor_email'     => Auth::user()?->email,
             'donation_type'   => $donationType,
             'total_amount'    => $amount,
+            'original_amount' => $originalAmount,
+            'discount_amount' => $discountAmount,
+            'coupon_id'       => $couponId,
+            'coupon_code'     => $couponCode,
             'platform_fee'    => $fees['platform_fee'],
             'net_amount'      => $fees['net_amount'],
             'order_id'        => $order['id'],
@@ -711,6 +853,7 @@ class PaymentController extends Controller
                     ->increment('platform_earnings', $lockedDonation->platform_fee);
 
                 $this->decrementProductStock($lockedDonation);
+                $this->redeemCoupon($lockedDonation);
             });
 
             // Reload fresh donation with campaign for email
@@ -901,6 +1044,7 @@ class PaymentController extends Controller
                     ->increment('platform_earnings', $donation->platform_fee);
 
                 $this->decrementProductStock($donation);
+                $this->redeemCoupon($donation);
 
                 Log::info('Webhook: payment captured', [
                     'donation_id'   => $donation->id,
