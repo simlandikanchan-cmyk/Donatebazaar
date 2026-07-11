@@ -406,6 +406,27 @@ public function reject(Event $event): RedirectResponse
             );
         }
 
+        // ── Past event check ──
+        if ($event->event_date->isPast()) {
+            return back()->with(
+                'error',
+                'Cannot assign a volunteer to an event whose date has already passed (event date: ' . $event->event_date->format('d M Y') . ').'
+            );
+        }
+
+        // ── Duplicate assignment check ──
+        $existing = VolunteerAssignment::where('volunteer_id', $volunteer->id)
+            ->where('event_id', $event->id)
+            ->where('status', 'active')
+            ->exists();
+
+        if ($existing) {
+            return back()->with(
+                'error',
+                'This volunteer is already assigned to this event.'
+            );
+        }
+
         // ── Build the proposed assignment's date range ──
         $start = $data['start_date'] ?? $event->event_date->format('Y-m-d');
         $end   = $data['end_date'] ?? $event->event_date->format('Y-m-d');
@@ -424,19 +445,18 @@ public function reject(Event $event): RedirectResponse
             })
             ->get();
 
-        // ── Fix 6: Time-aware overlap check ──
+        // ── Fix 6: Time-aware overlap check (fixed Carbon vs string bug) ──
         $conflict = $overlapping->contains(function ($assignment) use ($start, $end, $event) {
-            $aStart = $assignment->start_date;
-            $aEnd   = $assignment->end_date;
-            $aEvent = $assignment->event;
+            $aStart = optional($assignment->start_date)?->format('Y-m-d');
+            $aEnd   = optional($assignment->end_date)?->format('Y-m-d');
 
-            // Multi-day range → date overlap is conclusive
-            if ($aStart != $aEnd || $start != $end || $aStart != $start) {
+            // Multi-day range or different dates → date overlap is conclusive
+            if ($aStart !== $aEnd || $start !== $end || $aStart !== $start) {
                 return true;
             }
 
             // Same single date — check time overlap if both events have times
-            if (! $aEvent || ! $aEvent->start_time || ! $aEvent->end_time) {
+            if (! $assignment->event || ! $assignment->event->start_time || ! $assignment->event->end_time) {
                 return true; // assume full-day
             }
             if (! $event->start_time || ! $event->end_time) {
@@ -444,8 +464,8 @@ public function reject(Event $event): RedirectResponse
             }
 
             // No overlap if one ends before the other starts (strict <)
-            return ! ($aEvent->end_time <= $event->start_time
-                   || $event->end_time   <= $aEvent->start_time);
+            return ! ($assignment->event->end_time <= $event->start_time
+                   || $event->end_time   <= $assignment->event->start_time);
         });
 
         if ($conflict) {

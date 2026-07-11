@@ -229,6 +229,95 @@ tbody tr:hover{background:var(--surface2)}
   @endif
 </div>
 
+@if($volunteer->is_verified)
+<div class="detail-card">
+  <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--text3);font-family:var(--mono);margin-bottom:16px">Assign to Event</div>
+  <form id="assignForm" method="POST">
+    @csrf
+    <input type="hidden" name="volunteer_id" value="{{ $volunteer->id }}">
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:12px;align-items:end">
+      <div>
+        <div class="info-label" style="margin-bottom:6px">Event</div>
+        <select id="assignEvent" class="filter-sel" required style="width:100%">
+          <option value="">— Select Event —</option>
+          @foreach($events as $ev)
+            <option value="{{ $ev->id }}"
+              data-date="{{ $ev->event_date->format('Y-m-d') }}"
+              @if($ev->event_date->isToday()) data-today="1" @endif
+            >{{ $ev->title }} ({{ $ev->event_date->format('d M') }})</option>
+          @endforeach
+        </select>
+      </div>
+      <div>
+        <div class="info-label" style="margin-bottom:6px">Role</div>
+        <input class="filter-inp" name="role" placeholder="e.g. Coordinator" style="width:100%">
+      </div>
+      <div>
+        <div class="info-label" style="margin-bottom:6px">Start Date</div>
+        <input class="filter-inp" name="start_date" type="date" id="assignStart" style="width:100%">
+      </div>
+      <div>
+        <div class="info-label" style="margin-bottom:6px">End Date</div>
+        <input class="filter-inp" name="end_date" type="date" id="assignEnd" style="width:100%">
+      </div>
+    </div>
+    <div style="margin-top:14px;display:flex;align-items:center;gap:12px">
+      <button type="submit" class="assign-btn" id="assignBtn" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+        Assign to Event
+      </button>
+      <span style="font-size:12px;color:var(--text3);font-family:var(--mono)" id="assignHint">Select an event above</span>
+    </div>
+  </form>
+</div>
+
+@push('page_scripts')
+<script>
+(function(){
+  var sel = document.getElementById('assignEvent');
+  var btn = document.getElementById('assignBtn');
+  var hint = document.getElementById('assignHint');
+  var form = document.getElementById('assignForm');
+  var startInp = document.getElementById('assignStart');
+  var endInp = document.getElementById('assignEnd');
+
+  if (sel) {
+    sel.addEventListener('change', function(){
+      var val = this.value;
+      if (val) {
+        var opt = this.options[this.selectedIndex];
+        btn.disabled = false;
+        hint.textContent = 'Will be assigned to event #' + val;
+        form.action = '{{ url('admin/events') }}/' + val + '/assign-volunteer';
+        var d = opt.getAttribute('data-date');
+        if (d) {
+          startInp.value = d;
+          endInp.value = d;
+        }
+      } else {
+        btn.disabled = true;
+        hint.textContent = 'Select an event above';
+        form.action = '';
+        startInp.value = '';
+        endInp.value = '';
+      }
+    });
+  }
+})();
+</script>
+@endpush
+@else
+<div class="detail-card" style="background:var(--amber-lt);border-color:rgba(245,158,11,.25)">
+  <div style="display:flex;align-items:center;gap:12px">
+    <svg viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" style="width:20px;height:20px;flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <div>
+      <div style="font-weight:700;font-size:13px;color:var(--text);font-family:var(--mono)">Not Verified</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:2px">Only verified volunteers can be assigned to events. Approve their application first.</div>
+    </div>
+  </div>
+</div>
+@endif
+
 <div style="margin-top:10px">
   <a href="{{ route('admin.volunteers.index') }}" class="filter-clear" style="display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 16px;border-radius:var(--r-sm);border:1px solid var(--border2);font-size:12.5px;color:var(--text3);text-decoration:none;transition:all var(--ease)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5m7-7l-7 7 7 7"/></svg>
@@ -247,5 +336,15 @@ tbody tr:hover{background:var(--surface2)}
 [data-theme="dark"] .b-pending{color:#fbbf24}
 [data-theme="dark"] .b-rejected{color:#f87171}
 .filter-clear:hover{border-color:var(--a);color:var(--a)}
+.filter-sel,.filter-inp{height:36px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:0 12px;font-size:12.5px;color:var(--text);font-family:var(--font);outline:none;transition:border-color var(--ease),box-shadow var(--ease)}
+.filter-sel:focus,.filter-inp:focus{border-color:var(--a);box-shadow:0 0 0 3px var(--a-glow)}
+.filter-sel{cursor:pointer;min-width:0}
+.filter-inp::placeholder{color:var(--text3)}
+.assign-btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 24px;border:none;border-radius:var(--r-sm);font-size:13px;font-weight:600;font-family:var(--font);cursor:pointer;transition:all var(--ease);background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;box-shadow:0 4px 14px rgba(37,99,235,.35)}
+.assign-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 20px rgba(37,99,235,.45)}
+.assign-btn:active:not(:disabled){transform:translateY(0)}
+.assign-btn:disabled{opacity:.4;cursor:not-allowed;box-shadow:none;transform:none}
+@media(max-width:768px){.detail-grid{grid-template-columns:1fr 1fr}.info-box[style*="span 2"],.info-box[style*="span 3"]{grid-column:span 1!important}}
+@media(max-width:600px){.detail-grid{grid-template-columns:1fr}#assignForm>div:first-child{grid-template-columns:1fr!important}}
 </style>
 @endpush

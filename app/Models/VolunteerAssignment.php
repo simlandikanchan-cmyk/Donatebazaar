@@ -16,6 +16,11 @@ class VolunteerAssignment extends Model
         'status'
     ];
 
+    protected $casts = [
+        'start_date' => 'date:Y-m-d',
+        'end_date'   => 'date:Y-m-d',
+    ];
+
     public function volunteer()
     {
         return $this->belongsTo(Volunteer::class);

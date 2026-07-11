@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Event;
 use App\Models\Volunteer;
 use App\Models\VolunteerApplication;
 use App\Services\VolunteerApplicationService;
@@ -47,7 +48,11 @@ class VolunteerAdminController extends Controller
     public function show(Volunteer $volunteer)
     {
         $volunteer->load('user', 'applications', 'assignments');
-        return view('admin.volunteers.show', compact('volunteer'));
+        $events = Event::where('status', Event::STATUS_ACTIVE)
+            ->whereDate('event_date', '>=', now())
+            ->orderBy('event_date')
+            ->get(['id', 'title', 'event_date', 'start_time', 'end_time']);
+        return view('admin.volunteers.show', compact('volunteer', 'events'));
     }
 
     public function applications(Request $request)
