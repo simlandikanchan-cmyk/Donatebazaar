@@ -406,11 +406,11 @@ public function reject(Event $event): RedirectResponse
             );
         }
 
-        // ── Past event check ──
-        if ($event->event_date->isPast()) {
+        // ── Past event check (uses hasEnded() which respects end_time/start_time) ──
+        if ($event->hasEnded()) {
             return back()->with(
                 'error',
-                'Cannot assign a volunteer to an event whose date has already passed (event date: ' . $event->event_date->format('d M Y') . ').'
+                'Cannot assign a volunteer to an event that has already ended (event: ' . $event->event_date->format('d M Y') . ($event->end_time ? ' ' . Carbon::parse($event->end_time)->format('H:i') : '') . ').'
             );
         }
 
