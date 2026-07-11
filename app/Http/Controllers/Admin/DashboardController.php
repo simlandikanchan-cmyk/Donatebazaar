@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Campaign;
+use App\Models\Volunteer;
+use App\Models\VolunteerApplication;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -79,6 +81,9 @@ class DashboardController extends Controller
         $counts = $this->computeCounts();
         extract($counts);
 
+        $volunteerCount = Volunteer::count();
+        $pendingVolunteerApps = VolunteerApplication::where('status', 'pending')->count();
+
         // Initial grid shows the Active (+ Paused) list, matching the default tab.
         $activeCampaigns = $this->scopeState(
             Campaign::with('user', 'category')->whereIn('campaign_state', ['active', 'paused']),
@@ -115,7 +120,9 @@ class DashboardController extends Controller
             'activeCampaigns',
             'chartLabels',
             'chartTotal',
-            'chartActive'
+            'chartActive',
+            'volunteerCount',
+            'pendingVolunteerApps'
         )));
     }
 

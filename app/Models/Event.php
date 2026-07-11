@@ -105,6 +105,14 @@ class Event extends Model
         return $this->hasMany(EventRegistration::class);
     }
 
+    /**
+     * Volunteer assignments for this event
+     */
+    public function volunteerAssignments(): HasMany
+    {
+        return $this->hasMany(VolunteerAssignment::class);
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Helper Methods

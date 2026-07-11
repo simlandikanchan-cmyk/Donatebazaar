@@ -1,0 +1,38 @@
+<?php
+
+namespace App\Mail;
+
+use App\Models\VolunteerApplication;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Content;
+use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Queue\SerializesModels;
+
+class VolunteerApplicationReceived extends Mailable implements ShouldQueue
+{
+    use Queueable, SerializesModels;
+
+    public VolunteerApplication $application;
+
+    public function __construct(VolunteerApplication $application)
+    {
+        $this->application = $application;
+    }
+
+    public function envelope(): Envelope
+    {
+        return new Envelope(
+            subject: 'Volunteer Application Received',
+        );
+    }
+
+    public function content(): Content
+    {
+        return new Content(
+            markdown: 'emails.volunteer.application-received',
+            with: ['application' => $this->application],
+        );
+    }
+}

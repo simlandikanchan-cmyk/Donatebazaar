@@ -17,6 +17,15 @@
 .vbadge.approved{background:#dcfce7;color:#15803d;}
 .vbadge.rejected{background:#fee2e2;color:#b91c1c;}
 .vol-empty{background:#fff;border:1px solid rgba(20,20,40,.10);border-radius:16px;padding:40px;text-align:center;color:#6b7188;}
+.vol-act{display:flex;gap:6px;}
+.vol-act form{display:inline;}
+.vbtn{display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border:none;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;transition:transform .15s,box-shadow .15s;text-decoration:none;font-family:inherit;}
+.vbtn:hover{transform:translateY(-1px);}
+.vbtn-approve{background:#dcfce7;color:#15803d;}
+.vbtn-approve:hover{box-shadow:0 3px 10px rgba(21,128,61,.25);}
+.vbtn-reject{background:#fee2e2;color:#b91c1c;}
+.vbtn-reject:hover{box-shadow:0 3px 10px rgba(185,28,28,.25);}
+.vbtn-disabled{opacity:.4;cursor:not-allowed;}
 </style>
 
 <div class="vol-cv">
@@ -28,7 +37,7 @@
   @else
     <table>
       <thead>
-        <tr><th>Volunteer</th><th>Message</th><th>Status</th><th>Applied</th></tr>
+        <tr><th>Volunteer</th><th>Message</th><th>Status</th><th>Applied</th><th>Actions</th></tr>
       </thead>
       <tbody>
         @foreach($applications as $app)
@@ -37,6 +46,24 @@
             <td class="msg">{{ $app->message ?: '—' }}</td>
             <td><span class="vbadge {{ $app->status }}">{{ $app->status }}</span></td>
             <td>{{ $app->applied_at ? $app->applied_at->format('d M Y') : $app->created_at->format('d M Y') }}</td>
+            <td>
+              @if(auth()->user()->role === 'admin' && $app->status === 'pending')
+                <div class="vol-act">
+                  <form method="POST" action="{{ route('admin.volunteer.status', $app->id) }}">
+                    @csrf
+                    <input type="hidden" name="status" value="approved">
+                    <button type="submit" class="vbtn vbtn-approve">&#10003; Approve</button>
+                  </form>
+                  <form method="POST" action="{{ route('admin.volunteer.status', $app->id) }}">
+                    @csrf
+                    <input type="hidden" name="status" value="rejected">
+                    <button type="submit" class="vbtn vbtn-reject">&#10007; Reject</button>
+                  </form>
+                </div>
+              @else
+                <span class="vbtn vbtn-disabled">—</span>
+              @endif
+            </td>
           </tr>
         @endforeach
       </tbody>

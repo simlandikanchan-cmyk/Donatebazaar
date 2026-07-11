@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Volunteer extends Model
 {
     protected $fillable = [
-        'user_id','bio','skills','availability','city','state','country','is_verified'
+        'user_id','phone','bio','skills','availability','city','state','country','is_verified'
     ];
 
     protected $casts = [

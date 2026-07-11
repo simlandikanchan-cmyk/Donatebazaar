@@ -32,10 +32,11 @@
 
 .vol-form .vol-field{margin-bottom:18px;}
 .vol-form label{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:8px;}
-.vol-form select,.vol-form textarea{
+.vol-form input,.vol-form select,.vol-form textarea{
   width:100%;border:1px solid var(--line);border-radius:12px;padding:13px 14px;font-size:14px;font-family:inherit;color:var(--ink);background:#fff;outline:none;transition:border-color .15s,box-shadow .15s;resize:vertical;
 }
-.vol-form select:focus,.vol-form textarea:focus{border-color:var(--purple-main);box-shadow:0 0 0 3px rgba(37,99,235,.16);}
+.vol-form input:focus,.vol-form select:focus,.vol-form textarea:focus{border-color:var(--purple-main);box-shadow:0 0 0 3px rgba(37,99,235,.16);}
+.vol-form .vol-error{color:var(--err);font-size:12px;margin-top:5px;}
 .vol-submit{width:100%;margin-top:6px;padding:14px;border:none;border-radius:13px;background:linear-gradient(135deg,var(--purple-main),var(--purple-deep));color:#fff;font-size:15px;font-weight:600;cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:0 10px 26px rgba(37,99,235,.32);}
 .vol-submit:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(37,99,235,.40);}
 
@@ -98,6 +99,12 @@
               <option value="{{ $c->id }}" @selected(old('campaign_id', $c->id) == $c->id)>{{ \Illuminate\Support\Str::limit($c->title, 70) }}</option>
             @endforeach
           </select>
+        </div>
+
+        <div class="vol-field">
+          <label for="phone">Phone Number <span style="color:var(--err);">*</span></label>
+          <input id="phone" name="phone" type="tel" placeholder="10-digit mobile number" value="{{ old('phone') }}" required maxlength="10" pattern="[0-9]{10}">
+          @error('phone') <div class="vol-error">{{ $message }}</div> @enderror
         </div>
 
         <div class="vol-field">

@@ -8,6 +8,7 @@ class VolunteerAssignment extends Model
 {
     protected $fillable = [
         'volunteer_id',
+        'event_id',
         'campaign_id',
         'role',
         'start_date',
@@ -23,5 +24,10 @@ class VolunteerAssignment extends Model
     public function campaign()
     {
         return $this->belongsTo(Campaign::class);
+    }
+
+    public function event()
+    {
+        return $this->belongsTo(Event::class);
     }
 }

@@ -7,6 +7,8 @@ use App\Mail\EventPublishedMail;
 use App\Models\Campaign;
 use App\Models\Category;
 use App\Models\Event;
+use App\Models\Volunteer;
+use App\Models\VolunteerAssignment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
@@ -371,6 +373,108 @@ public function reject(Event $event): RedirectResponse
     return back()->with('success', 'Event has been rejected.');
 }
 
+
+    /* ─────────────────────────────────────────
+     | ASSIGN VOLUNTEER TO EVENT
+     | With overlap detection to prevent assigning
+     | a volunteer to two events at the same time.
+     ───────────────────────────────────────── */
+    /**
+     * Assign a verified volunteer to an event.
+     *
+     * Fix 5: Only verified volunteers (is_verified = true) can be assigned.
+     * Fix 6: Overlap detection checks event start_time/end_time when
+     *        two assignments fall on the same single date, allowing
+     *        same-day back-to-back events (e.g. 9-11am and 2-4pm).
+     */
+    public function assignVolunteer(Request $request, Event $event): RedirectResponse
+    {
+        $data = $request->validate([
+            'volunteer_id' => ['required', 'integer', 'exists:volunteers,id'],
+            'role'         => ['nullable', 'string', 'max:255'],
+            'start_date'   => ['nullable', 'date'],
+            'end_date'     => ['nullable', 'date', 'after_or_equal:start_date'],
+        ]);
+
+        $volunteer = Volunteer::findOrFail($data['volunteer_id']);
+
+        // ── Fix 5: Only verified volunteers can be assigned ──
+        if (! $volunteer->is_verified) {
+            return back()->with(
+                'error',
+                'Only verified volunteers can be assigned to events. Approve their application first.'
+            );
+        }
+
+        // ── Build the proposed assignment's date range ──
+        $start = $data['start_date'] ?? $event->event_date->format('Y-m-d');
+        $end   = $data['end_date'] ?? $event->event_date->format('Y-m-d');
+
+        // ── Fetch potentially overlapping active assignments ──
+        $overlapping = VolunteerAssignment::with('event')
+            ->where('volunteer_id', $volunteer->id)
+            ->where('status', 'active')
+            ->where(function ($q) use ($start, $end) {
+                $q->where(function ($q) {
+                    $q->whereNull('start_date')->whereNull('end_date');
+                })->orWhere(function ($q) use ($start, $end) {
+                    $q->where('start_date', '<=', $end)
+                      ->where('end_date', '>=', $start);
+                });
+            })
+            ->get();
+
+        // ── Fix 6: Time-aware overlap check ──
+        $conflict = $overlapping->contains(function ($assignment) use ($start, $end, $event) {
+            $aStart = $assignment->start_date;
+            $aEnd   = $assignment->end_date;
+            $aEvent = $assignment->event;
+
+            // Multi-day range → date overlap is conclusive
+            if ($aStart != $aEnd || $start != $end || $aStart != $start) {
+                return true;
+            }
+
+            // Same single date — check time overlap if both events have times
+            if (! $aEvent || ! $aEvent->start_time || ! $aEvent->end_time) {
+                return true; // assume full-day
+            }
+            if (! $event->start_time || ! $event->end_time) {
+                return true; // assume full-day
+            }
+
+            // No overlap if one ends before the other starts (strict <)
+            return ! ($aEvent->end_time <= $event->start_time
+                   || $event->end_time   <= $aEvent->start_time);
+        });
+
+        if ($conflict) {
+            return back()->with(
+                'error',
+                'This volunteer is already assigned to another event during this period.'
+            );
+        }
+
+        // ── Create the assignment ──
+        $assignment = VolunteerAssignment::create([
+            'volunteer_id' => $volunteer->id,
+            'event_id'     => $event->id,
+            'campaign_id'  => $event->campaign_id,
+            'role'         => $data['role'] ?? null,
+            'start_date'   => $start,
+            'end_date'     => $end,
+            'status'       => 'active',
+        ]);
+
+        Log::info('Volunteer assigned to event', [
+            'assignment_id' => $assignment->id,
+            'volunteer_id'  => $volunteer->id,
+            'event_id'      => $event->id,
+            'admin_id'      => auth()->id(),
+        ]);
+
+        return back()->with('success', 'Volunteer assigned to event successfully.');
+    }
 
     /* ─────────────────────────────────────────
      | NOTIFY CAMPAIGN FOLLOWERS + CREATOR

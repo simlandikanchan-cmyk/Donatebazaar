@@ -18,4 +18,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::post('/events/{event}/draft',     [AdminEventController::class, 'draft'])->name('events.draft');
     Route::post('/events/{event}/toggle-setting', [AdminEventController::class, 'toggleSetting'])->name('events.toggleSetting');
 
+    Route::post('/events/{event}/assign-volunteer', [AdminEventController::class, 'assignVolunteer'])
+         ->name('events.assignVolunteer');
+
 });

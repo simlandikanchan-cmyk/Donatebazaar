@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 use App\Models\Volunteer;
 use App\Models\VolunteerApplication;
 use App\Models\Campaign;
+use App\Mail\VolunteerApplicationReceived;
+use App\Mail\VolunteerApplicationStatusChanged;
+use App\Services\VolunteerApplicationService;
+use Illuminate\Support\Facades\Log;
 
 class VolunteerController extends Controller
 {
@@ -32,46 +36,54 @@ class VolunteerController extends Controller
 
         $data = $request->validate([
             'campaign_id' => ['nullable', 'integer', 'exists:campaigns,id'],
-            'ngo_id'      => ['nullable', 'integer', 'exists:ngos,id'],
             'message'     => ['nullable', 'string', 'max:1000'],
+            'phone'       => ['required', 'string', 'regex:/^[0-9]{10}$/'],
         ]);
 
         $volunteer = Volunteer::firstOrCreate(['user_id' => auth()->id()]);
 
-        $ngoId = $data['ngo_id'] ?? null;
-        if (! empty($data['campaign_id'])) {
-            $campaign = Campaign::find($data['campaign_id']);
-            if ($campaign && ! is_null($campaign->ngo_id ?? null)) {
-                $ngoId = $campaign->ngo_id;
-            }
+        if (! empty($data['phone'])) {
+            $volunteer->update(['phone' => $data['phone']]);
         }
 
         $exists = VolunteerApplication::where('volunteer_id', $volunteer->id)
-            ->where('campaign_id', $data['campaign_id'] ?? null)
-            ->where('ngo_id', $ngoId)
+            ->whereIn('status', ['pending', 'approved'])
             ->exists();
 
         if ($exists) {
-            return back()->with('error', 'You have already applied.');
+            return back()->with('error', 'You already have a pending or approved application.');
         }
 
-        VolunteerApplication::create([
+        $application = VolunteerApplication::create([
             'volunteer_id' => $volunteer->id,
-            'campaign_id' => $data['campaign_id'] ?? null,
-            'ngo_id'      => $ngoId,
-            'message'     => $data['message'] ?? null,
-            'status'      => 'pending',
+            'campaign_id'  => $data['campaign_id'] ?? null,
+            'message'      => $data['message'] ?? null,
+            'status'       => 'pending',
         ]);
+
+        try {
+            Mail::to($volunteer->user->email)->send(
+                new VolunteerApplicationReceived($application)
+            );
+        } catch (\Throwable $e) {
+            Log::warning('Volunteer application confirmation email failed', [
+                'error' => $e->getMessage(),
+            ]);
+        }
 
         return back()->with('success', 'Your volunteer application has been submitted!');
     }
 
     /**
-     * List volunteers who applied to a campaign (authenticated users).
+     * List volunteers who applied to a campaign (admin/organizer only).
      */
     public function campaignVolunteers($id)
     {
         $campaign = Campaign::findOrFail($id);
+
+        if (auth()->user()->role !== 'admin' && $campaign->user_id !== auth()->id()) {
+            abort(403, 'Access denied.');
+        }
 
         $applications = VolunteerApplication::with('volunteer.user')
             ->where('campaign_id', $id)
@@ -79,5 +91,33 @@ class VolunteerController extends Controller
             ->get();
 
         return view('volunteer.campaign', compact('campaign', 'applications'));
+    }
+
+    /**
+     * Admin: approve/reject a volunteer application.
+     */
+    public function updateStatus(Request $request, $id, VolunteerApplicationService $service)
+    {
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Admins only.');
+        }
+
+        $data = $request->validate([
+            'status' => ['required', 'in:approved,rejected'],
+        ]);
+
+        $application = VolunteerApplication::with('volunteer.user')->findOrFail($id);
+
+        if ($application->status !== 'pending') {
+            return back()->with('error', 'Only pending applications can be updated.');
+        }
+
+        $service->processStatusChange($application, $data['status']);
+
+        $message = $data['status'] === 'approved'
+            ? 'Application approved. Volunteer is now verified.'
+            : 'Application rejected.';
+
+        return back()->with('success', $message);
     }
 }
