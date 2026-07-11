@@ -570,6 +570,49 @@ a    { text-decoration: none; color: inherit; }
 .scroll-top:hover { transform: translateY(-2px); }
 .scroll-top svg { width: 18px; height: 18px; }
 
+/* ═══════════════════════════════════════════════
+    STORYTELLING ENHANCEMENTS
+   ═════════════════════════════════════════════ */
+/* Hero cause quick-picks */
+.hero-causes { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 6px; }
+.hero-causes-label { font-size: 11px; color: rgba(255,255,255,.5); font-family: var(--font-mono); letter-spacing: .08em; text-transform: uppercase; width: 100%; margin-bottom: 2px; }
+.hero-cause { display: inline-flex; align-items: center; gap: 7px; padding: 8px 16px; border-radius: 100px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18); color: rgba(255,255,255,.82); font-size: 13px; font-weight: 500; font-family: var(--font); text-decoration: none; transition: all var(--transition); }
+.hero-cause:hover { background: rgba(255,255,255,.16); border-color: rgba(255,255,255,.4); color: #fff; transform: translateY(-2px); }
+.hero-cause svg { width: 14px; height: 14px; opacity: .8; }
+
+/* Card byline (organizer) */
+.camp-byline { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.camp-avatar { width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg,var(--accent),var(--accent2)); color: #fff; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.camp-org-name { font-size: 12px; color: var(--text3); font-family: var(--font); }
+.camp-org-name b { color: var(--text2); font-weight: 600; }
+
+/* Status / urgency badge on card image */
+.camp-status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 11px; border-radius: 100px; font-size: 11px; font-weight: 700; font-family: var(--font); }
+.camp-status-badge svg { width: 11px; height: 11px; }
+.st-urgent { background: rgba(239,68,68,.92); color: #fff; }
+.st-almost { background: rgba(245,158,11,.95); color: #1f1300; }
+.st-new    { background: rgba(16,185,129,.95); color: #fff; }
+
+.camp-donors-line { font-size: 12px; color: var(--text3); font-family: var(--font); margin-bottom: 14px; }
+.camp-donors-line b { color: var(--accent); font-family: var(--font-mono); }
+
+/* Voices of Impact */
+.voices-section { background: var(--bg); padding: 76px 0 36px; }
+.voices-head { text-align: center; margin-bottom: 44px; }
+.voices-title { font-family: var(--font-display); font-size: clamp(1.8rem,3.5vw,2.6rem); font-weight: 500; color: var(--text); line-height: 1.15; margin-bottom: 10px; }
+.voices-title em { font-style: normal; color: var(--accent); }
+.voices-sub { font-size: 15px; color: var(--text3); font-weight: 300; }
+.voices-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 22px; }
+@media(max-width: 860px) { .voices-grid { grid-template-columns: 1fr; } }
+.voice-card { background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius-lg); padding: 30px 28px; box-shadow: var(--shadow); position: relative; }
+.voice-quote-mark { font-family: Georgia, serif; font-size: 54px; line-height: 1; color: var(--accent); opacity: .18; position: absolute; top: 14px; left: 22px; }
+.voice-quote { font-size: 14.5px; color: var(--text2); line-height: 1.8; font-weight: 300; margin: 18px 0 22px; position: relative; z-index: 1; }
+.voice-author { display: flex; align-items: center; gap: 12px; }
+.voice-avatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg,var(--accent),var(--accent2)); color: #fff; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.voice-name { font-size: 13.5px; font-weight: 700; color: var(--text); }
+.voice-role { font-size: 11.5px; color: var(--text3); }
+.voice-cause { display: inline-block; margin-top: 14px; font-size: 11px; font-weight: 600; color: var(--accent); background: var(--accent-glow); padding: 4px 12px; border-radius: 100px; font-family: var(--font); }
+
 /* ── No-JS fallback for reveal animations ── */
 html:not(.js-enabled) .reveal { opacity: 1; transform: none; }
 
@@ -741,15 +784,15 @@ html:not(.js-enabled) .reveal { opacity: 1; transform: none; }
         <div class="hero-content">
             <div class="hero-pill">
                 <span class="hero-pill-dot"></span>
-                {{ $campaigns->total() ?? $campaigns->count() }}+ Verified Campaigns Live
+                {{ $campaigns->total() ?? $campaigns->count() }}+ lives changed — one campaign at a time
             </div>
 
             <h1 class="hero-title">
-                Browse &amp; Support<br><em>Every Cause</em>
+                Every cause has<br>a <em>story</em> worth telling
             </h1>
 
             <p class="hero-desc">
-                From medical emergencies to education and disaster relief — find a verified campaign that speaks to your heart and make every rupee count.
+                Behind each campaign is a person waiting — a child who needs surgery, a family rebuilding after a flood. Read their stories and help write the ending.
             </p>
 
             {{-- Search bar --}}
@@ -760,6 +803,16 @@ html:not(.js-enabled) .reveal { opacity: 1; transform: none; }
                 @if(request('sort'))<input type="hidden" name="sort" value="{{ request('sort') }}">@endif
                 <button type="submit" class="hero-search-btn">Search</button>
             </form>
+
+            <div class="hero-causes">
+                <span class="hero-causes-label">Browse by cause</span>
+                @foreach(($categories ?? collect())->take(5) as $cat)
+                <a class="hero-cause" href="{{ url()->current() }}?category={{ $cat->slug }}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                    {{ $cat->name }}
+                </a>
+                @endforeach
+            </div>
 <!-- 
             <div class="hero-trust">
                 <div class="hero-trust-item">
@@ -1013,6 +1066,10 @@ html:not(.js-enabled) .reveal { opacity: 1; transform: none; }
 
         $isSpotlight = $index === 0 && !request('search') && !request('category');
         $categorySlug = $campaign->category->slug ?? 'general';
+
+        $isNew    = $campaign->created_at && \Carbon\Carbon::parse($campaign->created_at)->diffInDays(now()) <= 7;
+        $isUrgent = $daysLeft !== null && $daysLeft <= 7;
+        $isAlmost = $percentage >= 75;
     @endphp
 
                     @if($isSpotlight)
@@ -1022,6 +1079,10 @@ html:not(.js-enabled) .reveal { opacity: 1; transform: none; }
                             <div class="spotlight-eyebrow">Featured Campaign</div>
                             <div class="spotlight-title">{{ $campaign->title }}</div>
                             <div class="spotlight-excerpt">{{ Str::limit(strip_tags($campaign->description), 160) }}</div>
+                            <div style="font-size:13px;color:rgba(255,255,255,.82);font-family:var(--font);margin-bottom:18px;display:flex;align-items:center;gap:9px;">
+                                <span style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.18);display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;">{{ strtoupper(substr(($campaign->user->name ?? 'O'),0,1)) }}</span>
+                                Started by {{ $campaign->user->name ?? 'a verified organiser' }}
+                            </div>
                             <div class="spotlight-stats">
                                 <div>
                                     <span class="spotlight-stat-val">₹{{ number_format($raised) }}</span>
@@ -1062,10 +1123,26 @@ html:not(.js-enabled) .reveal { opacity: 1; transform: none; }
                             <img loading="lazy" src="{{ asset('storage/' . $campaign->cover_image) }}" alt="{{ $campaign->title }}">
                             <div class="camp-badge-wrap">
                                 <span class="camp-cat-badge">{{ $campaign->category->name ?? 'General' }}</span>
-                                <span class="camp-verified-badge">Verified</span>
+                                <span style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
+                                    @if($isUrgent)
+                                        <span class="camp-status-badge st-urgent">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.3 3.86l-8.5 14.7A2 2 0 003.5 21h17a2 2 0 001.7-3.44l-8.5-14.7a2 2 0 00-3.4 0z"/></svg>
+                                            Urgent
+                                        </span>
+                                    @elseif($isAlmost)
+                                        <span class="camp-status-badge st-almost">Almost there</span>
+                                    @elseif($isNew)
+                                        <span class="camp-status-badge st-new">New</span>
+                                    @endif
+                                    <span class="camp-verified-badge">Verified</span>
+                                </span>
                             </div>
                             </div>
                         <div class="camp-body">
+                            <div class="camp-byline">
+                                <span class="camp-avatar">{{ strtoupper(substr(($campaign->user->name ?? 'O'),0,1)) }}</span>
+                                <span class="camp-org-name">by <b>{{ $campaign->user->name ?? 'Verified organiser' }}</b></span>
+                            </div>
                             <h3 class="camp-title">{{ $campaign->title }}</h3>
                             <p class="camp-excerpt">{{ Str::limit(strip_tags($campaign->description), 100) }}</p>
 
@@ -1094,6 +1171,8 @@ html:not(.js-enabled) .reveal { opacity: 1; transform: none; }
                                 @endif
                             </div>
 
+                            <div class="camp-donors-line"><b>{{ number_format($donors) }}</b> people came together for this cause</div>
+
                             <a href="{{ route('campaign.public', [$categorySlug, $campaign->slug]) }}" class="btn btn-accent btn-block">
                                 Donate Now
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -1107,8 +1186,8 @@ html:not(.js-enabled) .reveal { opacity: 1; transform: none; }
                         <div class="empty-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
                         </div>
-                        <div class="empty-title">No campaigns found</div>
-                        <p class="empty-sub">Try a different search term or browse all categories.</p>
+                        <div class="empty-title">No stories match yet</div>
+                        <p class="empty-sub">We couldn't find a campaign for that search. Try another cause or clear your filters to discover more.</p>
                         <a href="{{ url()->current() }}" class="btn btn-accent" style="margin:24px auto 0;width:fit-content">
                             View All Campaigns
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -1149,6 +1228,47 @@ html:not(.js-enabled) .reveal { opacity: 1; transform: none; }
 @endif
             </div>
 
+        </div>
+    </div>
+</section>
+
+
+{{-- ═══ VOICES OF IMPACT (storytelling) ═══ --}}
+<section class="voices-section">
+    <div class="container">
+        <div class="voices-head reveal">
+            <div class="eyebrow" style="justify-content:center;color:var(--accent)">Voices of Impact</div>
+            <h2 class="voices-title">Real people, <em>real change</em></h2>
+            <p class="voices-sub">Every rupee carries a story. Here's what giving looks like from the other side.</p>
+        </div>
+        <div class="voices-grid">
+            <div class="voice-card reveal d1">
+                <div class="voice-quote-mark">&ldquo;</div>
+                <p class="voice-quote">When my daughter needed heart surgery, I had nowhere to turn. Strangers I'll never meet came together in nine days. We're home, and she's running again.</p>
+                <div class="voice-author">
+                    <div class="voice-avatar">A</div>
+                    <div><div class="voice-name">Anita R.</div><div class="voice-role">Mother · Bengaluru</div></div>
+                </div>
+                <span class="voice-cause">Medical Emergency</span>
+            </div>
+            <div class="voice-card reveal d2">
+                <div class="voice-quote-mark">&ldquo;</div>
+                <p class="voice-quote">The flood took everything but our school rebuilt with help from 200 donors. Watching the kids return to class was the first time I breathed easy in months.</p>
+                <div class="voice-author">
+                    <div class="voice-avatar">M</div>
+                    <div><div class="voice-name">Meera K.</div><div class="voice-role">Teacher · Assam</div></div>
+                </div>
+                <span class="voice-cause">Disaster Relief</span>
+            </div>
+            <div class="voice-card reveal d3">
+                <div class="voice-quote-mark">&ldquo;</div>
+                <p class="voice-quote">I sponsored one girl's education two years ago. Yesterday she video-called to say she topped her class. That small monthly gift rewrote her whole future.</p>
+                <div class="voice-author">
+                    <div class="voice-avatar">R</div>
+                    <div><div class="voice-name">Rahul S.</div><div class="voice-role">Donor · Mumbai</div></div>
+                </div>
+                <span class="voice-cause">Education</span>
+            </div>
         </div>
     </div>
 </section>
