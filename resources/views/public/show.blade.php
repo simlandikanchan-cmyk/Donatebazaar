@@ -1614,11 +1614,73 @@ button { font-family:var(--font); }
                                    placeholder="₹ Enter custom amount"
                                    required min="1" max="500000" step="1"
                                    class="custom-input-new" oninput="syncAmtNew('once')">
+
+                            <div style="display:flex;gap:8px;margin-top:10px;">
+                                <input type="text" id="couponCode" name="coupon_code"
+                                       placeholder="Coupon code (optional)" autocomplete="off"
+                                       style="flex:1;height:48px;border-radius:12px;border:1.5px solid rgba(0,0,0,.12);background:#fff;padding:0 14px;font-size:14px;color:#0f1117;outline:none;text-transform:uppercase;">
+                                <button type="button" onclick="applyCoupon()"
+                                        style="height:48px;padding:0 18px;border:none;border-radius:12px;background:#0f1117;color:#fff;font-weight:600;font-size:13px;cursor:pointer;">
+                                    Apply
+                                </button>
+                            </div>
+                            <div id="couponMsg" style="font-size:12.5px;margin-top:6px;min-height:16px;"></div>
+
                             <button type="submit" class="btn-donate-new btn-once">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
                                 Donate Now
                             </button>
                         </form>
+
+                        <script>
+                        function applyCoupon() {
+                            var codeEl = document.getElementById('couponCode');
+                            var msg    = document.getElementById('couponMsg');
+                            var code   = codeEl.value.trim();
+                            var amount = parseFloat(document.getElementById('amtOnce').value);
+
+                            if (!code) { msg.textContent = ''; msg.style.color = ''; return; }
+                            if (!amount || amount < 1) {
+                                msg.textContent = 'Enter a donation amount first.';
+                                msg.style.color = '#dc2626';
+                                return;
+                            }
+
+                            msg.textContent = 'Checking…';
+                            msg.style.color = '#6b7280';
+
+                            fetch("{{ route('coupon.validate') }}", {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                                },
+                                body: JSON.stringify({
+                                    code: code,
+                                    amount: amount,
+                                    campaign_id: "{{ $campaign->id }}"
+                                })
+                            })
+                            .then(function (r) { return r.json(); })
+                            .then(function (d) {
+                                if (d.valid) {
+                                    msg.textContent = 'Coupon applied! You pay ₹'
+                                        + Number(d.discounted_total).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})
+                                        + ' (saved ₹'
+                                        + Number(d.discount_amount).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})
+                                        + ').';
+                                    msg.style.color = '#059669';
+                                } else {
+                                    msg.textContent = d.message || 'Invalid coupon code.';
+                                    msg.style.color = '#dc2626';
+                                }
+                            })
+                            .catch(function () {
+                                msg.textContent = 'Could not verify coupon. Try again.';
+                                msg.style.color = '#dc2626';
+                            });
+                        }
+                        </script>
                     </div>
 
                     <div id="mFormWeekly" style="display:none">

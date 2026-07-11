@@ -74,6 +74,22 @@ class User extends Authenticatable
     }
 
     /**
+     * Coupons assigned to this user (user-specific, single-use).
+     */
+    public function coupons()
+    {
+        return $this->hasMany(Coupon::class);
+    }
+
+    /**
+     * Coupon redemptions made by this user.
+     */
+    public function couponRedemptions()
+    {
+        return $this->hasMany(CouponRedemption::class);
+    }
+
+    /**
      * Event registrations made by this user.
      */
     public function eventRegistrations()

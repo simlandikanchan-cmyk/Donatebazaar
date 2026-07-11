@@ -101,15 +101,19 @@
                 </td>
               </tr>
 
-              @php
-                $rows = [
-                    ['Receipt Number', $receiptNo],
-                    ['Date & Time', \Carbon\Carbon::parse($paidAt)->format('d M Y, h:i A')],
-                    ['Payment Method', 'Razorpay'],
-                    ['Donation Amount', '₹' . number_format($amount, 2)],
-                    ['Platform Fee (5%)', '₹' . number_format($platformFee, 2)],
-                ];
-              @endphp
+               @php
+                 $rows = [
+                     ['Receipt Number', $receiptNo],
+                     ['Date & Time', \Carbon\Carbon::parse($paidAt)->format('d M Y, h:i A')],
+                     ['Payment Method', 'Razorpay'],
+                     ['Donation Amount', '₹' . number_format($amount, 2)],
+                     ['Platform Fee (5%)', '₹' . number_format($platformFee, 2)],
+                 ];
+
+                 if (($donation->discount_amount ?? 0) > 0) {
+                     $rows[] = ['Coupon (' . ($donation->coupon_code ?? '') . ')', '− ₹' . number_format($donation->discount_amount, 2)];
+                 }
+               @endphp
 
               @foreach ($rows as $row)
               <tr>

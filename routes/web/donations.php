@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\RecurringDonationController;
+use App\Http\Controllers\CouponController;
 use Illuminate\Support\Facades\Route;
 
 Route::match(['get', 'post'], '/donate/{campaign}', [PaymentController::class, 'redirectToPayment'])
@@ -18,6 +19,10 @@ Route::post('/payment/verify', [PaymentController::class, 'verify'])
 
 Route::post('/payment/webhook', [PaymentController::class, 'webhook'])
      ->name('payment.webhook');
+
+Route::post('/coupon/validate', [CouponController::class, 'check'])
+     ->name('coupon.validate')
+     ->middleware('auth');
 
 Route::middleware('auth')->group(function () {
     Route::get('/my-recurring-donations', [RecurringDonationController::class, 'index'])->name('recurring.index');
