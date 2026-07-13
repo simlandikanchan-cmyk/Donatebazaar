@@ -34,14 +34,17 @@
 
 <body class="flex flex-col min-h-screen" style="background:#f4f5fb">
 
+    @if(!request()->routeIs('events.edit') && !request()->routeIs('events.show'))
     {{-- Navigation --}}
     @include('layouts.navigation')
+    @endif
 
     {{-- Main Content --}}
     <main class="flex-grow">
         @yield('content')
     </main>
 
+    @if(!request()->routeIs('events.edit') && !request()->routeIs('events.show'))
     {{-- Footer --}}
     @include('partials.footer')
 
@@ -51,6 +54,7 @@
     ========================== -->
 
     <!-- Floating Chat Button -->
+    @endif
     <div class="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 z-50">
         <div class="relative">
             <button

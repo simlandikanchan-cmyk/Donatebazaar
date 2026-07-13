@@ -17,12 +17,14 @@ class FundraiserLevel extends Model
         'requires_admin_approval',
         'kyc_requirement',
         'badge_color',
+        'is_default',
     ];
 
     protected $casts = [
         'max_goal_amount'         => 'decimal:2',
         'min_raised_percent'      => 'decimal:2',
         'requires_admin_approval' => 'boolean',
+        'is_default'              => 'boolean',
     ];
 
     // ── Relationships ──────────────────────────────────────────

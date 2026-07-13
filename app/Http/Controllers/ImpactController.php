@@ -37,6 +37,7 @@ class ImpactController extends Controller
 
         $featured = Campaign::where('campaign_state', Campaign::STATE_COMPLETED)
             ->with('category:id,name,slug')
+            ->orderByDesc('is_featured')
             ->orderByDesc('raised_amount')
             ->first();
 
