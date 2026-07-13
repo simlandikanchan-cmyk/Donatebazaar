@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DonationHistoryController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\RecurringDonationController;
 use App\Http\Controllers\CouponController;
@@ -31,4 +32,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/recurring/{recurringDonation}/cancel', [RecurringDonationController::class, 'cancel'])->name('recurring.cancel');
     Route::patch('/recurring/{recurringDonation}/pause',  [RecurringDonationController::class, 'pause'])->name('recurring.pause');
     Route::patch('/recurring/{recurringDonation}/resume', [RecurringDonationController::class, 'resume'])->name('recurring.resume');
+
+    Route::get('/donation-history', [DonationHistoryController::class, 'index'])->name('donation.history');
+    Route::get('/donation-history/{donation}/receipt', [DonationHistoryController::class, 'receipt'])->name('donation.receipt');
 });
