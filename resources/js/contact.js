@@ -1,3 +1,5 @@
+document.documentElement.classList.add('js-enabled');
+
 window.toggleFAQ = function(btn) {
     const item = btn.closest('.faq-item');
     const isOpen = item.classList.contains('open');
