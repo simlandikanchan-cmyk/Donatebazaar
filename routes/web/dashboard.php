@@ -4,6 +4,8 @@ use App\Models\Campaign;
 use App\Models\Donation;
 use Illuminate\Support\Facades\Route;
 
+use App\Models\FundraiserLevel;
+
 Route::middleware(['auth', 'account.active'])->group(function () {
     Route::get('/user/dashboard', function () {
         $user = auth()->user()->load(['kycVerification', 'fundraiserLevel']);
@@ -54,4 +56,48 @@ Route::middleware(['auth', 'account.active'])->group(function () {
             'memberSince', 'daysActive', 'user'
         ));
     })->name('dashboard');
+
+    Route::get('/user/dashboard/saved-campaigns', function () {
+        $user = auth()->user();
+        $campaigns = $user->followedCampaigns()
+            ->with('category:id,name,slug')
+            ->withCount('donations')
+            ->latest()
+            ->paginate(20);
+
+        return view('user.saved-campaigns', compact('campaigns'));
+    })->name('saved.campaigns');
+
+    Route::get('/user/dashboard/level', function () {
+        $user = auth()->user();
+        $user->loadMissing(['fundraiserLevel.currentLevel', 'fundraiserLevel.history.fromLevel', 'fundraiserLevel.history.toLevel']);
+
+        $userLevel = $user->fundraiserLevel;
+        $currentLevel = $userLevel?->currentLevel ?? FundraiserLevel::starter();
+        $allLevels = FundraiserLevel::orderBy('level_number')->get();
+        $nextLevel = FundraiserLevel::nextAfter($currentLevel->level_number);
+
+        $campaignsCompleted = Campaign::where('user_id', $user->id)
+            ->whereIn('campaign_state', [Campaign::STATE_COMPLETED, Campaign::STATE_ACTIVE])
+            ->count();
+
+        $totalRaised = Campaign::where('user_id', $user->id)
+            ->sum('raised_amount');
+
+        $completionPct = 0;
+        if ($nextLevel) {
+            $campPct = $nextLevel->min_campaigns_completed > 0
+                ? min(100, ($campaignsCompleted / $nextLevel->min_campaigns_completed) * 100)
+                : 100;
+            $raisedPct = $nextLevel->min_raised_percent > 0
+                ? min(100, ($campaignsCompleted > 0 ? 100 : 0))
+                : 100;
+            $completionPct = min(100, ($campPct + $raisedPct) / 2);
+        }
+
+        return view('user.fundraiser-level', compact(
+            'userLevel', 'currentLevel', 'allLevels', 'nextLevel',
+            'campaignsCompleted', 'totalRaised', 'completionPct'
+        ));
+    })->name('user.level');
 });

@@ -13,6 +13,7 @@ use App\Models\Donation;
 use App\Models\UserFundraiserLevel;
 use App\Models\FundraiserLevel;
 use App\Models\EventRegistration;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class User extends Authenticatable
 {
@@ -95,6 +96,21 @@ class User extends Authenticatable
     public function eventRegistrations()
     {
         return $this->hasMany(EventRegistration::class);
+    }
+
+    // -------------------------------------------------------------------------
+    // Relationships — Followed Campaigns
+    // -------------------------------------------------------------------------
+
+    public function followedCampaigns(): MorphToMany
+    {
+        return $this->morphedByMany(
+            Campaign::class,
+            'following',
+            'followers',
+            'follower_id',
+            'following_id'
+        )->withTimestamps();
     }
 
     // -------------------------------------------------------------------------
