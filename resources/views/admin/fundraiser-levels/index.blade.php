@@ -30,7 +30,7 @@
 .level-attrs{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
 .attr{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-family:var(--mono);color:var(--text2);background:var(--surface);border:1px solid var(--border2);padding:4px 9px;border-radius:100px;}
 .attr svg{width:11px;height:11px;color:var(--text3);}
-.appr-pill{font-size:10px;font-weight:700;font-family:var(--mono);text-transform:uppercase;letter-spacing:.04em;padding:3px 9px;border-radius:100px;}
+.apr-pill{font-size:10px;font-weight:700;font-family:var(--mono);text-transform:uppercase;letter-spacing:.04em;padding:3px 9px;border-radius:100px;}
 .ap-yes{background:rgba(245,158,11,.12);color:#d97706;border:1px solid rgba(245,158,11,.22);}
 .ap-no{background:rgba(5,196,138,.12);color:var(--green);border:1px solid rgba(5,196,138,.22);}
 .actions{display:flex;align-items:center;gap:5px;flex-shrink:0;}
