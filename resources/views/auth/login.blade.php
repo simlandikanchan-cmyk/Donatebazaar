@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login — DonateBazaar</title>
+    <script>
+        (function () {
+            var t = localStorage.getItem('theme');
+            if (!t) {
+                t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            document.documentElement.setAttribute('data-theme', t);
+        })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -11,22 +20,67 @@
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         :root {
-            --left-bg-1: #0d0e1a;
-            --left-bg-2: #0f172a;
-            --left-bg-3: #042f2e;
-            --text: #1a1a2e;
-            --muted: #6b7280;
-            --border: rgba(0,0,0,0.1);
-            --bg: #f0f2f8;
-            --card: #ffffff;
-            --danger: #ef4444;
-            --font-mono: 'DM Mono', monospace;
-            --font: 'DM Sans', sans-serif;
+            /* Backgrounds */
+            --bg:          #f4f5fb;
+            --surface:     #ffffff;
+            --surface2:    #f8f9fe;
+
+            /* Borders */
+            --border:      rgba(0,0,0,0.06);
+            --border2:     rgba(0,0,0,0.10);
+
+            /* Text */
+            --text:        #0f1117;
+            --text2:       #4b5563;
+            --text3:       #9ca3af;
+
+            /* Accent */
+            --accent:      #2563eb;
+            --accent2:     #0d9488;
+            --accent-glow: rgba(37,99,235,0.18);
+
+            /* Semantic */
+            --green:       #16a34a;
+            --yellow:      #f59e0b;
+            --red:         #ef4444;
+            --blue:        #3b82f6;
+
+            /* Typography */
+            --font:        'DM Sans', sans-serif;
+            --font-mono:   'DM Mono', monospace;
+
+            /* Shape */
+            --radius:      14px;
+            --radius-sm:   9px;
+
+            /* Elevation */
+            --shadow:      0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+            --shadow-lg:   0 8px 40px rgba(0,0,0,0.12);
+
+            /* Login-specific mappings */
+            --card:  var(--surface);
+            --muted: var(--text2);
+            --danger: var(--red);
+        }
+
+        [data-theme="dark"] {
+            --bg:          #0b0c14;
+            --surface:     #13141f;
+            --surface2:    #1a1b2e;
+            --border:      rgba(255,255,255,0.06);
+            --border2:     rgba(255,255,255,0.10);
+            --text:        #f0f1ff;
+            --text2:       #a5b4c8;
+            --text3:       #5a6579;
+            --accent-glow: rgba(37,99,235,0.25);
+            --shadow:      0 1px 3px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.2);
+            --shadow-lg:   0 8px 40px rgba(0,0,0,0.5);
         }
 
         body {
             font-family: var(--font);
             background: var(--bg);
+            color: var(--text);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -34,6 +88,7 @@
             padding: 24px 16px;
             position: relative;
             overflow: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
         /* subtle bg blobs */
@@ -73,7 +128,8 @@
             width: 100%;
             border-radius: 24px;
             overflow: hidden;
-            box-shadow: 0 28px 90px rgba(13,14,26,0.28), 0 4px 24px rgba(0,0,0,0.10);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-lg), 0 4px 24px rgba(0,0,0,0.10);
             animation: rise 0.55s cubic-bezier(0.22,1,0.36,1) both;
         }
         @keyframes rise {
@@ -343,11 +399,12 @@
            RIGHT PANEL — white form
         ═══════════════════════════════ */
         .right-panel {
-            background: var(--card);
+            background: var(--surface);
             padding: 46px 40px;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            transition: background 0.3s ease;
         }
 
         .form-header { margin-bottom: 26px; }
@@ -402,7 +459,7 @@
             font-family: var(--font);
             font-size: 12.5px;
             font-weight: 600;
-            color: #374151;
+            color: var(--text);
         }
 
         .input-wrap {
@@ -414,7 +471,7 @@
             position: absolute;
             left: 13px; top: 50%;
             transform: translateY(-50%);
-            color: #c4c9d4;
+            color: var(--text3);
             pointer-events: none;
             transition: color 0.2s;
             width: 15px; height: 15px;
@@ -427,18 +484,18 @@
             font-family: var(--font);
             font-size: 13.5px;
             color: var(--text);
-            background: #f9fafb;
-            border: 1.5px solid rgba(0,0,0,0.09);
+            background: var(--surface2);
+            border: 1.5px solid var(--border2);
             border-radius: 10px;
             outline: none;
-            transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+            transition: border-color 0.2s, background 0.2s, box-shadow 0.2s, color 0.3s ease;
         }
         .input-wrap.has-toggle input { padding-right: 42px; }
-        .input-wrap input::placeholder { color: #c4c9d4; font-size: 13px; }
+        .input-wrap input::placeholder { color: var(--text3); font-size: 13px; }
         .input-wrap input:focus {
             border-color: var(--accent);
-            background: white;
-            box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+            background: var(--surface);
+            box-shadow: 0 0 0 3px var(--accent-glow);
         }
         .input-wrap:focus-within .ico { color: var(--accent); }
 
@@ -447,7 +504,7 @@
             right: 11px; top: 50%;
             transform: translateY(-50%);
             background: none; border: none;
-            cursor: pointer; color: #bbb;
+            cursor: pointer; color: var(--text3);
             padding: 4px;
             display: flex; align-items: center;
             z-index: 2;
@@ -500,18 +557,18 @@
             font-size: 13.5px;
             font-weight: 500;
             color: white;
-            background: linear-gradient(135deg, #1d4ed8 0%, #0d9488 100%);
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
             border: none;
             border-radius: 11px;
             cursor: pointer;
             transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
-            box-shadow: 0 4px 22px rgba(37,99,235,0.38);
+            box-shadow: 0 4px 22px var(--accent-glow);
             letter-spacing: 0.01em;
         }
         .btn-login:hover {
             opacity: 0.91;
             transform: translateY(-1px);
-            box-shadow: 0 8px 30px rgba(37,99,235,0.48);
+            box-shadow: 0 8px 30px var(--accent-glow);
         }
         .btn-login:active { transform: translateY(0); }
 
@@ -527,7 +584,7 @@
             height: 1px;
             background: rgba(0,0,0,0.07);
         }
-        .divider span { font-size: 11.5px; color: #bbb; font-weight: 500; font-family: var(--font-mono); }
+        .divider span { font-size: 11.5px; color: var(--text3); font-weight: 500; font-family: var(--font-mono); }
 
         /* Google */
         .btn-google {
@@ -566,6 +623,27 @@
         }
         .register-link a:hover { text-decoration: underline; }
 
+        /* Theme toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 18px; right: 18px;
+            z-index: 10;
+            width: 42px; height: 42px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%;
+            background: var(--surface);
+            border: 1.5px solid var(--border2);
+            color: var(--text);
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease, border-color 0.2s;
+        }
+        .theme-toggle:hover { transform: translateY(-1px); border-color: var(--accent); color: var(--accent); }
+        .theme-toggle svg { width: 19px; height: 19px; }
+        .theme-toggle .icon-moon { display: none; }
+        [data-theme="dark"] .theme-toggle .icon-sun  { display: none; }
+        [data-theme="dark"] .theme-toggle .icon-moon { display: block; }
+
         /* ── Responsive ── */
         @media (max-width: 720px) {
             .page-wrapper {
@@ -584,6 +662,16 @@
     </style>
 </head>
 <body>
+
+<button type="button" class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle theme">
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="4"/>
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+    </svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+    </svg>
+</button>
 
 <div class="page-wrapper">
 
@@ -829,6 +917,18 @@
 </div><!-- /page-wrapper -->
 
 <script>
+// Theme toggle (persisted, mirrors site [data-theme] convention)
+(function () {
+    var btn = document.getElementById('themeToggle');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+        var root = document.documentElement;
+        var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        try { localStorage.setItem('theme', next); } catch (e) {}
+    });
+})();
+
 function togglePwd(fieldId, btn) {
     const input = document.getElementById(fieldId);
     const isText = input.type === 'text';
