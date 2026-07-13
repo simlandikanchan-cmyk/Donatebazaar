@@ -97,6 +97,8 @@
                     <li><a href="{{ route('home') }}">Home</a></li>
                     <li><a href="{{ route('all.campaigns') }}">Campaigns</a></li>
                     <li><a href="{{ route('campaign.create') }}">Start Fundraiser</a></li>
+                    <li><a href="{{ route('search') }}">Search</a></li>
+                    <li><a href="{{ route('impact') }}">Impact Stories</a></li>
                     <li><a href="{{ route('how.it.works') }}">How It Works</a></li>
                     <li><a href="{{ route('ddrf.index') }}">Disaster Relief</a></li>
                 </ul>
@@ -185,9 +187,11 @@
             </div>
             <div style="display:flex; align-items:center; gap:24px;">
                 <div class="footer-bottom-links">
-                    <a href="#">Privacy</a>
-                    <a href="#">Terms</a>
-                    <a href="#">Security</a>
+                    <a href="{{ route('privacy') }}">Privacy</a>
+                    <a href="{{ route('terms') }}">Terms</a>
+                    <a href="{{ route('refund') }}">Refunds</a>
+                    <a href="{{ route('cookies') }}">Cookies</a>
+                    <a href="{{ route('faq') }}">FAQ</a>
                 </div>
                 <button class="back-to-top" id="back-to-top" aria-label="Back to top">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">

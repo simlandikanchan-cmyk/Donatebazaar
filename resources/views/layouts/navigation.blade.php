@@ -67,6 +67,11 @@
                        role="menuitem">
                         About Us
                     </a>
+                    <a href="{{ route('impact') }}"
+                       class="db-nav__dropdown-item"
+                       role="menuitem">
+                        Impact Stories
+                    </a>
                     <a href="{{ route('how.it.works') }}"
                        class="db-nav__dropdown-item"
                        role="menuitem">
@@ -115,6 +120,10 @@
 
         {{-- ── Right actions ── --}}
         <div class="db-navbar__actions">
+
+            <a href="{{ route('search') }}" class="db-icon-btn" aria-label="Search">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            </a>
 
             @auth
 
@@ -378,6 +387,12 @@
                     </div>
                 </div>
 
+                <a href="{{ route('search') }}"
+                   class="db-drawer__item">
+                    <span class="db-drawer__item-icon" aria-hidden="true"><i data-lucide="search"></i></span>
+                    <span class="db-drawer__item-label">Search</span>
+                </a>
+
                 <a href="{{ route('all.campaigns') }}"
                    class="db-drawer__item">
                     <span class="db-drawer__item-icon" aria-hidden="true"><i data-lucide="layout-grid"></i></span>
@@ -397,6 +412,7 @@
                 <div id="drawer-sub-about" class="db-drawer__sub" inert>
                     <div class="db-drawer__subinner">
                         <a href="{{ route('about') }}" class="db-drawer__subitem">About Us</a>
+                        <a href="{{ route('impact') }}" class="db-drawer__subitem">Impact Stories</a>
                         <a href="{{ route('how.it.works') }}" class="db-drawer__subitem">How It Works</a>
                         <a href="{{ route('blogs.index') }}" class="db-drawer__subitem">Blog</a>
                         <a href="{{ route('events.index') }}" class="db-drawer__subitem">Events</a>

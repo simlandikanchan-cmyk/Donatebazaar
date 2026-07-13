@@ -20,7 +20,10 @@ class PublicCampaignController extends Controller
                 'events',
             ])
             ->where('slug', $slug)
-            ->whereHas('category', fn($q) => $q->where('slug', $category))
+            ->where(function ($q) use ($category) {
+                $q->whereHas('category', fn($q) => $q->where('slug', $category))
+                  ->orWhereNull('category_id');
+            })
             ->firstOrFail();
 
         /*

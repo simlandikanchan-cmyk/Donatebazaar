@@ -108,7 +108,11 @@
                 Receipt
             </a>
             @endif
-            <a href="{{ $donation->campaign?->slug ? url('/campaigns/'.($donation->campaign->category->slug ?? 'general').'/'.$donation->campaign->slug) : '#' }}" class="btn btn-secondary">
+            @if($donation->campaign?->slug)
+            <a href="{{ route('campaign.public', ['category' => $donation->campaign->category->slug ?? 'uncategorized', 'slug' => $donation->campaign->slug]) }}" class="btn btn-secondary">
+            @else
+            <a href="#" class="btn btn-secondary">
+            @endif
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                 View
             </a>
@@ -199,12 +203,14 @@
 .dh-empty p{font-size:12px;color:var(--text3);max-width:320px;line-height:1.6;}
 .dh-empty .btn{padding:10px 20px;font-size:12.5px;}
 .dh-empty .btn svg{width:13px;height:13px;opacity:1;}
-.dh-pagination{display:flex;justify-content:center;margin-top:22px;}
-.dh-pagination :is(.pagination){display:flex;gap:6px;list-style:none;flex-wrap:wrap;}
-.dh-pagination :is(.page-item .page-link){display:flex;align-items:center;justify-content:center;min-width:34px;height:34px;padding:0 10px;border-radius:var(--r-sm);border:1px solid var(--border2);background:var(--surface);color:var(--text2);font-size:12px;font-weight:600;font-family:var(--mono);transition:all var(--ease);}
-.dh-pagination :is(.page-item .page-link:hover){border-color:var(--accent);color:var(--accent);}
-.dh-pagination :is(.page-item.active .page-link){background:var(--accent);border-color:var(--accent);color:#fff;}
-.dh-pagination :is(.page-item.disabled .page-link){opacity:.4;cursor:not-allowed;}
+.dh-pagination{display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:22px;}
+.dh-pagination .pagination{display:flex;gap:6px;list-style:none;flex-wrap:wrap;padding:0;margin:0;}
+.dh-pagination .page-link{display:flex;align-items:center;justify-content:center;min-width:34px;height:34px;padding:0 10px;border-radius:var(--r-sm);border:1px solid var(--border2);background:var(--surface);color:var(--text2);font-size:12px;font-weight:600;font-family:var(--mono);transition:all var(--ease);text-decoration:none;}
+.dh-pagination .page-link:hover{border-color:var(--accent);color:var(--accent);}
+.dh-pagination .active .page-link{background:var(--accent);border-color:var(--accent);color:#fff;}
+.dh-pagination .disabled .page-link{opacity:.4;cursor:default;pointer-events:none;}
+.dh-pagination .pagination-info{font-size:12px;color:var(--text3);font-family:var(--mono);margin:0;}
+.dh-pagination .pagination-info strong{font-weight:700;color:var(--text2);}
 
 @media(max-width:960px){.dh-stats{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:860px){
