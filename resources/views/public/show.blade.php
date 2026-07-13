@@ -19,9 +19,9 @@
     --text:        #0f1117;
     --text2:       #4b5563;
     --text3:       #9ca3af;
-    --accent:      #6366f1;
-    --accent2:     #8b5cf6;
-    --accent-glow: rgba(99,102,241,0.18);
+    --accent:      #2563eb;
+    --accent2:     #0d9488;
+    --accent-glow: rgba(37,99,235,0.18);
     --orange:      #f97316;
     --orange2:     #ea580c;
     --orange-light:#fff7ed;
@@ -87,8 +87,8 @@ button { font-family:var(--font); }
 }
 .hero-grid-lines {
     position:absolute; inset:0; z-index:1;
-    background-image:linear-gradient(rgba(99,102,241,.05) 1px,transparent 1px),
-                     linear-gradient(90deg,rgba(99,102,241,.05) 1px,transparent 1px);
+    background-image:linear-gradient(rgba(37,99,235,.05) 1px,transparent 1px),
+                     linear-gradient(90deg,rgba(37,99,235,.05) 1px,transparent 1px);
     background-size:60px 60px; opacity:.5; pointer-events:none;
 }
 .hero-inner { position:relative; z-index:2; display:flex; flex-direction:column; height:100%; }
@@ -112,7 +112,7 @@ button { font-family:var(--font); }
     font-size:11px; font-weight:700; color:#fff;
     letter-spacing:.09em; text-transform:uppercase;
     font-family:var(--font-mono); margin-bottom:18px;
-    width:fit-content; box-shadow:0 6px 20px rgba(99,102,241,.4);
+    width:fit-content; box-shadow:0 6px 20px rgba(37,99,235,.4);
 }
 .hero-cat-pill::before {
     content:''; width:6px; height:6px; border-radius:50%;
@@ -126,7 +126,7 @@ button { font-family:var(--font); }
     font-family:var(--font-display); text-transform:capitalize;
     font-size:clamp(2.2rem,4.5vw,3.6rem); font-weight:500;
     line-height:1.1; color:#fff; margin-bottom:22px;
-    max-width:780px; letter-spacing:-.01em;
+    max-width:780px; letter-spacing:-.01em; text-wrap:balance;
 }
 .hero-meta { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:32px; }
 .hero-pill {
@@ -201,7 +201,7 @@ button { font-family:var(--font); }
 .sec-title {
     font-family:var(--font-display); text-transform:capitalize;
     font-size:clamp(1.25rem,2vw,1.65rem); font-weight:700;
-    line-height:1.2; color:var(--text); margin-bottom:14px;
+    line-height:1.2; color:var(--text); margin-bottom:14px; text-wrap:balance;
 }
 .sec-title em { font-style:normal; color:var(--accent); }
 .sec-text { font-size:14.5px; line-height:1.85; color:var(--text2); font-weight:300; }
@@ -244,8 +244,8 @@ button { font-family:var(--font); }
 }
 .mission-chip:hover .chip-icon { transform:scale(1.12); }
 .chip-icon svg { width:12px; height:12px; }
-.chip-verified    { background:rgba(99,102,241,.08);  color:#4338ca; border-color:rgba(99,102,241,.2); }
-.chip-verified .chip-icon { background:rgba(99,102,241,.15); }
+.chip-verified    { background:rgba(37,99,235,.08);  color:#1e40af; border-color:rgba(37,99,235,.2); }
+.chip-verified .chip-icon { background:rgba(37,99,235,.15); }
 .chip-transparent { background:rgba(16,185,129,.07);  color:#065f46; border-color:rgba(16,185,129,.2); }
 .chip-transparent .chip-icon { background:rgba(16,185,129,.15); }
 .chip-secure      { background:rgba(59,130,246,.07);  color:#1d4ed8; border-color:rgba(59,130,246,.2); }
@@ -275,14 +275,14 @@ button { font-family:var(--font); }
     border-radius:var(--radius); color:var(--accent); font-weight:500;
     font-size:14px; transition:all var(--transition);
 }
-.video-link-fallback:hover { background:var(--accent-glow); border-color:rgba(99,102,241,.3); }
+.video-link-fallback:hover { background:var(--accent-glow); border-color:rgba(37,99,235,.3); }
 .video-link-fallback svg { width:20px; height:20px; flex-shrink:0; }
 
 /* ─── Updates Timeline ─── */
 .updates-timeline { display:flex; flex-direction:column; gap:0; position:relative; margin-top:8px; }
 .updates-timeline::before {
     content:''; position:absolute; left:19px; top:0; bottom:0; width:2px;
-    background:linear-gradient(to bottom, var(--accent), rgba(99,102,241,.1));
+    background:linear-gradient(to bottom, var(--accent), rgba(37,99,235,.1));
     border-radius:2px; z-index:0;
 }
 .update-item { display:flex; gap:18px; align-items:flex-start; padding-bottom:26px; position:relative; z-index:1; }
@@ -291,7 +291,7 @@ button { font-family:var(--font); }
     width:40px; height:40px; border-radius:50%;
     background:linear-gradient(135deg,var(--accent),var(--accent2));
     display:flex; align-items:center; justify-content:center;
-    flex-shrink:0; box-shadow:0 4px 14px rgba(99,102,241,.3);
+    flex-shrink:0; box-shadow:0 4px 14px rgba(37,99,235,.3);
     border:3px solid var(--surface);
 }
 .update-dot svg { width:15px; height:15px; color:#fff; }
@@ -300,11 +300,11 @@ button { font-family:var(--font); }
     border-radius:var(--radius); padding:16px 18px;
     transition:all var(--transition);
 }
-.update-body:hover { border-color:rgba(99,102,241,.25); box-shadow:var(--shadow-md); }
+.update-body:hover { border-color:rgba(37,99,235,.25); box-shadow:var(--shadow-md); }
 .update-meta { display:flex; align-items:center; gap:10px; margin-bottom:8px; flex-wrap:wrap; }
 .update-num-badge {
     font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
-    color:var(--accent); background:rgba(99,102,241,.1);
+    color:var(--accent); background:rgba(37,99,235,.1);
     padding:3px 10px; border-radius:100px; font-family:var(--font-mono);
 }
 .update-date { font-size:11px; color:var(--text3); font-family:var(--font-mono); }
@@ -332,11 +332,11 @@ button { font-family:var(--font); }
     background:linear-gradient(90deg,var(--accent),var(--accent2));
     transform:scaleX(0); transform-origin:left; transition:transform .35s;
 }
-.product-card-left:hover { border-color:rgba(99,102,241,.3); box-shadow:var(--shadow-md); transform:translateY(-3px); }
+.product-card-left:hover { border-color:rgba(37,99,235,.3); box-shadow:var(--shadow-md); transform:translateY(-3px); }
 .product-card-left:hover::before { transform:scaleX(1); }
 .product-card-left-icon {
     width:42px; height:42px; border-radius:11px;
-    background:linear-gradient(135deg,rgba(99,102,241,.12),rgba(139,92,246,.12));
+    background:linear-gradient(135deg,rgba(37,99,235,.12),rgba(13,148,136,.12));
     display:flex; align-items:center; justify-content:center; margin-bottom:12px;
 }
 .product-card-left-icon svg { width:19px; height:19px; color:var(--accent); }
@@ -357,7 +357,7 @@ button { font-family:var(--font); }
 .impact-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
 @media(max-width:680px){ .impact-grid { grid-template-columns:1fr; } }
 .impact-card { border:1px solid var(--border2); border-radius:var(--radius); overflow:hidden; transition:transform var(--transition),box-shadow var(--transition),border-color var(--transition); }
-.impact-card:hover { transform:translateY(-4px); box-shadow:var(--shadow-lg); border-color:rgba(99,102,241,.25); }
+.impact-card:hover { transform:translateY(-4px); box-shadow:var(--shadow-lg); border-color:rgba(37,99,235,.25); }
 .impact-img { width:100%; height:148px; object-fit:cover; transition:transform .55s ease; display:block; }
 .impact-card:hover .impact-img { transform:scale(1.07); }
 .impact-body { padding:13px 15px; background:var(--surface); }
@@ -379,7 +379,7 @@ button { font-family:var(--font); }
     background:var(--wi-color,var(--accent));
     transform:scaleX(0); transition:transform .35s; transform-origin:left;
 }
-.why-item:hover { border-color:rgba(99,102,241,.25); transform:translateY(-3px); box-shadow:var(--shadow-md); }
+.why-item:hover { border-color:rgba(37,99,235,.25); transform:translateY(-3px); box-shadow:var(--shadow-md); }
 .why-item:hover::before { transform:scaleX(1); }
 .why-icon { width:42px; height:42px; border-radius:11px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
 .why-icon svg { width:19px; height:19px; }
@@ -393,7 +393,7 @@ button { font-family:var(--font); }
     border-radius:var(--radius); overflow:hidden;
     transition:border-color var(--transition), box-shadow var(--transition);
 }
-.faq-item.open { border-color:rgba(99,102,241,.3); box-shadow:0 4px 16px rgba(99,102,241,.08); }
+.faq-item.open { border-color:rgba(37,99,235,.3); box-shadow:0 4px 16px rgba(37,99,235,.08); }
 .faq-q {
     display:flex; align-items:center; justify-content:space-between;
     padding:17px 19px; cursor:pointer; gap:14px;
@@ -429,13 +429,13 @@ button { font-family:var(--font); }
 .dark-strip::before {
     content:''; position:absolute; top:-80px; left:-80px;
     width:280px; height:280px; border-radius:50%;
-    background:radial-gradient(circle,rgba(99,102,241,.08) 0%,transparent 70%);
+    background:radial-gradient(circle,rgba(37,99,235,.08) 0%,transparent 70%);
     pointer-events:none;
 }
-.dark-strip .eyebrow { color:#a5b4fc; }
-.dark-strip .eyebrow::before { background:#a5b4fc; }
+.dark-strip .eyebrow { color:#93c5fd; }
+.dark-strip .eyebrow::before { background:#93c5fd; }
 .dark-strip .sec-title { color:#fff; }
-.dark-strip .sec-title em { color:#a5b4fc; }
+.dark-strip .sec-title em { color:#93c5fd; }
 .hiw-steps { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:22px; position:relative; z-index:1; }
 @media(max-width:600px){ .hiw-steps { grid-template-columns:1fr; } }
 .hiw-step {
@@ -448,12 +448,12 @@ button { font-family:var(--font); }
     background:linear-gradient(90deg,var(--accent),var(--accent2));
     transform:scaleX(0); transition:transform .4s; transform-origin:left;
 }
-.hiw-step:hover { background:rgba(255,255,255,.09); border-color:rgba(99,102,241,.3); transform:translateY(-4px); }
+.hiw-step:hover { background:rgba(255,255,255,.09); border-color:rgba(37,99,235,.3); transform:translateY(-4px); }
 .hiw-step:hover::before { transform:scaleX(1); }
 .hiw-step-num   { font-family:var(--font-mono); font-size:11px; font-weight:700; color:var(--accent); letter-spacing:.1em; margin-bottom:11px; }
 .hiw-step-icon  { width:42px; height:42px; border-radius:11px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.1); display:flex; align-items:center; justify-content:center; margin-bottom:13px; transition:all var(--transition); }
-.hiw-step:hover .hiw-step-icon { background:rgba(99,102,241,.2); border-color:rgba(99,102,241,.3); }
-.hiw-step-icon svg { width:19px; height:19px; color:#a5b4fc; }
+.hiw-step:hover .hiw-step-icon { background:rgba(37,99,235,.2); border-color:rgba(37,99,235,.3); }
+.hiw-step-icon svg { width:19px; height:19px; color:#93c5fd; }
 .hiw-step-title { font-size:13.5px; font-weight:600; color:#fff; margin-bottom:5px; }
 .hiw-step-desc  { font-size:12px; color:rgba(255,255,255,.5); line-height:1.7; font-weight:300; }
 
@@ -464,13 +464,13 @@ button { font-family:var(--font); }
     border-radius:var(--radius); padding:13px 16px;
     transition:all var(--transition);
 }
-.donor-row:hover { background:#eff0fe; border-color:rgba(99,102,241,.2); }
+.donor-row:hover { background:#eff0fe; border-color:rgba(37,99,235,.2); }
 .donor-row-left { display:flex; align-items:center; gap:13px; }
 .donor-avatar-new {
     width:46px; height:46px; border-radius:13px; flex-shrink:0;
     background:linear-gradient(135deg,var(--accent),var(--accent2));
     color:#fff; display:flex; align-items:center; justify-content:center;
-    font-size:16px; font-weight:700; box-shadow:0 4px 12px rgba(99,102,241,.3);
+    font-size:16px; font-weight:700; box-shadow:0 4px 12px rgba(37,99,235,.3);
     font-family:var(--font-mono);
 }
 .donor-info-name { font-size:14px; font-weight:600; color:var(--text); }
@@ -481,7 +481,7 @@ button { font-family:var(--font); }
     font-size:9px; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
     padding:2px 8px; border-radius:100px; margin-top:3px; display:inline-block;
 }
-.donor-type-money   { background:rgba(99,102,241,.1); color:var(--accent); }
+.donor-type-money   { background:rgba(37,99,235,.1); color:var(--accent); }
 .donor-type-product { background:rgba(249,115,22,.1); color:var(--orange2); }
 
 /* ─── Share & Action ─── */
@@ -553,7 +553,7 @@ button { font-family:var(--font); }
 .donate-head-new::before {
     content:''; position:absolute; top:-50px; right:-50px;
     width:160px; height:160px; border-radius:50%;
-    background:rgba(99,102,241,.09); pointer-events:none;
+    background:rgba(37,99,235,.09); pointer-events:none;
 }
 .donate-head-new-title { font-family:var(--font-display); font-size:15px; font-weight:700; color:#fff; margin-bottom:14px; position:relative; z-index:1; }
 .donate-raised-row-new { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:9px; position:relative; z-index:1; }
@@ -574,7 +574,7 @@ button { font-family:var(--font); }
     padding:4px 10px; border-radius:100px; font-size:11px;
     font-family:var(--font-mono); font-weight:600;
 }
-.dbp-money   { background:rgba(99,102,241,.2); color:#a5b4fc; }
+.dbp-money   { background:rgba(37,99,235,.2); color:#93c5fd; }
 .dbp-product { background:rgba(249,115,22,.2); color:#fdba74; }
 
 /* ─── Main Tabs (Products / Money) ─── */
@@ -595,7 +595,7 @@ button { font-family:var(--font); }
 }
 .main-donate-tab.active-products { color:var(--orange); background:var(--orange-light); }
 .main-donate-tab.active-products::after { background:var(--orange); }
-.main-donate-tab.active-money { color:var(--accent); background:rgba(99,102,241,.05); }
+.main-donate-tab.active-money { color:var(--accent); background:rgba(37,99,235,.05); }
 .main-donate-tab.active-money::after { background:var(--accent); }
 .main-donate-tab svg { width:15px; height:15px; }
 
@@ -613,7 +613,7 @@ button { font-family:var(--font); }
 .dp-badge { position:absolute; top:7px; left:7px; z-index:2; font-size:9px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; padding:3px 8px; border-radius:100px; display:none; }
 .dp-badge.visible { display:block; }
 .dp-badge-impactful { background:#d1fae5; color:#065f46; }
-.dp-badge-popular   { background:#ede9fe; color:#5b21b6; }
+.dp-badge-popular   { background:#ccfbf1; color:#0f766e; }
 .dp-img-wrap { width:100%; height:110px; overflow:hidden; background:var(--surface2); display:flex; align-items:center; justify-content:center; position:relative; flex-shrink:0; }
 .dp-img { max-width:86%; max-height:86%; width:auto; height:auto; object-fit:contain; display:block; transition:transform .45s ease; }
 .dp-card:hover .dp-img { transform:scale(1.07); }
@@ -661,14 +661,14 @@ button { font-family:var(--font); }
 .freq-banner-new { display:none; align-items:center; gap:9px; padding:9px 13px; border-radius:var(--radius-sm); font-size:12px; font-weight:500; margin-bottom:13px; line-height:1.5; }
 .freq-banner-new.show { display:flex; }
 .freq-banner-weekly-new  { background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; }
-.freq-banner-monthly-new { background:var(--accent-glow); color:var(--accent); border:1px solid rgba(99,102,241,.2); }
+.freq-banner-monthly-new { background:var(--accent-glow); color:var(--accent); border:1px solid rgba(37,99,235,.2); }
 .freq-banner-new svg { flex-shrink:0; width:13px; height:13px; }
 .existing-sub-new { display:flex; align-items:flex-start; gap:9px; padding:11px 13px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:var(--radius-sm); font-size:12px; color:#166534; margin-bottom:13px; }
 .existing-sub-new svg { flex-shrink:0; width:13px; height:13px; margin-top:1px; }
 .amt-grid-new { display:grid; grid-template-columns:repeat(3,1fr); gap:7px; margin-bottom:12px; }
 .amt-btn-new { padding:9px 5px; border:1.5px solid var(--border2); border-radius:var(--radius-sm); background:var(--surface2); font-family:var(--font); font-size:12.5px; font-weight:600; color:var(--text2); cursor:pointer; transition:all var(--transition); text-align:center; }
 .amt-btn-new:hover { border-color:var(--accent); color:var(--accent); background:var(--accent-glow); }
-.amt-btn-new.active { background:linear-gradient(135deg,var(--accent),var(--accent2)); border-color:transparent; color:#fff; box-shadow:0 4px 14px rgba(99,102,241,.35); transform:translateY(-2px); }
+.amt-btn-new.active { background:linear-gradient(135deg,var(--accent),var(--accent2)); border-color:transparent; color:#fff; box-shadow:0 4px 14px rgba(37,99,235,.35); transform:translateY(-2px); }
 .custom-input-new { width:100%; border:1.5px solid var(--border2); border-radius:var(--radius-sm); padding:11px 13px; font-family:var(--font); font-size:14.5px; font-weight:600; color:var(--text); background:var(--surface2); outline:none; transition:border-color var(--transition),box-shadow var(--transition),background var(--transition); margin-bottom:11px; }
 .custom-input-new:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-glow); background:var(--surface); }
 .custom-input-new:disabled { opacity:.5; cursor:not-allowed; }
@@ -676,11 +676,11 @@ button { font-family:var(--font); }
 .impact-preview-new.show { display:block; }
 .impact-preview-new strong { color:var(--text); font-size:12.5px; display:block; margin-bottom:2px; }
 .btn-donate-new { width:100%; display:flex; align-items:center; justify-content:center; gap:9px; padding:14px; border:none; border-radius:var(--radius); font-size:14.5px; font-weight:700; cursor:pointer; transition:all var(--transition); letter-spacing:.01em; font-family:var(--font); }
-.btn-once    { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; box-shadow:0 6px 22px rgba(99,102,241,.4); }
-.btn-once:hover    { opacity:.9; transform:translateY(-2px); box-shadow:0 10px 28px rgba(99,102,241,.5); }
+.btn-once    { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; box-shadow:0 6px 22px rgba(37,99,235,.4); }
+.btn-once:hover    { opacity:.9; transform:translateY(-2px); box-shadow:0 10px 28px rgba(37,99,235,.5); }
 .btn-weekly  { background:linear-gradient(135deg,#2563eb ,#3b82f6); color:#fff; box-shadow:0 6px 22px rgba(37,99,235,.35); }
 .btn-weekly:hover  { opacity:.9; transform:translateY(-2px); }
-.btn-monthly { background:linear-gradient(135deg,var(--accent2),#7c3aed); color:#fff; box-shadow:0 6px 22px rgba(139,92,246,.35); }
+.btn-monthly { background:linear-gradient(135deg,var(--accent2),#0d9488); color:#fff; box-shadow:0 6px 22px rgba(13,148,136,.35); }
 .btn-monthly:hover { opacity:.9; transform:translateY(-2px); }
 .btn-donate-new svg { width:16px; height:16px; flex-shrink:0; }
 .login-note-new { display:flex; align-items:center; gap:8px; padding:9px 13px; background:#fffbeb; border:1px solid #fde68a; border-radius:var(--radius-sm); font-size:12px; color:#92400e; margin-top:9px; }
@@ -718,7 +718,7 @@ button { font-family:var(--font); }
 /* ═══════════════════════════════════════════
    SCROLL TOP BUTTON
 ═══════════════════════════════════════════ */
-.scroll-top { position:fixed; bottom:76px; right:22px; width:42px; height:42px; border-radius:50%; background:var(--accent); color:#fff; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 5px 18px rgba(99,102,241,.45); opacity:0; transform:translateY(14px); transition:all var(--transition); z-index:801; }
+.scroll-top { position:fixed; bottom:76px; right:22px; width:42px; height:42px; border-radius:50%; background:var(--accent); color:#fff; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 5px 18px rgba(37,99,235,.45); opacity:0; transform:translateY(14px); transition:all var(--transition); z-index:801; }
 .scroll-top.visible { opacity:1; transform:translateY(0); }
 .scroll-top:hover { transform:translateY(-2px); }
 .scroll-top svg { width:17px; height:17px; }
@@ -736,7 +736,7 @@ button { font-family:var(--font); }
 .goal-reached-pill {
     font-family:var(--font-mono); font-size:13px; font-weight:600;
     color:var(--accent); padding:3px 10px;
-    background:rgba(99,102,241,.15); border:1px solid rgba(99,102,241,.3);
+    background:rgba(37,99,235,.15); border:1px solid rgba(37,99,235,.3);
     border-radius:100px; display:inline-flex; align-items:center; gap:5px;
 }
 .goal-reached-pill svg { width:11px; height:11px; }
@@ -750,7 +750,7 @@ button { font-family:var(--font); }
 .scroll-progress-fill {
     height:100%; width:0%;
     background:linear-gradient(90deg,var(--accent),var(--accent2),var(--orange));
-    box-shadow:0 0 12px rgba(99,102,241,.5);
+    box-shadow:0 0 12px rgba(37,99,235,.5);
     transition:width .12s linear;
 }
 
@@ -838,6 +838,16 @@ button { font-family:var(--font); }
     .hero-cta { flex-direction:column; }
     .hero-donate-btn, .hero-share-btn { width:100%; justify-content:center; }
 }
+    .hero-float-cards { pointer-events:none; user-select:none; }
+    #couponCode:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-glow); background:#fff; }
+    a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-visible {
+        outline:2px solid var(--accent); outline-offset:2px; border-radius:6px;
+    }
+    @media(prefers-reduced-motion:reduce){
+        *,*::before,*::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important; }
+        .reveal,.reveal-left,.reveal-right { opacity:1 !important; transform:none !important; }
+    }
+
 </style>
 
 
@@ -902,7 +912,7 @@ button { font-family:var(--font); }
     <div class="hero-overlay"></div>
     <div class="hero-grid-lines"></div>
 
-    <div class="hero-float-cards">
+    <div class="hero-float-cards" aria-hidden="true">
         <div class="hero-float-card">
             <div class="fcard-lbl">Raised</div>
             <div class="fcard-val">₹{{ number_format($raised) }}</div>
@@ -966,9 +976,9 @@ button { font-family:var(--font); }
                     <span style="color:#a72a2a">Urgent</span>
                 </span>
                 @endif
-                <span class="hero-pill" style="background:rgba(99,102,241,.15);border-color:rgba(99,102,241,.25)">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#a5b4fc" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                    <span style="color:#a5b4fc">Verified Campaign</span>
+                <span class="hero-pill" style="background:rgba(37,99,235,.15);border-color:rgba(37,99,235,.25)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#93c5fd" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    <span style="color:#93c5fd">Verified Campaign</span>
                 </span>
             </div>
 
@@ -1007,7 +1017,7 @@ button { font-family:var(--font); }
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
                     Donate Now
                 </button>
-                <button type="button" class="hero-share-btn" onclick="shareCampaign()">
+                <button type="button" class="hero-share-btn" onclick="shareCampaign(event)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
                     Share
                 </button>
@@ -1032,7 +1042,7 @@ button { font-family:var(--font); }
 
                 <div class="mission-chips">
                     <span class="mission-chip chip-verified">
-                        <span class="chip-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#4338ca" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg></span>Verified Campaign
+                        <span class="chip-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg></span>Verified Campaign
                     </span>
                     <span class="mission-chip chip-transparent">
                         <span class="chip-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></span>100% Transparent
@@ -1249,7 +1259,7 @@ button { font-family:var(--font); }
                     ['bg'=>'#fff7ed','color'=>'#ea580c','wi'=>'#ea580c','title'=>'Product Giving',    'desc'=>'Donate products and make your impact tangible.',               'svg'=>'<path d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/>'],
                     ['bg'=>'#f0fdf4','color'=>'#16a34a','wi'=>'#16a34a','title'=>'Verified & Trusted', 'desc'=>'100% verified charities via strict multi-step KYC process.',      'svg'=>'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/>'],
                     ['bg'=>'#eff6ff','color'=>'#2563eb ','wi'=>'#2563eb ','title'=>'Guaranteed Updates','desc'=>'Regular photo and video updates sent directly to you.',            'svg'=>'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>'],
-                    ['bg'=>'#faf5ff','color'=>'#7c3aed','wi'=>'#7c3aed','title'=>'Easy Setup',         'desc'=>'Launch a fundraiser in just a few minutes — no hassle.',          'svg'=>'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>'],
+                    ['bg'=>'#f0fdfa','color'=>'#0d9488','wi'=>'#0d9488','title'=>'Easy Setup',         'desc'=>'Launch a fundraiser in just a few minutes — no hassle.',          'svg'=>'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>'],
                     ['bg'=>'#fff1f2','color'=>'#dc2626','wi'=>'#dc2626','title'=>'Secure & Private',   'desc'=>'256-bit SSL encrypted payments, your data is never stored.',      'svg'=>'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>'],
                     ['bg'=>'#f0f9ff','color'=>'#0284c7','wi'=>'#0284c7','title'=>'24×7 Support',       'desc'=>'Our dedicated team is always here to help you succeed.',          'svg'=>'<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>'],
                 ];
@@ -1311,8 +1321,8 @@ button { font-family:var(--font); }
                         <div class="eyebrow">Community Support</div>
                         <h2 class="sec-title" style="margin-bottom:0">Recent <em>Donors</em></h2>
                     </div>
-                    <div style="width:46px;height:46px;border-radius:13px;background:rgba(99,102,241,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="1.8" width="22" height="22"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                    <div style="width:46px;height:46px;border-radius:13px;background:rgba(37,99,235,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.8" width="22" height="22"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
                     </div>
                 </div>
                 <div style="display:flex;flex-direction:column;gap:10px;">
@@ -1613,6 +1623,7 @@ button { font-family:var(--font); }
                             <input type="number" id="amtOnce" name="amount"
                                    placeholder="₹ Enter custom amount"
                                    required min="1" max="500000" step="1"
+                                   inputmode="decimal" autocomplete="off"
                                    class="custom-input-new" oninput="syncAmtNew('once')">
 
                             <div style="display:flex;gap:8px;margin-top:10px;">
@@ -1688,7 +1699,7 @@ button { font-family:var(--font); }
                         <form action="{{ route('recurring.store', $campaign->id) }}" method="POST">
                             @csrf
                             <input type="hidden" name="frequency" value="weekly">
-                            <input type="number" id="amtWeekly" name="amount" placeholder="₹ Amount per week" required min="10" class="custom-input-new" oninput="syncAmtNew('weekly')">
+                            <input type="number" id="amtWeekly" name="amount" placeholder="₹ Amount per week" required min="10" inputmode="decimal" class="custom-input-new" oninput="syncAmtNew('weekly')">
                             <button type="submit" class="btn-donate-new btn-weekly">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
                                 Start Weekly Donation
@@ -1709,7 +1720,7 @@ button { font-family:var(--font); }
                         <form action="{{ route('recurring.store', $campaign->id) }}" method="POST">
                             @csrf
                             <input type="hidden" name="frequency" value="monthly">
-                            <input type="number" id="amtMonthly" name="amount" placeholder="₹ Amount per month" required min="10" class="custom-input-new" oninput="syncAmtNew('monthly')">
+                            <input type="number" id="amtMonthly" name="amount" placeholder="₹ Amount per month" required min="10" inputmode="decimal" class="custom-input-new" oninput="syncAmtNew('monthly')">
                             <button type="submit" class="btn-donate-new btn-monthly">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
                                 Start Monthly Donation
@@ -1822,7 +1833,7 @@ button { font-family:var(--font); }
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                     X
                 </button>
-                <button type="button" class="share-soc-btn s-copy" onclick="copyLink()" aria-label="Copy link">
+                <button type="button" class="share-soc-btn s-copy" onclick="copyLink(this)" aria-label="Copy link">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
                     Copy
                 </button>
@@ -1869,7 +1880,7 @@ button { font-family:var(--font); }
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
             <span id="sdbBtnLabel">Donate Now</span>
         </button>
-        <button type="button" class="sdb-share-btn" onclick="shareCampaign()" aria-label="Share">
+        <button type="button" class="sdb-share-btn" onclick="shareCampaign(event)" aria-label="Share">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
         </button>
     </div>
@@ -1883,12 +1894,23 @@ button { font-family:var(--font); }
 <script>
 (function(){
     var els = document.querySelectorAll('.reveal,.reveal-left,.reveal-right');
+    if (!('IntersectionObserver' in window) || !els.length) {
+        els.forEach(function(el){ el.classList.add('visible'); });
+        return;
+    }
     var obs = new IntersectionObserver(function(entries){
         entries.forEach(function(e){
             if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
         });
     },{ threshold:0.07, rootMargin:'0px 0px -28px 0px' });
     els.forEach(function(el){ obs.observe(el); });
+
+    // Safety net: never leave content stuck invisible.
+    function revealAll(){
+        els.forEach(function(el){ el.classList.add('visible'); });
+    }
+    window.addEventListener('load', function(){ setTimeout(revealAll, 1500); });
+    setTimeout(revealAll, 4000);
 })();
 
 window.addEventListener('DOMContentLoaded', function(){
@@ -2134,24 +2156,24 @@ document.addEventListener('DOMContentLoaded', function(){
     });
 });
 
-function copyLink(){
+function copyLink(btn){
     var url = window.location.href;
+    var done = function(){ if(btn) flashCopied(btn); };
     if(navigator.clipboard && navigator.clipboard.writeText){
-        navigator.clipboard.writeText(url).then(showCopied).catch(function(){ fallbackCopy(url); });
-    } else { fallbackCopy(url); }
+        navigator.clipboard.writeText(url).then(done).catch(function(){ fallbackCopy(url, done); });
+    } else { fallbackCopy(url, done); }
 }
-function fallbackCopy(text){
+function fallbackCopy(text, cb){
     var t = document.createElement('textarea');
     t.value = text; document.body.appendChild(t); t.select();
-    try { document.execCommand('copy'); showCopied(); } catch(e){ alert('Copy this link: ' + text); }
+    try { document.execCommand('copy'); if(cb) cb(); } catch(e){ alert('Copy this link: ' + text); }
     document.body.removeChild(t);
 }
-function showCopied(){
-    var row = document.querySelector('.share-copy-row');
-    if(!row) return;
-    var orig = row.innerHTML;
-    row.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span style="color:#10b981">Link copied to clipboard!</span>';
-    setTimeout(function(){ row.innerHTML = orig; }, 2000);
+function flashCopied(btn){
+    var orig = btn.innerHTML;
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+    btn.style.color = 'var(--green)'; btn.style.borderColor = 'var(--green)';
+    setTimeout(function(){ btn.innerHTML = orig; btn.style.color=''; btn.style.borderColor=''; }, 2000);
 }
 
 function shareTo(network){
@@ -2165,19 +2187,22 @@ function shareTo(network){
     if(links[network]){ window.open(links[network], '_blank', 'noopener,width=600,height=540'); }
 }
 
-function shareCampaign(){
+function shareCampaign(ev){
     var title = '{{ addslashes($campaign->title) }}';
     var url   = window.location.href;
+    var btn   = (ev && ev.currentTarget) || (window.event && window.event.currentTarget);
     if(navigator.share){
         navigator.share({ title:title, url:url }).catch(function(){});
-    } else {
+    } else if(navigator.clipboard && navigator.clipboard.writeText){
         navigator.clipboard.writeText(url).then(function(){
-            var btn  = event.currentTarget;
+            if(!btn) return;
             var orig = btn.innerHTML;
             btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
             btn.style.color = 'var(--green)'; btn.style.borderColor = 'var(--green)';
             setTimeout(function(){ btn.innerHTML=orig; btn.style.color=''; btn.style.borderColor=''; }, 2000);
         }).catch(function(){ alert('Copy this link: ' + url); });
+    } else {
+        fallbackCopy(url, function(){ if(btn) flashCopied(btn); });
     }
 }
 </script>
