@@ -32,7 +32,7 @@
                 <span class="wb-badge wbb-purple" style="margin-left:8px;font-size:10px;">{{ $levelName }}</span>
             @endif
         </div>
-        <div class="wb-name">{{ auth()->user()->name }} <span class="wave">👋</span></div>
+        <div class="wb-name">{{ auth()->user()->name }} <span class="wave"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2"/><path d="M14 10V4a2 2 0 0 0-2-2 2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg></span></div>
         <div class="wb-sub" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
             <span>Here's what's happening with your campaigns today.</span>
             @if($daysActive > 0)
@@ -48,13 +48,13 @@
         </div>
         <div class="wb-badges">
             @if($countActive > 0)
-                <span class="wb-badge wbb-green">✓ {{ $countActive }} live</span>
+                <span class="wb-badge wbb-green"><svg class="badge-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>{{ $countActive }} live</span>
             @endif
             @if($countPending > 0)
-                <span class="wb-badge wbb-yellow">⏱ {{ $countPending }} pending review</span>
+                <span class="wb-badge wbb-yellow"><svg class="badge-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>{{ $countPending }} pending review</span>
             @endif
             @if($countRejected > 0)
-                <span class="wb-badge wbb-red">✕ {{ $countRejected }} rejected</span>
+                <span class="wb-badge wbb-red"><svg class="badge-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>{{ $countRejected }} rejected</span>
             @endif
             @if($overallPct > 0)
                 <span class="wb-badge wbb-purple">{{ $overallPct }}% overall funded</span>
@@ -125,7 +125,7 @@
             <div class="stat-foot">Avg ₹{{ number_format($avgDonation) }} per donation</div>
         </div>
     </div>
-    <a href="{{ url('/user/dashboard') }}#cGrid" class="stat-card" style="cursor:pointer;text-decoration:none;display:flex;">
+    <a href="{{ url('/user/dashboard') }}#cGrid" class="stat-card is-link" style="cursor:pointer;text-decoration:none;display:flex;">
         <div class="stat-icon-wrap si-blue">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
         </div>
@@ -246,16 +246,18 @@
         <div class="qs-title">Campaign Status</div>
         @php
             $qsRows = [
-                ['var(--green)',  'Active',         $countActive],
-                ['var(--blue)',   'Awaiting Review',$countInactive],
-                ['var(--yellow)', 'Pending',        $countPending],
-                ['var(--accent)', 'Paused',         $countPaused],
-                ['var(--red)',    'Rejected',       $countRejected],
-                ['var(--gray)',   'Expired',        $countExpired],
+                ['var(--green)',  'Active',         $countActive,   'active'],
+                ['var(--blue)',   'Awaiting Review',$countInactive, 'inactive'],
+                ['var(--yellow)', 'Pending',        $countPending,  'pending'],
+                ['var(--accent)', 'Paused',         $countPaused,   'paused'],
+                ['var(--red)',    'Rejected',       $countRejected, 'rejected'],
+                ['var(--gray)',   'Expired',        $countExpired,  'expired'],
             ];
         @endphp
-        @foreach($qsRows as [$color, $label, $val])
-        <div class="qs-row" onclick="setFilter('{{ strtolower(str_replace(' ','-',$label)) }}')">
+        @foreach($qsRows as [$color, $label, $val, $filter])
+        <div class="qs-row" role="button" tabindex="0"
+             onclick="setFilter('{{ $filter }}')"
+             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setFilter('{{ $filter }}');}">
             <div class="qs-row-left">
                 <div class="qs-dot" style="background:{{ $color }}"></div>
                 <span class="qs-label">{{ $label }}</span>
@@ -413,7 +415,7 @@
 
             @if($fv === 'inactive')
             <div class="reason reason-b">
-                <div class="reason-lbl">⏳ Awaiting admin review</div>
+                <div class="reason-lbl"><svg class="reason-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Awaiting admin review</div>
                 <div class="reason-txt">Your campaign will go live once approved.</div>
             </div>
             @elseif($fv === 'pending')
@@ -423,12 +425,12 @@
             </div>
             @elseif($fv === 'rejected' && $campaign->rejection_reason)
             <div class="reason reason-r">
-                <div class="reason-lbl">✕ Rejection reason</div>
+                <div class="reason-lbl"><svg class="reason-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>Rejection reason</div>
                 <div class="reason-txt">{{ $campaign->rejection_reason }}</div>
             </div>
             @elseif($fv === 'paused' && $campaign->pause_reason)
             <div class="reason reason-y">
-                <div class="reason-lbl">⏸ Pause reason</div>
+                <div class="reason-lbl"><svg class="reason-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>Pause reason</div>
                 <div class="reason-txt">{{ $campaign->pause_reason }}</div>
             </div>
             @elseif($fv === 'expired')
@@ -664,26 +666,30 @@ document.addEventListener('DOMContentLoaded', function(){
 var html = document.documentElement;
 
 /* ── Animated stat counters ── */
-function animateCounter(el, target, suffix) {
+function animateCounter(el, target, prefix, suffix) {
     var duration = 900, start = 0, startTime = null;
+    prefix = prefix || '';
     suffix = suffix || '';
     function step(timestamp) {
         if (!startTime) startTime = timestamp;
         var progress = Math.min((timestamp - startTime) / duration, 1);
         var eased = 1 - Math.pow(1 - progress, 3);
         var current = Math.floor(eased * target);
-        el.textContent = current.toLocaleString('en-IN') + suffix;
+        el.textContent = prefix + current.toLocaleString('en-IN') + suffix;
         if (progress < 1) requestAnimationFrame(step);
     }
     requestAnimationFrame(step);
 }
 document.querySelectorAll('.stat-val').forEach(function (el) {
-    var raw = el.textContent.replace(/[₹,]/g, '').trim();
+    var original = el.textContent;
+    var prefixMatch = original.match(/^(\D*)/);
+    var prefix = prefixMatch ? prefixMatch[1] : '';
+    var raw = original.replace(/[₹,]/g, '').trim();
     var num = parseInt(raw, 10);
     if (!isNaN(num) && num > 0) {
-        var suffix = el.textContent.includes('%') ? '%' : '';
-        el.textContent = '0' + suffix;
-        animateCounter(el, num, suffix);
+        var suffix = original.includes('%') ? '%' : '';
+        el.textContent = prefix + '0' + suffix;
+        animateCounter(el, num, prefix, suffix);
     }
 });
 
@@ -822,9 +828,9 @@ window.renderChart = function(){
             datasets: [{
                 label: 'Amount Raised (₹)',
                 data: values,
-                borderColor: '#2563eb ', backgroundColor: grad,
+                borderColor: '#2563eb', backgroundColor: grad,
                 borderWidth: 2.5, fill: true, tension: .45,
-                pointBackgroundColor: '#2563eb ',
+                pointBackgroundColor: '#2563eb',
                 pointBorderColor: tipBg, pointBorderWidth: 2,
                 pointRadius: 4, pointHoverRadius: 6,
             }]
@@ -872,7 +878,7 @@ var campChart;
                 {
                     label: 'Raised (₹)',
                     data: campaigns.map(function(c){ return c.raised; }),
-                    backgroundColor: '#2563eb ',
+                    backgroundColor: '#2563eb',
                     borderRadius: 4,
                     barPercentage: .65,
                 },
