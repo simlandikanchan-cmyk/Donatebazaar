@@ -2,13 +2,33 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Faq;
 use Illuminate\Http\Request;
 
 class FaqController extends Controller
 {
     public function index()
     {
-        $faqs = [
+        if (Faq::count() > 0) {
+            $faqs = Faq::active()
+                ->ordered()
+                ->get()
+                ->groupBy('category')
+                ->map(function ($items) {
+                    return $items->map(function ($faq) {
+                        return ['q' => $faq->question, 'a' => $faq->answer];
+                    });
+                });
+        } else {
+            $faqs = $this->defaults();
+        }
+
+        return view('faq.index', compact('faqs'));
+    }
+
+    protected function defaults(): \Illuminate\Support\Collection
+    {
+        $data = [
             'Getting Started' => [
                 ['q' => 'What is DonateBazaar?', 'a' => 'DonateBazaar is a crowdfunding platform that connects donors with verified campaigns across various categories including medical, education, disaster relief, and community projects. We make it easy to start a campaign or donate to a cause you care about.'],
                 ['q' => 'How do I create a campaign?', 'a' => 'Sign up for a free account, complete your KYC verification, and click "Start a Campaign" from your dashboard. Fill in your campaign details including title, description, goal amount, and cover image. Once submitted, our team reviews and approves campaigns within 24-48 hours.'],
@@ -35,6 +55,16 @@ class FaqController extends Controller
             ],
         ];
 
-        return view('faq.index', compact('faqs'));
+        return collect($data)->map(function ($items, $category) {
+            return collect($items)->map(function ($item, $i) use ($category) {
+                return new Faq([
+                    'category'   => $category,
+                    'question'   => $item['q'],
+                    'answer'     => $item['a'],
+                    'sort_order' => $i,
+                    'is_active'  => true,
+                ]);
+            });
+        });
     }
 }

@@ -7,6 +7,7 @@
 <title>{{ $event->title }} — DonateBazaar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+@vite('resources/css/user.css')
 
 @php
     if ($event->status === 'active') {
@@ -39,9 +40,6 @@
     --text:         #0f1117;
     --text2:        #4b5563;
     --text3:        #9ca3af;
-    --sidebar-bg:   #0d0e1a;
-    --sidebar-text: rgba(255,255,255,0.65);
-    --sidebar-act:  rgba(37,99,235,0.18);
     --yellow:       #f59e0b;
     --red:          #ef4444;
     --blue:         #3b82f6;
@@ -63,9 +61,6 @@
     --text:         #f0f1ff;
     --text2:        #a5b4c8;
     --text3:        #5a6579;
-    --sidebar-bg:   #07080f;
-    --sidebar-text: rgba(255,255,255,0.55);
-    --sidebar-act:  rgba(120,119,255,0.22);
     --accent-glow:  rgba(37,99,235,0.25);
     --shadow:       0 1px 3px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.2);
     --shadow-lg:    0 8px 40px rgba(0,0,0,0.5);
@@ -83,65 +78,7 @@ a{text-decoration:none;color:inherit;}
 /* ── SHELL ── */
 .shell{display:flex;min-height:100vh;}
 
-/* ── SIDEBAR ── */
-.sidebar{
-    width:var(--sb-w);flex-shrink:0;background:var(--sidebar-bg);
-    display:flex;flex-direction:column;
-    position:fixed;top:0;left:0;bottom:0;z-index:300;
-    overflow-y:auto;overflow-x:hidden;
-    border-right:1px solid rgba(255,255,255,0.04);
-    transition:transform 0.3s cubic-bezier(.4,0,.2,1);
-}
-.sidebar::-webkit-scrollbar{width:0;}
-.s-logo{
-    display:flex;align-items:center;gap:10px;
-    padding:22px 18px 18px;border-bottom:1px solid rgba(255,255,255,0.05);
-}
-.s-logo-mark{
-    width:36px;height:36px;border-radius:10px;
-    background:linear-gradient(135deg,var(--accent),var(--accent2));
-    display:flex;align-items:center;justify-content:center;flex-shrink:0;
-    box-shadow:0 4px 14px rgba(37,99,235,0.35);
-}
-.s-logo-mark svg{width:18px;height:18px;color:#fff;}
-.s-logo-name{font-size:17px;font-weight:700;color:#fff;letter-spacing:-0.01em;}
-.s-logo-tag{font-size:9px;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.12em;margin-top:1px;}
-.s-user{
-    margin:12px 10px 4px;padding:10px 12px;
-    background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);
-    border-radius:var(--radius-sm);display:flex;align-items:center;gap:9px;
-}
-.s-avatar{
-    width:32px;height:32px;border-radius:8px;
-    background:linear-gradient(135deg,var(--accent),var(--accent2));
-    color:#fff;font-size:13px;font-weight:700;
-    display:flex;align-items:center;justify-content:center;flex-shrink:0;
-}
-.s-user-name{font-size:12.5px;font-weight:600;color:rgba(255,255,255,0.85);}
-.s-user-role{font-size:10px;color:rgba(255,255,255,0.35);margin-top:1px;}
-.s-label{
-    font-size:9.5px;font-weight:700;color:rgba(255,255,255,0.25);
-    text-transform:uppercase;letter-spacing:0.14em;
-    padding:16px 18px 5px;font-family:var(--font-mono);
-}
-.s-nav{padding:0 8px;}
-.s-link{
-    display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:9px;
-    color:var(--sidebar-text);font-size:13px;font-weight:500;text-decoration:none;
-    transition:background var(--transition),color var(--transition);
-    margin-bottom:1px;border:none;background:transparent;
-    width:100%;text-align:left;cursor:pointer;position:relative;font-family:var(--font);
-}
-.s-link:hover{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.9);}
-.s-link.active{background:var(--sidebar-act);color:#a5b4fc;}
-.s-link.active::before{
-    content:'';position:absolute;left:0;top:20%;bottom:20%;
-    width:3px;border-radius:0 2px 2px 0;background:var(--accent);
-}
-.s-icon{width:16px;height:16px;flex-shrink:0;opacity:0.8;}
-.s-link.active .s-icon,.s-link:hover .s-icon{opacity:1;}
-.s-divider{height:1px;background:rgba(255,255,255,0.05);margin:8px 18px;}
-.s-bottom{margin-top:auto;padding:12px 8px 16px;border-top:1px solid rgba(255,255,255,0.05);}
+
 
 /* ── MAIN ── */
 .main{margin-left:var(--sb-w);flex:1;min-width:0;display:flex;flex-direction:column;min-height:100vh;}
@@ -378,64 +315,7 @@ a{text-decoration:none;color:inherit;}
 <div class="shell">
 
 {{-- ══════════ SIDEBAR ══════════ --}}
-<aside class="sidebar" id="sidebar">
-
-    <div class="s-logo">
-        <div class="s-logo-mark">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-        </div>
-        <div>
-            <div class="s-logo-name">DonateBazaar</div>
-            <div class="s-logo-tag">My Portal</div>
-        </div>
-    </div>
-
-    <div class="s-user">
-        <div class="s-avatar">{{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 1)) }}</div>
-        <div>
-            <div class="s-user-name">{{ auth()->user()->name ?? 'User' }}</div>
-            <div class="s-user-role">Fundraiser</div>
-        </div>
-    </div>
-
-    <div class="s-label">Navigation</div>
-    <nav class="s-nav">
-        <a href="{{ route('dashboard') }}" class="s-link">
-            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-            Dashboard
-        </a>
-        <a href="{{ route('campaign.create') }}" class="s-link">
-            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-            New Campaign
-        </a>
-    </nav>
-
-    <div class="s-label">This Event</div>
-    <nav class="s-nav">
-        <a href="{{ route('campaign.show', $event->campaign->id) }}" class="s-link">
-            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-            Parent Campaign
-        </a>
-        <a href="#" class="s-link active">
-            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-            Event Overview
-        </a>
-        <a href="{{ route('events.edit', $event->id) }}" class="s-link">
-            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-            Edit Event
-        </a>
-    </nav>
-
-    <div class="s-divider"></div>
-    <div class="s-bottom">
-        <a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('lf').submit();" class="s-link" style="color:rgba(248,113,113,0.75);">
-            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-            Sign Out
-        </a>
-        <form id="lf" action="{{ route('logout') }}" method="POST" style="display:none;">@csrf</form>
-    </div>
-
-</aside>
+@include('partials.user-sidebar')
 
 {{-- ══════════ MAIN ══════════ --}}
 <div class="main">
