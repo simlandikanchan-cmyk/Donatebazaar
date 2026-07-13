@@ -202,7 +202,7 @@
                                 <tr>
                                     <td style="padding:14px 18px;">
                                         <span style="font-family:Arial,Helvetica,sans-serif;font-size:11.5px;color:#a0a0b8;display:block;margin-bottom:4px;">Subscribed with</span>
-                                        <span style="font-family:'Courier New',Courier,monospace;font-size:13px;color:#6c5ff5;font-weight:bold;">{{ $subscriberEmail }}</span>
+                                        <span style="font-family:'Courier New',Courier,monospace;font-size:13px;color:#6c5ff5;font-weight:bold;">{{ $subscriber->email }}</span>
                                     </td>
                                 </tr>
                             </table>
@@ -224,7 +224,7 @@
         </tr>
         <tr>
             <td align="center" style="padding:10px 24px 4px;">
-                <a href="{{ url('/newsletter/unsubscribe') }}" style="font-family:'Courier New',Courier,monospace;font-size:11.5px;color:#9a9ab0;text-decoration:underline;">Unsubscribe</a>
+                <a href="{{ route('newsletter.unsubscribe', $subscriber->unsubscribe_token) }}" style="font-family:'Courier New',Courier,monospace;font-size:11.5px;color:#9a9ab0;text-decoration:underline;">Unsubscribe</a>
                 <span style="font-family:Arial,sans-serif;font-size:12px;color:#d0d0e0;">&nbsp;&middot;&nbsp;</span>
                 <a href="{{ url('/privacy') }}" style="font-family:'Courier New',Courier,monospace;font-size:11.5px;color:#9a9ab0;text-decoration:underline;">Privacy policy</a>
             </td>

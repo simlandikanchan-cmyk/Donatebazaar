@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\VolunteerController;
+use App\Http\Controllers\VolunteerDashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/volunteer/apply', [VolunteerController::class, 'create'])->name('volunteer.apply');
@@ -10,6 +11,7 @@ Route::post('/volunteer/apply', [VolunteerController::class, 'store'])
     ->name('volunteer.apply.store');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/my-volunteer-dashboard', [VolunteerDashboardController::class, 'index'])->name('volunteer.dashboard');
     Route::get('/campaign/{id}/volunteers', [VolunteerController::class, 'campaignVolunteers'])->name('volunteers.campaign');
 });
 

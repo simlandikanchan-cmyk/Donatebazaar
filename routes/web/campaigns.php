@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CampaignAnalyticsController;
 use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\PublicCampaignController;
 use App\Http\Controllers\KycUploadController;
@@ -21,6 +22,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/campaign/{campaign}/resume',    [CampaignController::class, 'resume'])->name('campaign.resume');
     Route::post('/campaign/{campaign}/follow',    [CampaignController::class, 'toggleFollow'])->name('campaign.follow');
     Route::post('/campaigns/{campaign}/resubmit', [CampaignController::class, 'resubmit'])->name('campaign.resubmit');
+
+    Route::get('/campaign/{campaign}/analytics', [CampaignAnalyticsController::class, 'index'])->name('campaign.analytics');
 
     Route::get('/kyc/upload/{campaign}',   [KycUploadController::class, 'show'])->name('kyc.upload.form');
     Route::post('/kyc/upload/{campaign}',  [KycUploadController::class, 'store'])->name('kyc.upload');
