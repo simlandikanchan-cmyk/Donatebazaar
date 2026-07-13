@@ -17,6 +17,7 @@ export default defineConfig({
                 'resources/css/footer.css',
                 'resources/css/about.css',
                 'resources/css/contact.css',
+                'resources/css/campaigns.css',
 
                 // Page JS
                 'resources/js/home.js',
