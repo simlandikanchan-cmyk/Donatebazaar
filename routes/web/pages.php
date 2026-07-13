@@ -3,6 +3,7 @@
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\HowItWorksController;
+use App\Http\Controllers\ImpactController;
 use App\Http\Controllers\DdrfController;
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\NewsletterController;
@@ -37,3 +38,5 @@ Route::get('/refund-cancellation', [LegalController::class, 'refund'])->name('re
 Route::get('/cookie-policy', [LegalController::class, 'cookies'])->name('cookies');
 
 Route::get('/faq', [FaqController::class, 'index'])->name('faq');
+
+Route::get('/impact', [ImpactController::class, 'index'])->name('impact');

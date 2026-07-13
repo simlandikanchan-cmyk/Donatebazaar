@@ -98,6 +98,7 @@
                     <li><a href="{{ route('all.campaigns') }}">Campaigns</a></li>
                     <li><a href="{{ route('campaign.create') }}">Start Fundraiser</a></li>
                     <li><a href="{{ route('search') }}">Search</a></li>
+                    <li><a href="{{ route('impact') }}">Impact Stories</a></li>
                     <li><a href="{{ route('how.it.works') }}">How It Works</a></li>
                     <li><a href="{{ route('ddrf.index') }}">Disaster Relief</a></li>
                 </ul>

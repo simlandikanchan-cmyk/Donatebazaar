@@ -15,7 +15,10 @@ class DonationHistoryController extends Controller
         $user = Auth::user();
 
         $donations = Donation::where('user_id', $user->id)
-            ->with('campaign:id,title,slug,cover_image,goal_amount,raised_amount')
+            ->with(['campaign' => function ($q) {
+                $q->select('id','title','slug','cover_image','goal_amount','raised_amount','category_id')
+                  ->with('category:id,name,slug');
+            }])
             ->orderByRaw("FIELD(payment_status, 'completed', 'pending', 'failed', 'refunded')")
             ->latest('created_at')
             ->paginate(15);
