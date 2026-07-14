@@ -43,6 +43,4 @@
 </div>
 @endsection
 
-@push('styles')
-<style>.legal-page{--font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;--accent:#6366f1;}.legal-hero{position:relative;overflow:hidden;background:linear-gradient(160deg,#0d0e1a,#0f172a 50%,#042f2e);padding:80px 24px 64px;text-align:center;}.legal-hero-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(99,102,241,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,0.04) 1px,transparent 1px);background-size:36px 36px;pointer-events:none;}.legal-hero-inner{position:relative;z-index:1;}.legal-hero-inner h1{font-family:var(--mono);font-size:clamp(26px,4vw,36px);font-weight:500;color:#fff;letter-spacing:-0.03em;}.legal-hero-inner p{font-size:12px;color:rgba(255,255,255,.4);font-family:var(--mono);margin-top:4px;}.legal-body{max-width:760px;margin:0 auto;padding:48px 24px 80px;}.legal-body h2{font-size:17px;font-weight:700;color:#0f1117;margin:32px 0 10px;letter-spacing:-0.01em;}.legal-body p{font-size:14px;color:#4b5563;line-height:1.8;margin-bottom:16px;}.legal-body a{color:var(--accent);text-decoration:none;}.legal-body a:hover{text-decoration:underline;}@media(max-width:520px){.legal-hero{padding:60px 16px 48px;}.legal-body{padding:32px 16px 60px;}}</style>
-@endpush
+@push('styles') @vite(['resources/css/legal.css']) @endpush

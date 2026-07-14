@@ -477,7 +477,7 @@
                             <div style="font-size:12px;color:rgba(255,255,255,.6);font-family:var(--font-mono);margin-bottom:24px">
                                 {{ $percentage }}% of ₹{{ number_format($goal) }} goal
                             </div>
-                            <a href="{{ route('campaign.public', [$categorySlug, $campaign->slug]) }}" class="btn btn-white">
+                            <a href="{{ route('campaign.public', [$categorySlug, $campaign->slug]) }}" class="btn btn-spotlight">
                                 Donate Now
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                             </a>
