@@ -1,4 +1,6 @@
 @import 'base/_variables.css';
+@import 'components/_badges.css';
+@import 'components/_cards.css';
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Outfit:wght@300;400;500;600&display=swap');
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -91,20 +93,9 @@
     .progress-track { height:3px;background:var(--indigo-pale);overflow:hidden; }
     .progress-fill  { height:100%;background:linear-gradient(90deg,var(--purple-main),var(--purple-mid),var(--indigo-main));border-radius:0 3px 3px 0;transition:width .5s cubic-bezier(.4,0,.2,1); }
 
-    .form-card {
-        background:rgba(255,255,255,.88);
-        backdrop-filter:blur(24px) saturate(1.4);
-        -webkit-backdrop-filter:blur(24px) saturate(1.4);
-        border-radius:28px;border:1px solid rgba(255,255,255,.75);
-        box-shadow:0 2px 0 rgba(37,99,235,.06) inset,0 30px 80px rgba(37,99,235,.1),0 8px 24px rgba(37,99,235,.08);
-        overflow:hidden;
-    }
     .card-header-bar { padding:28px 36px 24px;border-bottom:1px solid var(--indigo-pale);background:linear-gradient(to right,rgba(245,243,255,.8),rgba(238,242,255,.8)); }
-    .step-badge { display:inline-block;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--purple-main);background:var(--purple-pale);padding:3px 10px;border-radius:100px;margin-bottom:10px; }
     .step-heading { font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:600;color:var(--ink);margin-bottom:4px; }
     .step-sub { font-size:13px;color:var(--ink-soft);font-weight:300; }
-
-    .card-body { padding:32px 36px 36px; }
 
     .step-panel { display:none; }
     .step-panel.active { display:block;animation:slideIn .38s cubic-bezier(.4,0,.2,1); }
@@ -248,7 +239,6 @@
     }
     .skip-note svg { width:16px;height:16px;color:var(--indigo-main);flex-shrink:0;margin-top:1px; }
 
-    .review-card { border-radius:18px;border:1px solid var(--indigo-pale);overflow:hidden;margin-bottom:16px; }
     .review-card-header { padding:14px 20px;background:linear-gradient(135deg,var(--purple-mist),var(--indigo-pale));border-bottom:1px solid var(--indigo-pale); }
     .review-card-title  { font-size:12px;font-weight:600;color:var(--ink-mid);text-transform:uppercase;letter-spacing:.08em; }
     .review-row { display:flex;justify-content:space-between;align-items:flex-start;padding:13px 20px;border-bottom:1px solid rgba(224,231,255,.6);gap:12px; }
