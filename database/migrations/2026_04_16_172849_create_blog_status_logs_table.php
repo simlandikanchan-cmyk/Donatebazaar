@@ -11,7 +11,8 @@ return new class extends Migration
      */
 public function up()
 {
-    Schema::create('blog_status_logs', function (Blueprint $table) {
+    if (! Schema::hasTable('blog_status_logs')) {
+        Schema::create('blog_status_logs', function (Blueprint $table) {
         $table->id();
 
         $table->foreignId('blog_id')->constrained()->cascadeOnDelete();
@@ -24,6 +25,7 @@ public function up()
 
         $table->timestamps();
     });
+    }
 }
 
     /**

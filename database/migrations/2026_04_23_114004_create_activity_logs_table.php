@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('activity_logs', function (Blueprint $table) {
+        if (! Schema::hasTable('activity_logs')) {
+            Schema::create('activity_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->string('action');
@@ -17,6 +18,7 @@ return new class extends Migration {
             $table->json('new_data')->nullable();
             $table->timestamps();
         });
+        }
     }
 
     public function down(): void

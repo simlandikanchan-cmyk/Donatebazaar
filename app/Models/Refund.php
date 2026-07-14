@@ -12,6 +12,7 @@ class Refund extends Model
     protected $fillable = [
         'donation_id',
         'donation_payment_id',
+        'gateway_refund_id',
         'amount',
         'reason',
         'status',

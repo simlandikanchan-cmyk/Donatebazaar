@@ -9,6 +9,7 @@ use App\Models\Coupon;
 use App\Models\CouponRedemption;
 use App\Models\Donation;
 use App\Models\DonationItem;
+use App\Models\Refund;
 use App\Services\CouponService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -986,6 +987,8 @@ class PaymentController extends Controller
         match ($event) {
             'payment.captured' => $this->handlePaymentCaptured($data),
             'payment.failed'   => $this->handlePaymentFailed($data),
+            'refund.processed' => $this->handleRefundProcessed($data),
+            'refund.failed'    => $this->handleRefundFailed($data),
             default            => null,
         };
 
@@ -1081,6 +1084,129 @@ class PaymentController extends Controller
             ->update(['payment_status' => 'failed']);
 
         Log::info('Webhook: payment failed', ['order_id' => $orderId]);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Refund Webhook Handlers
+    |
+    | Razorpay emits refund.processed (money returned) and refund.failed.
+    | The donation's Razorpay payment id lives on donations.payment_id,
+    | which is what we match the webhook's payload.refund.entity.payment_id
+    | against. Mirrors the lock + transaction + idempotency pattern above.
+    |--------------------------------------------------------------------------
+    */
+
+    private function handleRefundProcessed(array $payload): void
+    {
+        $refund      = $payload['payload']['refund']['entity'] ?? [];
+        $refundId    = $refund['id']        ?? null;
+        $paymentId   = $refund['payment_id'] ?? null;
+        $amountPaise = $refund['amount']    ?? null;
+
+        if (! $refundId || ! $paymentId || $amountPaise === null) {
+            return;
+        }
+
+        $amount = (float) $amountPaise / 100; // Razorpay amounts are in paise
+
+        $lock = Cache::lock('webhook_lock_' . $refundId, self::LOCK_TTL);
+        if (! $lock->get()) {
+            return;
+        }
+
+        try {
+            DB::transaction(function () use ($refundId, $paymentId, $amount) {
+                // Idempotency: a Refund for this gateway refund id already exists.
+                if (Refund::where('gateway_refund_id', $refundId)->exists()) {
+                    return;
+                }
+
+                $donation = Donation::lockForUpdate()
+                    ->where('payment_id', $paymentId)
+                    ->first();
+
+                // Guard: only a completed, not-yet-refunded donation is refundable here.
+                if (! $donation || $donation->payment_status !== 'completed' || $donation->is_refunded) {
+                    return;
+                }
+
+                $donation->payment_status = 'refunded';
+                $donation->is_refunded    = true;
+                $donation->refunded_at    = now();
+                $donation->save();
+
+                Refund::create([
+                    'donation_id'         => $donation->id,
+                    'donation_payment_id' => null,
+                    'amount'              => $amount,
+                    'reason'              => null,
+                    'status'              => 'processed',
+                    'processed_at'        => now(),
+                    'gateway_refund_id'   => $refundId,
+                ]);
+
+                Log::info('Webhook: refund processed', [
+                    'donation_id' => $donation->id,
+                    'refund_id'   => $refundId,
+                    'payment_id'  => $paymentId,
+                    'amount'      => $amount,
+                ]);
+            });
+        } finally {
+            $lock->release();
+        }
+    }
+
+    private function handleRefundFailed(array $payload): void
+    {
+        $refund    = $payload['payload']['refund']['entity'] ?? [];
+        $refundId  = $refund['id']        ?? null;
+        $paymentId = $refund['payment_id'] ?? null;
+
+        if (! $refundId || ! $paymentId) {
+            return;
+        }
+
+        $lock = Cache::lock('webhook_lock_' . $refundId, self::LOCK_TTL);
+        if (! $lock->get()) {
+            return;
+        }
+
+        try {
+            DB::transaction(function () use ($refundId, $paymentId, $refund) {
+                $donation = Donation::where('payment_id', $paymentId)->first();
+                if (! $donation) {
+                    return;
+                }
+
+                $refundRecord = Refund::where('gateway_refund_id', $refundId)->first();
+
+                if ($refundRecord) {
+                    $refundRecord->update(['status' => 'failed']);
+                } else {
+                    Refund::create([
+                        'donation_id'         => $donation->id,
+                        'donation_payment_id' => null,
+                        'amount'              => (float) ($refund['amount'] ?? 0) / 100,
+                        'reason'              => 'Refund failed at gateway',
+                        'status'              => 'failed',
+                        'processed_at'        => null,
+                        'gateway_refund_id'   => $refundId,
+                    ]);
+                }
+
+                // NOTE: donation.payment_status is intentionally left untouched.
+
+                Log::info('Webhook: refund failed', [
+                    'donation_id' => $donation->id,
+                    'refund_id'   => $refundId,
+                    'payment_id'  => $paymentId,
+                ]);
+            });
+        } finally {
+            $lock->release();
+        }
     }
 }
 
