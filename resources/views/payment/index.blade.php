@@ -2,24 +2,7 @@
 
 @section('content')
 
-<style>
-
-    @keyframes spin {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
-    }
-
-    .btn-spinner {
-        width: 16px;
-        height: 16px;
-        border: 2px solid rgba(255,255,255,0.4);
-        border-top-color: #fff;
-        border-radius: 50%;
-        display: inline-block;
-        animation: spin 0.7s linear infinite;
-    }
-
-</style>
+@push('styles') @vite(['resources/css/payment.css']) @endpush
 
 <div class="min-h-screen flex items-center justify-center px-4 py-10"
      style="background: linear-gradient(180deg,#F8FAFC 0%,#EEF2FF 100%);">
