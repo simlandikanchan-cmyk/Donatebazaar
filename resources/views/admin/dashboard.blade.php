@@ -268,7 +268,7 @@
 @endsection
 
 @push('page_scripts')
-<script>
+<script type="module">
 (function(){
 'use strict';
 
