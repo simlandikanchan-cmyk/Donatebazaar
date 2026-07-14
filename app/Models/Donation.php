@@ -62,4 +62,9 @@ class Donation extends Model
     {
         return $this->belongsTo(Coupon::class);
     }
+
+    public function refunds()
+    {
+        return $this->hasMany(Refund::class);
+    }
 }

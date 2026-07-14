@@ -55,6 +55,7 @@ require __DIR__.'/admin/legal.php';
 require __DIR__.'/admin/subscribers.php';
 require __DIR__.'/admin/fundraiser-levels.php';
 require __DIR__.'/admin/success-stories.php';
+require __DIR__.'/admin/donations.php';
 // require __DIR__.'/admin/users.php';     // stub — add routes when ready
 // require __DIR__.'/admin/reports.php';   // stub
 // require __DIR__.'/admin/settings.php';  // stub

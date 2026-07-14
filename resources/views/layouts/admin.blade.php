@@ -99,6 +99,14 @@
     </a>
   </nav>
 
+  <div class="s-section">Finance</div>
+  <nav class="s-nav">
+    <a href="{{ route('admin.donations.index') }}" class="s-link @yield('sidebar_donations')">
+      <svg class="s-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+      Donations
+    </a>
+  </nav>
+
   <div class="s-section">Events</div>
   <nav class="s-nav">
     <a href="{{ route('admin.events.index') }}" class="s-link @yield('sidebar_events')">

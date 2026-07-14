@@ -11,24 +11,28 @@ return new class extends Migration
      */
 public function up()
 {
-    Schema::table('job_applications', function (Blueprint $table) {
-        $table->dropForeign(['job_id']);
-        $table->foreign('job_id')
-              ->references('id')
-              ->on('job_posts')
-              ->onDelete('cascade');
-    });
+    if (Schema::hasTable('job_applications')) {
+        Schema::table('job_applications', function (Blueprint $table) {
+            $table->dropForeign(['job_id']);
+            $table->foreign('job_id')
+                  ->references('id')
+                  ->on('job_posts')
+                  ->onDelete('cascade');
+        });
+    }
 }
 
 public function down()
 {
-    Schema::table('job_applications', function (Blueprint $table) {
-        $table->dropForeign(['job_id']);
-        $table->foreign('job_id')
-              ->references('id')
-              ->on('job_listings')
-              ->onDelete('cascade');
-    });
+    if (Schema::hasTable('job_applications')) {
+        Schema::table('job_applications', function (Blueprint $table) {
+            $table->dropForeign(['job_id']);
+            $table->foreign('job_id')
+                  ->references('id')
+                  ->on('job_listings')
+                  ->onDelete('cascade');
+        });
+    }
 }
 
 };
