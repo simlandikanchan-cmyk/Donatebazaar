@@ -1,7 +1,14 @@
-⸪潬੧䐮当瑓牯੥攮癮⸊湥⹶慢正灵⸊湥⹶牰摯捵楴湯⸊桰慰瑣牯樮潳੮瀮灨湵瑩爮獥汵⹴慣档੥ⸯ汦敥ੴⸯ摩慥⼊渮癯੡ⸯ桰異楮⹴慣档੥ⸯ獶潣敤⼊種摥⼊畡桴樮潳੮港摯彥潭畤敬ੳ瀯扵楬⽣畢汩੤瀯扵楬⽣潨ੴ瀯扵楬⽣瑳牯条੥猯潴慲敧⨯欮祥⼊瑳牯条⽥慰汩⼊敶摮牯䠊浯獥整摡樮潳੮潈敭瑳慥⹤慹汭吊畨扭⹳扤⼊瘀攀渀搀漀爀ഀ਀⼀渀漀搀攀开洀漀搀甀氀攀猀ഀ਀⼀猀琀漀爀愀最攀⼀氀漀最猀ഀ਀⼀⸀攀渀瘀ഀ਀
+﻿.env
+.env.backup
+/vendor
+/node_modules
+/public/build
+/public/hot
+/public/storage
+.phpunit.result.cache
+
 # Removed from repo: debug scripts and local SQL backups
 kyc_backup_before_encryption.sql
 debug.php
 check_blade.php
 *.sql
-node_modules
