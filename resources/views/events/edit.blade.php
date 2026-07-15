@@ -82,25 +82,6 @@ body {
 .topbar-title p  { font-size: 11px; color: var(--text3); margin-top: 1px; }
 .topbar-right { display: flex; align-items: center; gap: 8px; }
 
-/* theme toggle */
-.theme-toggle { position: relative; }
-.theme-toggle input { position: absolute; opacity: 0; width: 0; height: 0; }
-.theme-toggle label {
-    display: flex; align-items: center; justify-content: space-between;
-    width: 52px; height: 28px; border-radius: 100px;
-    background: var(--surface2); border: 1px solid var(--border2);
-    cursor: pointer; padding: 3px 4px; position: relative;
-}
-.theme-toggle label::after {
-    content: ''; width: 20px; height: 20px; border-radius: 50%;
-    background: var(--accent); position: absolute; left: 4px;
-    transition: transform 0.3s cubic-bezier(.4,0,.2,1);
-    box-shadow: 0 2px 6px rgba(99,102,241,0.4);
-}
-.theme-toggle input:checked + label::after { transform: translateX(24px); }
-.theme-icons { display: flex; justify-content: space-between; width: 100%; position: relative; z-index: 1; }
-.theme-icons svg { width: 12px; height: 12px; color: var(--text3); }
-
 .hamburger {
     display: none; width: 36px; height: 36px; border-radius: 10px;
     border: 1px solid var(--border2); background: var(--surface2); cursor: pointer;
