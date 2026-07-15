@@ -115,12 +115,14 @@ class EventController extends Controller
 
         // Respect the button the admin clicked (draft or active)
         // Default to draft if nothing sent
-        $validated['status']           = $request->input('status', 'draft');
-        $validated['send_notification'] = $request->boolean('send_notification');
-        $validated['slug']             = $slug;
-        $validated['raised_amount']    = 0;
-        $validated['registered_count'] = 0;
-        $validated['user_id']          = auth()->id();
+        $validated['status']              = $request->input('status', 'draft');
+        $validated['send_notification']    = $request->boolean('send_notification');
+        $validated['allow_registrations']  = $request->boolean('allow_registrations');
+        $validated['show_on_campaign']     = $request->boolean('show_on_campaign');
+        $validated['slug']                = $slug;
+        $validated['raised_amount']       = 0;
+        $validated['registered_count']    = 0;
+        $validated['user_id']             = auth()->id();
 
         if ($request->hasFile('cover_image')) {
             $validated['cover_image'] = $request

@@ -120,6 +120,13 @@ class EventController extends Controller
                 'integer',
                 'min:1',
             ],
+
+            'cover_image' => [
+                'nullable',
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:2048',
+            ],
         ]);
 
         /*
@@ -147,6 +154,12 @@ class EventController extends Controller
         |--------------------------------------------------------------------------
         */
 
+        if ($request->hasFile('cover_image')) {
+            $validated['cover_image'] = $request
+                ->file('cover_image')
+                ->store('events', 'public');
+        }
+
         $event = $campaign->events()->create([
             'title'             => $validated['title'],
             'description'       => $validated['description'],
@@ -155,6 +168,7 @@ class EventController extends Controller
             'end_time'          => $validated['end_time'],
             'goal_amount'       => $validated['goal_amount'] ?? 0,
             'max_participants'  => $validated['max_participants'] ?? 0,
+            'cover_image'       => $validated['cover_image'] ?? null,
             'user_id'           => Auth::id(),
             'slug'              => $slug,
             'status'            => Event::STATUS_PENDING,
@@ -319,6 +333,13 @@ class EventController extends Controller
                 'integer',
                 'min:1',
             ],
+
+            'cover_image' => [
+                'nullable',
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:2048',
+            ],
         ]);
 
         /*
@@ -389,6 +410,12 @@ class EventController extends Controller
         | Update Event
         |--------------------------------------------------------------------------
         */
+
+        if ($request->hasFile('cover_image')) {
+            $validated['cover_image'] = $request
+                ->file('cover_image')
+                ->store('events', 'public');
+        }
 
         $event->update($validated);
 

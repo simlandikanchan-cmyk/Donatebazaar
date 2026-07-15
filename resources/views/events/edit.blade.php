@@ -82,25 +82,6 @@ body {
 .topbar-title p  { font-size: 11px; color: var(--text3); margin-top: 1px; }
 .topbar-right { display: flex; align-items: center; gap: 8px; }
 
-/* theme toggle */
-.theme-toggle { position: relative; }
-.theme-toggle input { position: absolute; opacity: 0; width: 0; height: 0; }
-.theme-toggle label {
-    display: flex; align-items: center; justify-content: space-between;
-    width: 52px; height: 28px; border-radius: 100px;
-    background: var(--surface2); border: 1px solid var(--border2);
-    cursor: pointer; padding: 3px 4px; position: relative;
-}
-.theme-toggle label::after {
-    content: ''; width: 20px; height: 20px; border-radius: 50%;
-    background: var(--accent); position: absolute; left: 4px;
-    transition: transform 0.3s cubic-bezier(.4,0,.2,1);
-    box-shadow: 0 2px 6px rgba(99,102,241,0.4);
-}
-.theme-toggle input:checked + label::after { transform: translateX(24px); }
-.theme-icons { display: flex; justify-content: space-between; width: 100%; position: relative; z-index: 1; }
-.theme-icons svg { width: 12px; height: 12px; color: var(--text3); }
-
 .hamburger {
     display: none; width: 36px; height: 36px; border-radius: 10px;
     border: 1px solid var(--border2); background: var(--surface2); cursor: pointer;
@@ -291,6 +272,25 @@ body {
 .chip-rejected  { background: rgba(239,68,68,0.12);   color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
 .chip-completed { background: rgba(99,102,241,0.12);  color: #818cf8; border: 1px solid rgba(99,102,241,0.25); }
 
+.ic-blue   { background: rgba(59,130,246,0.12);  color: #3b82f6; }
+
+/* ─── UPLOAD ZONE ─── */
+.upload-zone{border:2px dashed var(--border2);border-radius:var(--radius-sm);padding:28px 20px;text-align:center;cursor:pointer;transition:all .2s ease;position:relative;overflow:hidden;background:var(--surface2);}
+.upload-zone:hover{border-color:var(--accent);background:var(--accent-glow);}
+.upload-zone.has-preview{border-style:solid;border-color:var(--accent);padding:0;}
+.upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.upload-icon{width:44px;height:44px;border-radius:12px;background:var(--accent-glow);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;}
+.upload-icon svg{width:20px;height:20px;color:var(--accent);}
+.upload-text{font-size:13px;font-weight:600;color:var(--text2);}
+.upload-sub{font-size:11px;color:var(--text3);margin-top:4px;}
+.upload-preview{width:100%;height:160px;object-fit:cover;border-radius:calc(var(--radius-sm) - 2px);display:none;}
+.upload-preview.show{display:block;}
+.upload-overlay{position:absolute;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;border-radius:calc(var(--radius-sm) - 2px);}
+.upload-zone.has-preview:hover .upload-overlay{display:flex;}
+.upload-overlay span{color:#fff;font-size:12px;font-weight:600;font-family:var(--font-mono);}
+.field-hint{font-size:11px;color:var(--text3);font-family:var(--font-mono);}
+.err-msg{color:var(--red);}
+
 /* ─── ANIMATION ─── */
 @keyframes fadeUp {
     from { opacity: 0; transform: translateY(12px); }
@@ -404,7 +404,7 @@ body {
                 </div>
                 @endif
 
-                <form action="{{ route('events.update', $event->id) }}" method="POST" id="editForm">
+                <form action="{{ route('events.update', $event->id) }}" method="POST" enctype="multipart/form-data" id="editForm">
                     @csrf
                     @method('PUT')
 
@@ -528,6 +528,35 @@ body {
                                         placeholder="Unlimited">
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    {{-- ── Cover Image ── --}}
+                    <div class="card" style="margin-bottom:16px;">
+                        <div class="card-header">
+                            <div class="card-icon ic-blue">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                            </div>
+                            <div>
+                                <div class="card-title">Cover Image</div>
+                                <div class="card-sub">Optional — Recommended: 1200×600px, max 2MB</div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="upload-zone" id="editUploadZone">
+                                <input type="file" name="cover_image" id="editCoverInput" accept="image/*" onchange="previewEditImage(this)">
+                                <img src="{{ $event->cover_image ? asset('storage/'.$event->cover_image) : '' }}" alt="Preview"
+                                     class="upload-preview {{ $event->cover_image ? 'show' : '' }}" id="editUploadPreview">
+                                <div class="upload-overlay"><span>Click to change</span></div>
+                                <div id="editUploadPlaceholder" {{ $event->cover_image ? 'style=display:none' : '' }}>
+                                    <div class="upload-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                    </div>
+                                    <div class="upload-text">Click to upload cover image</div>
+                                    <div class="upload-sub">PNG, JPG, WEBP — max 2MB</div>
+                                </div>
+                            </div>
+                            @error('cover_image')<p class="field-hint err-msg" style="margin-top:8px;">{{ $message }}</p>@enderror
                         </div>
                     </div>
 
@@ -656,6 +685,22 @@ body {
             sidebar.classList.remove('open');
         }
     });
+
+window.previewEditImage = function(input) {
+    if (!input.files || !input.files[0]) return;
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        var preview = document.getElementById('editUploadPreview');
+        var zone = document.getElementById('editUploadZone');
+        var placeholder = document.getElementById('editUploadPlaceholder');
+        preview.src = e.target.result;
+        preview.classList.add('show');
+        placeholder.style.display = 'none';
+        zone.classList.add('has-preview');
+    };
+    reader.readAsDataURL(input.files[0]);
+};
+
 })();
 </script>
 

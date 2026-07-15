@@ -31,9 +31,7 @@ class EventPublishedMail extends Mailable
         return new Content(
             view: 'emails.event-published',
             with: [
-                'eventUrl' => $this->event->slug
-                    ? route('events.show', $this->event->slug)
-                    : (config('app.url') . '/events/' . $this->event->id),
+                'eventUrl' => route('events.show', $this->event->id),
             ],
         );
     }
