@@ -35,7 +35,7 @@
         </div>
         @endif
 
-        <form action="{{ route('events.store', $campaign->id) }}" method="POST" id="eventForm">
+        <form action="{{ route('events.store', $campaign->id) }}" method="POST" enctype="multipart/form-data" id="eventForm">
             @csrf
 
             {{-- Card 1: Basic Info --}}
@@ -204,6 +204,34 @@
                             @error('max_participants')<p class="form-hint err-msg">{{ $message }}</p>@enderror
                         </div>
                     </div>
+                </div>
+            </div>
+
+            {{-- Card 5: Cover Image --}}
+            <div class="card d5">
+                <div class="card-header">
+                    <div class="card-icon ic-blue">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    </div>
+                    <div>
+                        <div class="card-title">Cover Image</div>
+                        <div class="card-sub">Optional — Recommended: 1200×600px, max 2MB</div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="upload-zone" id="createUploadZone">
+                        <input type="file" name="cover_image" id="createCoverInput" accept="image/*" onchange="previewCreateImage(this)">
+                        <img src="" alt="Preview" class="upload-preview" id="createUploadPreview">
+                        <div class="upload-overlay"><span>Click to change</span></div>
+                        <div id="createUploadPlaceholder">
+                            <div class="upload-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            </div>
+                            <div class="upload-text">Click to upload cover image</div>
+                            <div class="upload-sub">PNG, JPG, WEBP — max 2MB</div>
+                        </div>
+                    </div>
+                    @error('cover_image')<p class="form-hint err-msg">{{ $message }}</p>@enderror
                 </div>
             </div>
 
@@ -410,7 +438,21 @@
 .tip-icon svg{width:13px;height:13px;color:var(--accent);}
 .tip-text{font-size:11.5px;color:var(--text2);line-height:1.6;padding-top:3px;}
 
-.d1{animation-delay:.05s}.d2{animation-delay:.10s}.d3{animation-delay:.15s}.d4{animation-delay:.20s}
+.ic-blue  {background:rgba(59,130,246,0.12);color:#3b82f6;}
+.upload-zone{border:2px dashed var(--border2);border-radius:var(--radius-sm);padding:28px 20px;text-align:center;cursor:pointer;transition:all .2s ease;position:relative;overflow:hidden;background:var(--surface2);}
+.upload-zone:hover{border-color:var(--accent);background:var(--accent-glow);}
+.upload-zone.has-preview{border-style:solid;border-color:var(--accent);padding:0;}
+.upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.upload-icon{width:44px;height:44px;border-radius:12px;background:var(--accent-glow);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;}
+.upload-icon svg{width:20px;height:20px;color:var(--accent);}
+.upload-text{font-size:13px;font-weight:600;color:var(--text2);}
+.upload-sub{font-size:11px;color:var(--text3);margin-top:4px;}
+.upload-preview{width:100%;height:160px;object-fit:cover;border-radius:calc(var(--radius-sm) - 2px);display:none;}
+.upload-preview.show{display:block;}
+.upload-overlay{position:absolute;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;border-radius:calc(var(--radius-sm) - 2px);}
+.upload-zone.has-preview:hover .upload-overlay{display:flex;}
+.upload-overlay span{color:#fff;font-size:12px;font-weight:600;font-family:var(--font-mono);}
+.d1{animation-delay:.05s}.d2{animation-delay:.10s}.d3{animation-delay:.15s}.d4{animation-delay:.20s}.d5{animation-delay:.25s}
 
 @media(max-width:960px){
     .page-grid{grid-template-columns:1fr;}
@@ -431,6 +473,21 @@ document.getElementById('eventForm').addEventListener('submit', function(){
     btn.disabled = true;
     btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px;animation:spin 1s linear infinite"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> Creating…';
 });
+
+window.previewCreateImage = function(input) {
+    if (!input.files || !input.files[0]) return;
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        var preview = document.getElementById('createUploadPreview');
+        var zone = document.getElementById('createUploadZone');
+        var placeholder = document.getElementById('createUploadPlaceholder');
+        preview.src = e.target.result;
+        preview.classList.add('show');
+        placeholder.style.display = 'none';
+        zone.classList.add('has-preview');
+    };
+    reader.readAsDataURL(input.files[0]);
+};
 
 })();
 </script>
