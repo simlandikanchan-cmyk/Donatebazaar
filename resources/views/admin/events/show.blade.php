@@ -456,6 +456,76 @@
       </div>
     </div>
 
+    {{-- Registrations --}}
+    @if($event->registrations->isNotEmpty())
+    <div class="card" style="animation-delay:.16s;">
+      <div class="card-header">
+        <div class="card-icon ci-blue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg>
+        </div>
+        <div>
+          <div class="card-title">Registrations ({{ $event->registrations->count() }})</div>
+          <div class="card-subtitle">People who signed up for this event</div>
+        </div>
+      </div>
+      <div class="card-body" style="padding:0;">
+        <div style="overflow-x:auto;">
+          <table style="width:100%;border-collapse:collapse;font-size:12.5px;">
+            <thead>
+              <tr style="background:var(--surface2);">
+                <th style="text-align:left;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);">#</th>
+                <th style="text-align:left;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);">Name</th>
+                <th style="text-align:left;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);">Email</th>
+                <th style="text-align:left;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);">Phone</th>
+                <th style="text-align:left;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);">Date</th>
+                <th style="text-align:center;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach($event->registrations as $idx => $reg)
+              <tr style="border-bottom:1px solid var(--border);{{ $loop->last ? 'border-bottom:none;' : '' }}">
+                <td style="padding:11px 18px;color:var(--text3);font-family:var(--mono);font-size:11px;">{{ $idx + 1 }}</td>
+                <td style="padding:11px 18px;font-weight:600;color:var(--text);">
+                  @if($reg->user)
+                    <a href="{{ route('admin.users.show', $reg->user) }}" style="color:var(--a);text-decoration:none;">{{ $reg->name }}</a>
+                  @else
+                    {{ $reg->name }}
+                    <span style="font-size:10px;color:var(--text3);font-family:var(--mono);">(guest)</span>
+                  @endif
+                </td>
+                <td style="padding:11px 18px;color:var(--text2);font-family:var(--mono);font-size:11.5px;">
+                  <a href="mailto:{{ $reg->email }}" style="color:var(--a);text-decoration:none;">{{ $reg->email }}</a>
+                </td>
+                <td style="padding:11px 18px;color:var(--text2);font-family:var(--mono);font-size:11.5px;">{{ $reg->phone ?? '—' }}</td>
+                <td style="padding:11px 18px;color:var(--text2);font-family:var(--mono);font-size:11px;">{{ $reg->created_at->format('d M Y, h:i A') }}</td>
+                <td style="padding:11px 18px;text-align:center;">
+                  @if($reg->status === 'registered')
+                    <span style="display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:100px;font-size:10px;font-weight:700;font-family:var(--mono);background:var(--green-lt);color:#059669;white-space:nowrap;">
+                      <span style="width:5px;height:5px;border-radius:50%;background:#10b981;"></span> Registered
+                    </span>
+                  @else
+                    <span style="display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:100px;font-size:10px;font-weight:700;font-family:var(--mono);background:var(--red-lt);color:#dc2626;white-space:nowrap;">
+                      <span style="width:5px;height:5px;border-radius:50%;background:#ef4444;"></span> Cancelled
+                    </span>
+                  @endif
+                </td>
+              </tr>
+              @if($reg->message)
+              <tr style="border-bottom:1px solid var(--border);{{ $loop->last ? 'border-bottom:none;' : '' }}">
+                <td colspan="6" style="padding:0 18px 11px;color:var(--text3);font-size:12px;font-style:italic;line-height:1.5;">
+                  <span style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);font-style:normal;">Message: </span>
+                  {{ $reg->message }}
+                </td>
+              </tr>
+              @endif
+              @endforeach
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    @endif
+
     {{-- Bottom action row --}}
     <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;animation:fadeUp .4s .18s ease both;align-items:center;">
       <a href="{{ route('admin.events.edit', $event) }}" class="btn btn-publish">

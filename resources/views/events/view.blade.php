@@ -7,7 +7,7 @@
 <title>{{ $event->title }} — DonateBazaar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-@vite('resources/css/user.css')
+@vite(['resources/css/user.css', 'resources/css/events-view.css'])
 
 @php
     if ($event->status === 'active') {
@@ -29,8 +29,6 @@
     $maxPart    = $event->max_participants  ?? 0;
     $partPct    = ($maxPart > 0) ? min(100, round(($registered / $maxPart) * 100)) : 0;
 @endphp
-
-@push('styles') @vite(['resources/css/events-view.css']) @endpush
 </head>
 <body>
 <div class="shell">
