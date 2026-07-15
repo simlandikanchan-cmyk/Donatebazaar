@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\DonationReceiptMail;
+use App\Mail\DonationRefundMail;
 use App\Models\Campaign;
 use App\Models\CampaignProduct;
 use App\Models\Coupon;
@@ -1116,7 +1117,10 @@ class PaymentController extends Controller
         }
 
         try {
-            DB::transaction(function () use ($refundId, $paymentId, $amount) {
+            $refundRecord = null;
+            $donation     = null;
+
+            DB::transaction(function () use ($refundId, $paymentId, $amount, &$refundRecord, &$donation) {
                 // Idempotency: a Refund for this gateway refund id already exists.
                 if (Refund::where('gateway_refund_id', $refundId)->exists()) {
                     return;
@@ -1136,7 +1140,7 @@ class PaymentController extends Controller
                 $donation->refunded_at    = now();
                 $donation->save();
 
-                Refund::create([
+                $refundRecord = Refund::create([
                     'donation_id'         => $donation->id,
                     'donation_payment_id' => null,
                     'amount'              => $amount,
@@ -1153,6 +1157,10 @@ class PaymentController extends Controller
                     'amount'      => $amount,
                 ]);
             });
+
+            if ($refundRecord && $donation && $donation->donor_email) {
+                Mail::to($donation->donor_email)->send(new DonationRefundMail($donation, $refundRecord));
+            }
         } finally {
             $lock->release();
         }

@@ -18,7 +18,7 @@ class DonationHistoryController extends Controller
             ->with(['campaign' => function ($q) {
                 $q->select('id','title','slug','cover_image','goal_amount','raised_amount','category_id')
                   ->with('category:id,name,slug');
-            }])
+            }, 'refunds'])
             ->orderByRaw("FIELD(payment_status, 'completed', 'pending', 'failed', 'refunded')")
             ->latest('created_at')
             ->paginate(15);
@@ -40,9 +40,13 @@ class DonationHistoryController extends Controller
             ->where('payment_status', 'pending')
             ->count();
 
+        $refundedCount = Donation::where('user_id', $user->id)
+            ->where('is_refunded', true)
+            ->count();
+
         return view('donations.history', compact(
             'donations', 'campaigns', 'recurringCount',
-            'totalDonated', 'completedCount', 'pendingCount'
+            'totalDonated', 'completedCount', 'pendingCount', 'refundedCount'
         ));
     }
 
