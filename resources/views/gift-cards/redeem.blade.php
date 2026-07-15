@@ -433,11 +433,10 @@ function checkCode() {
             document.getElementById('hiddenCode').value = data.code;
 
             var emailInput = document.getElementById('donorEmail');
-            emailInput.value = data.recipient_email;
-            emailInput.readOnly = true;
-            emailInput.style.background = 'var(--surface2)';
-            emailInput.style.cursor = 'not-allowed';
-            document.getElementById('emailHint').textContent = 'This gift card can only be redeemed using the email it was sent to.';
+            emailInput.readOnly = false;
+            emailInput.style.background = '';
+            emailInput.style.cursor = '';
+            document.getElementById('emailHint').innerHTML = 'This gift card was sent to <strong>' + data.recipient_email_masked + '</strong> — enter your full email above.';
 
             setTimeout(function () { gotoStep(2); }, 350);
         } else {
