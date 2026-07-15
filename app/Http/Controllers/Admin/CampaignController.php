@@ -8,6 +8,7 @@ use App\Models\Campaign;
 use App\Notifications\KycRequestedNotification;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
@@ -309,7 +310,7 @@ public function edit(Campaign $campaign)
     // -------------------------------------------------------------------------
     // BULK APPROVE
     // -------------------------------------------------------------------------
-    public function bulkApprove(Request $request): RedirectResponse
+    public function bulkApprove(Request $request): Response
     {
         $data = $request->validate([
             'ids'   => ['required', 'array'],
@@ -362,7 +363,7 @@ public function edit(Campaign $campaign)
     // -------------------------------------------------------------------------
     // BULK REJECT
     // -------------------------------------------------------------------------
-    public function bulkReject(Request $request): RedirectResponse
+    public function bulkReject(Request $request): Response
     {
         $data = $request->validate([
             'ids'    => ['required', 'array'],
@@ -411,7 +412,7 @@ public function edit(Campaign $campaign)
     // -------------------------------------------------------------------------
     // BULK PAUSE
     // -------------------------------------------------------------------------
-    public function bulkPause(Request $request): RedirectResponse
+    public function bulkPause(Request $request): Response
     {
         $data = $request->validate([
             'ids'    => ['required', 'array'],
