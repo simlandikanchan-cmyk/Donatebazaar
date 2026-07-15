@@ -3,14 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\DonationRefundMail;
 use App\Models\Campaign;
 use App\Models\Donation;
 use App\Models\Refund;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Razorpay\Api\Api;
 use Razorpay\Api\Errors\Error as RazorpayError;
 
@@ -74,80 +77,114 @@ class DonationController extends Controller
 
     /**
      * Admin-triggered full refund.
+     *
+     * Wrapped in a Cache::lock keyed per-donation so that a double-click,
+     * duplicate tab submit, or client-side retry cannot fire two Razorpay
+     * refund API calls for the same donation. The DB::transaction's
+     * lockForUpdate() below only protects the database row — it does NOT
+     * stop two concurrent requests from both reaching the gateway before
+     * either has saved anything, so the lock has to wrap the guard check
+     * and the gateway call as well, not just the DB write.
      */
     public function refund(Request $request, Donation $donation): RedirectResponse
     {
-        // (a) Guard: only completed, not-yet-refunded donations.
-        if ($donation->payment_status !== 'completed' || $donation->is_refunded) {
+        $lock = Cache::lock('donation_refund_' . $donation->id, 30);
+
+        if (! $lock->get()) {
             return redirect()
                 ->route('admin.donations.show', $donation)
-                ->with('error', 'Only completed, non-refunded donations can be refunded.');
+                ->with('error', 'A refund is already being processed for this donation.');
         }
-
-        if (empty($donation->payment_id)) {
-            return redirect()
-                ->route('admin.donations.show', $donation)
-                ->with('error', 'This donation has no Razorpay payment id and cannot be refunded.');
-        }
-
-        $api = $this->getRazorpayApi();
 
         try {
-            // (b) Full refund (total_amount → paise). Payment must be fetched so id is set.
-            $razorpayRefund = $api->payment
-                ->fetch($donation->payment_id)
-                ->refund(['amount' => (int) round($donation->total_amount * 100)]);
-        } catch (RazorpayError $e) {
-            // (d) API failure: do NOT modify donation fields; log a failed Refund row.
-            Log::error('Admin refund failed at gateway', [
-                'donation_id' => $donation->id,
-                'payment_id'  => $donation->payment_id,
-                'message'     => $e->getMessage(),
-            ]);
+            // Re-fetch fresh state now that we hold the lock — the $donation
+            // passed in via route-model-binding may be stale if another
+            // request (or the webhook) changed it moments ago.
+            $donation->refresh();
 
-            Refund::create([
-                'donation_id'         => $donation->id,
-                'donation_payment_id' => null,
-                'gateway_refund_id'   => null,
-                'amount'              => $donation->total_amount,
-                'reason'              => 'Admin refund failed at gateway: ' . $e->getMessage(),
-                'status'              => 'failed',
-                'processed_at'        => null,
-            ]);
+            // (a) Guard: only completed, not-yet-refunded donations.
+            if ($donation->payment_status !== 'completed' || $donation->is_refunded) {
+                return redirect()
+                    ->route('admin.donations.show', $donation)
+                    ->with('error', 'Only completed, non-refunded donations can be refunded.');
+            }
+
+            $paymentId = $donation->payment_id;
+
+            if (empty($paymentId) || ! preg_match('/^pay_[A-Za-z0-9]{14,}$/', $paymentId)) {
+                return redirect()
+                    ->route('admin.donations.show', $donation)
+                    ->with('error', 'This donation has no valid Razorpay payment id and cannot be refunded.');
+            }
+
+            $api = $this->getRazorpayApi();
+
+            try {
+                // (b) Full refund (total_amount → paise). Payment must be fetched so id is set.
+                $razorpayRefund = $api->payment
+                    ->fetch($paymentId)
+                    ->refund(['amount' => (int) round($donation->total_amount * 100)]);
+            } catch (RazorpayError $e) {
+                // (d) API failure: do NOT modify donation fields; log a failed Refund row.
+                Log::error('Admin refund failed at gateway', [
+                    'donation_id' => $donation->id,
+                    'payment_id'  => $donation->payment_id,
+                    'message'     => $e->getMessage(),
+                ]);
+
+                Refund::create([
+                    'donation_id'         => $donation->id,
+                    'donation_payment_id' => null,
+                    'gateway_refund_id'   => null,
+                    'amount'              => $donation->total_amount,
+                    'reason'              => 'Admin refund failed at gateway: ' . $e->getMessage(),
+                    'status'              => 'failed',
+                    'processed_at'        => null,
+                ]);
+
+                return redirect()
+                    ->route('admin.donations.show', $donation)
+                    ->with('error', 'Refund failed at the payment gateway: ' . $e->getMessage());
+            }
+
+            // (c) Success: persist inside a transaction with a row lock + re-checked guard.
+            $refundRecord = null;
+
+            DB::transaction(function () use ($donation, $razorpayRefund, $request, &$refundRecord) {
+                $locked = Donation::lockForUpdate()->where('id', $donation->id)->first();
+
+                // Idempotency guard: a webhook may have already refunded this.
+                if ($locked->payment_status !== 'completed' || $locked->is_refunded) {
+                    return;
+                }
+
+                $locked->payment_status = 'refunded';
+                $locked->is_refunded    = true;
+                $locked->refunded_at    = now();
+                $locked->save();
+
+                $refundRecord = Refund::create([
+                    'donation_id'         => $locked->id,
+                    'donation_payment_id' => null,
+                    'gateway_refund_id'   => $razorpayRefund->id,
+                    'amount'              => $donation->total_amount,
+                    'reason'              => $request->input('reason'),
+                    'status'              => 'processed',
+                    'processed_at'        => now(),
+                ]);
+            });
+
+            if ($refundRecord && $donation->donor_email) {
+                Mail::to($donation->donor_email)->send(new DonationRefundMail($donation, $refundRecord));
+            }
 
             return redirect()
                 ->route('admin.donations.show', $donation)
-                ->with('error', 'Refund failed at the payment gateway: ' . $e->getMessage());
+                ->with('success', 'Refund of ₹' . number_format($donation->total_amount, 2) . ' initiated successfully.');
+
+        } finally {
+            $lock->release();
         }
-
-        // (c) Success: persist inside a transaction with a row lock + re-checked guard.
-        DB::transaction(function () use ($donation, $razorpayRefund, $request) {
-            $locked = Donation::lockForUpdate()->where('id', $donation->id)->first();
-
-            // Idempotency guard: a webhook may have already refunded this.
-            if ($locked->payment_status !== 'completed' || $locked->is_refunded) {
-                return;
-            }
-
-            $locked->payment_status = 'refunded';
-            $locked->is_refunded    = true;
-            $locked->refunded_at    = now();
-            $locked->save();
-
-            Refund::create([
-                'donation_id'         => $locked->id,
-                'donation_payment_id' => null,
-                'gateway_refund_id'   => $razorpayRefund->id,
-                'amount'              => $donation->total_amount,
-                'reason'              => $request->input('reason'),
-                'status'              => 'processed',
-                'processed_at'        => now(),
-            ]);
-        });
-
-        return redirect()
-            ->route('admin.donations.show', $donation)
-            ->with('success', 'Refund of ₹' . number_format($donation->total_amount, 2) . ' initiated successfully.');
     }
 
     /**

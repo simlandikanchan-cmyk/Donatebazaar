@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('sidebar_donations', 'active')
-@section('page_title', 'Donation #{{ $donation->id }}')
+<!-- @section('page_title', 'Donation #{{ $donation->id }}') -->
 @section('page_subtitle', 'Donation detail & refund history')
 
 @push('page_styles')

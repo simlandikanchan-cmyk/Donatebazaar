@@ -5,10 +5,11 @@
 
 @section('content')
 @php
-    $dhAll       = $donations->total();
-    $dhCompleted = $completedCount;
-    $dhPending   = $pendingCount;
-    $dhTotal     = $totalDonated;
+    $dhAll        = $donations->total();
+    $dhCompleted  = $completedCount;
+    $dhPending    = $pendingCount;
+    $dhRefunded   = $refundedCount;
+    $dhTotal      = $totalDonated;
 @endphp
 
 <div class="dh-stats">
@@ -37,6 +38,15 @@
         <div>
             <div class="dh-stat-num">{{ $dhPending }}</div>
             <div class="dh-stat-lbl">Pending</div>
+        </div>
+    </div>
+    <div class="dh-stat" data-filter="refunded">
+        <div class="dh-stat-icon si-gray">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m4 0h1M3 10l2-5h14l2 5v9a1 1 0 01-1 1H4a1 1 0 01-1-1v-9z"/></svg>
+        </div>
+        <div>
+            <div class="dh-stat-num">{{ $dhRefunded }}</div>
+            <div class="dh-stat-lbl">Refunded</div>
         </div>
     </div>
     <div class="dh-stat" data-filter="total">
@@ -93,7 +103,13 @@
                 <span class="dh-meta-item" style="font-family:var(--mono);font-size:10px;color:var(--text3);">
                     #{{ $donation->receipt_number }}
                 </span>
-                @endif
+            @endif
+            @if($donation->is_refunded && $donation->refunded_at)
+                <span class="dh-meta-item" style="color:#6b7280;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m4 0h1M3 10l2-5h14l2 5v9a1 1 0 01-1 1H4a1 1 0 01-1-1v-9z"/></svg>
+                    Refunded {{ $donation->refunded_at->format('d M Y, h:i A') }}
+                </span>
+            @endif
             </div>
         </div>
         <div class="dh-chips">
@@ -107,6 +123,11 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 Receipt
             </a>
+            @elseif($donation->is_refunded && $donation->refunds->isNotEmpty())
+            <button type="button" class="btn btn-gray" onclick="toggleRefundDetails({{ $donation->id }})">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m4 0h1M3 10l2-5h14l2 5v9a1 1 0 01-1 1H4a1 1 0 01-1-1v-9z"/></svg>
+                Refund Info
+            </button>
             @endif
             @if($donation->campaign?->slug)
             <a href="{{ route('campaign.public', ['category' => $donation->campaign->category->slug ?? 'uncategorized', 'slug' => $donation->campaign->slug]) }}" class="btn btn-secondary">
@@ -118,6 +139,45 @@
             </a>
         </div>
     </div>
+    @if($donation->is_refunded && $donation->refunds->isNotEmpty())
+    <div class="dh-refund-details" id="refundDetails{{ $donation->id }}" style="display:none;">
+        <div class="dh-refund-header">Refund Details</div>
+        @foreach($donation->refunds as $refund)
+        <div class="dh-refund-row">
+            <div class="dh-refund-item">
+                <span class="dh-refund-label">Amount</span>
+                <span class="dh-refund-value">₹{{ number_format($refund->amount, 2) }}</span>
+            </div>
+            <div class="dh-refund-item">
+                <span class="dh-refund-label">Status</span>
+                <span class="dh-refund-value">
+                    @switch($refund->status)
+                        @case('processed')<span style="color:#10b981;">✓ Processed</span>@break
+                        @case('failed')<span style="color:#ef4444;">✕ Failed</span>@break
+                        @case('pending')<span style="color:#d97706;">● Pending</span>@break
+                    @endswitch
+                </span>
+            </div>
+            <div class="dh-refund-item">
+                <span class="dh-refund-label">Processed At</span>
+                <span class="dh-refund-value">{{ $refund->processed_at ? $refund->processed_at->format('d M Y, h:i A') : '—' }}</span>
+            </div>
+            @if($refund->reason)
+            <div class="dh-refund-item full">
+                <span class="dh-refund-label">Reason</span>
+                <span class="dh-refund-value">{{ $refund->reason }}</span>
+            </div>
+            @endif
+            @if($refund->gateway_refund_id)
+            <div class="dh-refund-item">
+                <span class="dh-refund-label">Gateway Refund ID</span>
+                <span class="dh-refund-value mono">{{ $refund->gateway_refund_id }}</span>
+            </div>
+            @endif
+        </div>
+        @endforeach
+    </div>
+    @endif
     @endforeach
 </div>
 
@@ -159,6 +219,7 @@
 .si-green{background:rgba(16,185,129,0.12);color:var(--green);}
 .si-yellow{background:rgba(245,158,11,0.12);color:var(--yellow);}
 .si-pink{background:rgba(236,72,153,0.12);color:var(--pink);}
+.si-gray{background:rgba(107,114,128,0.12);color:#6b7280;}
 .dh-stat-num{font-size:21px;font-weight:800;color:var(--text);letter-spacing:-0.02em;line-height:1.1;}
 .dh-stat-lbl{font-size:10.5px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.06em;margin-top:2px;}
 
@@ -196,6 +257,18 @@
 [data-theme="dark"] .chip-refunded{color:#9ca3af;}
 
 .dh-actions{display:flex;align-items:center;gap:7px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;}
+.btn-gray{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;border-radius:var(--r-sm);border:1px solid var(--border2);background:var(--surface);color:var(--text2);font-size:11px;font-weight:600;font-family:var(--font);cursor:pointer;transition:all var(--ease);text-decoration:none;white-space:nowrap;}
+.btn-gray:hover{border-color:#6b7280;color:#6b7280;}
+.btn-gray svg{width:13px;height:13px;flex-shrink:0;}
+.dh-refund-details{background:var(--surface2);border:1px dashed var(--border2);border-radius:var(--r-sm);padding:14px 18px;margin:-6px 0 10px;animation:fadeUp .3s both;}
+.dh-refund-header{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text3);font-family:var(--mono);margin-bottom:10px;}
+.dh-refund-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.dh-refund-item{display:flex;flex-direction:column;gap:2px;}
+.dh-refund-item.full{grid-column:1/-1;}
+.dh-refund-label{font-size:9.5px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;font-family:var(--mono);}
+.dh-refund-value{font-size:12px;font-weight:600;color:var(--text);}
+.dh-refund-value.mono{font-family:var(--mono);font-size:11px;}
+@media(max-width:600px){.dh-refund-row{grid-template-columns:1fr 1fr;}}
 
 .dh-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:60px 20px;text-align:center;}
 .dh-empty svg{width:48px;height:48px;color:var(--text3);opacity:0.25;}
@@ -265,5 +338,13 @@ document.querySelectorAll('.dh-filter-tab').forEach(function(tab){
 });
 
 searchInput?.addEventListener('input', applyFilters);
+
+function toggleRefundDetails(id) {
+    var el = document.getElementById('refundDetails' + id);
+    if (el) {
+        var isOpen = el.style.display !== 'none';
+        el.style.display = isOpen ? 'none' : 'block';
+    }
+}
 </script>
 @endpush
