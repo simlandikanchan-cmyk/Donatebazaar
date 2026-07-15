@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Campaign;
+use App\Models\Donation;
+use App\Models\User;
 use App\Models\Volunteer;
 use App\Models\VolunteerApplication;
 use Illuminate\Http\Request;
@@ -84,6 +86,13 @@ class DashboardController extends Controller
         $volunteerCount = Volunteer::count();
         $pendingVolunteerApps = VolunteerApplication::where('status', 'pending')->count();
 
+        $totalUsers    = User::count();
+        $newUsersToday = User::whereDate('created_at', today())->count();
+
+        $totalDonations = Donation::count();
+        $donationsToday = Donation::whereDate('created_at', today())->count();
+        $totalRevenue   = Donation::sum('total_amount');
+
         // Initial grid shows the Active (+ Paused) list, matching the default tab.
         $activeCampaigns = $this->scopeState(
             Campaign::with('user', 'category')->whereIn('campaign_state', ['active', 'paused']),
@@ -122,7 +131,12 @@ class DashboardController extends Controller
             'chartTotal',
             'chartActive',
             'volunteerCount',
-            'pendingVolunteerApps'
+            'pendingVolunteerApps',
+            'totalUsers',
+            'newUsersToday',
+            'totalDonations',
+            'donationsToday',
+            'totalRevenue'
         )));
     }
 
