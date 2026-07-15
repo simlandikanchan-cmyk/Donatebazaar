@@ -235,17 +235,28 @@
     <div class="stat-mini-lbl">Registrations</div>
     <div class="stat-mini-val">{{ $regCount }}</div>
     <div class="stat-mini-sub">
-      @if($event->max_participants) of {{ $event->max_participants }} max
+      @if($event->max_participants)
+        @php $capPct = min(100, round($regCount / $event->max_participants * 100)); @endphp
+        <span style="color:{{ $capPct >= 100 ? 'var(--red)' : ($capPct >= 80 ? 'var(--amber)' : 'var(--text3)') }};">
+          {{ $capPct }}% of {{ number_format($event->max_participants) }} capacity
+        </span>
       @else No limit
       @endif
     </div>
   </div>
   <div class="stat-mini">
-    <div class="stat-mini-lbl">Days Away</div>
-    <div class="stat-mini-val" style="{{ $days !== null && $days < 0 ? 'color:var(--text3)' : '' }}">
-      {{ $days === null ? '—' : ($days < 0 ? 'Past' : ($days === 0 ? 'Today' : $days)) }}
+    <div class="stat-mini-lbl">{{ $days !== null && $days < 0 ? 'Ended' : ($days === null ? 'Date' : 'Days Away') }}</div>
+    <div class="stat-mini-val" style="
+      @if($days === null) color:var(--text3);
+      @elseif($days < 0) color:var(--text3);
+      @elseif($days === 0) color:var(--amber);
+      @elseif($days <= 7) color:var(--green);
+      @else color:var(--text);
+      @endif
+    ">
+      {{ $days === null ? '—' : ($days < 0 ? number_format(abs($days)) . ' days ago' : ($days === 0 ? 'Today' : $days)) }}
     </div>
-    <div class="stat-mini-sub">{{ $event->event_date?->format('d M Y') ?? 'No date set' }}</div>
+    <div class="stat-mini-sub">{{ $event->event_date?->format('D, d M Y') ?? 'No date set' }}</div>
   </div>
 </div>
 
@@ -377,6 +388,34 @@
       </div>
     </div>
 
+    {{-- Organizer --}}
+    <div class="card" style="animation-delay:.12s;">
+      <div class="card-header">
+        <div class="card-icon ci-purple">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+        </div>
+        <div>
+          <div class="card-title">Organizer</div>
+          <div class="card-subtitle">Who created this event</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="width:44px;height:44px;border-radius:12px;background:var(--a-lt);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;font-weight:700;color:var(--a);font-family:var(--mono);overflow:hidden;">
+            @if($event->user->avatar ?? false)
+              <img src="{{ asset('storage/'.$event->user->avatar) }}" style="width:100%;height:100%;object-fit:cover;" alt="">
+            @else
+              {{ strtoupper(substr($event->user->name ?? '?', 0, 1)) }}
+            @endif
+          </div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:14px;font-weight:600;color:var(--text);">{{ $event->user->name ?? 'Unknown' }}</div>
+            <div style="font-size:11.5px;color:var(--text3);font-family:var(--mono);margin-top:2px;">{{ $event->user->email ?? '' }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     {{-- EVENT SETTINGS --}}
     <div class="card" style="animation-delay:.14s;">
       <div class="card-header">
@@ -457,7 +496,6 @@
     </div>
 
     {{-- Registrations --}}
-    @if($event->registrations->isNotEmpty())
     <div class="card" style="animation-delay:.16s;">
       <div class="card-header">
         <div class="card-icon ci-blue">
@@ -467,13 +505,33 @@
           <div class="card-title">Registrations ({{ $event->registrations->count() }})</div>
           <div class="card-subtitle">People who signed up for this event</div>
         </div>
+        @php
+          $regActive  = $event->registrations->where('status', 'registered')->count();
+          $regCancelled = $event->registrations->where('status', 'cancelled')->count();
+        @endphp
+        <div style="margin-left:auto;display:flex;gap:10px;flex-shrink:0;">
+          @if($regActive > 0)
+          <span style="display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:100px;font-size:10px;font-weight:700;font-family:var(--mono);background:var(--green-lt);color:#059669;">
+            <span style="width:5px;height:5px;border-radius:50%;background:#10b981;"></span> {{ $regActive }} active
+          </span>
+          @endif
+          @if($regCancelled > 0)
+          <span style="display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:100px;font-size:10px;font-weight:700;font-family:var(--mono);background:var(--red-lt);color:#dc2626;">
+            <span style="width:5px;height:5px;border-radius:50%;background:#ef4444;"></span> {{ $regCancelled }} cancelled
+          </span>
+          @endif
+        </div>
+      </div>
+      @if($event->registrations->isNotEmpty())
+      <div style="padding:0 22px 12px;border-bottom:1px solid var(--border);">
+        <input type="text" id="regSearch" placeholder="Search by name, email, or phone…" style="width:100%;padding:8px 12px;border:1px solid var(--border2);border-radius:var(--r-sm);font-size:12.5px;font-family:var(--font);background:var(--surface2);color:var(--text);outline:none;box-sizing:border-box;" oninput="filterRegistrations(this.value)">
       </div>
       <div class="card-body" style="padding:0;">
         <div style="overflow-x:auto;">
-          <table style="width:100%;border-collapse:collapse;font-size:12.5px;">
+          <table style="width:100%;border-collapse:collapse;font-size:12.5px;" id="regTable">
             <thead>
               <tr style="background:var(--surface2);">
-                <th style="text-align:left;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);">#</th>
+                <th style="text-align:left;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);width:36px;">#</th>
                 <th style="text-align:left;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);">Name</th>
                 <th style="text-align:left;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);">Email</th>
                 <th style="text-align:left;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);">Phone</th>
@@ -481,9 +539,10 @@
                 <th style="text-align:center;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);">Status</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="regBody">
               @foreach($event->registrations as $idx => $reg)
-              <tr style="border-bottom:1px solid var(--border);{{ $loop->last ? 'border-bottom:none;' : '' }}">
+              <tr class="reg-row" style="border-bottom:1px solid var(--border);{{ $loop->last ? 'border-bottom:none;' : '' }}"
+                  data-search="{{ strtolower($reg->name.' '.$reg->email.' '.($reg->phone ?? '')) }}">
                 <td style="padding:11px 18px;color:var(--text3);font-family:var(--mono);font-size:11px;">{{ $idx + 1 }}</td>
                 <td style="padding:11px 18px;font-weight:600;color:var(--text);">
                   @if($reg->user)
@@ -511,13 +570,77 @@
                 </td>
               </tr>
               @if($reg->message)
-              <tr style="border-bottom:1px solid var(--border);{{ $loop->last ? 'border-bottom:none;' : '' }}">
-                <td colspan="6" style="padding:0 18px 11px;color:var(--text3);font-size:12px;font-style:italic;line-height:1.5;">
+              <tr class="reg-row" style="border-bottom:1px solid var(--border);{{ $loop->last ? 'border-bottom:none;' : '' }}"
+                  data-search="{{ strtolower($reg->name.' '.$reg->email.' '.($reg->phone ?? '')) }}">
+                <td colspan="6" style="padding:0 18px 11px 54px;color:var(--text3);font-size:12px;font-style:italic;line-height:1.5;">
                   <span style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);font-style:normal;">Message: </span>
                   {{ $reg->message }}
                 </td>
               </tr>
               @endif
+              @endforeach
+            </tbody>
+          </table>
+          <div id="regEmpty" style="display:none;text-align:center;padding:32px 20px;color:var(--text3);font-size:13px;">
+            No registrations match your search.
+          </div>
+        </div>
+      </div>
+      @else
+      <div class="card-body">
+        <div style="text-align:center;padding:32px 20px;color:var(--text3);font-size:13px;">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 10px;display:block;opacity:.25;"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg>
+          <div style="font-weight:600;margin-bottom:4px;">No registrations yet</div>
+          <div>Share the event link to get people signed up.</div>
+        </div>
+      </div>
+      @endif
+    </div>
+
+    {{-- Volunteer Assignments --}}
+    @if($event->volunteerAssignments->isNotEmpty())
+    <div class="card" style="animation-delay:.18s;">
+      <div class="card-header">
+        <div class="card-icon ci-green">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+        </div>
+        <div>
+          <div class="card-title">Volunteers ({{ $event->volunteerAssignments->count() }})</div>
+          <div class="card-subtitle">Assigned to support this event</div>
+        </div>
+      </div>
+      <div class="card-body" style="padding:0;">
+        <div style="overflow-x:auto;">
+          <table style="width:100%;border-collapse:collapse;font-size:12.5px;">
+            <thead>
+              <tr style="background:var(--surface2);">
+                <th style="text-align:left;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);">Name</th>
+                <th style="text-align:left;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);">Role</th>
+                <th style="text-align:left;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);">Dates</th>
+                <th style="text-align:center;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach($event->volunteerAssignments as $va)
+              <tr style="border-bottom:1px solid var(--border);{{ $loop->last ? 'border-bottom:none;' : '' }}">
+                <td style="padding:11px 18px;font-weight:600;color:var(--text);">
+                  @if($va->volunteer?->user)
+                    {{ $va->volunteer->user->name }}
+                  @else
+                    {{ $va->volunteer->name ?? 'Volunteer #'.$va->volunteer_id }}
+                  @endif
+                </td>
+                <td style="padding:11px 18px;color:var(--text2);font-size:12px;">{{ $va->role ?? '—' }}</td>
+                <td style="padding:11px 18px;color:var(--text2);font-family:var(--mono);font-size:11px;">
+                  {{ $va->start_date ? $va->start_date->format('d M Y') : '—' }}
+                  @if($va->end_date && $va->end_date != $va->start_date) – {{ $va->end_date->format('d M Y') }} @endif
+                </td>
+                <td style="padding:11px 18px;text-align:center;">
+                  <span style="display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:100px;font-size:10px;font-weight:700;font-family:var(--mono);background:var(--green-lt);color:#059669;white-space:nowrap;">
+                    <span style="width:5px;height:5px;border-radius:50%;background:#10b981;"></span> {{ ucfirst($va->status) }}
+                  </span>
+                </td>
+              </tr>
               @endforeach
             </tbody>
           </table>
@@ -536,6 +659,12 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
         All Events
       </a>
+      @if($event->status === 'active')
+      <button class="btn btn-edit" onclick="copyEventLink(this)" data-url="{{ url('events/'.$event->id) }}" style="cursor:pointer;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+        <span>Copy Link</span>
+      </button>
+      @endif
       <form method="POST" action="{{ route('admin.events.destroy', $event) }}"
             onsubmit="return confirm('Permanently delete \'{{ addslashes($event->title) }}\'? This cannot be undone.')"
             style="margin-left:auto;">
@@ -720,6 +849,51 @@ window.toggleDD = function(){ document.getElementById('avDD').classList.toggle('
 document.addEventListener('click', function(e){
   var w = document.getElementById('avWrap');
   if (w && !w.contains(e.target)) document.getElementById('avDD').classList.remove('open');
+});
+
+/* ── Registration search ── */
+window.filterRegistrations = function(q) {
+  q = q.toLowerCase().trim();
+  var rows = document.querySelectorAll('.reg-row');
+  var visible = 0;
+  rows.forEach(function(r) {
+    var match = !q || r.dataset.search.includes(q);
+    r.style.display = match ? '' : 'none';
+    if (match) visible++;
+  });
+  var empty = document.getElementById('regEmpty');
+  if (empty) empty.style.display = visible === 0 ? 'block' : 'none';
+};
+
+/* ── Copy event link ── */
+window.copyEventLink = function(btn) {
+  var url = btn.dataset.url;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).then(function() {
+      var span = btn.querySelector('span');
+      var orig = span.textContent;
+      span.textContent = 'Copied!';
+      btn.style.borderColor = 'var(--green)';
+      btn.style.color = 'var(--green)';
+      setTimeout(function() { span.textContent = orig; btn.style.borderColor = ''; btn.style.color = ''; }, 2000);
+    }).catch(function() { fallbackCopy(url, btn); });
+  } else { fallbackCopy(url, btn); }
+};
+function fallbackCopy(url, btn) {
+  var i = document.createElement('input');
+  i.value = url; i.style.position = 'fixed'; i.style.opacity = '0';
+  document.body.appendChild(i); i.select();
+  try { document.execCommand('copy'); btn.querySelector('span').textContent = 'Copied!'; } catch(e) {}
+  document.body.removeChild(i);
+}
+
+/* ── Toggle loading indicator ── */
+document.querySelectorAll('.toggle-wrap input[type=checkbox]').forEach(function(chk) {
+  chk.addEventListener('change', function() {
+    var wrap = this.closest('.toggle-wrap');
+    wrap.style.opacity = '.5';
+    wrap.style.pointerEvents = 'none';
+  });
 });
 })();
 </script>

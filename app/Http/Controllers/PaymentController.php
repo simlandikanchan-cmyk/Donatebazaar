@@ -10,8 +10,11 @@ use App\Models\Coupon;
 use App\Models\CouponRedemption;
 use App\Models\Donation;
 use App\Models\DonationItem;
+use App\Models\ProductReservation;
 use App\Models\Refund;
+use App\Exceptions\InsufficientStockException;
 use App\Services\CouponService;
+use App\Services\ProductReservationService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -223,6 +226,19 @@ class PaymentController extends Controller
         ]);
     }
 
+    private function consumeReservations(Donation $donation): void
+    {
+        if ($donation->donation_type !== 'product') {
+            return;
+        }
+
+        (new ProductReservationService())->consume($donation);
+
+        Log::info('Product reservations consumed after payment', [
+            'donation_id' => $donation->id,
+        ]);
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Helper — redeem a coupon once a donation is successfully paid
@@ -418,6 +434,47 @@ class PaymentController extends Controller
 
         /*
         |----------------------------------------------------------------------
+        | Reserve product stock (prevent oversell race)
+        |
+        | Uses pessimistic row locks inside a DB transaction. If not enough
+        | stock is available after accounting for active (non-expired)
+        | reservations, reject with a clear "only X left" message.
+        |----------------------------------------------------------------------
+        */
+
+        $reservationIds = [];
+        $cartType       = $request->input('donation_type', 'money');
+        $productIdsRaw  = $request->input('product_ids', '');
+        $productQtysRaw = $request->input('product_qtys', '');
+
+        if ($cartType === 'products' && $productIdsRaw !== '') {
+            $pIds  = array_values(array_filter(explode(',', $productIdsRaw)));
+            $pQtys = array_values(array_filter(explode(',', $productQtysRaw)));
+
+            $items = [];
+            foreach ($pIds as $i => $pid) {
+                $items[] = [
+                    'product_id' => (int) trim($pid),
+                    'quantity'   => (int) trim($pQtys[$i] ?? 1),
+                ];
+            }
+
+            try {
+                $reservationIds = (new ProductReservationService())->reserve(
+                    $items,
+                    session()->getId()
+                );
+            } catch (InsufficientStockException $e) {
+                Log::info('Product reservation failed', [
+                    'campaign_id' => $campaign->id,
+                    'error'       => $e->getMessage(),
+                ]);
+                return $this->backToCampaign($campaign, $e->getMessage());
+            }
+        }
+
+        /*
+        |----------------------------------------------------------------------
         | Store Donation Session
         | — also saves cart data when the user donates products
         |----------------------------------------------------------------------
@@ -431,6 +488,7 @@ class PaymentController extends Controller
             'donation_coupon_id'     => $couponData ? $couponData['id'] : null,
             'donation_campaign'      => (string) $campaign->id,
             'donation_session_at'    => now()->timestamp,
+            'donation_reservation_ids' => $reservationIds,
             'donation_cart'          => [
                 'ids'  => $request->input('product_ids', ''),
                 'qtys' => $request->input('product_qtys', ''),
@@ -680,6 +738,15 @@ class PaymentController extends Controller
                 'product_ids' => $cart['ids'],
                 'qtys'        => $cart['qtys'],
             ]);
+
+            // Link any product reservations created at redirectToPayment to this
+            // donation so they can be consumed (deleted) once payment succeeds —
+            // including via the unauthenticated webhook, which has no session.
+            if ($ids = session('donation_reservation_ids', [])) {
+                ProductReservation::whereIn('id', $ids)
+                    ->whereNull('donation_id')
+                    ->update(['donation_id' => $donation->id]);
+            }
         }
 
         /*
@@ -855,6 +922,7 @@ class PaymentController extends Controller
                     ->increment('platform_earnings', $lockedDonation->platform_fee);
 
                 $this->decrementProductStock($lockedDonation);
+                $this->consumeReservations($lockedDonation);
                 $this->redeemCoupon($lockedDonation);
             });
 
@@ -1048,6 +1116,7 @@ class PaymentController extends Controller
                     ->increment('platform_earnings', $donation->platform_fee);
 
                 $this->decrementProductStock($donation);
+                $this->consumeReservations($donation);
                 $this->redeemCoupon($donation);
 
                 Log::info('Webhook: payment captured', [
