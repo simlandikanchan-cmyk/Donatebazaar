@@ -16,6 +16,7 @@
 .dn-pendingr{background:rgba(245,158,11,.12);color:var(--amber);border-color:rgba(245,158,11,.25)}
 .ab-refund{background:var(--amber-lt);color:var(--amber);border-color:rgba(245,158,11,.18)}
 .ab-refund:hover{background:var(--amber);color:#fff;border-color:var(--amber)}
+.toast-info{background:linear-gradient(135deg,#2563eb,#60a5fa)}
 .dn-anon{font-style:italic;color:var(--text3)}
 .dn-kv{display:flex;flex-direction:column;gap:2px}
 .dn-kv .k{font-size:10px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em}
@@ -38,6 +39,12 @@
 <div style="background:rgba(240,68,68,.09);border:1px solid rgba(240,68,68,.25);color:#7f1d1d;padding:12px 16px;border-radius:var(--r-sm);font-size:13px;font-weight:500;margin-bottom:18px;display:flex;align-items:center;gap:8px">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
   {{ session('error') }}
+</div>
+@endif
+@if(session('info'))
+<div style="background:rgba(59,130,246,.09);border:1px solid rgba(59,130,246,.25);color:#1e40af;padding:12px 16px;border-radius:var(--r-sm);font-size:13px;font-weight:500;margin-bottom:18px;display:flex;align-items:center;gap:8px">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+  {{ session('info') }}
 </div>
 @endif
 
@@ -206,15 +213,17 @@
     var icons = {
       success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
       error:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+      info:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
     };
     var t = document.createElement('div');
-    t.className = 'toast toast-' + (type === 'success' ? 'ok' : 'err');
+    t.className = 'toast toast-' + (type === 'success' ? 'ok' : type === 'info' ? 'info' : 'err');
     t.innerHTML = (icons[type] || '') + '<span>' + msg + '</span><button class="toast-x" onclick="this.parentElement.remove()">✕</button>';
     document.getElementById('toastWrap').appendChild(t);
     setTimeout(function () { t.style.transition='opacity .3s,transform .3s'; t.style.opacity='0'; t.style.transform='translateX(20px)'; setTimeout(function(){ t.remove(); }, 300); }, 4200);
   }
   @if(session('success')) setTimeout(function(){toast(@json(session('success')),'success');},200); @endif
   @if(session('error')) setTimeout(function(){toast(@json(session('error')),'error');},200); @endif
+  @if(session('info')) setTimeout(function(){toast(@json(session('info')),'info');},200); @endif
 
   window.openRefund = function (id, donor, amount) {
     document.getElementById('refundForm').action = '{{ route('admin.donations.refund', ':id') }}'.replace(':id', id);

@@ -102,16 +102,28 @@ class DonationController extends Controller
             // request (or the webhook) changed it moments ago.
             $donation->refresh();
 
-            // (a) Guard: only completed, not-yet-refunded donations.
-            if ($donation->payment_status !== 'completed' || $donation->is_refunded) {
+            // (a) Guard: already-refunded → info (not an error).
+            if ($donation->is_refunded) {
                 return redirect()
                     ->route('admin.donations.show', $donation)
-                    ->with('error', 'Only completed, non-refunded donations can be refunded.');
+                    ->with('info', 'This donation has already been refunded.');
+            }
+
+            // (b) Guard: only completed donations are eligible.
+            if ($donation->payment_status !== 'completed') {
+                return redirect()
+                    ->route('admin.donations.show', $donation)
+                    ->with('error', 'Only completed donations can be refunded.');
             }
 
             $paymentId = $donation->payment_id;
 
             if (empty($paymentId) || ! preg_match('/^pay_[A-Za-z0-9]{14,}$/', $paymentId)) {
+                Log::warning('Refund attempt blocked: invalid payment_id format', [
+                    'donation_id' => $donation->id,
+                    'payment_id'  => $paymentId,
+                ]);
+
                 return redirect()
                     ->route('admin.donations.show', $donation)
                     ->with('error', 'This donation has no valid Razorpay payment id and cannot be refunded.');
@@ -148,13 +160,16 @@ class DonationController extends Controller
             }
 
             // (c) Success: persist inside a transaction with a row lock + re-checked guard.
-            $refundRecord = null;
+            $refundRecord   = null;
+            $alreadyRefunded = false;
 
-            DB::transaction(function () use ($donation, $razorpayRefund, $request, &$refundRecord) {
+            DB::transaction(function () use ($donation, $razorpayRefund, $request, &$refundRecord, &$alreadyRefunded) {
                 $locked = Donation::lockForUpdate()->where('id', $donation->id)->first();
 
                 // Idempotency guard: a webhook may have already refunded this.
                 if ($locked->payment_status !== 'completed' || $locked->is_refunded) {
+                    $alreadyRefunded = true;
+
                     return;
                 }
 
@@ -175,7 +190,20 @@ class DonationController extends Controller
             });
 
             if ($refundRecord && $donation->donor_email) {
-                Mail::to($donation->donor_email)->send(new DonationRefundMail($donation, $refundRecord));
+                try {
+                    Mail::to($donation->donor_email)->send(new DonationRefundMail($donation, $refundRecord));
+                } catch (\Throwable $e) {
+                    Log::error('Failed to send refund notification email', [
+                        'donation_id' => $donation->id,
+                        'message'     => $e->getMessage(),
+                    ]);
+                }
+            }
+
+            if ($alreadyRefunded) {
+                return redirect()
+                    ->route('admin.donations.show', $donation)
+                    ->with('info', 'This donation was already refunded (likely processed via webhook moments ago).');
             }
 
             return redirect()

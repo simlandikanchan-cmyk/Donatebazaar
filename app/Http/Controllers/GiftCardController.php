@@ -112,10 +112,18 @@ class GiftCardController extends Controller
         ]);
 
         // Send email to recipient
-        \Mail::send('emails.gift-card', ['giftCard' => $giftCard], function ($m) use ($giftCard) {
-            $m->to($giftCard->recipient_email, $giftCard->recipient_name)
-              ->subject("You've received a DonateBazaar Gift Card from {$giftCard->sender_name}!");
-        });
+        try {
+            \Mail::send('emails.gift-card', ['giftCard' => $giftCard], function ($m) use ($giftCard) {
+                $m->to($giftCard->recipient_email, $giftCard->recipient_name)
+                  ->subject("You've received a DonateBazaar Gift Card from {$giftCard->sender_name}!");
+            });
+        } catch (\Throwable $e) {
+            \Log::error('Failed to send gift card email', [
+                'gift_card_id' => $giftCard->id,
+                'code'         => $giftCard->code,
+                'message'      => $e->getMessage(),
+            ]);
+        }
 
         return response()->json([
             'success' => true,
@@ -159,11 +167,22 @@ class GiftCardController extends Controller
         }
 
         return response()->json([
-            'valid'           => true,
-            'amount'          => $giftCard->amount,
-            'code'            => $giftCard->code,
-            'recipient_email' => $giftCard->recipient_email, // NEW — for frontend hint/autofill
+            'valid'                  => true,
+            'amount'                 => $giftCard->amount,
+            'code'                   => $giftCard->code,
+            'recipient_email_masked' => $this->maskEmail($giftCard->recipient_email),
         ]);
+    }
+
+    private function maskEmail(string $email): string
+    {
+        [$local, $domain] = explode('@', $email);
+        $maskedLocal = substr($local, 0, 1) . str_repeat('*', max(strlen($local) - 1, 1));
+        $domainParts = explode('.', $domain);
+        $maskedDomain = substr($domainParts[0], 0, 1) . str_repeat('*', max(strlen($domainParts[0]) - 1, 1));
+        $tld = implode('.', array_slice($domainParts, 1));
+
+        return "{$maskedLocal}@{$maskedDomain}.{$tld}";
     }
 
     // ── Process redemption ────────────────────────────────────────────────────

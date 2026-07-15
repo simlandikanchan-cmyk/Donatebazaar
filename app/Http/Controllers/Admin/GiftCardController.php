@@ -79,10 +79,18 @@ class GiftCardController extends Controller
         }
 
         // Send email
-        \Mail::send('emails.gift-card', ['giftCard' => $giftCard], function ($m) use ($giftCard) {
-            $m->to($giftCard->recipient_email, $giftCard->recipient_name)
-              ->subject("You've received a DonateBazaar Gift Card from {$giftCard->sender_name}!");
-        });
+        try {
+            \Mail::send('emails.gift-card', ['giftCard' => $giftCard], function ($m) use ($giftCard) {
+                $m->to($giftCard->recipient_email, $giftCard->recipient_name)
+                  ->subject("You've received a DonateBazaar Gift Card from {$giftCard->sender_name}!");
+            });
+        } catch (\Throwable $e) {
+            \Log::error('Failed to resend gift card email', [
+                'gift_card_id' => $giftCard->id,
+                'code'         => $giftCard->code,
+                'message'      => $e->getMessage(),
+            ]);
+        }
 
         $giftCard->update(['status' => 'sent']);
 
