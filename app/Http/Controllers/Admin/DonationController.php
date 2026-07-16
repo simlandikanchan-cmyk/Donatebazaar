@@ -70,7 +70,7 @@ class DonationController extends Controller
      */
     public function show(Donation $donation): View
     {
-        $donation->load(['campaign', 'user', 'coupon', 'refunds']);
+        $donation->load(['campaign', 'user', 'coupon', 'refunds', 'items.product']);
 
         return view('admin.donations.show', compact('donation'));
     }

@@ -32,6 +32,9 @@
 
 .page-grid{display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start;}
 @media(max-width:960px){.page-grid{grid-template-columns:1fr;}}
+@media(max-width:640px){.icon-grid{grid-template-columns:repeat(4,1fr)}.color-grid{grid-template-columns:repeat(4,1fr)}.card-body{padding:16px}}
+@media(max-width:480px){.icon-grid{grid-template-columns:repeat(3,1fr)}.color-grid{grid-template-columns:repeat(4,1fr)}.preview-live{padding:24px 16px;min-height:0}.prev-icon-box{width:56px;height:56px;font-size:22px}.pub-card-inner{padding:12px;gap:10px}}
+@media(max-width:380px){.icon-grid{grid-template-columns:repeat(3,1fr)}.custom-color-row{flex-wrap:wrap}.custom-color-row label{white-space:normal;font-size:10px}}
 
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;animation:fadeUp .4s ease both;margin-bottom:16px;}
 .card:nth-child(1){animation-delay:.05s;} .card:nth-child(2){animation-delay:.10s;} .card:nth-child(3){animation-delay:.15s;}

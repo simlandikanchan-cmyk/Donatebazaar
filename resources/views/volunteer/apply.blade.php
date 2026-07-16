@@ -106,14 +106,14 @@
         </div>
 
         <div class="vol-field">
-          <label for="state">State (optional)</label>
+          <label for="state">Select your state</label>
           <select id="state" name="state" class="vol-input">
             <option value="">Select your state...</option>
           </select>
         </div>
 
         <div class="vol-field">
-          <label for="city">City (optional)</label>
+          <label for="city">Select your city </label>
           <div class="vol-city-wrap">
             <input id="city" name="city" type="text" placeholder="Your city" value="{{ old('city') }}" maxlength="120" autocomplete="off">
             <div id="city-suggestions" class="vol-city-suggest"></div>
@@ -234,6 +234,5 @@
 })();
 </script>
 
-@endsection
-
 @vite(['resources/css/volunteer-apply.css', 'resources/js/volunteer-city.js'])
+@endsection

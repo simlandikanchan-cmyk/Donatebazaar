@@ -106,6 +106,8 @@
 .flash svg{width:14px;height:14px;flex-shrink:0;}
 @media(max-width:860px){.form-grid{grid-template-columns:1fr}}
 @media(max-width:600px){.row-2,.row-3{grid-template-columns:1fr}}
+@media(max-width:480px){.card-body{padding:16px}.card-header{padding:14px 16px}.summary-body{padding:12px 14px}.summary-header{padding:12px 14px}.action-bar{flex-direction:column;align-items:stretch}.action-bar .btn{justify-content:center}.status-opts{flex-direction:column}.status-opt{min-width:0}.summary-card{position:static}}
+@media(max-width:380px){.card-header{padding:12px 14px}.card-body{padding:12px 14px}.card-title{font-size:12px}.inp,.sel,.textarea{font-size:12px;height:38px}.btn{font-size:12px;padding:10px 16px}.summary-val{font-size:12px}.row-2,.row-3{gap:10px}.upload-zone{padding:18px 14px}.toggle-row{padding:10px 0}.current-img{height:100px}}
 </style>
 @endpush
 @section('content')

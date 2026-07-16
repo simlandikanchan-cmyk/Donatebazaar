@@ -97,6 +97,8 @@
 .reply-send:disabled{opacity:.6;cursor:not-allowed;transform:none}
 @media(max-width:960px){.detail-grid{grid-template-columns:1fr}.side-panel{flex-direction:row;flex-wrap:wrap}.side-card{flex:1;min-width:240px}}
 @media(max-width:600px){.info-grid{grid-template-columns:1fr}.dc-foot{flex-direction:column;align-items:stretch}.act-btn{justify-content:center}}
+@media(max-width:480px){.card-body{padding:16px 14px}.msg-bubble{padding:12px 14px;font-size:13px}.msg-author{font-size:12px}.msg-date{font-size:10px}.msg-text{font-size:13px}.hdr-left h2{font-size:16px}.side-card{padding:14px}.side-card h4{font-size:13px}.side-card p{font-size:12px}.side-card .label{font-size:10px}.msg-count{font-size:12px}.reply-area{padding:14px}.reply-area textarea{font-size:13px}.reply-area .btn{font-size:12px;padding:9px 16px}}
+@media(max-width:380px){.card-body{padding:12px 10px}.msg-bubble{padding:10px 12px;font-size:12px}.msg-text{font-size:12px}.msg-author{font-size:11px}.msg-date{font-size:9px}.hdr-left h2{font-size:14px}.hdr-left span{font-size:11px}.side-card{padding:12px 10px;min-width:0}.side-card h4{font-size:12px}.side-card p{font-size:11px}.label{font-size:9px}.msg-count{font-size:11px}.reply-area{padding:12px 10px}.reply-area textarea{font-size:12px;min-height:70px}.reply-area .btn{font-size:11px;padding:8px 14px;width:100%;justify-content:center}.detail-grid{gap:10px}.info-grid{gap:6px}.info-row{padding:8px 0}.info-label{font-size:9px}.info-value{font-size:12px}.dc-foot{gap:6px}.act-btn{font-size:12px;padding:8px 14px;height:36px}}
 </style>
 @endpush
 

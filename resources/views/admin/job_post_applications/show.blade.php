@@ -64,7 +64,7 @@
             </div>
           </div>
           <div class="card-body">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div class="applicant-grid">
               <div class="field">
                 <div class="field-lbl">Full Name</div>
                 <div class="field-val">{{ $jobPostApplication->name }}</div>
@@ -347,6 +347,10 @@
 
 /* ── RESPONSIVE ── */
 @media(max-width:860px){.content-grid{grid-template-columns:1fr}}
+.applicant-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:600px){.applicant-grid{grid-template-columns:1fr;}}
 @media(max-width:600px){.hs-avatar{width:42px;height:42px;font-size:16px}.hs-name{font-size:16px}}
+@media(max-width:480px){.content-grid{gap:14px}.hs{padding:16px}.hs-avatar{width:38px;height:38px;font-size:14px}.hs-name{font-size:15px}.hs-sub{font-size:11px}.hs-badges{gap:4px}.hs-badge{font-size:9px;padding:3px 8px}.applicant-grid{gap:10px}.info-card{padding:14px}.info-label{font-size:9px}.info-value{font-size:13px}.sec-title{font-size:13px}.question-card{padding:14px}.question-card h5{font-size:13px}.q-meta{font-size:11px}.files-strip{gap:6px}.file-link{font-size:11px;padding:8px 12px}.back-link{font-size:11px;height:32px;padding:0 10px}.card-actions{flex-direction:column;gap:6px}.card-actions .btn{width:100%;justify-content:center}}
+@media(max-width:380px){.hs{padding:12px}.hs-avatar{width:34px;height:34px;font-size:13px}.hs-name{font-size:14px}.hs-sub{font-size:10px}.applicant-grid{grid-template-columns:1fr}.info-card{padding:10px}.info-value{font-size:12px}.info-label{font-size:8px}.question-card{padding:12px}.question-card h5{font-size:12px}.q-meta{font-size:10px}.files-strip{flex-direction:column}.file-link{width:100%;justify-content:center}.flash{font-size:12px;padding:10px 12px}.empty-state{padding:30px 16px}}
 </style>
 @endpush

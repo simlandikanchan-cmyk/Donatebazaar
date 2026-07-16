@@ -17,6 +17,10 @@
 .ab-refund{background:var(--amber-lt);color:var(--amber);border-color:rgba(245,158,11,.18)}
 .ab-refund:hover{background:var(--amber);color:#fff;border-color:var(--amber)}
 .dn-anon{font-style:italic;color:var(--text3)}
+@media(max-width:960px){.don-stats-grid{grid-template-columns:repeat(2,1fr)!important}}
+@media(max-width:640px){.don-stats-grid{grid-template-columns:repeat(2,1fr)!important;gap:12px}}
+@media(max-width:480px){.don-stats-grid{grid-template-columns:1fr!important}}
+@media(max-width:380px){.don-stats-grid .stat{padding:12px 14px}}
 </style>
 @endpush
 
@@ -39,7 +43,7 @@
   </div>
 </div>
 
-<div class="stats-grid" style="grid-template-columns:repeat(4,1fr)">
+<div class="stats-grid don-stats-grid" style="grid-template-columns:repeat(4,1fr)">
   <div class="stat" onclick="setFilter('all')" style="cursor:pointer">
     <div class="stat-icon si-teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
     <div class="stat-body"><div class="stat-lbl">Total</div><div class="stat-val sv-teal">{{ $counts['total'] }}</div><div class="stat-foot">All donations</div></div>

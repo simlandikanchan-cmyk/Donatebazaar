@@ -52,11 +52,16 @@
 .cp-meta{font-size:11px;color:var(--text3);line-height:1.5;}
 .meta-name{color:var(--text2);font-weight:600;}
 
+@media(max-width:960px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:860px){
   .search-input{width:100%;}.search-input:focus{width:100%;}
   .search-wrap{flex:1;min-width:180px;}
   .filter-bar-inner{flex-direction:column;align-items:stretch;}
 }
+@media(max-width:700px){.toolbar{flex-direction:column;align-items:stretch}.toolbar-left{flex-wrap:wrap}.select-wrap{flex:1;min-width:0}.filter-select{width:100%}.date-input{width:100%}.filter-sep{text-align:center}.toolbar-right{width:100%}.toolbar-right .export-btn{flex:1;justify-content:center}}
+@media(max-width:640px){.card-head{flex-direction:column;align-items:flex-start;gap:8px}.cp-bulkbar{flex-direction:column;align-items:stretch;gap:10px}.cp-bulk-acts{justify-content:center}}
+@media(max-width:540px){.stats-grid{grid-template-columns:1fr 1fr;gap:10px}.stat{padding:12px 14px}.stat-icon{width:32px;height:32px;border-radius:8px}.stat-icon svg{width:13px;height:13px}.stat-val{font-size:15px}}
+@media(max-width:480px){.stats-grid{grid-template-columns:1fr}}
 </style>
 @endpush
 

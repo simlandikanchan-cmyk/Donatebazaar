@@ -117,6 +117,8 @@
 [data-theme="dark"] .b-pending{color:var(--amber);}[data-theme="dark"] .b-approved{color:#34d399;}
 [data-theme="dark"] .b-rejected{color:#f87171;}[data-theme="dark"] .b-draft{color:#9ca3af;}
 @media(max-width:600px){.page-header{flex-direction:column;align-items:flex-start;}}
+@media(max-width:480px){.edit-layout{gap:14px}.card-body{padding:14px 12px}.form-row{gap:12px}.form-input,.form-select,.form-textarea{font-size:12px;padding:8px 11px}.card-header{padding:12px 14px}.page-header-left h2{font-size:16px}.page-header-right{width:100%}.page-header-right .btn{flex:1;justify-content:center}}
+@media(max-width:380px){.card-body{padding:12px 10px}.form-label{font-size:9px}.form-input,.form-select,.form-textarea{font-size:11px;padding:7px 10px}.form-row{grid-template-columns:1fr}.card-title{font-size:10px}.page-header-left h2{font-size:14px}.page-header-right{flex-direction:column;gap:6px}.page-header-right .btn{width:100%}.meta-row{padding:7px 0}.meta-val{font-size:11px}.editor-toolbar{gap:2px;padding:6px 8px}.editor-btn{width:26px;height:24px;font-size:11px}.slug-prefix{font-size:10px}.slug-input{padding-left:60px!important}}
 </style>
 @endpush
 @section('content')

@@ -90,6 +90,8 @@
 @media(max-width:1100px){.detail-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:680px){.detail-grid{grid-template-columns:1fr}.hero-card{flex-direction:column}.hero-right{flex-direction:row;align-items:center}.actions-card{flex-direction:column;align-items:flex-start}}
 @media(max-width:600px){.hero-left{flex-direction:column;align-items:flex-start}.hero-av{width:48px;height:48px;font-size:18px}.hero-title{font-size:18px}.c-btn{width:100%}.actions-right{width:100%;flex-direction:column}}
+@media(max-width:480px){.hero-card{padding:18px 16px}.detail-card{padding:16px}.hero-title{font-size:16px}.hero-meta{flex-direction:column;align-items:flex-start;gap:8px}.info-box{padding:12px 14px}.info-value{font-size:13px}.actions-card{padding:16px 18px}.modal{padding:20px}.rejection-banner{padding:12px 14px;flex-direction:column;gap:8px}}
+@media(max-width:380px){.hero-card{padding:14px 12px}.hero-av{width:42px;height:42px;font-size:16px}.hero-title{font-size:15px}.hero-sub{font-size:11px}.detail-card{padding:12px}.sec-ttl{font-size:11px}.info-box{padding:10px 12px}.info-value{font-size:12px}.info-label{font-size:8px}.detail-grid{gap:8px}.c-btn{font-size:12px;padding:8px 14px;height:36px}.tl-item{padding:10px 0}.tl-title{font-size:12px}.tl-sub{font-size:10px}.actions-left strong{font-size:12px}}
 </style>
 @endpush
 

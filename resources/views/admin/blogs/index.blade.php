@@ -135,6 +135,9 @@ tbody tr:not([data-status="published"]) .js-feature{display:none}
   tbody td.actions{justify-content:flex-start;flex-wrap:wrap}
   .title-primary{max-width:none}
 }
+@media(max-width:640px){.stat-card{padding:14px 16px;gap:10px}.stat-num{font-size:1.4rem}}
+@media(max-width:480px){.stat-card{padding:12px 14px;gap:8px}.stat-num{font-size:1.2rem}.stat-name{font-size:9px}.sec-header{flex-direction:column;align-items:flex-start}.bulk-bar{flex-direction:column;align-items:stretch;gap:10px}.bulk-actions{justify-content:center}}
+@media(max-width:380px){.stat-card{padding:10px 12px}.stat-card .stat-icon{width:32px;height:32px;border-radius:8px}.stat-card .stat-icon svg{width:13px;height:13px}.bulk-left{text-align:center}}
 </style>
 @endpush
 @section('content')

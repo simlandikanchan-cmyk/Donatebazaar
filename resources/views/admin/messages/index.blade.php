@@ -136,6 +136,9 @@ tbody tr.unread::before{content:'';position:absolute;left:0;top:0;bottom:0;width
   tbody td.actions{justify-content:flex-start;flex-wrap:wrap}
   .msg-prev{-webkit-line-clamp:3}
 }
+@media(max-width:640px){.filter-bar{padding:12px 14px;gap:8px}.filter-group{flex:1;min-width:0}.filter-sel{width:100%}}
+@media(max-width:480px){.filter-bar{flex-direction:column;align-items:stretch}.filter-group{flex-wrap:wrap;width:100%}.filter-sel{width:100%}.filter-div{display:none}.filter-reset{width:100%;justify-content:center}}
+@media(max-width:380px){.pagination-wrap{flex-direction:column;gap:8px}}
 </style>
 @endpush
 
