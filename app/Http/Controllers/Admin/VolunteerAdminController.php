@@ -34,6 +34,12 @@ class VolunteerAdminController extends Controller
                     ->orWhere('phone', 'like', $s);
                 });
             })
+            ->when($request->state, function ($q) use ($request) {
+                $q->where('state', $request->state);
+            })
+            ->when($request->city, function ($q) use ($request) {
+                $q->where('city', $request->city);
+            })
             ->latest();
 
         $volunteers = $query->paginate(20)->withQueryString();

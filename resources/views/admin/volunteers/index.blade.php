@@ -90,6 +90,13 @@
     <form method="GET" action="{{ route('admin.volunteers.index') }}" class="filter-bar">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px;color:var(--text3);flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
       <input class="filter-inp" type="text" name="search" placeholder="Search by name, email, city or phone…" value="{{ request('search') }}">
+      <select class="filter-sel" id="filter-state" name="state">
+        <option value="">All states</option>
+      </select>
+      <div class="filter-city-wrap">
+        <input class="filter-inp" type="text" id="filter-city" name="city" placeholder="Filter by city…" value="{{ request('city') }}" autocomplete="off">
+        <div id="city-suggestions" class="vol-city-suggest" style="position:absolute;top:100%;left:0;right:0;z-index:30;background:var(--surface);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r-sm) var(--r-sm);max-height:220px;overflow-y:auto;display:none;"></div>
+      </div>
       <button type="submit" class="filter-btn">Search</button>
       @if(request('search'))
         <a href="{{ route('admin.volunteers.index') }}" class="filter-clear">
@@ -115,6 +122,7 @@
               <th>Volunteer</th>
               <th>Phone</th>
               <th>City</th>
+              <th>State</th>
               <th>Availability</th>
               <th>Verified</th>
               <th>Registered</th>
@@ -131,6 +139,7 @@
               </td>
               <td class="cell-date">{{ $v->phone ?? '—' }}</td>
               <td>{{ $v->city ?? '—' }}</td>
+              <td>{{ $v->state ?? '—' }}</td>
               <td>
                 @if($v->availability)
                   <span class="badge b-pending">{{ str_replace('_', ' ', ucfirst($v->availability)) }}</span>
@@ -155,7 +164,7 @@
             </tr>
             @empty
             <tr class="empty-row">
-              <td colspan="8">
+                <td colspan="9">
                 <div class="empty-inner">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg>
                   <strong>No volunteers found</strong>
@@ -173,6 +182,60 @@
 
 @endsection
 
+@push('page_scripts')
+<script>
+(function () {
+  const statesCities = @json(json_decode(file_get_contents(resource_path('js/data/in-states-cities.json')), true));
+
+  const stateSel  = document.getElementById('filter-state');
+  const cityInp   = document.getElementById('filter-city');
+  const box       = document.getElementById('city-suggestions');
+  if (!stateSel || !cityInp || !box) return;
+
+  Object.keys(statesCities).sort().forEach(state => {
+    const opt = document.createElement('option');
+    opt.value = state;
+    opt.textContent = state;
+    if (state === @json(request('state'))) opt.selected = true;
+    stateSel.appendChild(opt);
+  });
+
+  function pool() {
+    const s = stateSel.value;
+    return (s && statesCities[s]) ? statesCities[s] : Object.values(statesCities).flat();
+  }
+
+  function render(q) {
+    const list = pool().filter(n => n.toLowerCase().startsWith(q.toLowerCase())).slice(0, 12);
+    box.innerHTML = '';
+    if (!list.length) { box.style.display = 'none'; return; }
+    list.forEach(name => {
+      const el = document.createElement('div');
+      el.className = 'city-suggestion';
+      el.style.padding = '9px 12px';
+      el.style.cursor = 'pointer';
+      el.style.fontSize = '12.5px';
+      el.textContent = name;
+      el.addEventListener('mousedown', e => {
+        e.preventDefault();
+        cityInp.value = name;
+        box.style.display = 'none';
+      });
+      box.appendChild(el);
+    });
+    box.style.display = 'block';
+  }
+
+  cityInp.addEventListener('input', () => render(cityInp.value.trim()));
+  cityInp.addEventListener('focus', () => render(cityInp.value.trim()));
+  stateSel.addEventListener('change', () => { cityInp.value = ''; render(''); });
+  document.addEventListener('click', e => {
+    if (!box.contains(e.target) && e.target !== cityInp) box.style.display = 'none';
+  });
+})();
+</script>
+@endpush
+
 @push('page_styles')
 <style>
 .stats-grid{grid-template-columns:repeat(4,1fr);}
@@ -185,6 +248,7 @@
 .filter-bar{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;box-shadow:var(--sh);margin-bottom:20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;animation:fadeUp .4s .1s ease both;}
 .filter-inp,.filter-sel{height:36px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:0 12px;font-size:12.5px;color:var(--text);font-family:var(--font);outline:none;transition:border-color var(--ease),box-shadow var(--ease);}
 .filter-inp{width:320px;}
+.filter-city-wrap{position:relative;display:flex;}
 .filter-inp:focus,.filter-sel:focus{border-color:var(--a);box-shadow:0 0 0 3px var(--a-glow);}
 .filter-inp::placeholder{color:var(--text3);}
 .filter-btn{height:36px;padding:0 18px;background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;border:none;border-radius:var(--r-sm);font-size:12.5px;font-weight:600;font-family:var(--font);cursor:pointer;transition:opacity var(--ease),transform var(--ease);box-shadow:0 3px 10px rgba(37,99,235,.3);}
