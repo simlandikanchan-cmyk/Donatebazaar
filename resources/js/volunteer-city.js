@@ -25,7 +25,8 @@ function getCityPool() {
 
 function render(q) {
   const pool = getCityPool();
-  const matches = q
+  const selectedState = stateSelect ? stateSelect.value : '';
+  const matches = (q || selectedState)
     ? pool.filter(n => n.toLowerCase().startsWith(q.toLowerCase())).slice(0, 12)
     : [];
   box.innerHTML = '';
@@ -50,9 +51,10 @@ if (cityInput) {
 }
 if (stateSelect) {
   // When state changes, clear city input (since old value may not belong to new state)
+  // and reveal the new state's cities so the user sees the cascaded list immediately.
   stateSelect.addEventListener('change', () => {
     cityInput.value = '';
-    box.style.display = 'none';
+    render('');
   });
 }
 document.addEventListener('click', e => {
