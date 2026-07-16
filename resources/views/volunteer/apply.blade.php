@@ -106,6 +106,13 @@
         </div>
 
         <div class="vol-field">
+          <label for="state">State (optional)</label>
+          <select id="state" name="state" class="vol-input">
+            <option value="">Select your state...</option>
+          </select>
+        </div>
+
+        <div class="vol-field">
           <label for="city">City (optional)</label>
           <div class="vol-city-wrap">
             <input id="city" name="city" type="text" placeholder="Your city" value="{{ old('city') }}" maxlength="120" autocomplete="off">

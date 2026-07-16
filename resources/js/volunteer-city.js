@@ -1,30 +1,60 @@
-import cities from './data/in-cities.json';
+import statesCities from './data/in-states-cities.json';
 
-const input = document.getElementById('city');
-if (input) {
-  const box = document.getElementById('city-suggestions');
-  const render = (q) => {
-    const matches = q
-      ? cities.filter(n => n.toLowerCase().startsWith(q.toLowerCase())).slice(0, 12)
-      : [];
-    box.innerHTML = '';
-    if (!matches.length) { box.style.display = 'none'; return; }
-    matches.forEach(name => {
-      const el = document.createElement('div');
-      el.className = 'city-suggestion';
-      el.textContent = name;
-      el.addEventListener('mousedown', e => {
-        e.preventDefault();
-        input.value = name;
-        box.style.display = 'none';
-      });
-      box.appendChild(el);
-    });
-    box.style.display = 'block';
-  };
-  input.addEventListener('input', () => render(input.value.trim()));
-  input.addEventListener('focus', () => render(input.value.trim()));
-  document.addEventListener('click', e => {
-    if (!box.contains(e.target) && e.target !== input) box.style.display = 'none';
+const stateSelect = document.getElementById('state');
+const cityInput = document.getElementById('city');
+const box = document.getElementById('city-suggestions');
+
+// Populate state dropdown
+if (stateSelect) {
+  Object.keys(statesCities).sort().forEach(state => {
+    const opt = document.createElement('option');
+    opt.value = state;
+    opt.textContent = state;
+    stateSelect.appendChild(opt);
   });
 }
+
+function getCityPool() {
+  const selectedState = stateSelect ? stateSelect.value : '';
+  if (selectedState && statesCities[selectedState]) {
+    return statesCities[selectedState];
+  }
+  // No state selected -> search across all states combined
+  return Object.values(statesCities).flat();
+}
+
+function render(q) {
+  const pool = getCityPool();
+  const matches = q
+    ? pool.filter(n => n.toLowerCase().startsWith(q.toLowerCase())).slice(0, 12)
+    : [];
+  box.innerHTML = '';
+  if (!matches.length) { box.style.display = 'none'; return; }
+  matches.forEach(name => {
+    const el = document.createElement('div');
+    el.className = 'city-suggestion';
+    el.textContent = name;
+    el.addEventListener('mousedown', e => {
+      e.preventDefault();
+      cityInput.value = name;
+      box.style.display = 'none';
+    });
+    box.appendChild(el);
+  });
+  box.style.display = 'block';
+}
+
+if (cityInput) {
+  cityInput.addEventListener('input', () => render(cityInput.value.trim()));
+  cityInput.addEventListener('focus', () => render(cityInput.value.trim()));
+}
+if (stateSelect) {
+  // When state changes, clear city input (since old value may not belong to new state)
+  stateSelect.addEventListener('change', () => {
+    cityInput.value = '';
+    box.style.display = 'none';
+  });
+}
+document.addEventListener('click', e => {
+  if (!box.contains(e.target) && e.target !== cityInput) box.style.display = 'none';
+});
