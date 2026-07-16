@@ -308,6 +308,31 @@ svg{display:block;flex-shrink:0;}
 [data-theme="dark"] .hero-btn-ghost:hover{background:rgba(255,255,255,.1);}
 .hero-btn svg{width:14px;height:14px;}
 
+/* ── HERO DECOR (glow + particles) ── */
+.hero-glow{position:absolute;border-radius:50%;filter:blur(60px);z-index:1;pointer-events:none;}
+.hero-glow.g1{width:240px;height:240px;top:-90px;right:-40px;background:radial-gradient(circle,rgba(37,99,235,.28) 0%,transparent 70%);}
+.hero-glow.g2{width:200px;height:200px;bottom:-100px;left:-30px;background:radial-gradient(circle,rgba(13,148,136,.22) 0%,transparent 70%);}
+.hero-particle{position:absolute;left:var(--x);top:var(--y);width:var(--s);height:var(--s);border-radius:50%;background:rgba(37,99,235,.55);box-shadow:0 0 8px rgba(37,99,235,.6);z-index:1;pointer-events:none;animation:heroFloat 6s ease-in-out infinite;animation-delay:var(--d);}
+[data-theme="dark"] .hero-particle{background:rgba(125,211,252,.6);box-shadow:0 0 8px rgba(125,211,252,.7);}
+@keyframes heroFloat{0%,100%{transform:translateY(0) translateX(0);opacity:.5}50%{transform:translateY(-14px) translateX(8px);opacity:1}}
+
+/* ── HERO LIVE TICKER ── */
+.hero-ticker{display:flex;align-items:center;gap:9px;margin-top:15px;background:rgba(255,255,255,.55);border:1px solid rgba(37,99,235,.14);border-radius:100px;padding:7px 14px;overflow:hidden;max-width:420px;}
+[data-theme="dark"] .hero-ticker{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);}
+.hero-ticker-dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0;box-shadow:0 0 0 3px rgba(5,196,138,.18);animation:pulse 2s ease infinite;}
+.hero-ticker-track{position:relative;flex:1;height:16px;overflow:hidden;}
+.hero-ticker-item{position:absolute;left:0;top:0;white-space:nowrap;font-size:12px;color:var(--text2);font-family:var(--mono);opacity:0;transform:translateY(8px);transition:opacity .4s ease,transform .4s ease;}
+.hero-ticker-item b{color:var(--a);font-weight:700;}
+.hero-ticker-item.show{opacity:1;transform:none;}
+[data-theme="dark"] .hero-ticker-item{color:rgba(255,255,255,.7);}
+[data-theme="dark"] .hero-ticker-item b{color:#93c5fd;}
+
+/* ── DOUGHNUT CENTER OVERLAY ── */
+.doughnut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;text-align:center;}
+.dc-val{font-family:var(--mono);font-size:2.1rem;font-weight:800;color:var(--text);letter-spacing:-.03em;line-height:1;}
+.dc-lbl{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-top:5px;font-family:var(--mono);}
+.dc-sub{font-size:11px;color:var(--text3);margin-top:3px;font-family:var(--mono);}
+
 /* ── ANALYTICS ROW ── */
 .analytics-row{display:grid;grid-template-columns:1fr 290px;gap:14px;margin-bottom:24px;}
 .chart-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:24px;box-shadow:var(--sh);animation:fadeUp .4s .22s ease both;}
@@ -346,6 +371,23 @@ svg{display:block;flex-shrink:0;}
 .qnav-ico svg{width:18px;height:18px;}
 .qnav-lbl{font-size:12px;font-weight:600;color:var(--text);}
 .qnav-sub{font-size:10px;color:var(--text3);}
+
+/* ── COMMUNITY IMPACT ROW ── */
+.impact-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;}
+.impact-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:22px 24px;box-shadow:var(--sh);display:flex;align-items:center;gap:16px;position:relative;overflow:hidden;animation:fadeUp .4s ease both;transition:transform var(--ease),box-shadow var(--ease);}
+.impact-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent);opacity:.85;}
+.impact-card:hover{transform:translateY(-3px);box-shadow:var(--sh-md);}
+.impact-icon{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);}
+.impact-icon svg{width:22px;height:22px;}
+.impact-body{flex:1;min-width:0;}
+.impact-label{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.07em;font-family:var(--mono);}
+.impact-arrow{width:13px;height:13px;color:var(--accent);}
+.impact-value{font-family:var(--mono);font-size:1.9rem;font-weight:800;color:var(--text);letter-spacing:-.03em;line-height:1.15;margin:5px 0 4px;}
+.impact-foot{font-size:11.5px;color:var(--text3);line-height:1.45;}
+.impact-foot strong{color:var(--text2);}
+
+/* ── ANIMATED COUNT HELPERS ── */
+.hb-count,.hc-count{font-variant-numeric:tabular-nums;}
 
 /* ── MODALS ── */
 .overlay{display:none;position:fixed;inset:0;z-index:9998;background:rgba(4,5,14,.65);backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:20px;}
@@ -466,6 +508,7 @@ svg{display:block;flex-shrink:0;}
   .qnav{grid-template-columns:repeat(4,1fr)}
   .stats-grid{grid-template-columns:repeat(3,1fr)}
   .c-grid{grid-template-columns:repeat(2,1fr)}
+  .impact-row{grid-template-columns:1fr}
 }
 @media(max-width:960px){
   .sidebar{transform:translateX(-100%)}
