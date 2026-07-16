@@ -66,6 +66,10 @@ export default defineConfig({
                 // Navbar
                 'resources/css/navbar.css',
                 'resources/js/navbar.js',
+
+                // Volunteer Apply
+                'resources/css/volunteer-apply.css',
+                'resources/js/volunteer-city.js',
             ],
             
             refresh: true,

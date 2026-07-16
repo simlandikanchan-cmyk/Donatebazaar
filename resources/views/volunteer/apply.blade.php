@@ -3,8 +3,6 @@
 @section('content')
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Outfit:wght@300;400;500;600&display=swap');
-
 :root{
   --purple-deep:#0f766e;
   --purple-main:#2563eb ;
@@ -15,12 +13,12 @@
   --ok:#16a34a;
   --err:#dc2626;
 }
-.vol-page{font-family:'Outfit',system-ui,sans-serif;color:var(--ink);background:
+.vol-page{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:
   radial-gradient(1200px 500px at 50% -10%, rgba(37,99,235,.10), transparent 60%),
   #fbfaff;min-height:100vh;}
 .vol-hero{max-width:1080px;margin:0 auto;padding:64px 22px 18px;text-align:center;}
 .vol-eyebrow{display:inline-block;font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--purple-main);background:var(--purple-soft);padding:7px 14px;border-radius:30px;margin-bottom:18px;}
-.vol-hero h1{font-family:'Playfair Display',serif;font-size:clamp(30px,5vw,46px);font-weight:600;line-height:1.1;margin-bottom:14px;}
+.vol-hero h1{font-family:'Inter',system-ui,sans-serif;font-size:clamp(30px,5vw,46px);font-weight:600;line-height:1.1;margin-bottom:14px;}
 .vol-hero p{max-width:620px;margin:0 auto;color:var(--muted);font-size:16px;line-height:1.6;}
 
 .vol-wrap{max-width:1080px;margin:0 auto;padding:26px 22px 70px;display:grid;grid-template-columns:1.15fr .85fr;gap:26px;align-items:start;}
@@ -108,8 +106,18 @@
         </div>
 
         <div class="vol-field">
-          <label for="city">City (optional)</label>
-          <input id="city" name="city" type="text" placeholder="Your city" value="{{ old('city') }}" maxlength="120">
+          <label for="state">Select your state</label>
+          <select id="state" name="state" class="vol-input">
+            <option value="">Select your state...</option>
+          </select>
+        </div>
+
+        <div class="vol-field">
+          <label for="city">Select your city </label>
+          <div class="vol-city-wrap">
+            <input id="city" name="city" type="text" placeholder="Your city" value="{{ old('city') }}" maxlength="120" autocomplete="off">
+            <div id="city-suggestions" class="vol-city-suggest"></div>
+          </div>
           @error('city') <div class="vol-error">{{ $message }}</div> @enderror
         </div>
 
@@ -226,4 +234,5 @@
 })();
 </script>
 
+@vite(['resources/css/volunteer-apply.css', 'resources/js/volunteer-city.js'])
 @endsection

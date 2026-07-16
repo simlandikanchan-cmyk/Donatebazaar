@@ -67,4 +67,9 @@ class Donation extends Model
     {
         return $this->hasMany(Refund::class);
     }
+
+    public function items()
+    {
+        return $this->hasMany(DonationItem::class);
+    }
 }

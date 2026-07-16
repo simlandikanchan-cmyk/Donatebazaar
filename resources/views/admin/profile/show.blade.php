@@ -128,6 +128,7 @@
 .btn-modal-delete{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 18px;border-radius:var(--r-sm);font-size:12.5px;font-weight:700;border:none;cursor:pointer;background:linear-gradient(135deg,#dc2626,#f04444);color:#fff;box-shadow:0 4px 18px rgba(240,68,68,.3);transition:transform .2s;}
 .btn-modal-delete:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(240,68,68,.4);}
 
+@media(max-width:380px){.profile-grid{gap:14px}.card{padding:16px 14px}.card h2{font-size:clamp(16px,4.5vw,18px)}.card p{font-size:11px}.pw-str-wrap{flex-direction:column;gap:6px}.pw-str-wrap .btn{width:100%;justify-content:center}.form-group input{height:36px;font-size:12px;padding:0 11px}.form-group label{font-size:10px}.form-row{gap:10px}.btn-save{height:38px;font-size:12px;padding:0 16px}.btn-ghost{height:36px;font-size:11px;padding:0 14px}.profile-sidebar{padding:16px}.profile-sidebar .av{width:56px;height:56px;font-size:20px}.profile-sidebar .name{font-size:15px}.profile-sidebar .email{font-size:11px}.field-err{font-size:10px}}
 @keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
 </style>
 @endpush

@@ -100,6 +100,9 @@
 .modal-actions .action-btn{flex:1;margin:0;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
 @media(max-width:960px){.page-grid{grid-template-columns:1fr;}.right-col{position:static;}.input-row{grid-template-columns:1fr;}}
+@media(max-width:640px){.card-body{padding:14px}.card-header{padding:12px 14px}.cover-preview-img{height:160px}}
+@media(max-width:480px){.cover-preview-img{height:130px}.card-header{flex-direction:column;align-items:flex-start;gap:6px}.char-count{float:none;display:block;text-align:right;margin-top:2px}}
+@media(max-width:380px){.info-row{flex-direction:column;align-items:flex-start;gap:4px}}
 </style>
 @endpush
 

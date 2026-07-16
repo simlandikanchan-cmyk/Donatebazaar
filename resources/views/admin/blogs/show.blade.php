@@ -126,6 +126,8 @@
 .modal-confirm:hover{opacity:.85;}
 @media(max-width:900px){.body{flex-direction:column;}.review-panel{width:100%;position:static;display:grid;grid-template-columns:repeat(2,1fr);}}
 @media(max-width:600px){.review-panel{grid-template-columns:1fr;}}
+@media(max-width:480px){.body{padding:16px 14px 40px}.prose-area{padding:18px 16px 24px}.engage-strip{flex-direction:column;align-items:flex-start;gap:8px}.es-divider{display:none}.blog-byline{flex-direction:column;align-items:flex-start}.blog-title{font-size:clamp(18px,5vw,22px)}.eng-grid{grid-template-columns:1fr 1fr}.stat-pair{grid-template-columns:1fr 1fr}.cover-wrap{aspect-ratio:16/9}}
+@media(max-width:380px){.body{padding:12px 10px 32px}.prose-area{padding:14px 12px 20px}.blog-title{font-size:clamp(16px,5vw,20px)}.blog-prose{font-size:13px}.engage-strip{padding:10px 14px}.eng-box{padding:10px 12px}.eng-num{font-size:1.2rem}.stat-box .sn{font-size:1.1rem}.modal-box{padding:18px}.modal-title{font-size:15px}}
 </style>
 @endpush
 @section('content')

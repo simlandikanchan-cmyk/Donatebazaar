@@ -49,6 +49,9 @@
 .flash-err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.22);color:#991b1b;}
 .message-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px 16px;font-size:13px;color:var(--text2);line-height:1.6;margin-top:8px;font-style:italic;}
 @media(max-width:860px){.detail-grid{grid-template-columns:1fr;}}
+@media(max-width:640px){.detail-card{padding:16px 18px}.detail-lbl{font-size:9px}.detail-val{font-size:12px}.amount-val{font-size:17px}}
+@media(max-width:480px){.detail-hdr{flex-direction:column;align-items:flex-start;gap:4px}.actions{flex-direction:column}.act-btn{width:100%;justify-content:center}}
+@media(max-width:380px){.detail-row{flex-direction:column;align-items:flex-start;gap:3px}.status-form{flex-direction:column;align-items:stretch}.status-form input{min-width:0!important;width:100%}}
 </style>
 @endpush
 

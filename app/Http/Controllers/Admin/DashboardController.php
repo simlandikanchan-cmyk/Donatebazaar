@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Volunteer;
 use App\Models\VolunteerApplication;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class DashboardController extends Controller
 {
@@ -50,26 +51,18 @@ class DashboardController extends Controller
      */
     private function computeCounts(): array
     {
-        $startOfDay = now()->startOfDay();
+        $counts = Campaign::selectRaw("campaign_state, COUNT(*) as count")
+            ->groupBy('campaign_state')
+            ->pluck('count', 'campaign_state');
 
-        $cntPending   = Campaign::where('campaign_state', 'pending')->count();
-        $cntPaused    = Campaign::where('campaign_state', 'paused')->count();
-        $cntRejected  = Campaign::where('campaign_state', 'rejected')->count();
-        $cntCompleted = Campaign::where('campaign_state', 'completed')->count();
+        $totalCampaigns = (int) $counts->sum();
+        $cntPending     = (int) ($counts['pending'] ?? 0);
+        $cntActive      = (int) ($counts['active'] ?? 0);
+        $cntPaused      = (int) ($counts['paused'] ?? 0);
+        $cntExpired     = (int) ($counts['expired'] ?? 0);
+        $cntRejected    = (int) ($counts['rejected'] ?? 0);
+        $cntCompleted   = (int) ($counts['completed'] ?? 0);
 
-        $cntActive = Campaign::where('campaign_state', 'active')
-            ->where(function ($q) use ($startOfDay) {
-                $q->whereNull('end_date')->orWhere('end_date', '>=', $startOfDay);
-            })->count();
-
-        $cntExpired = Campaign::where('campaign_state', 'expired')
-            ->orWhere(function ($q) use ($startOfDay) {
-                $q->where('campaign_state', 'active')
-                  ->whereNotNull('end_date')
-                  ->where('end_date', '<', $startOfDay);
-            })->count();
-
-        $totalCampaigns = Campaign::count();
         $approvalRate = $totalCampaigns > 0 ? round(($cntActive / $totalCampaigns) * 100) : 0;
 
         return compact(
@@ -80,18 +73,34 @@ class DashboardController extends Controller
 
     public function index()
     {
-        $counts = $this->computeCounts();
-        extract($counts);
+        $stats = Cache::remember('admin_dashboard_stats', 300, function () {
+            $counts = $this->computeCounts();
 
-        $volunteerCount = Volunteer::count();
-        $pendingVolunteerApps = VolunteerApplication::where('status', 'pending')->count();
+            $volunteerCount = Volunteer::count();
+            $pendingVolunteerApps = VolunteerApplication::where('status', 'pending')->count();
 
-        $totalUsers    = User::count();
-        $newUsersToday = User::whereDate('created_at', today())->count();
+            $totalUsers    = User::count();
+            $newUsersToday = User::whereDate('created_at', today())->count();
 
-        $totalDonations = Donation::count();
-        $donationsToday = Donation::whereDate('created_at', today())->count();
-        $totalRevenue   = Donation::sum('total_amount');
+            $totalDonations = Donation::count();
+            $donationsToday = Donation::whereDate('created_at', today())->count();
+            $totalRevenue   = Donation::sum('total_amount');
+
+            $avgDonation  = $totalDonations > 0 ? (int) round($totalRevenue / $totalDonations) : 0;
+            $uniqueDonors = Donation::whereNotNull('user_id')->distinct('user_id')->count('user_id');
+            $successRate  = ($counts['totalCampaigns'] ?? 0) > 0
+                ? round((Campaign::where('campaign_state', 'completed')->count() / $counts['totalCampaigns']) * 100)
+                : 0;
+
+            return array_merge($counts, compact(
+                'volunteerCount', 'pendingVolunteerApps',
+                'totalUsers', 'newUsersToday',
+                'totalDonations', 'donationsToday', 'totalRevenue',
+                'avgDonation', 'uniqueDonors', 'successRate'
+            ));
+        });
+
+        extract($stats);
 
         // Initial grid shows the Active (+ Paused) list, matching the default tab.
         $activeCampaigns = $this->scopeState(
@@ -125,18 +134,11 @@ class DashboardController extends Controller
             $chartActive[] = $row ? (int) $row->active : 0;
         }
 
-        return view('admin.dashboard', array_merge($counts, compact(
+        return view('admin.dashboard', array_merge($stats, compact(
             'activeCampaigns',
             'chartLabels',
             'chartTotal',
-            'chartActive',
-            'volunteerCount',
-            'pendingVolunteerApps',
-            'totalUsers',
-            'newUsersToday',
-            'totalDonations',
-            'donationsToday',
-            'totalRevenue'
+            'chartActive'
         )));
     }
 

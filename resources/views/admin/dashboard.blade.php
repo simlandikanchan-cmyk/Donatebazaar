@@ -102,6 +102,18 @@
         <div class="stat-icon si-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
         <div class="stat-body"><div class="stat-lbl">Revenue</div><div class="stat-val sv-amber">₹ {{ number_format($totalRevenue) }}</div><div class="stat-foot">All time on platform</div></div>
       </div>
+      <div class="stat">
+        <div class="stat-icon si-a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
+        <div class="stat-body"><div class="stat-lbl">Avg Donation</div><div class="stat-val sv-a">₹ {{ number_format($avgDonation) }}</div><div class="stat-foot">Per donation transaction</div></div>
+      </div>
+      <div class="stat">
+        <div class="stat-icon si-purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg></div>
+        <div class="stat-body"><div class="stat-lbl">Unique Donors</div><div class="stat-val sv-purple">{{ $uniqueDonors }}</div><div class="stat-foot">People who donated</div></div>
+      </div>
+      <div class="stat">
+        <div class="stat-icon si-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+        <div class="stat-body"><div class="stat-lbl">Success Rate</div><div class="stat-val sv-green">{{ $successRate }}%</div><div class="stat-foot">Campaigns completed</div></div>
+      </div>
 
 </div>
 
@@ -179,6 +191,14 @@
       <button class="ftab" data-filter="inactive">Inactive <span class="cnt">{{ $cntExpired + $cntCompleted }}</span></button>
       <button class="ftab" data-filter="rejected">Rejected <span class="cnt">{{ $cntRejected }}</span></button>
     </div>
+    <select class="ftab-select" id="ftabSelect">
+      <option value="all">All ({{ $totalCampaigns }})</option>
+      <option value="pending">Pending ({{ $cntPending }})</option>
+      <option value="active" selected>Active ({{ $cntActive }})</option>
+      <option value="paused">Paused ({{ $cntPaused }})</option>
+      <option value="inactive">Inactive ({{ $cntExpired + $cntCompleted }})</option>
+      <option value="rejected">Rejected ({{ $cntRejected }})</option>
+    </select>
   </div>
 </div>
 
@@ -427,7 +447,12 @@ var state='active',searchQ='',sortVal='',isFetching=false,currentPage=1;
 
 function csrfToken(){var m=document.querySelector('meta[name=csrf-token]');return m?m.getAttribute('content'):'';}
 
-function setTab(f,v){var el=document.querySelector('.ftab[data-filter="'+f+'"] .cnt');if(el)el.textContent=v;}
+function setTab(f,v){
+  var el=document.querySelector('.ftab[data-filter="'+f+'"] .cnt');
+  if(el)el.textContent=v;
+  var opt=document.querySelector('#ftabSelect option[value="'+f+'"]');
+  if(opt)opt.textContent=f.charAt(0).toUpperCase()+f.slice(1)+' ('+v+')';
+}
 
 function fetchGrid(page){
   page=page||1;currentPage=page;
@@ -458,12 +483,22 @@ document.querySelectorAll('.ftab').forEach(function(tab){
   tab.addEventListener('click',function(){
     document.querySelectorAll('.ftab').forEach(function(t){t.classList.remove('on');});
     this.classList.add('on');state=this.dataset.filter;fetchGrid(1);
+    var sel=document.getElementById('ftabSelect');
+    if(sel)sel.value=state;
   });
 });
+var ftabSelect=document.getElementById('ftabSelect');
+if(ftabSelect){
+  ftabSelect.addEventListener('change',function(){
+    window.setFilter(this.value);
+  });
+}
 
 window.setFilter=function(f){
   state=f;
   document.querySelectorAll('.ftab').forEach(function(t){t.classList.toggle('on',t.dataset.filter===f);});
+  var sel=document.getElementById('ftabSelect');
+  if(sel)sel.value=f;
   fetchGrid(1);
   var el=document.getElementById('cGrid');
   if(el)el.scrollIntoView({behavior:'smooth',block:'start'});

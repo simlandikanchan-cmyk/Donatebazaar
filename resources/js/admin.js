@@ -49,6 +49,14 @@ window.Chart = Chart;
         overlay.classList.remove('open');
       });
     }
+    sidebar.querySelectorAll('.s-link').forEach(function (link) {
+      link.addEventListener('click', function () {
+        if (window.innerWidth <= 960) {
+          sidebar.classList.remove('open');
+          if (overlay) overlay.classList.remove('open');
+        }
+      });
+    });
   }
 
   /* ── Avatar Dropdown ── */

@@ -2,7 +2,13 @@
 
 namespace App\Providers;
 
+use App\Models\Campaign;
+use App\Models\Donation;
+use App\Models\User;
+use App\Models\Volunteer;
+use App\Models\VolunteerApplication;
 use App\Services\FundraiserLevelService;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
@@ -32,10 +38,30 @@ class AppServiceProvider extends ServiceProvider
 
         // Eager-load category on every {campaign} route binding
         Route::bind('campaign', function ($value) {
-            return \App\Models\Campaign::with('category')
+            return Campaign::with('category')
                 ->where(is_numeric($value) ? 'id' : 'slug', $value)
                 ->firstOrFail();
         });
+
+        // ───────────────────────────────────────────────────────────────
+        // Admin dashboard stats cache invalidation
+        // ───────────────────────────────────────────────────────────────
+
+        $forget = fn () => Cache::forget('admin_dashboard_stats');
+
+        Campaign::saved($forget);
+        Campaign::deleted($forget);
+
+        Donation::created($forget);
+        Donation::deleted($forget);
+
+        User::created($forget);
+
+        Volunteer::saved($forget);
+        Volunteer::deleted($forget);
+
+        VolunteerApplication::saved($forget);
+        VolunteerApplication::deleted($forget);
 
         // Health Checks
         Health::checks([

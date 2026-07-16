@@ -115,6 +115,7 @@
 .serp-bar-fill{height:100%;border-radius:100px;transition:width .4s ease,background .3s;}
 .serp-bar-num{font-size:10px;font-family:var(--mono);color:var(--text3);width:36px;text-align:right;flex-shrink:0;}
 .read-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px;}
+@media(max-width:640px){.read-stats{grid-template-columns:1fr;}}
 .read-stat{background:var(--surface2);border-radius:var(--r-sm);padding:9px 10px;text-align:center;border:1px solid var(--border);}
 .read-stat-num{font-size:16px;font-weight:700;color:var(--text);font-family:var(--mono);}
 .read-stat-lbl{font-size:9.5px;color:var(--text3);margin-top:2px;}
@@ -144,6 +145,7 @@
 .ready-badge.part{background:var(--amber-lt);color:var(--amber);}
 .ready-badge.full{background:var(--green-lt);color:var(--green);}
 .admin-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+@media(max-width:640px){.admin-stat-grid{grid-template-columns:1fr;}}
 .admin-stat-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;text-align:center;transition:all var(--ease);}
 .admin-stat-box:hover{border-color:rgba(37,99,235,.25);transform:translateY(-2px);}
 .admin-stat-num{font-family:var(--mono);font-size:1.3rem;font-weight:800;color:var(--a);line-height:1;}
@@ -162,6 +164,8 @@
   .action-btns{justify-content:stretch;}
   .action-btns .btn{flex:1;justify-content:center;}
 }
+@media(max-width:480px){.form-card{padding:16px}.page-hdr{flex-direction:column}.page-hdr-left h2{font-size:17px}.field-grid{gap:12px}.field-input,.field-select,.field-textarea{font-size:12px;padding:8px 11px}.admin-stat-grid{grid-template-columns:1fr 1fr}.action-bar{padding:12px 14px}.action-bar-hint{font-size:11px}.read-stats{gap:6px}}
+@media(max-width:380px){.form-card{padding:12px}.card-title{font-size:10px;margin-bottom:12px;padding-bottom:10px}.field-label{font-size:11px}.field-input,.field-select,.field-textarea{font-size:11px}.admin-stat-grid{grid-template-columns:1fr}.action-btns{flex-direction:column;gap:6px}.action-btns .btn{width:100%}.admin-badge{font-size:10px;padding:4px 10px}.read-stats{grid-template-columns:1fr}.serp-box{padding:10px 12px}.score-ring-wrap{flex-direction:column;align-items:flex-start;gap:10px}}
 </style>
 @endpush
 @section('content')

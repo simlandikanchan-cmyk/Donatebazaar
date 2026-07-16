@@ -344,7 +344,11 @@ tbody tr:hover{background:var(--surface2)}
 .assign-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 20px rgba(37,99,235,.45)}
 .assign-btn:active:not(:disabled){transform:translateY(0)}
 .assign-btn:disabled{opacity:.4;cursor:not-allowed;box-shadow:none;transform:none}
-@media(max-width:768px){.detail-grid{grid-template-columns:1fr 1fr}.info-box[style*="span 2"],.info-box[style*="span 3"]{grid-column:span 1!important}}
-@media(max-width:600px){.detail-grid{grid-template-columns:1fr}#assignForm>div:first-child{grid-template-columns:1fr!important}}
+@media(max-width:900px){.hero-card{flex-direction:column;padding:22px 24px}.hero-right{align-items:flex-start!important;width:100%}#assignForm>div:first-child{grid-template-columns:1fr 1fr!important}}
+@media(max-width:768px){.detail-grid{grid-template-columns:1fr 1fr}.info-box[style*="span 2"],.info-box[style*="span 3"]{grid-column:span 1!important}.hero-title{font-size:18px}.hero-av{width:46px;height:46px;font-size:17px;border-radius:13px}}
+@media(max-width:600px){.detail-grid{grid-template-columns:1fr}#assignForm>div:first-child{grid-template-columns:1fr!important}.hero-card{padding:18px 16px}.hero-meta{gap:8px}.hero-meta-item{font-size:10.5px}}
+@media(max-width:540px){.table-wrap td:nth-child(4),.table-wrap th:nth-child(4){display:none}.detail-card{padding:18px 16px}.detail-grid{gap:10px}}
+@media(max-width:480px){.hero-av{width:38px;height:38px;font-size:14px;border-radius:11px}.hero-title{font-size:16px}}
+@media(max-width:380px){.hero-card{padding:14px 12px}.hero-av{width:34px;height:34px;font-size:13px;border-radius:10px}.hero-title{font-size:15px}.hero-sub{font-size:10px}.hero-meta{gap:6px}.hero-meta-item{font-size:9px}.hero-right{gap:6px}.hero-right .btn{width:100%;justify-content:center;font-size:11px;padding:8px 12px}.detail-card{padding:14px 12px}.detail-card h3{font-size:13px}.detail-grid{gap:8px}.info-box{padding:10px 8px}.info-box .v{font-size:12px}.info-box .k{font-size:9px}.assign-card{padding:14px 12px}.assign-card h3{font-size:13px}#assignForm>div:first-child{grid-template-columns:1fr!important;gap:10px}#assignForm label{font-size:9px}#assignForm select,#assignForm input{font-size:11px;height:34px;padding:0 10px}.assign-actions{flex-direction:column;gap:6px}.assign-actions .btn-primary,.assign-actions .btn{width:100%;justify-content:center}.table-wrap td:nth-child(3),.table-wrap th:nth-child(3){display:none}.table td,.table th{padding:7px 6px;font-size:10px}}
 </style>
 @endpush
