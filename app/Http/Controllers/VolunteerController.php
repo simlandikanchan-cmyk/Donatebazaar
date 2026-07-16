@@ -38,13 +38,17 @@ class VolunteerController extends Controller
             'campaign_id' => ['nullable', 'integer', 'exists:campaigns,id'],
             'message'     => ['nullable', 'string', 'max:1000'],
             'phone'       => ['required', 'string', 'regex:/^[0-9]{10}$/'],
+            'city'        => ['nullable', 'string', 'max:120'],
+            'availability'=> ['required', 'in:full_time,part_time,weekends'],
         ]);
 
         $volunteer = Volunteer::firstOrCreate(['user_id' => auth()->id()]);
 
-        if (! empty($data['phone'])) {
-            $volunteer->update(['phone' => $data['phone']]);
-        }
+        $volunteer->update(array_filter([
+            'phone'       => $data['phone'] ?? null,
+            'city'        => $data['city'] ?? null,
+            'availability'=> $data['availability'] ?? null,
+        ]));
 
         $exists = VolunteerApplication::where('volunteer_id', $volunteer->id)
             ->whereIn('status', ['pending', 'approved'])

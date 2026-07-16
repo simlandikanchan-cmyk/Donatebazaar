@@ -108,6 +108,23 @@
         </div>
 
         <div class="vol-field">
+          <label for="city">City (optional)</label>
+          <input id="city" name="city" type="text" placeholder="Your city" value="{{ old('city') }}" maxlength="120">
+          @error('city') <div class="vol-error">{{ $message }}</div> @enderror
+        </div>
+
+        <div class="vol-field">
+          <label for="availability">Availability <span style="color:var(--err);">*</span></label>
+          <select id="availability" name="availability" required>
+            <option value="">Select your availability…</option>
+            <option value="full_time" @selected(old('availability') == 'full_time')>Full time</option>
+            <option value="part_time" @selected(old('availability') == 'part_time')>Part time</option>
+            <option value="weekends" @selected(old('availability') == 'weekends')>Weekends only</option>
+          </select>
+          @error('availability') <div class="vol-error">{{ $message }}</div> @enderror
+        </div>
+
+        <div class="vol-field">
           <label for="message">Why do you want to volunteer? (optional)</label>
           <textarea id="message" name="message" rows="5" placeholder="Tell us a bit about yourself, your skills, or the cause you care about…">{{ old('message') }}</textarea>
         </div>
