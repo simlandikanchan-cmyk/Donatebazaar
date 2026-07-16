@@ -33,6 +33,12 @@
 
 <p>Phone: {{ $phone ?? session('otp_phone') }}</p>
 
+@if (app()->environment('local') && session('otp_dev'))
+    <p style="color:#e67e22; font-weight:bold; border:1px dashed #e67e22; padding:8px; display:inline-block;">
+        DEV OTP: {{ session('otp_dev') }}
+    </p>
+@endif
+
 <input type="text" id="otp" placeholder="Enter OTP" maxlength="6" inputmode="numeric">
 <br>
 
