@@ -107,7 +107,10 @@
 
         <div class="vol-field">
           <label for="city">City (optional)</label>
-          <input id="city" name="city" type="text" placeholder="Your city" value="{{ old('city') }}" maxlength="120">
+          <div class="vol-city-wrap">
+            <input id="city" name="city" type="text" placeholder="Your city" value="{{ old('city') }}" maxlength="120" autocomplete="off">
+            <div id="city-suggestions" class="vol-city-suggest"></div>
+          </div>
           @error('city') <div class="vol-error">{{ $message }}</div> @enderror
         </div>
 
@@ -225,3 +228,5 @@
 </script>
 
 @endsection
+
+@vite(['resources/css/volunteer-apply.css', 'resources/js/volunteer-city.js'])
