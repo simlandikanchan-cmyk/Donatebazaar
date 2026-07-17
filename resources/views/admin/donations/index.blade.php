@@ -17,6 +17,11 @@
 .ab-refund{background:var(--amber-lt);color:var(--amber);border-color:rgba(245,158,11,.18)}
 .ab-refund:hover{background:var(--amber);color:#fff;border-color:var(--amber)}
 .dn-anon{font-style:italic;color:var(--text3)}
+@media(max-width:380px){
+  .filter-row{flex-direction:column;align-items:stretch;gap:8px;}
+  .ftab-select{margin-top:4px;}
+  .sinp{width:100%;}
+}
 </style>
 @endpush
 
@@ -78,6 +83,12 @@
     <button class="ftab" data-filter="refundable">Refundable <span class="cnt">{{ $counts['refundable'] }}</span></button>
     <button class="ftab" data-filter="refunded">Refunded <span class="cnt">{{ $counts['refunded'] }}</span></button>
   </div>
+  <select class="ftab-select" onchange="var btn=document.querySelector('.ftab[data-filter=&quot;'+this.value+'&quot;]');if(btn)btn.click();">
+    <option value="all">All ({{ $counts['total'] }})</option>
+    <option value="completed">Completed ({{ $counts['completed'] }})</option>
+    <option value="refundable">Refundable ({{ $counts['refundable'] }})</option>
+    <option value="refunded">Refunded ({{ $counts['refunded'] }})</option>
+  </select>
   <div class="filter-right">
     <select class="sort-sel" id="campaignSelect">
       <option value="">All campaigns</option>

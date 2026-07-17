@@ -135,6 +135,13 @@ tbody tr:not([data-status="published"]) .js-feature{display:none}
   tbody td.actions{justify-content:flex-start;flex-wrap:wrap}
   .title-primary{max-width:none}
 }
+@media(max-width:380px){
+  .sec-hdr{gap:8px;}
+  .sec-right{flex-direction:column;align-items:stretch;gap:6px;width:100%;}
+  .ftab-select{margin-top:4px;}
+  .sort-select,.sec-right .sort-select{width:100%;}
+  .search-input{width:100%;}
+}
 </style>
 @endpush
 @section('content')
@@ -210,6 +217,12 @@ tbody tr:not([data-status="published"]) .js-feature{display:none}
       <button class="ftab {{ $activeStatus === 'published' ? 'on' : '' }}" data-status="published"><span class="fcnt" id="fcntPublished">{{ $cntPublished }}</span> Published</button>
       <button class="ftab {{ $activeStatus === 'rejected'  ? 'on' : '' }}" data-status="rejected"><span class="fcnt" id="fcntRejected">{{ $cntRejected }}</span> Rejected</button>
     </div>
+    <select class="ftab-select" onchange="var btn=document.querySelector('.ftab[data-status=&quot;'+this.value+'&quot;]');if(btn)btn.click();">
+      <option value="all" {{ $activeStatus === 'all' ? 'selected' : '' }}>All ({{ $cntTotal }})</option>
+      <option value="pending" {{ $activeStatus === 'pending' ? 'selected' : '' }}>Pending ({{ $cntPending }})</option>
+      <option value="published" {{ $activeStatus === 'published' ? 'selected' : '' }}>Published ({{ $cntPublished }})</option>
+      <option value="rejected" {{ $activeStatus === 'rejected' ? 'selected' : '' }}>Rejected ({{ $cntRejected }})</option>
+    </select>
   </div>
 </div>
 

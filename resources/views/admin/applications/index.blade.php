@@ -62,6 +62,10 @@ tbody tr:hover{background:var(--surface2)}
   tbody td.action-cell::before{padding-top:4px}
   .action-cell .c-btn{flex:1;min-width:0}
 }
+@media(max-width:380px){
+  .ftab-select{margin-top:4px;}
+  .sec-search input{width:100%;max-width:none;}
+}
 </style>
 @endpush
 
@@ -134,6 +138,13 @@ tbody tr:hover{background:var(--surface2)}
       <button class="ftab" data-filter="approved">Approved <span class="cnt" id="cntApproved">{{ $cntApproved }}</span></button>
       <button class="ftab" data-filter="rejected">Rejected <span class="cnt" id="cntRejected">{{ $cntRejected }}</span></button>
     </div>
+    <select class="ftab-select" onchange="var btn=document.querySelector('.ftab[data-filter=&quot;'+this.value+'&quot;]');if(btn)btn.click();">
+      <option value="all">All ({{ $applications->total() }})</option>
+      <option value="pending">Pending ({{ $cntPending }})</option>
+      <option value="under_review">Review ({{ $cntReview }})</option>
+      <option value="approved">Approved ({{ $cntApproved }})</option>
+      <option value="rejected">Rejected ({{ $cntRejected }})</option>
+    </select>
   </div>
 </div>
 

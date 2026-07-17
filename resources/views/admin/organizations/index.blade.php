@@ -75,6 +75,23 @@ tbody tr:hover{background:var(--surface2);}
 .sv-a{color:var(--a);}
 .stat-foot{font-size:10px;color:var(--text3);}
 @media(max-width:860px){.stats-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:380px){
+  .stats-grid{grid-template-columns:1fr;gap:8px;}
+  .stat{padding:10px 12px;gap:8px;}
+  .stat-icon{width:30px;height:30px;border-radius:8px;}
+  .stat-icon svg{width:13px;height:13px;}
+  .stat-val{font-size:1.1rem;}
+  .toolbar{gap:8px;}
+  .toolbar-left{flex-direction:column;align-items:stretch;gap:6px;}
+  .search-input,.search-input:focus{width:100%;}
+  .select-wrap{width:100%;}
+  .filter-select{width:100%;}
+  .toolbar-right{width:100%;}
+  .export-btn{width:100%;justify-content:center;}
+  .card-head{padding:10px 14px;}
+  td{padding:10px 12px;font-size:12px;}
+  thead th{padding:8px 12px;font-size:9px;}
+}
 .alert-ok{background:rgba(5,196,138,.08);border:1px solid rgba(5,196,138,.22);color:#065f46;padding:12px 16px;border-radius:var(--r-sm);font-size:13px;margin-bottom:16px;display:flex;align-items:center;gap:10px;animation:fadeUp .3s ease;}
 .alert-ok svg{width:15px;height:15px;flex-shrink:0;}
 </style>

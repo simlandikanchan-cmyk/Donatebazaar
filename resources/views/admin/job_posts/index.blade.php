@@ -123,6 +123,13 @@ tbody tr:hover{background:var(--surface2)}
 @media(max-width:480px){
   .stats-grid{grid-template-columns:1fr!important}
 }
+@media(max-width:380px){
+  .filter-row{flex-direction:column;align-items:stretch;gap:8px;}
+  .ftab-select{margin-top:4px;}
+  .sinp{width:100%;}
+  .filter-right{width:100%;}
+  .sort-sel{width:100%;}
+}
 </style>
 @endpush
 
@@ -288,6 +295,14 @@ tbody tr:hover{background:var(--surface2)}
     <button class="ftab" data-filter="remote">Remote <span class="cnt">{{ $cntRemote }}</span></button>
     <button class="ftab" data-filter="featured">Featured <span class="cnt">{{ $cntFeatured }}</span></button>
   </div>
+  <select class="ftab-select" onchange="var btn=document.querySelector('.ftab[data-filter=&quot;'+this.value+'&quot;]');if(btn)btn.click();">
+    <option value="all">All ({{ $totalJobs }})</option>
+    <option value="active">Active ({{ $cntActive }})</option>
+    <option value="draft">Draft ({{ $cntDraft }})</option>
+    <option value="closed">Closed ({{ $cntClosed }})</option>
+    <option value="remote">Remote ({{ $cntRemote }})</option>
+    <option value="featured">Featured ({{ $cntFeatured }})</option>
+  </select>
   <div class="filter-right">
     <div class="swrap">
       <svg class="sico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>

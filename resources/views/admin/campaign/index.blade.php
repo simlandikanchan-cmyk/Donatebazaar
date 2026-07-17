@@ -97,6 +97,26 @@
 @media(max-width:1200px){.stats-grid{grid-template-columns:repeat(3,1fr);}}
 @media(max-width:860px){.stats-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:520px){.stats-grid{grid-template-columns:1fr;}}
+
+@media(max-width:380px){
+  .stats-grid{gap:8px;}
+  .stat{padding:10px 12px;gap:8px;}
+  .stat-icon{width:30px;height:30px;border-radius:8px;}
+  .stat-icon svg{width:13px;height:13px;}
+  .stat-val{font-size:1rem;}
+  .toolbar{gap:8px;}
+  .toolbar-left{gap:6px;flex-direction:column;align-items:stretch;}
+  .search-wrap{min-width:0;width:100%;}
+  .search-input,.search-input:focus{width:100%;}
+  .cp-bulkbar{flex-direction:column;gap:8px;padding:10px 14px;}
+  .cp-bulk-acts{width:100%;justify-content:center;}
+  .p-table{font-size:11px;}
+  .p-table th,.p-table td{padding:8px 8px;}
+  .cmp-title{max-width:140px;font-size:12px;}
+  .cmp-actions{gap:4px;}
+  .cmp-view,.cmp-edit{padding:0 8px;font-size:11px;}
+  .pagination-wrap{flex-direction:column;align-items:center;text-align:center;}
+}
 </style>
 @endpush
 
@@ -213,6 +233,15 @@ $sortUrl = function($column) use ($sort, $dir) {
         <a href="{{ route('admin.campaign.index', array_merge(request()->except(['status','page']), ['status' => 'completed'])) }}"
            class="ftab {{ $status === 'completed' ? 'on' : '' }}">Completed <span class="cnt">{{ $cntCompleted }}</span></a>
       </div>
+      <select class="ftab-select" onchange="window.location.href=this.value">
+        <option value="{{ route('admin.campaign.index', array_merge(request()->except(['status','page']), ['status' => 'all'])) }}" {{ $status === 'all' ? 'selected' : '' }}>All ({{ $campaigns->total() }})</option>
+        <option value="{{ route('admin.campaign.index', array_merge(request()->except(['status','page']), ['status' => 'active'])) }}" {{ $status === 'active' ? 'selected' : '' }}>Active ({{ $cntActive }})</option>
+        <option value="{{ route('admin.campaign.index', array_merge(request()->except(['status','page']), ['status' => 'pending'])) }}" {{ $status === 'pending' ? 'selected' : '' }}>Pending ({{ $cntPending }})</option>
+        <option value="{{ route('admin.campaign.index', array_merge(request()->except(['status','page']), ['status' => 'paused'])) }}" {{ $status === 'paused' ? 'selected' : '' }}>Paused ({{ $cntPaused }})</option>
+        <option value="{{ route('admin.campaign.index', array_merge(request()->except(['status','page']), ['status' => 'rejected'])) }}" {{ $status === 'rejected' ? 'selected' : '' }}>Rejected ({{ $cntRejected }})</option>
+        <option value="{{ route('admin.campaign.index', array_merge(request()->except(['status','page']), ['status' => 'expired'])) }}" {{ $status === 'expired' ? 'selected' : '' }}>Expired ({{ $cntExpired }})</option>
+        <option value="{{ route('admin.campaign.index', array_merge(request()->except(['status','page']), ['status' => 'completed'])) }}" {{ $status === 'completed' ? 'selected' : '' }}>Completed ({{ $cntCompleted }})</option>
+      </select>
     </div>
   </div>
 

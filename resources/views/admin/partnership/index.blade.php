@@ -158,6 +158,28 @@ td{padding:12px 16px;font-size:13px;vertical-align:middle;}
 
 @media(max-width:860px){.stats-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:600px){.stats-grid{grid-template-columns:1fr 1fr}.search-input{width:160px;}.search-input:focus{width:180px;}}
+@media(max-width:380px){
+  .stats-grid{grid-template-columns:1fr;gap:8px;}
+  .stat{padding:10px 12px;gap:8px;}
+  .stat-icon{width:30px;height:30px;border-radius:8px;}
+  .stat-icon svg{width:13px;height:13px;}
+  .stat-val{font-size:1.1rem;}
+  .toolbar{gap:8px;}
+  .toolbar-left{flex-direction:column;align-items:stretch;gap:6px;}
+  .search-input,.search-input:focus{width:100%;}
+  .select-wrap{width:100%;}
+  .filter-select{width:100%;}
+  .toolbar-right{width:100%;}
+  .export-btn{width:100%;justify-content:center;}
+  .card-head{padding:10px 14px;}
+  td{padding:10px 12px;font-size:12px;}
+  thead th{padding:8px 12px;font-size:9px;}
+  .bulk-bar{flex-direction:column;gap:8px;padding:10px 14px;}
+  .bulk-bar .bulk-acts{width:100%;justify-content:center;flex-wrap:wrap;}
+  .actions{gap:3px;}
+  .act-btn{padding:4px 8px;font-size:10.5px;}
+  .act-btn svg{width:9px;height:9px;}
+}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 </style>

@@ -131,6 +131,7 @@ td{padding:13px 18px;font-size:13px;vertical-align:middle;}
 
 @media(max-width:860px){.stats-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:500px){.stats-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:380px){.stats-grid{grid-template-columns:1fr;gap:8px;}.stat{padding:10px 12px;gap:8px;}}
 
 /* ── PAGINATION ── */
 .pagination-wrap{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-top:1px solid var(--border);background:var(--surface2);flex-wrap:wrap;gap:10px;}

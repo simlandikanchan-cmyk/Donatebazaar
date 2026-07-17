@@ -263,5 +263,6 @@ tbody tr:hover{background:var(--surface2);}
 
 @media(max-width:860px){.search-wrap{display:none}}
 @media(max-width:600px){.filter-bar{flex-direction:column;align-items:stretch}.filter-inp,.filter-sel{width:100%}}
+@media(max-width:380px){.stats-grid{grid-template-columns:1fr;gap:8px;}.stat{padding:10px 12px;}.stat-icon{width:30px;height:30px;}.stat-icon svg{width:13px;height:13px;}}
 </style>
 @endpush
