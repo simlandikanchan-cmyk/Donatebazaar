@@ -179,6 +179,14 @@
       <button class="ftab" data-filter="inactive">Inactive <span class="cnt">{{ $cntExpired + $cntCompleted }}</span></button>
       <button class="ftab" data-filter="rejected">Rejected <span class="cnt">{{ $cntRejected }}</span></button>
     </div>
+    <select class="ftab-select" id="ftabSelect">
+      <option value="all">All ({{ $totalCampaigns }})</option>
+      <option value="pending">Pending ({{ $cntPending }})</option>
+      <option value="active" selected>Active ({{ $cntActive }})</option>
+      <option value="paused">Paused ({{ $cntPaused }})</option>
+      <option value="inactive">Inactive ({{ $cntExpired + $cntCompleted }})</option>
+      <option value="rejected">Rejected ({{ $cntRejected }})</option>
+    </select>
   </div>
 </div>
 
@@ -457,13 +465,22 @@ function fetchGrid(page){
 document.querySelectorAll('.ftab').forEach(function(tab){
   tab.addEventListener('click',function(){
     document.querySelectorAll('.ftab').forEach(function(t){t.classList.remove('on');});
-    this.classList.add('on');state=this.dataset.filter;fetchGrid(1);
+    this.classList.add('on');state=this.dataset.filter;
+    document.getElementById('ftabSelect').value=state;
+    fetchGrid(1);
   });
+});
+
+document.getElementById('ftabSelect').addEventListener('change',function(){
+  state=this.value;
+  document.querySelectorAll('.ftab').forEach(function(t){t.classList.toggle('on',t.dataset.filter===state);});
+  fetchGrid(1);
 });
 
 window.setFilter=function(f){
   state=f;
   document.querySelectorAll('.ftab').forEach(function(t){t.classList.toggle('on',t.dataset.filter===f);});
+  document.getElementById('ftabSelect').value=f;
   fetchGrid(1);
   var el=document.getElementById('cGrid');
   if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
