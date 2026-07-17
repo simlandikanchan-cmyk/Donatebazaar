@@ -153,14 +153,14 @@
     </div>
 
     <div class="actions">
-      <a href="{{ route('admin.gift-cards.index') }}" class="act-btn ab-back">
+      <a href="{{ route('admin.gift-cards.index') }}" class="btn btn-secondary act-btn ab-back">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
         Back to List
       </a>
       @if($giftCard->isPaid() && !$giftCard->isRedeemed())
       <form method="POST" action="{{ route('admin.gift-cards.resend', $giftCard->id) }}" style="display:inline;">
         @csrf
-        <button type="submit" class="act-btn ab-resend">
+        <button type="submit" class="btn btn-secondary act-btn ab-resend">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
           Resend Email
         </button>
@@ -169,7 +169,7 @@
       @if(!$giftCard->isRedeemed())
       <form method="POST" action="{{ route('admin.gift-cards.destroy', $giftCard->id) }}" style="display:inline;" onsubmit="return confirm('Cancel this gift card?')">
         @csrf @method('DELETE')
-        <button type="submit" class="act-btn ab-cancel">
+        <button type="submit" class="btn btn-secondary act-btn ab-cancel">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 18L18 6M6 6l12 12"/></svg>
           Cancel Card
         </button>

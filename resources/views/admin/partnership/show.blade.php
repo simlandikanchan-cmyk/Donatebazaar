@@ -84,7 +84,7 @@
 @endpush
 @section('content')
 {{-- BACK --}}
-<a href="{{ route('admin.partnership.index') }}" class="back-btn">
+<a href="{{ route('admin.partnership.index') }}" class="btn btn-secondary back-btn">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
   Back to Partnerships
 </a>
@@ -305,7 +305,7 @@
         <textarea name="admin_notes" class="form-textarea" rows="5"
           placeholder="Write internal review notes…">{{ $partnership->admin_notes }}</textarea>
       </div>
-      <button type="submit" class="submit-btn">
+      <button type="submit" class="btn btn-primary submit-btn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
         Update Partnership Status
       </button>

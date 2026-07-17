@@ -139,14 +139,14 @@
     <div class="action-bar">
       <form method="POST" action="{{ route('admin.volunteer_applications.approve', $application) }}">
         @csrf
-        <button type="submit" class="btn-approve" onclick="return confirm('Approve this application? The volunteer will be marked as verified and notified via email.')">
+        <button type="submit" class="btn btn-green btn-approve" onclick="return confirm('Approve this application? The volunteer will be marked as verified and notified via email.')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
           Approve & Verify
         </button>
       </form>
       <form method="POST" action="{{ route('admin.volunteer_applications.reject', $application) }}">
         @csrf
-        <button type="submit" class="btn-reject" onclick="return confirm('Reject this application? The applicant will be notified via email.')">
+        <button type="submit" class="btn btn-red btn-reject" onclick="return confirm('Reject this application? The applicant will be notified via email.')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
           Reject
         </button>

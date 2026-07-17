@@ -116,7 +116,7 @@
     <h2>Message from {{ $message->name }}</h2>
     <p>Received {{ $message->created_at->diffForHumans() }} &middot; {{ $message->created_at->format('d M Y, h:i A') }}</p>
   </div>
-  <a href="{{ route('admin.messages') }}" class="back-btn">
+  <a href="{{ route('admin.messages') }}" class="btn btn-secondary back-btn">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
     Back to Messages
   </a>
@@ -166,13 +166,13 @@
     </div>
 
     <div class="dc-foot">
-      <button type="button" class="act-btn ab-reply reply-open">
+      <button type="button" class="btn btn-secondary act-btn ab-reply reply-open">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
         Reply via Email
       </button>
       <form action="{{ route('admin.messages.delete', $message->id) }}" method="POST" style="display:inline;">
         @csrf @method('DELETE')
-        <button type="submit" class="act-btn ab-delete" onclick="return confirm('Delete this message permanently?')">
+        <button type="submit" class="btn btn-red act-btn ab-delete" onclick="return confirm('Delete this message permanently?')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
           Delete Message
         </button>
@@ -215,19 +215,19 @@
     <div class="side-card">
       <div class="sc-head">Quick Actions</div>
       <div class="sc-body">
-        <button type="button" class="qa-btn reply-open">
+        <button type="button" class="btn btn-secondary qa-btn reply-open">
           <span class="qa-icon qi-purple">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
           </span>
           Reply via Email
         </button>
-        <button type="button" class="qa-btn" id="toggleReadBtn">
+        <button type="button" class="btn btn-secondary qa-btn" id="toggleReadBtn">
           <span class="qa-icon qi-gray">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9l9 6 9-6"/></svg>
           </span>
           Mark as Unread
         </button>
-        <a href="{{ route('admin.messages') }}" class="qa-btn">
+        <a href="{{ route('admin.messages') }}" class="btn btn-secondary qa-btn">
           <span class="qa-icon qi-gray">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
           </span>
@@ -235,7 +235,7 @@
         </a>
         <form action="{{ route('admin.messages.delete', $message->id) }}" method="POST">
           @csrf @method('DELETE')
-          <button type="submit" class="qa-btn danger" style="width:100%;" onclick="return confirm('Delete this message permanently?')">
+          <button type="submit" class="btn btn-red qa-btn danger" onclick="return confirm('Delete this message permanently?')">
             <span class="qa-icon qi-red">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
             </span>
@@ -276,8 +276,8 @@
     <div class="reply-foot">
       <a class="reply-mailto" href="mailto:{{ $message->email }}">Open in email app instead</a>
       <div class="reply-actions">
-        <button type="button" class="reply-cancel" data-reply-close>Cancel</button>
-        <button type="button" class="reply-send" id="replySend">
+        <button type="button" class="btn btn-secondary reply-cancel" data-reply-close>Cancel</button>
+        <button type="button" class="btn btn-primary reply-send" id="replySend">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
           Send Reply
         </button>

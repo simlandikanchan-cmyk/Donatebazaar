@@ -157,7 +157,7 @@
                             <form method="POST" action="{{ route('admin.gift-cards.destroy', $gc->id) }}"
                                   onsubmit="return confirm('Cancel this gift card?')" style="display:inline;">
                                 @csrf @method('DELETE')
-                                <button type="submit" class="gc-action-btn gc-action-cancel"
+                                <button type="submit" class="btn btn-secondary gc-action-btn gc-action-cancel"
                                         aria-label="Cancel gift card {{ $gc->code }}">
                                     Cancel
                                 </button>

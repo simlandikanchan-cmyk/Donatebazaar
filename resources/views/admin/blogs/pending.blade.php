@@ -28,14 +28,14 @@
  
         <form method="POST" action="{{ route('admin.blogs.approve', $blog) }}">
           @csrf
-          <button class="btn btn-success">✓ Approve</button>
+          <button class="btn btn-green">✓ Approve</button>
         </form>
  
         <form method="POST" action="{{ route('admin.blogs.reject', $blog) }}"
               onsubmit="return promptReason(this)">
           @csrf
           <input type="hidden" name="reason" id="reject_reason_{{ $blog->id }}">
-          <button class="btn btn-danger" data-id="{{ $blog->id }}">✗ Reject</button>
+          <button class="btn btn-red" data-id="{{ $blog->id }}">✗ Reject</button>
         </form>
       </div>
     </div>

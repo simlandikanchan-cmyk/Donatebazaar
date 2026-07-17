@@ -11,7 +11,7 @@
             <option value="part-time">Part-Time</option>
             <option value="volunteer">Volunteer</option>
         </select>
-        <button class="bg-green-600 text-white px-5 py-2 rounded">Search</button>
+        <button type="submit" class="btn btn-primary">Search</button>
     </form>
 
     @foreach($jobs as $job)

@@ -224,7 +224,7 @@
               @error('email') <span class="field-err">{{ $message }}</span> @enderror
             </div>
           </div>
-          <button type="submit" class="btn-save">
+          <button type="submit" class="btn btn-primary btn-save">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
             Save Changes
           </button>
@@ -279,7 +279,7 @@
               </div>
             </div>
           </div>
-          <button type="submit" class="btn-save">
+          <button type="submit" class="btn btn-primary btn-save">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
             Update Password
           </button>
@@ -337,7 +337,7 @@
               <form method="POST" action="{{ route('admin.profile.sessions.revoke', $session->id) }}" onsubmit="return confirm('Revoke this session? The device will be signed out.');" style="display:inline-flex;">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="sess-revoke">Revoke</button>
+                <button type="submit" class="btn btn-red sess-revoke">Revoke</button>
               </form>
             @endif
           </div>
@@ -351,7 +351,7 @@
             <form method="POST" action="{{ route('admin.profile.sessions.revoke-all') }}" onsubmit="return confirm('Revoke all other active sessions? You will stay logged in on this device.');" style="display:inline-flex;">
               @csrf
               @method('DELETE')
-              <button type="submit" class="sess-revoke-all">
+              <button type="submit" class="btn btn-red sess-revoke-all">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                 Revoke All Others
               </button>
@@ -371,7 +371,7 @@
         <div class="danger-warn">
           <strong>Irreversible action.</strong> Deleting your account will permanently remove all your data including campaigns, donation records, and personal information. This cannot be undone.
         </div>
-        <button type="button" class="danger-btn" onclick="openDeleteModal()">
+        <button type="button" class="btn btn-red danger-btn" onclick="openDeleteModal()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
           Delete My Account
         </button>
@@ -412,8 +412,8 @@
         @error('password') <span class="field-err">{{ $message }}</span> @enderror
       </div>
       <div class="modal-btns">
-        <button type="button" class="btn-modal-cancel" onclick="closeDeleteModal()">Cancel</button>
-        <button type="submit" class="btn-modal-delete">
+        <button type="button" class="btn btn-secondary btn-modal-cancel" onclick="closeDeleteModal()">Cancel</button>
+        <button type="submit" class="btn btn-red btn-modal-delete">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
           Delete Account
         </button>

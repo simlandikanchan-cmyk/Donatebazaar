@@ -44,7 +44,7 @@
             <textarea name="bio" rows="3" placeholder="Tell people a little about yourself...">{{ old('bio', $user->bio) }}</textarea>
             @error('bio')<div class="field-err">{{ $message }}</div>@enderror
           </div>
-          <button type="submit" class="save-btn">Save Changes</button>
+          <button type="submit" class="btn btn-primary save-btn">Save Changes</button>
         </form>
       </div>
     </div>
@@ -91,7 +91,7 @@
               <input type="password" name="password_confirmation" placeholder="Repeat new password">
             </div>
           </div>
-          <button type="submit" class="save-btn ghost" style="margin-top:14px;">Update Password</button>
+          <button type="submit" class="btn btn-primary save-btn ghost">Update Password</button>
         </form>
       </div>
     </div>
@@ -118,7 +118,7 @@
             <input type="password" name="password" placeholder="Your current password">
             @error('password', 'userDeletion')<div class="field-err">{{ $message }}</div>@enderror
           </div>
-          <button type="submit" class="save-btn danger">Delete My Account</button>
+          <button type="submit" class="btn btn-red save-btn danger">Delete My Account</button>
         </form>
       </div>
     </div>

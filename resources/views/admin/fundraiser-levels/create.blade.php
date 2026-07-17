@@ -5,7 +5,7 @@
 @section('page_subtitle', 'Create a new fundraiser progression level')
 
 @section('topbar_left')
-  <a href="{{ route('admin.fundraiser-levels.index') }}" class="back-btn">
+  <a href="{{ route('admin.fundraiser-levels.index') }}" class="btn btn-secondary back-btn">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M12 19l-7-7 7-7"/></svg>
     All Levels
   </a>
@@ -173,7 +173,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
       Create Level
     </button>
-    <a href="{{ route('admin.fundraiser-levels.index') }}" class="back-btn" style="text-decoration:none;">Cancel</a>
+    <a href="{{ route('admin.fundraiser-levels.index') }}" class="btn btn-secondary back-btn" style="text-decoration:none;">Cancel</a>
   </div>
 </form>
 @endsection

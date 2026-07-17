@@ -391,11 +391,11 @@
           </label>
 
           <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);display:flex;gap:8px;">
-            <button type="submit" form="editForm" class="btn btn-primary" style="flex:1;">
+            <button type="submit" form="editForm" class="btn btn-primary">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
               Save
             </button>
-            <a href="{{ route('admin.blogs.index') }}" class="btn btn-ghost">Cancel</a>
+            <a href="{{ route('admin.blogs.index') }}" class="btn btn-secondary btn-ghost">Cancel</a>
           </div>
         </div>
       </div>
@@ -466,7 +466,7 @@
                 src="{{ $blog->cover_image ? asset('storage/'.$blog->cover_image) : '' }}"
                 alt="Cover">
               <div class="cover-preview-actions">
-                <button type="button" class="cover-preview-btn cpb-remove" onclick="removeCover()" title="Remove">
+                <button type="button" class="btn btn-red cover-preview-btn cpb-remove" onclick="removeCover()" title="Remove">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
                 <button type="button" class="cover-preview-btn cpb-change" onclick="document.getElementById('coverInput').click()" title="Change">
@@ -592,7 +592,7 @@
             onsubmit="return confirm('Delete \'{{ addslashes($blog->title ?? '') }}\'?\nThis will soft-delete the post.')">
         @csrf
         @method('DELETE')
-        <button type="submit" class="btn btn-danger" style="width:100%;justify-content:center;">
+        <button type="submit" class="btn btn-red">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
           Delete Post
         </button>

@@ -238,12 +238,12 @@ label.lbl span{color:var(--red);margin-left:2px;}
     <div class="modal-ttl">Delete Job Post?</div>
     <div class="modal-desc">You are about to permanently delete <strong>"{{ $jobPost->title }}"</strong>. This will also remove all associated applications. This action <strong>cannot be undone</strong>.</div>
     <div class="modal-btns">
-      <button class="btn btn-modal-cancel" onclick="closeDeleteModal()">
+      <button class="btn btn-secondary btn-modal-cancel" onclick="closeDeleteModal()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>Cancel
       </button>
       <form action="{{ route('admin.job_posts.destroy', $jobPost->id) }}" method="POST" style="flex:1;">
         @csrf @method('DELETE')
-        <button type="submit" class="btn btn-modal-delete" style="width:100%;">
+        <button type="submit" class="btn btn-red btn-modal-delete">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>Yes, Delete
         </button>
       </form>
@@ -260,10 +260,10 @@ label.lbl span{color:var(--red);margin-left:2px;}
     <div class="modal-ttl">Discard Changes?</div>
     <div class="modal-desc">You have <strong>unsaved changes</strong> to this job post. If you leave now, your edits will be lost.</div>
     <div class="modal-btns">
-      <button class="btn btn-modal-cancel" onclick="closeDiscardModal()">
+      <button class="btn btn-secondary btn-modal-cancel" onclick="closeDiscardModal()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>Keep Editing
       </button>
-      <a href="{{ route('admin.job_posts.index') }}" class="btn btn-modal-delete" style="background:linear-gradient(135deg,#f59e0b,#fbbf24);box-shadow:0 4px 18px rgba(245,158,11,.30);">
+      <a href="{{ route('admin.job_posts.index') }}" class="btn btn-yellow btn-modal-delete">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 17l-5-5 5-5m7 5l-5-5 5-5"/></svg>Discard &amp; Leave
       </a>
     </div>
@@ -624,7 +624,7 @@ label.lbl span{color:var(--red);margin-left:2px;}
           <span>Danger Zone</span>
         </div>
         <div class="danger-desc">Permanently delete this job post and all associated applications. This action cannot be undone.</div>
-        <button type="button" class="btn btn-danger" onclick="openDeleteModal()">
+        <button type="button" class="btn btn-red" onclick="openDeleteModal()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
           Delete This Job Post
         </button>

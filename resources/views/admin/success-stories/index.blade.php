@@ -129,7 +129,7 @@ td{padding:13px 18px;font-size:13px;vertical-align:middle;}
               <div class="actions">
                 <form method="POST" action="{{ route('admin.success-stories.toggle', $c->id) }}">@csrf
                   <input type="hidden" name="is_featured" value="{{ $c->is_featured ? 0 : 1 }}">
-                  <button type="submit" class="toggle-btn {{ $c->is_featured?'toggle-on':'toggle-off' }}">
+                  <button type="submit" class="btn btn-secondary toggle-btn {{ $c->is_featured?'toggle-on':'toggle-off' }}">
                     @if($c->is_featured)
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.36 6.64a9 9 0 11-12.73 0M12 2v10"/></svg>Unfeature
                     @else
@@ -137,7 +137,7 @@ td{padding:13px 18px;font-size:13px;vertical-align:middle;}
                     @endif
                   </button>
                 </form>
-                <a href="{{ route('campaign.public', ['category' => $c->category?->slug ?? 'campaign', 'slug' => $c->slug]) }}" target="_blank" class="toggle-btn toggle-off" title="View">View</a>
+                <a href="{{ route('campaign.public', ['category' => $c->category?->slug ?? 'campaign', 'slug' => $c->slug]) }}" target="_blank" class="btn btn-secondary toggle-btn toggle-off" title="View">View</a>
               </div>
             </td>
           </tr>

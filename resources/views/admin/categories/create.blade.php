@@ -5,7 +5,7 @@
 @section('page_subtitle', 'Add a new category')
 
 @section('topbar_left')
-  <a href="{{ route('admin.categories.index') }}" class="back-btn">
+  <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary back-btn">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M12 19l-7-7 7-7"/></svg>
     All Categories
   </a>
