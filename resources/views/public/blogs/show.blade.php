@@ -146,10 +146,9 @@
                 @endauth
 
                 {{-- Copy link --}}
-                <button onclick="copyLink()"
-                    class="flex items-center gap-2 px-4 py-2 rounded-full border border-stone-200 text-stone-600 text-sm hover:border-stone-400 hover:bg-stone-50 transition-colors">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                <button type="button" class="btn btn-secondary" onclick="copyLink()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
                     </svg>
                     <span id="copy-label">Copy Link</span>
                 </button>
@@ -166,8 +165,7 @@
 
                 {{-- Report --}}
                 @auth
-                <button onclick="document.getElementById('report-modal').classList.remove('hidden')"
-                    class="ml-auto text-xs text-stone-400 hover:text-rose-500 transition-colors underline underline-offset-2">
+                <button type="button" class="btn btn-yellow" onclick="document.getElementById('report-modal').classList.remove('hidden')">
                     Report post
                 </button>
                 @endauth
@@ -231,14 +229,7 @@
                                 @enderror
                                 <div class="flex items-center justify-between mt-3">
                                     <p class="text-xs text-stone-400">Be kind and constructive</p>
-                                    <button type="submit"
-                                        class="mt-5 md:mt-0 text-white text-sm font-semibold rounded-xl transition-all hover:scale-105"
-                                        style="
-                                            padding:11px 18px;
-                                            font-family:'DM Sans', sans-serif;
-                                            background: linear-gradient(135deg, #2563eb , #0d9488);
-                                            box-shadow: 0 4px 14px rgba(37,99,235,.4);
-                                        ">
+                                <button type="submit" class="btn btn-primary">
                                         Post Comment
                                     </button>
                                 </div>
@@ -312,8 +303,7 @@
                                 <input id="reply-input" type="text" name="content" placeholder="Write a reply…"
                                     class="flex-1 border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm bg-white focus:outline-none transition-all"
                                     required>
-                                <button type="submit"
-                                    class="px-4 py-2.5 bg-stone-900 text-white text-xs font-medium rounded-xl hover:bg-amber-500 hover:text-stone-900 transition-colors whitespace-nowrap">
+                                <button type="submit" class="btn btn-primary">
                                     Reply
                                 </button>
                             </form>
@@ -442,8 +432,7 @@
 @auth
 <div class="fixed bottom-6 right-6 z-40 lg:hidden">
     <button id="float-like"
-        class="flex items-center gap-2 px-5 py-3 rounded-full shadow-xl border text-sm font-semibold
-               {{ $isLiked ? 'bg-rose-50 border-rose-300 text-rose-600' : 'bg-white border-stone-200 text-stone-600' }}"
+        type="button" class="btn btn-accent"
         onclick="document.getElementById('like-btn').click()">
         <span>{{ $isLiked ? '♥' : '♡' }}</span>
         <span id="float-count">{{ number_format($blog->likes_count ?? 0) }}</span>
@@ -459,9 +448,9 @@
         <div class="flex items-center justify-between mb-5">
             <h3 class="font-display text-lg font-bold text-stone-800">Report This Post</h3>
             <button onclick="document.getElementById('report-modal').classList.add('hidden')"
-                class="w-8 h-8 flex items-center justify-center rounded-full text-stone-400 hover:bg-stone-100 hover:text-stone-600 transition-colors">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                class="btn btn-secondary" aria-label="Close report">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
             </button>
         </div>
@@ -484,13 +473,12 @@
                     class="w-full border border-stone-200 rounded-xl px-3 py-2.5 text-sm bg-stone-50 focus:outline-none focus:ring-2 focus:ring-amber-400 resize-none"></textarea>
             </div>
             <div class="flex gap-3">
-                <button type="submit"
-                    class="flex-1 py-2.5 bg-rose-600 text-white text-sm font-semibold rounded-xl hover:bg-rose-700 transition-colors">
+                <button type="submit" class="btn btn-primary">
                     Submit Report
                 </button>
                 <button type="button"
                     onclick="document.getElementById('report-modal').classList.add('hidden')"
-                    class="flex-1 py-2.5 border border-stone-200 text-stone-600 text-sm font-medium rounded-xl hover:bg-stone-50 transition-colors">
+                    class="btn btn-secondary">
                     Cancel
                 </button>
             </div>

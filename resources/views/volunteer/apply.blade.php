@@ -137,7 +137,7 @@
           <textarea id="message" name="message" rows="5" placeholder="Tell us a bit about yourself, your skills, or the cause you care about…">{{ old('message') }}</textarea>
         </div>
 
-        <button type="submit" class="vol-submit">Submit Application</button>
+        <button type="submit" class="btn btn-primary vol-submit">Submit Application</button>
       </form>
     </div>
 

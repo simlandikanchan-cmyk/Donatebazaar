@@ -462,7 +462,7 @@
                     <strong>Schedule</strong> sets a future date
                 </p>
                 <div class="action-btns">
-                    <button type="submit" name="action" value="draft" class="btn btn-draft">
+                    <button type="submit" name="action" value="draft" class="btn btn-secondary btn-draft">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
                         Save Draft
                     </button>
@@ -470,7 +470,7 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                         Schedule
                     </button>
-                    <button type="submit" name="action" value="publish" class="btn btn-publish">
+                    <button type="submit" name="action" value="publish" class="btn btn-green btn-publish">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3l14 9-14 9V3z"/></svg>
                         Publish Now
                     </button>

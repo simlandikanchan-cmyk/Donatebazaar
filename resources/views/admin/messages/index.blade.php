@@ -266,15 +266,15 @@ tbody tr.unread::before{content:'';position:absolute;left:0;top:0;bottom:0;width
 <div class="bulk-bar" id="bulkBar">
   <div class="bulk-left"><strong id="bulkCount">0</strong> selected</div>
   <div class="bulk-actions">
-    <button class="bb-btn bb-read" id="bulkRead">
+    <button class="btn btn-secondary bb-btn bb-read" id="bulkRead">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
       Mark as read
     </button>
-    <button class="bb-btn bb-delete" id="bulkDelete">
+    <button class="btn btn-red bb-btn bb-delete" id="bulkDelete">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
       Delete
     </button>
-    <button class="bb-btn bb-clear" id="bulkClear">Clear</button>
+    <button class="btn btn-secondary bb-btn bb-clear" id="bulkClear">Clear</button>
   </div>
 </div>
 
@@ -342,11 +342,11 @@ tbody tr.unread::before{content:'';position:absolute;left:0;top:0;bottom:0;width
           </td>
           <td data-label="Actions">
             <div class="actions">
-              <a href="{{ route('admin.messages.show', $msg->id) }}" class="act-btn ab-view">
+              <a href="{{ route('admin.messages.show', $msg->id) }}" class="btn btn-secondary act-btn ab-view">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                 View
               </a>
-              <button type="button" class="act-btn ab-toggle" data-id="{{ $msg->id }}" data-read="{{ $isRead ? '1' : '0' }}">
+              <button type="button" class="btn btn-secondary act-btn ab-toggle" data-id="{{ $msg->id }}" data-read="{{ $isRead ? '1' : '0' }}">
                 @if($isRead)
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9l9 6 9-6"/></svg> Unread
                 @else
@@ -355,7 +355,7 @@ tbody tr.unread::before{content:'';position:absolute;left:0;top:0;bottom:0;width
               </button>
               <form action="{{ route('admin.messages.delete', $msg->id) }}" method="POST" style="display:inline;">
                 @csrf @method('DELETE')
-                <button type="submit" class="act-btn ab-delete" onclick="return confirm('Delete this message?')">
+                <button type="submit" class="btn btn-red act-btn ab-delete" onclick="return confirm('Delete this message?')">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
                   Delete
                 </button>

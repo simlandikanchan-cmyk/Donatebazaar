@@ -499,7 +499,7 @@ label.lbl .counter.over{color:var(--red);}
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                   Discard
                 </a>
-                <button type="submit" name="_action" value="draft" class="btn btn-draft" id="draftBtn">
+                <button type="submit" name="_action" value="draft" class="btn btn-secondary btn-draft" id="draftBtn">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
                   Save Draft
                 </button>

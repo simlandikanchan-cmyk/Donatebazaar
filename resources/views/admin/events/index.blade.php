@@ -471,40 +471,40 @@ tbody tr.row-selected{background:var(--a-lt);}
                 <a href="{{ route('admin.events.show', $event->id) }}" class="act-link act-icon" title="View" aria-label="View">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                 </a>
-                <a href="{{ route('admin.events.edit', $event->id) }}" class="act-link act-edit act-icon" title="Edit" aria-label="Edit">
+                <a href="{{ route('admin.events.edit', $event->id) }}" class="btn btn-secondary act-link act-edit act-icon" title="Edit" aria-label="Edit">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                 </a>
                 <form class="act-form" method="POST" action="{{ route('admin.events.toggleSetting', $event->id) }}">
                   @csrf
                   <input type="hidden" name="field" value="send_notification">
-                  <button type="submit" class="act-link act-bell act-icon {{ $event->send_notification ? 'is-on' : '' }}" title="{{ $event->send_notification ? 'Notifications ON — also emails the campaign creator when published (followers are always notified)' : 'Notifications OFF — toggle to also email the campaign creator on publish' }}" aria-label="{{ $event->send_notification ? 'Notify On' : 'Notify' }}">
+                  <button type="submit" class="btn btn-secondary act-link act-bell act-icon {{ $event->send_notification ? 'is-on' : '' }}" title="{{ $event->send_notification ? 'Notifications ON — also emails the campaign creator when published (followers are always notified)' : 'Notifications OFF — toggle to also email the campaign creator on publish' }}" aria-label="{{ $event->send_notification ? 'Notify On' : 'Notify' }}">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
                   </button>
                 </form>
                 @if($event->status === 'pending')
                   <form class="act-form" method="POST" action="{{ route('admin.events.approve', $event->id) }}" onsubmit="return confirm('Approve and publish this event?')">
                     @csrf
-                    <button type="submit" class="act-link act-approve act-icon" title="Approve" aria-label="Approve">
+                    <button type="submit" class="btn btn-green act-link act-approve act-icon" title="Approve" aria-label="Approve">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 6L9 17l-5-5"/></svg>
                     </button>
                   </form>
                   <form class="act-form" method="POST" action="{{ route('admin.events.reject', $event->id) }}" onsubmit="return confirm('Reject this event?')">
                     @csrf
-                    <button type="submit" class="act-link act-reject act-icon" title="Reject" aria-label="Reject">
+                    <button type="submit" class="btn btn-red act-link act-reject act-icon" title="Reject" aria-label="Reject">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
                     </button>
                   </form>
                 @elseif($event->status === 'draft')
                   <form class="act-form" method="POST" action="{{ route('admin.events.publish', $event->id) }}">
                     @csrf
-                    <button type="submit" class="act-link act-approve act-icon" title="Publish" aria-label="Publish">
+                    <button type="submit" class="btn btn-green act-link act-approve act-icon" title="Publish" aria-label="Publish">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7"/></svg>
                     </button>
                   </form>
                 @elseif($event->status === 'active')
                   <form class="act-form" method="POST" action="{{ route('admin.events.draft', $event->id) }}" onsubmit="return confirm('Revert this event to draft? It will no longer be public.')">
                     @csrf
-                    <button type="submit" class="act-link act-reject act-icon" title="Unpublish" aria-label="Unpublish">
+                    <button type="submit" class="btn btn-red act-link act-reject act-icon" title="Unpublish" aria-label="Unpublish">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 3h22M9 3h6"/></svg>
                     </button>
                   </form>
@@ -599,23 +599,23 @@ tbody tr.row-selected{background:var(--a-lt);}
         </div>
       </div>
       <div class="ev-card-actions">
-        <a href="{{ route('admin.events.show', $event->id) }}" class="act-link">View</a>
-        <a href="{{ route('admin.events.edit', $event->id) }}" class="act-link act-edit">Edit</a>
+        <a href="{{ route('admin.events.show', $event->id) }}" class="btn btn-secondary act-link">View</a>
+        <a href="{{ route('admin.events.edit', $event->id) }}" class="btn btn-secondary act-link act-edit">Edit</a>
         <form class="act-form" method="POST" action="{{ route('admin.events.toggleSetting', $event->id) }}">
           @csrf
           <input type="hidden" name="field" value="send_notification">
-          <button type="submit" class="act-link act-bell {{ $event->send_notification ? 'is-on' : '' }}">
+          <button type="submit" class="btn btn-secondary act-link act-bell {{ $event->send_notification ? 'is-on' : '' }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
             {{ $event->send_notification ? 'Notify On' : 'Notify' }}
           </button>
         </form>
         @if($event->status === 'pending')
-          <form class="act-form" method="POST" action="{{ route('admin.events.approve', $event->id) }}">@csrf<button type="submit" class="act-link act-approve">Approve</button></form>
-          <form class="act-form" method="POST" action="{{ route('admin.events.reject', $event->id) }}">@csrf<button type="submit" class="act-link act-reject">Reject</button></form>
+          <form class="act-form" method="POST" action="{{ route('admin.events.approve', $event->id) }}">@csrf<button type="submit" class="btn btn-green act-link act-approve">Approve</button></form>
+          <form class="act-form" method="POST" action="{{ route('admin.events.reject', $event->id) }}">@csrf<button type="submit" class="btn btn-red act-link act-reject">Reject</button></form>
         @elseif($event->status === 'draft')
-          <form class="act-form" method="POST" action="{{ route('admin.events.publish', $event->id) }}">@csrf<button type="submit" class="act-link act-approve">Publish</button></form>
+          <form class="act-form" method="POST" action="{{ route('admin.events.publish', $event->id) }}">@csrf<button type="submit" class="btn btn-green act-link act-approve">Publish</button></form>
         @elseif($event->status === 'active')
-          <form class="act-form" method="POST" action="{{ route('admin.events.draft', $event->id) }}">@csrf<button type="submit" class="act-link act-reject">Unpublish</button></form>
+          <form class="act-form" method="POST" action="{{ route('admin.events.draft', $event->id) }}">@csrf<button type="submit" class="btn btn-red act-link act-reject">Unpublish</button></form>
         @endif
       </div>
     </div>
@@ -636,10 +636,10 @@ tbody tr.row-selected{background:var(--a-lt);}
 <div class="bulk-bar" id="bulkBar">
   <span class="bulk-count" id="bulkCount">0 selected</span>
   <div class="bulk-acts">
-    <button type="button" class="bulk-btn bulk-btn-del" onclick="openBulkConfirm()">
+    <button type="button" class="btn btn-red bulk-btn bulk-btn-del" onclick="openBulkConfirm()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>Delete
     </button>
-    <button type="button" class="bulk-btn bulk-btn-cancel" onclick="clearSelection()">Cancel</button>
+    <button type="button" class="btn btn-secondary bulk-btn bulk-btn-cancel" onclick="clearSelection()">Cancel</button>
   </div>
 </div>
 

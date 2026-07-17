@@ -177,7 +177,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px;"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
       Onboard NGO
     </button>
-    <a href="{{ route('admin.organizations.index') }}" class="btn-ghost">Cancel</a>
+    <a href="{{ route('admin.organizations.index') }}" class="btn btn-secondary btn-ghost">Cancel</a>
   </div>
 </form>
 

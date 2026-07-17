@@ -41,7 +41,7 @@
 <input type="text" id="phone" placeholder="Enter phone number (9876543210)" maxlength="10" inputmode="numeric">
 <br>
 
-<button id="sendBtn" onclick="sendOTP()">Send OTP</button>
+<button id="sendBtn" type="button" class="btn btn-primary" onclick="sendOTP()">Send OTP</button>
 
 <div id="message"></div>
 

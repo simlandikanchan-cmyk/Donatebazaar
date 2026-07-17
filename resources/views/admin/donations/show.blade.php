@@ -246,10 +246,10 @@
       <textarea id="refundReason" name="reason" rows="2" placeholder="Reason (optional)…" style="width:100%;margin-top:12px;padding:8px 10px;border:1px solid var(--border2);border-radius:var(--r-sm);font-size:12.5px;font-family:var(--font);background:var(--surface2);color:var(--text);resize:vertical"></textarea>
     </div>
     <div class="modal-acts">
-      <button type="button" onclick="closeRefund()" class="modal-btn modal-cancel">Cancel</button>
+      <button type="button" onclick="closeRefund()" class="btn btn-secondary modal-btn modal-cancel">Cancel</button>
       <form id="refundForm" method="POST" style="flex:1;">
         @csrf
-        <button type="submit" class="modal-btn modal-red" style="width:100%;">↺ Confirm Refund</button>
+        <button type="submit" class="btn btn-red modal-btn modal-red">↺ Confirm Refund</button>
       </form>
     </div>
   </div>

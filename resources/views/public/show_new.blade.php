@@ -214,7 +214,7 @@ onclick="navigator.share({
 title:'{{ $campaign->title }}',
 url:window.location.href
 })"
-class="border border-blue-600 text-blue-600 px-10 py-3 rounded-lg">
+class="btn btn-accent">
 
 Share this mission
 

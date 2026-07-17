@@ -682,7 +682,7 @@ foreach ($docs as $field => $info) { if ($application->$field) { $hasDocs = true
     <input type="hidden" name="admin_notes" id="adminNotesInput">
     <textarea id="adminNotesTextarea" rows="3" class="modal-ta" placeholder="Add internal notes about this application…" style="margin-bottom:12px;">{{ $application->admin_notes }}</textarea>
     <div style="display:flex;gap:8px;flex-wrap:wrap;">
-      <button type="button" class="c-btn c-btn-view" onclick="saveAdminNotes()">
+      <button type="button" class="btn btn-secondary c-btn c-btn-view" onclick="saveAdminNotes()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
         Save Notes
       </button>
@@ -707,19 +707,19 @@ foreach ($docs as $field => $info) { if ($application->$field) { $hasDocs = true
     @endif
   </div>
   <div class="actions-right">
-    <a href="{{ route('admin.applications') }}" class="c-btn c-btn-back">
+    <a href="{{ route('admin.applications') }}" class="btn btn-secondary c-btn c-btn-back">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
       Back to List
     </a>
     @if($application->status === 'pending' || $application->status === 'under_review')
       <form method="POST" action="{{ route('admin.applications.approve', $application->id) }}" onsubmit="return handleSub(this,'Approving…')">
         @csrf
-        <button type="submit" class="c-btn c-btn-approve">
+        <button type="submit" class="btn btn-green c-btn c-btn-approve">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
           Approve Application
         </button>
       </form>
-      <button type="button" class="c-btn c-btn-reject" onclick="openReject({{ $application->id }})">
+      <button type="button" class="btn btn-red c-btn c-btn-reject" onclick="openReject({{ $application->id }})">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
         Reject Application
       </button>
@@ -755,8 +755,8 @@ foreach ($docs as $field => $info) { if ($application->$field) { $hasDocs = true
       <textarea id="rejectReason" name="rejection_reason" rows="3" placeholder="Or type a custom reason…" class="modal-ta"></textarea>
       <p id="rejectErr" class="modal-err">⚠ Please provide a reason before rejecting.</p>
       <div class="modal-acts">
-        <button type="button" onclick="closeReject()" class="modal-btn modal-cancel">Cancel</button>
-        <button type="submit" id="rejectBtn" class="modal-btn modal-red">✕ Reject Application</button>
+        <button type="button" onclick="closeReject()" class="btn btn-secondary modal-btn modal-cancel">Cancel</button>
+        <button type="submit" id="rejectBtn" class="btn btn-red modal-btn modal-red">✕ Reject Application</button>
       </div>
     </form>
   </div>

@@ -42,11 +42,11 @@
 <input type="text" id="otp" placeholder="Enter OTP" maxlength="6" inputmode="numeric">
 <br>
 
-<button id="verifyBtn" onclick="verifyOTP()">Verify OTP</button>
+<button id="verifyBtn" type="button" class="btn btn-primary" onclick="verifyOTP()">Verify OTP</button>
 
 <br><br>
 
-<button id="resendBtn" onclick="resendOTP()" disabled>
+<button id="resendBtn" type="button" class="btn btn-secondary" onclick="resendOTP()" disabled>
     Resend OTP (30s)
 </button>
 

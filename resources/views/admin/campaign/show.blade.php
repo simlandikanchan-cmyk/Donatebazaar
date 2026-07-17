@@ -247,7 +247,7 @@
                 style="width:100%;min-height:80px;border-radius:9px;border:1px solid var(--border2);background:var(--surface2);color:var(--text);font-family:var(--font);font-size:13px;padding:10px 12px;outline:none;resize:vertical;margin-bottom:14px;transition:border-color var(--ease);"
                 onfocus="this.style.borderColor='var(--a)'" onblur="this.style.borderColor='var(--border2)'"></textarea>
             <div class="modal-actions">
-                <button type="button" class="action-btn btn-ghost" onclick="closeRejectModal()">Cancel</button>
+                <button type="button" class="btn btn-secondary action-btn btn-ghost" onclick="closeRejectModal()">Cancel</button>
                 <button type="submit" class="action-btn btn-red">Confirm Reject</button>
             </div>
         </form>
@@ -863,7 +863,7 @@
                     </div>
                 @endif
 
-                <a href="{{ route('admin.dashboard') }}" class="action-btn btn-ghost" style="margin-top:12px;">
+                <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary action-btn btn-ghost" style="margin-top:12px;">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M12 5l-7 7 7 7"/></svg>
                     Back to Dashboard
                 </a>

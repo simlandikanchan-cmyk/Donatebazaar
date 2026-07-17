@@ -262,7 +262,7 @@ tbody tr:hover{background:var(--surface2)}
       </div>
     </div>
     <div style="margin-top:14px;display:flex;align-items:center;gap:12px">
-      <button type="submit" class="assign-btn" id="assignBtn" disabled>
+      <button type="submit" class="btn btn-primary assign-btn" id="assignBtn" disabled>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
         Assign to Event
       </button>

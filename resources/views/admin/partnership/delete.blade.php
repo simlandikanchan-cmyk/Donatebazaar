@@ -31,7 +31,7 @@
       <form method="POST" action="{{ route('admin.partnership.delete',$partnership->id) }}" style="flex:1;">
         @csrf
         @method('DELETE')
-        <button style="flex:1;width:100%;padding:11px;border-radius:10px;font-size:13px;font-weight:500;border:none;cursor:pointer;background:var(--red);color:#fff;">
+        <button class="btn btn-red">
           Yes, Delete
         </button>
       </form>
