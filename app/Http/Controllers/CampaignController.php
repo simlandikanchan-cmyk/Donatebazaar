@@ -27,8 +27,8 @@ class CampaignController extends Controller
 
     private const CREATE_RULES = [
         'title'       => 'required|string|max:255',
-        'description' => 'required',
-        'goal_amount' => 'required|numeric|min:1',
+        'description' => 'required|string|max:20000',
+        'goal_amount' => 'required|numeric|min:1|max:500000',
         'category_id' => 'required|exists:categories,id',
         'cover_image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
         'location'    => 'nullable|string|max:255',
@@ -39,8 +39,8 @@ class CampaignController extends Controller
 
     private const UPDATE_RULES = [
         'title'       => 'required|string|max:255',
-        'description' => 'required',
-        'goal_amount' => 'required|numeric|min:1',
+        'description' => 'required|string|max:20000',
+        'goal_amount' => 'required|numeric|min:1|max:500000',
         'category_id' => 'required|exists:categories,id',
         'cover_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         'location'    => 'nullable|string|max:255',
@@ -90,6 +90,13 @@ class CampaignController extends Controller
         ]);
 
         $request->validate(self::CREATE_RULES);
+
+        // Validate nested uploads (not covered by CREATE_RULES) to prevent
+        // arbitrary file types / oversized uploads being stored.
+        $request->validate([
+            'products.*.image' => ['nullable', 'file', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'updates.*.document' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
+        ]);
 
         $updates = $request->input('updates', []);
         $hasValidUpdate = false;
@@ -141,6 +148,10 @@ class CampaignController extends Controller
 
     public function show(Campaign $campaign)
     {
+        if ($campaign->user_id !== Auth::id()) {
+            abort(403);
+        }
+
         $campaign->load([
             'category', 'user', 'products', 'updates',
             'donations' => fn($q) => $q->where('payment_status', 'completed')->orderBy('created_at', 'desc'),

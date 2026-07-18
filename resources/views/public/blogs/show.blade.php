@@ -109,7 +109,7 @@
 
             {{-- ── CONTENT ── --}}
             <div class="prose-custom max-w-none mb-10" id="article-body">
-                {!! $blog->content !!}
+                {!! nl2br(e($blog->content)) !!}
             </div>
 
             {{-- Tags --}}
