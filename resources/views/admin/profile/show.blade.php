@@ -98,9 +98,17 @@
 .sess-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:100px;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;background:rgba(5,196,138,.12);color:var(--green);border:1px solid rgba(5,196,138,.2);font-family:var(--mono);}
 .sess-revoke{flex-shrink:0;padding:6px 13px;border-radius:var(--r-sm);font-size:11px;font-weight:600;border:1px solid var(--border2);background:var(--surface2);color:var(--text3);cursor:pointer;transition:all var(--ease);text-decoration:none;}
 .sess-revoke:hover{background:var(--red-lt);border-color:var(--red);color:var(--red);}
-.sess-footer{padding:12px 20px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.sess-footer{padding:12px 20px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
 .sess-revoke-all{display:inline-flex;align-items:center;gap:5px;padding:8px 14px;border-radius:var(--r-sm);font-size:11px;font-weight:600;border:1px solid var(--border2);background:var(--surface2);color:var(--text3);cursor:pointer;transition:all var(--ease);text-decoration:none;white-space:nowrap;}
 .sess-revoke-all:hover{background:var(--amber-lt);border-color:var(--amber);color:var(--amber);}
+@media(max-width:600px){
+  .session-row{flex-wrap:wrap;gap:8px;padding:10px 14px;}
+  .session-info{flex:1 1 100%;order:-1;}
+  .sess-revoke{margin-left:auto;}
+  .sess-footer{flex-direction:column;align-items:stretch;gap:8px;padding:12px 14px;}
+  .sess-footer span{flex:none !important;text-align:center;}
+  .sess-footer form{align-self:center;}
+}
 
 /* ── DANGER ZONE ── */
 .danger-card{border-color:rgba(240,68,68,.3);}
@@ -351,7 +359,7 @@
               @csrf
               @method('DELETE')
               <button type="submit" class="sess-revoke-all">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                 Revoke All Others
               </button>
             </form>

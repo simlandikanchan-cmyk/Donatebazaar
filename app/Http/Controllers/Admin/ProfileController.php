@@ -19,7 +19,7 @@ class ProfileController extends Controller
             ->where('user_id', $request->user()->id)
             ->orderBy('last_activity', 'desc')
             ->get()
-            ->map(function ($session) {
+            ->map(function ($session) use ($request) {
                 $session->is_current = $session->id === $request->session()->getId();
                 $session->last_active = \Carbon\Carbon::createFromTimestamp($session->last_activity)->diffForHumans();
                 return $session;

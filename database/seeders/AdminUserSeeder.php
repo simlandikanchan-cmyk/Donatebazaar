@@ -15,7 +15,7 @@ class AdminUserSeeder extends Seeder
             [
                 'name'     => 'Admin',
                 'email'    => 'admin@DonateBazaar.com',
-                'password' => Hash::make('admin@123'),
+                'password' => Hash::make('YourNewSecurePassword123!'),
                 'role'     => 'admin',
             ]
         );

@@ -4,11 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Campaign;
+use App\Models\ContactMessage;
 use App\Models\Donation;
+use App\Models\JobPostApplication;
 use App\Models\User;
 use App\Models\Volunteer;
 use App\Models\VolunteerApplication;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class DashboardController extends Controller
 {
@@ -70,7 +73,8 @@ class DashboardController extends Controller
             })->count();
 
         $totalCampaigns = Campaign::count();
-        $approvalRate = $totalCampaigns > 0 ? round(($cntActive / $totalCampaigns) * 100) : 0;
+        $reviewed = $cntActive + $cntRejected;
+        $approvalRate = $reviewed > 0 ? round(($cntActive / $reviewed) * 100) : 0;
 
         return compact(
             'totalCampaigns', 'cntPending', 'cntActive', 'cntPaused',
@@ -93,6 +97,67 @@ class DashboardController extends Controller
         $donationsToday = Donation::whereDate('created_at', today())->count();
         $totalRevenue   = Donation::sum('total_amount');
 
+        // ─────────────────────────────────────────────────────────
+        // Pending Actions counts
+        // ─────────────────────────────────────────────────────────
+        $unreadMessages     = ContactMessage::where('is_read', false)->count();
+        $pendingJobApplicants = JobPostApplication::where('status', 'pending')->count();
+
+        // ─────────────────────────────────────────────────────────
+        // Recent Activity — merged timeline
+        // ─────────────────────────────────────────────────────────
+        $recentDonations = Donation::with('campaign')
+            ->where('payment_status', 'completed')
+            ->latest()
+            ->take(5)
+            ->get()
+            ->map(fn ($d) => [
+                'type'      => 'donation',
+                'desc'      => '₹' . number_format((float) $d->total_amount) . ' donation to ' . ($d->campaign->title ?? 'a campaign'),
+                'time'      => $d->created_at,
+                'link'      => route('admin.donations.index'),
+            ]);
+
+        $recentCampaigns = Campaign::where('campaign_state', 'pending')
+            ->latest()
+            ->take(4)
+            ->get()
+            ->map(fn ($c) => [
+                'type' => 'campaign',
+                'desc' => 'Campaign "' . Str::limit($c->title, 40) . '" submitted for review',
+                'time' => $c->created_at,
+                'link' => route('admin.campaign.index'),
+            ]);
+
+        $recentVolApps = VolunteerApplication::latest()
+            ->take(4)
+            ->get()
+            ->map(fn ($v) => [
+                'type' => 'volunteer',
+                'desc' => 'New volunteer application received',
+                'time' => $v->created_at,
+                'link' => route('admin.volunteer_applications.index'),
+            ]);
+
+        $recentMessages = ContactMessage::latest()
+            ->take(4)
+            ->get()
+            ->map(fn ($m) => [
+                'type' => 'message',
+                'desc' => 'Message "' . Str::limit($m->subject ?? '(no subject)', 40) . '" received',
+                'time' => $m->created_at,
+                'link' => route('admin.messages'),
+            ]);
+
+        $recentActivity = collect()
+            ->merge($recentDonations)
+            ->merge($recentCampaigns)
+            ->merge($recentVolApps)
+            ->merge($recentMessages)
+            ->sortByDesc('time')
+            ->take(12)
+            ->values();
+
         // Initial grid shows the Active (+ Paused) list, matching the default tab.
         $activeCampaigns = $this->scopeState(
             Campaign::with('user', 'category')->whereIn('campaign_state', ['active', 'paused']),
@@ -100,7 +165,7 @@ class DashboardController extends Controller
         )->latest()->paginate(12, ['*'], 'cpage');
 
         // ─────────────────────────────────────────────────────────
-        // Monthly Chart
+        // Monthly Chart (last 6 months)
         // ─────────────────────────────────────────────────────────
 
         $monthlyData = Campaign::selectRaw("
@@ -108,7 +173,7 @@ class DashboardController extends Controller
                 COUNT(*) as total,
                 SUM(campaign_state = 'active') as active
             ")
-            ->where('created_at', '>=', now()->subMonths(11)->startOfMonth())
+            ->where('created_at', '>=', now()->subMonths(5)->startOfMonth())
             ->groupByRaw("DATE_FORMAT(created_at, '%Y-%m')")
             ->orderBy('month')
             ->get()
@@ -116,7 +181,7 @@ class DashboardController extends Controller
 
         $chartLabels = $chartTotal = $chartActive = [];
 
-        for ($i = 11; $i >= 0; $i--) {
+        for ($i = 5; $i >= 0; $i--) {
             $key = now()->subMonths($i)->format('Y-m');
             $row = $monthlyData->get($key);
 
@@ -125,18 +190,69 @@ class DashboardController extends Controller
             $chartActive[] = $row ? (int) $row->active : 0;
         }
 
+        // ─────────────────────────────────────────────────────────
+        // Revenue Trend (last 6 months)
+        // ─────────────────────────────────────────────────────────
+
+        $revenueData = Donation::selectRaw("
+                DATE_FORMAT(created_at, '%Y-%m') as month,
+                SUM(total_amount) as revenue
+            ")
+            ->where('payment_status', 'completed')
+            ->where('created_at', '>=', now()->subMonths(5)->startOfMonth())
+            ->groupByRaw("DATE_FORMAT(created_at, '%Y-%m')")
+            ->orderBy('month')
+            ->get()
+            ->keyBy('month');
+
+        $revLabels = $revData = [];
+
+        for ($i = 5; $i >= 0; $i--) {
+            $key = now()->subMonths($i)->format('Y-m');
+            $row = $revenueData->get($key);
+
+            $revLabels[] = now()->subMonths($i)->format('M');
+            $revData[]   = $row ? (float) $row->revenue : 0;
+        }
+
+        // ─────────────────────────────────────────────────────────
+        // Top Campaigns by Funds Raised
+        // ─────────────────────────────────────────────────────────
+
+        $topCampaigns = Campaign::where('raised_amount', '>', 0)
+            ->orderByDesc('raised_amount')
+            ->take(5)
+            ->get(['title', 'raised_amount']);
+
+        $topCampLabels = $topCampValues = [];
+
+        foreach ($topCampaigns as $c) {
+            $topCampLabels[] = Str::limit($c->title, 28);
+            $topCampValues[] = (float) $c->raised_amount;
+        }
+
+        $topCampLabels = array_reverse($topCampLabels);
+        $topCampValues = array_reverse($topCampValues);
+
         return view('admin.dashboard', array_merge($counts, compact(
             'activeCampaigns',
             'chartLabels',
             'chartTotal',
             'chartActive',
+            'revLabels',
+            'revData',
+            'topCampLabels',
+            'topCampValues',
             'volunteerCount',
             'pendingVolunteerApps',
             'totalUsers',
             'newUsersToday',
             'totalDonations',
             'donationsToday',
-            'totalRevenue'
+            'totalRevenue',
+            'unreadMessages',
+            'pendingJobApplicants',
+            'recentActivity'
         )));
     }
 

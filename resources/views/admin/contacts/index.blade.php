@@ -24,7 +24,8 @@
     </div>
 
     <div class="bg-white shadow-xl rounded-2xl overflow-hidden border border-gray-100">
-        <table class="w-full text-sm">
+        <div style="overflow-x:auto;">
+        <table class="w-full text-sm" style="min-width:560px;">
             <thead class="bg-gray-100 text-gray-700 uppercase text-xs">
                 <tr>
                     <th class="p-4 text-left">Name</th>
@@ -56,6 +57,7 @@
                 @endforeach
             </tbody>
         </table>
+        </div>
     </div>
 </div>
 @endsection

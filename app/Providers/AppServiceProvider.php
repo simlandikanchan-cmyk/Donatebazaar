@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Services\FundraiserLevelService;
+use App\View\Composers\CampaignShowComposer;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
 
@@ -20,6 +22,10 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(FundraiserLevelService::class);
+
+        if ($this->app->environment('local')) {
+            $this->app->register(\App\Providers\TelescopeServiceProvider::class);
+        }
     }
 
     /**
@@ -36,6 +42,8 @@ class AppServiceProvider extends ServiceProvider
                 ->where(is_numeric($value) ? 'id' : 'slug', $value)
                 ->firstOrFail();
         });
+
+        View::composer('campaigns.show', CampaignShowComposer::class);
 
         // Health Checks
         Health::checks([

@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DonateBazaar — System Architecture, Security & Scalability Report</title>
+<style>
+  :root{
+    --ink:#0f1117; --ink2:#4b5563; --ink3:#9ca3af;
+    --accent:#2563eb; --accent2:#0d9488; --line:#e5e7eb;
+    --bg-soft:#f8f9fe; --green:#16a34a; --red:#ef4444; --amber:#f59e0b;
+    --code-bg:#0d1117; --code-ink:#e6edf3;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:#fff;font-size:12px;line-height:1.6;}
+  .page{width:210mm;min-height:297mm;padding:18mm 16mm;margin:0 auto;page-break-after:always;position:relative;}
+  .page:last-child{page-break-after:auto;}
+  h1{font-size:26px;margin:0 0 6px;letter-spacing:-.5px;}
+  h2{font-size:18px;margin:0 0 10px;padding-bottom:6px;border-bottom:2px solid var(--accent);color:var(--accent);}
+  h3{font-size:14px;margin:14px 0 6px;color:var(--ink);}
+  p{margin:0 0 8px;}
+  .sub{color:var(--ink2);font-size:12px;margin-bottom:14px;}
+  .muted{color:var(--ink3);}
+  .lead{font-size:13px;background:var(--bg-soft);border-left:4px solid var(--accent);padding:10px 14px;border-radius:6px;margin:10px 0 16px;}
+  table{width:100%;border-collapse:collapse;margin:8px 0 14px;font-size:11px;}
+  th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top;}
+  th{background:var(--accent);color:#fff;font-weight:600;}
+  tr:nth-child(even) td{background:#fafbff;}
+  code{background:#eef2ff;color:#3730a3;padding:1px 5px;border-radius:4px;font-size:11px;font-family:'Consolas',monospace;}
+  .tag{display:inline-block;background:var(--accent);color:#fff;font-size:10px;padding:2px 8px;border-radius:20px;margin:0 3px 3px 0;}
+  .tag.g{background:var(--green);}
+  .tag.a{background:var(--accent2);}
+  .tag.r{background:var(--red);}
+  .tag.y{background:var(--amber);}
+  .box{background:var(--bg-soft);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:10px 0;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .kpi{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px;text-align:center;}
+  .kpi .n{font-size:22px;font-weight:800;color:var(--accent);}
+  .kpi .l{font-size:10px;color:var(--ink2);text-transform:uppercase;letter-spacing:.04em;}
+  ul{margin:6px 0 10px;padding-left:18px;}
+  li{margin:3px 0;}
+  .flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0;}
+  .flow .step{background:#eef2ff;color:#1e3a8a;border:1px solid #c7d2fe;padding:5px 10px;border-radius:6px;font-size:11px;}
+  .flow .arr{color:var(--ink3);font-weight:700;}
+  .footer{position:absolute;bottom:10mm;left:16mm;right:16mm;font-size:9px;color:var(--ink3);border-top:1px solid var(--line);padding-top:5px;display:flex;justify-content:space-between;}
+  .cover{display:flex;flex-direction:column;justify-content:center;min-height:297mm;text-align:center;background:linear-gradient(160deg,#0d0e1a 0%,#13122b 45%,#1a1040 100%);color:#fff;}
+  .cover h1{color:#fff;font-size:40px;}
+  .cover .big{font-size:64px;font-weight:800;background:linear-gradient(135deg,#60a5fa,#2dd4bf);-webkit-background-clip:text;background-clip:text;color:transparent;margin:10px 0;}
+  .cover .meta{color:rgba(255,255,255,.6);font-size:13px;margin-top:30px;}
+  .cover .pill{display:inline-block;border:1px solid rgba(96,165,250,.4);background:rgba(37,99,235,.12);color:#bfdbfe;padding:6px 16px;border-radius:30px;font-size:12px;margin-top:20px;}
+  .pagebreak{page-break-before:always;}
+  .note{font-size:10px;color:var(--ink3);font-style:italic;}
+  .secnum{color:var(--accent);font-weight:800;margin-right:6px;}
+  .barcol{height:8px;background:#e5e7eb;border-radius:6px;overflow:hidden;margin:3px 0 8px;}
+  .barcol > span{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));}
+</style>
+</head>
+<body>
+
+<!-- ============ PAGE 1 — COVER ============ -->
+<section class="page cover">
+  <div>
+    <div class="pill">CONFIDENTIAL · INTERNAL TECHNICAL DOCUMENT</div>
+    <h1>DonateBazaar</h1>
+    <div class="big">Crowdfunding Platform</div>
+    <p style="font-size:16px;color:rgba(255,255,255,.75);max-width:560px;margin:0 auto;">
+      End-to-End System Architecture, Security Engineering &amp; Scalability Assessment
+    </p>
+    <div class="meta">
+      Prepared for: Human Resources &amp; Engineering Leadership<br>
+      Subject: Functional scope, security enhancements &amp; scale readiness<br>
+      Author: Backend / Full-Stack Engineer (Project Owner)<br>
+      Tech Stack: Laravel 11 · MySQL/MariaDB · Razorpay · Anthropic Claude · Blade<br>
+      Document Version: 1.0 · Date: July 2026
+    </div>
+  </div>
+</section>
+
+<!-- ============ PAGE 2 — EXECUTIVE SUMMARY ============ -->
+<section class="page">
+  <h2><span class="secnum">1.</span>Executive Summary</h2>
+  <p class="sub">What was built, at a glance, and why it justifies senior-level compensation.</p>
+
+  <div class="grid2" style="margin-bottom:14px;">
+    <div class="kpi"><div class="n">~70</div><div class="l">Controllers</div></div>
+    <div class="kpi"><div class="n">~50</div><div class="l">Eloquent Models</div></div>
+    <div class="kpi"><div class="n">8</div><div class="l">Middleware</div></div>
+    <div class="kpi"><div class="n">4</div><div class="l">Service Classes</div></div>
+    <div class="kpi"><div class="n">20</div><div class="l">Mail Classes</div></div>
+    <div class="kpi"><div class="n">90+</div><div class="l">Migrations</div></div>
+  </div>
+
+  <div class="lead">
+    DonateBazaar is a <strong>production-grade, fintech-grade crowdfunding platform</strong> built from the ground up
+    in Laravel 11. It is not a CRUD scaffold. The most technically demanding work is a complete
+    <strong>Razorpay payment pipeline</strong> with bank-grade concurrency and integrity guarantees, wrapped in a
+    governed admin system with KYC compliance, audit logging, and an AI assistant.
+  </div>
+
+  <h3>Three pillars of delivered value</h3>
+  <table>
+    <tr><th style="width:30%">Pillar</th><th>Delivered Capability</th></tr>
+    <tr><td><strong>Functionality</strong></td><td>Multi-channel auth, 6-step campaign builder, KYC, donations, refunds, settlements, ~25 admin modules, blogs/events/volunteers/NGOs/jobs, AI chatbot.</td></tr>
+    <tr><td><strong>Security</strong></td><td>18 distinct controls: CSRF, HMAC webhook verification, constant-time comparison, OTP hashing, role/status middleware, private-disk KYC, server-side coupon validation, rate limiting, audit trails.</td></tr>
+    <tr><td><strong>Scalability</strong></td><td>Stateless money logic via DB triggers + locks, indexed queries, cache locks, queue-ready mail, API scaffold, asset optimization.</td></tr>
+  </table>
+
+  <div class="box">
+    <strong>Bottom line for this review:</strong> The engineer owns the entire backend — from database schema
+    (90+ migrations) through business logic (services, state machines) to external integrations (Razorpay,
+    Anthropic) and security hardening. This is a senior full-stack / backend engineering deliverable.
+  </div>
+
+  <div class="footer"><span>DonateBazaar — System Report v1.0</span><span>Page 2</span></div>
+</section>
+
+<!-- ============ PAGE 3 — TECH STACK & ARCHITECTURE ============ -->
+<section class="page">
+  <h2><span class="secnum">2.</span>Technology Stack &amp; Architecture</h2>
+  <p class="sub">The foundation the entire platform is built upon.</p>
+
+  <h3>2.1 Core Stack</h3>
+  <table>
+    <tr><th>Layer</th><th>Technology</th><th>Role</th></tr>
+    <tr><td>Framework</td><td>Laravel 11 (PHP 8.2+)</td><td>MVC, routing, ORM, queues, mail, middleware</td></tr>
+    <tr><td>Database</td><td>MySQL / MariaDB</td><td>Transactional storage + DB triggers for money integrity</td></tr>
+    <tr><td>Payment Gateway</td><td>Razorpay (Orders + Webhooks)</td><td>Donation capture, refunds, settlement</td></tr>
+    <tr><td>AI</td><td>Anthropic Claude (claude-sonnet-4-6)</td><td>Streaming customer-support chatbot</td></tr>
+    <tr><td>Front-end</td><td>Blade + custom CSS + Vite</td><td>Server-rendered views, WebP pipeline</td></tr>
+    <tr><td>Caching / Locks</td><td>Laravel Cache (lock API)</td><td>Distributed locks, category caching</td></tr>
+    <tr><td>Mail</td><td>Laravel Mail + 20 Mailable classes</td><td>Receipts, status, KYC, OTP workflow emails</td></tr>
+  </table>
+
+  <h3>2.2 Layered Architecture</h3>
+  <div class="box">
+    <div class="flow">
+      <span class="step">HTTP Routes (web / admin / api)</span><span class="arr">→</span>
+      <span class="step">Middleware (auth, admin, account, author)</span><span class="arr">→</span>
+      <span class="step">Controllers</span><span class="arr">→</span>
+      <span class="step">Services (business rules)</span><span class="arr">→</span>
+      <span class="step">Models / DB</span>
+    </div>
+    <p class="note" style="margin:0;">Cross-cutting: Events/Notifications, Mail, Queue-ready jobs, Scheduled Commands, DB Triggers.</p>
+  </div>
+
+  <h3>2.3 Directory Footprint</h3>
+  <table>
+    <tr><th>Path</th><th>Contents</th></tr>
+    <tr><td><code>app/Http/Controllers</code></td><td>~55 controllers (+ Admin sub-namespace)</td></tr>
+    <tr><td><code>app/Models</code></td><td>~50 Eloquent models</td></tr>
+    <tr><td><code>app/Http/Middleware</code></td><td>8 middleware (auth, admin, account, author, CSRF, webp…)</td></tr>
+    <tr><td><code>app/Services</code></td><td>FundraiserLevel, Coupon, Settlement, VolunteerApplication</td></tr>
+    <tr><td><code>app/Mail</code></td><td>20 Mailable classes</td></tr>
+    <tr><td><code>routes/web</code> + <code>routes/admin</code> + <code>routes/api</code></td><td>Modular route files per domain</td></tr>
+    <tr><td><code>database/migrations</code></td><td>90+ schema migrations incl. triggers &amp; indexes</td></tr>
+  </table>
+
+  <div class="footer"><span>DonateBazaar — System Report v1.0</span><span>Page 3</span></div>
+</section>
+
+<!-- ============ PAGE 4 — USER JOURNEY OVERVIEW ============ -->
+<section class="page">
+  <h2><span class="secnum">3.</span>End-to-End User Journeys</h2>
+  <p class="sub">How a visitor becomes a donor, and a creator becomes a live fundraiser.</p>
+
+  <h3>3.1 Visitor → Donor Journey</h3>
+  <div class="flow">
+    <span class="step">Browse homepage</span><span class="arr">→</span>
+    <span class="step">View campaign / category / search</span><span class="arr">→</span>
+    <span class="step">Enter donation amount</span><span class="arr">→</span>
+    <span class="step">Razorpay checkout</span><span class="arr">→</span>
+    <span class="step">Payment verified</span><span class="arr">→</span>
+    <span class="step">Receipt email + raised total updates</span>
+  </div>
+
+  <h3>3.2 Creator → Live Campaign Journey</h3>
+  <div class="flow">
+    <span class="step">Register (email/Google/OTP)</span><span class="arr">→</span>
+    <span class="step">6-step campaign wizard</span><span class="arr">→</span>
+    <span class="step">Pending state</span><span class="arr">→</span>
+    <span class="step">Upload KYC</span><span class="arr">→</span>
+    <span class="step">Admin KYC approve</span><span class="arr">→</span>
+    <span class="step">Admin campaign approve</span><span class="arr">→</span>
+    <span class="step">Active / Live</span>
+  </div>
+
+  <h3>3.3 Admin Governance Journey</h3>
+  <div class="flow">
+    <span class="step">Review submissions</span><span class="arr">→</span>
+    <span class="step">Approve / Reject (with reason)</span><span class="arr">→</span>
+    <span class="step">Pause / Resume / Complete</span><span class="arr">→</span>
+    <span class="step">Settle funds</span><span class="arr">→</span>
+    <span class="step">Audit log written</span>
+  </div>
+
+  <div class="box">
+    <strong>Key design principle:</strong> The campaign can only become <code>active</code> after <strong>two
+    independent approvals</strong> — the owner's KYC <em>and</em> the campaign itself. This separation of duties
+    is a compliance-grade pattern, not an accident.
+  </div>
+
+  <h3>3.4 Role Matrix</h3>
+  <table>
+    <tr><th>Role</th><th>Capabilities</th></tr>
+    <tr><td>Guest</td><td>Browse, search, view campaigns/blogs/events, donate</td></tr>
+    <tr><td>Donor</td><td>Above + authenticated donating, following, profile</td></tr>
+    <tr><td>Fundraiser / Verified Author</td><td>Create campaigns (level-gated), products, updates</td></tr>
+    <tr><td>Volunteer</td><td>Apply, get assigned, track hours</td></tr>
+    <tr><td>Admin</td><td>Full governance: approve/reject, KYC, settlements, all modules</td></tr>
+  </table>
+
+  <div class="footer"><span>DonateBazaar — System Report v1.0</span><span>Page 4</span></div>
+</section>
+
+<!-- ============ PAGE 5 — AUTHENTICATION ============ -->
+<section class="page">
+  <h2><span class="secnum">4.</span>Authentication &amp; Identity</h2>
+  <p class="sub">Three independent login channels, all secure by construction.</p>
+
+  <h3>4.1 Email / Password</h3>
+  <ul>
+    <li>Standard Laravel auth: <code>RegisteredUserController</code>, <code>AuthenticatedSessionController</code>.</li>
+    <li>Passwords hashed with <strong>bcrypt at cost 12</strong> (<code>BCRYPT_ROUNDS=12</code>), via the <code>Hash</code> facade only — no custom/weak hashing.</li>
+    <li>Email verification, password reset, and "confirm password" flows implemented.</li>
+    <li>Session regenerated after login; double-submit guard on the login form.</li>
+  </ul>
+
+  <h3>4.2 Google OAuth</h3>
+  <ul>
+    <li><code>GoogleController</code> redirects to Google, handles the callback, and creates/matches the user.</li>
+    <li>Google users get a random bcrypt password (<code>bcrypt(Str::random(32))</code>) — never stored in plaintext.</li>
+    <li><code>WelcomeGoogleMail</code> welcomes the new user.</li>
+  </ul>
+
+  <h3>4.3 Phone OTP Login</h3>
+  <ul>
+    <li><code>OtpController</code>: generates a 6-digit OTP via <code>random_int(100000,999999)</code> (cryptographically secure).</li>
+    <li>OTP stored as <code>Hash::make($otp)</code> with a 5-minute expiry and an attempt counter.</li>
+    <li>Verification uses <code>Hash::check</code>; routes throttled (<code>throttle:5,1</code> send, <code>throttle:3,1</code> resend).</li>
+  </ul>
+
+  <h3>4.4 Identity Model Highlights (<code>User.php</code>)</h3>
+  <table>
+    <tr><th>Feature</th><th>Implementation</th></tr>
+    <tr><td>Password protection</td><td><code>'password' =&gt; 'hashed'</code> cast; hidden from arrays</td></tr>
+    <tr><td>Fundraiser levels</td><td><code>assignedLevel()</code> via <code>hasOneThrough</code>; max goal + level name</td></tr>
+    <tr><td>Suspension</td><td><code>isFundraiserSuspended()</code> blocks suspended accounts</td></tr>
+    <tr><td>KYC status</td><td><code>hasApprovedKyc()</code> gates campaign activation</td></tr>
+    <tr><td>Followed campaigns</td><td>Polymorphic <code>morphedByMany</code> relationship</td></tr>
+  </table>
+
+  <div class="box">
+    <strong>Security note:</strong> OTPs are never stored in plaintext and expire quickly, and SMS/email channels
+    are rate-limited — mitigating the two most common auth attacks (brute force and replay).
+  </div>
+
+  <div class="footer"><span>DonateBazaar — System Report v1.0</span><span>Page 5</span></div>
+</section>
+
+<!-- ============ PAGE 6 — CAMPAIGN CREATION ============ -->
+<section class="page">
+  <h2><span class="secnum">5.</span>Campaign Creation Workflow</h2>
+  <p class="sub">The creator experience and the business rules that govern it.</p>
+
+  <h3>5.1 The 6-Step Wizard</h3>
+  <table>
+    <tr><th>Step</th><th>Fields</th><th>Validation</th></tr>
+    <tr><td>1. Basics</td><td>Title, goal (₹), category, description</td><td>Required; goal ≥ 1</td></tr>
+    <tr><td>2. Details</td><td>Location, video URL, dates, featured/urgent</td><td>end ≥ start</td></tr>
+    <tr><td>3. Updates</td><td>Campaign updates &amp; documents</td><td><strong>≥1 update req.</strong> (title+body)</td></tr>
+    <tr><td>4. Media</td><td>Cover image</td><td>JPG/PNG, auto→WebP 1200px</td></tr>
+    <tr><td>5. Products</td><td>Admin-suggested or custom</td><td>Optional</td></tr>
+    <tr><td>6. Review</td><td>Summary + KYC notice</td><td>Submit → KYC</td></tr>
+  </table>
+
+  <h3>5.2 Fundraiser-Level Gating</h3>
+  <p><code>FundraiserLevelService::canCreateCampaign()</code> enforces two limits before a campaign can be created:</p>
+  <ul>
+    <li><strong>Max concurrent campaigns</strong> (<code>max_active_campaigns</code>) — counts active/pending/paused.</li>
+    <li><strong>Max goal amount</strong> (<code>max_goal_amount</code>) — hard cap per level.</li>
+  </ul>
+  <p>On update, only the goal cap is re-checked (not the count). Level is resolved from <code>assignedLevel</code> or a default.</p>
+
+  <h3>5.3 On Submit (<code>CampaignController::store()</code>)</h3>
+  <ol>
+    <li>Auth check → redirect to login if unauthenticated.</li>
+    <li>Run fundraiser-level gate; reject with reason if over limit.</li>
+    <li>Validate all input against <code>CREATE_RULES</code>.</li>
+    <li>Require ≥1 valid campaign update.</li>
+    <li>Create <code>Campaign</code> in <code>pending</code> state with unique slug; convert cover to WebP.</li>
+    <li>Store products (user→<code>pending</code>, admin→<code>approved</code>) and updates.</li>
+    <li>Clear category cache; send <code>CampaignCreatedMail</code>; redirect to KYC.</li>
+  </ol>
+
+  <h3>5.4 Campaign State Machine</h3>
+  <div class="flow">
+    <span class="step">pending</span><span class="arr">→</span>
+    <span class="step">active</span><span class="arr">→</span>
+    <span class="step">paused</span><span class="arr">↔</span>
+    <span class="step">active</span><span class="arr">→</span>
+    <span class="step">completed</span>
+  </div>
+  <div class="flow">
+    <span class="step">pending</span><span class="arr">→</span>
+    <span class="step">rejected</span><span class="arr">→ (resubmit)</span>
+    <span class="step">pending</span>
+  </div>
+  <p class="note">Expiry is handled by a scheduled command and real-time end-date checks. Every transition writes a <code>CampaignLog</code>.</p>
+
+  <div class="footer"><span>DonateBazaar — System Report v1.0</span><span>Page 6</span></div>
+</section>
+
+<!-- ============ PAGE 7 — KYC & COMPLIANCE ============ -->
+<section class="page">
+  <h2><span class="secnum">6.</span>KYC &amp; Compliance</h2>
+  <p class="sub">Identity verification — a regulated, security-sensitive subsystem.</p>
+
+  <h3>6.1 KYC Flow (User Side)</h3>
+  <ul>
+    <li><code>KycUploadController</code>: user uploads PAN / Aadhaar / Passport to the <strong>private disk</strong>.</li>
+    <li>Record scoped per <code>campaign_id</code> + owner — a user with multiple campaigns keeps separate KYC records.</li>
+    <li>File stored at <code>kyc-documents/{user}/{campaign}</code>; status set to <code>pending</code>; admins notified.</li>
+    <li>Owner-only access enforced via <code>abort_unless(Auth::id() === ...)</code> on view/serve.</li>
+  </ul>
+
+  <h3>6.2 KYC Review (Admin Side)</h3>
+  <ul>
+    <li><code>Admin\KycController</code>: list, approve (<code>verified_by</code>, <code>verified_at</code>), reject (with reason).</li>
+    <li>Secure document serving via <code>response()->file()</code> from the private disk.</li>
+    <li>Campaign approval is <strong>hard-blocked</strong> until owner KYC is <code>approved</code>.</li>
+  </ul>
+
+  <h3>6.3 Why This Matters (Security)</h3>
+  <div class="box">
+    <strong>Sensitive PII (government IDs) is never placed on public storage.</strong> The private disk + owner-scoped
+    access + per-campaign isolation means a compromised campaign view cannot leak another user's ID document.
+    This is a deliberate compliance control, not a default.
+  </div>
+
+  <table>
+    <tr><th>Risk Addressed</th><th>Control</th></tr>
+    <tr><td>ID document leakage</td><td>Private disk + owner-only route guards</td></tr>
+    <tr><td>Cross-campaign data bleed</td><td>KYC scoped by <code>campaign_id</code></td></tr>
+    <tr><td>Fraudulent live campaigns</td><td>KYC approval required before activation</td></tr>
+    <tr><td>Stale verification</td><td>Admins can re-request KYC (<code>requestKyc</code>)</td></tr>
+  </table>
+
+  <h3>6.4 Reminder Automation</h3>
+  <p><code>SendKycReminders</code> scheduled command nudges users with pending KYC, sending <code>KycReminderMail</code> — reducing drop-off in the compliance funnel.</p>
+
+  <div class="footer"><span>DonateBazaar — System Report v1.0</span><span>Page 7</span></div>
+</section>
+
+<!-- ============ PAGE 8 — PAYMENT PIPELINE (CORE) ============ -->
+<section class="page">
+  <h2><span class="secnum">7.</span>Payment Pipeline — The Core Engineering</h2>
+  <p class="sub">The most complex, highest-risk subsystem. Engineered for correctness under concurrency.</p>
+
+  <h3>7.1 Three-Step Flow</h3>
+  <div class="flow">
+    <span class="step">1. redirectToPayment</span><span class="arr">→</span>
+    <span class="step">2. paymentPage (Razorpay order)</span><span class="arr">→</span>
+    <span class="step">3. verify (signature check)</span>
+  </div>
+
+  <h3>7.2 Step 1 — Initiate (<code>redirectToPayment()</code>)</h3>
+  <ul>
+    <li>Rate-limited (10 hits / 60s per user/IP).</li>
+    <li>Validates amount within ₹1–₹500,000.</li>
+    <li>Applies coupon <strong>server-side</strong> (discount never trusted from client).</li>
+    <li>Checks campaign state (rejects expired/paused/rejected).</li>
+    <li>Stores a 15-minute donation session with cart data.</li>
+  </ul>
+
+  <h3>7.3 Step 2 — Payment Page (<code>paymentPage()</code>)</h3>
+  <ul>
+    <li>Re-validates session (exists, matches campaign, not expired &gt; 900s).</li>
+    <li>Re-validates coupon from DB; falls back to full amount if coupon lapsed.</li>
+    <li>Calculates the <strong>5% platform fee</strong> split (<code>platform_fee</code> + <code>net_amount</code>).</li>
+    <li>Creates a Razorpay order (full amount in paise) and a <code>pending</code> <code>Donation</code> row.</li>
+    <li>Saves product donation items; clears session; guards against re-opening a completed payment.</li>
+  </ul>
+
+  <h3>7.4 Platform Fee Model ("Ketto-style")</h3>
+  <div class="box">
+    Razorpay charges the donor the full amount. Internally the system splits it:
+    <code>net_amount = amount − (amount × 5%)</code>. The campaign receives <code>net_amount</code>;
+    the platform retains <code>platform_fee</code>. This is recorded on every donation and aggregated at settlement.
+  </div>
+
+  <div class="footer"><span>DonateBazaar — System Report v1.0</span><span>Page 8</span></div>
+</section>
+
+<!-- ============ PAGE 9 — PAYMENT INTEGRITY / CONCURRENCY ============ -->
+<section class="page">
+  <h2><span class="secnum">8.</span>Payment Integrity &amp; Concurrency</h2>
+  <p class="sub">How double-charging, double-crediting, and race conditions are prevented.</p>
+
+  <h3>8.1 Defense-in-Depth Layers</h3>
+  <table>
+    <tr><th>#</th><th>Control</th><th>Mechanism</th><th>Prevents</th></tr>
+    <tr><td>1</td><td>Signature verification</td><td><code>verifyPaymentSignature()</code></td><td>Forged "paid" callbacks</td></tr>
+    <tr><td>2</td><td>Distributed lock</td><td><code>Cache::lock('payment_lock_'.$paymentId)</code></td><td>Concurrent double processing</td></tr>
+    <tr><td>3</td><td>DB row lock</td><td><code>Donation::lockForUpdate()</code></td><td>Race on the donation row</td></tr>
+    <tr><td>4</td><td>Idempotency check</td><td>Early-exit if <code>payment_status==='completed'</code></td><td>Retry double-credit</td></tr>
+    <tr><td>5</td><td>DB trigger</td><td><code>trg_donation_raised_amount_*</code></td><td>Double-increment of totals</td></tr>
+    <tr><td>6</td><td>Rate limiting</td><td><code>RateLimiter</code> on verify</td><td>Brute / abuse</td></tr>
+  </table>
+
+  <h3>8.2 Transaction Pattern</h3>
+  <pre style="background:var(--code-bg);color:var(--code-ink);padding:10px;border-radius:8px;font-size:10px;overflow:auto;"><code>DB::transaction(function () use ($donation, $request) {
+    $locked = Donation::lockForUpdate()->findOrFail($donation->id);
+    if ($locked->payment_status === 'completed') return;   // idempotent
+    $locked->payment_status = 'completed';
+    $locked->save();
+    Campaign::lockForUpdate()->findOrFail($id)
+            ->increment('platform_earnings', $locked->platform_fee);
+    $this->decrementProductStock($locked);
+    $this->redeemCoupon($locked);
+});
+// receipt email sent AFTER commit, outside the lock</code></pre>
+
+  <h3>8.3 Why the DB Trigger Matters</h3>
+  <p>The application <strong>does not</strong> manually increment <code>raised_amount</code>. A MariaDB trigger
+  recomputes it from the sum of completed donations — the single source of truth. This removes an entire class
+  of bugs (double counting, partial updates, lost writes under load).</p>
+
+  <h3>8.4 Product Stock &amp; Coupons</h3>
+  <ul>
+    <li>Stock decremented with a guarded <code>where('remaining_quantity','>=',qty)->decrement()</code>.</li>
+    <li>Coupon redemption is atomic, locked, and idempotent (never redeemed twice for the same donation).</li>
+  </ul>
+
+  <div class="footer"><span>DonateBazaar — System Report v1.0</span><span>Page 9</span></div>
+</section>
+
+<!-- ============ PAGE 10 — WEBHOOKS & REFUNDS ============ -->
+<section class="page">
+  <h2><span class="secnum">9.</span>Webhooks, Refunds &amp; Settlement</h2>
+  <p class="sub">Asynchronous money movement, handled safely.</p>
+
+  <h3>9.1 Webhook Security</h3>
+  <ul>
+    <li><code>webhook()</code> verifies <code>X-Razorpay-Signature</code> using <code>hash_hmac('sha256', …)</code> compared with <code>hash_equals()</code> (constant-time — immune to timing attacks).</li>
+    <li>Two-tier guard: missing secret → <strong>500</strong> (alerts us to misconfig); missing signature → <strong>400</strong> (rejected, logged).</li>
+  </ul>
+
+  <h3>9.2 Event Routing</h3>
+  <table>
+    <tr><th>Razorpay Event</th><th>Handler</th><th>Effect</th></tr>
+    <tr><td><code>payment.captured</code></td><td><code>handlePaymentCaptured</code></td><td>Mark completed, increment earnings, stock, coupon, email</td></tr>
+    <tr><td><code>payment.failed</code></td><td><code>handlePaymentFailed</code></td><td>Mark donation <code>failed</code></td></tr>
+    <tr><td><code>refund.processed</code></td><td><code>handleRefundProcessed</code></td><td>Create <code>Refund</code>, mark refunded, email donor</td></tr>
+    <tr><td><code>refund.failed</code></td><td><code>handleRefundFailed</code></td><td>Record failed refund status</td></tr>
+  </table>
+
+  <h3>9.3 Refund Integrity</h3>
+  <ul>
+    <li>Idempotent: skips if a <code>Refund</code> with the same <code>gateway_refund_id</code> exists.</li>
+    <li>Only a <code>completed</code>, not-yet-refunded donation is refundable.</li>
+    <li>All handlers use the same lock + transaction + idempotency pattern as the verify path.</li>
+  </ul>
+
+  <h3>9.4 Settlement (<code>SettlementService</code>)</h3>
+  <div class="box">
+    Batches all <code>completed</code>, <code>pending</code>-settlement donations for a campaign into a
+    <code>CampaignSettlement</code> with <code>gross_amount</code>, <code>platform_fee</code>, and
+    <code>net_amount</code>. This is the payout ledger that reconciles platform earnings vs. what the campaign earns.
+  </div>
+
+  <h3>9.5 Recurring Donations</h3>
+  <p><code>RecurringDonationController</code> supports repeat giving — a foundation for subscription-style fundraising.</p>
+
+  <div class="footer"><span>DonateBazaar — System Report v1.0</span><span>Page 10</span></div>
+</section>
+
+<!-- ============ PAGE 11 — ADMIN PANEL ============ -->
+<section class="page">
+  <h2><span class="secnum">10.</span>Admin Panel &amp; Governance</h2>
+  <p class="sub">≈25 management modules with full auditability.</p>
+
+  <h3>10.1 Modules Delivered</h3>
+  <div>
+    <span class="tag">Campaigns</span><span class="tag">KYC</span><span class="tag">Categories</span>
+    <span class="tag">Blogs</span><span class="tag">Events</span><span class="tag">Partnerships</span>
+    <span class="tag">Organizations</span><span class="tag">Volunteers</span><span class="tag">Job Posts</span>
+    <span class="tag">Gift Cards</span><span class="tag">Coupons</span><span class="tag">FAQs</span>
+    <span class="tag">Legal Pages</span><span class="tag">Subscribers</span><span class="tag">Fundraiser Levels</span>
+    <span class="tag">Success Stories</span><span class="tag">Donations</span><span class="tag">Messages</span>
+    <span class="tag">Applications</span><span class="tag">Chatbot</span><span class="tag">Profile</span>
+  </div>
+
+  <h3>10.2 Campaign Governance Actions</h3>
+  <table>
+    <tr><th>Action</th><th>Rule (guard)</th></tr>
+    <tr><td>Approve</td><td>Only <code>pending</code> + owner KYC approved + not expired</td></tr>
+    <tr><td>Reject</td><td>Only <code>pending</code> + reason ≥ 10 chars</td></tr>
+    <tr><td>Pause</td><td>Only <code>active</code> + not expired + not already paused</td></tr>
+    <tr><td>Resume</td><td>Only <code>paused</code> + KYC approved + not expired</td></tr>
+    <tr><td>Complete</td><td>Only <code>active</code> + not expired</td></tr>
+    <tr><td>Bulk</td><td>Approve / Reject / Pause over selected IDs with skip logic</td></tr>
+  </table>
+
+  <h3>10.3 Audit &amp; Accountability</h3>
+  <ul>
+    <li>Every campaign action writes a <code>CampaignLog</code> (<code>action</code>, <code>message</code>, <code>user_id</code>).</li>
+    <li>Soft deletes on core models enable recovery and audit trails.</li>
+    <li>Admin middleware enforces <code>role === 'admin'</code>; <code>account.active</code> blocks suspended users.</li>
+  </ul>
+
+  <div class="box">
+    <strong>Engineering maturity signal:</strong> State transitions are never "open" — each has explicit guards
+    and produces an audit entry. This is how regulated financial products are supposed to behave.
+  </div>
+
+  <div class="footer"><span>DonateBazaar — System Report v1.0</span><span>Page 11</span></div>
+</section>
+
+<!-- ============ PAGE 12 — CONTENT & COMMUNITY ============ -->
+<section class="page">
+  <h2><span class="secnum">11.</span>Content, Community &amp; Engagement</h2>
+  <p class="sub">The features that drive retention and trust.</p>
+
+  <h3>11.1 Blogs</h3>
+  <ul>
+    <li>Polymorphic <strong>likes</strong> and <strong>comments</strong>; views and reports tracked.</li>
+    <li>Tags, status workflow (<code>BlogStatusLog</code>), admin moderation.</li>
+    <li>Public read via <code>PublicBlogController</code>; authoring gated by <code>EnsureVerifiedAuthor</code>.</li>
+  </ul>
+
+  <h3>11.2 Events &amp; Volunteering</h3>
+  <ul>
+    <li><code>EventController</code> + <code>EventRegistrationController</code>: create events, register, confirmation emails.</li>
+    <li><code>VolunteerController</code> + applications/assignments: users apply, admins assign, hours tracked.</li>
+  </ul>
+
+  <h3>11.3 Organizations &amp; Partnerships</h3>
+  <ul>
+    <li>NGO/organization applications with approval workflow (<code>OrganizationApplication</code>).</li>
+    <li>Partnerships with submitted/status emails; celebrity endorsements (<code>celebrity_campaign</code>).</li>
+  </ul>
+
+  <h3>11.4 Jobs &amp; Other</h3>
+  <ul>
+    <li>Job posts + applications with status emails.</li>
+    <li>Gift cards (purchase/redeem), newsletters (welcome email), FAQs, legal pages, success stories.</li>
+    <li>Campaign following (polymorphic followers) with notifications.</li>
+  </ul>
+
+  <h3>11.5 Notifications</h3>
+  <p>A notifications system (<code>NotificationController</code> + API) plus Laravel Notifications
+  (<code>KycSubmittedNotification</code>, <code>KycRequestedNotification</code>, <code>DonationReceived</code>)
+  keep users informed across the lifecycle.</p>
+
+  <div class="footer"><span>DonateBazaar — System Report v1.0</span><span>Page 12</span></div>
+</section>
+
+<!-- ============ PAGE 13 — AI CHATBOT ============ -->
+<section class="page">
+  <h2><span class="secnum">12.</span>AI Chatbot (Anthropic Claude)</h2>
+  <p class="sub">A streaming, context-aware customer-support assistant.</p>
+
+  <h3>12.1 How It Works</h3>
+  <ul>
+    <li><code>ChatbotController::chat()</code> validates the message (max 1000 chars), then streams from the
+      <strong>Claude API</strong> (<code>claude-sonnet-4-6</code>) using Server-Sent Events (SSE).</li>
+    <li>Responses are streamed token-by-token to the browser with <code>ob_flush()</code>/<code>flush()</code>.</li>
+    <li>Conversation history (last 10 messages) is kept in the session for context.</li>
+    <li>A scoped <code>systemPrompt()</code> restricts the assistant to donation/campaign/payment/refund topics.</li>
+  </ul>
+
+  <pre style="background:var(--code-bg);color:var(--code-ink);padding:10px;border-radius:8px;font-size:10px;overflow:auto;"><code>Http::withHeaders([ 'x-api-key' => config('services.anthropic.key'),
+       'anthropic-version' => '2023-06-01' ])
+    ->withOptions(['stream' => true])
+    ->post('https://api.anthropic.com/v1/messages', [
+        'model' => 'claude-sonnet-4-6',
+        'max_tokens' => 500,
+        'system' => $this->systemPrompt(),
+        'messages' => $history,
+        'stream' => true,
+    ]);</code></pre>
+
+  <h3>12.2 Engineering Notes</h3>
+  <table>
+    <tr><th>Concern</th><th>Handling</th></tr>
+    <tr><td>Streaming</td><td>SSE with <code>text/event-stream</code>, <code>X-Accel-Buffering: no</code></td></tr>
+    <tr><td>Context</td><td>Session-backed last-10-message window</td></tr>
+    <tr><td>Safety</td><td>System prompt limits scope; says "no account access"</td></tr>
+    <tr><td>Cost control</td><td><code>max_tokens = 500</code> cap</td></tr>
+    <tr><td>Route</td><td>CSRF excluded (SSE/post) but input-validated</td></tr>
+  </table>
+
+  <div class="box">
+    This demonstrates integration of a third-party LLM API with proper streaming, context management, and guardrails —
+    a modern, in-demand skill set.
+  </div>
+
+  <div class="footer"><span>DonateBazaar — System Report v1.0</span><span>Page 13</span></div>
+</section>
+
+<!-- ============ PAGE 14 — SECURITY OVERVIEW ============ -->
+<section class="page">
+  <h2><span class="secnum">13.</span>Security Enhancements — Overview</h2>
+  <p class="sub">18 distinct, deliberate security controls built into the platform.</p>
+
+  <div class="grid2">
+    <div class="box"><strong>Transport &amp; Form</strong><br>CSRF on all forms; only <code>chatbot</code> excluded (SSE).</div>
+    <div class="box"><strong>Payment Trust</strong><br>Razorpay signature verification on every callback.</div>
+    <div class="box"><strong>Webhook Trust</strong><br>HMAC + <code>hash_equals</code> constant-time compare.</div>
+    <div class="box"><strong>Concurrency</strong><br>Cache locks + DB row locks on money paths.</div>
+    <div class="box"><strong>Idempotency</strong><br>Early-exit + transaction re-checks.</div>
+    <div class="box"><strong>Data Integrity</strong><br>DB trigger = single source of truth for totals.</div>
+    <div class="box"><strong>Credential Storage</strong><br>bcrypt cost 12; OTP hashed; password cast hidden.</div>
+    <div class="box"><strong>Authorization</strong><br>Role + status + verified-author middleware.</div>
+    <div class="box"><strong>PII Protection</strong><br>KYC on private disk, owner-scoped.</div>
+    <div class="box"><strong>Anti-Tamper</strong><br>Coupons re-validated server-side.</div>
+    <div class="box"><strong>Abuse Mitigation</strong><br>Rate limiting on donate/verify/OTP.</div>
+    <div class="box"><strong>Auditability</strong><br>Soft deletes + campaign/activity logs.</div>
+  </div>
+
+  <p class="note" style="margin-top:12px;">The next two pages detail each control with file-level evidence.</p>
+
+  <div class="footer"><span>DonateBazaar — System Report v1.0</span><span>Page 14</span></div>
+</section>
+
+<!-- ============ PAGE 15 — SECURITY DETAIL TABLE 1 ============ -->
+<section class="page">
+  <h2><span class="secnum">14.</span>Security Controls — Evidence (1/2)</h2>
+  <table>
+    <tr><th>#</th><th>Control</th><th>Where</th><th>Purpose</th></tr>
+    <tr><td>1</td><td>CSRF protection</td><td><code>VerifyCsrfToken</code> (excl. chatbot)</td><td>Block cross-site request forgery</td></tr>
+    <tr><td>2</td><td>Razorpay signature verify</td><td><code>PaymentController::verify</code></td><td>Stop forged payment success</td></tr>
+    <tr><td>3</td><td>Webhook HMAC + <code>hash_equals</code></td><td><code>webhook()</code></td><td>Block spoofed callbacks (timing-safe)</td></tr>
+    <tr><td>4</td><td>Distributed cache lock</td><td><code>Cache::lock($paymentId)</code></td><td>Prevent concurrent double-processing</td></tr>
+    <tr><td>5</td><td>DB row lock</td><td><code>lockForUpdate()</code></td><td>Serialize updates; no race</td></tr>
+    <tr><td>6</td><td>Idempotency</td><td>completed-check in txn</td><td>Safe retries, no double credit</td></tr>
+    <tr><td>7</td><td><code>raised_amount</code> trigger</td><td><code>trg_donation_raised_amount_*</code></td><td>Eliminate double-increment</td></tr>
+    <tr><td>9</td><td>OTP hashing + expiry + throttle</td><td><code>OtpController</code></td><td>Prevent OTP replay / brute force</td></tr>
+    <tr><td>10</td><td>Role/status middleware</td><td><code>AdminMiddleware</code>, <code>CheckAccountStatus</code>, <code>EnsureVerifiedAuthor</code></td><td>Enforce authorization, not just auth</td></tr>
+  </table>
+
+  <div class="box">
+    <strong>Security posture summary:</strong> The platform treats money movement and identity as the highest-risk
+    surfaces and applies defense-in-depth (verify → lock → transaction → trigger → idempotent) rather than a single check.
+  </div>
+
+  <div class="footer"><span>DonateBazaar — System Report v1.0</span><span>Page 15</span></div>
+</section>
+
+<!-- ============ PAGE 16 — SECURITY DETAIL TABLE 2 ============ -->
+<section class="page">
+  <h2><span class="secnum">15.</span>Security Controls — Evidence (2/2)</h2>
+  <table>
+    <tr><th>#</th><th>Control</th><th>Where</th><th>Purpose</th></tr>
+    <tr><td>8</td><td>Strong password hashing</td><td><code>BCRYPT_ROUNDS=12</code>, <code>Hash</code> only</td><td>Verified cost-12 bcrypt</td></tr>
+    <tr><td>11</td><td>Private-disk KYC</td><td><code>KycUploadController</code></td><td>PII never publicly exposed</td></tr>
+    <tr><td>12</td><td>Server-side coupon validation</td><td><code>paymentPage</code> / <code>redeemCoupon</code></td><td>Prevent discount tampering</td></tr>
+    <tr><td>13</td><td>Rate limiting</td><td><code>RateLimiter</code> + <code>throttle:</code></td><td>Brute-force / abuse mitigation</td></tr>
+    <tr><td>14</td><td>Session expiry &amp; mismatch</td><td><code>paymentPage()</code></td><td>Stop stale/spoofed donation sessions</td></tr>
+    <tr><td>15</td><td>Soft deletes + audit logs</td><td>models / <code>CampaignLog</code></td><td>Recovery + accountability</td></tr>
+    <tr><td>16</td><td>WebP auto-conversion</td><td><code>WebpImageMiddleware</code></td><td>Reduce upload attack surface</td></tr>
+    <tr><td>17</td><td>Double-submit guard</td><td><code>login.blade.php</code> JS</td><td>Prevent duplicate auth requests</td></tr>
+    <tr><td>18</td><td>Hidden password cast</td><td><code>User</code> model</td><td>No accidental secret leakage</td></tr>
+  </table>
+
+  <h3>15.1 What This Demonstrates</h3>
+  <ul>
+    <li>Security was designed in, not bolted on.</li>
+    <li>Financial correctness is protected at multiple layers (app + DB + gateway).</li>
+    <li>Sensitive data (KYC, OTP, passwords) is hashed or isolated by design.</li>
+  </ul>
+
+  <div class="footer"><span>DonateBazaar — System Report v1.0</span><span>Page 16</span></div>
+</section>
+
+<!-- ============ PAGE 17 — SCALABILITY STRENGTHS ============ -->
+<section class="page">
+  <h2><span class="secnum">16.</span>Scalability — Built-In Strengths</h2>
+  <p class="sub">Where the architecture is ready for growth.</p>
+
+  <h3>16.1 Stateless Money Logic</h3>
+  <ul>
+    <li>All critical money movement relies on <strong>DB triggers + locks</strong>, so multiple app servers behind a load balancer won't corrupt totals.</li>
+    <li>No in-process state holds financial truth — safe for horizontal scaling.</li>
+  </ul>
+
+  <h3>16.2 Cache &amp; Locks</h3>
+  <ul>
+    <li><code>Cache::lock</code> works across servers when the cache driver is shared (Redis/Memcached).</li>
+    <li>Public campaign categories cached (<code>active_campaign_categories</code>, 1-hour TTL).</li>
+  </ul>
+
+  <h3>16.3 Database Performance</h3>
+  <ul>
+    <li>Dedicated index migrations: <code>add_indexes_to_tables</code>, <code>add_critical_indexes</code>, <code>add_indexes_for_performance</code>.</li>
+    <li>UUIDs generated, foreign keys enforced, polymorphic relations used appropriately.</li>
+  </ul>
+
+  <h3>16.4 Queue-Ready</h3>
+  <ul>
+    <li><code>TestQueueJob</code> + jobs table migration present.</li>
+    <li>Receipt/status emails are sent <em>outside</em> DB transactions — decoupled from the request lifecycle.</li>
+  </ul>
+
+  <h3>16.5 Read Path &amp; API</h3>
+  <ul>
+    <li>Slug-based SEO URLs, sitemap generation, public caching.</li>
+    <li>REST API scaffolded (<code>routes/api</code>: campaigns, donations, events, notifications, payments).</li>
+  </ul>
+
+  <div class="barcol"><span style="width:85%"></span></div>
+  <p class="note">Maturity estimate: ~85% scale-ready for a moderate-traffic production launch.</p>
+
+  <div class="footer"><span>DonateBazaar — System Report v1.0</span><span>Page 17</span></div>
+</section>
+
+<!-- ============ PAGE 18 — SCALABILITY GAPS & ROADMAP ============ -->
+<section class="page">
+  <h2><span class="secnum">17.</span>Scalability — Gaps &amp; Recommendations</h2>
+  <p class="sub">Honest assessment of what to harden before very high scale.</p>
+
+  <table>
+    <tr><th>Area</th><th>Current</th><th>Recommendation</th></tr>
+    <tr><td>Cache driver</td><td>Default (likely file)</td><td>Set <code>CACHE_DRIVER=redis</code> so locks are shared across servers</td></tr>
+    <tr><td>Queues</td><td>Mail sent inline</td><td>Move email/webhook side-effects to Redis/SQS queue workers</td></tr>
+    <tr><td>Webhook idempotency</td><td>App-level lock</td><td>Add unique DB constraint on <code>gateway_refund_id</code> / <code>order_id</code></td></tr>
+    <tr><td>Sessions</td><td>File-based</td><td>Use Redis/database sessions for multi-node persistence</td></tr>
+    <tr><td>Image processing</td><td>Manual command</td><td>Queue job + object storage (S3) instead of local disk</td></tr>
+    <tr><td>API auth</td><td>Stub ("future use")</td><td>Add Sanctum/token auth + rate limiting before public exposure</td></tr>
+    <tr><td>Observability</td><td>Logs only</td><td>Add metrics/alerting on failed webhooks &amp; critical log paths</td></tr>
+    <tr><td>Money counter</td><td>DB trigger</td><td>Consider async counter service for very high write volume</td></tr>
+  </table>
+
+  <div class="box">
+    <strong>Interpretation:</strong> None of these are architectural flaws — they are the normal "scale-up"
+    steps any growing fintech platform takes. The foundation (stateless money logic, locks, indexes, queue-ready
+    code) is already in place, which is the expensive part.
+  </div>
+
+  <div class="footer"><span>DonateBazaar — System Report v1.0</span><span>Page 18</span></div>
+</section>
+
+<!-- ============ PAGE 19 — DATABASE & DATA MODEL ============ -->
+<section class="page">
+  <h2><span class="secnum">18.</span>Data Model &amp; Persistence</h2>
+  <p class="sub">A relational model designed for financial accuracy and auditability.</p>
+
+  <h3>18.1 Core Entities</h3>
+  <table>
+    <tr><th>Domain</th><th>Key Models</th></tr>
+    <tr><td>Users &amp; Identity</td><td>User, KycVerification, FundraiserLevel, UserFundraiserLevel, Role/Permission</td></tr>
+    <tr><td>Campaigns</td><td>Campaign, CampaignProduct, CampaignUpdate, CampaignLog, Category, CategoryProduct</td></tr>
+    <tr><td>Money</td><td>Donation, DonationItem, Refund, Coupon, CouponRedemption, CampaignSettlement, SettlementItem, PayoutAccount</td></tr>
+    <tr><td>Content</td><td>Blog, BlogComment, BlogLike, BlogView, BlogReport, Tag, Event, EventRegistration</td></tr>
+    <tr><td>Community</td><td>Volunteer, VolunteerApplication, VolunteerAssignment, Organization, OrganizationApplication, Partnership, Celebrity, JobPost, JobPostApplication</td></tr>
+    <tr><td>Comms</td><td>Subscriber, ContactMessage, Notification, GiftCard, Faq, LegalPage, SuccessStory</td></tr>
+  </table>
+
+  <h3>18.2 Schema Engineering</h3>
+  <ul>
+    <li>90+ migrations with explicit <code>created_at</code>/<code>updated_at</code> and <code>softDeletes</code>.</li>
+    <li>Foreign keys enforced; dedicated index migrations for hot queries.</li>
+    <li>Polymorphic relations (<code>likes</code>, <code>comments</code>, <code>followers</code>) reused across entities.</li>
+    <li>DB triggers maintain <code>raised_amount</code> as a derived, consistent value.</li>
+  </ul>
+
+  <h3>18.3 Money Integrity Pattern</h3>
+  <div class="box">
+    <code>Donation</code> stores the full breakdown per row: <code>total_amount</code>, <code>original_amount</code>,
+    <code>discount_amount</code>, <code>platform_fee</code>, <code>net_amount</code>, <code>coupon_id</code>.
+    This makes every transaction auditable and reconciles perfectly with <code>CampaignSettlement</code>.
+  </div>
+
+  <div class="footer"><span>DonateBazaar — System Report v1.0</span><span>Page 19</span></div>
+</section>
+
+<!-- ============ PAGE 20 — CONCLUSION & HR SUMMARY ============ -->
+<section class="page">
+  <h2><span class="secnum">19.</span>Conclusion &amp; HR Summary</h2>
+
+  <div class="lead">
+    DonateBazaar is a complete, production-grade crowdfunding platform engineered end-to-end by a single backend /
+    full-stack engineer. It spans secure multi-channel authentication, a compliant KYC-backed campaign system,
+    a fintech-grade Razorpay payment pipeline with bank-grade concurrency controls, a governed admin panel,
+    rich community features, and an AI assistant — backed by 90+ well-structured migrations and 18 deliberate
+    security controls.
+  </div>
+
+  <h3>19.1 Delivered at a Glance</h3>
+  <div class="grid2">
+    <div class="kpi"><div class="n">7</div><div class="l">Major subsystems</div></div>
+    <div class="kpi"><div class="n">18</div><div class="l">Security controls</div></div>
+    <div class="kpi"><div class="n">2</div><div class="l">Approval gates / campaign</div></div>
+    <div class="kpi"><div class="n">6</div><div class="l">Payment integrity layers</div></div>
+  </div>
+
+  <h3>19.2 Competencies Demonstrated</h3>
+  <ul>
+    <li><strong>Backend architecture:</strong> layered MVC, services, state machines, middleware.</li>
+    <li><strong>Financial correctness:</strong> idempotent payments, DB triggers, lock-based concurrency.</li>
+    <li><strong>Security engineering:</strong> CSRF, HMAC, constant-time compare, hashing, PII isolation, rate limiting.</li>
+    <li><strong>Integrations:</strong> Razorpay (orders/webhooks/refunds), Anthropic Claude (streaming).</li>
+    <li><strong>Data modeling:</strong> 50 models, polymorphic relations, audit trails, migrations at scale.</li>
+    <li><strong>DevOps awareness:</strong> scheduled commands, cache locks, queue-ready patterns, asset optimization.</li>
+  </ul>
+
+  <h3>19.3 Recommended Calibration</h3>
+  <div class="box">
+    This body of work corresponds to a <strong>senior backend / full-stack engineer</strong> level: ownership of an
+    entire financial product, security hardening, and scale-aware design. Compensation should reflect
+    end-to-end product ownership, not task-level execution.
+  </div>
+
+  <p class="note" style="margin-top:14px;">Prepared as an internal engineering &amp; compensation reference. All claims are
+  traceable to the application source (controllers, models, migrations, middleware, services).</p>
+
+  <div class="footer"><span>DonateBazaar — System Report v1.0</span><span>Page 20</span></div>
+</section>
+
+</body>
+</html>

@@ -66,6 +66,17 @@ export default defineConfig({
                 // Navbar
                 'resources/css/navbar.css',
                 'resources/js/navbar.js',
+
+                // Auth
+                'resources/css/auth.css',
+                'resources/js/auth.js',
+
+                // Campaign Show
+                'resources/css/campaigns-show.css',
+                'resources/js/campaigns-show.js',
+
+                // Footer
+                'resources/js/footer.js',
             ],
             
             refresh: true,
