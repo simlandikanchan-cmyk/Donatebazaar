@@ -19,7 +19,7 @@ return new class extends Migration
             $table->enum('kyc_status', [
                 'pending',
                 'approved',
-                'rejected'
+                'rejected',
             ])->default('pending');
         });
     }

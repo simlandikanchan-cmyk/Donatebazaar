@@ -2,22 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Blog\RecordBlogViewAction;
+use App\Actions\Blog\ToggleBlogLikeAction;
+use App\Http\Requests\Blog\ReportBlogRequest;
+use App\Http\Requests\Blog\StoreBlogCommentRequest;
 use App\Models\Blog;
 use App\Models\BlogReport;
 use App\Models\Category;
 use App\Models\Tag;
-
-use Illuminate\View\View;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
-use App\Actions\Blog\ToggleBlogLikeAction;
-use App\Actions\Blog\RecordBlogViewAction;
-
-use App\Http\Requests\Blog\StoreBlogCommentRequest;
-use App\Http\Requests\Blog\ReportBlogRequest;
+use Illuminate\View\View;
 
 class PublicBlogController extends Controller
 {
@@ -59,14 +56,11 @@ class PublicBlogController extends Controller
         // Sort
         match ($request->get('sort', 'recent')) {
 
-            'popular' =>
-                $query->popular(),
+            'popular' => $query->popular(),
 
-            'trending' =>
-                $query->trending(),
+            'trending' => $query->trending(),
 
-            default =>
-                $query->recent(),
+            default => $query->recent(),
         };
 
         $blogs = $query
@@ -78,7 +72,7 @@ class PublicBlogController extends Controller
                 'id',
                 'name',
                 'slug',
-                'icon'
+                'icon',
             ]);
 
         $tags = Tag::has('blogs')
@@ -86,7 +80,7 @@ class PublicBlogController extends Controller
             ->get([
                 'id',
                 'name',
-                'slug'
+                'slug',
             ]);
 
         $featured = Blog::public()
@@ -145,17 +139,16 @@ class PublicBlogController extends Controller
                     'category_id',
                     $blog->category_id
                 )
+                    ->orWhereHas(
+                        'tags',
+                        function ($t) use ($blog) {
 
-                ->orWhereHas(
-                    'tags',
-                    function ($t) use ($blog) {
-
-                        $t->whereIn(
-                            'tags.id',
-                            $blog->tags->pluck('id')
-                        );
-                    }
-                );
+                            $t->whereIn(
+                                'tags.id',
+                                $blog->tags->pluck('id')
+                            );
+                        }
+                    );
             })
 
             ->latest('published_at')
@@ -309,29 +302,29 @@ class PublicBlogController extends Controller
     // }
 
     public function comment(
-    StoreBlogCommentRequest $request,
-    Blog $blog
-): RedirectResponse {
+        StoreBlogCommentRequest $request,
+        Blog $blog
+    ): RedirectResponse {
 
-    abort_unless(
-        $blog->is_publicly_visible,
-        404
-    );
+        abort_unless(
+            $blog->is_publicly_visible,
+            404
+        );
 
-    $blog->allComments()->create([
-        'user_id' => Auth::id(),
-        'parent_id' => $request->parent_id,
-        'content' => $request->content,
-        'is_approved' => true,
-    ]);
+        $blog->allComments()->create([
+            'user_id' => Auth::id(),
+            'parent_id' => $request->parent_id,
+            'content' => $request->content,
+            'is_approved' => true,
+        ]);
 
-    $blog->increment('comments_count');
+        $blog->increment('comments_count');
 
-    return back()->with(
-        'success',
-        'Comment posted successfully.'
-    );
-}
+        return back()->with(
+            'success',
+            'Comment posted successfully.'
+        );
+    }
 
     /*
     |--------------------------------------------------------------------------
@@ -353,13 +346,11 @@ class PublicBlogController extends Controller
             'blog_id',
             $blog->id
         )
-
-        ->where(
-            'reported_by',
-            Auth::id()
-        )
-
-        ->exists();
+            ->where(
+                'reported_by',
+                Auth::id()
+            )
+            ->exists();
 
         if ($alreadyReported) {
 

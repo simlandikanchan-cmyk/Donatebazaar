@@ -126,6 +126,8 @@
 .modal-confirm:hover{opacity:.85;}
 @media(max-width:900px){.body{flex-direction:column;}.review-panel{width:100%;position:static;display:grid;grid-template-columns:repeat(2,1fr);}}
 @media(max-width:600px){.review-panel{grid-template-columns:1fr;}}
+@media(max-width:480px){.body{padding:16px 14px 40px}.prose-area{padding:18px 16px 24px}.engage-strip{flex-direction:column;align-items:flex-start;gap:8px}.es-divider{display:none}.blog-byline{flex-direction:column;align-items:flex-start}.blog-title{font-size:clamp(18px,5vw,22px)}.eng-grid{grid-template-columns:1fr 1fr}.stat-pair{grid-template-columns:1fr 1fr}.cover-wrap{aspect-ratio:16/9}}
+@media(max-width:380px){.body{padding:12px 10px 32px}.prose-area{padding:14px 12px 20px}.blog-title{font-size:clamp(16px,5vw,20px)}.blog-prose{font-size:13px}.engage-strip{padding:10px 14px}.eng-box{padding:10px 12px}.eng-num{font-size:1.2rem}.stat-box .sn{font-size:1.1rem}.modal-box{padding:18px}.modal-title{font-size:15px}}
 </style>
 @endpush
 @section('content')
@@ -367,12 +369,12 @@
         @if($blog->status === 'pending')
           <form method="POST" action="{{ route('admin.blogs.approve', $blog) }}">
             @csrf
-            <button type="submit" class="act-full af-approve">
+            <button type="submit" class="btn btn-green act-full af-approve">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
               Approve Post
             </button>
           </form>
-          <button type="button" class="act-full af-reject" onclick="openRejectModal()">
+          <button type="button" class="btn btn-red act-full af-reject" onclick="openRejectModal()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             Reject Post
           </button>
@@ -384,13 +386,13 @@
         @elseif($blog->status === 'rejected')
           <form method="POST" action="{{ route('admin.blogs.approve', $blog) }}">
             @csrf
-            <button type="submit" class="act-full af-approve">
+            <button type="submit" class="btn btn-green act-full af-approve">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
               Re-Approve Post
             </button>
           </form>
         @endif
-        <a href="{{ route('admin.blogs.edit', $blog) }}" class="act-full af-edit">
+        <a href="{{ route('admin.blogs.edit', $blog) }}" class="btn btn-secondary act-full af-edit">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path stroke-linecap="round" stroke-linejoin="round" d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
           Edit Post
         </a>
@@ -414,8 +416,8 @@
                 maxlength="1000" aria-describedby="reject-error"></textarea>
       <p class="modal-error" id="reject-error" role="alert">A reason is required before rejecting.</p>
       <div class="modal-footer">
-        <button type="button" class="modal-cancel" onclick="closeRejectModal()">Cancel</button>
-        <button type="button" class="modal-confirm" onclick="submitReject()">Reject post</button>
+        <button type="button" class="btn btn-secondary modal-cancel" onclick="closeRejectModal()">Cancel</button>
+        <button type="button" class="btn btn-red modal-confirm" onclick="submitReject()">Reject post</button>
       </div>
     </form>
   </div>

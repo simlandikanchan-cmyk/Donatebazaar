@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Campaign;
 use App\Models\Donation;
 use App\Models\RecurringDonation;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class DonationHistoryController extends Controller
@@ -16,8 +15,8 @@ class DonationHistoryController extends Controller
 
         $donations = Donation::where('user_id', $user->id)
             ->with(['campaign' => function ($q) {
-                $q->select('id','title','slug','cover_image','goal_amount','raised_amount','category_id')
-                  ->with('category:id,name,slug');
+                $q->select('id', 'title', 'slug', 'cover_image', 'goal_amount', 'raised_amount', 'category_id')
+                    ->with('category:id,name,slug');
             }, 'refunds'])
             ->orderByRaw("FIELD(payment_status, 'completed', 'pending', 'failed', 'refunded')")
             ->latest('created_at')
@@ -59,14 +58,14 @@ class DonationHistoryController extends Controller
         $donation->load('campaign');
 
         return view('donations.receipt', [
-            'donation'    => $donation,
-            'campaign'    => $donation->campaign,
-            'donorName'   => $donation->donor_name ?? 'Donor',
-            'amount'      => $donation->total_amount,
+            'donation' => $donation,
+            'campaign' => $donation->campaign,
+            'donorName' => $donation->donor_name ?? 'Donor',
+            'amount' => $donation->total_amount,
             'platformFee' => $donation->platform_fee,
-            'netAmount'   => $donation->net_amount,
-            'receiptNo'   => $donation->receipt_number,
-            'paidAt'      => $donation->paid_at,
+            'netAmount' => $donation->net_amount,
+            'receiptNo' => $donation->receipt_number,
+            'paidAt' => $donation->paid_at,
         ]);
     }
 }

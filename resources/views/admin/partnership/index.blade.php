@@ -158,6 +158,7 @@ td{padding:12px 16px;font-size:13px;vertical-align:middle;}
 
 @media(max-width:860px){.stats-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:600px){.stats-grid{grid-template-columns:1fr 1fr}.search-input{width:160px;}.search-input:focus{width:180px;}}
+<<<<<<< HEAD
 @media(max-width:380px){
   .stats-grid{grid-template-columns:1fr;gap:8px;}
   .stat{padding:10px 12px;gap:8px;}
@@ -180,6 +181,10 @@ td{padding:12px 16px;font-size:13px;vertical-align:middle;}
   .act-btn{padding:4px 8px;font-size:10.5px;}
   .act-btn svg{width:9px;height:9px;}
 }
+=======
+@media(max-width:480px){.page-hdr{padding:16px 14px}.page-hdr-left h2{font-size:clamp(16px,4.5vw,18px)}.stats-grid{grid-template-columns:1fr 1fr;gap:8px}.stat-card{padding:14px 10px}.stat-num{font-size:clamp(18px,5vw,22px)}.stat-lbl{font-size:10px}.toolbar{flex-direction:column;align-items:stretch;gap:8px}.toolbar-left{gap:6px;flex-wrap:wrap}.search-input{width:100%!important;min-width:0}.search-input:focus{width:100%!important}.toolbar-right{width:100%}.toolbar-right .export-btn{flex:1;justify-content:center}.table-wrap{overflow-x:auto}.table th,.table td{padding:10px 8px;font-size:11px}.table .col-desc{display:none}.table th.col-desc{display:none}.status-pill{font-size:10px;padding:3px 8px}.filter-btn{font-size:11px;height:32px;padding:0 10px}}
+@media(max-width:380px){.page-hdr{padding:12px 10px}.page-hdr-left h2{font-size:clamp(14px,4.5vw,16px)}.stats-grid{grid-template-columns:1fr;gap:6px}.stat-card{padding:12px 8px;flex-direction:row;gap:10px}.stat-num{font-size:clamp(16px,5vw,20px)}.stat-lbl{font-size:9px}.toolbar-left{flex-wrap:wrap}.filter-select{font-size:11px;height:32px;padding:0 25px 0 10px}.table .col-type,.table .col-created{display:none}.table th.col-type,.table th.col-created{display:none}.pagination-wrap{gap:6px;flex-wrap:wrap;justify-content:center}.page-btn{font-size:11px;height:30px;min-width:30px}.bulk-bar{flex-direction:column;gap:6px}.bulk-bar .btn{width:100%;justify-content:center}}
+>>>>>>> origin/master
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 </style>
@@ -194,8 +199,8 @@ td{padding:12px 16px;font-size:13px;vertical-align:middle;}
     <h3>Delete Partnership?</h3>
     <p>This will permanently remove the request from <strong id="modalPartnerName"></strong>. This action cannot be undone.</p>
     <div class="modal-acts">
-      <button class="modal-cancel" onclick="closeModal()">Cancel</button>
-      <button class="modal-del" onclick="confirmDelete()">Yes, Delete</button>
+      <button class="btn btn-secondary modal-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-red modal-del" onclick="confirmDelete()">Yes, Delete</button>
     </div>
   </div>
 </div>
@@ -209,8 +214,8 @@ td{padding:12px 16px;font-size:13px;vertical-align:middle;}
     <h3>Delete Selected Requests?</h3>
     <p>This will permanently remove <strong id="bulkCountDisplay">0</strong> partnership request(s).</p>
     <div class="modal-acts">
-      <button class="modal-cancel" onclick="closeBulkModal()">Cancel</button>
-      <button class="modal-del" onclick="confirmBulkDelete()">Yes, Delete</button>
+      <button class="btn btn-secondary modal-cancel" onclick="closeBulkModal()">Cancel</button>
+      <button class="btn btn-red modal-del" onclick="confirmBulkDelete()">Yes, Delete</button>
     </div>
   </div>
 </div>
@@ -319,19 +324,19 @@ td{padding:12px 16px;font-size:13px;vertical-align:middle;}
   <div class="bulk-bar" id="bulkBar">
     <span><strong class="bulk-count" id="bulkCount">0</strong> selected</span>
     <div class="bulk-acts">
-      <button type="button" class="bulk-btn bulk-approve" onclick="bulkAction('approved')">
+      <button type="button" class="btn btn-green bulk-btn bulk-approve" onclick="bulkAction('approved')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"/></svg>Approve
       </button>
-      <button type="button" class="bulk-btn bulk-reject" onclick="bulkAction('rejected')">
+      <button type="button" class="btn btn-red bulk-btn bulk-reject" onclick="bulkAction('rejected')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>Reject
       </button>
-      <button type="button" class="bulk-btn bulk-pending" onclick="bulkAction('pending')">
+      <button type="button" class="btn btn-yellow bulk-btn bulk-pending" onclick="bulkAction('pending')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Pending
       </button>
-      <button type="button" class="bulk-btn bulk-del" onclick="openBulkDelete()">
+      <button type="button" class="btn btn-red bulk-btn bulk-del" onclick="openBulkDelete()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Delete
       </button>
-      <button type="button" class="bulk-btn bulk-cancel" onclick="clearAllCheckboxes()">Cancel</button>
+      <button type="button" class="btn btn-secondary bulk-btn bulk-cancel" onclick="clearAllCheckboxes()">Cancel</button>
     </div>
   </div>
 
@@ -441,11 +446,11 @@ td{padding:12px 16px;font-size:13px;vertical-align:middle;}
           </td>
           <td>
             <div class="actions">
-              <a href="{{ route('admin.partnership.show', $p->id) }}" class="act-btn act-view">
+              <a href="{{ route('admin.partnership.show', $p->id) }}" class="btn btn-secondary act-btn act-view">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                 View
               </a>
-              <button type="button" class="act-btn act-del"
+              <button type="button" class="btn btn-red act-btn act-del"
                 onclick="openModal('{{ $p->id }}','{{ addslashes($p->name) }}','{{ route('admin.partnership.delete', $p->id) }}')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Delete
               </button>

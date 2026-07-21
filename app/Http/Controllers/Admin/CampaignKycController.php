@@ -47,7 +47,7 @@ class CampaignKycController extends Controller
             adminMessage: $validated['admin_message'] ?? ''
         ));
 
-        return back()->with('success', 'KYC request sent to ' . $owner->name . ' via email and in-app notification.');
+        return back()->with('success', 'KYC request sent to '.$owner->name.' via email and in-app notification.');
     }
 
     /**

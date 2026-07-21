@@ -33,7 +33,7 @@ return new class extends Migration
                 'physical',
                 'digital',
                 'service',
-                'donation'
+                'donation',
             ])->default('physical');
 
             $table->boolean('is_active')->default(true);

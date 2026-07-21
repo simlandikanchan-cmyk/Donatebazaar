@@ -56,6 +56,7 @@ return new class extends Migration
                 DB::table('campaigns')
                     ->where('id', $campaign->id)
                     ->update(['location_id' => $locationCache[$cacheKey]]);
+
                 continue;
             }
 
@@ -63,15 +64,15 @@ return new class extends Migration
             [$city, $countryPart] = array_pad(array_map('trim', explode(',', $raw, 2)), 2, null);
 
             // Normalise common variations
-            $city    = $this->normaliseCity($city);
+            $city = $this->normaliseCity($city);
             $country = $this->normaliseCountry($countryPart ?? 'India');
 
             $locationId = DB::table('locations')->insertGetId([
-                'city'       => $city,
-                'state'      => null,        // extend later with a geocoding job
-                'country'    => $country,
-                'latitude'   => null,
-                'longitude'  => null,
+                'city' => $city,
+                'state' => null,        // extend later with a geocoding job
+                'country' => $country,
+                'latitude' => null,
+                'longitude' => null,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
@@ -100,14 +101,17 @@ return new class extends Migration
 
     private function normaliseCountry(?string $raw): string
     {
-        if (!$raw) return 'India';
+        if (! $raw) {
+            return 'India';
+        }
         $raw = strtolower(trim($raw));
         // Strip leading city word if accidentally included
         $raw = preg_replace('/^[a-z]+\s+/', '', $raw);
         $map = [
-            'india'  => 'India',
-            'in'     => 'India',
+            'india' => 'India',
+            'in' => 'India',
         ];
+
         return $map[$raw] ?? ucwords($raw);
     }
 };

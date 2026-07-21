@@ -27,6 +27,16 @@ class Donation extends Model
 
         'order_id',
         'payment_gateway',
+        'payment_id',
+        'signature',
+
+        'payment_status',
+        'is_refunded',
+        'refunded_at',
+        'released_at',
+        'paid_at',
+        'settlement_status',
+        'campaign_settlement_id',
 
         'currency',
 
@@ -37,14 +47,15 @@ class Donation extends Model
     ];
 
     protected $casts = [
-        'total_amount'    => 'decimal:2',
-        'platform_fee'    => 'decimal:2',
-        'net_amount'      => 'decimal:2',
+        'total_amount' => 'decimal:2',
+        'platform_fee' => 'decimal:2',
+        'net_amount' => 'decimal:2',
         'original_amount' => 'decimal:2',
         'discount_amount' => 'decimal:2',
-        'paid_at'      => 'datetime',
-        'refunded_at'  => 'datetime',
-        'is_refunded'  => 'boolean',
+        'paid_at' => 'datetime',
+        'refunded_at' => 'datetime',
+        'released_at' => 'datetime',
+        'is_refunded' => 'boolean',
         'is_anonymous' => 'boolean',
     ];
 
@@ -67,4 +78,13 @@ class Donation extends Model
     {
         return $this->hasMany(Refund::class);
     }
+<<<<<<< HEAD
 }
+=======
+
+    public function items()
+    {
+        return $this->hasMany(DonationItem::class);
+    }
+}
+>>>>>>> origin/master

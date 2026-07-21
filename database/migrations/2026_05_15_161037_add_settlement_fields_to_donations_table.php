@@ -28,9 +28,9 @@ return new class extends Migration
                 'pending',
                 'processing',
                 'settled',
-                'failed'
+                'failed',
             ])->default('pending')
-              ->after('payment_status');
+                ->after('payment_status');
 
             // Settlement reference
             // Foreign key will be added later in separate migration

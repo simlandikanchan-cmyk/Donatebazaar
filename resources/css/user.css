@@ -697,6 +697,15 @@ svg { display: block; flex-shrink: 0; }
 .reason-ico { width: 13px; height: 13px; vertical-align: -2px; margin-right: 4px; }
 .wave svg { width: 18px; height: 18px; display: inline-block; }
 
+/* ══ PAGINATION ══ */
+.pagination-wrap { margin-top: 16px; }
+.pagination-wrap nav { display: flex; }
+.pagination-wrap ul.pagination { display: flex; align-items: center; gap: 4px; list-style: none; padding: 0; margin: 0; }
+.pagination-wrap .page-link { display: inline-flex; align-items: center; justify-content: center; min-width: 32px; height: 32px; padding: 0 6px; border-radius: 8px; font-size: 12px; font-weight: 600; font-family: var(--mono); transition: all var(--ease); text-decoration: none; background: var(--surface2); color: var(--text2); border: 1px solid var(--border2); }
+.pagination-wrap .page-link:hover { background: var(--accent-lt); color: var(--accent); border-color: var(--accent); }
+.pagination-wrap .active .page-link { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 2px 8px rgba(37,99,235,.3); }
+.pagination-wrap .disabled .page-link { background: var(--surface2); color: var(--text3); border-color: var(--border2); opacity: .45; cursor: default; pointer-events: none; }
+
 /* ══ RECENT ACTIVITY ══ */
 .activity-card {
     background: var(--surface); border: 1px solid var(--border);

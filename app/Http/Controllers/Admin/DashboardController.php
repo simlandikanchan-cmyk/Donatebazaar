@@ -4,14 +4,24 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Campaign;
+<<<<<<< HEAD
+use App\Models\CampaignSettlement;
 use App\Models\ContactMessage;
 use App\Models\Donation;
 use App\Models\JobPostApplication;
+=======
+use App\Models\Donation;
+>>>>>>> origin/master
 use App\Models\User;
 use App\Models\Volunteer;
 use App\Models\VolunteerApplication;
+use App\Models\Wallet;
 use Illuminate\Http\Request;
+<<<<<<< HEAD
 use Illuminate\Support\Str;
+=======
+use Illuminate\Support\Facades\Cache;
+>>>>>>> origin/master
 
 class DashboardController extends Controller
 {
@@ -37,11 +47,11 @@ class DashboardController extends Controller
             case 'inactive':
                 return $query->where(function ($q) use ($startOfDay) {
                     $q->whereIn('campaign_state', ['expired', 'completed'])
-                      ->orWhere(function ($q2) use ($startOfDay) {
-                          $q2->where('campaign_state', 'active')
-                             ->whereNotNull('end_date')
-                             ->where('end_date', '<', $startOfDay);
-                      });
+                        ->orWhere(function ($q2) use ($startOfDay) {
+                            $q2->where('campaign_state', 'active')
+                                ->whereNotNull('end_date')
+                                ->where('end_date', '<', $startOfDay);
+                        });
                 });
             default: // 'all'
                 return $query;
@@ -53,11 +63,14 @@ class DashboardController extends Controller
      */
     private function computeCounts(): array
     {
-        $startOfDay = now()->startOfDay();
+        $counts = Campaign::selectRaw("campaign_state, COUNT(*) as count")
+            ->groupBy('campaign_state')
+            ->pluck('count', 'campaign_state');
 
-        $cntPending   = Campaign::where('campaign_state', 'pending')->count();
-        $cntPaused    = Campaign::where('campaign_state', 'paused')->count();
-        $cntRejected  = Campaign::where('campaign_state', 'rejected')->count();
+<<<<<<< HEAD
+        $cntPending = Campaign::where('campaign_state', 'pending')->count();
+        $cntPaused = Campaign::where('campaign_state', 'paused')->count();
+        $cntRejected = Campaign::where('campaign_state', 'rejected')->count();
         $cntCompleted = Campaign::where('campaign_state', 'completed')->count();
 
         $cntActive = Campaign::where('campaign_state', 'active')
@@ -68,13 +81,24 @@ class DashboardController extends Controller
         $cntExpired = Campaign::where('campaign_state', 'expired')
             ->orWhere(function ($q) use ($startOfDay) {
                 $q->where('campaign_state', 'active')
-                  ->whereNotNull('end_date')
-                  ->where('end_date', '<', $startOfDay);
+                    ->whereNotNull('end_date')
+                    ->where('end_date', '<', $startOfDay);
             })->count();
 
         $totalCampaigns = Campaign::count();
         $reviewed = $cntActive + $cntRejected;
         $approvalRate = $reviewed > 0 ? round(($cntActive / $reviewed) * 100) : 0;
+=======
+        $totalCampaigns = (int) $counts->sum();
+        $cntPending     = (int) ($counts['pending'] ?? 0);
+        $cntActive      = (int) ($counts['active'] ?? 0);
+        $cntPaused      = (int) ($counts['paused'] ?? 0);
+        $cntExpired     = (int) ($counts['expired'] ?? 0);
+        $cntRejected    = (int) ($counts['rejected'] ?? 0);
+        $cntCompleted   = (int) ($counts['completed'] ?? 0);
+
+        $approvalRate = $totalCampaigns > 0 ? round(($cntActive / $totalCampaigns) * 100) : 0;
+>>>>>>> origin/master
 
         return compact(
             'totalCampaigns', 'cntPending', 'cntActive', 'cntPaused',
@@ -84,24 +108,53 @@ class DashboardController extends Controller
 
     public function index()
     {
-        $counts = $this->computeCounts();
-        extract($counts);
+        $stats = Cache::remember('admin_dashboard_stats', 300, function () {
+            $counts = $this->computeCounts();
 
-        $volunteerCount = Volunteer::count();
-        $pendingVolunteerApps = VolunteerApplication::where('status', 'pending')->count();
+            $volunteerCount = Volunteer::count();
+            $pendingVolunteerApps = VolunteerApplication::where('status', 'pending')->count();
 
-        $totalUsers    = User::count();
+            $totalUsers    = User::count();
+            $newUsersToday = User::whereDate('created_at', today())->count();
+
+            $totalDonations = Donation::count();
+            $donationsToday = Donation::whereDate('created_at', today())->count();
+            $totalRevenue   = Donation::sum('total_amount');
+
+            $avgDonation  = $totalDonations > 0 ? (int) round($totalRevenue / $totalDonations) : 0;
+            $uniqueDonors = Donation::whereNotNull('user_id')->distinct('user_id')->count('user_id');
+            $successRate  = ($counts['totalCampaigns'] ?? 0) > 0
+                ? round((Campaign::where('campaign_state', 'completed')->count() / $counts['totalCampaigns']) * 100)
+                : 0;
+
+            return array_merge($counts, compact(
+                'volunteerCount', 'pendingVolunteerApps',
+                'totalUsers', 'newUsersToday',
+                'totalDonations', 'donationsToday', 'totalRevenue',
+                'avgDonation', 'uniqueDonors', 'successRate'
+            ));
+        });
+
+        extract($stats);
+
+        $totalUsers = User::count();
         $newUsersToday = User::whereDate('created_at', today())->count();
 
         $totalDonations = Donation::count();
         $donationsToday = Donation::whereDate('created_at', today())->count();
-        $totalRevenue   = Donation::sum('total_amount');
+        $totalRevenue = Donation::sum('total_amount');
 
         // ─────────────────────────────────────────────────────────
         // Pending Actions counts
         // ─────────────────────────────────────────────────────────
-        $unreadMessages     = ContactMessage::where('is_read', false)->count();
+        $unreadMessages = ContactMessage::where('is_read', false)->count();
         $pendingJobApplicants = JobPostApplication::where('status', 'pending')->count();
+
+        // ─────────────────────────────────────────────────────────
+        // Wallet / Settlement stats
+        // ─────────────────────────────────────────────────────────
+        $pendingSettlements = CampaignSettlement::where('status', 'pending_approval')->count();
+        $totalWalletBalance = Wallet::sum('balance');
 
         // ─────────────────────────────────────────────────────────
         // Recent Activity — merged timeline
@@ -112,10 +165,10 @@ class DashboardController extends Controller
             ->take(5)
             ->get()
             ->map(fn ($d) => [
-                'type'      => 'donation',
-                'desc'      => '₹' . number_format((float) $d->total_amount) . ' donation to ' . ($d->campaign->title ?? 'a campaign'),
-                'time'      => $d->created_at,
-                'link'      => route('admin.donations.index'),
+                'type' => 'donation',
+                'desc' => '₹'.number_format((float) $d->total_amount).' donation to '.($d->campaign->title ?? 'a campaign'),
+                'time' => $d->created_at,
+                'link' => route('admin.donations.index'),
             ]);
 
         $recentCampaigns = Campaign::where('campaign_state', 'pending')
@@ -124,7 +177,7 @@ class DashboardController extends Controller
             ->get()
             ->map(fn ($c) => [
                 'type' => 'campaign',
-                'desc' => 'Campaign "' . Str::limit($c->title, 40) . '" submitted for review',
+                'desc' => 'Campaign "'.Str::limit($c->title, 40).'" submitted for review',
                 'time' => $c->created_at,
                 'link' => route('admin.campaign.index'),
             ]);
@@ -144,7 +197,7 @@ class DashboardController extends Controller
             ->get()
             ->map(fn ($m) => [
                 'type' => 'message',
-                'desc' => 'Message "' . Str::limit($m->subject ?? '(no subject)', 40) . '" received',
+                'desc' => 'Message "'.Str::limit($m->subject ?? '(no subject)', 40).'" received',
                 'time' => $m->created_at,
                 'link' => route('admin.messages'),
             ]);
@@ -186,10 +239,11 @@ class DashboardController extends Controller
             $row = $monthlyData->get($key);
 
             $chartLabels[] = now()->subMonths($i)->format('M');
-            $chartTotal[]  = $row ? (int) $row->total : 0;
+            $chartTotal[] = $row ? (int) $row->total : 0;
             $chartActive[] = $row ? (int) $row->active : 0;
         }
 
+<<<<<<< HEAD
         // ─────────────────────────────────────────────────────────
         // Revenue Trend (last 6 months)
         // ─────────────────────────────────────────────────────────
@@ -212,7 +266,7 @@ class DashboardController extends Controller
             $row = $revenueData->get($key);
 
             $revLabels[] = now()->subMonths($i)->format('M');
-            $revData[]   = $row ? (float) $row->revenue : 0;
+            $revData[] = $row ? (float) $row->revenue : 0;
         }
 
         // ─────────────────────────────────────────────────────────
@@ -252,7 +306,16 @@ class DashboardController extends Controller
             'totalRevenue',
             'unreadMessages',
             'pendingJobApplicants',
+            'pendingSettlements',
+            'totalWalletBalance',
             'recentActivity'
+=======
+        return view('admin.dashboard', array_merge($stats, compact(
+            'activeCampaigns',
+            'chartLabels',
+            'chartTotal',
+            'chartActive'
+>>>>>>> origin/master
         )));
     }
 
@@ -262,15 +325,15 @@ class DashboardController extends Controller
      */
     public function campaigns(Request $request)
     {
-        $state  = $request->input('state', 'active');
+        $state = $request->input('state', 'active');
         $search = trim((string) $request->input('search', ''));
-        $sort   = $request->input('sort', '');
+        $sort = $request->input('sort', '');
 
         $query = Campaign::with('user', 'category');
         $query = $this->scopeState($query, $state);
 
         if ($search !== '') {
-            $query->where('title', 'like', '%' . $search . '%');
+            $query->where('title', 'like', '%'.$search.'%');
         }
 
         switch ($sort) {
@@ -298,10 +361,10 @@ class DashboardController extends Controller
             : '';
 
         return response()->json([
-            'cards'      => $cards,
+            'cards' => $cards,
             'pagination' => $pagination,
-            'total'      => $campaigns->total(),
-            'counts'     => $this->computeCounts(),
+            'total' => $campaigns->total(),
+            'counts' => $this->computeCounts(),
         ]);
     }
 }

@@ -27,7 +27,14 @@
     $products = collect();
     try {
         if (method_exists($campaign, 'products')) {
-            $products = $campaign->products()->where('is_active', 1)->where('approval_status', 'approved')->with('categoryProduct')->get();
+            $products = $campaign->products()
+                ->where('is_active', 1)
+                ->where('approval_status', 'approved')
+                ->with('categoryProduct')
+                ->withCount(['reservations as active_reserved_sum' => function ($q) {
+                    $q->where('expires_at', '>', now());
+                }])
+                ->get();
         }
     } catch (\Throwable $e) {}
 
@@ -611,7 +618,7 @@
                     <div class="dp-grid" id="dpGrid">
                         @foreach($products as $idx => $product)
                         @php
-                            $qtyNeeded = $product->remaining_quantity ?? $product->stock ?? 0;
+                            $qtyNeeded = max(0, ($product->remaining_quantity ?? 0) - ($product->active_reserved_sum ?? 0));
                             $totalQty  = $product->quantity ?? max($qtyNeeded, 1000);
                             $soldPct   = $totalQty > 0 ? min(100, round((($totalQty - $qtyNeeded) / $totalQty) * 100)) : 0;
                             $isFirst   = $idx === 0;

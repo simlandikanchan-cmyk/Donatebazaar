@@ -24,17 +24,17 @@ class ActivityService
     }
 
     // 🔥 AUTO ACTIVITY CREATOR (IMPORTANT)
-public function createDonationActivity($donation)
-{
-    return $this->repo->create([
-        'user_id' => auth()->id(), //
-        'campaign_id' => $donation->campaign_id,
-        'type' => 'donation',
-        'title' => 'New Donation ',
-        'description' => 'Donated ₹'.$donation->amount,
-        'meta' => [
-            'amount' => $donation->amount
-        ]
-    ]);
-}
+    public function createDonationActivity($donation)
+    {
+        return $this->repo->create([
+            'user_id' => auth()->id(), //
+            'campaign_id' => $donation->campaign_id,
+            'type' => 'donation',
+            'title' => 'New Donation ',
+            'description' => 'Donated ₹'.$donation->amount,
+            'meta' => [
+                'amount' => $donation->amount,
+            ],
+        ]);
+    }
 }

@@ -11,18 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-    
-    Schema::create('campaign_logs', function (Blueprint $table) {
-    $table->id();
-    $table->foreignId('campaign_id')->constrained()->onDelete('cascade');
-    $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
 
-    $table->string('action'); // paused, resumed, approved, rejected
-    $table->text('message')->nullable();
+        Schema::create('campaign_logs', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('campaign_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
 
-    $table->timestamps();
+            $table->string('action'); // paused, resumed, approved, rejected
+            $table->text('message')->nullable();
 
-    });
+            $table->timestamps();
+
+        });
     }
 
     /**

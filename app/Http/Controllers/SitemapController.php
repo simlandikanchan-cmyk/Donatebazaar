@@ -7,8 +7,6 @@ use App\Models\Campaign;
 use App\Models\Category;
 use App\Models\Event;
 use App\Models\JobPost;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\URL;
 
 class SitemapController extends Controller
 {
@@ -31,54 +29,54 @@ class SitemapController extends Controller
         ];
 
         $campaigns = Campaign::whereIn('campaign_state', [
-                Campaign::STATE_ACTIVE,
-                Campaign::STATE_COMPLETED,
-                Campaign::STATE_EXPIRED,
-            ])
+            Campaign::STATE_ACTIVE,
+            Campaign::STATE_COMPLETED,
+            Campaign::STATE_EXPIRED,
+        ])
             ->whereNotNull('slug')
             ->with('category:id,slug')
             ->get()
-            ->map(fn($c) => [
-                'loc'        => '/campaigns/' . ($c->category->slug ?? 'general') . '/' . $c->slug,
-                'priority'   => $c->campaign_state === Campaign::STATE_ACTIVE ? '0.8' : '0.5',
+            ->map(fn ($c) => [
+                'loc' => '/campaigns/'.($c->category->slug ?? 'general').'/'.$c->slug,
+                'priority' => $c->campaign_state === Campaign::STATE_ACTIVE ? '0.8' : '0.5',
                 'changefreq' => $c->campaign_state === Campaign::STATE_ACTIVE ? 'daily' : 'weekly',
-                'lastmod'    => $c->updated_at,
+                'lastmod' => $c->updated_at,
             ]);
 
         $categories = Category::where('is_active', true)
             ->get()
-            ->map(fn($c) => [
-                'loc'        => '/category/' . $c->slug,
-                'priority'   => '0.6',
+            ->map(fn ($c) => [
+                'loc' => '/category/'.$c->slug,
+                'priority' => '0.6',
                 'changefreq' => 'weekly',
             ]);
 
         $blogs = Blog::public()
             ->whereNotNull('slug')
             ->get()
-            ->map(fn($b) => [
-                'loc'        => '/blog/' . $b->slug,
-                'priority'   => '0.7',
+            ->map(fn ($b) => [
+                'loc' => '/blog/'.$b->slug,
+                'priority' => '0.7',
                 'changefreq' => 'monthly',
-                'lastmod'    => $b->updated_at,
+                'lastmod' => $b->updated_at,
             ]);
 
         $events = Event::whereIn('status', [Event::STATUS_ACTIVE, Event::STATUS_COMPLETED])
             ->get()
-            ->map(fn($e) => [
-                'loc'        => '/events/' . $e->id,
-                'priority'   => '0.6',
+            ->map(fn ($e) => [
+                'loc' => '/events/'.$e->id,
+                'priority' => '0.6',
                 'changefreq' => 'weekly',
-                'lastmod'    => $e->updated_at,
+                'lastmod' => $e->updated_at,
             ]);
 
         $jobs = JobPost::active()
             ->get()
-            ->map(fn($j) => [
-                'loc'        => '/career/' . $j->slug,
-                'priority'   => '0.5',
+            ->map(fn ($j) => [
+                'loc' => '/career/'.$j->slug,
+                'priority' => '0.5',
                 'changefreq' => 'weekly',
-                'lastmod'    => $j->updated_at,
+                'lastmod' => $j->updated_at,
             ]);
 
         $urls = collect()

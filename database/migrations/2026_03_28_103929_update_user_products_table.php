@@ -10,15 +10,16 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up()
-{
-    Schema::table('user_products', function (Blueprint $table) {
-        $table->text('description')->nullable()->after('name');
-        $table->string('image')->nullable();
+    {
+        Schema::table('user_products', function (Blueprint $table) {
+            $table->text('description')->nullable()->after('name');
+            $table->string('image')->nullable();
 
-        $table->text('rejection_reason')->nullable();
-        $table->foreignId('approved_by')->nullable()->constrained('users')->nullOnDelete();
-    });
-}
+            $table->text('rejection_reason')->nullable();
+            $table->foreignId('approved_by')->nullable()->constrained('users')->nullOnDelete();
+        });
+    }
+
     /**
      * Reverse the migrations.
      */

@@ -12,7 +12,7 @@ class Subscriber extends Model
     ];
 
     protected $casts = [
-        'subscribed_at'   => 'datetime',
+        'subscribed_at' => 'datetime',
         'unsubscribed_at' => 'datetime',
     ];
 

@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::table('campaigns', function (Blueprint $table) {
             $table->timestamp('approved_at')
-                  ->nullable()
-                  ->after('status');
+                ->nullable()
+                ->after('status');
         });
     }
 

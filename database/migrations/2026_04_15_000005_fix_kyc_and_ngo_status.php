@@ -32,7 +32,7 @@ return new class extends Migration
     {
         // A) Fix kyc_verifications.document_number
         // First: fill any existing nulls with a placeholder so we can apply NOT NULL
-        \DB::table('kyc_verifications')
+        DB::table('kyc_verifications')
             ->whereNull('document_number')
             ->update(['document_number' => 'UNKNOWN-REQUIRES-UPDATE']);
 
@@ -42,7 +42,7 @@ return new class extends Migration
 
         // B) Fix ngos.verification_status — varchar → enum
         // MariaDB requires changing column type; cast existing values to valid enum values
-        \DB::statement("
+        DB::statement("
             UPDATE ngos
             SET verification_status = CASE
                 WHEN LOWER(verification_status) IN ('approved') THEN 'approved'
@@ -51,7 +51,7 @@ return new class extends Migration
             END
         ");
 
-        \DB::statement("
+        DB::statement("
             ALTER TABLE ngos
             MODIFY COLUMN verification_status
             ENUM('pending','approved','rejected') NOT NULL DEFAULT 'pending'
@@ -61,8 +61,8 @@ return new class extends Migration
         Schema::table('campaigns', function (Blueprint $table) {
             $table->dropForeign(['category_id']);
             $table->foreign('category_id')
-                  ->references('id')->on('categories')
-                  ->onDelete('restrict');
+                ->references('id')->on('categories')
+                ->onDelete('restrict');
         });
     }
 
@@ -72,7 +72,7 @@ return new class extends Migration
             $table->string('document_number')->nullable()->change();
         });
 
-        \DB::statement("
+        DB::statement("
             ALTER TABLE ngos
             MODIFY COLUMN verification_status VARCHAR(255) NOT NULL DEFAULT 'pending'
         ");

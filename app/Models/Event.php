@@ -3,12 +3,9 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use App\Models\User;
-use App\Models\Campaign;
-use App\Models\EventRegistration;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Event extends Model
 {
@@ -18,11 +15,15 @@ class Event extends Model
     |--------------------------------------------------------------------------
     */
 
-    public const STATUS_PENDING   = 'pending';
-    public const STATUS_ACTIVE    = 'active';
+    public const STATUS_PENDING = 'pending';
+
+    public const STATUS_ACTIVE = 'active';
+
     public const STATUS_COMPLETED = 'completed';
+
     public const STATUS_CANCELLED = 'cancelled';
-    public const STATUS_EXPIRED   = 'expired';
+
+    public const STATUS_EXPIRED = 'expired';
 
     /*
     |--------------------------------------------------------------------------
@@ -59,14 +60,14 @@ class Event extends Model
     */
 
     protected $casts = [
-        'event_date'           => 'date',
-        'goal_amount'          => 'decimal:2',
-        'raised_amount'        => 'decimal:2',
-        'max_participants'     => 'integer',
-        'registered_count'     => 'integer',
-        'allow_registrations'  => 'boolean',
-        'show_on_campaign'     => 'boolean',
-        'send_notification'    => 'boolean',
+        'event_date' => 'date',
+        'goal_amount' => 'decimal:2',
+        'raised_amount' => 'decimal:2',
+        'max_participants' => 'integer',
+        'registered_count' => 'integer',
+        'allow_registrations' => 'boolean',
+        'show_on_campaign' => 'boolean',
+        'send_notification' => 'boolean',
     ];
 
     /*
@@ -76,9 +77,9 @@ class Event extends Model
     */
 
     protected $attributes = [
-        'raised_amount'    => 0,
+        'raised_amount' => 0,
         'registered_count' => 0,
-        'status'           => self::STATUS_PENDING,
+        'status' => self::STATUS_PENDING,
     ];
 
     /*
@@ -157,29 +158,29 @@ class Event extends Model
     // }
 
     public function hasEnded(): bool
-{
-    if (!$this->event_date) {
-        return false;
+    {
+        if (! $this->event_date) {
+            return false;
+        }
+
+        // Combine event_date with end_time (or start_time, or end of day if neither set)
+        $dateStr = $this->event_date->format('Y-m-d');
+
+        if ($this->end_time) {
+            $cutoff = Carbon::parse($dateStr.' '.Carbon::parse($this->end_time)->format('H:i:s'));
+        } elseif ($this->start_time) {
+            $cutoff = Carbon::parse($dateStr.' '.Carbon::parse($this->start_time)->format('H:i:s'));
+        } else {
+            // No time info — treat the whole day as valid, ends at midnight after
+            $cutoff = Carbon::parse($dateStr)->endOfDay();
+        }
+
+        return $cutoff->isPast();
     }
-
-    // Combine event_date with end_time (or start_time, or end of day if neither set)
-    $dateStr = $this->event_date->format('Y-m-d');
-
-    if ($this->end_time) {
-        $cutoff = Carbon::parse($dateStr . ' ' . Carbon::parse($this->end_time)->format('H:i:s'));
-    } elseif ($this->start_time) {
-        $cutoff = Carbon::parse($dateStr . ' ' . Carbon::parse($this->start_time)->format('H:i:s'));
-    } else {
-        // No time info — treat the whole day as valid, ends at midnight after
-        $cutoff = Carbon::parse($dateStr)->endOfDay();
-    }
-
-    return $cutoff->isPast();
-}
 
     public function isFull(): bool
     {
-        if (!$this->max_participants) {
+        if (! $this->max_participants) {
             return false;
         }
 
@@ -189,7 +190,7 @@ class Event extends Model
 
     public function remainingSpots(): int
     {
-        if (!$this->max_participants) {
+        if (! $this->max_participants) {
             return 0;
         }
 

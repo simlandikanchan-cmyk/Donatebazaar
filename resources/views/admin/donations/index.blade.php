@@ -17,6 +17,7 @@
 .ab-refund{background:var(--amber-lt);color:var(--amber);border-color:rgba(245,158,11,.18)}
 .ab-refund:hover{background:var(--amber);color:#fff;border-color:var(--amber)}
 .dn-anon{font-style:italic;color:var(--text3)}
+<<<<<<< HEAD
 @media(max-width:640px){
   .stats-grid{grid-template-columns:repeat(2,1fr) !important;}
 }
@@ -42,6 +43,12 @@
   #donationTable tbody tr:not(.empty-row){padding:12px 14px}
   #donationTable tbody tr td::before{min-width:65px;font-size:9px}
 }
+=======
+@media(max-width:960px){.don-stats-grid{grid-template-columns:repeat(2,1fr)!important}}
+@media(max-width:640px){.don-stats-grid{grid-template-columns:repeat(2,1fr)!important;gap:12px}}
+@media(max-width:480px){.don-stats-grid{grid-template-columns:1fr!important}}
+@media(max-width:380px){.don-stats-grid .stat{padding:12px 14px}}
+>>>>>>> origin/master
 </style>
 @endpush
 
@@ -64,7 +71,7 @@
   </div>
 </div>
 
-<div class="stats-grid" style="grid-template-columns:repeat(4,1fr)">
+<div class="stats-grid don-stats-grid" style="grid-template-columns:repeat(4,1fr)">
   <div class="stat" onclick="setFilter('all')" style="cursor:pointer">
     <div class="stat-icon si-teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
     <div class="stat-body"><div class="stat-lbl">Total</div><div class="stat-val sv-teal">{{ $counts['total'] }}</div><div class="stat-foot">All donations</div></div>
@@ -258,10 +265,10 @@
       <textarea id="refundReason" name="reason" rows="2" placeholder="Reason (optional)…" style="width:100%;margin-top:12px;padding:8px 10px;border:1px solid var(--border2);border-radius:var(--r-sm);font-size:12.5px;font-family:var(--font);background:var(--surface2);color:var(--text);resize:vertical"></textarea>
     </div>
     <div class="modal-acts">
-      <button type="button" onclick="closeRefund()" class="modal-btn modal-cancel">Cancel</button>
+      <button type="button" onclick="closeRefund()" class="btn btn-secondary modal-btn modal-cancel">Cancel</button>
       <form id="refundForm" method="POST" style="flex:1;">
         @csrf
-        <button type="submit" class="modal-btn modal-red" style="width:100%;">↺ Confirm Refund</button>
+        <button type="submit" class="btn btn-red modal-btn modal-red">↺ Confirm Refund</button>
       </form>
     </div>
   </div>

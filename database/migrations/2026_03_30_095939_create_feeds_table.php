@@ -11,28 +11,28 @@ return new class extends Migration
      */
     public function up(): void
     {
-              Schema::create('feeds', function (Blueprint $table) {
-    $table->id();
+        Schema::create('feeds', function (Blueprint $table) {
+            $table->id();
 
-    $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
 
-    $table->enum('type', [
-        'donation',
-        'campaign',
-        'post',
-        'event',
-        'milestone'
-    ]);
+            $table->enum('type', [
+                'donation',
+                'campaign',
+                'post',
+                'event',
+                'milestone',
+            ]);
 
-    $table->unsignedBigInteger('reference_id');
-    $table->string('reference_type');
+            $table->unsignedBigInteger('reference_id');
+            $table->string('reference_type');
 
-    $table->foreignId('location_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('location_id')->nullable()->constrained()->nullOnDelete();
 
-    $table->decimal('score', 10, 5)->default(0);
+            $table->decimal('score', 10, 5)->default(0);
 
-    $table->timestamps();
-  });
+            $table->timestamps();
+        });
     }
 
     /**

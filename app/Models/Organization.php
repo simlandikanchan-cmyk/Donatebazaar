@@ -2,13 +2,17 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Organization extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'user_id',
         'name',
+        'type',
         'slug',
         'description',
         'logo',
@@ -26,6 +30,13 @@ class Organization extends Model
         'verification_status',
         'verified_at',
         'is_active',
+        'wallet_hold_days',
+    ];
+
+    protected $casts = [
+        'wallet_hold_days' => 'integer',
+        'is_active' => 'boolean',
+        'verified_at' => 'datetime',
     ];
 
     /**
@@ -50,5 +61,21 @@ class Organization extends Model
     public function applications()
     {
         return $this->hasMany(OrganizationApplication::class);
+    }
+
+    /**
+     * Wallet ledger for this organization (one wallet per owner).
+     */
+    public function wallet()
+    {
+        return $this->morphOne(Wallet::class, 'owner');
+    }
+
+    /**
+     * Payout bank/UPI accounts for this organization.
+     */
+    public function payoutAccounts()
+    {
+        return $this->hasMany(PayoutAccount::class);
     }
 }

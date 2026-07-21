@@ -172,6 +172,8 @@ label.lbl .counter.over{color:var(--red);}
 /* ── RESPONSIVE ── */
 @media(max-width:1100px){.form-layout{grid-template-columns:minmax(0,1fr);}.side-stack{position:static;}}
 @media(max-width:600px){.field-row{grid-template-columns:1fr;}}
+@media(max-width:480px){.form-layout{gap:14px}.card-body{padding:16px 14px}.form-card-head{padding:10px 14px}.form-card-head h4{font-size:12px}.field-row{gap:10px}.form-label{font-size:10px}.form-input,.form-select,.form-textarea{font-size:12px;padding:8px 11px}.form-hint{font-size:10px}.action-btns{flex-direction:column;gap:8px}.action-btns .btn{flex:1;justify-content:center}.back-link{font-size:11px}}
+@media(max-width:380px){.card-body{padding:12px 10px}.form-input,.form-select,.form-textarea{font-size:11px;padding:7px 10px}.form-label{font-size:9px}.form-card-head{padding:10px 12px}.form-card-head h4{font-size:11px}.field-row{gap:8px}.action-bar{padding:10px 12px;flex-direction:column;gap:8px}.action-bar .btn{width:100%;justify-content:center}.back-link{margin-bottom:8px}.field{gap:4px}}
 </style>
 @endpush
 
@@ -502,7 +504,7 @@ label.lbl .counter.over{color:var(--red);}
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                   Discard
                 </a>
-                <button type="submit" name="_action" value="draft" class="btn btn-draft" id="draftBtn">
+                <button type="submit" name="_action" value="draft" class="btn btn-secondary btn-draft" id="draftBtn">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
                   Save Draft
                 </button>

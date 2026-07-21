@@ -10,6 +10,6 @@ class BlogView extends Model
         'blog_id',
         'user_id',
         'ip_address',
-        'viewed_date'
+        'viewed_date',
     ];
 }

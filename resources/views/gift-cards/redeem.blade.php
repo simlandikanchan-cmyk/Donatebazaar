@@ -302,7 +302,7 @@
                     <div class="gr-review-row">
                         <span class="gr-review-label">Donor name</span>
                         <span class="gr-review-value" id="reviewName"></span>
-                        <button type="button" class="gr-review-change" onclick="gotoStep(3)">Change</button>
+                        <button type="button" class="btn btn-secondary gr-review-change" onclick="gotoStep(3)">Change</button>
                     </div>
                     <div class="gr-review-row">
                         <span class="gr-review-label">Donor email</span>

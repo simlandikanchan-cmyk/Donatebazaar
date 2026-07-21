@@ -5,7 +5,7 @@
 @section('page_subtitle', 'Update this frequently asked question')
 
 @section('topbar_left')
-  <a href="{{ route('admin.faqs.index') }}" class="back-btn">
+  <a href="{{ route('admin.faqs.index') }}" class="btn btn-secondary back-btn">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M12 19l-7-7 7-7"/></svg>
     All FAQs
   </a>
@@ -50,6 +50,8 @@ textarea.f-input{resize:vertical;min-height:140px;line-height:1.6;}
 [data-theme="dark"] .alert-error{color:#f87171;}
 .grid-2{display:grid;grid-template-columns:1fr 160px;gap:20px;}
 @media(max-width:640px){.grid-2{grid-template-columns:1fr;}}
+@media(max-width:480px){.card-body{padding:16px}.card-head{padding:12px 16px}.f-input{font-size:12px;padding:8px 11px}.f-label{font-size:10px}.submit-btn{font-size:12px;padding:10px 18px}.back-btn{font-size:11px;height:32px;padding:0 12px}}
+@media(max-width:380px){.card-body{padding:12px}.f-input{font-size:11px;padding:7px 10px}.f-label{font-size:9px}.field{margin-bottom:14px}.f-hint{font-size:10px}.f-error{font-size:10px}.submit-btn{font-size:11px;padding:9px 16px;width:100%;justify-content:center}.card-head-title{font-size:10px}.toggle-row{flex-direction:column;align-items:flex-start;gap:8px}}
 </style>
 @endpush
 
@@ -127,7 +129,7 @@ textarea.f-input{resize:vertical;min-height:140px;line-height:1.6;}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 6L9 17l-5-5"/></svg>
       Save Changes
     </button>
-    <a href="{{ route('admin.faqs.index') }}" class="back-btn" style="text-decoration:none;">Cancel</a>
+    <a href="{{ route('admin.faqs.index') }}" class="btn btn-secondary back-btn" style="text-decoration:none;">Cancel</a>
   </div>
 </form>
 @endsection

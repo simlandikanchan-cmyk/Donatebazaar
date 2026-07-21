@@ -237,9 +237,8 @@
                 auto-open Razorpay on page load. Prevents the modal from
                 re-opening when the user refreshes after a completed payment.
             --}}
-            <button id="rzp-button"
-                    class="w-full rounded-2xl text-white font-semibold py-4 transition-all duration-200 shadow-lg hover:scale-[1.01]"
-                    style="background: linear-gradient(135deg,#4F46E5 0%,#7C3AED 100%);"
+            <button id="rzp-button" type="button"
+                    class="btn btn-primary w-full"
                     data-payment-status="{{ $donation->payment_status ?? 'pending' }}">
 
                 <span class="flex items-center justify-center gap-2">

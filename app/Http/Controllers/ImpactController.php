@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Campaign;
 use App\Models\Donation;
-use Illuminate\Http\Request;
 
 class ImpactController extends Controller
 {
@@ -22,8 +21,8 @@ class ImpactController extends Controller
             ->count();
 
         $totalDonors = Donation::whereHas('campaign', function ($q) {
-                $q->where('campaign_state', Campaign::STATE_COMPLETED);
-            })
+            $q->where('campaign_state', Campaign::STATE_COMPLETED);
+        })
             ->distinct('user_id')
             ->count('user_id');
 

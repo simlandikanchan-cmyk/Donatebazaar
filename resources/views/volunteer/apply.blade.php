@@ -3,8 +3,6 @@
 @section('content')
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Outfit:wght@300;400;500;600&display=swap');
-
 :root{
   --purple-deep:#0f766e;
   --purple-main:#2563eb ;
@@ -15,12 +13,20 @@
   --ok:#16a34a;
   --err:#dc2626;
 }
-.vol-page{font-family:'Outfit',system-ui,sans-serif;color:var(--ink);background:
+<<<<<<< HEAD
+.vol-page{font-family:'DM Sans',sans-serif;color:var(--ink);background:
+=======
+.vol-page{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:
+>>>>>>> origin/master
   radial-gradient(1200px 500px at 50% -10%, rgba(37,99,235,.10), transparent 60%),
   #fbfaff;min-height:100vh;}
 .vol-hero{max-width:1080px;margin:0 auto;padding:64px 22px 18px;text-align:center;}
 .vol-eyebrow{display:inline-block;font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--purple-main);background:var(--purple-soft);padding:7px 14px;border-radius:30px;margin-bottom:18px;}
-.vol-hero h1{font-family:'Playfair Display',serif;font-size:clamp(30px,5vw,46px);font-weight:600;line-height:1.1;margin-bottom:14px;}
+<<<<<<< HEAD
+.vol-hero h1{font-size:clamp(30px,5vw,46px);font-weight:600;line-height:1.1;margin-bottom:14px;}
+=======
+.vol-hero h1{font-family:'Inter',system-ui,sans-serif;font-size:clamp(30px,5vw,46px);font-weight:600;line-height:1.1;margin-bottom:14px;}
+>>>>>>> origin/master
 .vol-hero p{max-width:620px;margin:0 auto;color:var(--muted);font-size:16px;line-height:1.6;}
 
 .vol-wrap{max-width:1080px;margin:0 auto;padding:26px 22px 70px;display:grid;grid-template-columns:1.15fr .85fr;gap:26px;align-items:start;}
@@ -108,11 +114,86 @@
         </div>
 
         <div class="vol-field">
+<<<<<<< HEAD
+          <label for="country">Country</label>
+          <select id="country" name="country">
+            <option value="India" @selected(old('country', 'India') === 'India')>India</option>
+            <option value="other" @selected(old('country') === 'other')>Other</option>
+          </select>
+          @error('country') <div class="vol-error">{{ $message }}</div> @enderror
+        </div>
+
+        <div class="vol-field" id="stateField">
+          <label for="state">State</label>
+          <select id="state" name="state">
+            <option value="">Select state</option>
+          </select>
+          @error('state') <div class="vol-error">{{ $message }}</div> @enderror
+        </div>
+
+        <div class="vol-field" id="cityField">
+          <label for="city">City</label>
+          <select id="city" name="city">
+            <option value="">Select city</option>
+          </select>
+=======
+          <label for="state">Select your state</label>
+          <select id="state" name="state" class="vol-input">
+            <option value="">Select your state...</option>
+          </select>
+        </div>
+
+        <div class="vol-field">
+          <label for="city">Select your city </label>
+          <div class="vol-city-wrap">
+            <input id="city" name="city" type="text" placeholder="Your city" value="{{ old('city') }}" maxlength="120" autocomplete="off">
+            <div id="city-suggestions" class="vol-city-suggest"></div>
+          </div>
+>>>>>>> origin/master
+          @error('city') <div class="vol-error">{{ $message }}</div> @enderror
+        </div>
+
+        <div class="vol-field">
+<<<<<<< HEAD
+          <label for="availability">Availability</label>
+          <select id="availability" name="availability">
+            <option value="">Select availability</option>
+            <option value="full_time" @selected(old('availability') === 'full_time')>Full Time</option>
+            <option value="part_time" @selected(old('availability') === 'part_time')>Part Time</option>
+            <option value="weekends" @selected(old('availability') === 'weekends')>Weekends</option>
+=======
+          <label for="availability">Availability <span style="color:var(--err);">*</span></label>
+          <select id="availability" name="availability" required>
+            <option value="">Select your availability…</option>
+            <option value="full_time" @selected(old('availability') == 'full_time')>Full time</option>
+            <option value="part_time" @selected(old('availability') == 'part_time')>Part time</option>
+            <option value="weekends" @selected(old('availability') == 'weekends')>Weekends only</option>
+>>>>>>> origin/master
+          </select>
+          @error('availability') <div class="vol-error">{{ $message }}</div> @enderror
+        </div>
+
+        <div class="vol-field">
+<<<<<<< HEAD
+          <label for="skills">Skills (comma separated)</label>
+          <input id="skills" name="skills" type="text" placeholder="e.g. Teaching, Photography, Event Management" value="{{ old('skills') }}">
+          @error('skills') <div class="vol-error">{{ $message }}</div> @enderror
+        </div>
+
+        <div class="vol-field">
+          <label for="bio">Bio</label>
+          <textarea id="bio" name="bio" rows="4" placeholder="Tell us a bit about yourself…">{{ old('bio') }}</textarea>
+          @error('bio') <div class="vol-error">{{ $message }}</div> @enderror
+        </div>
+
+        <div class="vol-field">
+=======
+>>>>>>> origin/master
           <label for="message">Why do you want to volunteer? (optional)</label>
           <textarea id="message" name="message" rows="5" placeholder="Tell us a bit about yourself, your skills, or the cause you care about…">{{ old('message') }}</textarea>
         </div>
 
-        <button type="submit" class="vol-submit">Submit Application</button>
+        <button type="submit" class="btn btn-primary vol-submit">Submit Application</button>
       </form>
     </div>
 
@@ -136,8 +217,57 @@
 <div class="toast-stack" id="toastStack" role="status" aria-live="polite" aria-atomic="false"></div>
 
 <script>
+var _cities = @json($cities);
+
 (function(){
   'use strict';
+
+  var countryEl = document.getElementById('country');
+  var stateEl = document.getElementById('state');
+  var cityEl = document.getElementById('city');
+
+  function loadStates(country) {
+    if (country === 'India') {
+      fetch('/api/states/india')
+        .then(function(r) { return r.json(); })
+        .then(function(states) {
+          stateEl.innerHTML = '<option value="">Select state</option>';
+          states.forEach(function(s) {
+            var selected = '{{ old('state') }}' === s ? ' selected' : '';
+            stateEl.innerHTML += '<option value="' + s + '"' + selected + '>' + s + '</option>';
+          });
+          stateEl.style.display = '';
+          if (stateEl.value) { loadCities(stateEl.value); }
+        });
+    } else {
+      stateEl.innerHTML = '<option value="">Select state</option>';
+      stateEl.style.display = 'none';
+      cityEl.innerHTML = '<option value="">Select city</option>';
+      cityEl.style.display = 'none';
+    }
+  }
+
+  function loadCities(state) {
+    if (!state || !_cities[state]) {
+      cityEl.innerHTML = '<option value="">Select city</option>';
+      return;
+    }
+    cityEl.innerHTML = '<option value="">Select city</option>';
+    _cities[state].forEach(function(c) {
+      var selected = '{{ old('city') }}' === c ? ' selected' : '';
+      cityEl.innerHTML += '<option value="' + c + '"' + selected + '>' + c + '</option>';
+    });
+    cityEl.style.display = '';
+  }
+
+  if (countryEl) {
+    countryEl.addEventListener('change', function() { loadStates(this.value); });
+    loadStates(countryEl.value);
+  }
+
+  if (stateEl) {
+    stateEl.addEventListener('change', function() { loadCities(this.value); });
+  }
 
   var stack = document.getElementById('toastStack');
 
@@ -209,4 +339,5 @@
 })();
 </script>
 
+@vite(['resources/css/volunteer-apply.css', 'resources/js/volunteer-city.js'])
 @endsection

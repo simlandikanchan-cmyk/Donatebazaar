@@ -2,14 +2,15 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         // Add column only if not exists
-        if (!Schema::hasColumn('blogs', 'status_id')) {
+        if (! Schema::hasColumn('blogs', 'status_id')) {
             Schema::table('blogs', function (Blueprint $table) {
                 $table->unsignedBigInteger('status_id')->nullable()->after('status');
             });

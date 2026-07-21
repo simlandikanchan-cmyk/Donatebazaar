@@ -15,8 +15,8 @@ class FundraiserLevelController extends Controller
         $levels = FundraiserLevel::orderBy('level_number')->get();
 
         $stats = [
-            'total'    => $levels->count(),
-            'auto'     => $levels->where('requires_admin_approval', false)->count(),
+            'total' => $levels->count(),
+            'auto' => $levels->where('requires_admin_approval', false)->count(),
             'approval' => $levels->where('requires_admin_approval', true)->count(),
         ];
 
@@ -31,17 +31,17 @@ class FundraiserLevelController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $data = $request->validate([
-            'level_number'             => 'required|integer|min:1|unique:fundraiser_levels,level_number',
-            'level_name'               => 'required|string|max:50',
-            'description'              => 'nullable|string|max:500',
-            'max_goal_amount'         => 'required|numeric|min:0',
-            'max_active_campaigns'     => 'required|integer|min:1',
-            'min_campaigns_completed'  => 'required|integer|min:0',
-            'min_raised_percent'       => 'required|numeric|min:0|max:100',
-            'requires_admin_approval'  => 'nullable|boolean',
-            'kyc_requirement'          => 'required|in:none,basic,full,org',
-            'badge_color'              => 'nullable|string|max:20',
-            'is_default'               => 'nullable|boolean',
+            'level_number' => 'required|integer|min:1|unique:fundraiser_levels,level_number',
+            'level_name' => 'required|string|max:50',
+            'description' => 'nullable|string|max:500',
+            'max_goal_amount' => 'required|numeric|min:0',
+            'max_active_campaigns' => 'required|integer|min:1',
+            'min_campaigns_completed' => 'required|integer|min:0',
+            'min_raised_percent' => 'required|numeric|min:0|max:100',
+            'requires_admin_approval' => 'nullable|boolean',
+            'kyc_requirement' => 'required|in:none,basic,full,org',
+            'badge_color' => 'nullable|string|max:20',
+            'is_default' => 'nullable|boolean',
         ]);
 
         $data['requires_admin_approval'] = $request->has('requires_admin_approval');
@@ -65,17 +65,17 @@ class FundraiserLevelController extends Controller
     public function update(Request $request, FundraiserLevel $fundraiserLevel): RedirectResponse
     {
         $data = $request->validate([
-            'level_number'             => 'required|integer|min:1|unique:fundraiser_levels,level_number,' . $fundraiserLevel->id,
-            'level_name'               => 'required|string|max:50',
-            'description'              => 'nullable|string|max:500',
-            'max_goal_amount'         => 'required|numeric|min:0',
-            'max_active_campaigns'     => 'required|integer|min:1',
-            'min_campaigns_completed'  => 'required|integer|min:0',
-            'min_raised_percent'       => 'required|numeric|min:0|max:100',
-            'requires_admin_approval'  => 'nullable|boolean',
-            'kyc_requirement'          => 'required|in:none,basic,full,org',
-            'badge_color'              => 'nullable|string|max:20',
-            'is_default'               => 'nullable|boolean',
+            'level_number' => 'required|integer|min:1|unique:fundraiser_levels,level_number,'.$fundraiserLevel->id,
+            'level_name' => 'required|string|max:50',
+            'description' => 'nullable|string|max:500',
+            'max_goal_amount' => 'required|numeric|min:0',
+            'max_active_campaigns' => 'required|integer|min:1',
+            'min_campaigns_completed' => 'required|integer|min:0',
+            'min_raised_percent' => 'required|numeric|min:0|max:100',
+            'requires_admin_approval' => 'nullable|boolean',
+            'kyc_requirement' => 'required|in:none,basic,full,org',
+            'badge_color' => 'nullable|string|max:20',
+            'is_default' => 'nullable|boolean',
         ]);
 
         $data['requires_admin_approval'] = $request->has('requires_admin_approval');

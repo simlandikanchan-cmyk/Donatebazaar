@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User;
 
 class Partnership extends Model
 {
@@ -50,29 +49,39 @@ class Partnership extends Model
     //  Priority Label (for UI)
     public function getPriorityLabelAttribute()
     {
-        if ($this->priority_score >= 30) return 'High';
-        if ($this->priority_score >= 10) return 'Medium';
+        if ($this->priority_score >= 30) {
+            return 'High';
+        }
+        if ($this->priority_score >= 10) {
+            return 'Medium';
+        }
+
         return 'Low';
     }
 
     // Priority Color (for badges)
     public function getPriorityColorAttribute()
     {
-        if ($this->priority_score >= 30) return 'green';
-        if ($this->priority_score >= 10) return 'yellow';
+        if ($this->priority_score >= 30) {
+            return 'green';
+        }
+        if ($this->priority_score >= 10) {
+            return 'yellow';
+        }
+
         return 'gray';
     }
 
     //  Check if document exists
     public function getHasDocumentAttribute()
     {
-        return !empty($this->document);
+        return ! empty($this->document);
     }
 
     //  Check if website exists
     public function getHasWebsiteAttribute()
     {
-        return !empty($this->website);
+        return ! empty($this->website);
     }
 
     //  Human readable time

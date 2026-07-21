@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\JobPostApplication;
 
 class JobPost extends Model
 {
@@ -33,14 +32,14 @@ class JobPost extends Model
     ];
 
     protected $casts = [
-        'is_remote'             => 'boolean',
-        'featured'              => 'boolean',
-        'skills'                => 'array',
-        'vacancies'             => 'integer',
-        'views_count'           => 'integer',
-        'applications_count'    => 'integer',
-        'application_deadline'  => 'date',
-        'published_at'          => 'datetime',
+        'is_remote' => 'boolean',
+        'featured' => 'boolean',
+        'skills' => 'array',
+        'vacancies' => 'integer',
+        'views_count' => 'integer',
+        'applications_count' => 'integer',
+        'application_deadline' => 'date',
+        'published_at' => 'datetime',
     ];
 
     /*
@@ -79,7 +78,7 @@ class JobPost extends Model
     {
         return $query->where(function ($q) {
             $q->whereNull('published_at')
-              ->orWhere('published_at', '<=', now());
+                ->orWhere('published_at', '<=', now());
         });
     }
 
@@ -102,7 +101,7 @@ class JobPost extends Model
             ->where('status', 'active')
             ->where(function ($q) {
                 $q->whereNull('application_deadline')
-                  ->orWhereDate('application_deadline', '>=', now());
+                    ->orWhereDate('application_deadline', '>=', now());
             });
     }
 
@@ -113,7 +112,7 @@ class JobPost extends Model
     {
         return $query->where(function ($q) {
             $q->where('status', 'closed')
-              ->orWhereDate('application_deadline', '<', now());
+                ->orWhereDate('application_deadline', '<', now());
         });
     }
 
@@ -128,7 +127,7 @@ class JobPost extends Model
      */
     public function getIsExpiredAttribute()
     {
-        if (!$this->application_deadline) {
+        if (! $this->application_deadline) {
             return false;
         }
 

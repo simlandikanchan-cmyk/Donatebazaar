@@ -15,19 +15,18 @@ return new class extends Migration
         //     //
         // });
         Schema::table('users', function (Blueprint $table) {
-    $table->enum('role', ['admin','ngo','donor'])->default('donor');
-    $table->enum('status', ['active','suspended'])->default('active');
-});
+            $table->enum('role', ['admin', 'ngo', 'donor'])->default('donor');
+            $table->enum('status', ['active', 'suspended'])->default('active');
+        });
     }
 
     /**
      * Reverse the migrations.
      */
-public function down(): void
-{
-    Schema::table('users', function (Blueprint $table) {
-        $table->dropColumn(['role','status']);
-    });
-}
-
+    public function down(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn(['role', 'status']);
+        });
+    }
 };

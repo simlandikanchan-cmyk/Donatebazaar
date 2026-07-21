@@ -49,9 +49,9 @@ class CategoryProduct extends Model
         // Strip leading "storage/" or "public/" if mistakenly stored that way
         $path = ltrim($path, '/');
         $path = preg_replace('#^storage/#', '', $path);
-        $path = preg_replace('#^public/#',  '', $path);
+        $path = preg_replace('#^public/#', '', $path);
 
-        return asset('storage/' . $path);
+        return asset('storage/'.$path);
     }
 
     /**

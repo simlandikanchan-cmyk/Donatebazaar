@@ -184,8 +184,12 @@
         @endif
     </nav>
 
-    <div class="s-label">Donations</div>
+    <div class="s-label">Finance</div>
     <nav class="s-nav">
+        <a href="{{ route('dashboard.wallet') }}" class="s-link {{ request()->is('user/dashboard/wallet') ? 'active' : '' }}">
+            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+            Wallet
+        </a>
         <a href="{{ route('recurring.index') }}" class="s-link {{ request()->is('my-recurring-donations') ? 'active' : '' }}">
             <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
             Recurring Donations

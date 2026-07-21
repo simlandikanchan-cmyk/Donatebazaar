@@ -11,10 +11,10 @@ class ContactMessageController extends Controller
 {
     public function index()
     {
-        $total  = ContactMessage::count();
-        $read   = ContactMessage::where('is_read', true)->count();
+        $total = ContactMessage::count();
+        $read = ContactMessage::where('is_read', true)->count();
         $unread = $total - $read;
-        $today  = ContactMessage::whereDate('created_at', today())->count();
+        $today = ContactMessage::whereDate('created_at', today())->count();
 
         $messages = ContactMessage::latest()->paginate(10);
 
@@ -39,7 +39,7 @@ class ContactMessageController extends Controller
         $message->update(['is_read' => ! $message->is_read]);
 
         return response()->json([
-            'ok'      => true,
+            'ok' => true,
             'is_read' => (bool) $message->is_read,
         ]);
     }
@@ -50,32 +50,32 @@ class ContactMessageController extends Controller
 
         $request->validate([
             'subject' => 'required|string|max:255',
-            'body'    => 'required|string',
+            'body' => 'required|string',
         ]);
 
         try {
             Mail::raw($request->body, function ($mail) use ($message, $request) {
                 $mail->to($message->email, $message->name)
-                     ->subject($request->subject);
+                    ->subject($request->subject);
             });
         } catch (\Exception $e) {
             return response()->json([
-                'ok'      => false,
-                'message' => 'Could not send email: ' . $e->getMessage(),
+                'ok' => false,
+                'message' => 'Could not send email: '.$e->getMessage(),
             ], 422);
         }
 
         return response()->json([
-            'ok'      => true,
-            'message' => 'Reply sent to ' . $message->email,
+            'ok' => true,
+            'message' => 'Reply sent to '.$message->email,
         ]);
     }
 
     public function bulk(Request $request)
     {
         $request->validate([
-            'ids'    => 'required|array',
-            'ids.*'  => 'integer',
+            'ids' => 'required|array',
+            'ids.*' => 'integer',
             'action' => 'required|in:read,delete',
         ]);
 
@@ -83,16 +83,16 @@ class ContactMessageController extends Controller
 
         if ($request->input('action') === 'delete') {
             $count = ContactMessage::whereIn('id', $ids)->delete();
-            $msg   = $count . ' message' . ($count === 1 ? '' : 's') . ' deleted.';
+            $msg = $count.' message'.($count === 1 ? '' : 's').' deleted.';
         } else {
             $count = ContactMessage::whereIn('id', $ids)->update(['is_read' => true]);
-            $msg   = $count . ' message' . ($count === 1 ? '' : 's') . ' marked as read.';
+            $msg = $count.' message'.($count === 1 ? '' : 's').' marked as read.';
         }
 
         return response()->json([
-            'ok'   => true,
+            'ok' => true,
             'done' => $count,
-            'msg'  => $msg,
+            'msg' => $msg,
         ]);
     }
 

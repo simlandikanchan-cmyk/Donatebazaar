@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Partnership;
-use Illuminate\Support\Facades\Mail;
 use App\Mail\PartnershipSubmitted;
+use App\Models\Partnership;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class PartnershipController extends Controller
@@ -62,7 +62,7 @@ class PartnershipController extends Controller
 
         if ($recent) {
             return back()->withErrors([
-                'email' => 'You already submitted a request. Please wait before trying again.'
+                'email' => 'You already submitted a request. Please wait before trying again.',
             ]);
         }
 
@@ -104,7 +104,7 @@ class PartnershipController extends Controller
         if (Str::contains($request->email, [
             'gmail.com',
             'yahoo.com',
-            'hotmail.com'
+            'hotmail.com',
         ])) {
             $score -= 10;
         } else {

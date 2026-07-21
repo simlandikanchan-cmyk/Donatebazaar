@@ -92,7 +92,15 @@
 @endphp
 
 <div class="hero">
+  <span class="hero-glow g1"></span>
+  <span class="hero-glow g2"></span>
+  <span class="hero-particle" style="--x:12%;--y:18%;--s:4px;--d:0s"></span>
+  <span class="hero-particle" style="--x:70%;--y:10%;--s:3px;--d:1.2s"></span>
+  <span class="hero-particle" style="--x:85%;--y:60%;--s:5px;--d:2.5s"></span>
+  <span class="hero-particle" style="--x:25%;--y:70%;--s:3px;--d:3.8s"></span>
+  <span class="hero-particle" style="--x:55%;--y:80%;--s:4px;--d:5s"></span>
   <div class="hero-left">
+<<<<<<< HEAD
     <div class="hero-greeting">
       <div class="hero-avatar">
         @if(auth()->user()->avatar)
@@ -116,12 +124,21 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="hero-badge-ico"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           {{ $cntPending }} awaiting review
         </span>
+=======
+    <div class="hero-tag"><span class="hero-tag-dot"></span>{{ $greeting }}, Administrator</div>
+    <div class="hero-name">{{ auth()->user()->name ?? 'Admin' }} <span class="wave">👋</span></div>
+    <div class="hero-sub">Every donation tells a story of hope. Together, we're turning compassion into action — one campaign at a time.</div>
+    <div class="hero-badges">
+      @if($cntPending > 0)
+        <span class="hero-badge hb-amber"><span class="hb-count" data-count="{{ $cntPending }}">0</span> awaiting review</span>
+>>>>>>> origin/master
       @else
         <span class="hero-badge hb-green">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="hero-badge-ico"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
           All caught up
         </span>
       @endif
+<<<<<<< HEAD
       <span class="hero-badge hb-green">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="hero-badge-ico"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
         {{ $cntActive }} active
@@ -134,6 +151,15 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="hero-badge-ico"><path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
         {{ $activeJobs }} open jobs
       </span>
+=======
+      <span class="hero-badge hb-green"><span class="hb-count" data-count="{{ $cntActive }}">0</span> active campaigns</span>
+      <span class="hero-badge hb-purple"><span class="hb-count" data-count="{{ $approvalRate }}">0</span>% approval rate</span>
+      <span class="hero-badge hb-teal"><span class="hb-count" data-count="{{ $activeJobs }}">0</span> open jobs</span>
+    </div>
+    <div class="hero-ticker">
+      <span class="hero-ticker-dot"></span>
+      <div class="hero-ticker-track" id="tickerTrack"></div>
+>>>>>>> origin/master
     </div>
   </div>
   <div class="hero-right">
@@ -194,6 +220,10 @@
     <div class="stat-icon si-red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg></div>
     <div class="stat-body"><div class="stat-lbl">Donations</div><div class="stat-val sv-red">{{ $totalDonations }}</div><div class="stat-foot">All time on platform</div></div>
   </div>
+  <div class="stat" onclick="window.location='{{ route('admin.wallets.index') }}'" style="cursor:pointer;">
+    <div class="stat-icon si-teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg></div>
+    <div class="stat-body"><div class="stat-lbl">Wallet Balance</div><div class="stat-val sv-teal">₹{{ number_format($totalWalletBalance) }}</div><div class="stat-foot">Across all wallets →</div></div>
+  </div>
   <div class="stat">
     <div class="stat-icon si-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg></div>
     <div class="stat-body"><div class="stat-lbl">New Today</div><div class="stat-val sv-blue">{{ $newUsersToday }}</div><div class="stat-foot">Users joined today</div></div>
@@ -202,6 +232,42 @@
     <div class="stat-icon si-purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
     <div class="stat-body"><div class="stat-lbl">Donations Today</div><div class="stat-val sv-purple">{{ $donationsToday }}</div><div class="stat-foot">Received in last 24h</div></div>
   </div>
+<<<<<<< HEAD
+=======
+      <div class="stat">
+        <div class="stat-icon si-teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></div>
+        <div class="stat-body"><div class="stat-lbl">Active Jobs</div><div class="stat-val sv-teal">{{ $activeJobs }}</div><div class="stat-foot"><a href="{{ route('admin.job_posts.create') }}">+ Post new job →</a></div></div>
+      </div>
+      <div class="stat">
+        <div class="stat-icon si-purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg></div>
+        <div class="stat-body"><div class="stat-lbl">Volunteers</div><div class="stat-val sv-purple">{{ $volunteerCount }}</div><div class="stat-foot"><a href="{{ route('admin.volunteers.index') }}">{{ $pendingVolunteerApps }} pending →</a></div></div>
+      </div>
+      <div class="stat">
+        <div class="stat-icon si-gray"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg></div>
+        <div class="stat-body"><div class="stat-lbl">Total Users</div><div class="stat-val sv-gray">{{ $totalUsers }}</div><div class="stat-foot">{{ $newUsersToday }} joined today</div></div>
+      </div>
+      <div class="stat">
+        <div class="stat-icon si-red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg></div>
+        <div class="stat-body"><div class="stat-lbl">Donations</div><div class="stat-val sv-red">{{ $totalDonations }}</div><div class="stat-foot">{{ $donationsToday }} received today</div></div>
+      </div>
+      <div class="stat">
+        <div class="stat-icon si-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+        <div class="stat-body"><div class="stat-lbl">Revenue</div><div class="stat-val sv-amber">₹ {{ number_format($totalRevenue) }}</div><div class="stat-foot">All time on platform</div></div>
+      </div>
+      <div class="stat">
+        <div class="stat-icon si-a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
+        <div class="stat-body"><div class="stat-lbl">Avg Donation</div><div class="stat-val sv-a">₹ {{ number_format($avgDonation) }}</div><div class="stat-foot">Per donation transaction</div></div>
+      </div>
+      <div class="stat">
+        <div class="stat-icon si-purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg></div>
+        <div class="stat-body"><div class="stat-lbl">Unique Donors</div><div class="stat-val sv-purple">{{ $uniqueDonors }}</div><div class="stat-foot">People who donated</div></div>
+      </div>
+      <div class="stat">
+        <div class="stat-icon si-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+        <div class="stat-body"><div class="stat-lbl">Success Rate</div><div class="stat-val sv-green">{{ $successRate }}%</div><div class="stat-foot">Campaigns completed</div></div>
+      </div>
+
+>>>>>>> origin/master
 </div>
 
 <div class="analytics-row">
@@ -212,8 +278,8 @@
         <div class="chart-sub">Monthly overview — last 6 months</div>
       </div>
       <div class="chart-legend">
-        <div class="leg-item"><div class="leg-dot" style="background:#2563eb "></div>Total</div>
-        <div class="leg-item"><div class="leg-dot" style="background:#05c48a"></div>Approved</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#0d9488"></div>Total</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#f43f5e"></div>Approved</div>
       </div>
     </div>
     <div class="chart-wrap"><canvas id="lineChart"></canvas></div>
@@ -278,6 +344,17 @@
         <span class="sp-label" style="font-size:11px;color:var(--text3);">All caught up</span>
       @endif
     </a>
+    <a href="{{ route('admin.settlements.index') }}" class="sp-row">
+      <div class="sp-left">
+        <svg class="pa-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+        <span class="sp-label">Settlements pending approval</span>
+      </div>
+      @if($pendingSettlements > 0)
+        <span class="pa-badge" style="background:var(--teal-lt);color:var(--teal);">{{ $pendingSettlements }}</span>
+      @else
+        <span class="sp-label" style="font-size:11px;color:var(--text3);">All caught up</span>
+      @endif
+    </a>
   </div>
 </div>
 
@@ -289,7 +366,41 @@
       <div class="chart-sub">Current state of all campaigns on the platform</div>
     </div>
   </div>
-  <div class="doughnut-wrap"><canvas id="doughnutChart"></canvas></div>
+  <div class="doughnut-wrap"><canvas id="doughnutChart"></canvas>
+    <div class="doughnut-center">
+      <div class="dc-val" id="dcVal">{{ $approvalRate }}%</div>
+      <div class="dc-lbl">Approval Rate</div>
+      <div class="dc-sub">{{ $cntActive }} of {{ $totalCampaigns }} active</div>
+    </div>
+  </div>
+</div>
+
+{{-- ══ COMMUNITY IMPACT ══ --}}
+<div class="impact-row">
+  <div class="impact-card impact-revenue" style="--accent:#0d9488">
+    <div class="impact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg></div>
+    <div class="impact-body">
+      <div class="impact-label"><svg class="impact-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Community Impact</div>
+      <div class="impact-value" id="impactRevenue"><span class="hc-count" data-count="{{ $totalRevenue }}">0</span></div>
+      <div class="impact-foot">Raised by <strong>{{ $uniqueDonors }}</strong> donors across <strong>{{ $totalDonations }}</strong> contributions</div>
+    </div>
+  </div>
+  <div class="impact-card impact-donors" style="--accent:#f43f5e">
+    <div class="impact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg></div>
+    <div class="impact-body">
+      <div class="impact-label"><svg class="impact-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Community Growth</div>
+      <div class="impact-value" id="impactUsers"><span class="hc-count" data-count="{{ $totalUsers }}">0</span></div>
+      <div class="impact-foot"><strong>{{ $newUsersToday }}</strong> new member{{ $newUsersToday !== 1 ? 's' : '' }} joined today</div>
+    </div>
+  </div>
+  <div class="impact-card impact-avg" style="--accent:#f59e0b">
+    <div class="impact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+    <div class="impact-body">
+      <div class="impact-label"><svg class="impact-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Average Gift</div>
+      <div class="impact-value" id="impactAvg">₹<span class="hc-count" data-count="{{ $avgDonation }}">0</span></div>
+      <div class="impact-foot">Per donation &mdash; <strong>{{ $successRate > 0 ? $successRate . '%' : 'awaiting' }}</strong> campaign completion rate</div>
+    </div>
+  </div>
 </div>
 
 {{-- ══ REVENUE TREND + TOP CAMPAIGNS (2-column row) ══ --}}
@@ -414,10 +525,10 @@
 <div class="bulk-bar" id="bulkBar" role="region" aria-label="Bulk actions">
   <div class="bb-info"><span id="bbCount">0</span> campaign(s) selected</div>
   <div class="bb-acts">
-    <button type="button" class="bb-btn bb-approve" id="bbApprove">✓ Approve</button>
-    <button type="button" class="bb-btn bb-pause" id="bbPause">⏸ Pause</button>
-    <button type="button" class="bb-btn bb-reject" id="bbReject">✕ Reject</button>
-    <button type="button" class="bb-clear" id="bbClear">Clear</button>
+    <button type="button" class="btn btn-green bb-btn bb-approve" id="bbApprove">✓ Approve</button>
+    <button type="button" class="btn btn-yellow bb-btn bb-pause" id="bbPause">⏸ Pause</button>
+    <button type="button" class="btn btn-red bb-btn bb-reject" id="bbReject">✕ Reject</button>
+    <button type="button" class="btn btn-secondary bb-clear" id="bbClear">Clear</button>
   </div>
 </div>
 
@@ -441,7 +552,7 @@
       <div class="modal-lbl">Reason <span id="bulkReq">*</span></div>
       <textarea id="bulkReason" name="reason" rows="3" class="modal-ta" placeholder="Provide a reason for the campaign owner…"></textarea>
       <p id="bulkErr" class="modal-err">⚠ Please provide a reason.</p>
-      <div class="modal-acts"><button type="button" onclick="closeBulk()" class="modal-btn modal-cancel">Cancel</button><button type="submit" id="bulkBtn" class="modal-btn modal-red">Confirm</button></div>
+      <div class="modal-acts"><button type="button" onclick="closeBulk()" class="btn btn-secondary modal-btn modal-cancel">Cancel</button><button type="submit" id="bulkBtn" class="btn btn-red modal-btn modal-red">Confirm</button></div>
     </form>
   </div>
 </div>
@@ -465,7 +576,7 @@
       </div>
       <textarea id="pauseReason" name="reason" rows="3" placeholder="Or type a custom reason…" class="modal-ta"></textarea>
       <p id="pauseErr" class="modal-err">⚠ Please provide a reason before pausing.</p>
-      <div class="modal-acts"><button type="button" onclick="closePause()" class="modal-btn modal-cancel">Cancel</button><button type="submit" id="pauseBtn" class="modal-btn modal-amber">⏸ Pause Campaign</button></div>
+      <div class="modal-acts"><button type="button" onclick="closePause()" class="btn btn-secondary modal-btn modal-cancel">Cancel</button><button type="submit" id="pauseBtn" class="btn btn-yellow modal-btn modal-amber">⏸ Pause Campaign</button></div>
     </form>
   </div>
 </div>
@@ -489,7 +600,7 @@
       </div>
       <textarea id="rejectReason" name="reason" rows="3" placeholder="Or type a custom reason…" class="modal-ta"></textarea>
       <p id="rejectErr" class="modal-err">⚠ Please provide a reason before rejecting.</p>
-      <div class="modal-acts"><button type="button" onclick="closeReject()" class="modal-btn modal-cancel">Cancel</button><button type="submit" id="rejectBtn" class="modal-btn modal-red">✕ Reject Campaign</button></div>
+      <div class="modal-acts"><button type="button" onclick="closeReject()" class="btn btn-secondary modal-btn modal-cancel">Cancel</button><button type="submit" id="rejectBtn" class="btn btn-red modal-btn modal-red">✕ Reject Campaign</button></div>
     </form>
   </div>
 </div>
@@ -503,11 +614,40 @@
 var html=document.documentElement;
 var lineChart;
 
-/* ── Approval bar animation ── */
-setTimeout(function(){
-  var b=document.getElementById('approvalBar');
-  if(b)b.style.width='{{ $approvalRate??0 }}%';
-},700);
+/* ── Entrance animations ── */
+(function(){
+  setTimeout(function(){
+    var b=document.getElementById('approvalBar');
+    if(b)b.style.width='{{ $approvalRate??0 }}%';
+  },700);
+  var cards=document.querySelectorAll('.stats-grid .stat');
+  cards.forEach(function(c,i){
+    c.style.animationDelay=(.08*i)+'s';
+    c.style.opacity='0';
+  });
+  setTimeout(function(){
+    cards.forEach(function(c,i){
+      requestAnimationFrame(function(){
+        c.style.animation='fadeUp .5s ease both';
+        c.style.animationDelay=(.08*i)+'s';
+      });
+    });
+  },50);
+  var dcv=document.getElementById('dcVal');
+  if(dcv){
+    var match=dcv.textContent.match(/^(\d+)/);
+    if(match&&match[1]>0){
+      var target=parseInt(match[1],10);
+      dcv.textContent='0%';
+      requestAnimationFrame(function step(ts){
+        if(!dcv._st)dcv._st=ts;
+        var p=Math.min((ts-dcv._st)/900,1);
+        dcv.textContent=Math.floor((1-Math.pow(1-p,3))*target)+'%';
+        if(p<1)requestAnimationFrame(step);
+      });
+    }
+  }
+})();
 
 /* ── Chart ── */
 var chartLabels=@json($chartLabels);
@@ -528,16 +668,16 @@ function loadChart(){
   if(lineChart){lineChart.destroy();lineChart=null;}
   var ctx=canvas.getContext('2d');
   var g1=ctx.createLinearGradient(0,0,0,190);
-  g1.addColorStop(0,'rgba(37,99,235,.22)');g1.addColorStop(1,'rgba(37,99,235,0)');
+  g1.addColorStop(0,'rgba(13,148,136,.25)');g1.addColorStop(1,'rgba(13,148,136,0)');
   var g2=ctx.createLinearGradient(0,0,0,190);
-  g2.addColorStop(0,'rgba(5,196,138,.18)');g2.addColorStop(1,'rgba(5,196,138,0)');
+  g2.addColorStop(0,'rgba(244,63,94,.18)');g2.addColorStop(1,'rgba(244,63,94,0)');
   lineChart=new Chart(ctx,{
     type:'line',
     data:{
       labels:chartLabels,
       datasets:[
-        {label:'Total Campaigns',data:chartTotal,borderColor:'#2563eb ',backgroundColor:g1,borderWidth:2.5,pointRadius:4,tension:.45,fill:true,pointBackgroundColor:'#2563eb ',pointBorderColor:tipBg,pointBorderWidth:2,pointHoverRadius:6},
-        {label:'Approved',data:chartApproved,borderColor:'#05c48a',backgroundColor:g2,borderWidth:2.5,pointRadius:4,tension:.45,fill:true,pointBackgroundColor:'#05c48a',pointBorderColor:tipBg,pointBorderWidth:2,pointHoverRadius:6}
+        {label:'Total Campaigns',data:chartTotal,borderColor:'#0d9488',backgroundColor:g1,borderWidth:2.5,pointRadius:4,tension:.45,fill:true,pointBackgroundColor:'#0d9488',pointBorderColor:tipBg,pointBorderWidth:2,pointHoverRadius:6},
+        {label:'Approved',data:chartApproved,borderColor:'#f43f5e',backgroundColor:g2,borderWidth:2.5,pointRadius:4,tension:.45,fill:true,pointBackgroundColor:'#f43f5e',pointBorderColor:tipBg,pointBorderWidth:2,pointHoverRadius:6}
       ]
     },
     options:{
@@ -569,15 +709,40 @@ function animateCounter(el, target) {
   }
   requestAnimationFrame(step);
 }
-document.querySelectorAll('.stat .stat-val').forEach(function (el) {
-  var text = el.textContent.replace(/[%₹,]/g, '').trim();
-  var num = parseInt(text, 10);
-  if (!isNaN(num) && num > 0) {
-    var suffix = el.textContent.includes('%') ? '%' : '';
-    el.textContent = '0' + suffix;
-    animateCounter(el, num);
-  }
+document.querySelectorAll('.hb-count').forEach(function (el) {
+  var target = parseInt(el.getAttribute('data-count'), 10) || 0;
+  if (target > 0) animateCounter(el, target);
 });
+document.querySelectorAll('.hc-count').forEach(function (el) {
+  var target = parseInt(el.getAttribute('data-count'), 10) || 0;
+  if (target > 0) animateCounter(el, target);
+});
+
+/* ── Live activity ticker ── */
+(function(){
+  var items = [
+    '<b>{{ $donationsToday }}</b> donation{{ $donationsToday !== 1 ? "s" : "" }} received today',
+    '<b>{{ $newUsersToday }}</b> new user{{ $newUsersToday !== 1 ? "s" : "" }} joined today',
+    '<b>{{ $cntPending }}</b> campaign{{ $cntPending !== 1 ? "s" : "" }} awaiting review',
+    '<b>{{ $cntActive }}</b> campaign{{ $cntActive !== 1 ? "s" : "" }} running live',
+    'Platform raised <b>&#8377;{{ number_format($totalRevenue) }}</b> all time'
+  ].filter(function(s){ return !s.startsWith('<b>0</b>'); });
+  if (!items.length) return;
+  var track = document.getElementById('tickerTrack');
+  if (!track) return;
+  var i = 0;
+  function show(){
+    var el = document.createElement('div');
+    el.className = 'hero-ticker-item';
+    el.innerHTML = items[i];
+    track.innerHTML = '';
+    track.appendChild(el);
+    requestAnimationFrame(function(){ el.classList.add('show'); });
+    i = (i + 1) % items.length;
+    setTimeout(show, 3200);
+  }
+  show();
+})();
 
 /* ── Doughnut chart ── */
 var doughnutChart;
@@ -596,7 +761,7 @@ function loadDoughnut(){
       labels: ['Active', 'Pending', 'Paused', 'Rejected', 'Expired'],
       datasets: [{
         data: [{{ $cntActive }}, {{ $cntPending }}, {{ $cntPaused }}, {{ $cntRejected }}, {{ $cntExpired + $cntCompleted }}],
-        backgroundColor: ['#05c48a', '#f59e0b', '#2563eb ', '#f04444', '#94a3b8'],
+        backgroundColor: ['#0d9488', '#f59e0b', '#f97316', '#f43f5e', '#94a3b8'],
         borderColor: isDark ? '#1c1d36' : '#fff',
         borderWidth: 3,
         hoverOffset: 10
@@ -767,7 +932,12 @@ var state='active',searchQ='',sortVal='',isFetching=false,currentPage=1;
 
 function csrfToken(){var m=document.querySelector('meta[name=csrf-token]');return m?m.getAttribute('content'):'';}
 
-function setTab(f,v){var el=document.querySelector('.ftab[data-filter="'+f+'"] .cnt');if(el)el.textContent=v;}
+function setTab(f,v){
+  var el=document.querySelector('.ftab[data-filter="'+f+'"] .cnt');
+  if(el)el.textContent=v;
+  var opt=document.querySelector('#ftabSelect option[value="'+f+'"]');
+  if(opt)opt.textContent=f.charAt(0).toUpperCase()+f.slice(1)+' ('+v+')';
+}
 
 function fetchGrid(page){
   page=page||1;currentPage=page;
@@ -797,11 +967,23 @@ function fetchGrid(page){
 document.querySelectorAll('.ftab').forEach(function(tab){
   tab.addEventListener('click',function(){
     document.querySelectorAll('.ftab').forEach(function(t){t.classList.remove('on');});
+<<<<<<< HEAD
     this.classList.add('on');state=this.dataset.filter;
     document.getElementById('ftabSelect').value=state;
     fetchGrid(1);
+=======
+    this.classList.add('on');state=this.dataset.filter;fetchGrid(1);
+    var sel=document.getElementById('ftabSelect');
+    if(sel)sel.value=state;
+>>>>>>> origin/master
   });
 });
+var ftabSelect=document.getElementById('ftabSelect');
+if(ftabSelect){
+  ftabSelect.addEventListener('change',function(){
+    window.setFilter(this.value);
+  });
+}
 
 document.getElementById('ftabSelect').addEventListener('change',function(){
   state=this.value;
@@ -812,7 +994,12 @@ document.getElementById('ftabSelect').addEventListener('change',function(){
 window.setFilter=function(f){
   state=f;
   document.querySelectorAll('.ftab').forEach(function(t){t.classList.toggle('on',t.dataset.filter===f);});
+<<<<<<< HEAD
   document.getElementById('ftabSelect').value=f;
+=======
+  var sel=document.getElementById('ftabSelect');
+  if(sel)sel.value=f;
+>>>>>>> origin/master
   fetchGrid(1);
   var el=document.getElementById('cGrid');
   if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
@@ -843,6 +1030,25 @@ function bindCardInteractions(){
   });
   grid.querySelectorAll('.c-checkbox').forEach(function(cb){
     cb.addEventListener('change',updateBulkBar);
+  });
+  bindTilt();
+}
+
+/* ── 3D hover tilt on campaign cards ── */
+function bindTilt(){
+  if (window.matchMedia('(hover: none)').matches) return;
+  grid.querySelectorAll('.c-card:not(.no-tilt)').forEach(function(card){
+    if (card.dataset.tilted) return;
+    card.dataset.tilted = '1';
+    card.addEventListener('mousemove', function(e){
+      var r = card.getBoundingClientRect();
+      var px = (e.clientX - r.left) / r.width  - .5;
+      var py = (e.clientY - r.top)  / r.height - .5;
+      card.style.transform = 'translateY(-5px) rotateX(' + (-py * 6).toFixed(2) + 'deg) rotateY(' + (px * 8).toFixed(2) + 'deg)';
+    });
+    card.addEventListener('mouseleave', function(){
+      card.style.transform = '';
+    });
   });
 }
 bindCardInteractions();

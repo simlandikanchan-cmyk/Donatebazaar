@@ -562,7 +562,7 @@ body {
 
                     {{-- ── Submit row ── --}}
                     <div class="submit-row">
-                        <a href="{{ route('events.show', $event->id) }}" class="btn-cancel">
+                        <a href="{{ route('events.show', $event->id) }}" class="btn btn-secondary btn-cancel">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M12 5l-7 7 7 7"/></svg>
                             Cancel
                         </a>

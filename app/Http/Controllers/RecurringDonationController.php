@@ -12,13 +12,13 @@ class RecurringDonationController extends Controller
     // ── Store a new recurring donation subscription ──
     public function store(Request $request, Campaign $campaign)
     {
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return redirect()->route('login')
                 ->with('info', 'Please log in to set up recurring donations.');
         }
 
         $request->validate([
-            'amount'    => 'required|numeric|min:10',
+            'amount' => 'required|numeric|min:10',
             'frequency' => 'required|in:daily,weekly,monthly,quarterly',
         ]);
 
@@ -29,8 +29,8 @@ class RecurringDonationController extends Controller
 
         if ($existing) {
             return back()->with('error',
-                'You already have an active ' . $existing->frequency .
-                ' donation of ₹' . number_format($existing->amount) .
+                'You already have an active '.$existing->frequency.
+                ' donation of ₹'.number_format($existing->amount).
                 ' for this campaign. Please cancel it first.'
             );
         }
@@ -39,23 +39,23 @@ class RecurringDonationController extends Controller
         $nextBilling = RecurringDonation::calculateNextBilling($request->frequency);
 
         $recurring = RecurringDonation::create([
-            'user_id'           => Auth::id(),
-            'campaign_id'       => $campaign->id,
-            'amount'            => $request->amount,
-            'frequency'         => $request->frequency,
-            'status'            => 'active',
+            'user_id' => Auth::id(),
+            'campaign_id' => $campaign->id,
+            'amount' => $request->amount,
+            'frequency' => $request->frequency,
+            'status' => 'active',
             'next_billing_date' => $nextBilling,
-            'billing_count'     => 0,
+            'billing_count' => 0,
         ]);
 
         return redirect()->route('donate.redirect', [
-            'campaign'     => $campaign->id,
-            'amount'       => $request->amount,
+            'campaign' => $campaign->id,
+            'amount' => $request->amount,
             'recurring_id' => $recurring->id,
-            'frequency'    => $request->frequency,
+            'frequency' => $request->frequency,
         ])->with('success',
-            'Recurring ' . $request->frequency . ' donation of ₹' .
-            number_format($request->amount) . ' set up successfully!'
+            'Recurring '.$request->frequency.' donation of ₹'.
+            number_format($request->amount).' set up successfully!'
         );
     }
 

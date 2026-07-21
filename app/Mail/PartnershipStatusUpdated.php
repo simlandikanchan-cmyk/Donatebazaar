@@ -2,10 +2,10 @@
 
 namespace App\Mail;
 
+use App\Models\Partnership;
+use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Bus\Queueable;
-use App\Models\Partnership;
 
 class PartnershipStatusUpdated extends Mailable
 {
@@ -42,9 +42,9 @@ class PartnershipStatusUpdated extends Mailable
         }
 
         if ($this->partnership->status === 'rejected') {
-            return "Update on Your Partnership Request";
+            return 'Update on Your Partnership Request';
         }
 
-        return "Partnership Status Updated";
+        return 'Partnership Status Updated';
     }
 }

@@ -11,18 +11,18 @@ class ActivityRepository
         return Activity::create($data);
     }
 
-public function getFeed($userId = null)
-{
-    return Activity::with(['user', 'campaign'])
-        ->where(function ($q) use ($userId) {
-            if ($userId) {
-                $q->where('user_id', $userId);
-            } else {
-                $q->whereNull('user_id')
-                  ->orWhereNotNull('user_id');
-            }
-        })
-        ->latest()
-        ->paginate(10);
-}
+    public function getFeed($userId = null)
+    {
+        return Activity::with(['user', 'campaign'])
+            ->where(function ($q) use ($userId) {
+                if ($userId) {
+                    $q->where('user_id', $userId);
+                } else {
+                    $q->whereNull('user_id')
+                        ->orWhereNotNull('user_id');
+                }
+            })
+            ->latest()
+            ->paginate(10);
+    }
 }

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NewsletterWelcome;
 use App\Models\Subscriber;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\NewsletterWelcome;
 
 class NewsletterController extends Controller
 {
@@ -26,15 +26,15 @@ class NewsletterController extends Controller
         if ($subscriber && $subscriber->unsubscribed_at !== null) {
             $subscriber->update([
                 'unsubscribed_at' => null,
-                'subscribed_at'   => now(),
+                'subscribed_at' => now(),
             ]);
         }
 
-        if (!$subscriber) {
+        if (! $subscriber) {
             $subscriber = Subscriber::create([
-                'email'             => $email,
+                'email' => $email,
                 'unsubscribe_token' => Subscriber::generateToken(),
-                'subscribed_at'     => now(),
+                'subscribed_at' => now(),
             ]);
         }
 
@@ -57,7 +57,7 @@ class NewsletterController extends Controller
 
         return view('newsletter.unsubscribed', [
             'already' => $subscriber && $subscriber->unsubscribed_at !== null,
-            'found'   => $subscriber !== null,
+            'found' => $subscriber !== null,
         ]);
     }
 }

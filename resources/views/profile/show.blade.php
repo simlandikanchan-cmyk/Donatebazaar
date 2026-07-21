@@ -559,7 +559,7 @@
         </div>
         <div class="card-body">
           <p style="font-size:12.5px;color:var(--text2);margin-bottom:16px;line-height:1.7;">These actions are permanent and cannot be undone. Please be absolutely certain before proceeding.</p>
-          <button class="save-btn danger" type="button" onclick="toast('Account deletion requires a confirmation email.','error')">
+          <button class="btn btn-red save-btn danger" type="button" onclick="toast('Account deletion requires a confirmation email.','error')">
             Delete My Account
           </button>
         </div>

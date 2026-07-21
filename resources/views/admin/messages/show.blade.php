@@ -97,6 +97,8 @@
 .reply-send:disabled{opacity:.6;cursor:not-allowed;transform:none}
 @media(max-width:960px){.detail-grid{grid-template-columns:1fr}.side-panel{flex-direction:row;flex-wrap:wrap}.side-card{flex:1;min-width:240px}}
 @media(max-width:600px){.info-grid{grid-template-columns:1fr}.dc-foot{flex-direction:column;align-items:stretch}.act-btn{justify-content:center}}
+@media(max-width:480px){.card-body{padding:16px 14px}.msg-bubble{padding:12px 14px;font-size:13px}.msg-author{font-size:12px}.msg-date{font-size:10px}.msg-text{font-size:13px}.hdr-left h2{font-size:16px}.side-card{padding:14px}.side-card h4{font-size:13px}.side-card p{font-size:12px}.side-card .label{font-size:10px}.msg-count{font-size:12px}.reply-area{padding:14px}.reply-area textarea{font-size:13px}.reply-area .btn{font-size:12px;padding:9px 16px}}
+@media(max-width:380px){.card-body{padding:12px 10px}.msg-bubble{padding:10px 12px;font-size:12px}.msg-text{font-size:12px}.msg-author{font-size:11px}.msg-date{font-size:9px}.hdr-left h2{font-size:14px}.hdr-left span{font-size:11px}.side-card{padding:12px 10px;min-width:0}.side-card h4{font-size:12px}.side-card p{font-size:11px}.label{font-size:9px}.msg-count{font-size:11px}.reply-area{padding:12px 10px}.reply-area textarea{font-size:12px;min-height:70px}.reply-area .btn{font-size:11px;padding:8px 14px;width:100%;justify-content:center}.detail-grid{gap:10px}.info-grid{gap:6px}.info-row{padding:8px 0}.info-label{font-size:9px}.info-value{font-size:12px}.dc-foot{gap:6px}.act-btn{font-size:12px;padding:8px 14px;height:36px}}
 </style>
 @endpush
 
@@ -114,7 +116,7 @@
     <h2>Message from {{ $message->name }}</h2>
     <p>Received {{ $message->created_at->diffForHumans() }} &middot; {{ $message->created_at->format('d M Y, h:i A') }}</p>
   </div>
-  <a href="{{ route('admin.messages') }}" class="back-btn">
+  <a href="{{ route('admin.messages') }}" class="btn btn-secondary back-btn">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
     Back to Messages
   </a>
@@ -164,13 +166,13 @@
     </div>
 
     <div class="dc-foot">
-      <button type="button" class="act-btn ab-reply reply-open">
+      <button type="button" class="btn btn-secondary act-btn ab-reply reply-open">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
         Reply via Email
       </button>
       <form action="{{ route('admin.messages.delete', $message->id) }}" method="POST" style="display:inline;">
         @csrf @method('DELETE')
-        <button type="submit" class="act-btn ab-delete" onclick="return confirm('Delete this message permanently?')">
+        <button type="submit" class="btn btn-red act-btn ab-delete" onclick="return confirm('Delete this message permanently?')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
           Delete Message
         </button>
@@ -213,19 +215,19 @@
     <div class="side-card">
       <div class="sc-head">Quick Actions</div>
       <div class="sc-body">
-        <button type="button" class="qa-btn reply-open">
+        <button type="button" class="btn btn-secondary qa-btn reply-open">
           <span class="qa-icon qi-purple">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
           </span>
           Reply via Email
         </button>
-        <button type="button" class="qa-btn" id="toggleReadBtn">
+        <button type="button" class="btn btn-secondary qa-btn" id="toggleReadBtn">
           <span class="qa-icon qi-gray">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9l9 6 9-6"/></svg>
           </span>
           Mark as Unread
         </button>
-        <a href="{{ route('admin.messages') }}" class="qa-btn">
+        <a href="{{ route('admin.messages') }}" class="btn btn-secondary qa-btn">
           <span class="qa-icon qi-gray">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
           </span>
@@ -233,7 +235,7 @@
         </a>
         <form action="{{ route('admin.messages.delete', $message->id) }}" method="POST">
           @csrf @method('DELETE')
-          <button type="submit" class="qa-btn danger" style="width:100%;" onclick="return confirm('Delete this message permanently?')">
+          <button type="submit" class="btn btn-red qa-btn danger" onclick="return confirm('Delete this message permanently?')">
             <span class="qa-icon qi-red">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
             </span>
@@ -274,8 +276,8 @@
     <div class="reply-foot">
       <a class="reply-mailto" href="mailto:{{ $message->email }}">Open in email app instead</a>
       <div class="reply-actions">
-        <button type="button" class="reply-cancel" data-reply-close>Cancel</button>
-        <button type="button" class="reply-send" id="replySend">
+        <button type="button" class="btn btn-secondary reply-cancel" data-reply-close>Cancel</button>
+        <button type="button" class="btn btn-primary reply-send" id="replySend">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
           Send Reply
         </button>

@@ -72,7 +72,7 @@ return new class extends Migration
             $table->softDeletes();
 
             // Modify status enum to include draft & under_review
-            \DB::statement("ALTER TABLE organization_applications MODIFY COLUMN status ENUM('draft','pending','under_review','approved','rejected') DEFAULT 'draft'");
+            DB::statement("ALTER TABLE organization_applications MODIFY COLUMN status ENUM('draft','pending','under_review','approved','rejected') DEFAULT 'draft'");
         });
     }
 
@@ -96,7 +96,7 @@ return new class extends Migration
                 'submitted_at', 'reviewed_at', 'reviewed_by', 'current_step', 'deleted_at',
             ]);
 
-            \DB::statement("ALTER TABLE organization_applications MODIFY COLUMN status ENUM('pending','approved','rejected') DEFAULT 'pending'");
+            DB::statement("ALTER TABLE organization_applications MODIFY COLUMN status ENUM('pending','approved','rejected') DEFAULT 'pending'");
         });
     }
 };

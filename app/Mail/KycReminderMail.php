@@ -30,7 +30,7 @@ class KycReminderMail extends Mailable
                     $this->campaign->user->name,
                 ),
             ],
-            subject: 'Reminder: Upload KYC to Activate Your Campaign — ' . config('app.name'),
+            subject: 'Reminder: Upload KYC to Activate Your Campaign — '.config('app.name'),
         );
     }
 
@@ -40,7 +40,7 @@ class KycReminderMail extends Mailable
             view: 'emails.kyc-reminder',
             with: [
                 'campaign' => $this->campaign,
-                'user'     => $this->campaign->user,
+                'user' => $this->campaign->user,
             ],
         );
     }

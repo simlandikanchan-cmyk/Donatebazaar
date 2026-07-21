@@ -2,13 +2,14 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Models\Campaign;
 use Carbon\Carbon;
+use Illuminate\Console\Command;
 
 class ExpireCampaigns extends Command
 {
     protected $signature = 'campaigns:expire';
+
     protected $description = 'Expire campaigns whose end date has passed';
 
     public function handle()

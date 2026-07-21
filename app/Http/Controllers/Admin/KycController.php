@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\KycRejectRequest;
 use App\Models\KycVerification;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\View\View;
 
 class KycController extends Controller
 {
@@ -26,8 +26,8 @@ class KycController extends Controller
             ->paginate(20);
 
         $counts = [
-            'total'    => KycVerification::count(),
-            'pending'  => KycVerification::where('status', 'pending')->count(),
+            'total' => KycVerification::count(),
+            'pending' => KycVerification::where('status', 'pending')->count(),
             'approved' => KycVerification::where('status', 'approved')->count(),
             'rejected' => KycVerification::where('status', 'rejected')->count(),
         ];
@@ -41,7 +41,7 @@ class KycController extends Controller
     public function approve(KycVerification $kyc): RedirectResponse
     {
         $kyc->update([
-            'status'      => 'approved',
+            'status' => 'approved',
             'verified_by' => auth()->id(),
             'verified_at' => now(),
             'rejection_reason' => null,
@@ -56,47 +56,37 @@ class KycController extends Controller
     public function reject(KycRejectRequest $request, KycVerification $kyc): RedirectResponse
     {
         $kyc->update([
-            'status'           => 'rejected',
+            'status' => 'rejected',
             'rejection_reason' => $request->rejection_reason,
-            'verified_by'      => auth()->id(),
-            'verified_at'      => now(),
+            'verified_by' => auth()->id(),
+            'verified_at' => now(),
         ]);
 
         return back()->with('success', "KYC rejected for {$kyc->user->name}.");
     }
 
-
-
-
-
-
-
-
-
-
     /**
- * Serve the KYC document file to admin.
- */
-// public function showDocument(KycVerification $kyc)
-// {
-//     abort_if(! $kyc->document_url, 404);
-//     abort_if(! Storage::disk('public')->exists($kyc->document_url), 404);
+     * Serve the KYC document file to admin.
+     */
+    // public function showDocument(KycVerification $kyc)
+    // {
+    //     abort_if(! $kyc->document_url, 404);
+    //     abort_if(! Storage::disk('public')->exists($kyc->document_url), 404);
 
-//     return Storage::disk('public')->response($kyc->document_url);
-// }
+    //     return Storage::disk('public')->response($kyc->document_url);
+    // }
 
-public function showDocument(KycVerification $kyc)
-{
-    abort_if(! $kyc->document_url, 404);
-    abort_if(! Storage::disk('private')->exists($kyc->document_url), 404);
+    public function showDocument(KycVerification $kyc)
+    {
+        abort_if(! $kyc->document_url, 404);
+        abort_if(! Storage::disk('private')->exists($kyc->document_url), 404);
 
-    $path     = Storage::disk('private')->path($kyc->document_url);
-    $mimeType = mime_content_type($path);
+        $path = Storage::disk('private')->path($kyc->document_url);
+        $mimeType = mime_content_type($path);
 
-    return response()->file($path, [
-        'Content-Type'        => $mimeType,
-        'Content-Disposition' => 'inline; filename="' . basename($path) . '"',
-    ]);
-}
-
+        return response()->file($path, [
+            'Content-Type' => $mimeType,
+            'Content-Disposition' => 'inline; filename="'.basename($path).'"',
+        ]);
+    }
 }

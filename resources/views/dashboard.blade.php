@@ -24,6 +24,8 @@
 
 {{-- ══ WELCOME BANNER ══ --}}
 <div class="welcome-banner">
+    <span class="wb-glow g1"></span>
+    <span class="wb-glow g2"></span>
     <div class="wb-left">
         <div class="wb-tag">
             <span class="wb-tag-dot"></span>
@@ -135,6 +137,16 @@
             <div class="stat-foot">View all →</div>
         </div>
     </a>
+    <a href="{{ route('dashboard.wallet') }}" class="stat-card is-link" style="cursor:pointer;text-decoration:none;display:flex;">
+        <div class="stat-icon-wrap si-purple">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+        </div>
+        <div class="stat-info">
+            <div class="stat-label">Wallet</div>
+            <div class="stat-val sv-purple">₹{{ number_format($wallet->available_balance) }}</div>
+            <div class="stat-foot">Available balance →</div>
+        </div>
+    </a>
 </div>
 
 {{-- ══ RECENT DONOR ACTIVITY ══ --}}
@@ -242,6 +254,30 @@
         <div class="chart-wrap"><canvas id="fundChart"></canvas></div>
     </div>
 
+    <div class="impact-ring-card">
+        <div class="impact-ring-hdr">Funding Health</div>
+        <div class="impact-ring-sub">Overall goal completion</div>
+        <div class="impact-ring-wrap">
+            <svg viewBox="0 0 120 120" width="150" height="150">
+                <defs>
+                    <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#2563eb"/>
+                        <stop offset="100%" stop-color="#0d9488"/>
+                    </linearGradient>
+                </defs>
+                <circle class="impact-ring-bg" cx="60" cy="60" r="52"/>
+                <circle class="impact-ring-fg" id="impactRing" cx="60" cy="60" r="52"/>
+            </svg>
+            <div class="impact-ring-center">
+                <div class="impact-ring-pct" id="impactRingPct">{{ $overallPct }}%</div>
+                <div class="impact-ring-lbl">Funded</div>
+            </div>
+        </div>
+        <div class="impact-ring-foot">
+            <b>&#8377;{{ number_format($totalRaised, 0) }}</b> of &#8377;{{ number_format($totalGoal, 0) }}
+        </div>
+    </div>
+
     <div class="qs-panel">
         <div class="qs-title">Campaign Status</div>
         @php
@@ -303,6 +339,7 @@
         ['url'=> url('/user/dashboard/blogs'),    'lbl'=>'My Blogs',         'sub'=>$blogTotal.' posts', 'delay'=>'.35s','bg'=>'rgba(245,158,11,.10)',       'color'=>'var(--yellow)',  'icon'=>'<path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>'],
         ['url'=> url('/user/dashboard/blogs/create'),'lbl'=>'Write Blog',   'sub'=>'New post',          'delay'=>'.40s','bg'=>'rgba(16,185,129,.10)',       'color'=>'var(--green)',   'icon'=>'<path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>'],
         ['url'=> route('gift-cards.index'),       'lbl'=>'Gift Cards',       'sub'=>'Buy & redeem',      'delay'=>'.45s','bg'=>'rgba(236,72,153,.10)',       'color'=>'var(--pink)',    'icon'=>'<path stroke-linecap="round" stroke-linejoin="round" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/>'],
+        ['url'=> route('dashboard.wallet'),        'lbl'=>'Wallet',           'sub'=>'View balance & payout','delay'=>'.50s','bg'=>'var(--purple-lt)',         'color'=>'var(--purple)',  'icon'=>'<path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>'],
     ];
     @endphp
     @foreach($navItems as $item)
@@ -338,6 +375,15 @@
             <button class="ftab" data-filter="rejected">Rejected <span class="cnt">{{ $countRejected }}</span></button>
             <button class="ftab" data-filter="expired">Expired <span class="cnt">{{ $countExpired }}</span></button>
         </div>
+        <select class="ftab-select" id="ftabSelect">
+            <option value="all">All ({{ $countAll }})</option>
+            <option value="active">Active ({{ $countActive }})</option>
+            <option value="inactive">Awaiting ({{ $countInactive }})</option>
+            <option value="pending">Pending ({{ $countPending }})</option>
+            <option value="paused">Paused ({{ $countPaused }})</option>
+            <option value="rejected">Rejected ({{ $countRejected }})</option>
+            <option value="expired">Expired ({{ $countExpired }})</option>
+        </select>
         <div class="view-toggle">
             <button class="vt-btn on" id="btnGrid" title="Grid view">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
@@ -699,6 +745,16 @@ setTimeout(function(){
     if (bar) bar.style.width = '{{ $overallPct }}%';
 }, 700);
 
+/* ── Animate impact ring ── */
+setTimeout(function(){
+    var ring = document.getElementById('impactRing');
+    if (!ring) return;
+    var pct = parseInt('{{ $overallPct }}', 10) || 0;
+    var circ = 2 * Math.PI * 52;
+    ring.style.strokeDasharray = circ;
+    ring.style.strokeDashoffset = circ - (circ * pct / 100);
+}, 450);
+
 /* ── Filter + Search + Sort ── */
 var activeFilter = 'all', searchQ = '', sortVal = '';
 
@@ -739,13 +795,21 @@ document.querySelectorAll('.ftab').forEach(function(tab){
         document.querySelectorAll('.ftab').forEach(function(t){ t.classList.remove('on'); });
         this.classList.add('on');
         activeFilter = this.dataset.filter;
+        document.getElementById('ftabSelect').value = activeFilter;
         applyFilters();
     });
+});
+
+document.getElementById('ftabSelect').addEventListener('change', function(){
+    activeFilter = this.value;
+    document.querySelectorAll('.ftab').forEach(function(t){ t.classList.toggle('on', t.dataset.filter === activeFilter); });
+    applyFilters();
 });
 
 window.setFilter = function(f){
     activeFilter = f;
     document.querySelectorAll('.ftab').forEach(function(t){ t.classList.toggle('on', t.dataset.filter === f); });
+    document.getElementById('ftabSelect').value = f;
     applyFilters();
     var el = document.getElementById('cGrid');
     if (el) el.scrollIntoView({ behavior:'smooth', block:'start' });

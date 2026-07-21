@@ -21,7 +21,7 @@ class EventRegistrationMail extends Mailable
     */
 
     public function __construct(
-        public readonly Event             $event,
+        public readonly Event $event,
         public readonly EventRegistration $registration,
     ) {}
 
@@ -34,7 +34,7 @@ class EventRegistrationMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Registration Confirmed: ' . $this->event->title,
+            subject: 'Registration Confirmed: '.$this->event->title,
         );
     }
 

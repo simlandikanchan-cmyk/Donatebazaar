@@ -10,29 +10,25 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
 
-
         $schedule->command('campaigns:expire')->hourly();
+
+<<<<<<< HEAD
+=======
+        $schedule->command('reservations:prune')->everyFiveMinutes();
 
         
 
 
 
+>>>>>>> origin/master
         $schedule->command('telescope:prune', ['--hours' => 24])->daily();
-
-
 
     }
 
     protected function commands()
-
-
-
     {
 
         $this->load(__DIR__.'/Commands');
 
-        
     }
-
-
 }

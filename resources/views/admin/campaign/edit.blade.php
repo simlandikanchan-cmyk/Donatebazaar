@@ -100,6 +100,9 @@
 .modal-actions .action-btn{flex:1;margin:0;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
 @media(max-width:960px){.page-grid{grid-template-columns:1fr;}.right-col{position:static;}.input-row{grid-template-columns:1fr;}}
+@media(max-width:640px){.card-body{padding:14px}.card-header{padding:12px 14px}.cover-preview-img{height:160px}}
+@media(max-width:480px){.cover-preview-img{height:130px}.card-header{flex-direction:column;align-items:flex-start;gap:6px}.char-count{float:none;display:block;text-align:right;margin-top:2px}}
+@media(max-width:380px){.info-row{flex-direction:column;align-items:flex-start;gap:4px}}
 </style>
 @endpush
 
@@ -111,7 +114,7 @@
         <div class="modal-title">Discard Changes?</div>
         <p class="modal-body">You have unsaved changes. Are you sure you want to leave? All edits will be lost.</p>
         <div class="modal-actions">
-            <button type="button" class="action-btn btn-ghost" onclick="closeDiscardModal()">Keep Editing</button>
+            <button type="button" class="btn btn-secondary action-btn btn-ghost" onclick="closeDiscardModal()">Keep Editing</button>
             <a href="{{ route('admin.campaign.show', $campaign->id) }}" class="action-btn btn-red" id="discardConfirmBtn">Discard</a>
         </div>
     </div>
@@ -197,7 +200,7 @@
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
                                         Change
                                     </label>
-                                    <button type="button" class="cover-preview-btn cover-preview-btn-remove" onclick="removeCover()">
+                                    <button type="button" class="btn btn-red cover-preview-btn cover-preview-btn-remove" onclick="removeCover()">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                         Remove
                                     </button>
@@ -429,7 +432,7 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
                         Save Changes
                     </button>
-                    <button type="button" class="action-btn btn-ghost" id="discardBtn">
+                    <button type="button" class="btn btn-secondary action-btn btn-ghost" id="discardBtn">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                         Discard &amp; Go Back
                     </button>
@@ -515,7 +518,7 @@
             </div>
 
             {{-- View Campaign Link --}}
-            <a href="{{ route('admin.campaign.show', $campaign->id) }}" class="action-btn btn-ghost" id="backBtn" style="text-decoration:none;display:flex;">
+            <a href="{{ route('admin.campaign.show', $campaign->id) }}" class="btn btn-secondary action-btn btn-ghost" id="backBtn" style="text-decoration:none;display:flex;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                 View Campaign Page
             </a>

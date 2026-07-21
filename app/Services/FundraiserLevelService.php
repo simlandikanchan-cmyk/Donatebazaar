@@ -30,8 +30,8 @@ class FundraiserLevelService
         if (! $level) {
             return [
                 'allowed' => false,
-                'reason'  => 'No fundraiser level assigned. Please contact support.',
-                'level'   => null,
+                'reason' => 'No fundraiser level assigned. Please contact support.',
+                'level' => null,
             ];
         }
 
@@ -48,10 +48,10 @@ class FundraiserLevelService
             if ($activeCount >= $level->max_active_campaigns) {
                 return [
                     'allowed' => false,
-                    'reason'  => "You can have at most {$level->max_active_campaigns} active campaign(s) "
-                               . "at your current level ({$level->name}). "
-                               . "Complete or close an existing campaign first.",
-                    'level'   => $level,
+                    'reason' => "You can have at most {$level->max_active_campaigns} active campaign(s) "
+                               ."at your current level ({$level->name}). "
+                               .'Complete or close an existing campaign first.',
+                    'level' => $level,
                 ];
             }
         }
@@ -60,9 +60,9 @@ class FundraiserLevelService
         if ($level->max_goal_amount !== null && $goalAmount > $level->max_goal_amount) {
             return [
                 'allowed' => false,
-                'reason'  => "Your level ({$level->name}) allows a maximum goal of "
-                           . '₹' . number_format($level->max_goal_amount) . '.',
-                'level'   => $level,
+                'reason' => "Your level ({$level->name}) allows a maximum goal of "
+                           .'₹'.number_format($level->max_goal_amount).'.',
+                'level' => $level,
             ];
         }
 
@@ -74,7 +74,7 @@ class FundraiserLevelService
      * Only verifies goal amount cap — does NOT re-check campaign count
      * because the user already owns this campaign and it's already counted.
      *
-     * @param  Campaign $campaign  The campaign being edited (for context/logging).
+     * @param  Campaign  $campaign  The campaign being edited (for context/logging).
      * @return array{allowed: bool, reason: string|null, level: FundraiserLevel|null}
      */
     public function canEditCampaignGoal(User $user, float $newGoalAmount, Campaign $campaign): array
@@ -84,8 +84,8 @@ class FundraiserLevelService
         if (! $level) {
             return [
                 'allowed' => false,
-                'reason'  => 'No fundraiser level assigned. Please contact support.',
-                'level'   => null,
+                'reason' => 'No fundraiser level assigned. Please contact support.',
+                'level' => null,
             ];
         }
 
@@ -93,10 +93,10 @@ class FundraiserLevelService
         if ($level->max_goal_amount !== null && $newGoalAmount > $level->max_goal_amount) {
             return [
                 'allowed' => false,
-                'reason'  => "Your level ({$level->name}) allows a maximum goal of "
-                           . '₹' . number_format($level->max_goal_amount) . '. '
-                           . 'Please contact support to raise your limit.',
-                'level'   => $level,
+                'reason' => "Your level ({$level->name}) allows a maximum goal of "
+                           .'₹'.number_format($level->max_goal_amount).'. '
+                           .'Please contact support to raise your limit.',
+                'level' => $level,
             ];
         }
 
@@ -118,15 +118,14 @@ class FundraiserLevelService
     // }
 
     private function resolveLevel(User $user): ?FundraiserLevel
-{
-    // assignedLevel is a hasOneThrough that returns FundraiserLevel directly.
-    // fundraiserLevel (the pivot row) is NOT used here — that returns UserFundraiserLevel.
-    // return $user->assignedLevel
-    //     ?? FundraiserLevel::where('is_default', true)->first();
+    {
+        // assignedLevel is a hasOneThrough that returns FundraiserLevel directly.
+        // fundraiserLevel (the pivot row) is NOT used here — that returns UserFundraiserLevel.
+        // return $user->assignedLevel
+        //     ?? FundraiserLevel::where('is_default', true)->first();
 
-   return $user->assignedLevel
-    ?? FundraiserLevel::first();
+        return $user->assignedLevel
+         ?? FundraiserLevel::first();
 
-}
-
+    }
 }

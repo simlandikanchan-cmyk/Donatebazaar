@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Carbon\Carbon;
 
 class Coupon extends Model
 {
@@ -30,13 +30,13 @@ class Coupon extends Model
 
     protected $casts = [
         'discount_value' => 'decimal:2',
-        'min_amount'     => 'decimal:2',
-        'max_discount'   => 'decimal:2',
-        'usage_limit'    => 'integer',
-        'used_count'     => 'integer',
-        'expires_at'     => 'datetime',
-        'redeemed_at'    => 'datetime',
-        'is_active'      => 'boolean',
+        'min_amount' => 'decimal:2',
+        'max_discount' => 'decimal:2',
+        'usage_limit' => 'integer',
+        'used_count' => 'integer',
+        'expires_at' => 'datetime',
+        'redeemed_at' => 'datetime',
+        'is_active' => 'boolean',
     ];
 
     /*
@@ -128,7 +128,7 @@ class Coupon extends Model
         if ($this->min_amount !== null && $amount < (float) $this->min_amount) {
             return [
                 false,
-                'Minimum donation of ₹' . number_format((float) $this->min_amount, 2) . ' required for this coupon.',
+                'Minimum donation of ₹'.number_format((float) $this->min_amount, 2).' required for this coupon.',
             ];
         }
 

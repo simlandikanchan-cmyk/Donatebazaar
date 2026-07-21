@@ -20,43 +20,43 @@ class CouponSeeder extends Seeder
         $user = User::firstOrCreate(
             ['email' => 'demo@donatebazaar.com'],
             [
-                'name'     => 'Demo Coupon User',
+                'name' => 'Demo Coupon User',
                 'password' => Hash::make('password'),
-                'phone'    => '9999999999',
+                'phone' => '9999999999',
             ]
         );
 
         Coupon::firstOrCreate(
             ['code' => 'WELCOME500'],
             [
-                'user_id'       => $user->id,
-                'campaign_id'   => null,
+                'user_id' => $user->id,
+                'campaign_id' => null,
                 'discount_type' => 'fixed',
                 'discount_value' => 500,
-                'min_amount'    => 1000,
-                'max_discount'  => null,
-                'usage_limit'   => 1,
-                'used_count'    => 0,
-                'expires_at'    => null,
-                'is_active'     => true,
-                'redeemed_at'   => null,
+                'min_amount' => 1000,
+                'max_discount' => null,
+                'usage_limit' => 1,
+                'used_count' => 0,
+                'expires_at' => null,
+                'is_active' => true,
+                'redeemed_at' => null,
             ]
         );
 
         Coupon::firstOrCreate(
             ['code' => 'SAVE10'],
             [
-                'user_id'       => null,
-                'campaign_id'   => null,
+                'user_id' => null,
+                'campaign_id' => null,
                 'discount_type' => 'percent',
                 'discount_value' => 10,
-                'min_amount'    => null,
-                'max_discount'  => 200,
-                'usage_limit'   => null,
-                'used_count'    => 0,
-                'expires_at'    => null,
-                'is_active'     => true,
-                'redeemed_at'   => null,
+                'min_amount' => null,
+                'max_discount' => 200,
+                'usage_limit' => null,
+                'used_count' => 0,
+                'expires_at' => null,
+                'is_active' => true,
+                'redeemed_at' => null,
             ]
         );
     }

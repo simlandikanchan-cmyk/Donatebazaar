@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Mail\BlogStatusMail;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BlogRequest;
+use App\Mail\BlogStatusMail;
 use App\Models\Blog;
 use App\Models\BlogReport;
 use App\Models\Category;
 use App\Models\Tag;
-use App\Http\Requests\BlogRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -31,42 +31,41 @@ class BlogController extends Controller
 
     // ── Index ─────────────────────────────────────────────────────────────────
 
-// Replace your index() method with this:
+    // Replace your index() method with this:
 
-public function index(Request $request)
-{
-    $status = $request->input('status', 'all');
-    $sort   = $request->input('sort', 'latest');
-    $search = $request->input('search', '');
+    public function index(Request $request)
+    {
+        $status = $request->input('status', 'all');
+        $sort = $request->input('sort', 'latest');
+        $search = $request->input('search', '');
 
-    $query = Blog::with('author');
+        $query = Blog::with('author');
 
-    if ($status !== 'all') {
-        $query->where('status', $status);
+        if ($status !== 'all') {
+            $query->where('status', $status);
+        }
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                    ->orWhereHas('author', fn ($q2) => $q2->where('name', 'like', "%{$search}%")
+                    );
+            });
+        }
+
+        match ($sort) {
+            'oldest' => $query->oldest(),
+            'title' => $query->orderBy('title'),
+            default => $query->latest(),
+        };
+
+        return view('admin.blogs.index', [
+            'blogs' => $query->paginate(15)->withQueryString(),
+            'pendingCount' => Blog::where('status', Blog::STATUS_PENDING)->count(),
+            'publishedCount' => Blog::where('status', Blog::STATUS_PUBLISHED)->count(), // was approvedCount
+            'rejectedCount' => Blog::where('status', Blog::STATUS_REJECTED)->count(),
+        ]);
     }
-
-    if ($search) {
-        $query->where(function ($q) use ($search) {
-            $q->where('title', 'like', "%{$search}%")
-              ->orWhereHas('author', fn($q2) =>
-                  $q2->where('name', 'like', "%{$search}%")
-              );
-        });
-    }
-
-    match ($sort) {
-        'oldest' => $query->oldest(),
-        'title'  => $query->orderBy('title'),
-        default  => $query->latest(),
-    };
-
-    return view('admin.blogs.index', [
-        'blogs'          => $query->paginate(15)->withQueryString(),
-        'pendingCount'   => Blog::where('status', Blog::STATUS_PENDING)->count(),
-        'publishedCount' => Blog::where('status', Blog::STATUS_PUBLISHED)->count(), // was approvedCount
-        'rejectedCount'  => Blog::where('status', Blog::STATUS_REJECTED)->count(),
-    ]);
-}
 
     // ── Pending Queue ─────────────────────────────────────────────────────────
 
@@ -114,7 +113,7 @@ public function index(Request $request)
     public function create()
     {
         $categories = Category::where('is_active', true)->get(['id', 'name']);
-        $tags       = Tag::orderBy('name')->get(['id', 'name']);
+        $tags = Tag::orderBy('name')->get(['id', 'name']);
 
         return view('admin.blogs.create', compact('categories', 'tags'));
     }
@@ -128,12 +127,12 @@ public function index(Request $request)
                 ->store('blogs/covers', 'public');
         }
 
-        $data['author_id']    = Auth::id();
-        $data['author_role']  = 'admin';
-        $data['status']       = Blog::STATUS_PUBLISHED;
+        $data['author_id'] = Auth::id();
+        $data['author_role'] = 'admin';
+        $data['status'] = Blog::STATUS_PUBLISHED;
         $data['published_at'] = now();
-        $data['reviewed_by']  = Auth::id();
-        $data['reviewed_at']  = now();
+        $data['reviewed_by'] = Auth::id();
+        $data['reviewed_at'] = now();
 
         unset($data['tag_ids']);
 
@@ -170,8 +169,8 @@ public function index(Request $request)
         // Prevent editing a soft-deleted blog
         abort_if($blog->trashed(), 404);
 
-        $categories   = Category::where('is_active', true)->get(['id', 'name']);
-        $tags         = Tag::orderBy('name')->get(['id', 'name']);
+        $categories = Category::where('is_active', true)->get(['id', 'name']);
+        $tags = Tag::orderBy('name')->get(['id', 'name']);
         $selectedTags = $blog->tags->pluck('id')->toArray();
 
         return view('admin.blogs.edit', compact('blog', 'categories', 'tags', 'selectedTags'));
@@ -186,16 +185,16 @@ public function index(Request $request)
 
         // DEBUG: remove these two Log lines once confirmed working
         Log::info('BlogController@update called', [
-            'blog_id'      => $blog->id,
-            'http_method'  => $request->method(),
-            '_method'      => $request->input('_method'),
-            'route'        => $request->route()->getName(),
+            'blog_id' => $blog->id,
+            'http_method' => $request->method(),
+            '_method' => $request->input('_method'),
+            'route' => $request->route()->getName(),
         ]);
 
         $data = $request->validated();
 
         // ── 1. Slug ───────────────────────────────────────────────────────────
-        if (!empty($data['slug'])) {
+        if (! empty($data['slug'])) {
             $data['slug'] = Str::slug($data['slug']);
         } elseif ($blog->slug) {
             $data['slug'] = $blog->slug;
@@ -211,7 +210,7 @@ public function index(Request $request)
             }
             $data['cover_image'] = $request->file('cover_image')
                 ->store('blogs/covers', 'public');
-        } elseif (!empty($data['remove_cover'])) {
+        } elseif (! empty($data['remove_cover'])) {
             // Explicit remove
             if ($blog->cover_image) {
                 Storage::disk('public')->delete($blog->cover_image);
@@ -223,11 +222,11 @@ public function index(Request $request)
         }
 
         // ── 3. Booleans (unchecked checkboxes are not sent by browsers) ───────
-        $data['is_featured']    = $request->boolean('is_featured');
+        $data['is_featured'] = $request->boolean('is_featured');
         $data['allow_comments'] = $request->boolean('allow_comments');
-        $data['is_pinned']      = $request->boolean('is_pinned');
-        $data['allow_likes']    = $request->boolean('allow_likes');
-        $data['show_share']     = $request->boolean('show_share');
+        $data['is_pinned'] = $request->boolean('is_pinned');
+        $data['allow_likes'] = $request->boolean('allow_likes');
+        $data['show_share'] = $request->boolean('show_share');
 
         // ── 4. Whitelist — only update columns that belong to this form ───────
         // 'status' is deliberately excluded; use approve/reject/archive actions
@@ -262,7 +261,7 @@ public function index(Request $request)
             $tagList = array_filter(
                 array_map('trim', explode(',', $request->input('tags', '')))
             );
-            if (!empty($tagList)) {
+            if (! empty($tagList)) {
                 $tagIds = Tag::whereIn('name', $tagList)->pluck('id');
                 $blog->tags()->sync($tagIds);
             }
@@ -280,9 +279,9 @@ public function index(Request $request)
         // DEBUG: remove once soft-delete issue is confirmed resolved
         Log::info('BlogController@destroy called', [
             'blog_id' => $blog->id,
-            'trace'   => collect(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 6))
-                            ->pluck('function')
-                            ->implode(' → '),
+            'trace' => collect(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 6))
+                ->pluck('function')
+                ->implode(' → '),
         ]);
 
         $blog->delete();
@@ -296,27 +295,27 @@ public function index(Request $request)
     public function bulk(Request $request)
     {
         $request->validate([
-            'ids'    => 'required|array',
-            'ids.*'  => 'integer',
+            'ids' => 'required|array',
+            'ids.*' => 'integer',
             'action' => 'required|in:publish,delete',
         ]);
 
-        $ids    = $request->input('ids');
+        $ids = $request->input('ids');
         $action = $request->input('action');
 
         if ($action === 'delete') {
             $count = Blog::whereIn('id', $ids)->delete(); // soft delete
-            $msg   = $count . ' blog' . ($count === 1 ? '' : 's') . ' deleted.';
+            $msg = $count.' blog'.($count === 1 ? '' : 's').' deleted.';
         } else {
             $pending = Blog::whereIn('id', $ids)
                 ->where('status', Blog::STATUS_PENDING)
                 ->get();
 
             Blog::whereIn('id', $ids)->update([
-                'status'       => Blog::STATUS_PUBLISHED,
+                'status' => Blog::STATUS_PUBLISHED,
                 'published_at' => now(),
-                'reviewed_by'  => Auth::id(),
-                'reviewed_at'  => now(),
+                'reviewed_by' => Auth::id(),
+                'reviewed_at' => now(),
             ]);
 
             $count = count($ids);
@@ -325,17 +324,17 @@ public function index(Request $request)
                 try {
                     Mail::to($blog->author)->send(new BlogStatusMail($blog, 'published'));
                 } catch (\Throwable $e) {
-                    Log::warning('Bulk publish mail failed: ' . $e->getMessage());
+                    Log::warning('Bulk publish mail failed: '.$e->getMessage());
                 }
             }
 
-            $msg = $count . ' blog' . ($count === 1 ? '' : 's') . ' published.';
+            $msg = $count.' blog'.($count === 1 ? '' : 's').' published.';
         }
 
         return response()->json([
-            'ok'   => true,
+            'ok' => true,
             'done' => $count,
-            'msg'  => $msg,
+            'msg' => $msg,
         ]);
     }
 
@@ -377,14 +376,14 @@ public function index(Request $request)
         try {
             Mail::to($blog->author)->send(new BlogStatusMail($blog, 'published'));
         } catch (\Throwable $e) {
-            Log::warning('Blog approve mail failed: ' . $e->getMessage());
+            Log::warning('Blog approve mail failed: '.$e->getMessage());
         }
 
         if ($request->wantsJson()) {
             return response()->json([
-                'ok'      => true,
+                'ok' => true,
                 'message' => "Blog \"{$blog->title}\" approved and published.",
-                'status'  => $blog->status,
+                'status' => $blog->status,
             ]);
         }
 
@@ -422,17 +421,17 @@ public function index(Request $request)
         } else {
             $maxOrder = Blog::where('is_featured', true)->max('carousel_order') ?? 0;
             $blog->update([
-                'is_featured'    => true,
+                'is_featured' => true,
                 'carousel_order' => $maxOrder + 1,
-                'featured_at'    => now(),
+                'featured_at' => now(),
             ]);
             $msg = 'Blog added to carousel.';
         }
 
         if ($request->wantsJson()) {
             return response()->json([
-                'ok'          => true,
-                'message'     => $msg,
+                'ok' => true,
+                'message' => $msg,
                 'is_featured' => $blog->is_featured,
             ]);
         }
@@ -448,9 +447,9 @@ public function index(Request $request)
 
         if ($request->wantsJson()) {
             return response()->json([
-                'ok'      => true,
+                'ok' => true,
                 'message' => "Blog \"{$blog->title}\" archived.",
-                'status'  => $blog->status,
+                'status' => $blog->status,
             ]);
         }
 
@@ -469,9 +468,9 @@ public function index(Request $request)
 
         if ($request->wantsJson()) {
             return response()->json([
-                'ok'      => true,
+                'ok' => true,
                 'message' => 'Blog flagged for review.',
-                'status'  => $blog->status,
+                'status' => $blog->status,
             ]);
         }
 
@@ -483,7 +482,7 @@ public function index(Request $request)
     public function reorder(Request $request)
     {
         $request->validate([
-            'order'   => 'required|array',
+            'order' => 'required|array',
             'order.*' => 'integer|exists:blogs,id',
         ]);
 
@@ -501,10 +500,10 @@ public function index(Request $request)
     public function analytics()
     {
         $stats = [
-            'total'       => Blog::withTrashed()->count(),
-            'pending'     => Blog::pending()->count(),
-            'published'   => Blog::published()->count(),
-            'flagged'     => Blog::flagged()->count(),
+            'total' => Blog::withTrashed()->count(),
+            'pending' => Blog::pending()->count(),
+            'published' => Blog::published()->count(),
+            'flagged' => Blog::flagged()->count(),
             'total_views' => Blog::sum('views_count'),
             'total_likes' => Blog::sum('likes_count'),
         ];
@@ -515,7 +514,7 @@ public function index(Request $request)
             ->get(['id', 'title', 'slug', 'views_count', 'likes_count']);
 
         $recentActivity = Blog::with('statusLogs')
-            ->whereHas('statusLogs', fn($q) => $q->where('created_at', '>=', now()->subDays(7)))
+            ->whereHas('statusLogs', fn ($q) => $q->where('created_at', '>=', now()->subDays(7)))
             ->take(20)
             ->get();
 
@@ -527,7 +526,7 @@ public function index(Request $request)
     public function dismissReport(BlogReport $report)
     {
         $report->update([
-            'status'      => 'dismissed',
+            'status' => 'dismissed',
             'reviewed_by' => Auth::id(),
             'reviewed_at' => now(),
         ]);

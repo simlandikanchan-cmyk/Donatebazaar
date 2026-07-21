@@ -24,7 +24,7 @@ return new class extends Migration
             $table->dropColumn([
                 'order_id',
                 'payment_id',
-                'signature'
+                'signature',
             ]);
 
         });

@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Campaign;
 use App\Models\Event;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -143,7 +143,7 @@ class EventController extends Controller
 
         while (Event::where('slug', $slug)->exists()) {
 
-            $slug = $baseSlug . '-' . $counter;
+            $slug = $baseSlug.'-'.$counter;
 
             $counter++;
         }
@@ -161,23 +161,23 @@ class EventController extends Controller
         }
 
         $event = $campaign->events()->create([
-            'title'             => $validated['title'],
-            'description'       => $validated['description'],
-            'event_date'        => $validated['event_date'],
-            'start_time'        => $validated['start_time'],
-            'end_time'          => $validated['end_time'],
-            'goal_amount'       => $validated['goal_amount'] ?? 0,
-            'max_participants'  => $validated['max_participants'] ?? 0,
-            'cover_image'       => $validated['cover_image'] ?? null,
-            'user_id'           => Auth::id(),
-            'slug'              => $slug,
-            'status'            => Event::STATUS_PENDING,
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'event_date' => $validated['event_date'],
+            'start_time' => $validated['start_time'],
+            'end_time' => $validated['end_time'],
+            'goal_amount' => $validated['goal_amount'] ?? 0,
+            'max_participants' => $validated['max_participants'] ?? 0,
+            'cover_image' => $validated['cover_image'] ?? null,
+            'user_id' => Auth::id(),
+            'slug' => $slug,
+            'status' => Event::STATUS_PENDING,
         ]);
 
         Log::info('Event created', [
-            'event_id'    => $event->id,
+            'event_id' => $event->id,
             'campaign_id' => $campaign->id,
-            'user_id'     => Auth::id(),
+            'user_id' => Auth::id(),
         ]);
 
         return redirect()
@@ -222,7 +222,7 @@ class EventController extends Controller
         }
 
         // Auto update status
-        if ($shouldExpire && !$event->isExpired()) {
+        if ($shouldExpire && ! $event->isExpired()) {
             $event->update([
                 'status' => Event::STATUS_EXPIRED,
             ]);
@@ -362,7 +362,7 @@ class EventController extends Controller
                     ->exists()
             ) {
 
-                $slug = $baseSlug . '-' . $counter;
+                $slug = $baseSlug.'-'.$counter;
 
                 $counter++;
             }
@@ -398,7 +398,7 @@ class EventController extends Controller
             $previewEvent = $event->replicate();
             $previewEvent->event_date = $validated['event_date'];
             $previewEvent->start_time = $validated['start_time'];
-            $previewEvent->end_time   = $validated['end_time'];
+            $previewEvent->end_time = $validated['end_time'];
 
             $validated['status'] = $previewEvent->hasEnded()
                 ? Event::STATUS_EXPIRED
@@ -421,7 +421,7 @@ class EventController extends Controller
 
         Log::info('Event updated', [
             'event_id' => $event->id,
-            'user_id'  => Auth::id(),
+            'user_id' => Auth::id(),
         ]);
 
         return redirect()

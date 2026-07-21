@@ -16,13 +16,13 @@ class EventPublishedMail extends Mailable
 
     public function __construct(
         public readonly Event $event,
-        public readonly User  $recipient,
+        public readonly User $recipient,
     ) {}
 
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'New Event Published: ' . $this->event->title,
+            subject: 'New Event Published: '.$this->event->title,
         );
     }
 

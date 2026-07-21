@@ -7,6 +7,7 @@ use App\Models\Event;
 use App\Models\EventRegistration;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 
@@ -79,9 +80,9 @@ class EventRegistrationController extends Controller
         */
 
         $validated = $request->validate([
-            'name'    => ['required', 'string', 'max:255'],
-            'email'   => ['required', 'email', 'max:255'],
-            'phone'   => ['required', 'string', 'max:30'],
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255'],
+            'phone' => ['required', 'string', 'max:30'],
             'message' => ['nullable', 'string', 'max:1000'],
         ]);
 
@@ -110,12 +111,12 @@ class EventRegistrationController extends Controller
 
         $registration = EventRegistration::create([
             'event_id' => $event->id,
-            'user_id'  => null,            // anonymous — no account required
-            'name'     => $validated['name'],
-            'email'    => $validated['email'],
-            'phone'    => $validated['phone'],
-            'message'  => $validated['message'] ?? null,
-            'status'   => 'registered',
+            'user_id' => null,            // anonymous — no account required
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'],
+            'message' => $validated['message'] ?? null,
+            'status' => 'registered',
         ]);
 
         // Increment the denormalized counter on the event
@@ -132,14 +133,14 @@ class EventRegistrationController extends Controller
                 ->send(new EventRegistrationMail($event, $registration));
         } catch (\Throwable $e) {
             // Log but don't fail the registration if mail breaks
-            \Illuminate\Support\Facades\Log::error('Event registration email failed', [
+            Log::error('Event registration email failed', [
                 'registration_id' => $registration->id,
-                'error'           => $e->getMessage(),
+                'error' => $e->getMessage(),
             ]);
         }
 
         return redirect()
             ->route('events.show', $event->id)
-            ->with('success', 'You\'re registered! A confirmation email has been sent to ' . $validated['email'] . '.');
+            ->with('success', 'You\'re registered! A confirmation email has been sent to '.$validated['email'].'.');
     }
 }

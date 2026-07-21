@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::create('coupons', function (Blueprint $table) {
@@ -14,18 +15,18 @@ return new class extends Migration {
 
             // null user_id => public promo code usable by anyone
             $table->foreignId('user_id')
-                  ->nullable()
-                  ->constrained()
-                  ->nullOnDelete();
+                ->nullable()
+                ->constrained()
+                ->nullOnDelete();
 
             // null campaign_id => valid for any campaign
             $table->foreignId('campaign_id')
-                  ->nullable()
-                  ->constrained()
-                  ->nullOnDelete();
+                ->nullable()
+                ->constrained()
+                ->nullOnDelete();
 
             $table->enum('discount_type', ['fixed', 'percent'])
-                  ->default('fixed');
+                ->default('fixed');
 
             $table->decimal('discount_value', 12, 2);
 

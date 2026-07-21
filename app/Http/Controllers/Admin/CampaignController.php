@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Mail\CampaignStatusMail;
 use App\Http\Controllers\Controller;
+use App\Mail\CampaignStatusMail;
 use App\Models\Campaign;
+use App\Models\Category;
+use App\Models\KycVerification;
 use App\Notifications\KycRequestedNotification;
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Symfony\Component\HttpFoundation\Response;
 
 class CampaignController extends Controller
 {
@@ -21,11 +23,11 @@ class CampaignController extends Controller
     {
         $status = $request->input('status', 'all');
         $search = $request->input('search');
-        $sort   = $request->input('sort', 'created_at');
-        $dir    = $request->input('direction', 'desc');
+        $sort = $request->input('sort', 'created_at');
+        $dir = $request->input('direction', 'desc');
 
         $allowedSorts = ['title', 'goal_amount', 'raised_amount', 'created_at'];
-        if (!in_array($sort, $allowedSorts)) {
+        if (! in_array($sort, $allowedSorts)) {
             $sort = 'created_at';
         }
         $dir = $dir === 'asc' ? 'asc' : 'desc';
@@ -39,24 +41,24 @@ class CampaignController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
-                  ->orWhereHas('user', fn($uq) => $uq->where('name', 'like', "%{$search}%")
-                      ->orWhere('email', 'like', "%{$search}%"));
+                    ->orWhereHas('user', fn ($uq) => $uq->where('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%"));
             });
         }
 
         $campaigns = $query->orderBy($sort, $dir)->paginate(15);
 
         return view('admin.campaign.index', [
-            'campaigns'    => $campaigns,
-            'status'       => $status,
-            'search'       => $search,
-            'sort'         => $sort,
-            'dir'          => $dir,
-            'cntActive'    => Campaign::active()->count(),
-            'cntPending'   => Campaign::pending()->count(),
-            'cntPaused'    => Campaign::paused()->count(),
-            'cntRejected'  => Campaign::rejected()->count(),
-            'cntExpired'   => Campaign::expired()->count(),
+            'campaigns' => $campaigns,
+            'status' => $status,
+            'search' => $search,
+            'sort' => $sort,
+            'dir' => $dir,
+            'cntActive' => Campaign::active()->count(),
+            'cntPending' => Campaign::pending()->count(),
+            'cntPaused' => Campaign::paused()->count(),
+            'cntRejected' => Campaign::rejected()->count(),
+            'cntExpired' => Campaign::expired()->count(),
             'cntCompleted' => Campaign::completed()->count(),
         ]);
     }
@@ -70,7 +72,7 @@ class CampaignController extends Controller
             'user.kycVerification',
             'category',
             'events',
-            'logs'
+            'logs',
         ]);
 
         return view('admin.campaign.show', compact('campaign'));
@@ -79,23 +81,23 @@ class CampaignController extends Controller
     // -------------------------------------------------------------------------
     // EDIT
     // -------------------------------------------------------------------------
-public function edit(Campaign $campaign)
-{
-    $campaign->load([
-        'user',
-        'category',
-        'events',
-        'logs'
-    ]);
+    public function edit(Campaign $campaign)
+    {
+        $campaign->load([
+            'user',
+            'category',
+            'events',
+            'logs',
+        ]);
 
-    $categories = \App\Models\Category::orderBy('name')
-        ->get();
+        $categories = Category::orderBy('name')
+            ->get();
 
-    return view('admin.campaign.edit', compact(
-        'campaign',
-        'categories'
-    ));
-}
+        return view('admin.campaign.edit', compact(
+            'campaign',
+            'categories'
+        ));
+    }
 
     // -------------------------------------------------------------------------
     // UPDATE
@@ -103,13 +105,13 @@ public function edit(Campaign $campaign)
     public function update(Request $request, Campaign $campaign): RedirectResponse
     {
         $data = $request->validate([
-            'title'            => ['required', 'string', 'max:255'],
-            'slug'             => ['nullable', 'string', 'max:255'],
-            'short_description'=> ['nullable', 'string', 'max:500'],
-            'description'      => ['required', 'string'],
-            'goal_amount'      => ['required', 'numeric', 'min:1'],
-            'status'           => ['nullable', 'string'],
-            'end_date'         => ['nullable', 'date'],
+            'title' => ['required', 'string', 'max:255'],
+            'slug' => ['nullable', 'string', 'max:255'],
+            'short_description' => ['nullable', 'string', 'max:500'],
+            'description' => ['required', 'string'],
+            'goal_amount' => ['required', 'numeric', 'min:1'],
+            'status' => ['nullable', 'string'],
+            'end_date' => ['nullable', 'date'],
         ]);
 
         DB::transaction(function () use ($campaign, $data) {
@@ -141,19 +143,12 @@ public function edit(Campaign $campaign)
             return back()->with('error', 'Cannot approve expired campaign.');
         }
 
-        $kyc = optional($campaign->user)->kycVerification;
+        $hasKyc = KycVerification::where('user_id', $campaign->user_id)
+            ->where('status', KycVerification::STATUS_APPROVED)
+            ->exists();
 
-        if (! $kyc || $kyc->status !== 'approved') {
-
-            $reason = ! $kyc
-                ? 'User has not submitted KYC.'
-                : match ($kyc->status) {
-                    'pending'  => 'KYC under review.',
-                    'rejected' => 'KYC rejected.',
-                    default    => 'KYC not verified.',
-                };
-
-            return back()->with('error', "Cannot approve: {$reason}");
+        if (! $hasKyc) {
+            return back()->with('error', 'Cannot approve: User KYC not approved.');
         }
 
         DB::transaction(function () use ($campaign) {
@@ -192,7 +187,7 @@ public function edit(Campaign $campaign)
             $this->log(
                 $campaign,
                 'rejected',
-                'Rejected: ' . $data['reason']
+                'Rejected: '.$data['reason']
             );
         });
 
@@ -313,7 +308,7 @@ public function edit(Campaign $campaign)
     public function bulkApprove(Request $request): Response
     {
         $data = $request->validate([
-            'ids'   => ['required', 'array'],
+            'ids' => ['required', 'array'],
             'ids.*' => ['integer', 'exists:campaigns,id'],
         ]);
 
@@ -324,12 +319,16 @@ public function edit(Campaign $campaign)
             $campaign = Campaign::find($id);
             if (! $campaign || ! $campaign->isPending() || $campaign->isExpired()) {
                 $skipped++;
+
                 continue;
             }
 
-            $kyc = optional($campaign->user)->kycVerification;
-            if (! $kyc || $kyc->status !== 'approved') {
+            $hasKyc = KycVerification::where('user_id', $campaign->user_id)
+                ->where('status', KycVerification::STATUS_APPROVED)
+                ->exists();
+            if (! $hasKyc) {
                 $skipped++;
+
                 continue;
             }
 
@@ -366,8 +365,8 @@ public function edit(Campaign $campaign)
     public function bulkReject(Request $request): Response
     {
         $data = $request->validate([
-            'ids'    => ['required', 'array'],
-            'ids.*'  => ['integer', 'exists:campaigns,id'],
+            'ids' => ['required', 'array'],
+            'ids.*' => ['integer', 'exists:campaigns,id'],
             'reason' => ['required', 'string', 'min:10', 'max:500'],
         ]);
 
@@ -378,12 +377,13 @@ public function edit(Campaign $campaign)
             $campaign = Campaign::find($id);
             if (! $campaign || ! $campaign->isPending()) {
                 $skipped++;
+
                 continue;
             }
 
             DB::transaction(function () use ($campaign, $data) {
                 $campaign->reject($data['reason']);
-                $this->log($campaign, 'rejected', 'Rejected (bulk): ' . $data['reason']);
+                $this->log($campaign, 'rejected', 'Rejected (bulk): '.$data['reason']);
             });
 
             Mail::to($campaign->user)
@@ -415,8 +415,8 @@ public function edit(Campaign $campaign)
     public function bulkPause(Request $request): Response
     {
         $data = $request->validate([
-            'ids'    => ['required', 'array'],
-            'ids.*'  => ['integer', 'exists:campaigns,id'],
+            'ids' => ['required', 'array'],
+            'ids.*' => ['integer', 'exists:campaigns,id'],
             'reason' => ['nullable', 'string', 'max:500'],
         ]);
 
@@ -427,6 +427,7 @@ public function edit(Campaign $campaign)
             $campaign = Campaign::find($id);
             if (! $campaign || ! $campaign->isActive() || $campaign->isExpired() || $campaign->isPaused()) {
                 $skipped++;
+
                 continue;
             }
 
@@ -480,13 +481,19 @@ public function edit(Campaign $campaign)
             'admin_message' => ['nullable', 'string', 'max:500'],
         ]);
 
-        $kyc = optional($campaign->user)->kycVerification;
+        $hasApprovedKyc = KycVerification::where('user_id', $campaign->user_id)
+            ->where('status', KycVerification::STATUS_APPROVED)
+            ->exists();
 
-        if ($kyc && $kyc->status === 'approved') {
+        if ($hasApprovedKyc) {
             return back()->with('error', 'KYC already approved.');
         }
 
-        if ($kyc && $kyc->status === 'pending') {
+        $hasPendingKyc = KycVerification::where('user_id', $campaign->user_id)
+            ->where('status', KycVerification::STATUS_PENDING)
+            ->exists();
+
+        if ($hasPendingKyc) {
             return back()->with('warning', 'KYC already pending.');
         }
 
@@ -518,7 +525,7 @@ public function edit(Campaign $campaign)
         try {
 
             $campaign->logs()->create([
-                'action'  => $action,
+                'action' => $action,
                 'message' => $message,
                 'user_id' => auth()->id(),
             ]);
@@ -526,7 +533,7 @@ public function edit(Campaign $campaign)
         } catch (\Throwable $e) {
 
             \Log::warning(
-                'Campaign log failed: ' . $e->getMessage()
+                'Campaign log failed: '.$e->getMessage()
             );
         }
     }

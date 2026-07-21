@@ -46,21 +46,21 @@ class BlogPolicy
     /**
      * Users can see their own blogs. Admins can see all.
      */
-public function view(User $user, Blog $blog): bool
-{
-    // Admin can view all
-    if ($this->isAdmin($user)) {
-        return true;
-    }
+    public function view(User $user, Blog $blog): bool
+    {
+        // Admin can view all
+        if ($this->isAdmin($user)) {
+            return true;
+        }
 
-    // Owner can view own blogs
-    if ($blog->author_id === $user->id) {
-        return true;
-    }
+        // Owner can view own blogs
+        if ($blog->author_id === $user->id) {
+            return true;
+        }
 
-    // Public published blogs
-    return $blog->status === Blog::STATUS_PUBLISHED;
-}
+        // Public published blogs
+        return $blog->status === Blog::STATUS_PUBLISHED;
+    }
 
     // ── create ────────────────────────────────────────────────────────────────
 
@@ -97,20 +97,17 @@ public function view(User $user, Blog $blog): bool
     public function delete(User $user, Blog $blog): bool
     {
         if ($this->isAdmin($user)) {
-            return !$blog->trashed();
+            return ! $blog->trashed();
         }
         // previous
         // return $blog->author_id === $user->id
         //     && $blog->status === Blog::STATUS_DRAFT;
-       
 
         return $blog->author_id === $user->id
     && in_array($blog->status, [
         Blog::STATUS_DRAFT,
-        Blog::STATUS_REJECTED
+        Blog::STATUS_REJECTED,
     ]);
-
-
 
     }
 

@@ -117,6 +117,8 @@
 [data-theme="dark"] .b-pending{color:var(--amber);}[data-theme="dark"] .b-approved{color:#34d399;}
 [data-theme="dark"] .b-rejected{color:#f87171;}[data-theme="dark"] .b-draft{color:#9ca3af;}
 @media(max-width:600px){.page-header{flex-direction:column;align-items:flex-start;}}
+@media(max-width:480px){.edit-layout{gap:14px}.card-body{padding:14px 12px}.form-row{gap:12px}.form-input,.form-select,.form-textarea{font-size:12px;padding:8px 11px}.card-header{padding:12px 14px}.page-header-left h2{font-size:16px}.page-header-right{width:100%}.page-header-right .btn{flex:1;justify-content:center}}
+@media(max-width:380px){.card-body{padding:12px 10px}.form-label{font-size:9px}.form-input,.form-select,.form-textarea{font-size:11px;padding:7px 10px}.form-row{grid-template-columns:1fr}.card-title{font-size:10px}.page-header-left h2{font-size:14px}.page-header-right{flex-direction:column;gap:6px}.page-header-right .btn{width:100%}.meta-row{padding:7px 0}.meta-val{font-size:11px}.editor-toolbar{gap:2px;padding:6px 8px}.editor-btn{width:26px;height:24px;font-size:11px}.slug-prefix{font-size:10px}.slug-input{padding-left:60px!important}}
 </style>
 @endpush
 @section('content')
@@ -389,11 +391,11 @@
           </label>
 
           <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);display:flex;gap:8px;">
-            <button type="submit" form="editForm" class="btn btn-primary" style="flex:1;">
+            <button type="submit" form="editForm" class="btn btn-primary">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
               Save
             </button>
-            <a href="{{ route('admin.blogs.index') }}" class="btn btn-ghost">Cancel</a>
+            <a href="{{ route('admin.blogs.index') }}" class="btn btn-secondary btn-ghost">Cancel</a>
           </div>
         </div>
       </div>
@@ -464,7 +466,7 @@
                 src="{{ $blog->cover_image ? asset('storage/'.$blog->cover_image) : '' }}"
                 alt="Cover">
               <div class="cover-preview-actions">
-                <button type="button" class="cover-preview-btn cpb-remove" onclick="removeCover()" title="Remove">
+                <button type="button" class="btn btn-red cover-preview-btn cpb-remove" onclick="removeCover()" title="Remove">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
                 <button type="button" class="cover-preview-btn cpb-change" onclick="document.getElementById('coverInput').click()" title="Change">
@@ -590,7 +592,7 @@
             onsubmit="return confirm('Delete \'{{ addslashes($blog->title ?? '') }}\'?\nThis will soft-delete the post.')">
         @csrf
         @method('DELETE')
-        <button type="submit" class="btn btn-danger" style="width:100%;justify-content:center;">
+        <button type="submit" class="btn btn-red">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
           Delete Post
         </button>

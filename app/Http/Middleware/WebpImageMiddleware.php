@@ -13,7 +13,7 @@ class WebpImageMiddleware
         $response = $next($request);
 
         // Only process HTML responses
-        if (!str_contains($response->headers->get('Content-Type', ''), 'text/html')) {
+        if (! str_contains($response->headers->get('Content-Type', ''), 'text/html')) {
             return $response;
         }
 
@@ -23,9 +23,9 @@ class WebpImageMiddleware
         $content = preg_replace_callback(
             '/\b(src|srcset)=(["\'])([^"\']+\.(jpg|jpeg|png))(["\'])/i',
             function ($matches) {
-                $attr    = $matches[1]; // src or srcset
-                $quote   = $matches[2]; // " or '
-                $url     = $matches[3]; // full URL or path
+                $attr = $matches[1]; // src or srcset
+                $quote = $matches[2]; // " or '
+                $url = $matches[3]; // full URL or path
                 $closing = $matches[5]; // closing quote
 
                 $webpUrl = preg_replace('/\.(jpg|jpeg|png)$/i', '.webp', $url);
@@ -52,7 +52,8 @@ class WebpImageMiddleware
         // Handle /storage/ URLs
         if (str_contains($url, '/storage/')) {
             $path = str_replace('/storage/', '', parse_url($url, PHP_URL_PATH));
-            return storage_path('app/public/' . $path);
+
+            return storage_path('app/public/'.$path);
         }
 
         // Handle asset URLs like /images/

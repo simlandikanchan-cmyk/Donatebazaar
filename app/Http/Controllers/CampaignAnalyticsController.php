@@ -3,8 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Campaign;
-use App\Models\Donation;
-use Illuminate\Http\Request;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -21,13 +20,13 @@ class CampaignAnalyticsController extends Controller
 
         $completedDonationsAll = (clone $completedDonations)->get();
 
-        $totalRaised    = (clone $completedDonations)->sum('total_amount');
-        $donationCount  = (clone $completedDonations)->count();
-        $avgDonation    = $donationCount > 0 ? $totalRaised / $donationCount : 0;
-        $maxDonation    = (clone $completedDonations)->max('total_amount') ?? 0;
-        $minDonation    = (clone $completedDonations)->min('total_amount') ?? 0;
-        $platformFees   = (clone $completedDonations)->sum('platform_fee');
-        $uniqueDonors   = (clone $completedDonations)
+        $totalRaised = (clone $completedDonations)->sum('total_amount');
+        $donationCount = (clone $completedDonations)->count();
+        $avgDonation = $donationCount > 0 ? $totalRaised / $donationCount : 0;
+        $maxDonation = (clone $completedDonations)->max('total_amount') ?? 0;
+        $minDonation = (clone $completedDonations)->min('total_amount') ?? 0;
+        $platformFees = (clone $completedDonations)->sum('platform_fee');
+        $uniqueDonors = (clone $completedDonations)
             ->whereNotNull('donor_email')
             ->distinct('donor_email')
             ->count('donor_email');
@@ -58,7 +57,7 @@ class CampaignAnalyticsController extends Controller
             ->get();
 
         $weeklyTrend = $trendData->groupBy(function ($item) {
-            return \Carbon\Carbon::parse($item->date)->startOfWeek()->format('Y-m-d');
+            return Carbon::parse($item->date)->startOfWeek()->format('Y-m-d');
         })->map(function ($group) {
             return [
                 'total' => $group->sum('total'),
@@ -74,9 +73,10 @@ class CampaignAnalyticsController extends Controller
         $dailyData = $trendData->pluck('total', 'date');
 
         $weeklyLabels = $weeklyTrend->keys()->map(function ($date) {
-            $start = \Carbon\Carbon::parse($date);
+            $start = Carbon::parse($date);
             $end = $start->copy()->addDays(6);
-            return $start->format('d M') . ' - ' . $end->format('d M');
+
+            return $start->format('d M').' - '.$end->format('d M');
         });
         $weeklyTotals = $weeklyTrend->pluck('total');
 

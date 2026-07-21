@@ -2,68 +2,62 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Contact;
+use Illuminate\Http\Request;
 
 class ContactController extends Controller
 {
+    // Show Contact Page
+    public function index()
+    {
+        return view('contact');
+    }
 
-// Show Contact Page
-public function index()
-{
-return view('contact');
-}
+    // Save Message
+    public function store(Request $request)
+    {
 
+        // dd($request->all());
 
-// Save Message
-public function store(Request $request)
-{
+        $request->validate([
 
-// dd($request->all());
+            'name' => 'required',
+            'email' => 'required|email',
+            'subject' => 'required',
+            'message' => 'required',
 
-$request->validate([
+        ]);
 
-'name'=>'required',
-'email'=>'required|email',
-'subject'=>'required',
-'message'=>'required'
+        Contact::create([
 
-]);
+            'name' => $request->name,
+            'email' => $request->email,
+            'subject' => $request->subject,
+            'message' => $request->message,
 
-Contact::create([
+        ]);
 
-'name'=>$request->name,
-'email'=>$request->email,
-'subject'=>$request->subject,
-'message'=>$request->message
+        return back()->with('success', 'Message Sent Successfully');
 
-]);
+    }
 
-return back()->with('success','Message Sent Successfully');
+    // Admin Contact List
+    public function adminIndex()
+    {
 
-}
+        $contacts = Contact::latest()->get();
 
+        return view('admin.contacts.index', compact('contacts'));
 
+    }
 
-// Admin Contact List
-public function adminIndex()
-{
+    // Delete Contact
+    public function adminDelete($id)
+    {
 
-$contacts = \App\Models\Contact::latest()->get();
+        Contact::find($id)->delete();
 
-return view('admin.contacts.index',compact('contacts'));
+        return back()->with('success', 'Message Deleted');
 
-}
-
-
-// Delete Contact
-public function adminDelete($id)
-{
-
-\App\Models\Contact::find($id)->delete();
-
-return back()->with('success','Message Deleted');
-
-}
-
+    }
 }

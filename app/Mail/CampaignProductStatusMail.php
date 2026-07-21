@@ -4,6 +4,7 @@ namespace App\Mail;
 
 use App\Models\CampaignProduct;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
@@ -15,23 +16,26 @@ class CampaignProductStatusMail extends Mailable
     use Queueable, SerializesModels;
 
     public CampaignProduct $product;
-    public string $status;
-    public ?string $reason;
-    public ?\Illuminate\Contracts\Auth\Authenticatable $admin;
 
-    public function __construct(CampaignProduct $product, string $status, ?string $reason = null, ?\Illuminate\Contracts\Auth\Authenticatable $admin = null)
+    public string $status;
+
+    public ?string $reason;
+
+    public ?Authenticatable $admin;
+
+    public function __construct(CampaignProduct $product, string $status, ?string $reason = null, ?Authenticatable $admin = null)
     {
         $this->product = $product;
-        $this->status  = $status;
-        $this->reason  = $reason;
-        $this->admin   = $admin ?? auth()->user();
+        $this->status = $status;
+        $this->reason = $reason;
+        $this->admin = $admin ?? auth()->user();
     }
 
     public function envelope(): Envelope
     {
         $subject = $this->status === 'approved'
-            ? 'Your Product Has Been Approved — ' . config('app.name')
-            : 'Your Product Has Been Rejected — ' . config('app.name');
+            ? 'Your Product Has Been Approved — '.config('app.name')
+            : 'Your Product Has Been Rejected — '.config('app.name');
 
         return new Envelope(
             to: [
@@ -56,10 +60,10 @@ class CampaignProductStatusMail extends Mailable
             view: 'emails.campaign-product-status',
             with: [
                 'product' => $this->product,
-                'user'    => $this->product->user,
-                'status'  => $this->status,
-                'reason'  => $this->reason,
-                'admin'   => $this->admin,
+                'user' => $this->product->user,
+                'status' => $this->status,
+                'reason' => $this->reason,
+                'admin' => $this->admin,
             ],
         );
     }

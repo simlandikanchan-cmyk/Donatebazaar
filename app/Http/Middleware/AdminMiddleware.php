@@ -16,7 +16,7 @@ class AdminMiddleware
         $user = auth()->user();
 
         // Not logged in → redirect
-        if (!$user) {
+        if (! $user) {
             return redirect()->route('login');
         }
 

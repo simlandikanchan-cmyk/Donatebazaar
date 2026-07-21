@@ -2,8 +2,8 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -11,11 +11,11 @@ return new class extends Migration
     {
         // / 1. ADD NEW COLUMNS FIRST
         Schema::table('likes', function (Blueprint $table) {
-            if (!Schema::hasColumn('likes', 'reference_id')) {
+            if (! Schema::hasColumn('likes', 'reference_id')) {
                 $table->unsignedBigInteger('reference_id')->nullable()->after('user_id');
             }
 
-            if (!Schema::hasColumn('likes', 'reference_type')) {
+            if (! Schema::hasColumn('likes', 'reference_type')) {
                 $table->string('reference_type')->nullable()->after('reference_id');
             }
         });
@@ -24,7 +24,7 @@ return new class extends Migration
         DB::statement("UPDATE likes SET reference_id = post_id, reference_type = 'post'");
 
         // / 3. DROP FOREIGN KEY FIRST (MANDATORY)
-        DB::statement("ALTER TABLE likes DROP FOREIGN KEY likes_post_id_foreign");
+        DB::statement('ALTER TABLE likes DROP FOREIGN KEY likes_post_id_foreign');
 
         // / 4. NOW DROP COLUMN
         Schema::table('likes', function (Blueprint $table) {
