@@ -13,12 +13,11 @@ return new class extends Migration
     {
         Schema::table('events', function (Blueprint $table) {
 
-         // In the migration up():
-        $table->boolean('allow_registrations')->default(true);
-        $table->boolean('show_on_campaign')->default(true);
-        $table->boolean('send_notification')->default(false);   
+            // In the migration up():
+            $table->boolean('allow_registrations')->default(true);
+            $table->boolean('show_on_campaign')->default(true);
+            $table->boolean('send_notification')->default(false);
 
-        
         });
     }
 

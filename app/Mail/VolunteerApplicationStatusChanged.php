@@ -23,7 +23,7 @@ class VolunteerApplicationStatusChanged extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Volunteer Application ' . ucfirst($this->application->status),
+            subject: 'Volunteer Application '.ucfirst($this->application->status),
         );
     }
 

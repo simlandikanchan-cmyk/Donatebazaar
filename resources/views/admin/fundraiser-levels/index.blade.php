@@ -5,6 +5,10 @@
 @section('page_subtitle', 'Configure fundraiser progression & requirements')
 
 @section('topbar_left')
+  <a href="{{ route('admin.dashboard') }}" class="back-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5m7 7l-7-7 7-7"/></svg>
+    Dashboard
+  </a>
   <a href="{{ route('admin.fundraiser-levels.create') }}" class="add-btn">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
     Add Level
@@ -43,6 +47,9 @@
 .empty-state{padding:64px 24px;text-align:center;}
 .empty-icon-wrap{width:64px;height:64px;border-radius:18px;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 16px;}
 .empty-state h3{font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.back-btn{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 16px;background:var(--surface2);color:var(--text2);border:1px solid var(--border2);border-radius:var(--r-sm);font-size:12.5px;font-weight:600;cursor:pointer;transition:all var(--ease);font-family:var(--font);text-decoration:none;}
+.back-btn:hover{border-color:var(--a);color:var(--a);background:var(--a-lt);}
+.back-btn svg{width:13px;height:13px;}
 </style>
 @endpush
 

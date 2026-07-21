@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Mail;
 class SendKycReminders extends Command
 {
     protected $signature = 'campaigns:send-kyc-reminders';
+
     protected $description = 'Send KYC upload reminders to campaign owners who have not submitted KYC';
 
     public function handle(): int
@@ -21,11 +22,11 @@ class SendKycReminders extends Command
             ->where('campaign_state', Campaign::STATE_PENDING)
             ->where(function ($q) use ($now) {
                 $q->whereNull('kyc_reminded_at')
-                  ->where('created_at', '<', $now->copy()->subHours(24));
+                    ->where('created_at', '<', $now->copy()->subHours(24));
             })
             ->orWhere(function ($q) use ($now) {
                 $q->whereNotNull('kyc_reminded_at')
-                  ->where('kyc_reminded_at', '<', $now->copy()->subDays(3));
+                    ->where('kyc_reminded_at', '<', $now->copy()->subDays(3));
             })
             ->whereDoesntHave('user.kycVerification', fn ($q) => $q->where('status', 'approved'))
             ->get();

@@ -17,5 +17,5 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/volunteer/{id}/status', [VolunteerController::class, 'updateStatus'])
-         ->name('admin.volunteer.status');
+        ->name('admin.volunteer.status');
 });

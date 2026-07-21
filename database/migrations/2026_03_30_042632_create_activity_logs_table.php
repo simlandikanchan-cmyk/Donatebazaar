@@ -14,7 +14,7 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
 
             $table->string('action'); // e.g. "campaign_approved"
-            
+
             $table->morphs('loggable'); // campaign / donation / product
 
             $table->json('meta')->nullable();

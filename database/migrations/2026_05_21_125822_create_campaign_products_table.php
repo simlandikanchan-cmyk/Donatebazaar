@@ -42,13 +42,13 @@ return new class extends Migration
 
             $table->enum('source', [
                 'admin',
-                'user'
+                'user',
             ])->default('admin');
 
             $table->enum('approval_status', [
                 'pending',
                 'approved',
-                'rejected'
+                'rejected',
             ])->default('approved');
 
             $table->foreignId('approved_by')

@@ -59,9 +59,9 @@ return new class extends Migration
             $table->foreignId('blog_id')->constrained('blogs')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('parent_id')
-                  ->nullable()
-                  ->constrained('blog_comments')
-                  ->onDelete('cascade');
+                ->nullable()
+                ->constrained('blog_comments')
+                ->onDelete('cascade');
             $table->text('content');
             $table->boolean('is_approved')->default(true);  // auto-approve; false = held for moderation
             $table->softDeletes();
@@ -109,7 +109,7 @@ return new class extends Migration
         // ── 7. Add verified_author flag to users (non-breaking) ───────────────
         // Instead of altering the role enum (dangerous), we add a flag column.
         Schema::table('users', function (Blueprint $table) {
-            if (!Schema::hasColumn('users', 'is_verified_author')) {
+            if (! Schema::hasColumn('users', 'is_verified_author')) {
                 $table->boolean('is_verified_author')->default(false)->after('role');
             }
         });

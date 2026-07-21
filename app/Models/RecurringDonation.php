@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Carbon\Carbon;
 
 class RecurringDonation extends Model
 {
@@ -23,8 +23,8 @@ class RecurringDonation extends Model
 
     protected $casts = [
         'next_billing_date' => 'datetime',
-        'last_billed_at'    => 'datetime',
-        'amount'            => 'decimal:2',
+        'last_billed_at' => 'datetime',
+        'amount' => 'decimal:2',
     ];
 
     public function user(): BelongsTo
@@ -40,12 +40,12 @@ class RecurringDonation extends Model
     // ── Shared billing-date calculator (store() + resume() both use this) ──
     public static function calculateNextBilling(string $frequency): Carbon
     {
-        return match($frequency) {
-            'daily'     => now()->addDay(),
-            'weekly'    => now()->addWeek(),
-            'monthly'   => now()->addMonth(),
+        return match ($frequency) {
+            'daily' => now()->addDay(),
+            'weekly' => now()->addWeek(),
+            'monthly' => now()->addMonth(),
             'quarterly' => now()->addMonths(3),
-            default     => now()->addMonth(), // fallback safety net
+            default => now()->addMonth(), // fallback safety net
         };
     }
 
@@ -80,7 +80,7 @@ class RecurringDonation extends Model
         }
 
         $this->update([
-            'status'            => 'active',
+            'status' => 'active',
             'next_billing_date' => self::calculateNextBilling($this->frequency),
         ]);
     }

@@ -53,12 +53,13 @@ class MigrateBlogMetrics extends Command
                         ['views_count', 'likes_count', 'comments_count']
                     );
 
-                    $this->info('Processed chunk of ' . count($blogs) . ' blogs');
+                    $this->info('Processed chunk of '.count($blogs).' blogs');
                 });
 
             DB::commit();
 
             $this->info(' Blog metrics migrated successfully!');
+
             return Command::SUCCESS;
 
         } catch (Throwable $e) {

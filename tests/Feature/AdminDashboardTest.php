@@ -2,20 +2,22 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use App\Models\User;
-use App\Models\Category;
 use App\Models\Campaign;
+use App\Models\Category;
 use App\Models\KycVerification;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
+use Tests\TestCase;
 
 class AdminDashboardTest extends TestCase
 {
     use RefreshDatabase;
 
     protected User $admin;
+
     protected User $ngo;
+
     protected Category $category;
 
     protected function setUp(): void
@@ -27,14 +29,14 @@ class AdminDashboardTest extends TestCase
         $this->ngo = User::factory()->create(['role' => 'ngo', 'email' => 'ngo_test@donatebazar.com']);
         KycVerification::create([
             'user_id' => $this->ngo->id,
-            'status'  => KycVerification::STATUS_APPROVED,
+            'status' => KycVerification::STATUS_APPROVED,
         ]);
 
         $this->category = Category::create([
-            'name'     => 'Test Category',
-            'slug'     => 'test-category',
-            'icon'     => 'heart',
-            'color'    => '#2563eb',
+            'name' => 'Test Category',
+            'slug' => 'test-category',
+            'icon' => 'heart',
+            'color' => '#2563eb',
             'is_active' => true,
         ]);
     }
@@ -42,13 +44,13 @@ class AdminDashboardTest extends TestCase
     private function makeCampaign(string $state, array $attrs = []): Campaign
     {
         return Campaign::create(array_merge([
-            'user_id'        => $this->ngo->id,
-            'category_id'    => $this->category->id,
-            'title'          => 'Campaign ' . Str::random(6),
-            'slug'           => 'camp-' . Str::random(8),
-            'description'    => 'Test campaign',
-            'goal_amount'    => 100000,
-            'raised_amount'  => 0,
+            'user_id' => $this->ngo->id,
+            'category_id' => $this->category->id,
+            'title' => 'Campaign '.Str::random(6),
+            'slug' => 'camp-'.Str::random(8),
+            'description' => 'Test campaign',
+            'goal_amount' => 100000,
+            'raised_amount' => 0,
             'campaign_state' => $state,
         ], $attrs));
     }
@@ -102,7 +104,7 @@ class AdminDashboardTest extends TestCase
         $response->assertStatus(200);
         $response->assertJsonStructure(['message', 'type']);
         $this->assertDatabaseHas('campaigns', [
-            'id'            => $campaign->id,
+            'id' => $campaign->id,
             'campaign_state' => Campaign::STATE_ACTIVE,
         ]);
     }
@@ -113,14 +115,14 @@ class AdminDashboardTest extends TestCase
 
         $response = $this->actingAs($this->admin)
             ->postJson(route('admin.campaigns.bulk-reject'), [
-                'ids'    => [$campaign->id],
+                'ids' => [$campaign->id],
                 'reason' => 'Fraudulent or misleading content',
             ]);
 
         $response->assertStatus(200);
         $response->assertJsonStructure(['message', 'type']);
         $this->assertDatabaseHas('campaigns', [
-            'id'             => $campaign->id,
+            'id' => $campaign->id,
             'campaign_state' => Campaign::STATE_REJECTED,
         ]);
     }
@@ -131,14 +133,14 @@ class AdminDashboardTest extends TestCase
 
         $response = $this->actingAs($this->admin)
             ->postJson(route('admin.campaigns.bulk-pause'), [
-                'ids'    => [$campaign->id],
+                'ids' => [$campaign->id],
                 'reason' => 'Under review by admin team',
             ]);
 
         $response->assertStatus(200);
         $response->assertJsonStructure(['message', 'type']);
         $this->assertDatabaseHas('campaigns', [
-            'id'             => $campaign->id,
+            'id' => $campaign->id,
             'campaign_state' => Campaign::STATE_PAUSED,
         ]);
     }

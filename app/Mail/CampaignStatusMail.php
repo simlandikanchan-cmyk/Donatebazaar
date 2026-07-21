@@ -15,21 +15,23 @@ class CampaignStatusMail extends Mailable
     use Queueable, SerializesModels;
 
     public Campaign $campaign;
+
     public string $status;
+
     public ?string $reason;
 
     public function __construct(Campaign $campaign, string $status, ?string $reason = null)
     {
         $this->campaign = $campaign;
-        $this->status   = $status;
-        $this->reason   = $reason;
+        $this->status = $status;
+        $this->reason = $reason;
     }
 
     public function envelope(): Envelope
     {
         $subject = $this->status === 'approved'
-            ? 'Your Campaign Has Been Approved — ' . config('app.name')
-            : 'Your Campaign Status Update — ' . config('app.name');
+            ? 'Your Campaign Has Been Approved — '.config('app.name')
+            : 'Your Campaign Status Update — '.config('app.name');
 
         return new Envelope(
             to: [
@@ -48,9 +50,9 @@ class CampaignStatusMail extends Mailable
             view: 'emails.campaign-status',
             with: [
                 'campaign' => $this->campaign,
-                'user'     => $this->campaign->user,
-                'status'   => $this->status,
-                'reason'   => $this->reason,
+                'user' => $this->campaign->user,
+                'status' => $this->status,
+                'reason' => $this->reason,
             ],
         );
     }

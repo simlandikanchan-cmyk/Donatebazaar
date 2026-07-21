@@ -45,14 +45,14 @@ class KycController extends Controller
             $existing = $user->kycVerification;
 
             $data = [
-                'status'             => 'pending',
-                'rejection_reason'   => null,
-                'verified_by'        => null,
-                'verified_at'        => null,
-                'kyc_account_name'   => $request->kyc_account_name,
+                'status' => 'pending',
+                'rejection_reason' => null,
+                'verified_by' => null,
+                'verified_at' => null,
+                'kyc_account_name' => $request->kyc_account_name,
                 'kyc_account_number' => $request->kyc_account_number,
-                'kyc_ifsc'           => $request->kyc_ifsc ? strtoupper($request->kyc_ifsc) : null,
-                'kyc_bank_name'      => $request->kyc_bank_name,
+                'kyc_ifsc' => $request->kyc_ifsc ? strtoupper($request->kyc_ifsc) : null,
+                'kyc_bank_name' => $request->kyc_bank_name,
             ];
 
             // Aadhaar
@@ -87,9 +87,9 @@ class KycController extends Controller
                 if ($existing?->document_url) {
                     Storage::disk('private')->delete($existing->document_url);
                 }
-                $data['document_url']    = $request->file('document_file')
+                $data['document_url'] = $request->file('document_file')
                     ->store('kyc_documents', 'private');
-                $data['document_type']   = $request->document_type;
+                $data['document_type'] = $request->document_type;
                 $data['document_number'] = $request->document_number;
             }
 
@@ -115,7 +115,7 @@ class KycController extends Controller
 
             Log::error('KYC submission failed', [
                 'user_id' => $user->id,
-                'error'   => $e->getMessage(),
+                'error' => $e->getMessage(),
             ]);
 
             return redirect()->back()

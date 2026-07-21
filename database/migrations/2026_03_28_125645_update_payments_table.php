@@ -10,11 +10,11 @@ return new class extends Migration
     {
         Schema::table('payments', function (Blueprint $table) {
 
-            if (!Schema::hasColumn('payments', 'payable_id')) {
+            if (! Schema::hasColumn('payments', 'payable_id')) {
                 $table->unsignedBigInteger('payable_id')->nullable()->after('amount');
             }
 
-            if (!Schema::hasColumn('payments', 'payable_type')) {
+            if (! Schema::hasColumn('payments', 'payable_type')) {
                 $table->string('payable_type')->nullable()->after('payable_id');
             }
 

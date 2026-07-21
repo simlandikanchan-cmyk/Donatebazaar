@@ -12,42 +12,42 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('organization_applications', function (Blueprint $table) {
-    $table->id();
+            $table->id();
 
-    // User
-    $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            // User
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
 
-    // Step 1 - Organization Info
-    $table->string('organization_type')->nullable();
-    $table->string('name');
-    $table->text('address')->nullable();
-    $table->json('causes')->nullable();
-    $table->string('founder_name')->nullable();
-    $table->string('founder_linkedin')->nullable();
+            // Step 1 - Organization Info
+            $table->string('organization_type')->nullable();
+            $table->string('name');
+            $table->text('address')->nullable();
+            $table->json('causes')->nullable();
+            $table->string('founder_name')->nullable();
+            $table->string('founder_linkedin')->nullable();
 
-    // Step 2 - Contact Person
-    $table->string('contact_name');
-    $table->string('contact_phone');
-    $table->string('contact_email');
-    $table->string('contact_role')->nullable();
+            // Step 2 - Contact Person
+            $table->string('contact_name');
+            $table->string('contact_phone');
+            $table->string('contact_email');
+            $table->string('contact_role')->nullable();
 
-    // Step 3 - Certifications
-    $table->boolean('has_80g')->default(false);
-    $table->boolean('has_fcra')->default(false);
+            // Step 3 - Certifications
+            $table->boolean('has_80g')->default(false);
+            $table->boolean('has_fcra')->default(false);
 
-    // Step 4 - Profile
-    $table->string('website')->nullable();
-    $table->string('budget_range')->nullable();
-    $table->string('donor_strength')->nullable();
-    $table->string('employee_strength')->nullable();
-    $table->boolean('has_crowdfunded')->default(false);
-    $table->string('campaign_timeline')->nullable();
+            // Step 4 - Profile
+            $table->string('website')->nullable();
+            $table->string('budget_range')->nullable();
+            $table->string('donor_strength')->nullable();
+            $table->string('employee_strength')->nullable();
+            $table->boolean('has_crowdfunded')->default(false);
+            $table->string('campaign_timeline')->nullable();
 
-    // Status
-    $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            // Status
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
 
-    $table->timestamps();
-});
+            $table->timestamps();
+        });
 
     }
 

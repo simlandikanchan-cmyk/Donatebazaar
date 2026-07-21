@@ -19,12 +19,12 @@ return new class extends Migration
             $table->string('recipient_email');
             $table->text('message')->nullable();
             $table->timestamp('send_at');
-            $table->enum('status', ['pending','sent','redeemed','expired','cancelled'])
-                  ->default('pending');
+            $table->enum('status', ['pending', 'sent', 'redeemed', 'expired', 'cancelled'])
+                ->default('pending');
             $table->string('payment_id')->nullable();
             $table->string('order_id')->nullable();
-            $table->enum('payment_status', ['pending','completed','failed'])
-                  ->default('pending');
+            $table->enum('payment_status', ['pending', 'completed', 'failed'])
+                ->default('pending');
             $table->foreignId('redeemed_by')->nullable()->constrained('users')->nullOnDelete();
             $table->unsignedBigInteger('redeemed_on_campaign')->nullable();
             $table->timestamp('redeemed_at')->nullable();

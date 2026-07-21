@@ -402,6 +402,14 @@ html[data-theme="dark"] .site-footer {
     margin-bottom: 16px;
 }
 
+.nl-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    margin-bottom: 6px;
+    letter-spacing: 0.02em;
+}
 .newsletter-form-wrap {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -458,7 +466,9 @@ html[data-theme="dark"] .site-footer {
     justify-content: center;
 }
 @media (max-width: 400px) {
-    .newsletter-form-inner button { min-width: 100px; padding: 11px 12px; font-size: 12px; }
+    .newsletter-form-inner { flex-direction: column; }
+    .newsletter-form-inner input { border-radius: 12px 12px 0 0; }
+    .newsletter-form-inner button { border-radius: 0 0 12px 12px; min-width: unset; width: 100%; padding: 11px 12px; font-size: 12px; }
 }
 .newsletter-form-inner button:hover { opacity: 0.88; letter-spacing: 0.05em; }
 .newsletter-form-inner button:disabled { opacity: 0.55; cursor: default; letter-spacing: 0.03em; }

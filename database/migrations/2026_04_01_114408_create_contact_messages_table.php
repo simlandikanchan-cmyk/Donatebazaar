@@ -10,20 +10,20 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up()
-{
-    Schema::create('contact_messages', function (Blueprint $table) {
-        $table->id();
+    {
+        Schema::create('contact_messages', function (Blueprint $table) {
+            $table->id();
 
-        $table->string('name');
-        $table->string('email');
-        $table->string('subject')->nullable();
-        $table->text('message');
+            $table->string('name');
+            $table->string('email');
+            $table->string('subject')->nullable();
+            $table->text('message');
 
-        $table->boolean('is_read')->default(false); // 🔥 important for admin
+            $table->boolean('is_read')->default(false); // 🔥 important for admin
 
-        $table->timestamps();
-    });
-}
+            $table->timestamps();
+        });
+    }
 
     /**
      * Reverse the migrations.

@@ -12,7 +12,7 @@ class VolunteerApplication extends Model
         'ngo_id',
         'message',
         'status',
-        'applied_at'
+        'applied_at',
     ];
 
     public function volunteer()

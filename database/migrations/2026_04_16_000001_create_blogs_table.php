@@ -2,8 +2,8 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * BLOGS TABLE
@@ -27,8 +27,8 @@ return new class extends Migration
             // ── Identity ─────────────────────────────────────────────────────
             $table->id();
             $table->foreignId('author_id')
-                  ->constrained('users')
-                  ->onDelete('cascade');
+                ->constrained('users')
+                ->onDelete('cascade');
 
             // Snapshot of the user's role at creation time (preserved if role changes)
             $table->enum('author_role', ['admin', 'ngo', 'donor'])->default('donor');
@@ -43,9 +43,9 @@ return new class extends Migration
 
             // ── Categorisation ───────────────────────────────────────────────
             $table->foreignId('category_id')
-                  ->nullable()
-                  ->constrained('categories')
-                  ->onDelete('set null');
+                ->nullable()
+                ->constrained('categories')
+                ->onDelete('set null');
 
             // ── Workflow ─────────────────────────────────────────────────────
             $table->enum('status', [
@@ -60,9 +60,9 @@ return new class extends Migration
 
             // ── Moderation ───────────────────────────────────────────────────
             $table->foreignId('reviewed_by')
-                  ->nullable()
-                  ->constrained('users')
-                  ->onDelete('set null');
+                ->nullable()
+                ->constrained('users')
+                ->onDelete('set null');
             $table->timestamp('reviewed_at')->nullable();
             $table->text('rejection_reason')->nullable();
 

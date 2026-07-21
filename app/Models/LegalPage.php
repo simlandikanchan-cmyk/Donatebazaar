@@ -23,8 +23,8 @@ class LegalPage extends Model
     {
         return [
             'privacy' => 'Privacy Policy',
-            'terms'   => 'Terms of Service',
-            'refund'  => 'Refund & Cancellation Policy',
+            'terms' => 'Terms of Service',
+            'refund' => 'Refund & Cancellation Policy',
             'cookies' => 'Cookie Policy',
         ];
     }

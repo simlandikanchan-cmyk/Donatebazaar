@@ -11,7 +11,7 @@ class Category extends Model
         'slug',
         'icon',
         'color',
-        'is_active'
+        'is_active',
     ];
 
     // RELATION

@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Partnership;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 use App\Mail\PartnershipStatusUpdated;
+use App\Models\Partnership;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Response;
 
 class PartnershipAdminController extends Controller
@@ -16,11 +17,11 @@ class PartnershipAdminController extends Controller
     {
         $search = $request->input('search');
         $status = $request->input('status', 'all');
-        $sort   = $request->input('sort', 'created_at');
-        $dir    = $request->input('direction', 'desc');
+        $sort = $request->input('sort', 'created_at');
+        $dir = $request->input('direction', 'desc');
 
         $allowedSorts = ['name', 'email', 'organization_name', 'partnership_type', 'priority_score', 'status', 'created_at', 'reviewed_at'];
-        if (!in_array($sort, $allowedSorts)) {
+        if (! in_array($sort, $allowedSorts)) {
             $sort = 'created_at';
         }
         $dir = $dir === 'asc' ? 'asc' : 'desc';
@@ -30,8 +31,8 @@ class PartnershipAdminController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('organization_name', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('organization_name', 'like', "%{$search}%");
             });
         }
 
@@ -60,12 +61,12 @@ class PartnershipAdminController extends Controller
         $partnership = Partnership::findOrFail($id);
 
         $request->validate([
-            'status'      => 'required|in:approved,rejected,pending',
-            'admin_notes' => 'nullable|string'
+            'status' => 'required|in:approved,rejected,pending',
+            'admin_notes' => 'nullable|string',
         ]);
 
         $partnership->update([
-            'status'      => $request->status,
+            'status' => $request->status,
             'admin_notes' => $request->admin_notes,
             'reviewed_at' => now(),
             'reviewed_by' => Auth::id(),
@@ -75,7 +76,7 @@ class PartnershipAdminController extends Controller
             ->queue(new PartnershipStatusUpdated($partnership));
 
         return redirect()->route('admin.partnership.index')
-            ->with('success', 'Partnership ' . $request->status . ' successfully.');
+            ->with('success', 'Partnership '.$request->status.' successfully.');
     }
 
     public function deletePage($id)
@@ -109,8 +110,8 @@ class PartnershipAdminController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('organization_name', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('organization_name', 'like', "%{$search}%");
             });
         }
 
@@ -121,8 +122,8 @@ class PartnershipAdminController extends Controller
         $partnerships = $query->latest()->get();
 
         $headers = [
-            'Content-Type'        => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="partnerships-' . now()->format('Y-m-d') . '.csv"',
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="partnerships-'.now()->format('Y-m-d').'.csv"',
         ];
 
         $callback = function () use ($partnerships) {
@@ -132,7 +133,7 @@ class PartnershipAdminController extends Controller
                 'ID', 'Name', 'Email', 'Phone', 'Organisation', 'Type',
                 'Size', 'Location', 'Partnership Type', 'Goal', 'Timeline',
                 'Website', 'Has Document', 'Priority Score', 'Status',
-                'Admin Notes', 'Reviewed By', 'Reviewed At', 'Submitted At'
+                'Admin Notes', 'Reviewed By', 'Reviewed At', 'Submitted At',
             ]);
 
             foreach ($partnerships as $p) {
@@ -154,7 +155,7 @@ class PartnershipAdminController extends Controller
                     $p->status,
                     $p->admin_notes,
                     $p->reviewer?->name,
-                    $p->reviewed_at ? \Carbon\Carbon::parse($p->reviewed_at)->format('Y-m-d H:i:s') : '',
+                    $p->reviewed_at ? Carbon::parse($p->reviewed_at)->format('Y-m-d H:i:s') : '',
                     $p->created_at->format('Y-m-d H:i:s'),
                 ]);
             }
@@ -168,8 +169,8 @@ class PartnershipAdminController extends Controller
     public function bulkUpdate(Request $request)
     {
         $data = $request->validate([
-            'ids'    => ['required', 'array'],
-            'ids.*'  => ['integer', 'exists:partnerships,id'],
+            'ids' => ['required', 'array'],
+            'ids.*' => ['integer', 'exists:partnerships,id'],
             'status' => ['required', 'in:approved,rejected,pending'],
         ]);
 
@@ -177,7 +178,7 @@ class PartnershipAdminController extends Controller
         $userId = Auth::id();
 
         $count = Partnership::whereIn('id', $data['ids'])->update([
-            'status'      => $data['status'],
+            'status' => $data['status'],
             'reviewed_at' => $now,
             'reviewed_by' => $userId,
         ]);
@@ -188,7 +189,7 @@ class PartnershipAdminController extends Controller
     public function bulkDelete(Request $request)
     {
         $data = $request->validate([
-            'ids'   => ['required', 'array'],
+            'ids' => ['required', 'array'],
             'ids.*' => ['integer', 'exists:partnerships,id'],
         ]);
 
@@ -201,6 +202,6 @@ class PartnershipAdminController extends Controller
             $p->delete();
         }
 
-        return back()->with('success', count($partnerships) . ' partnership(s) deleted.');
+        return back()->with('success', count($partnerships).' partnership(s) deleted.');
     }
 }

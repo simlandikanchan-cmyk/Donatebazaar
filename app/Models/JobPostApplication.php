@@ -1,6 +1,6 @@
 <?php
 
-namespace  App\Models;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,9 +15,13 @@ class JobPostApplication extends Model
      * Status constants.
      */
     const STATUS_PENDING = 'pending';
+
     const STATUS_SHORTLISTED = 'shortlisted';
+
     const STATUS_INTERVIEWED = 'interviewed';
+
     const STATUS_HIRED = 'hired';
+
     const STATUS_REJECTED = 'rejected';
 
     /**
@@ -78,9 +82,9 @@ class JobPostApplication extends Model
         }
 
         return $query->where(function ($q) use ($term) {
-            $q->where('name', 'like', '%' . $term . '%')
-              ->orWhere('email', 'like', '%' . $term . '%')
-              ->orWhere('phone', 'like', '%' . $term . '%');
+            $q->where('name', 'like', '%'.$term.'%')
+                ->orWhere('email', 'like', '%'.$term.'%')
+                ->orWhere('phone', 'like', '%'.$term.'%');
         });
     }
 
@@ -92,7 +96,7 @@ class JobPostApplication extends Model
 
     public function getCvExtensionAttribute(): ?string
     {
-        if (!$this->cv_path) {
+        if (! $this->cv_path) {
             return null;
         }
 

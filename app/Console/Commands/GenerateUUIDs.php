@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
+use DB;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
-use DB;
 
 class GenerateUUIDs extends Command
 {

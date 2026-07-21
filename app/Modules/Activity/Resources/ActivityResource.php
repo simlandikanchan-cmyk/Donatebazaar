@@ -16,7 +16,7 @@ class ActivityResource extends JsonResource
             'description' => $this->description,
             'image' => $this->image,
             'meta' => $this->meta,
-            'time' => $this->created_at->diffForHumans()
+            'time' => $this->created_at->diffForHumans(),
         ];
     }
 }

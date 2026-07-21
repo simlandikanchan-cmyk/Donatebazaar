@@ -15,7 +15,7 @@ class SubscriberController extends Controller
     {
         $query = Subscriber::query()
             ->when($request->search, function ($q) use ($request) {
-                $q->where('email', 'like', '%' . $request->search . '%');
+                $q->where('email', 'like', '%'.$request->search.'%');
             })
             ->when($request->status, function ($q) use ($request) {
                 if ($request->status === 'active') {
@@ -29,8 +29,8 @@ class SubscriberController extends Controller
         $subscribers = $query->paginate(25)->withQueryString();
 
         $stats = [
-            'total'        => Subscriber::count(),
-            'active'       => Subscriber::active()->count(),
+            'total' => Subscriber::count(),
+            'active' => Subscriber::active()->count(),
             'unsubscribed' => Subscriber::whereNotNull('unsubscribed_at')->count(),
         ];
 
@@ -53,7 +53,7 @@ class SubscriberController extends Controller
     {
         $subscriber->update([
             'unsubscribed_at' => null,
-            'subscribed_at'   => $subscriber->subscribed_at ?? now(),
+            'subscribed_at' => $subscriber->subscribed_at ?? now(),
         ]);
 
         return back()->with('success', 'Subscriber has been re-subscribed.');
@@ -70,7 +70,7 @@ class SubscriberController extends Controller
     {
         $subscribers = Subscriber::orderByDesc('subscribed_at')->get();
 
-        $fileName = 'newsletter-subscribers-' . now()->format('Y-m-d') . '.csv';
+        $fileName = 'newsletter-subscribers-'.now()->format('Y-m-d').'.csv';
 
         return response()->streamDownload(function () use ($subscribers) {
             $out = fopen('php://output', 'w');

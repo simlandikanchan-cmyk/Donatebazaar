@@ -27,7 +27,7 @@ return new class extends Migration
     {
         // Wipe plaintext OTPs before renaming — they are useless after rename
         DB::table('users')->update([
-            'otp'        => null,
+            'otp' => null,
             'otp_expire' => null,
         ]);
 

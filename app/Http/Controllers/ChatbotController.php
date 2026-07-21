@@ -11,7 +11,7 @@ class ChatbotController extends Controller
     // FAQ/knowledge base — pore etake DB theke o load korte paro
     private function systemPrompt(): string
     {
-        return <<<PROMPT
+        return <<<'PROMPT'
 You are DonateBazaar's helpful assistant. You help users with:
 - How donations work on this platform
 - Campaign creation and browsing
@@ -24,6 +24,7 @@ If you don't know something specific about a user's account or a specific campai
 say you don't have access to that yet and suggest contacting support.
 PROMPT;
     }
+
     public function chat(Request $request)
     {
         $request->validate([
@@ -33,31 +34,32 @@ PROMPT;
         // conversation history — session e রাখা, per-user context এর জন্য
         $history = session('chat_history', []);
         $history[] = ['role' => 'user', 'content' => $userMessage];
+
         return new StreamedResponse(function () use ($history) {
             $response = Http::withHeaders([
                 'x-api-key' => config('services.anthropic.key'),
                 'anthropic-version' => '2023-06-01',
                 'Content-Type' => 'application/json',
             ])->withOptions(['stream' => true])
-              ->post('https://api.anthropic.com/v1/messages', [
-                  'model' => 'claude-sonnet-4-6',
-                  'max_tokens' => 500,
-                  'system' => $this->systemPrompt(),
-                  'messages' => $history,
-                  'stream' => true,
-              ]);
+                ->post('https://api.anthropic.com/v1/messages', [
+                    'model' => 'claude-sonnet-4-6',
+                    'max_tokens' => 500,
+                    'system' => $this->systemPrompt(),
+                    'messages' => $history,
+                    'stream' => true,
+                ]);
 
             $fullReply = '';
             $body = $response->toPsrResponse()->getBody();
 
-            while (!$body->eof()) {
+            while (! $body->eof()) {
                 $line = $this->readLine($body);
                 if (str_starts_with($line, 'data: ')) {
                     $json = json_decode(substr($line, 6), true);
                     if (isset($json['type']) && $json['type'] === 'content_block_delta') {
                         $chunk = $json['delta']['text'] ?? '';
                         $fullReply .= $chunk;
-                        echo "data: " . json_encode(['text' => $chunk]) . "\n\n";
+                        echo 'data: '.json_encode(['text' => $chunk])."\n\n";
                         ob_flush();
                         flush();
                     }
@@ -81,11 +83,14 @@ PROMPT;
     private function readLine($stream): string
     {
         $line = '';
-        while (!$stream->eof()) {
+        while (! $stream->eof()) {
             $char = $stream->read(1);
-            if ($char === "\n") break;
+            if ($char === "\n") {
+                break;
+            }
             $line .= $char;
         }
+
         return trim($line);
     }
 }

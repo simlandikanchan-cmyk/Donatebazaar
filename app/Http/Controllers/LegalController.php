@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\LegalPage;
-use Illuminate\Http\Request;
 
 class LegalController extends Controller
 {
@@ -36,6 +35,6 @@ class LegalController extends Controller
         }
 
         // Fall back to the static template view shipped with the app.
-        return view('legal.' . $slug);
+        return view('legal.'.$slug);
     }
 }

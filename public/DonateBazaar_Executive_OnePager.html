@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DonateBazaar — Executive One-Pager</title>
+<style>
+  :root{--accent:#2563eb;--accent2:#0d9488;--ink:#0f1117;--ink2:#4b5563;--line:#e5e7eb;--bg:#f8f9fe;}
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif;color:var(--ink);font-size:11px;line-height:1.5;}
+  .page{width:210mm;min-height:297mm;padding:12mm 12mm;margin:0 auto;page-break-after:always;}
+  h1{font-size:20px;margin:0 0 2px;color:var(--accent);}
+  h2{font-size:13px;margin:10px 0 4px;padding-bottom:3px;border-bottom:2px solid var(--accent);color:var(--accent);}
+  h3{font-size:11px;margin:6px 0 2px;color:var(--accent2);}
+  p{margin:0 0 4px;}
+  .sub{color:var(--ink2);font-size:10px;margin-bottom:4px;}
+  table{width:100%;border-collapse:collapse;margin:3px 0 6px;font-size:9.5px;}
+  th,td{border:1px solid var(--line);padding:3px 5px;text-align:left;vertical-align:top;}
+  th{background:var(--accent);color:#fff;font-weight:600;}
+  tr:nth-child(even) td{background:#fafbff;}
+  code{background:#eef2ff;color:#3730a3;padding:0 3px;border-radius:3px;font-size:9px;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;}
+  .kpi{background:#fff;border:1px solid var(--line);border-radius:8px;padding:7px;text-align:center;}
+  .kpi .n{font-size:16px;font-weight:800;color:var(--accent);}
+  .kpi .l{font-size:8px;color:var(--ink2);text-transform:uppercase;}
+  .box{background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:7px 9px;margin:4px 0;}
+  .tag{display:inline-block;background:var(--accent);color:#fff;font-size:8px;padding:1px 6px;border-radius:20px;margin:1px 2px 1px 0;}
+  .tag.a{background:var(--accent2);}
+  .foot{font-size:8px;color:var(--ink2);margin-top:8px;border-top:1px solid var(--line);padding-top:3px;}
+</style>
+</head>
+<body>
+
+<section class="page">
+  <h1>DonateBazaar — Executive One-Pager</h1>
+  <p class="sub">Crowdfunding Platform · Laravel 11 · Built end-to-end by a single Backend / Full-Stack Engineer · For HR &amp; Engineering Leadership</p>
+
+  <div class="grid3" style="margin-bottom:6px;">
+    <div class="kpi"><div class="n">~70</div><div class="l">Controllers</div></div>
+    <div class="kpi"><div class="n">~50</div><div class="l">Models</div></div>
+    <div class="kpi"><div class="n">90+</div><div class="l">Migrations</div></div>
+    <div class="kpi"><div class="n">18</div><div class="l">Security Controls</div></div>
+    <div class="kpi"><div class="n">25</div><div class="l">Admin Modules</div></div>
+    <div class="kpi"><div class="n">6</div><div class="l">Payment Integrity Layers</div></div>
+  </div>
+
+  <h2>1. What Was Built</h2>
+  <p>A <strong>production-grade, fintech-grade crowdfunding platform</strong> — not a CRUD scaffold. Three channels of secure authentication, a compliance-backed (KYC) campaign system, a complete <strong>Razorpay payment pipeline</strong> with bank-grade concurrency controls, a governed admin panel, rich community features, and an AI assistant.</p>
+
+  <div class="grid2">
+    <div class="box">
+      <h3>Functional Scope</h3>
+      <span class="tag">Auth (email/Google/OTP)</span><span class="tag">6-step campaign wizard</span><span class="tag">KYC</span>
+      <span class="tag a">Donations</span><span class="tag a">Refunds</span><span class="tag a">Settlements</span>
+      <span class="tag">~25 admin modules</span><span class="tag">Blogs</span><span class="tag">Events</span>
+      <span class="tag">Volunteers</span><span class="tag">NGOs</span><span class="tag">Jobs</span><span class="tag">AI chatbot</span>
+    </div>
+    <div class="box">
+      <h3>Engineering Depth</h3>
+      <ul style="margin:0;padding-left:14px;">
+        <li>Idempotent payments (locks + DB triggers)</li>
+        <li>5% platform-fee split, reconciled at settlement</li>
+        <li>Dual-approval campaign activation (KYC + admin)</li>
+        <li>18 security controls, defense-in-depth</li>
+        <li>~50-model relational schema, 90+ migrations</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>2. How It Works (User → Admin)</h2>
+  <table>
+    <tr><th style="width:14%">Stage</th><th>User Side</th><th>Admin Side</th></tr>
+    <tr><td><strong>Onboard</strong></td><td>Register (email / Google / phone OTP, bcrypt cost 12)</td><td>Role-gated; suspended accounts blocked</td></tr>
+    <tr><td><strong>Create</strong></td><td>6-step wizard → campaign <code>pending</code> (level-capped)</td><td>Review submission</td></tr>
+    <tr><td><strong>Comply</strong></td><td>Upload KYC to private disk</td><td>Approve KYC → approve campaign (dual gate)</td></tr>
+    <tr><td><strong>Activate</strong></td><td>Campaign goes <code>active</code> / live</td><td>Pause / resume / complete + audit log</td></tr>
+    <tr><td><strong>Receive</strong></td><td>Donate via Razorpay → receipt + raised total updates</td><td>Settle funds (gross/fee/net ledger)</td></tr>
+  </table>
+
+  <h2>3. Security Enhancements (18 Controls)</h2>
+  <table>
+    <tr><th>Layer</th><th>Controls</th></tr>
+    <tr><td>Transport / Form</td><td>CSRF on all forms; double-submit guard</td></tr>
+    <tr><td>Payments</td><td>Razorpay signature verify; webhook HMAC + <code>hash_equals</code> (timing-safe)</td></tr>
+    <tr><td>Concurrency</td><td>Distributed cache lock + DB row lock + idempotency + DB trigger for totals</td></tr>
+    <tr><td>Credentials</td><td>bcrypt cost 12; OTP hashed + expiry + throttle</td></tr>
+    <tr><td>AuthZ / PII</td><td>Role/status/author middleware; KYC on private disk, owner-scoped</td></tr>
+    <tr><td>Anti-abuse</td><td>Server-side coupon re-validation; rate limiting; soft deletes + audit logs</td></tr>
+  </table>
+
+  <div class="foot">Source: full 100-page System &amp; Engineering Report (DonateBazaar_Report_100.html). All claims traceable to controllers, models, migrations, middleware, services.</div>
+</section>
+
+<section class="page">
+  <h2>4. Database &amp; Data Model (Summary)</h2>
+  <p>~50 Eloquent models across 6 domains, backed by 90+ migrations with indexes, foreign keys, soft deletes, and a money-integrity DB trigger.</p>
+  <table>
+    <tr><th>Domain</th><th>Key Models</th></tr>
+    <tr><td>Identity</td><td>User, KycVerification, FundraiserLevel, UserFundraiserLevel</td></tr>
+    <tr><td>Campaigns</td><td>Campaign (state machine), CampaignProduct, CampaignUpdate, CampaignLog, Category</td></tr>
+    <tr><td>Money</td><td>Donation, DonationItem, Refund, Coupon, CouponRedemption, CampaignSettlement, SettlementItem</td></tr>
+    <tr><td>Content</td><td>Blog + polymorphic Comment/Like/View/Report, Tag, Event, EventRegistration</td></tr>
+    <tr><td>Community</td><td>Volunteer/Application/Assignment, Organization/Application, Partnership, Celebrity, JobPost/Application</td></tr>
+    <tr><td>Comms</td><td>Subscriber, ContactMessage, Notification, GiftCard, Faq, LegalPage, SuccessStory</td></tr>
+  </table>
+  <div class="box"><strong>Money integrity:</strong> <code>raised_amount</code> is derived by a MariaDB trigger from summed completed donations — the single source of truth. Every donation stores total/original/discount/fee/net for full auditability.</div>
+
+  <h2>5. Scalability &amp; DevOps</h2>
+  <div class="grid2">
+    <div class="box"><h3>Strengths (built-in)</h3>
+      <ul style="margin:0;padding-left:14px;">
+        <li>Stateless money logic (triggers + locks) → safe horizontal scaling</li>
+        <li>Indexed hot queries; cache locks; queue-ready mail</li>
+        <li>REST API scaffold for mobile/SPA</li>
+        <li>5 scheduled commands (expire, KYC reminders, WebP, UUIDs, metrics)</li>
+      </ul>
+    </div>
+    <div class="box"><h3>Roadmap (scale-up)</h3>
+      <ul style="margin:0;padding-left:14px;">
+        <li>Redis cache/session driver; queue workers (SQS/Redis)</li>
+        <li>Unique DB constraint on gateway_refund_id</li>
+        <li>Object storage (S3) for media/KYC</li>
+        <li>Sanctum API auth + rate limiting; metrics/alerting</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>6. Business Impact</h2>
+  <table>
+    <tr><th>Dimension</th><th>Outcome</th></tr>
+    <tr><td>Revenue</td><td>5% platform fee on every donation, auto-split &amp; reconciled at settlement</td></tr>
+    <tr><td>Trust</td><td>Dual-approval + KYC + audit logs = compliant, trustworthy</td></tr>
+    <tr><td>Engagement</td><td>Blogs, events, volunteers, NGOs, AI chatbot drive retention</td></tr>
+    <tr><td>Operability</td><td>Bulk admin actions + settlement reduce manual overhead</td></tr>
+  </table>
+
+  <h2>7. Recommendation for Compensation</h2>
+  <div class="box" style="border-color:var(--accent);">
+    <strong>Senior Backend / Full-Stack Engineer level.</strong> This is end-to-end ownership of a financial product: schema (90+ migrations) → business logic (services, state machines) → external integrations (Razorpay, Anthropic) → security hardening. Compensation should reflect <em>product ownership</em>, not task-level execution.
+  </div>
+  <table>
+    <tr><th>Signal</th><th>Indicates</th></tr>
+    <tr><td>Owns full backend (DB → integrations)</td><td>Senior scope</td></tr>
+    <tr><td>Financial correctness under concurrency</td><td>Specialized skill</td></tr>
+    <tr><td>Security designed in (18 controls)</td><td>Mature engineering</td></tr>
+    <tr><td>Multi-subsystem delivery</td><td>High output</td></tr>
+  </table>
+
+  <div class="foot">Prepared as an internal engineering &amp; compensation reference. Full evidence in DonateBazaar_Report_100.html. End of one-pager.</div>
+</section>
+
+</body>
+</html>

@@ -7,13 +7,16 @@ use App\Mail\DonationRefundMail;
 use App\Models\Campaign;
 use App\Models\Donation;
 use App\Models\Refund;
+use App\Models\User;
+use App\Models\WalletTransaction;
+use App\Services\WalletService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\View\View;
 use Razorpay\Api\Api;
 use Razorpay\Api\Errors\Error as RazorpayError;
 
@@ -45,7 +48,7 @@ class DonationController extends Controller
                     ->orWhere('payment_id', 'like', "%{$q}%")
                     ->orWhereHas('user', function ($u) use ($q) {
                         $u->where('name', 'like', "%{$q}%")
-                          ->orWhere('email', 'like', "%{$q}%");
+                            ->orWhere('email', 'like', "%{$q}%");
                     });
             });
         }
@@ -55,11 +58,11 @@ class DonationController extends Controller
         $campaigns = Campaign::query()->orderBy('title')->pluck('title', 'id');
 
         $counts = [
-            'total'      => Donation::count(),
-            'completed'  => Donation::where('payment_status', 'completed')->count(),
-            'refunded'   => Donation::where('is_refunded', true)->count(),
+            'total' => Donation::count(),
+            'completed' => Donation::where('payment_status', 'completed')->count(),
+            'refunded' => Donation::where('is_refunded', true)->count(),
             'refundable' => Donation::where('payment_status', 'completed')
-                                    ->where('is_refunded', false)->count(),
+                ->where('is_refunded', false)->count(),
         ];
 
         return view('admin.donations.index', compact('donations', 'campaigns', 'counts'));
@@ -88,7 +91,7 @@ class DonationController extends Controller
      */
     public function refund(Request $request, Donation $donation): RedirectResponse
     {
-        $lock = Cache::lock('donation_refund_' . $donation->id, 30);
+        $lock = Cache::lock('donation_refund_'.$donation->id, 30);
 
         if (! $lock->get()) {
             return redirect()
@@ -121,7 +124,7 @@ class DonationController extends Controller
             if (empty($paymentId) || ! preg_match('/^pay_[A-Za-z0-9]{14,}$/', $paymentId)) {
                 Log::warning('Refund attempt blocked: invalid payment_id format', [
                     'donation_id' => $donation->id,
-                    'payment_id'  => $paymentId,
+                    'payment_id' => $paymentId,
                 ]);
 
                 return redirect()
@@ -140,27 +143,27 @@ class DonationController extends Controller
                 // (d) API failure: do NOT modify donation fields; log a failed Refund row.
                 Log::error('Admin refund failed at gateway', [
                     'donation_id' => $donation->id,
-                    'payment_id'  => $donation->payment_id,
-                    'message'     => $e->getMessage(),
+                    'payment_id' => $donation->payment_id,
+                    'message' => $e->getMessage(),
                 ]);
 
                 Refund::create([
-                    'donation_id'         => $donation->id,
+                    'donation_id' => $donation->id,
                     'donation_payment_id' => null,
-                    'gateway_refund_id'   => null,
-                    'amount'              => $donation->total_amount,
-                    'reason'              => 'Admin refund failed at gateway: ' . $e->getMessage(),
-                    'status'              => 'failed',
-                    'processed_at'        => null,
+                    'gateway_refund_id' => null,
+                    'amount' => $donation->total_amount,
+                    'reason' => 'Admin refund failed at gateway: '.$e->getMessage(),
+                    'status' => 'failed',
+                    'processed_at' => null,
                 ]);
 
                 return redirect()
                     ->route('admin.donations.show', $donation)
-                    ->with('error', 'Refund failed at the payment gateway: ' . $e->getMessage());
+                    ->with('error', 'Refund failed at the payment gateway: '.$e->getMessage());
             }
 
             // (c) Success: persist inside a transaction with a row lock + re-checked guard.
-            $refundRecord   = null;
+            $refundRecord = null;
             $alreadyRefunded = false;
 
             DB::transaction(function () use ($donation, $razorpayRefund, $request, &$refundRecord, &$alreadyRefunded) {
@@ -174,19 +177,43 @@ class DonationController extends Controller
                 }
 
                 $locked->payment_status = 'refunded';
-                $locked->is_refunded    = true;
-                $locked->refunded_at    = now();
+                $locked->is_refunded = true;
+                $locked->refunded_at = now();
                 $locked->save();
 
                 $refundRecord = Refund::create([
-                    'donation_id'         => $locked->id,
+                    'donation_id' => $locked->id,
                     'donation_payment_id' => null,
-                    'gateway_refund_id'   => $razorpayRefund->id,
-                    'amount'              => $donation->total_amount,
-                    'reason'              => $request->input('reason'),
-                    'status'              => 'processed',
-                    'processed_at'        => now(),
+                    'gateway_refund_id' => $razorpayRefund->id,
+                    'amount' => $donation->total_amount,
+                    'reason' => $request->input('reason'),
+                    'status' => 'processed',
+                    'processed_at' => now(),
                 ]);
+
+                // Debit the owner's wallet (reserved first while hold active).
+                // Inside the same lock/transaction as the refund — no second lock.
+                try {
+                    $owner = $locked->user_id
+                        ? User::find($locked->user_id)
+                        : ($locked->campaign?->user_id ? User::find($locked->campaign->user_id) : null);
+                    if ($owner) {
+                        $wallet = app(WalletService::class)->getOrCreateWallet($owner);
+                        app(WalletService::class)->debit(
+                            $wallet,
+                            (float) $locked->net_amount,
+                            WalletTransaction::SOURCE_REFUND,
+                            $refundRecord->id,
+                            Refund::class,
+                            'Refund #'.$refundRecord->id
+                        );
+                    }
+                } catch (\Throwable $e) {
+                    Log::error('Wallet debit failed for admin refund', [
+                        'donation_id' => $locked->id,
+                        'message' => $e->getMessage(),
+                    ]);
+                }
             });
 
             if ($refundRecord && $donation->donor_email) {
@@ -195,7 +222,7 @@ class DonationController extends Controller
                 } catch (\Throwable $e) {
                     Log::error('Failed to send refund notification email', [
                         'donation_id' => $donation->id,
-                        'message'     => $e->getMessage(),
+                        'message' => $e->getMessage(),
                     ]);
                 }
             }
@@ -208,7 +235,7 @@ class DonationController extends Controller
 
             return redirect()
                 ->route('admin.donations.show', $donation)
-                ->with('success', 'Refund of ₹' . number_format($donation->total_amount, 2) . ' initiated successfully.');
+                ->with('success', 'Refund of ₹'.number_format($donation->total_amount, 2).' initiated successfully.');
 
         } finally {
             $lock->release();
@@ -220,7 +247,7 @@ class DonationController extends Controller
      */
     private function getRazorpayApi(): Api
     {
-        $key    = config('services.razorpay.key');
+        $key = config('services.razorpay.key');
         $secret = config('services.razorpay.secret');
 
         if (empty($key) || empty($secret)) {

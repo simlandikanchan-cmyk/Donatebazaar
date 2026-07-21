@@ -18,16 +18,16 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('celebrity_id')
-                  ->constrained('celebrities')
-                  ->cascadeOnDelete();
+                ->constrained('celebrities')
+                ->cascadeOnDelete();
 
             $table->foreignId('campaign_id')
-                  ->constrained('campaigns')
-                  ->cascadeOnDelete();
+                ->constrained('campaigns')
+                ->cascadeOnDelete();
 
             // Role of the celebrity in this campaign
             $table->enum('role', ['endorser', 'ambassador', 'organizer', 'donor'])
-                  ->default('endorser');
+                ->default('endorser');
 
             $table->text('message')->nullable();   // Optional personal message
             $table->boolean('is_active')->default(true);

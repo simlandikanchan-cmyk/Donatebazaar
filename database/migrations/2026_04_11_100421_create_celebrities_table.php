@@ -39,9 +39,9 @@ return new class extends Migration
 
             // Linked User Account (nullable — celebrity may not have a login)
             $table->foreignId('user_id')
-                  ->nullable()
-                  ->constrained('users')
-                  ->nullOnDelete();
+                ->nullable()
+                ->constrained('users')
+                ->nullOnDelete();
 
             $table->timestamps();
             $table->softDeletes();

@@ -13,14 +13,14 @@ class CategoryProductController extends Controller
 {
     public function index(Request $request)
     {
-        $search  = $request->input('search');
-        $catId   = $request->input('category');
-        $status  = $request->input('status', 'all');
-        $sort    = $request->input('sort', 'created_at');
-        $dir     = $request->input('direction', 'desc');
+        $search = $request->input('search');
+        $catId = $request->input('category');
+        $status = $request->input('status', 'all');
+        $sort = $request->input('sort', 'created_at');
+        $dir = $request->input('direction', 'desc');
 
         $allowedSorts = ['name', 'price', 'stock', 'created_at', 'product_type'];
-        if (!in_array($sort, $allowedSorts)) {
+        if (! in_array($sort, $allowedSorts)) {
             $sort = 'created_at';
         }
         $dir = $dir === 'asc' ? 'asc' : 'desc';
@@ -30,7 +30,7 @@ class CategoryProductController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
+                    ->orWhere('description', 'like', "%{$search}%");
             });
         }
 
@@ -65,12 +65,12 @@ class CategoryProductController extends Controller
     {
         $request->validate([
             'category_id' => 'required|exists:categories,id',
-            'name'        => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'price'       => 'required|numeric|min:1',
-            'stock'       => 'required|integer|min:0',
+            'price' => 'required|numeric|min:1',
+            'stock' => 'required|integer|min:0',
             'product_type' => 'required',
-            'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         $imagePath = null;
@@ -80,14 +80,14 @@ class CategoryProductController extends Controller
         }
 
         CategoryProduct::create([
-            'category_id'  => $request->category_id,
-            'name'         => $request->name,
-            'description'  => $request->description,
-            'price'        => $request->price,
-            'stock'        => $request->stock,
+            'category_id' => $request->category_id,
+            'name' => $request->name,
+            'description' => $request->description,
+            'price' => $request->price,
+            'stock' => $request->stock,
             'product_type' => $request->product_type,
-            'image'        => $imagePath,
-            'is_active'    => $request->boolean('is_active'),
+            'image' => $imagePath,
+            'is_active' => $request->boolean('is_active'),
         ]);
 
         return redirect()
@@ -105,13 +105,13 @@ class CategoryProductController extends Controller
     public function update(Request $request, CategoryProduct $categoryProduct)
     {
         $request->validate([
-            'category_id'  => 'required|exists:categories,id',
-            'name'         => 'required|string|max:255',
-            'description'  => 'nullable|string',
-            'price'        => 'required|numeric|min:1',
-            'stock'        => 'required|integer|min:0',
+            'category_id' => 'required|exists:categories,id',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric|min:1',
+            'stock' => 'required|integer|min:0',
             'product_type' => 'required',
-            'image'        => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         $imagePath = $categoryProduct->image;
@@ -129,14 +129,14 @@ class CategoryProductController extends Controller
         }
 
         $categoryProduct->update([
-            'category_id'  => $request->category_id,
-            'name'         => $request->name,
-            'description'  => $request->description,
-            'price'        => $request->price,
-            'stock'        => $request->stock,
+            'category_id' => $request->category_id,
+            'name' => $request->name,
+            'description' => $request->description,
+            'price' => $request->price,
+            'stock' => $request->stock,
             'product_type' => $request->product_type,
-            'image'        => $imagePath,
-            'is_active'    => $request->boolean('is_active'),
+            'image' => $imagePath,
+            'is_active' => $request->boolean('is_active'),
         ]);
 
         return redirect()
@@ -158,8 +158,8 @@ class CategoryProductController extends Controller
     public function bulkToggle(Request $request)
     {
         $data = $request->validate([
-            'ids'     => ['required', 'array'],
-            'ids.*'   => ['integer', 'exists:category_products,id'],
+            'ids' => ['required', 'array'],
+            'ids.*' => ['integer', 'exists:category_products,id'],
             'is_active' => ['required', 'boolean'],
         ]);
 
@@ -175,7 +175,7 @@ class CategoryProductController extends Controller
     public function bulkDelete(Request $request)
     {
         $data = $request->validate([
-            'ids'   => ['required', 'array'],
+            'ids' => ['required', 'array'],
             'ids.*' => ['integer', 'exists:category_products,id'],
         ]);
 
@@ -196,7 +196,7 @@ class CategoryProductController extends Controller
     public function exportCsv(Request $request)
     {
         $search = $request->input('search');
-        $catId  = $request->input('category');
+        $catId = $request->input('category');
         $status = $request->input('status', 'all');
 
         $query = CategoryProduct::with('category');
@@ -204,7 +204,7 @@ class CategoryProductController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
+                    ->orWhere('description', 'like', "%{$search}%");
             });
         }
 
@@ -221,8 +221,8 @@ class CategoryProductController extends Controller
         $products = $query->latest()->get();
 
         $headers = [
-            'Content-Type'        => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="category-products-' . now()->format('Y-m-d') . '.csv"',
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="category-products-'.now()->format('Y-m-d').'.csv"',
         ];
 
         $callback = function () use ($products) {
@@ -230,7 +230,7 @@ class CategoryProductController extends Controller
 
             fputcsv($file, [
                 'ID', 'Name', 'Description', 'Category', 'Type',
-                'Price', 'Stock', 'Status', 'Image', 'Created At'
+                'Price', 'Stock', 'Status', 'Image', 'Created At',
             ]);
 
             foreach ($products as $p) {

@@ -2,14 +2,10 @@
 
 namespace App\Models;
 
-use App\Models\CampaignProduct;
-use App\Models\CampaignUpdate;
-
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Campaign extends Model
 {
@@ -19,11 +15,16 @@ class Campaign extends Model
     // SINGLE SOURCE OF TRUTH (STATE)
     // -------------------------------------------------------------------------
 
-    const STATE_PENDING   = 'pending';
-    const STATE_ACTIVE    = 'active';
-    const STATE_PAUSED    = 'paused';
-    const STATE_EXPIRED   = 'expired';
-    const STATE_REJECTED  = 'rejected';
+    const STATE_PENDING = 'pending';
+
+    const STATE_ACTIVE = 'active';
+
+    const STATE_PAUSED = 'paused';
+
+    const STATE_EXPIRED = 'expired';
+
+    const STATE_REJECTED = 'rejected';
+
     const STATE_COMPLETED = 'completed';
 
     // -------------------------------------------------------------------------
@@ -78,11 +79,10 @@ class Campaign extends Model
 
     ];
 
-
-     protected $casts = [
-        'start_date'      => 'date',
-        'end_date'        => 'date',
-        'paused_at'       => 'datetime',
+    protected $casts = [
+        'start_date' => 'date',
+        'end_date' => 'date',
+        'paused_at' => 'datetime',
         'kyc_reminded_at' => 'datetime',
     ];
 
@@ -164,20 +164,18 @@ class Campaign extends Model
             Celebrity::class,
             'celebrity_campaign'
         )
+            ->withPivot([
 
-        ->withPivot([
+                'role',
 
-            'role',
+                'message',
 
-            'message',
+                'is_active',
 
-            'is_active',
+                'endorsed_at',
 
-            'endorsed_at'
-
-        ])
-
-        ->withTimestamps();
+            ])
+            ->withTimestamps();
     }
 
     public function requiredLevel()
@@ -288,9 +286,15 @@ class Campaign extends Model
     }
 
     public function ownerKycApproved(): bool
-{
-    return $this->user?->kycVerification?->isApproved() ?? false;
-}
+    {
+        if (! $this->user_id) {
+            return false;
+        }
+
+        return KycVerification::where('user_id', $this->user_id)
+            ->where('status', KycVerification::STATUS_APPROVED)
+            ->exists();
+    }
 
     // -------------------------------------------------------------------------
     // BUSINESS LOGIC
@@ -300,8 +304,7 @@ class Campaign extends Model
     {
         $this->update([
 
-            'campaign_state' =>
-                self::STATE_ACTIVE,
+            'campaign_state' => self::STATE_ACTIVE,
 
         ]);
 
@@ -315,11 +318,9 @@ class Campaign extends Model
     {
         $this->update([
 
-            'campaign_state' =>
-                self::STATE_REJECTED,
+            'campaign_state' => self::STATE_REJECTED,
 
-            'rejection_reason' =>
-                $reason,
+            'rejection_reason' => $reason,
 
         ]);
 
@@ -333,14 +334,11 @@ class Campaign extends Model
     {
         $this->update([
 
-            'campaign_state' =>
-                self::STATE_PAUSED,
+            'campaign_state' => self::STATE_PAUSED,
 
-            'pause_reason' =>
-                $reason,
+            'pause_reason' => $reason,
 
-            'paused_at' =>
-                now(),
+            'paused_at' => now(),
 
         ]);
 
@@ -368,14 +366,11 @@ class Campaign extends Model
 
         $this->update([
 
-            'campaign_state' =>
-                self::STATE_ACTIVE,
+            'campaign_state' => self::STATE_ACTIVE,
 
-            'pause_reason' =>
-                null,
+            'pause_reason' => null,
 
-            'paused_at' =>
-                null,
+            'paused_at' => null,
 
         ]);
 
@@ -393,17 +388,13 @@ class Campaign extends Model
     {
         $this->update([
 
-            'campaign_state' =>
-                self::STATE_PENDING,
+            'campaign_state' => self::STATE_PENDING,
 
-            'rejection_reason' =>
-                null,
+            'rejection_reason' => null,
 
-            'pause_reason' =>
-                null,
+            'pause_reason' => null,
 
-            'paused_at' =>
-                null,
+            'paused_at' => null,
 
         ]);
 
@@ -421,8 +412,7 @@ class Campaign extends Model
     {
         $this->update([
 
-            'campaign_state' =>
-                self::STATE_COMPLETED,
+            'campaign_state' => self::STATE_COMPLETED,
 
         ]);
 
@@ -440,8 +430,7 @@ class Campaign extends Model
     {
         $this->update([
 
-            'campaign_state' =>
-                self::STATE_EXPIRED,
+            'campaign_state' => self::STATE_EXPIRED,
 
         ]);
 
@@ -501,14 +490,11 @@ class Campaign extends Model
 
             $this->logs()->create([
 
-                'user_id' =>
-                    auth()->id(),
+                'user_id' => auth()->id(),
 
-                'action' =>
-                    $action,
+                'action' => $action,
 
-                'message' =>
-                    $message,
+                'message' => $message,
 
             ]);
 

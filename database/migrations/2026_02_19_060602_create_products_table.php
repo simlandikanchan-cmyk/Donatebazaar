@@ -12,20 +12,20 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('products', function (Blueprint $table) {
-    $table->id();
+            $table->id();
 
-    $table->foreignId('campaign_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('campaign_id')->constrained()->cascadeOnDelete();
 
-    $table->string('name');
-    $table->text('description')->nullable();
-    $table->decimal('price', 10, 2);
-    $table->integer('stock')->nullable();
-    $table->string('image')->nullable();
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->decimal('price', 10, 2);
+            $table->integer('stock')->nullable();
+            $table->string('image')->nullable();
 
-    $table->boolean('is_active')->default(true);
+            $table->boolean('is_active')->default(true);
 
-    $table->timestamps();
-});
+            $table->timestamps();
+        });
 
     }
 

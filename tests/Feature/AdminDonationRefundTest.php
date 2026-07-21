@@ -8,6 +8,8 @@ use App\Models\Donation;
 use App\Models\Refund;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use Razorpay\Api\Errors\Error as RazorpayError;
@@ -23,37 +25,47 @@ class AdminDonationRefundTest extends TestCase
     {
         parent::setUp();
 
+        // PaymentController/DonationController construct a Razorpay Api client
+        // which aborts unless credentials are configured.
+        Config::set('services.razorpay.key', 'rzp_test_key');
+        Config::set('services.razorpay.secret', 'rzp_test_secret');
+
         $this->admin = User::factory()->create();
         $this->admin->role = 'admin';
         $this->admin->save();
 
         $this->campaign = Campaign::create([
-            'title'       => 'Refund Test Campaign',
-            'slug'        => 'refund-test-campaign',
-            'user_id'     => $this->admin->id,
+            'title' => 'Refund Test Campaign',
+            'slug' => 'refund-test-campaign',
+            'user_id' => $this->admin->id,
             'description' => 'Campaign used by the admin refund feature test.',
             'goal_amount' => 10000.00,
         ]);
 
+        // Razorpay payment ids are "pay_" + 14+ alphanumerics (enforced by the
+        // refund controller's payment_id format guard).
+        $paymentId = 'pay_'.str_repeat('A', 15);
+
         $this->donation = Donation::create([
-            'campaign_id'     => $this->campaign->id,
-            'user_id'         => $this->admin->id,
-            'donor_name'      => 'Jane Donor',
-            'donor_email'     => 'jane@example.com',
-            'donation_type'   => 'money',
-            'total_amount'    => 500.00,
-            'platform_fee'    => 15.00,
-            'net_amount'      => 485.00,
-            'currency'        => 'INR',
-            'order_id'        => 'order_manual_1',
+            'campaign_id' => $this->campaign->id,
+            'user_id' => $this->admin->id,
+            'donor_name' => 'Jane Donor',
+            'donor_email' => 'jane@example.com',
+            'donation_type' => 'money',
+            'total_amount' => 500.00,
+            'platform_fee' => 15.00,
+            'net_amount' => 485.00,
+            'currency' => 'INR',
+            'order_id' => 'order_manual_1',
         ]);
 
         // payment_id / payment_status / is_refunded are guarded on the model,
-        // so set them via direct assignment (mirrors how PaymentController persists them).
-        $this->donation->payment_id = 'pay_manual_1';
-        $this->donation->payment_status = 'completed';
-        $this->donation->is_refunded = false;
-        $this->donation->save();
+        // so persist them via a raw query (mirrors how PaymentController stores them).
+        DB::table('donations')->where('id', $this->donation->id)->update([
+            'payment_id' => $paymentId,
+            'payment_status' => 'completed',
+            'is_refunded' => false,
+        ]);
     }
 
     protected function tearDown(): void
@@ -71,14 +83,14 @@ class AdminDonationRefundTest extends TestCase
      */
     private function mockRazorpay(?string $refundId, bool $shouldThrow = false): void
     {
-        $paymentMock = Mockery::mock('overload:' . RazorpayPayment::class);
+        $paymentMock = Mockery::mock('overload:'.RazorpayPayment::class);
         $paymentMock->shouldReceive('fetch')->andReturnSelf();
 
         if ($shouldThrow) {
             $paymentMock->shouldReceive('refund')
                 ->andThrow(new RazorpayError('gateway declined', 'BAD_REQUEST_ERROR', 400));
         } else {
-            $entity = new \stdClass();
+            $entity = new \stdClass;
             $entity->id = $refundId;
             $paymentMock->shouldReceive('refund')->andReturn($entity);
         }
@@ -101,7 +113,7 @@ class AdminDonationRefundTest extends TestCase
             ->get(route('admin.donations.show', $this->donation))
             ->assertOk()
             ->assertSee('Refund Test Campaign')
-            ->assertSee('pay_manual_1');
+            ->assertSee($this->donation->payment_id);
     }
 
     #[Test]
@@ -146,14 +158,18 @@ class AdminDonationRefundTest extends TestCase
     #[Test]
     public function refund_is_rejected_for_already_refunded_donation(): void
     {
-        $this->donation->payment_status = 'refunded';
-        $this->donation->is_refunded = true;
-        $this->donation->save();
+        // Mark the donation as already refunded via a raw update
+        // (payment_status / is_refunded are guarded on the model).
+        DB::table('donations')->where('id', $this->donation->id)->update([
+            'payment_status' => 'refunded',
+            'is_refunded' => true,
+            'refunded_at' => now(),
+        ]);
 
         $this->actingAs($this->admin)
             ->post(route('admin.donations.refund', $this->donation))
             ->assertRedirect(route('admin.donations.show', $this->donation))
-            ->assertSessionHas('error');
+            ->assertSessionHas('info');
 
         $this->donation->refresh();
         $this->assertTrue($this->donation->is_refunded);
@@ -201,15 +217,15 @@ class AdminDonationRefundTest extends TestCase
             'payload' => [
                 'refund' => [
                     'entity' => [
-                        'id'         => 'rfnd_shared_1',
+                        'id' => 'rfnd_shared_1',
                         'payment_id' => $this->donation->payment_id,
-                        'amount'     => (int) round($this->donation->total_amount * 100),
+                        'amount' => (int) round($this->donation->total_amount * 100),
                     ],
                 ],
             ],
         ];
 
-        $controller = new PaymentController();
+        $controller = new PaymentController;
         $method = new ReflectionMethod($controller, 'handleRefundProcessed');
         $method->setAccessible(true);
         $method->invoke($controller, $payload);

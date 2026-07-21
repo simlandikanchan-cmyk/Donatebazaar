@@ -13,9 +13,9 @@ class CampaignProduct extends Model
 
     protected $casts = [
         'approved_at' => 'datetime',
-        'price'       => 'decimal:2',
-        'created_at'  => 'datetime',
-        'updated_at'  => 'datetime',
+        'price' => 'decimal:2',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     protected $fillable = [
@@ -80,6 +80,9 @@ class CampaignProduct extends Model
             'approved_by'
         );
     }
+<<<<<<< HEAD
+}
+=======
 
     /*
     |--------------------------------------------------------------------------
@@ -100,3 +103,4 @@ class CampaignProduct extends Model
         return app(ProductReservationService::class)->availableQuantity($this);
     }
 }
+>>>>>>> origin/master

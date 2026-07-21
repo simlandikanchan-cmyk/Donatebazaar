@@ -12,14 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('organization_certifications', function (Blueprint $table) {
-    $table->id();
-    $table->foreignId('organization_id')->constrained()->cascadeOnDelete();
+            $table->id();
+            $table->foreignId('organization_id')->constrained()->cascadeOnDelete();
 
-    $table->boolean('has_80g')->default(false);
-    $table->boolean('has_fcra')->default(false);
+            $table->boolean('has_80g')->default(false);
+            $table->boolean('has_fcra')->default(false);
 
-    $table->timestamps();
-});
+            $table->timestamps();
+        });
     }
 
     /**

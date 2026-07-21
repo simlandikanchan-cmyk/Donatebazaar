@@ -124,6 +124,13 @@ tbody tr:hover{background:var(--surface2)}
   .stats-grid{grid-template-columns:1fr!important}
 }
 @media(max-width:380px){
+<<<<<<< HEAD
+  .filter-row{flex-direction:column;align-items:stretch;gap:8px;}
+  .ftab-select{margin-top:4px;}
+  .sinp{width:100%;}
+  .filter-right{width:100%;}
+  .sort-sel{width:100%;}
+=======
   .sec-hdr h2{font-size:clamp(16px,4.5vw,18px)}.sec-hdr p{font-size:11px}
   .stats-grid{gap:8px}.stat-card{padding:14px 10px}.stat-num{font-size:clamp(18px,5vw,20px)}.stat-lbl{font-size:9px}
   .filter-row{gap:6px}.sinp{font-size:11px;height:34px;padding:0 10px}.filter-right{gap:4px}.filter-right .btn{font-size:11px;height:32px;padding:0 10px;flex:1;justify-content:center}
@@ -133,6 +140,7 @@ tbody tr:hover{background:var(--surface2)}
   .act-btns{gap:4px}.act-btn{font-size:10px;padding:5px 8px;height:28px}
   .pagination-wrap{flex-direction:column;gap:8px;padding:12px 14px}
   .empty-state{padding:30px 16px}
+>>>>>>> origin/master
 }
 </style>
 @endpush
@@ -299,6 +307,14 @@ tbody tr:hover{background:var(--surface2)}
     <button class="ftab" data-filter="remote">Remote <span class="cnt">{{ $cntRemote }}</span></button>
     <button class="ftab" data-filter="featured">Featured <span class="cnt">{{ $cntFeatured }}</span></button>
   </div>
+  <select class="ftab-select" onchange="var btn=document.querySelector('.ftab[data-filter=&quot;'+this.value+'&quot;]');if(btn)btn.click();">
+    <option value="all">All ({{ $totalJobs }})</option>
+    <option value="active">Active ({{ $cntActive }})</option>
+    <option value="draft">Draft ({{ $cntDraft }})</option>
+    <option value="closed">Closed ({{ $cntClosed }})</option>
+    <option value="remote">Remote ({{ $cntRemote }})</option>
+    <option value="featured">Featured ({{ $cntFeatured }})</option>
+  </select>
   <div class="filter-right">
     <div class="swrap">
       <svg class="sico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>

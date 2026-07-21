@@ -2,6 +2,8 @@
 
 namespace App\Modules\Activity\Models;
 
+use App\Models\Campaign;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 class Activity extends Model
@@ -14,7 +16,7 @@ class Activity extends Model
         'description',
         'image',
         'meta',
-        'visibility'
+        'visibility',
     ];
 
     protected $casts = [
@@ -23,11 +25,11 @@ class Activity extends Model
 
     public function user()
     {
-        return $this->belongsTo(\App\Models\User::class);
+        return $this->belongsTo(User::class);
     }
 
     public function campaign()
     {
-        return $this->belongsTo(\App\Models\Campaign::class);
+        return $this->belongsTo(Campaign::class);
     }
 }

@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class BlogComment extends Model
 {
@@ -65,8 +65,8 @@ class BlogComment extends Model
     public function replies(): HasMany
     {
         return $this->hasMany(BlogComment::class, 'parent_id')
-                    ->with('user') // eager load user
-                    ->latest();
+            ->with('user') // eager load user
+            ->latest();
     }
 
     // ─────────────────────────────────────────

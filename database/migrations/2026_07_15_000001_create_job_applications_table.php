@@ -29,13 +29,13 @@ return new class extends Migration
             $table->string('cv_path')->nullable();
             $table->text('admin_notes')->nullable();
             $table->enum('status', ['pending', 'shortlisted', 'rejected'])
-                  ->default('pending');
+                ->default('pending');
             $table->timestamps();
 
             $table->foreign('job_id')
-                  ->references('id')
-                  ->on('job_posts')
-                  ->onDelete('cascade');
+                ->references('id')
+                ->on('job_posts')
+                ->onDelete('cascade');
         });
     }
 

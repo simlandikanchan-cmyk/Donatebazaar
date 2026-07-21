@@ -9,15 +9,17 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-      public function up() {
-    Schema::table('kyc_verifications', function (Blueprint $table) {
-        $table->string('document_url')->nullable()->change();
-    });
-}
+    public function up()
+    {
+        Schema::table('kyc_verifications', function (Blueprint $table) {
+            $table->string('document_url')->nullable()->change();
+        });
+    }
 
-public function down() {
-    Schema::table('kyc_verifications', function (Blueprint $table) {
-        $table->string('document_url')->nullable(false)->change();
-    });
-}
+    public function down()
+    {
+        Schema::table('kyc_verifications', function (Blueprint $table) {
+            $table->string('document_url')->nullable(false)->change();
+        });
+    }
 };

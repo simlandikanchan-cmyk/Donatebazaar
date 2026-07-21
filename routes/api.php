@@ -13,3 +13,5 @@ require __DIR__.'/api/donations.php';
 require __DIR__.'/api/events.php';
 require __DIR__.'/api/users.php';
 require __DIR__.'/api/notifications.php';
+require __DIR__.'/api/states.php';
+require __DIR__.'/api/cities.php';

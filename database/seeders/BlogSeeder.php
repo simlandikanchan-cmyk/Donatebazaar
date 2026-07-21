@@ -43,8 +43,8 @@ class BlogSeeder extends Seeder
             DB::table('tags')->updateOrInsert(
                 ['slug' => Str::slug($name)],
                 [
-                    'name'       => $name,
-                    'slug'       => Str::slug($name),
+                    'name' => $name,
+                    'slug' => Str::slug($name),
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]

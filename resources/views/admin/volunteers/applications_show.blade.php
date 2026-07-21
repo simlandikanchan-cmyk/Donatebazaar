@@ -121,9 +121,41 @@
       <div class="info-value">{{ $application->volunteer?->created_at?->format('d M Y') ?? '—' }}</div>
     </div>
     <div class="info-box">
-      <div class="info-label">Location</div>
-      <div class="info-value">{{ collect([$application->volunteer?->city, $application->volunteer?->state])->filter()->join(', ') ?: '—' }}</div>
+      <div class="info-label">Country</div>
+      <div class="info-value">{{ $application->volunteer?->country ?? 'India' }}</div>
     </div>
+    <div class="info-box">
+      <div class="info-label">State</div>
+      <div class="info-value">{{ $application->volunteer?->state ?? '—' }}</div>
+    </div>
+    <div class="info-box">
+      <div class="info-label">City</div>
+      <div class="info-value">{{ $application->volunteer?->city ?? '—' }}</div>
+    </div>
+    <div class="info-box">
+      <div class="info-label">Availability</div>
+      <div class="info-value">{{ $application->volunteer?->availability ? str_replace('_', ' ', ucfirst($application->volunteer->availability)) : '—' }}</div>
+    </div>
+    <div class="info-box">
+      <div class="info-label">Skills</div>
+      <div class="info-value">
+        @if($application->volunteer?->skills && is_array($application->volunteer->skills) && count($application->volunteer->skills))
+          <div style="display:flex;flex-wrap:wrap;gap:4px">
+            @foreach($application->volunteer->skills as $skill)
+              <span style="padding:2px 8px;border-radius:100px;font-size:10px;font-weight:500;background:var(--a-lt);color:var(--a);border:1px solid rgba(37,99,235,.15)">{{ $skill }}</span>
+            @endforeach
+          </div>
+        @else
+          <span class="empty">—</span>
+        @endif
+      </div>
+    </div>
+    @if($application->volunteer?->bio)
+    <div class="info-box" style="grid-column:span 3">
+      <div class="info-label">Bio</div>
+      <div class="info-value" style="font-weight:400;line-height:1.7">{{ $application->volunteer->bio }}</div>
+    </div>
+    @endif
     @if($application->message)
     <div class="info-box" style="grid-column:span 3">
       <div class="info-label">Applicant Message</div>

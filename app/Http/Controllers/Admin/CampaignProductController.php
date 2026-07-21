@@ -12,22 +12,23 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Response;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class CampaignProductController extends Controller
 {
     public function index(Request $request): View
     {
-        $status     = $request->input('status', 'pending');
-        $search     = $request->input('search');
-        $source     = $request->input('source');
+        $status = $request->input('status', 'pending');
+        $search = $request->input('search');
+        $source = $request->input('source');
         $categoryId = $request->input('category');
-        $from       = $request->input('from');
-        $to         = $request->input('to');
-        $sort       = $request->input('sort', 'created_at');
-        $dir        = $request->input('direction', 'desc');
+        $from = $request->input('from');
+        $to = $request->input('to');
+        $sort = $request->input('sort', 'created_at');
+        $dir = $request->input('direction', 'desc');
 
         $allowedSorts = ['name', 'price', 'quantity', 'created_at', 'approval_status'];
-        if (!in_array($sort, $allowedSorts)) {
+        if (! in_array($sort, $allowedSorts)) {
             $sort = 'created_at';
         }
         $dir = $dir === 'asc' ? 'asc' : 'desc';
@@ -47,9 +48,9 @@ class CampaignProductController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhereHas('campaign', fn($cq) => $cq->where('title', 'like', "%{$search}%"))
-                  ->orWhereHas('user', fn($uq) => $uq->where('name', 'like', "%{$search}%")
-                      ->orWhere('email', 'like', "%{$search}%"));
+                    ->orWhereHas('campaign', fn ($cq) => $cq->where('title', 'like', "%{$search}%"))
+                    ->orWhereHas('user', fn ($uq) => $uq->where('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%"));
             });
         }
 
@@ -58,7 +59,7 @@ class CampaignProductController extends Controller
         }
 
         if ($categoryId) {
-            $query->whereHas('categoryProduct.category', fn($cq) => $cq->where('id', $categoryId));
+            $query->whereHas('categoryProduct.category', fn ($cq) => $cq->where('id', $categoryId));
         }
 
         if ($from) {
@@ -71,10 +72,10 @@ class CampaignProductController extends Controller
 
         $products = $query->orderBy($sort, $dir)->paginate(20);
 
-        $cntPending  = CampaignProduct::where('approval_status', 'pending')->count();
+        $cntPending = CampaignProduct::where('approval_status', 'pending')->count();
         $cntApproved = CampaignProduct::where('approval_status', 'approved')->count();
         $cntRejected = CampaignProduct::where('approval_status', 'rejected')->count();
-        $cntTotal    = CampaignProduct::count();
+        $cntTotal = CampaignProduct::count();
 
         $categories = Category::orderBy('name')->get();
 
@@ -93,9 +94,9 @@ class CampaignProductController extends Controller
 
         $product->update([
             'approval_status' => 'approved',
-            'approved_by'     => Auth::id(),
-            'approved_at'     => now(),
-            'is_active'       => true,
+            'approved_by' => Auth::id(),
+            'approved_at' => now(),
+            'is_active' => true,
         ]);
 
         $admin = Auth::user();
@@ -119,9 +120,9 @@ class CampaignProductController extends Controller
 
         $product->update([
             'approval_status' => 'rejected',
-            'approved_by'     => Auth::id(),
-            'approved_at'     => now(),
-            'is_active'       => false,
+            'approved_by' => Auth::id(),
+            'approved_at' => now(),
+            'is_active' => false,
         ]);
 
         $admin = Auth::user();
@@ -136,7 +137,7 @@ class CampaignProductController extends Controller
     public function bulkApprove(Request $request): RedirectResponse
     {
         $data = $request->validate([
-            'ids'   => ['required', 'array'],
+            'ids' => ['required', 'array'],
             'ids.*' => ['integer', 'exists:campaign_products,id'],
         ]);
 
@@ -148,9 +149,9 @@ class CampaignProductController extends Controller
             if ($product && $product->approval_status === 'pending') {
                 $product->update([
                     'approval_status' => 'approved',
-                    'approved_by'     => Auth::id(),
-                    'approved_at'     => now(),
-                    'is_active'       => true,
+                    'approved_by' => Auth::id(),
+                    'approved_at' => now(),
+                    'is_active' => true,
                 ]);
 
                 Mail::to($product->user)->queue(
@@ -167,8 +168,8 @@ class CampaignProductController extends Controller
     public function bulkReject(Request $request): RedirectResponse
     {
         $data = $request->validate([
-            'ids'    => ['required', 'array'],
-            'ids.*'  => ['integer', 'exists:campaign_products,id'],
+            'ids' => ['required', 'array'],
+            'ids.*' => ['integer', 'exists:campaign_products,id'],
             'reason' => ['required', 'string', 'max:500'],
         ]);
 
@@ -180,9 +181,9 @@ class CampaignProductController extends Controller
             if ($product && $product->approval_status === 'pending') {
                 $product->update([
                     'approval_status' => 'rejected',
-                    'approved_by'     => Auth::id(),
-                    'approved_at'     => now(),
-                    'is_active'       => false,
+                    'approved_by' => Auth::id(),
+                    'approved_at' => now(),
+                    'is_active' => false,
                 ]);
 
                 Mail::to($product->user)->queue(
@@ -204,11 +205,11 @@ class CampaignProductController extends Controller
         return back()->with('success', "Product \"{$name}\" deleted.");
     }
 
-    public function exportCsv(Request $request): \Symfony\Component\HttpFoundation\StreamedResponse
+    public function exportCsv(Request $request): StreamedResponse
     {
-        $status     = $request->input('status', 'all');
-        $search     = $request->input('search');
-        $source     = $request->input('source');
+        $status = $request->input('status', 'all');
+        $search = $request->input('search');
+        $source = $request->input('source');
         $categoryId = $request->input('category');
 
         $query = CampaignProduct::with([
@@ -226,9 +227,9 @@ class CampaignProductController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhereHas('campaign', fn($cq) => $cq->where('title', 'like', "%{$search}%"))
-                  ->orWhereHas('user', fn($uq) => $uq->where('name', 'like', "%{$search}%")
-                      ->orWhere('email', 'like', "%{$search}%"));
+                    ->orWhereHas('campaign', fn ($cq) => $cq->where('title', 'like', "%{$search}%"))
+                    ->orWhereHas('user', fn ($uq) => $uq->where('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%"));
             });
         }
 
@@ -237,14 +238,14 @@ class CampaignProductController extends Controller
         }
 
         if ($categoryId) {
-            $query->whereHas('categoryProduct.category', fn($cq) => $cq->where('id', $categoryId));
+            $query->whereHas('categoryProduct.category', fn ($cq) => $cq->where('id', $categoryId));
         }
 
         $products = $query->latest()->get();
 
         $headers = [
-            'Content-Type'        => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="campaign-products-' . now()->format('Y-m-d') . '.csv"',
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="campaign-products-'.now()->format('Y-m-d').'.csv"',
         ];
 
         $callback = function () use ($products) {
@@ -253,7 +254,7 @@ class CampaignProductController extends Controller
             fputcsv($file, [
                 'ID', 'Name', 'Description', 'Price', 'Quantity', 'Remaining',
                 'Source', 'Status', 'Campaign', 'Owner', 'Category Product',
-                'Category', 'Approved By', 'Approved At', 'Created At'
+                'Category', 'Approved By', 'Approved At', 'Created At',
             ]);
 
             foreach ($products as $p) {
@@ -267,7 +268,7 @@ class CampaignProductController extends Controller
                     $p->source,
                     $p->approval_status,
                     $p->campaign?->title,
-                    $p->user?->name . ' (' . $p->user?->email . ')',
+                    $p->user?->name.' ('.$p->user?->email.')',
                     $p->categoryProduct?->name,
                     $p->categoryProduct?->category?->name,
                     $p->approver?->name,

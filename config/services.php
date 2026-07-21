@@ -35,22 +35,20 @@ return [
         ],
     ],
 
-
     'razorpay' => [
-    'key' => env('RAZORPAY_KEY'),
-    'secret' => env('RAZORPAY_SECRET'),
+        'key' => env('RAZORPAY_KEY'),
+        'secret' => env('RAZORPAY_SECRET'),
 
-],
+    ],
 
-'google' => [
-    'client_id'     => env('GOOGLE_CLIENT_ID'),
-    'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-    'redirect'      => env('GOOGLE_REDIRECT_URI'),
-],
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URI'),
+    ],
 
-
-'anthropic' => [
-    'key' => env('ANTHROPIC_API_KEY'),
-],
+    'anthropic' => [
+        'key' => env('ANTHROPIC_API_KEY'),
+    ],
 
 ];

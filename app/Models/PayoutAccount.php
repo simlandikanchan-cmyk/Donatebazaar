@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class PayoutAccount extends Model
 {
@@ -17,10 +17,13 @@ class PayoutAccount extends Model
         'ifsc_code',
         'upi_id',
         'is_verified',
+        'verified_by',
+        'verified_at',
     ];
 
     protected $casts = [
         'is_verified' => 'boolean',
+        'verified_at' => 'datetime',
     ];
 
     /**
@@ -32,11 +35,19 @@ class PayoutAccount extends Model
     }
 
     /**
+     * Admin user who verified this account.
+     */
+    public function verifiedBy()
+    {
+        return $this->belongsTo(User::class, 'verified_by');
+    }
+
+    /**
      * Masked account number
      */
     public function getMaskedAccountNumberAttribute()
     {
-        return 'XXXXXX' . substr($this->account_number, -4);
+        return 'XXXXXX'.substr($this->account_number, -4);
     }
 
     /**

@@ -12,10 +12,18 @@ use App\Models\Donation;
 use App\Models\DonationItem;
 use App\Models\ProductReservation;
 use App\Models\Refund;
+<<<<<<< HEAD
+use App\Models\User;
+use App\Models\WalletTransaction;
+use App\Services\CouponService;
+use App\Services\WalletService;
+=======
 use App\Exceptions\InsufficientStockException;
 use App\Services\CouponService;
 use App\Services\ProductReservationService;
+>>>>>>> origin/master
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -33,10 +41,14 @@ use Razorpay\Api\Errors\SignatureVerificationError;
 
 class PaymentController extends Controller
 {
-    private const MIN_AMOUNT        = 1;
-    private const MAX_AMOUNT        = 500000;
-    private const LOCK_TTL          = 60;
-    private const RATE_LIMIT_HITS   = 10;
+    private const MIN_AMOUNT = 1;
+
+    private const MAX_AMOUNT = 500000;
+
+    private const LOCK_TTL = 60;
+
+    private const RATE_LIMIT_HITS = 10;
+
     private const RATE_LIMIT_WINDOW = 60;
 
     /*
@@ -52,11 +64,11 @@ class PaymentController extends Controller
     private function calculateFees(float $amount): array
     {
         $platformFee = round($amount * self::PLATFORM_FEE_PERCENT / 100, 2);
-        $netAmount   = round($amount - $platformFee, 2);
+        $netAmount = round($amount - $platformFee, 2);
 
         return [
             'platform_fee' => $platformFee,
-            'net_amount'   => $netAmount,
+            'net_amount' => $netAmount,
         ];
     }
 
@@ -68,7 +80,7 @@ class PaymentController extends Controller
 
     private function getRazorpayApi(): Api
     {
-        $key    = config('services.razorpay.key');
+        $key = config('services.razorpay.key');
         $secret = config('services.razorpay.secret');
 
         if (empty($key) || empty($secret)) {
@@ -94,7 +106,7 @@ class PaymentController extends Controller
         return redirect()
             ->route('campaign.public', [
                 'category' => $campaign->category->slug,
-                'slug'     => $campaign->slug,
+                'slug' => $campaign->slug,
             ])
             ->with('error', $error);
     }
@@ -114,7 +126,7 @@ class PaymentController extends Controller
         return redirect()
             ->route('campaign.public', [
                 'category' => $campaign->category->slug,
-                'slug'     => $campaign->slug,
+                'slug' => $campaign->slug,
             ])
             ->with('success', $message);
     }
@@ -140,21 +152,20 @@ class PaymentController extends Controller
     //     return $state;
     // }
 
-
     private function resolveState(Campaign $campaign): string
-{
-    $state = $campaign->campaign_state;
+    {
+        $state = $campaign->campaign_state;
 
-    if (
-        $state === 'active' &&
-        $campaign->end_date &&
-        Carbon::parse($campaign->end_date)->endOfDay()->isPast()
-    ) {
-        return 'expired';
+        if (
+            $state === 'active' &&
+            $campaign->end_date &&
+            Carbon::parse($campaign->end_date)->endOfDay()->isPast()
+        ) {
+            return 'expired';
+        }
+
+        return $state;
     }
-
-    return $state;
-}
 
     /*
     |--------------------------------------------------------------------------
@@ -194,14 +205,14 @@ class PaymentController extends Controller
 
             Log::info('Donation receipt email sent', [
                 'donation_id' => $donation->id,
-                'email'       => $donation->donor_email,
+                'email' => $donation->donor_email,
             ]);
         } catch (\Throwable $e) {
             // Never let email failure break the payment flow
             Log::error('Donation receipt email failed', [
                 'donation_id' => $donation->id,
-                'email'       => $donation->donor_email,
-                'error'       => $e->getMessage(),
+                'email' => $donation->donor_email,
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -222,7 +233,7 @@ class PaymentController extends Controller
 
         Log::info('Product stock decremented after payment', [
             'donation_id' => $donation->id,
-            'items'       => $items->count(),
+            'items' => $items->count(),
         ]);
     }
 
@@ -284,18 +295,38 @@ class PaymentController extends Controller
         }
 
         CouponRedemption::create([
-            'coupon_id'       => $coupon->id,
-            'user_id'         => $donation->user_id,
-            'donation_id'     => $donation->id,
+            'coupon_id' => $coupon->id,
+            'user_id' => $donation->user_id,
+            'donation_id' => $donation->id,
             'discount_amount' => $donation->discount_amount,
-            'created_at'      => now(),
+            'created_at' => now(),
         ]);
 
         Log::info('Coupon redeemed', [
-            'coupon_id'   => $coupon->id,
+            'coupon_id' => $coupon->id,
             'donation_id' => $donation->id,
-            'discount'    => $donation->discount_amount,
+            'discount' => $donation->discount_amount,
         ]);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Helper — resolve the wallet owner for a donation (its campaign creator)
+    |--------------------------------------------------------------------------
+    */
+
+    private function resolveWalletOwner(Donation $donation): ?User
+    {
+        if ($donation->user_id) {
+            return User::find($donation->user_id);
+        }
+
+        $campaign = $donation->campaign;
+        if ($campaign && $campaign->user_id) {
+            return User::find($campaign->user_id);
+        }
+
+        return null;
     }
 
     /*
@@ -312,7 +343,7 @@ class PaymentController extends Controller
 
         return route('campaign.public', [
             'category' => $campaign->category->slug,
-            'slug'     => $campaign->slug,
+            'slug' => $campaign->slug,
         ]);
     }
 
@@ -333,10 +364,11 @@ class PaymentController extends Controller
         |----------------------------------------------------------------------
         */
 
-        $rateLimitKey = 'donate_redirect_' . (Auth::id() ?? $request->ip());
+        $rateLimitKey = 'donate_redirect_'.(Auth::id() ?? $request->ip());
 
         if (RateLimiter::tooManyAttempts($rateLimitKey, self::RATE_LIMIT_HITS)) {
             $seconds = RateLimiter::availableIn($rateLimitKey);
+
             return $this->backToCampaign(
                 $campaign,
                 "Too many attempts. Please wait {$seconds} seconds."
@@ -355,14 +387,14 @@ class PaymentController extends Controller
             'amount' => [
                 'required',
                 'numeric',
-                'min:' . self::MIN_AMOUNT,
-                'max:' . self::MAX_AMOUNT,
+                'min:'.self::MIN_AMOUNT,
+                'max:'.self::MAX_AMOUNT,
             ],
         ], [
             'amount.required' => 'Please enter a donation amount.',
-            'amount.numeric'  => 'Amount must be a valid number.',
-            'amount.min'      => 'Minimum donation is ₹' . self::MIN_AMOUNT . '.',
-            'amount.max'      => 'Maximum donation is ₹' . number_format(self::MAX_AMOUNT) . '.',
+            'amount.numeric' => 'Amount must be a valid number.',
+            'amount.min' => 'Minimum donation is ₹'.self::MIN_AMOUNT.'.',
+            'amount.max' => 'Maximum donation is ₹'.number_format(self::MAX_AMOUNT).'.',
         ]);
 
         if ($validator->fails()) {
@@ -385,7 +417,7 @@ class PaymentController extends Controller
         */
 
         $enteredAmount = $amount;
-        $couponData    = null;
+        $couponData = null;
 
         $code = trim((string) $request->input('coupon_code', ''));
 
@@ -394,10 +426,10 @@ class PaymentController extends Controller
                 ->validate($code, Auth::user(), $campaign, $enteredAmount);
 
             if ($couponResult['valid']) {
-                $amount     = $couponResult['discounted_total'];
+                $amount = $couponResult['discounted_total'];
                 $couponData = [
-                    'id'       => $couponResult['coupon']->id,
-                    'code'     => $couponResult['coupon']->code,
+                    'id' => $couponResult['coupon']->id,
+                    'code' => $couponResult['coupon']->code,
                     'discount' => $couponResult['discount_amount'],
                     'original' => $enteredAmount,
                 ];
@@ -418,12 +450,12 @@ class PaymentController extends Controller
 
         if ($state !== 'active') {
             $messages = [
-                'expired'   => 'This campaign has ended and is no longer accepting donations.',
-                'paused'    => 'This campaign is currently paused.',
-                'rejected'  => 'This campaign is not available for donations.',
+                'expired' => 'This campaign has ended and is no longer accepting donations.',
+                'paused' => 'This campaign is currently paused.',
+                'rejected' => 'This campaign is not available for donations.',
                 'completed' => 'This campaign has already reached its goal.',
-                'inactive'  => 'This campaign is not currently active.',
-                'pending'   => 'This campaign is pending approval.',
+                'inactive' => 'This campaign is not currently active.',
+                'pending' => 'This campaign is pending approval.',
             ];
 
             return $this->backToCampaign(
@@ -481,8 +513,17 @@ class PaymentController extends Controller
         */
 
         session([
-            'donation_amount'        => $amount,
+            'donation_amount' => $amount,
             'donation_original_amount' => $enteredAmount,
+<<<<<<< HEAD
+            'donation_discount' => $couponData ? $couponData['discount'] : 0,
+            'donation_coupon_code' => $couponData ? $couponData['code'] : null,
+            'donation_coupon_id' => $couponData ? $couponData['id'] : null,
+            'donation_campaign' => (string) $campaign->id,
+            'donation_session_at' => now()->timestamp,
+            'donation_cart' => [
+                'ids' => $request->input('product_ids', ''),
+=======
             'donation_discount'      => $couponData ? $couponData['discount'] : 0,
             'donation_coupon_code'   => $couponData ? $couponData['code'] : null,
             'donation_coupon_id'     => $couponData ? $couponData['id'] : null,
@@ -491,17 +532,18 @@ class PaymentController extends Controller
             'donation_reservation_ids' => $reservationIds,
             'donation_cart'          => [
                 'ids'  => $request->input('product_ids', ''),
+>>>>>>> origin/master
                 'qtys' => $request->input('product_qtys', ''),
                 'type' => $request->input('donation_type', 'money'),
             ],
         ]);
 
         Log::info('Donation session created', [
-            'campaign_id'   => $campaign->id,
-            'user_id'       => Auth::id(),
-            'amount'        => $amount,
+            'campaign_id' => $campaign->id,
+            'user_id' => Auth::id(),
+            'amount' => $amount,
             'donation_type' => $request->input('donation_type', 'money'),
-            'product_ids'   => $request->input('product_ids', ''),
+            'product_ids' => $request->input('product_ids', ''),
         ]);
 
         return redirect()->route('payment.page', $campaign->id);
@@ -517,15 +559,15 @@ class PaymentController extends Controller
         Campaign $campaign
     ): View|RedirectResponse {
 
-        $amount     = session('donation_amount');
+        $amount = session('donation_amount');
         $campaignId = session('donation_campaign');
-        $sessionAt  = session('donation_session_at');
+        $sessionAt = session('donation_session_at');
 
         Log::debug('Payment page session check', [
-            'amount'           => $amount,
+            'amount' => $amount,
             'session_campaign' => $campaignId,
-            'route_campaign'   => $campaign->id,
-            'user_id'          => Auth::id(),
+            'route_campaign' => $campaign->id,
+            'user_id' => Auth::id(),
         ]);
 
         /*
@@ -540,6 +582,7 @@ class PaymentController extends Controller
             (string) $campaignId !== (string) $campaign->id
         ) {
             $this->clearDonationSession();
+
             return $this->backToCampaign($campaign, 'Invalid donation session. Please try again.');
         }
 
@@ -554,6 +597,7 @@ class PaymentController extends Controller
             (now()->timestamp - (int) $sessionAt) > 900
         ) {
             $this->clearDonationSession();
+
             return $this->backToCampaign($campaign, 'Your session expired. Please try again.');
         }
 
@@ -567,6 +611,7 @@ class PaymentController extends Controller
 
         if ($state !== 'active') {
             $this->clearDonationSession();
+
             return $this->backToCampaign($campaign, 'This campaign is no longer active.');
         }
 
@@ -580,6 +625,7 @@ class PaymentController extends Controller
 
         if ($amount < self::MIN_AMOUNT || $amount > self::MAX_AMOUNT) {
             $this->clearDonationSession();
+
             return $this->backToCampaign($campaign, 'Invalid donation amount.');
         }
 
@@ -596,8 +642,8 @@ class PaymentController extends Controller
 
         $originalAmount = (float) session('donation_original_amount', $amount);
         $discountAmount = (float) session('donation_discount', 0);
-        $couponCode     = session('donation_coupon_code');
-        $couponId       = session('donation_coupon_id');
+        $couponCode = session('donation_coupon_code');
+        $couponId = session('donation_coupon_id');
 
         $coupon = null;
 
@@ -606,14 +652,14 @@ class PaymentController extends Controller
 
             if ($coupon && $coupon->isValidFor(Auth::user(), $campaign, $originalAmount)[0]) {
                 $discountAmount = $coupon->computeDiscount($originalAmount);
-                $amount         = round($originalAmount - $discountAmount, 2);
+                $amount = round($originalAmount - $discountAmount, 2);
             } else {
                 // Coupon invalid at payment time → fall back to full amount.
-                $amount         = $originalAmount;
+                $amount = $originalAmount;
                 $discountAmount = 0;
-                $couponCode     = null;
-                $couponId       = null;
-                $coupon         = null;
+                $couponCode = null;
+                $couponId = null;
+                $coupon = null;
             }
         }
 
@@ -638,15 +684,15 @@ class PaymentController extends Controller
             $api = $this->getRazorpayApi();
 
             $order = $api->order->create([
-                'receipt'  => 'rcpt_' . time() . '_' . Auth::id(),
-                'amount'   => (int) round($amount * 100), // full amount in paise
+                'receipt' => 'rcpt_'.time().'_'.Auth::id(),
+                'amount' => (int) round($amount * 100), // full amount in paise
                 'currency' => 'INR',
-                'notes'    => [
-                    'campaign_id'   => $campaign->id,
+                'notes' => [
+                    'campaign_id' => $campaign->id,
                     'campaign_name' => $campaign->title,
-                    'user_id'       => Auth::id(),
-                    'platform_fee'  => $fees['platform_fee'],
-                    'net_amount'    => $fees['net_amount'],
+                    'user_id' => Auth::id(),
+                    'platform_fee' => $fees['platform_fee'],
+                    'net_amount' => $fees['net_amount'],
                 ],
             ]);
 
@@ -654,12 +700,13 @@ class PaymentController extends Controller
 
             Log::error('Razorpay order creation failed', [
                 'campaign_id' => $campaign->id,
-                'amount'      => $amount,
-                'user_id'     => Auth::id(),
-                'error'       => $e->getMessage(),
+                'amount' => $amount,
+                'user_id' => Auth::id(),
+                'error' => $e->getMessage(),
             ]);
 
             $this->clearDonationSession();
+
             return $this->backToCampaign($campaign, 'Unable to initialize payment. Please try again.');
         }
 
@@ -669,8 +716,8 @@ class PaymentController extends Controller
         |----------------------------------------------------------------------
         */
 
-        $cart         = session('donation_cart', []);
-        $isProduct    = ($cart['type'] ?? '') === 'products' && !empty($cart['ids']);
+        $cart = session('donation_cart', []);
+        $isProduct = ($cart['type'] ?? '') === 'products' && ! empty($cart['ids']);
         $donationType = $isProduct ? 'product' : 'money';
 
         /*
@@ -680,22 +727,22 @@ class PaymentController extends Controller
         */
 
         $donation = Donation::make([
-            'campaign_id'     => $campaign->id,
-            'user_id'         => Auth::id(),
-            'donor_name'      => Auth::user()?->name ?? 'Guest Donor',
-            'donor_email'     => Auth::user()?->email,
-            'donation_type'   => $donationType,
-            'total_amount'    => $amount,
+            'campaign_id' => $campaign->id,
+            'user_id' => Auth::id(),
+            'donor_name' => Auth::user()?->name ?? 'Guest Donor',
+            'donor_email' => Auth::user()?->email,
+            'donation_type' => $donationType,
+            'total_amount' => $amount,
             'original_amount' => $originalAmount,
             'discount_amount' => $discountAmount,
-            'coupon_id'       => $couponId,
-            'coupon_code'     => $couponCode,
-            'platform_fee'    => $fees['platform_fee'],
-            'net_amount'      => $fees['net_amount'],
-            'order_id'        => $order['id'],
+            'coupon_id' => $couponId,
+            'coupon_code' => $couponCode,
+            'platform_fee' => $fees['platform_fee'],
+            'net_amount' => $fees['net_amount'],
+            'order_id' => $order['id'],
             'payment_gateway' => 'razorpay',
-            'currency'        => 'INR',
-            'receipt_number'  => strtoupper(Str::random(12)),
+            'currency' => 'INR',
+            'receipt_number' => strtoupper(Str::random(12)),
         ]);
         $donation->payment_status = 'pending';
         $donation->save();
@@ -708,35 +755,36 @@ class PaymentController extends Controller
         */
 
         if ($isProduct) {
-            $ids  = array_values(array_filter(explode(',', $cart['ids'])));
+            $ids = array_values(array_filter(explode(',', $cart['ids'])));
             $qtys = array_values(array_filter(explode(',', $cart['qtys'])));
 
             foreach ($ids as $i => $productId) {
                 $productId = (int) trim($productId);
-                $qty       = (int) trim($qtys[$i] ?? 1);
+                $qty = (int) trim($qtys[$i] ?? 1);
 
                 $product = CampaignProduct::find($productId);
 
                 if (! $product) {
                     Log::warning('Product not found during donation_items creation', [
-                        'product_id'  => $productId,
+                        'product_id' => $productId,
                         'donation_id' => $donation->id,
                     ]);
+
                     continue;
                 }
 
                 DonationItem::create([
                     'donation_id' => $donation->id,
-                    'product_id'  => $productId,
-                    'quantity'    => $qty,
-                    'price'       => $product->price,
+                    'product_id' => $productId,
+                    'quantity' => $qty,
+                    'price' => $product->price,
                 ]);
             }
 
             Log::info('Product donation items saved', [
                 'donation_id' => $donation->id,
                 'product_ids' => $cart['ids'],
-                'qtys'        => $cart['qtys'],
+                'qtys' => $cart['qtys'],
             ]);
 
             // Link any product reservations created at redirectToPayment to this
@@ -758,13 +806,13 @@ class PaymentController extends Controller
         $this->clearDonationSession();
 
         Log::info('Payment order created', [
-            'donation_id'   => $donation->id,
-            'order_id'      => $order['id'],
-            'campaign_id'   => $campaign->id,
+            'donation_id' => $donation->id,
+            'order_id' => $order['id'],
+            'campaign_id' => $campaign->id,
             'donation_type' => $donationType,
-            'total_amount'  => $amount,
-            'platform_fee'  => $fees['platform_fee'],
-            'net_amount'    => $fees['net_amount'],
+            'total_amount' => $amount,
+            'platform_fee' => $fees['platform_fee'],
+            'net_amount' => $fees['net_amount'],
         ]);
 
         $campaign->load('category');
@@ -791,13 +839,13 @@ class PaymentController extends Controller
         }
 
         return view('payment.index', [
-            'campaign'     => $campaign,
-            'donation'     => $donation,
-            'amount'       => $amount,
+            'campaign' => $campaign,
+            'donation' => $donation,
+            'amount' => $amount,
             'platform_fee' => $fees['platform_fee'],
-            'net_amount'   => $fees['net_amount'],
-            'order_id'     => $order['id'],
-            'donation_id'  => $donation->id,
+            'net_amount' => $fees['net_amount'],
+            'order_id' => $order['id'],
+            'donation_id' => $donation->id,
             'razorpay_key' => config('services.razorpay.key'),
         ]);
     }
@@ -811,10 +859,10 @@ class PaymentController extends Controller
     public function verify(Request $request): JsonResponse
     {
         $request->validate([
-            'razorpay_order_id'   => 'required|string',
+            'razorpay_order_id' => 'required|string',
             'razorpay_payment_id' => 'required|string',
-            'razorpay_signature'  => 'required|string',
-            'donation_id'         => 'required|integer|exists:donations,id',
+            'razorpay_signature' => 'required|string',
+            'donation_id' => 'required|integer|exists:donations,id',
         ]);
 
         /*
@@ -823,7 +871,7 @@ class PaymentController extends Controller
         |----------------------------------------------------------------------
         */
 
-        $rateLimitKey = 'payment_verify_' . (Auth::id() ?? $request->ip());
+        $rateLimitKey = 'payment_verify_'.(Auth::id() ?? $request->ip());
 
         if (RateLimiter::tooManyAttempts($rateLimitKey, self::RATE_LIMIT_HITS)) {
             return response()->json([
@@ -840,8 +888,8 @@ class PaymentController extends Controller
         |----------------------------------------------------------------------
         */
 
-        $lockKey = 'payment_lock_' . $request->razorpay_payment_id;
-        $lock    = Cache::lock($lockKey, self::LOCK_TTL);
+        $lockKey = 'payment_lock_'.$request->razorpay_payment_id;
+        $lock = Cache::lock($lockKey, self::LOCK_TTL);
 
         if (! $lock->get()) {
             return response()->json([
@@ -861,9 +909,9 @@ class PaymentController extends Controller
             $api = $this->getRazorpayApi();
 
             $api->utility->verifyPaymentSignature([
-                'razorpay_order_id'   => $request->razorpay_order_id,
+                'razorpay_order_id' => $request->razorpay_order_id,
                 'razorpay_payment_id' => $request->razorpay_payment_id,
-                'razorpay_signature'  => $request->razorpay_signature,
+                'razorpay_signature' => $request->razorpay_signature,
             ]);
 
             /*
@@ -884,8 +932,8 @@ class PaymentController extends Controller
 
             if ($donation->payment_status === 'completed') {
                 return response()->json([
-                    'success'      => true,
-                    'message'      => 'Payment already completed.',
+                    'success' => true,
+                    'message' => 'Payment already completed.',
                     'redirect_url' => $this->campaignUrl($donation->campaign),
                 ]);
             }
@@ -910,10 +958,10 @@ class PaymentController extends Controller
                     return;
                 }
 
-                $lockedDonation->payment_id     = $request->razorpay_payment_id;
-                $lockedDonation->signature      = $request->razorpay_signature;
+                $lockedDonation->payment_id = $request->razorpay_payment_id;
+                $lockedDonation->signature = $request->razorpay_signature;
                 $lockedDonation->payment_status = 'completed';
-                $lockedDonation->paid_at        = now();
+                $lockedDonation->paid_at = now();
                 $lockedDonation->save();
 
                 // raised_amount is updated automatically by DB trigger.
@@ -924,6 +972,20 @@ class PaymentController extends Controller
                 $this->decrementProductStock($lockedDonation);
                 $this->consumeReservations($lockedDonation);
                 $this->redeemCoupon($lockedDonation);
+
+                // Credit the owner's wallet (held in reserve for the hold
+                // window). Idempotent against webhook retries.
+                $owner = $this->resolveWalletOwner($lockedDonation);
+                if ($owner) {
+                    app(WalletService::class)->credit(
+                        app(WalletService::class)->getOrCreateWallet($owner),
+                        (float) $lockedDonation->net_amount,
+                        WalletTransaction::SOURCE_DONATION,
+                        $lockedDonation->id,
+                        Donation::class,
+                        'Donation #'.$lockedDonation->id
+                    );
+                }
             });
 
             // Reload fresh donation with campaign for email
@@ -931,33 +993,33 @@ class PaymentController extends Controller
             $donation->load('campaign.category');
 
             Log::info('Payment completed', [
-                'donation_id'   => $donation->id,
-                'campaign_id'   => $donation->campaign_id,
+                'donation_id' => $donation->id,
+                'campaign_id' => $donation->campaign_id,
                 'donation_type' => $donation->donation_type,
-                'total_amount'  => $donation->total_amount,
-                'platform_fee'  => $donation->platform_fee,
-                'net_amount'    => $donation->net_amount,
-                'payment_id'    => $request->razorpay_payment_id,
-                'user_id'       => Auth::id(),
+                'total_amount' => $donation->total_amount,
+                'platform_fee' => $donation->platform_fee,
+                'net_amount' => $donation->net_amount,
+                'payment_id' => $request->razorpay_payment_id,
+                'user_id' => Auth::id(),
             ]);
 
             // Send receipt email — outside transaction, no DB lock held
             $this->sendReceiptEmail($donation);
 
             return response()->json([
-                'success'      => true,
-                'message'      => 'Payment successful. Thank you for your donation!',
+                'success' => true,
+                'message' => 'Payment successful. Thank you for your donation!',
                 'redirect_url' => $this->campaignUrl($donation->campaign),
-                'paid_at'      => $donation->paid_at?->toISOString(),
+                'paid_at' => $donation->paid_at?->toISOString(),
             ]);
 
         } catch (SignatureVerificationError $e) {
 
             Log::warning('Razorpay signature verification failed', [
-                'order_id'   => $request->razorpay_order_id,
+                'order_id' => $request->razorpay_order_id,
                 'payment_id' => $request->razorpay_payment_id,
-                'user_id'    => Auth::id(),
-                'ip'         => $request->ip(),
+                'user_id' => Auth::id(),
+                'ip' => $request->ip(),
             ]);
 
             DB::table('donations')
@@ -970,11 +1032,11 @@ class PaymentController extends Controller
                 'message' => 'Payment verification failed. Any deducted amount will be refunded in 5–7 days.',
             ], 400);
 
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
 
             Log::error('Donation not found during verification', [
                 'donation_id' => $request->donation_id,
-                'order_id'    => $request->razorpay_order_id,
+                'order_id' => $request->razorpay_order_id,
             ]);
 
             return response()->json([
@@ -985,11 +1047,11 @@ class PaymentController extends Controller
         } catch (\Throwable $e) {
 
             Log::error('Payment verification exception', [
-                'message'     => $e->getMessage(),
-                'order_id'    => $request->razorpay_order_id ?? null,
-                'payment_id'  => $request->razorpay_payment_id ?? null,
+                'message' => $e->getMessage(),
+                'order_id' => $request->razorpay_order_id ?? null,
+                'payment_id' => $request->razorpay_payment_id ?? null,
                 'donation_id' => $request->donation_id ?? null,
-                'user_id'     => Auth::id(),
+                'user_id' => Auth::id(),
             ]);
 
             return response()->json([
@@ -1010,9 +1072,9 @@ class PaymentController extends Controller
 
     public function webhook(Request $request): JsonResponse
     {
-        $secret    = config('services.razorpay.webhook_secret');
+        $secret = config('services.razorpay.webhook_secret');
         $signature = $request->header('X-Razorpay-Signature');
-        $payload   = $request->getContent();
+        $payload = $request->getContent();
 
         /*
         |----------------------------------------------------------------------
@@ -1031,6 +1093,7 @@ class PaymentController extends Controller
 
         if (! $secret) {
             Log::critical('RAZORPAY_WEBHOOK_SECRET is not set — all webhooks are being dropped');
+
             return response()->json(['status' => 'misconfigured'], 500);
         }
 
@@ -1038,6 +1101,7 @@ class PaymentController extends Controller
             Log::warning('Webhook received without X-Razorpay-Signature header', [
                 'ip' => $request->ip(),
             ]);
+
             return response()->json(['status' => 'invalid'], 400);
         }
 
@@ -1045,20 +1109,21 @@ class PaymentController extends Controller
 
         if (! hash_equals($expected, $signature)) {
             Log::warning('Webhook signature mismatch', ['ip' => $request->ip()]);
+
             return response()->json(['status' => 'invalid'], 400);
         }
 
-        $data  = json_decode($payload, true);
+        $data = json_decode($payload, true);
         $event = $data['event'] ?? null;
 
         Log::info('Webhook received', ['event' => $event]);
 
         match ($event) {
             'payment.captured' => $this->handlePaymentCaptured($data),
-            'payment.failed'   => $this->handlePaymentFailed($data),
+            'payment.failed' => $this->handlePaymentFailed($data),
             'refund.processed' => $this->handleRefundProcessed($data),
-            'refund.failed'    => $this->handleRefundFailed($data),
-            default            => null,
+            'refund.failed' => $this->handleRefundFailed($data),
+            default => null,
         };
 
         return response()->json(['status' => 'ok'], 200);
@@ -1072,14 +1137,18 @@ class PaymentController extends Controller
 
     private function handlePaymentCaptured(array $payload): void
     {
-        $paymentId = $payload['payload']['payment']['entity']['id']       ?? null;
-        $orderId   = $payload['payload']['payment']['entity']['order_id'] ?? null;
+        $paymentId = $payload['payload']['payment']['entity']['id'] ?? null;
+        $orderId = $payload['payload']['payment']['entity']['order_id'] ?? null;
 
-        if (! $paymentId || ! $orderId) return;
+        if (! $paymentId || ! $orderId) {
+            return;
+        }
 
-        $lock = Cache::lock('webhook_lock_' . $paymentId, self::LOCK_TTL);
+        $lock = Cache::lock('webhook_lock_'.$paymentId, self::LOCK_TTL);
 
-        if (! $lock->get()) return;
+        if (! $lock->get()) {
+            return;
+        }
 
         /*
         |----------------------------------------------------------------------
@@ -1103,11 +1172,13 @@ class PaymentController extends Controller
                     ->where('order_id', $orderId)
                     ->first();
 
-                if (! $donation || $donation->payment_status === 'completed') return;
+                if (! $donation || $donation->payment_status === 'completed') {
+                    return;
+                }
 
-                $donation->payment_id     = $paymentId;
+                $donation->payment_id = $paymentId;
                 $donation->payment_status = 'completed';
-                $donation->paid_at        = now();
+                $donation->paid_at = now();
                 $donation->save();
 
                 // raised_amount handled by DB trigger.
@@ -1119,12 +1190,26 @@ class PaymentController extends Controller
                 $this->consumeReservations($donation);
                 $this->redeemCoupon($donation);
 
+                // Credit the owner's wallet (held in reserve for the hold
+                // window). Idempotent against webhook retries.
+                $owner = $this->resolveWalletOwner($donation);
+                if ($owner) {
+                    app(WalletService::class)->credit(
+                        app(WalletService::class)->getOrCreateWallet($owner),
+                        (float) $donation->net_amount,
+                        WalletTransaction::SOURCE_DONATION,
+                        $donation->id,
+                        Donation::class,
+                        'Donation #'.$donation->id
+                    );
+                }
+
                 Log::info('Webhook: payment captured', [
-                    'donation_id'   => $donation->id,
+                    'donation_id' => $donation->id,
                     'donation_type' => $donation->donation_type,
-                    'payment_id'    => $paymentId,
-                    'platform_fee'  => $donation->platform_fee,
-                    'net_amount'    => $donation->net_amount,
+                    'payment_id' => $paymentId,
+                    'platform_fee' => $donation->platform_fee,
+                    'net_amount' => $donation->net_amount,
                 ]);
 
                 // Store for emailing after commit — NOT inside transaction
@@ -1146,7 +1231,9 @@ class PaymentController extends Controller
     {
         $orderId = $payload['payload']['payment']['entity']['order_id'] ?? null;
 
-        if (! $orderId) return;
+        if (! $orderId) {
+            return;
+        }
 
         DB::table('donations')
             ->where('order_id', $orderId)
@@ -1169,10 +1256,10 @@ class PaymentController extends Controller
 
     private function handleRefundProcessed(array $payload): void
     {
-        $refund      = $payload['payload']['refund']['entity'] ?? [];
-        $refundId    = $refund['id']        ?? null;
-        $paymentId   = $refund['payment_id'] ?? null;
-        $amountPaise = $refund['amount']    ?? null;
+        $refund = $payload['payload']['refund']['entity'] ?? [];
+        $refundId = $refund['id'] ?? null;
+        $paymentId = $refund['payment_id'] ?? null;
+        $amountPaise = $refund['amount'] ?? null;
 
         if (! $refundId || ! $paymentId || $amountPaise === null) {
             return;
@@ -1180,14 +1267,14 @@ class PaymentController extends Controller
 
         $amount = (float) $amountPaise / 100; // Razorpay amounts are in paise
 
-        $lock = Cache::lock('webhook_lock_' . $refundId, self::LOCK_TTL);
+        $lock = Cache::lock('webhook_lock_'.$refundId, self::LOCK_TTL);
         if (! $lock->get()) {
             return;
         }
 
         try {
             $refundRecord = null;
-            $donation     = null;
+            $donation = null;
 
             DB::transaction(function () use ($refundId, $paymentId, $amount, &$refundRecord, &$donation) {
                 // Idempotency: a Refund for this gateway refund id already exists.
@@ -1205,25 +1292,49 @@ class PaymentController extends Controller
                 }
 
                 $donation->payment_status = 'refunded';
-                $donation->is_refunded    = true;
-                $donation->refunded_at    = now();
+                $donation->is_refunded = true;
+                $donation->refunded_at = now();
                 $donation->save();
 
                 $refundRecord = Refund::create([
-                    'donation_id'         => $donation->id,
+                    'donation_id' => $donation->id,
                     'donation_payment_id' => null,
-                    'amount'              => $amount,
-                    'reason'              => null,
-                    'status'              => 'processed',
-                    'processed_at'        => now(),
-                    'gateway_refund_id'   => $refundId,
+                    'amount' => $amount,
+                    'reason' => null,
+                    'status' => 'processed',
+                    'processed_at' => now(),
+                    'gateway_refund_id' => $refundId,
                 ]);
+
+                // Debit the owner's wallet (reserved first while hold active).
+                // Inside the same lock/transaction as the refund — no second lock.
+                try {
+                    $owner = $this->resolveWalletOwner($donation);
+                    if ($owner) {
+                        $wallet = app(WalletService::class)
+                            ->getOrCreateWallet($owner);
+                        app(WalletService::class)->debit(
+                            $wallet,
+                            (float) $donation->net_amount,
+                            WalletTransaction::SOURCE_REFUND,
+                            $refundRecord->id,
+                            Refund::class,
+                            'Refund #'.$refundRecord->id
+                        );
+                    }
+                } catch (\Throwable $e) {
+                    Log::error('Wallet debit failed for refund', [
+                        'donation_id' => $donation->id,
+                        'refund_id' => $refundId,
+                        'message' => $e->getMessage(),
+                    ]);
+                }
 
                 Log::info('Webhook: refund processed', [
                     'donation_id' => $donation->id,
-                    'refund_id'   => $refundId,
-                    'payment_id'  => $paymentId,
-                    'amount'      => $amount,
+                    'refund_id' => $refundId,
+                    'payment_id' => $paymentId,
+                    'amount' => $amount,
                 ]);
             });
 
@@ -1237,15 +1348,15 @@ class PaymentController extends Controller
 
     private function handleRefundFailed(array $payload): void
     {
-        $refund    = $payload['payload']['refund']['entity'] ?? [];
-        $refundId  = $refund['id']        ?? null;
+        $refund = $payload['payload']['refund']['entity'] ?? [];
+        $refundId = $refund['id'] ?? null;
         $paymentId = $refund['payment_id'] ?? null;
 
         if (! $refundId || ! $paymentId) {
             return;
         }
 
-        $lock = Cache::lock('webhook_lock_' . $refundId, self::LOCK_TTL);
+        $lock = Cache::lock('webhook_lock_'.$refundId, self::LOCK_TTL);
         if (! $lock->get()) {
             return;
         }
@@ -1263,13 +1374,13 @@ class PaymentController extends Controller
                     $refundRecord->update(['status' => 'failed']);
                 } else {
                     Refund::create([
-                        'donation_id'         => $donation->id,
+                        'donation_id' => $donation->id,
                         'donation_payment_id' => null,
-                        'amount'              => (float) ($refund['amount'] ?? 0) / 100,
-                        'reason'              => 'Refund failed at gateway',
-                        'status'              => 'failed',
-                        'processed_at'        => null,
-                        'gateway_refund_id'   => $refundId,
+                        'amount' => (float) ($refund['amount'] ?? 0) / 100,
+                        'reason' => 'Refund failed at gateway',
+                        'status' => 'failed',
+                        'processed_at' => null,
+                        'gateway_refund_id' => $refundId,
                     ]);
                 }
 
@@ -1277,8 +1388,8 @@ class PaymentController extends Controller
 
                 Log::info('Webhook: refund failed', [
                     'donation_id' => $donation->id,
-                    'refund_id'   => $refundId,
-                    'payment_id'  => $paymentId,
+                    'refund_id' => $refundId,
+                    'payment_id' => $paymentId,
                 ]);
             });
         } finally {
@@ -1286,4 +1397,3 @@ class PaymentController extends Controller
         }
     }
 }
-

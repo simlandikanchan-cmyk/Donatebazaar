@@ -2,11 +2,11 @@
 
 namespace App\Services;
 
-use App\Models\VolunteerApplication;
 use App\Mail\VolunteerApplicationStatusChanged;
+use App\Models\VolunteerApplication;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class VolunteerApplicationService
 {

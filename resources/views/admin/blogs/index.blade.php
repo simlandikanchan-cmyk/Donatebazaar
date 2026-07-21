@@ -135,9 +135,19 @@ tbody tr:not([data-status="published"]) .js-feature{display:none}
   tbody td.actions{justify-content:flex-start;flex-wrap:wrap}
   .title-primary{max-width:none}
 }
+<<<<<<< HEAD
+@media(max-width:380px){
+  .sec-hdr{gap:8px;}
+  .sec-right{flex-direction:column;align-items:stretch;gap:6px;width:100%;}
+  .ftab-select{margin-top:4px;}
+  .sort-select,.sec-right .sort-select{width:100%;}
+  .search-input{width:100%;}
+}
+=======
 @media(max-width:640px){.stat-card{padding:14px 16px;gap:10px}.stat-num{font-size:1.4rem}}
 @media(max-width:480px){.stat-card{padding:12px 14px;gap:8px}.stat-num{font-size:1.2rem}.stat-name{font-size:9px}.sec-header{flex-direction:column;align-items:flex-start}.bulk-bar{flex-direction:column;align-items:stretch;gap:10px}.bulk-actions{justify-content:center}}
 @media(max-width:380px){.stat-card{padding:10px 12px}.stat-card .stat-icon{width:32px;height:32px;border-radius:8px}.stat-card .stat-icon svg{width:13px;height:13px}.bulk-left{text-align:center}}
+>>>>>>> origin/master
 </style>
 @endpush
 @section('content')
@@ -213,6 +223,12 @@ tbody tr:not([data-status="published"]) .js-feature{display:none}
       <button class="ftab {{ $activeStatus === 'published' ? 'on' : '' }}" data-status="published"><span class="fcnt" id="fcntPublished">{{ $cntPublished }}</span> Published</button>
       <button class="ftab {{ $activeStatus === 'rejected'  ? 'on' : '' }}" data-status="rejected"><span class="fcnt" id="fcntRejected">{{ $cntRejected }}</span> Rejected</button>
     </div>
+    <select class="ftab-select" onchange="var btn=document.querySelector('.ftab[data-status=&quot;'+this.value+'&quot;]');if(btn)btn.click();">
+      <option value="all" {{ $activeStatus === 'all' ? 'selected' : '' }}>All ({{ $cntTotal }})</option>
+      <option value="pending" {{ $activeStatus === 'pending' ? 'selected' : '' }}>Pending ({{ $cntPending }})</option>
+      <option value="published" {{ $activeStatus === 'published' ? 'selected' : '' }}>Published ({{ $cntPublished }})</option>
+      <option value="rejected" {{ $activeStatus === 'rejected' ? 'selected' : '' }}>Rejected ({{ $cntRejected }})</option>
+    </select>
   </div>
 </div>
 

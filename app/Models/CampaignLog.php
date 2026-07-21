@@ -10,7 +10,7 @@ class CampaignLog extends Model
         'campaign_id',
         'user_id',
         'action',
-        'message'
+        'message',
     ];
 
     public function campaign()

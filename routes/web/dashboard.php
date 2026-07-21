@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\WalletController;
 use App\Models\Campaign;
 use App\Models\Donation;
-use Illuminate\Support\Facades\Route;
-
 use App\Models\FundraiserLevel;
+use App\Models\RecurringDonation;
+use App\Services\WalletService;
+use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'account.active'])->group(function () {
     Route::get('/user/dashboard', function () {
@@ -23,7 +25,7 @@ Route::middleware(['auth', 'account.active'])->group(function () {
             ->orderBy('month')
             ->pluck('total', 'month');
 
-        $recurringDonations = \App\Models\RecurringDonation::where('user_id', $user->id)
+        $recurringDonations = RecurringDonation::where('user_id', $user->id)
             ->with('campaign:id,title')
             ->latest()
             ->take(10)
@@ -50,10 +52,12 @@ Route::middleware(['auth', 'account.active'])->group(function () {
         $memberSince = $user->created_at;
         $daysActive = $memberSince ? now()->diffInDays($memberSince) : 0;
 
+        $wallet = (new WalletService)->getOrCreateWallet($user);
+
         return view('dashboard', compact(
             'campaigns', 'monthlyData', 'recurringDonations', 'recurringCount',
             'kyc', 'recentDonations', 'totalDonationsCount', 'level', 'levelName',
-            'memberSince', 'daysActive', 'user'
+            'memberSince', 'daysActive', 'user', 'wallet'
         ));
     })->name('dashboard');
 
@@ -100,4 +104,13 @@ Route::middleware(['auth', 'account.active'])->group(function () {
             'campaignsCompleted', 'totalRaised', 'completionPct'
         ));
     })->name('user.level');
+
+    Route::get('/user/dashboard/wallet', [WalletController::class, 'index'])
+        ->name('dashboard.wallet');
+
+    Route::post('/user/dashboard/wallet/request-payout', [WalletController::class, 'requestPayout'])
+        ->name('dashboard.wallet.request');
+
+    Route::post('/user/dashboard/wallet/payout-account', [WalletController::class, 'savePayoutAccount'])
+        ->name('dashboard.wallet.payout-account');
 });

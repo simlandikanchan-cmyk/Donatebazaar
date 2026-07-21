@@ -58,10 +58,32 @@
   .search-wrap{flex:1;min-width:180px;}
   .filter-bar-inner{flex-direction:column;align-items:stretch;}
 }
+<<<<<<< HEAD
+
+@media(max-width:380px){
+  .toolbar-left{gap:4px;}
+  .search-wrap{min-width:0;width:100%;}
+  .select-wrap{width:100%;}
+  .filter-select{width:100%;}
+  .date-input{flex:1;min-width:0;}
+  .filter-sep{display:none;}
+  .toolbar-right{width:100%;}
+  .export-btn{width:100%;justify-content:center;}
+  .p-table{font-size:11px;}
+  .p-table th,.p-table td{padding:8px 8px;}
+  .stats-grid{gap:6px;}
+  .stat{padding:10px 12px;gap:8px;}
+  .stat-icon{width:30px;height:30px;border-radius:8px;}
+  .stat-icon svg{width:13px;height:13px;}
+  .stat-val{font-size:1rem;}
+  .cp-bulkbar{padding:10px 14px;flex-direction:column;gap:8px;}
+}
+=======
 @media(max-width:700px){.toolbar{flex-direction:column;align-items:stretch}.toolbar-left{flex-wrap:wrap}.select-wrap{flex:1;min-width:0}.filter-select{width:100%}.date-input{width:100%}.filter-sep{text-align:center}.toolbar-right{width:100%}.toolbar-right .export-btn{flex:1;justify-content:center}}
 @media(max-width:640px){.card-head{flex-direction:column;align-items:flex-start;gap:8px}.cp-bulkbar{flex-direction:column;align-items:stretch;gap:10px}.cp-bulk-acts{justify-content:center}}
 @media(max-width:540px){.stats-grid{grid-template-columns:1fr 1fr;gap:10px}.stat{padding:12px 14px}.stat-icon{width:32px;height:32px;border-radius:8px}.stat-icon svg{width:13px;height:13px}.stat-val{font-size:15px}}
 @media(max-width:480px){.stats-grid{grid-template-columns:1fr}}
+>>>>>>> origin/master
 </style>
 @endpush
 
@@ -124,6 +146,12 @@
         <a href="{{ route('admin.campaign-products.index', array_merge(request()->except(['status', 'page']), ['status' => 'rejected'])) }}"
            class="ftab {{ $status === 'rejected' ? 'on' : '' }}">Rejected <span class="cnt">{{ $cntRejected }}</span></a>
       </div>
+      <select class="ftab-select" onchange="window.location.href=this.value">
+        <option value="{{ route('admin.campaign-products.index', array_merge(request()->except(['status', 'page']), ['status' => 'all'])) }}" {{ $status === 'all' ? 'selected' : '' }}>All ({{ $cntTotal }})</option>
+        <option value="{{ route('admin.campaign-products.index', array_merge(request()->except(['status', 'page']), ['status' => 'pending'])) }}" {{ $status === 'pending' ? 'selected' : '' }}>Pending ({{ $cntPending }})</option>
+        <option value="{{ route('admin.campaign-products.index', array_merge(request()->except(['status', 'page']), ['status' => 'approved'])) }}" {{ $status === 'approved' ? 'selected' : '' }}>Approved ({{ $cntApproved }})</option>
+        <option value="{{ route('admin.campaign-products.index', array_merge(request()->except(['status', 'page']), ['status' => 'rejected'])) }}" {{ $status === 'rejected' ? 'selected' : '' }}>Rejected ({{ $cntRejected }})</option>
+      </select>
     </div>
   </div>
 

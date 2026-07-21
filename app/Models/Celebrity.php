@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Celebrity extends Model
 {
@@ -33,10 +33,10 @@ class Celebrity extends Model
     ];
 
     protected $casts = [
-        'is_verified'    => 'boolean',
-        'is_featured'    => 'boolean',
-        'date_of_birth'  => 'date',
-        'followers_count'=> 'integer',
+        'is_verified' => 'boolean',
+        'is_featured' => 'boolean',
+        'date_of_birth' => 'date',
+        'followers_count' => 'integer',
     ];
 
     // ─── Relationships ───────────────────────────────────────────────────────────
@@ -56,8 +56,8 @@ class Celebrity extends Model
     public function campaigns(): BelongsToMany
     {
         return $this->belongsToMany(Campaign::class, 'celebrity_campaign')
-                    ->withPivot(['role', 'message', 'is_active', 'endorsed_at'])
-                    ->withTimestamps();
+            ->withPivot(['role', 'message', 'is_active', 'endorsed_at'])
+            ->withTimestamps();
     }
 
     /**

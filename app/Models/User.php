@@ -2,42 +2,36 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-use App\Models\KycVerification;
-use App\Models\Campaign;
-use App\Models\Volunteer;
-use App\Models\Donation;
-use App\Models\UserFundraiserLevel;
-use App\Models\FundraiserLevel;
-use App\Models\EventRegistration;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
-
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory, Notifiable;
+    use HasFactory, \Illuminate\Auth\MustVerifyEmail, Notifiable;
 
     // -------------------------------------------------------------------------
     // Fillable / Hidden / Casts
     // -------------------------------------------------------------------------
 
     protected $fillable = [
-    'google_id',
-    'name',
-    'email',
-    'password',
-    'phone',
-    'avatar',
-    'cover_image',
-    'bio',
-    'otp_hash',
-    'otp_expires_at',
-    'otp_attempts',
-    'phone_verified_at',
-    'last_login_at',
-];
+        'google_id',
+        'name',
+        'email',
+        'password',
+        'phone',
+        'avatar',
+        'cover_image',
+        'bio',
+        'otp_hash',
+        'otp_expires_at',
+        'otp_attempts',
+        'phone_verified_at',
+        'last_login_at',
+    ];
 
     protected $hidden = [
         'password',
@@ -45,15 +39,15 @@ class User extends Authenticatable
     ];
 
     protected function casts(): array
-{
-    return [
-        'email_verified_at' => 'datetime',
-        'phone_verified_at' => 'datetime',
-        'otp_expires_at'    => 'datetime',
-        'last_login_at'     => 'datetime',
-        'password'          => 'hashed',
-    ];
-}
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'phone_verified_at' => 'datetime',
+            'otp_expires_at' => 'datetime',
+            'last_login_at' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
 
     // -------------------------------------------------------------------------
     // Relationships — Core
@@ -124,7 +118,9 @@ class User extends Authenticatable
 
     public function hasApprovedKyc(): bool
     {
-        return optional($this->kycVerification)->status === 'approved';
+        return KycVerification::where('user_id', $this->id)
+            ->where('status', KycVerification::STATUS_APPROVED)
+            ->exists();
     }
 
     // -------------------------------------------------------------------------
@@ -143,7 +139,7 @@ class User extends Authenticatable
     /**
      * The actual FundraiserLevel model for this user.
      */
-    public function assignedLevel(): \Illuminate\Database\Eloquent\Relations\HasOneThrough
+    public function assignedLevel(): HasOneThrough
     {
         return $this->hasOneThrough(
             FundraiserLevel::class,
@@ -193,5 +189,13 @@ class User extends Authenticatable
     public function hasPendingLevelUpgrade(): bool
     {
         return $this->fundraiserLevel?->status === 'upgrade_pending';
+    }
+
+    /**
+     * Wallet ledger for this user (one wallet per owner).
+     */
+    public function wallet()
+    {
+        return $this->morphOne(Wallet::class, 'owner');
     }
 }

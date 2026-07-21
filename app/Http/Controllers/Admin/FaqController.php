@@ -14,10 +14,10 @@ class FaqController extends Controller
     {
         $query = Faq::query()
             ->when($request->search, function ($q) use ($request) {
-                $s = '%' . $request->search . '%';
+                $s = '%'.$request->search.'%';
                 $q->where('question', 'like', $s)
-                  ->orWhere('answer', 'like', $s)
-                  ->orWhere('category', 'like', $s);
+                    ->orWhere('answer', 'like', $s)
+                    ->orWhere('category', 'like', $s);
             })
             ->when($request->category, function ($q) use ($request) {
                 $q->where('category', $request->category);
@@ -31,8 +31,8 @@ class FaqController extends Controller
         $categories = Faq::select('category')->distinct()->orderBy('category')->pluck('category');
 
         $stats = [
-            'total'    => Faq::count(),
-            'active'   => Faq::where('is_active', true)->count(),
+            'total' => Faq::count(),
+            'active' => Faq::where('is_active', true)->count(),
             'inactive' => Faq::where('is_active', false)->count(),
         ];
 
@@ -47,11 +47,11 @@ class FaqController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $data = $request->validate([
-            'category'   => 'required|string|max:120',
-            'question'   => 'required|string|max:500',
-            'answer'     => 'required|string',
+            'category' => 'required|string|max:120',
+            'question' => 'required|string|max:500',
+            'answer' => 'required|string',
             'sort_order' => 'nullable|integer|min:0',
-            'is_active'  => 'nullable|boolean',
+            'is_active' => 'nullable|boolean',
         ]);
 
         $data['is_active'] = $request->has('is_active');
@@ -70,11 +70,11 @@ class FaqController extends Controller
     public function update(Request $request, Faq $faq): RedirectResponse
     {
         $data = $request->validate([
-            'category'   => 'required|string|max:120',
-            'question'   => 'required|string|max:500',
-            'answer'     => 'required|string',
+            'category' => 'required|string|max:120',
+            'question' => 'required|string|max:500',
+            'answer' => 'required|string',
             'sort_order' => 'nullable|integer|min:0',
-            'is_active'  => 'nullable|boolean',
+            'is_active' => 'nullable|boolean',
         ]);
 
         $data['is_active'] = $request->has('is_active');

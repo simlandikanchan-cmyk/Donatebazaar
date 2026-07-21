@@ -7,6 +7,7 @@ use App\Models\Donation;
 use App\Models\GiftCard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Razorpay\Api\Api;
 
 class GiftCardController extends Controller
@@ -23,48 +24,48 @@ class GiftCardController extends Controller
     public function createOrder(Request $request)
     {
         $request->validate([
-            'amount'          => 'required|integer|min:100|max:500000',
-            'theme'           => 'required|in:purple,teal,coral,blue',
-            'sender_name'     => 'required|string|max:100',
-            'sender_email'    => 'required|email',
-            'recipient_name'  => 'required|string|max:100',
+            'amount' => 'required|integer|min:100|max:500000',
+            'theme' => 'required|in:purple,teal,coral,blue',
+            'sender_name' => 'required|string|max:100',
+            'sender_email' => 'required|email',
+            'recipient_name' => 'required|string|max:100',
             'recipient_email' => 'required|email',
-            'message'         => 'nullable|string|max:500',
-            'send_at'         => 'required|date|after_or_equal:today',
+            'message' => 'nullable|string|max:500',
+            'send_at' => 'required|date|after_or_equal:today',
         ]);
 
-        $key    = config('services.razorpay.key');
+        $key = config('services.razorpay.key');
         $secret = config('services.razorpay.secret');
-        $api    = new Api($key, $secret);
+        $api = new Api($key, $secret);
 
         $order = $api->order->create([
-            'receipt'  => 'gc_' . time() . '_' . rand(100, 999),
-            'amount'   => (int) $request->amount * 100,
+            'receipt' => 'gc_'.time().'_'.rand(100, 999),
+            'amount' => (int) $request->amount * 100,
             'currency' => 'INR',
-            'notes'    => ['type' => 'gift_card'],
+            'notes' => ['type' => 'gift_card'],
         ]);
 
         // Store pending gift card
         $giftCard = GiftCard::create([
-            'code'            => GiftCard::generateCode(),
-            'amount'          => $request->amount,
-            'theme'           => $request->theme,
-            'sender_name'     => $request->sender_name,
-            'sender_email'    => $request->sender_email,
-            'recipient_name'  => $request->recipient_name,
+            'code' => GiftCard::generateCode(),
+            'amount' => $request->amount,
+            'theme' => $request->theme,
+            'sender_name' => $request->sender_name,
+            'sender_email' => $request->sender_email,
+            'recipient_name' => $request->recipient_name,
             'recipient_email' => $request->recipient_email,
-            'message'         => $request->message,
-            'send_at'         => $request->send_at,
-            'order_id'        => $order['id'],
-            'status'          => 'pending',
-            'payment_status'  => 'pending',
+            'message' => $request->message,
+            'send_at' => $request->send_at,
+            'order_id' => $order['id'],
+            'status' => 'pending',
+            'payment_status' => 'pending',
         ]);
 
         return response()->json([
-            'order_id'       => $order['id'],
-            'gift_card_id'   => $giftCard->id,
-            'razorpay_key'   => $key,
-            'amount'         => (int) $request->amount * 100,
+            'order_id' => $order['id'],
+            'gift_card_id' => $giftCard->id,
+            'razorpay_key' => $key,
+            'amount' => (int) $request->amount * 100,
         ]);
     }
 
@@ -73,10 +74,10 @@ class GiftCardController extends Controller
     public function verify(Request $request)
     {
         $request->validate([
-            'razorpay_order_id'   => 'required|string',
+            'razorpay_order_id' => 'required|string',
             'razorpay_payment_id' => 'required|string',
-            'razorpay_signature'  => 'required|string',
-            'gift_card_id'        => 'required|integer|exists:gift_cards,id',
+            'razorpay_signature' => 'required|string',
+            'gift_card_id' => 'required|integer|exists:gift_cards,id',
         ]);
 
         $api = new Api(
@@ -86,9 +87,9 @@ class GiftCardController extends Controller
 
         try {
             $api->utility->verifyPaymentSignature([
-                'razorpay_order_id'   => $request->razorpay_order_id,
+                'razorpay_order_id' => $request->razorpay_order_id,
                 'razorpay_payment_id' => $request->razorpay_payment_id,
-                'razorpay_signature'  => $request->razorpay_signature,
+                'razorpay_signature' => $request->razorpay_signature,
             ]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Payment verification failed.'], 400);
@@ -100,34 +101,34 @@ class GiftCardController extends Controller
         if ($giftCard->payment_status === 'completed') {
             return response()->json([
                 'success' => true,
-                'code'    => $giftCard->code,
+                'code' => $giftCard->code,
                 'message' => 'Already processed.',
             ]);
         }
 
         $giftCard->update([
-            'payment_id'     => $request->razorpay_payment_id,
+            'payment_id' => $request->razorpay_payment_id,
             'payment_status' => 'completed',
-            'status'         => 'sent',
+            'status' => 'sent',
         ]);
 
         // Send email to recipient
         try {
             \Mail::send('emails.gift-card', ['giftCard' => $giftCard], function ($m) use ($giftCard) {
                 $m->to($giftCard->recipient_email, $giftCard->recipient_name)
-                  ->subject("You've received a DonateBazaar Gift Card from {$giftCard->sender_name}!");
+                    ->subject("You've received a DonateBazaar Gift Card from {$giftCard->sender_name}!");
             });
         } catch (\Throwable $e) {
             \Log::error('Failed to send gift card email', [
                 'gift_card_id' => $giftCard->id,
-                'code'         => $giftCard->code,
-                'message'      => $e->getMessage(),
+                'code' => $giftCard->code,
+                'message' => $e->getMessage(),
             ]);
         }
 
         return response()->json([
             'success' => true,
-            'code'    => $giftCard->code,
+            'code' => $giftCard->code,
             'message' => 'Gift card sent successfully!',
         ]);
     }
@@ -154,7 +155,7 @@ class GiftCardController extends Controller
             ->where('payment_status', 'completed')
             ->first();
 
-        if (!$giftCard) {
+        if (! $giftCard) {
             return response()->json(['valid' => false, 'message' => 'Invalid gift card code.']);
         }
 
@@ -167,9 +168,9 @@ class GiftCardController extends Controller
         }
 
         return response()->json([
-            'valid'                  => true,
-            'amount'                 => $giftCard->amount,
-            'code'                   => $giftCard->code,
+            'valid' => true,
+            'amount' => $giftCard->amount,
+            'code' => $giftCard->code,
             'recipient_email_masked' => $this->maskEmail($giftCard->recipient_email),
         ]);
     }
@@ -177,9 +178,9 @@ class GiftCardController extends Controller
     private function maskEmail(string $email): string
     {
         [$local, $domain] = explode('@', $email);
-        $maskedLocal = substr($local, 0, 1) . str_repeat('*', max(strlen($local) - 1, 1));
+        $maskedLocal = substr($local, 0, 1).str_repeat('*', max(strlen($local) - 1, 1));
         $domainParts = explode('.', $domain);
-        $maskedDomain = substr($domainParts[0], 0, 1) . str_repeat('*', max(strlen($domainParts[0]) - 1, 1));
+        $maskedDomain = substr($domainParts[0], 0, 1).str_repeat('*', max(strlen($domainParts[0]) - 1, 1));
         $tld = implode('.', array_slice($domainParts, 1));
 
         return "{$maskedLocal}@{$maskedDomain}.{$tld}";
@@ -190,9 +191,9 @@ class GiftCardController extends Controller
     public function redeem(Request $request)
     {
         $request->validate([
-            'code'        => 'required|string',
+            'code' => 'required|string',
             'campaign_id' => 'required|integer|exists:campaigns,id',
-            'donor_name'  => 'required|string|max:100',
+            'donor_name' => 'required|string|max:100',
             'donor_email' => 'required|email',
         ]);
 
@@ -217,27 +218,27 @@ class GiftCardController extends Controller
 
             // Mark redeemed
             $giftCard->update([
-                'status'               => 'redeemed',
-                'redeemed_by'          => Auth::id(),
+                'status' => 'redeemed',
+                'redeemed_by' => Auth::id(),
                 'redeemed_on_campaign' => $request->campaign_id,
-                'redeemed_at'          => now(),
+                'redeemed_at' => now(),
             ]);
 
             // Create donation record
-            $donation = new Donation();
-            $donation->campaign_id     = $request->campaign_id;
-            $donation->user_id         = Auth::id();
-            $donation->donor_name      = $request->donor_name;
-            $donation->donor_email     = $request->donor_email;
-            $donation->donation_type   = 'money';
-            $donation->total_amount    = $giftCard->amount;
+            $donation = new Donation;
+            $donation->campaign_id = $request->campaign_id;
+            $donation->user_id = Auth::id();
+            $donation->donor_name = $request->donor_name;
+            $donation->donor_email = $request->donor_email;
+            $donation->donation_type = 'money';
+            $donation->total_amount = $giftCard->amount;
             $donation->payment_gateway = 'gift_card';
-            $donation->payment_status  = 'completed';
-            $donation->payment_id      = $giftCard->code;
-            $donation->order_id        = $giftCard->order_id;
-            $donation->currency        = 'INR';
-            $donation->receipt_number  = strtoupper(\Illuminate\Support\Str::random(12));
-            $donation->paid_at         = now();
+            $donation->payment_status = 'completed';
+            $donation->payment_id = $giftCard->code;
+            $donation->order_id = $giftCard->order_id;
+            $donation->currency = 'INR';
+            $donation->receipt_number = strtoupper(Str::random(12));
+            $donation->paid_at = now();
             $donation->save();
 
             return redirect()->route('gift-cards.redeem.success', ['code' => $giftCard->code]);
@@ -249,6 +250,7 @@ class GiftCardController extends Controller
     public function redeemSuccess(string $code)
     {
         $giftCard = GiftCard::where('code', $code)->firstOrFail();
+
         return view('gift-cards.success', compact('giftCard'));
     }
 }

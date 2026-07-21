@@ -18,12 +18,13 @@ class LegalPageController extends Controller
         // Merge so every known slug appears even if not yet created.
         $rows = collect($all)->map(function ($title, $slug) use ($pages) {
             $existing = $pages->firstWhere('slug', $slug);
+
             return (object) [
-                'slug'        => $slug,
-                'title'       => $title,
-                'exists'      => (bool) $existing,
-                'updated_at'  => $existing?->updated_at,
-                'updated_by'  => $existing?->updatedBy?->name,
+                'slug' => $slug,
+                'title' => $title,
+                'exists' => (bool) $existing,
+                'updated_at' => $existing?->updated_at,
+                'updated_by' => $existing?->updatedBy?->name,
             ];
         });
 
@@ -44,28 +45,28 @@ class LegalPageController extends Controller
         abort_unless(array_key_exists($slug, LegalPage::slugs()), 404);
 
         $data = $request->validate([
-            'title'   => 'required|string|max:255',
+            'title' => 'required|string|max:255',
             'content' => 'required|string',
         ]);
 
         LegalPage::updateOrCreate(
             ['slug' => $slug],
             [
-                'title'      => $data['title'],
-                'content'    => $data['content'],
+                'title' => $data['title'],
+                'content' => $data['content'],
                 'updated_by' => auth()->id(),
             ]
         );
 
         $route = match ($slug) {
             'privacy' => 'privacy',
-            'terms'   => 'terms',
-            'refund'  => 'refund',
+            'terms' => 'terms',
+            'refund' => 'refund',
             'cookies' => 'cookies',
-            default   => 'privacy',
+            default => 'privacy',
         };
 
         return redirect()->route('admin.legal.index')
-            ->with('success', 'Legal page updated successfully. View it at /' . $slug . '.');
+            ->with('success', 'Legal page updated successfully. View it at /'.$slug.'.');
     }
 }

@@ -21,10 +21,10 @@ class FundraiserLevel extends Model
     ];
 
     protected $casts = [
-        'max_goal_amount'         => 'decimal:2',
-        'min_raised_percent'      => 'decimal:2',
+        'max_goal_amount' => 'decimal:2',
+        'min_raised_percent' => 'decimal:2',
         'requires_admin_approval' => 'boolean',
-        'is_default'              => 'boolean',
+        'is_default' => 'boolean',
     ];
 
     // ── Relationships ──────────────────────────────────────────

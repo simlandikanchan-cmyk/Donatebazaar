@@ -30,7 +30,7 @@ class BlogCreatedMail extends Mailable
                     $this->blog->author->name,
                 ),
             ],
-            subject: 'Your Blog Has Been Submitted — ' . config('app.name'),
+            subject: 'Your Blog Has Been Submitted — '.config('app.name'),
         );
     }
 

@@ -10,20 +10,20 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up()
-{
-    Schema::table('orders', function (Blueprint $table) {
-        $table->unsignedBigInteger('location_id')->nullable()->after('user_id');
+    {
+        Schema::table('orders', function (Blueprint $table) {
+            $table->unsignedBigInteger('location_id')->nullable()->after('user_id');
 
-        $table->foreign('location_id')->references('id')->on('locations')->nullOnDelete();
-        $table->index('location_id');
-    });
-}
+            $table->foreign('location_id')->references('id')->on('locations')->nullOnDelete();
+            $table->index('location_id');
+        });
+    }
 
-public function down()
-{
-    Schema::table('orders', function (Blueprint $table) {
-        $table->dropForeign(['location_id']);
-        $table->dropColumn('location_id');
-    });
-}
+    public function down()
+    {
+        Schema::table('orders', function (Blueprint $table) {
+            $table->dropForeign(['location_id']);
+            $table->dropColumn('location_id');
+        });
+    }
 };

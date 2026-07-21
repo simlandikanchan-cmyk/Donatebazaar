@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Faq;
-use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class FaqController extends Controller
 {
@@ -26,7 +26,7 @@ class FaqController extends Controller
         return view('faq.index', compact('faqs'));
     }
 
-    protected function defaults(): \Illuminate\Support\Collection
+    protected function defaults(): Collection
     {
         $data = [
             'Getting Started' => [
@@ -58,11 +58,11 @@ class FaqController extends Controller
         return collect($data)->map(function ($items, $category) {
             return collect($items)->map(function ($item, $i) use ($category) {
                 return new Faq([
-                    'category'   => $category,
-                    'question'   => $item['q'],
-                    'answer'     => $item['a'],
+                    'category' => $category,
+                    'question' => $item['q'],
+                    'answer' => $item['a'],
                     'sort_order' => $i,
-                    'is_active'  => true,
+                    'is_active' => true,
                 ]);
             });
         });

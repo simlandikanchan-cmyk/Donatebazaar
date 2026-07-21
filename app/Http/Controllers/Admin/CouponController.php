@@ -14,7 +14,7 @@ class CouponController extends Controller
     {
         $query = Coupon::with(['user', 'campaign'])
             ->when($request->search, function ($q) use ($request) {
-                $q->where('code', 'like', '%' . $request->search . '%');
+                $q->where('code', 'like', '%'.$request->search.'%');
             })
             ->when($request->status, function ($q) use ($request) {
                 if ($request->status === 'active') {
@@ -30,8 +30,8 @@ class CouponController extends Controller
         $coupons = $query->paginate(20)->withQueryString();
 
         $stats = [
-            'total'   => Coupon::count(),
-            'active'  => Coupon::where('is_active', true)->count(),
+            'total' => Coupon::count(),
+            'active' => Coupon::where('is_active', true)->count(),
             'expired' => Coupon::whereNotNull('expires_at')->where('expires_at', '<', now()->startOfDay())->count(),
         ];
 
@@ -40,7 +40,7 @@ class CouponController extends Controller
 
     public function create()
     {
-        $users     = User::orderBy('name')->get(['id', 'name', 'email']);
+        $users = User::orderBy('name')->get(['id', 'name', 'email']);
         $campaigns = Campaign::orderBy('title')->get(['id', 'title']);
 
         return view('admin.coupons.create', compact('users', 'campaigns'));
@@ -58,7 +58,7 @@ class CouponController extends Controller
 
     public function edit(Coupon $coupon)
     {
-        $users     = User::orderBy('name')->get(['id', 'name', 'email']);
+        $users = User::orderBy('name')->get(['id', 'name', 'email']);
         $campaigns = Campaign::orderBy('title')->get(['id', 'title']);
 
         return view('admin.coupons.edit', compact('coupon', 'users', 'campaigns'));
@@ -84,19 +84,19 @@ class CouponController extends Controller
 
     protected function validated(Request $request, ?Coupon $coupon = null): array
     {
-        $unique = 'unique:coupons,code' . ($coupon ? ',' . $coupon->id : '');
+        $unique = 'unique:coupons,code'.($coupon ? ','.$coupon->id : '');
 
         $data = $request->validate([
-            'code'            => ['required', 'string', 'max:50', $unique],
-            'user_id'         => 'nullable|exists:users,id',
-            'campaign_id'     => 'nullable|exists:campaigns,id',
-            'discount_type'   => 'required|in:fixed,percent',
-            'discount_value'  => 'required|numeric|min:0',
-            'min_amount'      => 'nullable|numeric|min:0',
-            'max_discount'    => 'nullable|numeric|min:0',
-            'usage_limit'     => 'nullable|integer|min:1',
-            'expires_at'      => 'nullable|date',
-            'is_active'       => 'boolean',
+            'code' => ['required', 'string', 'max:50', $unique],
+            'user_id' => 'nullable|exists:users,id',
+            'campaign_id' => 'nullable|exists:campaigns,id',
+            'discount_type' => 'required|in:fixed,percent',
+            'discount_value' => 'required|numeric|min:0',
+            'min_amount' => 'nullable|numeric|min:0',
+            'max_discount' => 'nullable|numeric|min:0',
+            'usage_limit' => 'nullable|integer|min:1',
+            'expires_at' => 'nullable|date',
+            'is_active' => 'boolean',
         ]);
 
         // Checkbox absent => false; present (any value) => true.

@@ -136,9 +136,27 @@ tbody tr.unread::before{content:'';position:absolute;left:0;top:0;bottom:0;width
   tbody td.actions{justify-content:flex-start;flex-wrap:wrap}
   .msg-prev{-webkit-line-clamp:3}
 }
+<<<<<<< HEAD
+@media(max-width:380px){
+  .stats-grid{gap:8px;}
+  .stat{padding:10px 12px;gap:8px;}
+  .stat-icon{width:30px;height:30px;border-radius:8px;}
+  .stat-icon svg{width:13px;height:13px;}
+  .stat-val{font-size:1.1rem;}
+  .sec-hdr{gap:8px;}
+  .sec-search input{width:100%;max-width:none;}
+  .ftab-select{margin-top:4px;}
+  .filter-bar{flex-direction:column;align-items:stretch;gap:8px;padding:12px 14px;}
+  .filter-group{flex-wrap:wrap;}
+  .filter-div{display:none;}
+  .filter-reset{margin-left:0;width:100%;justify-content:center;}
+  .table-card .table-footer{flex-direction:column;gap:4px;text-align:center;}
+}
+=======
 @media(max-width:640px){.filter-bar{padding:12px 14px;gap:8px}.filter-group{flex:1;min-width:0}.filter-sel{width:100%}}
 @media(max-width:480px){.filter-bar{flex-direction:column;align-items:stretch}.filter-group{flex-wrap:wrap;width:100%}.filter-sel{width:100%}.filter-div{display:none}.filter-reset{width:100%;justify-content:center}}
 @media(max-width:380px){.pagination-wrap{flex-direction:column;gap:8px}}
+>>>>>>> origin/master
 </style>
 @endpush
 
@@ -211,6 +229,11 @@ tbody tr.unread::before{content:'';position:absolute;left:0;top:0;bottom:0;width
       <button class="ftab" data-filter="new">Unread <span class="cnt" id="cntUnread">{{ $cntNew }}</span></button>
       <button class="ftab" data-filter="read">Read <span class="cnt" id="cntRead">{{ $cntRead }}</span></button>
     </div>
+    <select class="ftab-select" onchange="var btn=document.querySelector('.ftab[data-filter=&quot;'+this.value+'&quot;]');if(btn)btn.click();">
+      <option value="all">All ({{ $cntTotal }})</option>
+      <option value="new">Unread ({{ $cntNew }})</option>
+      <option value="read">Read ({{ $cntRead }})</option>
+    </select>
   </div>
 </div>
 

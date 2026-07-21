@@ -143,6 +143,12 @@
 .no-campaigns svg{width:36px;height:36px;opacity:.2;margin:0 auto 10px;display:block;}
 @media(max-width:860px){.form-grid{grid-template-columns:1fr}}
 @media(max-width:600px){.row-2,.row-3{grid-template-columns:1fr}.stepper{gap:4px}.step{padding:8px 12px}}
+@media(max-width:480px){
+  .stepper{overflow-x:auto;flex-wrap:nowrap;justify-content:flex-start;border-radius:16px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  .stepper::-webkit-scrollbar{display:none;}
+  .step{flex:0 0 auto;}
+  .step-label{white-space:nowrap;}
+}
 </style>
 @endpush
 @section('content')

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Campaign;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class PublicCampaignController extends Controller
@@ -10,19 +11,19 @@ class PublicCampaignController extends Controller
     public function show($category, $slug)
     {
         $campaign = Campaign::with([
-                'category',
-                'user',
-                'donations' => function ($q) {
-                    $q->where('payment_status', 'completed')
-                      ->latest()
-                      ->take(10);
-                },
-                'events',
-            ])
+            'category',
+            'user',
+            'donations' => function ($q) {
+                $q->where('payment_status', 'completed')
+                    ->latest()
+                    ->take(10);
+            },
+            'events',
+        ])
             ->where('slug', $slug)
             ->where(function ($q) use ($category) {
-                $q->whereHas('category', fn($q) => $q->where('slug', $category))
-                  ->orWhereNull('category_id');
+                $q->whereHas('category', fn ($q) => $q->where('slug', $category))
+                    ->orWhereNull('category_id');
             })
             ->firstOrFail();
 
@@ -43,7 +44,7 @@ class PublicCampaignController extends Controller
         if (
             $campaign->campaign_state === 'active' &&
             $campaign->end_date &&
-            \Carbon\Carbon::parse($campaign->end_date)->endOfDay()->isPast()
+            Carbon::parse($campaign->end_date)->endOfDay()->isPast()
         ) {
             // Update DB so next request is instant
             $campaign->update(['campaign_state' => 'expired']);
@@ -56,7 +57,7 @@ class PublicCampaignController extends Controller
         | Adjust states as needed for your business logic
         |----------------------------------------------------------------------
         */
-        if (!in_array($campaign->campaign_state, [
+        if (! in_array($campaign->campaign_state, [
             'active',
             'completed',
             'expired',

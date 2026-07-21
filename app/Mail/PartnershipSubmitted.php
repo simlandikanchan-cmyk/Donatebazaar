@@ -2,10 +2,10 @@
 
 namespace App\Mail;
 
+use App\Models\Partnership;
+use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Bus\Queueable;
-use App\Models\Partnership;
 
 class PartnershipSubmitted extends Mailable
 {
@@ -30,7 +30,7 @@ class PartnershipSubmitted extends Mailable
                 'score' => $this->partnership->priority_score ?? 0,
                 'message' => $this->partnership->message,
                 'website' => $this->partnership->website,
-                'hasDocument' => !empty($this->partnership->document),
+                'hasDocument' => ! empty($this->partnership->document),
             ]);
     }
 

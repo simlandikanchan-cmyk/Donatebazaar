@@ -16,15 +16,15 @@ return new class extends Migration
 
             // User relation
             $table->foreignId('user_id')
-                  ->constrained()
-                  ->cascadeOnDelete();
+                ->constrained()
+                ->cascadeOnDelete();
 
             // Optional: for guest users (future-ready)
             $table->string('session_id')->nullable();
 
             // Cart status (important for checkout flow)
             $table->enum('status', ['active', 'converted', 'abandoned'])
-                  ->default('active');
+                ->default('active');
 
             // Total (optional but useful)
             $table->decimal('total_amount', 12, 2)->default(0);

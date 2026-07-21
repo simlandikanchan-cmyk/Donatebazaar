@@ -20,10 +20,10 @@ class UserFundraiserLevel extends Model
     ];
 
     protected $casts = [
-        'total_amount_raised'    => 'decimal:2',
-        'upgrade_requested_at'   => 'datetime',
-        'upgrade_reviewed_at'    => 'datetime',
-        'level_upgraded_at'      => 'datetime',
+        'total_amount_raised' => 'decimal:2',
+        'upgrade_requested_at' => 'datetime',
+        'upgrade_reviewed_at' => 'datetime',
+        'level_upgraded_at' => 'datetime',
     ];
 
     // ── Relationships ──────────────────────────────────────────

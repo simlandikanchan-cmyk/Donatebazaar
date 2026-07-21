@@ -4,11 +4,10 @@ namespace App\Services\Blog;
 
 use App\Mail\BlogCreatedMail;
 use App\Models\Blog;
-
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class BlogService
 {
@@ -30,11 +29,11 @@ class BlogService
         $count = Blog::where(
             'slug',
             'LIKE',
-            $slug . '%'
+            $slug.'%'
         )->count();
 
         if ($count > 0) {
-            $slug .= '-' . ($count + 1);
+            $slug .= '-'.($count + 1);
         }
 
         $data['slug'] = $slug;
@@ -80,6 +79,13 @@ class BlogService
 
         // Remove tags
         unset($data['tag_ids']);
+
+        // Sanitize HTML in user-supplied content (prevent stored XSS).
+        // The editor is a plain <textarea>; content is rendered with nl2br(e(...))
+        // on the user side, so stripping tags is safe and keeps both renders consistent.
+        if (isset($data['content'])) {
+            $data['content'] = $this->sanitizeContent($data['content']);
+        }
 
         // Create
         $blog = Blog::create($data);
@@ -142,19 +148,17 @@ class BlogService
             $count = Blog::where(
                 'slug',
                 'LIKE',
-                $slug . '%'
+                $slug.'%'
             )
-
-            ->where(
-                'id',
-                '!=',
-                $blog->id
-            )
-
-            ->count();
+                ->where(
+                    'id',
+                    '!=',
+                    $blog->id
+                )
+                ->count();
 
             if ($count > 0) {
-                $slug .= '-' . ($count + 1);
+                $slug .= '-'.($count + 1);
             }
 
             $data['slug'] = $slug;
@@ -184,6 +188,11 @@ class BlogService
         }
 
         unset($data['tag_ids']);
+
+        // Sanitize HTML in user-supplied content (prevent stored XSS).
+        if (isset($data['content'])) {
+            $data['content'] = $this->sanitizeContent($data['content']);
+        }
 
         $blog->update($data);
 
@@ -233,7 +242,7 @@ class BlogService
         bool $submitNow
     ): string {
 
-        if (!$submitNow) {
+        if (! $submitNow) {
             return Blog::STATUS_DRAFT;
         }
 
@@ -245,5 +254,24 @@ class BlogService
         }
 
         return Blog::STATUS_PENDING;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Sanitize user-supplied blog content to prevent stored XSS.
+    |
+    | The blog editor is a plain <textarea> and content is rendered with
+    | nl2br(e(...)) on the user side, so stripping all HTML tags is safe and
+    | keeps both the user-facing and public renders consistent.
+    |--------------------------------------------------------------------------
+    */
+
+    private function sanitizeContent(string $content): string
+    {
+        // Collapse <br> tags into newlines; preserve line breaks so nl2br() works.
+        $content = preg_replace('#<br\s*/?>#i', "\n", $content);
+        $content = strip_tags($content);
+
+        return trim($content);
     }
 }

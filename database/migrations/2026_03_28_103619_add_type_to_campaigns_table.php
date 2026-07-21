@@ -10,17 +10,16 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up()
-{
-    Schema::table('campaigns', function (Blueprint $table) {
-        $table->enum('type', ['ngo', 'user'])->default('ngo')->after('user_id');
-    });
-}
+    {
+        Schema::table('campaigns', function (Blueprint $table) {
+            $table->enum('type', ['ngo', 'user'])->default('ngo')->after('user_id');
+        });
+    }
 
-public function down()
-{
-    Schema::table('campaigns', function (Blueprint $table) {
-        $table->dropColumn('type');
-    });
-}
-
+    public function down()
+    {
+        Schema::table('campaigns', function (Blueprint $table) {
+            $table->dropColumn('type');
+        });
+    }
 };
