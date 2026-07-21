@@ -193,8 +193,8 @@ td{padding:13px 18px;font-size:13px;vertical-align:middle;}
     <h3>Delete Product?</h3>
     <p>This will permanently remove <strong id="modalProdName"></strong>. This action cannot be undone.</p>
     <div class="modal-acts">
-      <button class="modal-cancel" onclick="closeModal()">Cancel</button>
-      <button class="modal-del" onclick="confirmDelete()">Yes, Delete</button>
+      <button class="btn btn-secondary modal-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-red modal-del" onclick="confirmDelete()">Yes, Delete</button>
     </div>
   </div>
 </div>
@@ -208,8 +208,8 @@ td{padding:13px 18px;font-size:13px;vertical-align:middle;}
     <h3>Delete Selected Products?</h3>
     <p>This will permanently remove <strong id="bulkCountDisplay">0</strong> product(s). This action cannot be undone.</p>
     <div class="modal-acts">
-      <button class="modal-cancel" onclick="closeBulkModal()">Cancel</button>
-      <button class="modal-del" onclick="confirmBulkDelete()">Yes, Delete</button>
+      <button class="btn btn-secondary modal-cancel" onclick="closeBulkModal()">Cancel</button>
+      <button class="btn btn-red modal-del" onclick="confirmBulkDelete()">Yes, Delete</button>
     </div>
   </div>
 </div>
@@ -311,10 +311,10 @@ td{padding:13px 18px;font-size:13px;vertical-align:middle;}
       <button type="button" class="bulk-btn bulk-deactivate" onclick="bulkAction('deactivate')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>Deactivate
       </button>
-      <button type="button" class="bulk-btn bulk-del" onclick="openBulkDelete()">
+      <button type="button" class="btn btn-red bulk-btn bulk-del" onclick="openBulkDelete()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Delete
       </button>
-      <button type="button" class="bulk-btn bulk-cancel" onclick="clearAllCheckboxes()">Cancel</button>
+      <button type="button" class="btn btn-secondary bulk-btn bulk-cancel" onclick="clearAllCheckboxes()">Cancel</button>
     </div>
   </div>
 
@@ -405,10 +405,10 @@ td{padding:13px 18px;font-size:13px;vertical-align:middle;}
           </td>
           <td>
             <div class="actions">
-              <a href="{{ route('admin.category-products.edit',$product->id) }}" class="act-btn act-edit">
+              <a href="{{ route('admin.category-products.edit',$product->id) }}" class="btn btn-secondary act-btn act-edit">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit
               </a>
-              <button type="button" class="act-btn act-del"
+              <button type="button" class="btn btn-red act-btn act-del"
                 onclick="openModal('{{ $product->id }}','{{ addslashes($product->name) }}','{{ route('admin.category-products.destroy',$product->id) }}')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Delete
               </button>

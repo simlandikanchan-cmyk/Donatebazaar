@@ -52,12 +52,12 @@
                   <form method="POST" action="{{ route('admin.volunteer.status', $app->id) }}">
                     @csrf
                     <input type="hidden" name="status" value="approved">
-                    <button type="submit" class="vbtn vbtn-approve">&#10003; Approve</button>
+                    <button type="submit" class="btn btn-green vbtn vbtn-approve">&#10003; Approve</button>
                   </form>
                   <form method="POST" action="{{ route('admin.volunteer.status', $app->id) }}">
                     @csrf
                     <input type="hidden" name="status" value="rejected">
-                    <button type="submit" class="vbtn vbtn-reject">&#10007; Reject</button>
+                    <button type="submit" class="btn btn-red vbtn vbtn-reject">&#10007; Reject</button>
                   </form>
                 </div>
               @else

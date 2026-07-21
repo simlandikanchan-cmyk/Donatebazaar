@@ -33,6 +33,8 @@
 .alert-ok{background:rgba(5,196,138,.08);border:1px solid rgba(5,196,138,.22);color:#065f46;padding:12px 16px;border-radius:var(--r-sm);font-size:13px;margin-bottom:16px;display:flex;align-items:center;gap:10px;animation:fadeUp .3s ease;}
 .alert-ok svg{width:15px;height:15px;flex-shrink:0;}
 @media(max-width:640px){.form-grid{grid-template-columns:1fr;}}
+@media(max-width:480px){.main-card>div{padding:16px 14px}.card-head{padding:12px 14px}.form-grid{gap:14px}.field label{font-size:11px}.field input,.field select,.field textarea{font-size:12px;height:36px;padding:0 11px}.btn-primary,.btn-ghost{height:38px;font-size:12px;padding:0 16px}.form-actions{flex-direction:column;align-items:stretch;gap:10px}.form-actions .btn-primary,.form-actions .btn-ghost{justify-content:center}}
+@media(max-width:380px){.main-card>div{padding:12px 10px}.card-head{padding:10px 12px}.card-head-title{font-size:10px}.field label{font-size:10px}.field input,.field select,.field textarea{font-size:11px;height:34px;padding:0 10px}.form-note{font-size:11px}.alert-ok{font-size:12px;padding:10px 12px}}
 </style>
 @endpush
 
@@ -175,7 +177,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px;"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
       Onboard NGO
     </button>
-    <a href="{{ route('admin.organizations.index') }}" class="btn-ghost">Cancel</a>
+    <a href="{{ route('admin.organizations.index') }}" class="btn btn-secondary btn-ghost">Cancel</a>
   </div>
 </form>
 

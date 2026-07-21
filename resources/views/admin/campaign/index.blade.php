@@ -97,6 +97,7 @@
 @media(max-width:1200px){.stats-grid{grid-template-columns:repeat(3,1fr);}}
 @media(max-width:860px){.stats-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:520px){.stats-grid{grid-template-columns:1fr;}}
+<<<<<<< HEAD
 
 @media(max-width:380px){
   .stats-grid{gap:8px;}
@@ -117,6 +118,9 @@
   .cmp-view,.cmp-edit{padding:0 8px;font-size:11px;}
   .pagination-wrap{flex-direction:column;align-items:center;text-align:center;}
 }
+=======
+@media(max-width:380px){.search-input{font-size:11px;height:34px;padding:0 10px}.search-wrap{min-width:0}.stats-grid{gap:8px}.stat{border-radius:10px;padding:12px 10px}.stat-inner{flex-direction:row;gap:10px}.stat-icon{width:32px;height:32px}.stat-icon svg{width:14px;height:14px}.stat-content{text-align:left}.stat-value{font-size:clamp(16px,4.5vw,18px)}.stat-label{font-size:9px}.table td,.table th{padding:7px 5px;font-size:10px}.table .col-campaign,.table .col-raised,.table th.col-campaign,.table th.col-raised{display:none}.pagination-wrap{flex-direction:column;gap:8px}.clear-btn{font-size:11px;height:34px;padding:0 10px}}
+>>>>>>> origin/master
 </style>
 @endpush
 
@@ -270,19 +274,19 @@ $sortUrl = function($column) use ($sort, $dir) {
   <div id="bulkBar" class="cp-bulkbar">
     <span><strong id="bulkCount">0</strong> campaign(s) selected</span>
     <div class="cp-bulk-acts">
-      <button type="button" class="cp-bulk-btn cp-bulk-approve" onclick="bulkAction('{{ route('admin.campaigns.bulk-approve') }}')">
+      <button type="button" class="btn btn-green cp-bulk-btn cp-bulk-approve" onclick="bulkAction('{{ route('admin.campaigns.bulk-approve') }}')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"/></svg>
         Approve
       </button>
-      <button type="button" class="cp-bulk-btn cp-bulk-reject" onclick="bulkAction('{{ route('admin.campaigns.bulk-reject') }}')">
+      <button type="button" class="btn btn-red cp-bulk-btn cp-bulk-reject" onclick="bulkAction('{{ route('admin.campaigns.bulk-reject') }}')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
         Reject
       </button>
-      <button type="button" class="cp-bulk-btn cp-bulk-pause" onclick="bulkAction('{{ route('admin.campaigns.bulk-pause') }}')">
+      <button type="button" class="btn btn-secondary cp-bulk-btn cp-bulk-pause" onclick="bulkAction('{{ route('admin.campaigns.bulk-pause') }}')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6"/></svg>
         Pause
       </button>
-      <button type="button" class="cp-bulk-btn cp-bulk-clear" onclick="clearSelection()">Clear Selection</button>
+      <button type="button" class="btn btn-secondary cp-bulk-btn cp-bulk-clear" onclick="clearSelection()">Clear Selection</button>
     </div>
   </div>
 

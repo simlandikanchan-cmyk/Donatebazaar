@@ -5,7 +5,7 @@
 @section('page_subtitle', 'Update policy content shown at /{{ $slug }}')
 
 @section('topbar_left')
-  <a href="{{ route('admin.legal.index') }}" class="back-btn">
+  <a href="{{ route('admin.legal.index') }}" class="btn btn-secondary back-btn">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M12 19l-7-7 7-7"/></svg>
     Legal Pages
   </a>
@@ -84,7 +84,7 @@ textarea.f-input{resize:vertical;min-height:420px;line-height:1.7;font-family:va
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 6L9 17l-5-5"/></svg>
       Save Page
     </button>
-    <a href="{{ route('admin.legal.index') }}" class="back-btn" style="text-decoration:none;">Cancel</a>
+    <a href="{{ route('admin.legal.index') }}" class="btn btn-secondary back-btn" style="text-decoration:none;">Cancel</a>
   </div>
 </form>
 @endsection

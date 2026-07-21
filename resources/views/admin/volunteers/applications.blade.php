@@ -159,15 +159,15 @@
                   @if($app->status === 'pending')
                     <form method="POST" action="{{ route('admin.volunteer_applications.approve', $app) }}" style="display:inline">
                       @csrf
-                      <button type="submit" class="act-link act-approve" onclick="return confirm('Approve this application? The volunteer will be marked as verified.')">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                      <button type="submit" class="btn btn-green act-link act-approve" onclick="return confirm('Approve this application? The volunteer will be marked as verified.')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                         Approve
                       </button>
                     </form>
                     <form method="POST" action="{{ route('admin.volunteer_applications.reject', $app) }}" style="display:inline">
                       @csrf
-                      <button type="submit" class="act-link act-reject" onclick="return confirm('Reject this application?')">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                      <button type="submit" class="btn btn-red act-link act-reject" onclick="return confirm('Reject this application?')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                         Reject
                       </button>
                     </form>

@@ -122,15 +122,15 @@ td{padding:13px 18px;font-size:13px;vertical-align:middle;}
               <div class="actions">
                 @if($sub->unsubscribed_at)
                   <form method="POST" action="{{ route('admin.subscribers.resubscribe', $sub->id) }}">@csrf
-                    <button type="submit" class="act-btn act-edit" title="Re-subscribe"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 6L9 17l-5-5"/></svg>Resubscribe</button>
+                    <button type="submit" class="btn btn-secondary act-btn act-edit" title="Re-subscribe"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 6L9 17l-5-5"/></svg>Resubscribe</button>
                   </form>
                 @else
                   <form method="POST" action="{{ route('admin.subscribers.unsubscribe', $sub->id) }}">@csrf
-                    <button type="submit" class="act-btn act-edit" title="Unsubscribe"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.36 6.64a9 9 0 11-12.73 0M12 2v10"/></svg>Unsubscribe</button>
+                    <button type="submit" class="btn btn-secondary act-btn act-edit" title="Unsubscribe"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.36 6.64a9 9 0 11-12.73 0M12 2v10"/></svg>Unsubscribe</button>
                   </form>
                 @endif
                 <form method="POST" action="{{ route('admin.subscribers.destroy', $sub->id) }}" onsubmit="return confirm('Remove this subscriber permanently?');">@csrf @method('DELETE')
-                  <button type="submit" class="act-btn act-del" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg></button>
+                  <button type="submit" class="btn btn-red act-btn act-del" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg></button>
                 </form>
               </div>
             </td>

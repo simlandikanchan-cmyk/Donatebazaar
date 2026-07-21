@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Services\ProductReservationService;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CampaignProduct extends Model
@@ -78,4 +80,27 @@ class CampaignProduct extends Model
             'approved_by'
         );
     }
+<<<<<<< HEAD
 }
+=======
+
+    /*
+    |--------------------------------------------------------------------------
+    | Reservations — stock currently held by donors mid-checkout
+    |--------------------------------------------------------------------------
+    */
+
+    public function reservations(): HasMany
+    {
+        return $this->hasMany(ProductReservation::class, 'product_id');
+    }
+
+    /**
+     * Stock available to a new donor = remaining minus non-expired reservations.
+     */
+    public function getAvailableQuantityAttribute(): int
+    {
+        return app(ProductReservationService::class)->availableQuantity($this);
+    }
+}
+>>>>>>> origin/master

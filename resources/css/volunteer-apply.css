@@ -1,0 +1,11 @@
+.vol-city-wrap { position: relative; }
+.vol-city-suggest {
+  position: absolute; top: 100%; left: 0; right: 0; z-index: 20;
+  background: #fff; border: 1px solid rgba(20,20,40,.10); border-top: none;
+  border-radius: 0 0 12px 12px; max-height: 220px; overflow-y: auto; display: none;
+}
+.city-suggestion {
+  padding: 13px 14px; cursor: pointer; font-size: 14px;
+  font-family: 'Inter', system-ui, sans-serif; color: #1f2233;
+}
+.city-suggestion:hover { background: #f3f4f6; }

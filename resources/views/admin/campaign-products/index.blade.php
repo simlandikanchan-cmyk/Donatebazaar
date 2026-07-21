@@ -52,11 +52,13 @@
 .cp-meta{font-size:11px;color:var(--text3);line-height:1.5;}
 .meta-name{color:var(--text2);font-weight:600;}
 
+@media(max-width:960px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:860px){
   .search-input{width:100%;}.search-input:focus{width:100%;}
   .search-wrap{flex:1;min-width:180px;}
   .filter-bar-inner{flex-direction:column;align-items:stretch;}
 }
+<<<<<<< HEAD
 
 @media(max-width:380px){
   .toolbar-left{gap:4px;}
@@ -76,6 +78,12 @@
   .stat-val{font-size:1rem;}
   .cp-bulkbar{padding:10px 14px;flex-direction:column;gap:8px;}
 }
+=======
+@media(max-width:700px){.toolbar{flex-direction:column;align-items:stretch}.toolbar-left{flex-wrap:wrap}.select-wrap{flex:1;min-width:0}.filter-select{width:100%}.date-input{width:100%}.filter-sep{text-align:center}.toolbar-right{width:100%}.toolbar-right .export-btn{flex:1;justify-content:center}}
+@media(max-width:640px){.card-head{flex-direction:column;align-items:flex-start;gap:8px}.cp-bulkbar{flex-direction:column;align-items:stretch;gap:10px}.cp-bulk-acts{justify-content:center}}
+@media(max-width:540px){.stats-grid{grid-template-columns:1fr 1fr;gap:10px}.stat{padding:12px 14px}.stat-icon{width:32px;height:32px;border-radius:8px}.stat-icon svg{width:13px;height:13px}.stat-val{font-size:15px}}
+@media(max-width:480px){.stats-grid{grid-template-columns:1fr}}
+>>>>>>> origin/master
 </style>
 @endpush
 
@@ -206,15 +214,15 @@
   <div id="bulkBar" class="cp-bulkbar">
     <span><strong id="bulkCount">0</strong> product(s) selected</span>
     <div class="cp-bulk-acts">
-      <button type="button" class="cp-bulk-btn cp-bulk-approve" onclick="bulkApprove()">
+      <button type="button" class="btn btn-green cp-bulk-btn cp-bulk-approve" onclick="bulkApprove()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"/></svg>
         Approve All
       </button>
-      <button type="button" class="cp-bulk-btn cp-bulk-reject" onclick="openBulkRejectModal()">
+      <button type="button" class="btn btn-red cp-bulk-btn cp-bulk-reject" onclick="openBulkRejectModal()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
         Reject All
       </button>
-      <button type="button" class="cp-bulk-btn cp-bulk-clear" onclick="clearSelection()">Clear Selection</button>
+      <button type="button" class="btn btn-secondary cp-bulk-btn cp-bulk-clear" onclick="clearSelection()">Clear Selection</button>
     </div>
   </div>
 
@@ -355,9 +363,9 @@
                 @if($product->approval_status === 'pending')
                   <form action="{{ route('admin.campaign-products.approve', $product) }}" method="POST" style="display:inline;">
                     @csrf
-                    <button type="submit" class="c-btn c-btn-approve" style="padding:7px 12px;font-size:12px;">Approve</button>
+                    <button type="submit" class="btn btn-green c-btn c-btn-approve">Approve</button>
                   </form>
-                  <button type="button" class="c-btn c-btn-reject" style="padding:7px 12px;font-size:12px;"
+                  <button type="button" class="btn btn-red c-btn c-btn-reject"
                           onclick="showRejectModal({{ $product->id }}, '{{ addslashes($product->name) }}')">
                     Reject
                   </button>
@@ -374,7 +382,7 @@
                       onsubmit="return confirm('Delete product &quot;{{ addslashes($product->name) }}&quot;? This cannot be undone.')">
                   @csrf
                   @method('DELETE')
-                  <button type="submit" class="cp-del" title="Delete product">
+                  <button type="submit" class="btn btn-red cp-del" title="Delete product">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m2 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg>
                   </button>
                 </form>
@@ -412,8 +420,8 @@
       <div class="modal-lbl">Reason <span>*</span></div>
       <textarea name="reason" class="modal-ta" rows="3" placeholder="Provide a reason for rejection..." required minlength="10" maxlength="500" style="width:100%;"></textarea>
       <div class="modal-acts">
-        <button type="button" class="modal-btn modal-cancel" onclick="closeRejectModal()">Cancel</button>
-        <button type="submit" class="modal-btn modal-red">Reject Product</button>
+        <button type="button" class="btn btn-secondary modal-btn modal-cancel" onclick="closeRejectModal()">Cancel</button>
+        <button type="submit" class="btn btn-red modal-btn modal-red">Reject Product</button>
       </div>
     </form>
   </div>
@@ -440,8 +448,8 @@
       <div class="modal-lbl">Reason <span>*</span></div>
       <textarea name="reason" class="modal-ta" rows="3" placeholder="Provide a reason for rejection..." required minlength="10" maxlength="500" style="width:100%;"></textarea>
       <div class="modal-acts">
-        <button type="button" class="modal-btn modal-cancel" onclick="closeBulkRejectModal()">Cancel</button>
-        <button type="submit" class="modal-btn modal-red">Reject Products</button>
+        <button type="button" class="btn btn-secondary modal-btn modal-cancel" onclick="closeBulkRejectModal()">Cancel</button>
+        <button type="submit" class="btn btn-red modal-btn modal-red">Reject Products</button>
       </div>
     </form>
   </div>
@@ -452,7 +460,7 @@
   <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);max-width:90%;max-height:90%;">
     <img id="lightboxImg" src="" alt="" style="max-width:100%;max-height:90vh;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.5);">
   </div>
-  <button type="button" style="position:absolute;top:20px;right:30px;background:none;border:none;color:#fff;font-size:32px;cursor:pointer;" onclick="closeLightbox()">&times;</button>
+  <button type="button" class="lightbox-close" onclick="closeLightbox()">&times;</button>
 </div>
 
 <form id="bulkApproveForm" method="POST" action="{{ route('admin.campaign-products.bulk-approve') }}" style="display:none;">

@@ -28,22 +28,22 @@ Route::middleware(['auth', 'account.active'])->group(function () {
         $recurringDonations = RecurringDonation::where('user_id', $user->id)
             ->with('campaign:id,title')
             ->latest()
+            ->take(10)
             ->get();
-        $recurringCount = $recurringDonations->count();
+        $recurringCount = \App\Models\RecurringDonation::where('user_id', $user->id)->count();
 
         $campaignIds = $campaigns->pluck('id');
         $recentDonations = collect();
         $totalDonationsCount = 0;
         if ($campaignIds->isNotEmpty()) {
-            $recentDonations = Donation::whereIn('campaign_id', $campaignIds)
+            $donationQuery = Donation::whereIn('campaign_id', $campaignIds)
+                ->whereNotNull('paid_at');
+            $recentDonations = (clone $donationQuery)
                 ->with('campaign:id,title')
-                ->whereNotNull('paid_at')
                 ->latest()
                 ->take(6)
                 ->get();
-            $totalDonationsCount = Donation::whereIn('campaign_id', $campaignIds)
-                ->whereNotNull('paid_at')
-                ->count();
+            $totalDonationsCount = $donationQuery->count();
         }
 
         $kyc = $user->kycVerification;

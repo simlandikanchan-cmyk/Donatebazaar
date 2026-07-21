@@ -49,6 +49,9 @@
 .flash-err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.22);color:#991b1b;}
 .message-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px 16px;font-size:13px;color:var(--text2);line-height:1.6;margin-top:8px;font-style:italic;}
 @media(max-width:860px){.detail-grid{grid-template-columns:1fr;}}
+@media(max-width:640px){.detail-card{padding:16px 18px}.detail-lbl{font-size:9px}.detail-val{font-size:12px}.amount-val{font-size:17px}}
+@media(max-width:480px){.detail-hdr{flex-direction:column;align-items:flex-start;gap:4px}.actions{flex-direction:column}.act-btn{width:100%;justify-content:center}}
+@media(max-width:380px){.detail-row{flex-direction:column;align-items:flex-start;gap:3px}.status-form{flex-direction:column;align-items:stretch}.status-form input{min-width:0!important;width:100%}}
 </style>
 @endpush
 
@@ -150,14 +153,14 @@
     </div>
 
     <div class="actions">
-      <a href="{{ route('admin.gift-cards.index') }}" class="act-btn ab-back">
+      <a href="{{ route('admin.gift-cards.index') }}" class="btn btn-secondary act-btn ab-back">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
         Back to List
       </a>
       @if($giftCard->isPaid() && !$giftCard->isRedeemed())
       <form method="POST" action="{{ route('admin.gift-cards.resend', $giftCard->id) }}" style="display:inline;">
         @csrf
-        <button type="submit" class="act-btn ab-resend">
+        <button type="submit" class="btn btn-secondary act-btn ab-resend">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
           Resend Email
         </button>
@@ -166,7 +169,7 @@
       @if(!$giftCard->isRedeemed())
       <form method="POST" action="{{ route('admin.gift-cards.destroy', $giftCard->id) }}" style="display:inline;" onsubmit="return confirm('Cancel this gift card?')">
         @csrf @method('DELETE')
-        <button type="submit" class="act-btn ab-cancel">
+        <button type="submit" class="btn btn-secondary act-btn ab-cancel">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 18L18 6M6 6l12 12"/></svg>
           Cancel Card
         </button>

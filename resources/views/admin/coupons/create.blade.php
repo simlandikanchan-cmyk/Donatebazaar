@@ -31,6 +31,8 @@
     .f-error{font-size:11.5px;color:var(--red);margin-top:5px;font-family:var(--mono);}
     .f-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
     @media(max-width:680px){.f-row{grid-template-columns:1fr;}}
+@media(max-width:480px){.card-body{padding:16px}.card-head{padding:12px 16px}.f-input,.f-select{font-size:12px;padding:8px 11px}.f-label{font-size:10px}.submit-btn{font-size:12px;padding:11px 16px}.back-btn{font-size:11px;height:32px;padding:0 12px}}
+@media(max-width:380px){.card-body{padding:12px}.f-input,.f-select{font-size:11px;padding:7px 10px}.f-label{font-size:9px}.field{margin-bottom:14px}.f-hint{font-size:10px}.f-error{font-size:10px}.submit-btn{font-size:11px;padding:10px 14px}.card-head-title{font-size:10px}.toggle-row{flex-direction:column;align-items:flex-start;gap:8px}}
 
     .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:4px 0;}
     .toggle-lbl{font-size:13px;font-weight:600;color:var(--text);}
@@ -49,7 +51,7 @@
 
 @section('content')
 <div style="margin-bottom:18px;">
-    <a href="{{ route('admin.coupons.index') }}" class="back-btn">
+    <a href="{{ route('admin.coupons.index') }}" class="btn btn-secondary back-btn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M12 19l-7-7 7-7"/></svg>
         All Coupons
     </a>

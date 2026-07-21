@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+<<<<<<< HEAD
 use App\Contracts\Gateway\GatewayInterface;
 use App\Gateways\RazorpayGateway;
 use App\Models\Campaign;
@@ -9,6 +10,17 @@ use App\Services\FundraiserLevelService;
 use App\Services\LaravelNotificationService;
 use App\Services\NotificationService;
 use App\View\Composers\CampaignShowComposer;
+=======
+use App\Models\Campaign;
+use App\Models\Donation;
+use App\Models\User;
+use App\Models\Volunteer;
+use App\Models\VolunteerApplication;
+use App\Services\FundraiserLevelService;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\ServiceProvider;
+>>>>>>> origin/master
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
@@ -69,7 +81,29 @@ class AppServiceProvider extends ServiceProvider
                 ->firstOrFail();
         });
 
+<<<<<<< HEAD
         View::composer('campaigns.show', CampaignShowComposer::class);
+=======
+        // ───────────────────────────────────────────────────────────────
+        // Admin dashboard stats cache invalidation
+        // ───────────────────────────────────────────────────────────────
+
+        $forget = fn () => Cache::forget('admin_dashboard_stats');
+
+        Campaign::saved($forget);
+        Campaign::deleted($forget);
+
+        Donation::created($forget);
+        Donation::deleted($forget);
+
+        User::created($forget);
+
+        Volunteer::saved($forget);
+        Volunteer::deleted($forget);
+
+        VolunteerApplication::saved($forget);
+        VolunteerApplication::deleted($forget);
+>>>>>>> origin/master
 
         // Health Checks
         Health::checks([

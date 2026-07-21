@@ -5,7 +5,7 @@
 @section('page_subtitle', 'Modify category')
 
 @section('topbar_left')
-  <a href="{{ route('admin.categories.index') }}" class="back-btn">
+  <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary back-btn">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M12 19l-7-7 7-7"/></svg>
     All Categories
   </a>
@@ -32,6 +32,9 @@
 
 .page-grid{display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start;}
 @media(max-width:960px){.page-grid{grid-template-columns:1fr;}}
+@media(max-width:640px){.icon-grid{grid-template-columns:repeat(4,1fr)}.color-grid{grid-template-columns:repeat(4,1fr)}.card-body{padding:16px}}
+@media(max-width:480px){.icon-grid{grid-template-columns:repeat(3,1fr)}.color-grid{grid-template-columns:repeat(4,1fr)}.preview-live{padding:24px 16px;min-height:0}.prev-icon-box{width:56px;height:56px;font-size:22px}.pub-card-inner{padding:12px;gap:10px}}
+@media(max-width:380px){.icon-grid{grid-template-columns:repeat(3,1fr)}.custom-color-row{flex-wrap:wrap}.custom-color-row label{white-space:normal;font-size:10px}}
 
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;animation:fadeUp .4s ease both;margin-bottom:16px;}
 .card:nth-child(1){animation-delay:.05s;} .card:nth-child(2){animation-delay:.10s;} .card:nth-child(3){animation-delay:.15s;}
@@ -136,8 +139,8 @@
     <h3>Delete Category?</h3>
     <p>This will permanently remove <strong>{{ $category->name }}</strong>. Campaigns using this category may be affected.</p>
     <div class="modal-acts">
-      <button class="modal-cancel" onclick="closeModal()">Cancel</button>
-      <button class="modal-del" onclick="document.getElementById('deleteForm').submit()">Yes, Delete</button>
+      <button class="btn btn-secondary modal-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-red modal-del" onclick="document.getElementById('deleteForm').submit()">Yes, Delete</button>
     </div>
   </div>
 </div>
@@ -328,7 +331,7 @@
       </div>
       <div class="danger-body">
         <p class="danger-desc">Deleting this category is permanent and cannot be undone. Campaigns assigned to it may lose their category reference.</p>
-        <button type="button" class="delete-btn" onclick="document.getElementById('deleteOverlay').classList.add('open')">
+        <button type="button" class="btn btn-red delete-btn" onclick="document.getElementById('deleteOverlay').classList.add('open')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
           Delete "{{ $category->name }}"
         </button>

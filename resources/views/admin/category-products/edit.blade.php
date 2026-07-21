@@ -180,8 +180,8 @@ label.lbl .req{color:var(--red);margin-left:2px;}
     <h3>Delete Product?</h3>
     <p>This will permanently remove <strong>{{ $categoryProduct->name }}</strong>. This action cannot be undone.</p>
     <div class="modal-acts">
-      <button class="modal-cancel" onclick="closeDeleteModal()">Cancel</button>
-      <button class="modal-del" onclick="document.getElementById('deleteForm').submit()">Yes, Delete</button>
+      <button class="btn btn-secondary modal-cancel" onclick="closeDeleteModal()">Cancel</button>
+      <button class="btn btn-red modal-del" onclick="document.getElementById('deleteForm').submit()">Yes, Delete</button>
     </div>
   </div>
 </div>
@@ -420,7 +420,7 @@ label.lbl .req{color:var(--red);margin-left:2px;}
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
               Discard
             </a>
-            <button type="button" class="btn btn-danger" onclick="document.getElementById('deleteOverlay').classList.add('open')">
+            <button type="button" class="btn btn-red" onclick="document.getElementById('deleteOverlay').classList.add('open')">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
               Delete
             </button>

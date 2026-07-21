@@ -135,6 +135,7 @@ tbody tr:not([data-status="published"]) .js-feature{display:none}
   tbody td.actions{justify-content:flex-start;flex-wrap:wrap}
   .title-primary{max-width:none}
 }
+<<<<<<< HEAD
 @media(max-width:380px){
   .sec-hdr{gap:8px;}
   .sec-right{flex-direction:column;align-items:stretch;gap:6px;width:100%;}
@@ -142,6 +143,11 @@ tbody tr:not([data-status="published"]) .js-feature{display:none}
   .sort-select,.sec-right .sort-select{width:100%;}
   .search-input{width:100%;}
 }
+=======
+@media(max-width:640px){.stat-card{padding:14px 16px;gap:10px}.stat-num{font-size:1.4rem}}
+@media(max-width:480px){.stat-card{padding:12px 14px;gap:8px}.stat-num{font-size:1.2rem}.stat-name{font-size:9px}.sec-header{flex-direction:column;align-items:flex-start}.bulk-bar{flex-direction:column;align-items:stretch;gap:10px}.bulk-actions{justify-content:center}}
+@media(max-width:380px){.stat-card{padding:10px 12px}.stat-card .stat-icon{width:32px;height:32px;border-radius:8px}.stat-card .stat-icon svg{width:13px;height:13px}.bulk-left{text-align:center}}
+>>>>>>> origin/master
 </style>
 @endpush
 @section('content')
@@ -233,11 +239,11 @@ tbody tr:not([data-status="published"]) .js-feature{display:none}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
       Publish
     </button>
-    <button class="bb-btn bb-delete" id="bulkDelete">
+    <button class="btn btn-red bb-btn bb-delete" id="bulkDelete">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
       Delete
     </button>
-    <button class="bb-btn bb-clear" id="bulkClear">Clear</button>
+    <button class="btn btn-secondary bb-btn bb-clear" id="bulkClear">Clear</button>
   </div>
 </div>
 
@@ -319,29 +325,29 @@ tbody tr:not([data-status="published"]) .js-feature{display:none}
           </td>
           <td data-label="Actions">
             <div class="actions">
-              <a href="{{ route('admin.blogs.show', $blog) }}" class="act-btn ab-view">
+              <a href="{{ route('admin.blogs.show', $blog) }}" class="btn btn-secondary act-btn ab-view">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                 Review
               </a>
-              <a href="{{ route('admin.blogs.edit', $blog) }}" class="act-btn ab-edit">
+              <a href="{{ route('admin.blogs.edit', $blog) }}" class="btn btn-secondary act-btn ab-edit">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path stroke-linecap="round" stroke-linejoin="round" d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                 Edit
               </a>
-              <button type="button" class="act-btn ab-approve js-approve" data-id="{{ $blog->id }}">
+              <button type="button" class="btn btn-green act-btn ab-approve js-approve" data-id="{{ $blog->id }}">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 Approve
               </button>
-              <button type="button" class="act-btn ab-feature js-feature" data-id="{{ $blog->id }}" data-featured="{{ $blog->is_featured ? '1' : '0' }}">
+              <button type="button" class="btn btn-green act-btn ab-feature js-feature" data-id="{{ $blog->id }}" data-featured="{{ $blog->is_featured ? '1' : '0' }}">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                 {{ $blog->is_featured ? 'Unfeature' : 'Feature' }}
               </button>
-              <button type="button" class="act-btn ab-archive js-archive" data-id="{{ $blog->id }}">
+              <button type="button" class="btn btn-green act-btn ab-archive js-archive" data-id="{{ $blog->id }}">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8v13H3V8m2-4h14a2 2 0 012 2v2H3V6a2 2 0 012-2z"/></svg>
                 Archive
               </button>
               <form method="POST" action="{{ route('admin.blogs.destroy', $blog) }}" style="display:inline;" onsubmit="return confirm('Delete \'{{ addslashes($blog->title) }}\'?')">
                 @csrf @method('DELETE')
-                <button type="submit" class="act-btn ab-delete" title="Delete">
+                <button type="submit" class="btn btn-red act-btn ab-delete" title="Delete">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                 </button>
               </form>

@@ -44,6 +44,10 @@
 .btn-reject:hover{background:var(--red);color:#fff;border-color:var(--red);transform:translateY(-1px);box-shadow:0 4px 14px rgba(240,68,68,.35)}
 [data-theme="dark"] .btn-reject{color:#f87171}
 [data-theme="dark"] .btn-reject:hover{color:#fff}
+@media(max-width:960px){.detail-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.detail-grid{grid-template-columns:1fr}.hero-card{flex-direction:column;align-items:stretch;padding:22px 20px}.hero-right{align-items:flex-start}.hero-title{font-size:18px}}
+@media(max-width:480px){.hero-card{padding:18px 16px}.hero-title{font-size:16px}.hero-sub{font-size:11px}.info-box{padding:12px 14px}.info-value{font-size:12px}}
+@media(max-width:380px){.hero-av{width:44px;height:44px;font-size:18px;border-radius:12px}.info-value{font-size:11px}.action-bar{flex-direction:column}.action-bar .btn-approve,.action-bar .btn-reject{width:100%;justify-content:center}}
 </style>
 @endpush
 
@@ -167,14 +171,14 @@
     <div class="action-bar">
       <form method="POST" action="{{ route('admin.volunteer_applications.approve', $application) }}">
         @csrf
-        <button type="submit" class="btn-approve" onclick="return confirm('Approve this application? The volunteer will be marked as verified and notified via email.')">
+        <button type="submit" class="btn btn-green btn-approve" onclick="return confirm('Approve this application? The volunteer will be marked as verified and notified via email.')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
           Approve & Verify
         </button>
       </form>
       <form method="POST" action="{{ route('admin.volunteer_applications.reject', $application) }}">
         @csrf
-        <button type="submit" class="btn-reject" onclick="return confirm('Reject this application? The applicant will be notified via email.')">
+        <button type="submit" class="btn btn-red btn-reject" onclick="return confirm('Reject this application? The applicant will be notified via email.')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
           Reject
         </button>

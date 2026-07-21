@@ -36,6 +36,7 @@ class VolunteerController extends Controller
 
         $data = $request->validate([
             'campaign_id' => ['nullable', 'integer', 'exists:campaigns,id'],
+<<<<<<< HEAD
             'message' => ['nullable', 'string', 'max:1000'],
             'phone' => ['required', 'string', 'regex:/^[0-9]{10}$/'],
             'bio' => ['nullable', 'string', 'max:1000'],
@@ -44,10 +45,17 @@ class VolunteerController extends Controller
             'city' => ['nullable', 'string', 'max:255'],
             'state' => ['nullable', 'string', 'max:255'],
             'country' => ['nullable', 'string', 'max:255'],
+=======
+            'message'     => ['nullable', 'string', 'max:1000'],
+            'phone'       => ['required', 'string', 'regex:/^[0-9]{10}$/'],
+            'city'        => ['nullable', 'string', 'max:120'],
+            'availability'=> ['required', 'in:full_time,part_time,weekends'],
+>>>>>>> origin/master
         ]);
 
         $volunteer = Volunteer::firstOrCreate(['user_id' => auth()->id()]);
 
+<<<<<<< HEAD
         $volunteer->update([
             'phone' => $data['phone'] ?? $volunteer->phone,
             'bio' => $data['bio'] ?? null,
@@ -57,6 +65,13 @@ class VolunteerController extends Controller
             'state' => $data['state'] ?? null,
             'country' => $data['country'] ?? 'India',
         ]);
+=======
+        $volunteer->update(array_filter([
+            'phone'       => $data['phone'] ?? null,
+            'city'        => $data['city'] ?? null,
+            'availability'=> $data['availability'] ?? null,
+        ]));
+>>>>>>> origin/master
 
         $exists = VolunteerApplication::where('volunteer_id', $volunteer->id)
             ->whereIn('status', ['pending', 'approved'])

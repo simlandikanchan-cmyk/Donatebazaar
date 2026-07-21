@@ -24,6 +24,7 @@
 .dn-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 @media(max-width:760px){.dn-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:480px){.dn-grid{grid-template-columns:1fr}}
+@media(max-width:380px){.page-hdr{padding:14px 12px}.page-hdr-left h2{font-size:clamp(16px,4.5vw,18px)}.dn-card{padding:14px 12px}.dn-amount{font-size:clamp(20px,6vw,24px)}.dn-meta{font-size:11px}.dn-grid{gap:10px}.dn-kv .v{font-size:12px}.dn-kv .k{font-size:9px}.back-link{font-size:11px;height:32px;padding:0 10px}.flash{font-size:12px;padding:10px 12px}}
 </style>
 @endpush
 
@@ -124,6 +125,57 @@
   @endif
 </div>
 
+@if($donation->donation_type === 'product' && $donation->items->isNotEmpty())
+<div class="sec-hdr">
+  <div class="sec-ttl">Purchased Products</div>
+  <div style="font-size:12px;color:var(--text3);font-family:var(--mono);">{{ $donation->items->count() }} item(s)</div>
+</div>
+
+<div class="table-card">
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Campaign</th>
+          <th>Unit Price</th>
+          <th>Qty</th>
+          <th>Line Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        @foreach($donation->items as $item)
+        <tr>
+          <td data-label="Product">
+            @if($item->product)
+              <div style="display:flex;align-items:center;gap:10px;">
+                @if($item->product->image)
+                  <img src="{{ asset('storage/' . $item->product->image) }}" alt="" style="width:36px;height:36px;border-radius:8px;object-fit:cover;border:1px solid var(--border2);">
+                @endif
+                <span style="font-weight:600;">{{ $item->product->name }}</span>
+              </div>
+            @else
+              <span style="color:var(--text3);">Product #{{ $item->product_id }} (removed)</span>
+            @endif
+          </td>
+          <td data-label="Campaign" style="font-size:12.5px;">{{ $item->product?->campaign?->title ?? '—' }}</td>
+          <td data-label="Unit Price" class="cell-mono">₹{{ number_format($item->price, 2) }}</td>
+          <td data-label="Qty" class="cell-mono">{{ $item->quantity }}</td>
+          <td data-label="Line Total" class="cell-mono" style="font-weight:600;color:var(--green)">₹{{ number_format($item->price * $item->quantity, 2) }}</td>
+        </tr>
+        @endforeach
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="4" style="text-align:right;font-weight:700;color:var(--text2);">Total</td>
+          <td class="cell-mono" style="font-weight:700;color:var(--green)">₹{{ number_format($donation->items->sum(fn($i) => $i->price * $i->quantity), 2) }}</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
+@endif
+
 <div class="sec-hdr">
   <div class="sec-ttl">Refund History</div>
   <div style="font-size:12px;color:var(--text3);font-family:var(--mono);">{{ $donation->refunds->count() }} record(s)</div>
@@ -194,10 +246,10 @@
       <textarea id="refundReason" name="reason" rows="2" placeholder="Reason (optional)…" style="width:100%;margin-top:12px;padding:8px 10px;border:1px solid var(--border2);border-radius:var(--r-sm);font-size:12.5px;font-family:var(--font);background:var(--surface2);color:var(--text);resize:vertical"></textarea>
     </div>
     <div class="modal-acts">
-      <button type="button" onclick="closeRefund()" class="modal-btn modal-cancel">Cancel</button>
+      <button type="button" onclick="closeRefund()" class="btn btn-secondary modal-btn modal-cancel">Cancel</button>
       <form id="refundForm" method="POST" style="flex:1;">
         @csrf
-        <button type="submit" class="modal-btn modal-red" style="width:100%;">↺ Confirm Refund</button>
+        <button type="submit" class="btn btn-red modal-btn modal-red">↺ Confirm Refund</button>
       </form>
     </div>
   </div>

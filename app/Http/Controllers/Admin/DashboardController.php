@@ -4,16 +4,24 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Campaign;
+<<<<<<< HEAD
 use App\Models\CampaignSettlement;
 use App\Models\ContactMessage;
 use App\Models\Donation;
 use App\Models\JobPostApplication;
+=======
+use App\Models\Donation;
+>>>>>>> origin/master
 use App\Models\User;
 use App\Models\Volunteer;
 use App\Models\VolunteerApplication;
 use App\Models\Wallet;
 use Illuminate\Http\Request;
+<<<<<<< HEAD
 use Illuminate\Support\Str;
+=======
+use Illuminate\Support\Facades\Cache;
+>>>>>>> origin/master
 
 class DashboardController extends Controller
 {
@@ -55,8 +63,11 @@ class DashboardController extends Controller
      */
     private function computeCounts(): array
     {
-        $startOfDay = now()->startOfDay();
+        $counts = Campaign::selectRaw("campaign_state, COUNT(*) as count")
+            ->groupBy('campaign_state')
+            ->pluck('count', 'campaign_state');
 
+<<<<<<< HEAD
         $cntPending = Campaign::where('campaign_state', 'pending')->count();
         $cntPaused = Campaign::where('campaign_state', 'paused')->count();
         $cntRejected = Campaign::where('campaign_state', 'rejected')->count();
@@ -77,6 +88,17 @@ class DashboardController extends Controller
         $totalCampaigns = Campaign::count();
         $reviewed = $cntActive + $cntRejected;
         $approvalRate = $reviewed > 0 ? round(($cntActive / $reviewed) * 100) : 0;
+=======
+        $totalCampaigns = (int) $counts->sum();
+        $cntPending     = (int) ($counts['pending'] ?? 0);
+        $cntActive      = (int) ($counts['active'] ?? 0);
+        $cntPaused      = (int) ($counts['paused'] ?? 0);
+        $cntExpired     = (int) ($counts['expired'] ?? 0);
+        $cntRejected    = (int) ($counts['rejected'] ?? 0);
+        $cntCompleted   = (int) ($counts['completed'] ?? 0);
+
+        $approvalRate = $totalCampaigns > 0 ? round(($cntActive / $totalCampaigns) * 100) : 0;
+>>>>>>> origin/master
 
         return compact(
             'totalCampaigns', 'cntPending', 'cntActive', 'cntPaused',
@@ -86,11 +108,34 @@ class DashboardController extends Controller
 
     public function index()
     {
-        $counts = $this->computeCounts();
-        extract($counts);
+        $stats = Cache::remember('admin_dashboard_stats', 300, function () {
+            $counts = $this->computeCounts();
 
-        $volunteerCount = Volunteer::count();
-        $pendingVolunteerApps = VolunteerApplication::where('status', 'pending')->count();
+            $volunteerCount = Volunteer::count();
+            $pendingVolunteerApps = VolunteerApplication::where('status', 'pending')->count();
+
+            $totalUsers    = User::count();
+            $newUsersToday = User::whereDate('created_at', today())->count();
+
+            $totalDonations = Donation::count();
+            $donationsToday = Donation::whereDate('created_at', today())->count();
+            $totalRevenue   = Donation::sum('total_amount');
+
+            $avgDonation  = $totalDonations > 0 ? (int) round($totalRevenue / $totalDonations) : 0;
+            $uniqueDonors = Donation::whereNotNull('user_id')->distinct('user_id')->count('user_id');
+            $successRate  = ($counts['totalCampaigns'] ?? 0) > 0
+                ? round((Campaign::where('campaign_state', 'completed')->count() / $counts['totalCampaigns']) * 100)
+                : 0;
+
+            return array_merge($counts, compact(
+                'volunteerCount', 'pendingVolunteerApps',
+                'totalUsers', 'newUsersToday',
+                'totalDonations', 'donationsToday', 'totalRevenue',
+                'avgDonation', 'uniqueDonors', 'successRate'
+            ));
+        });
+
+        extract($stats);
 
         $totalUsers = User::count();
         $newUsersToday = User::whereDate('created_at', today())->count();
@@ -198,6 +243,7 @@ class DashboardController extends Controller
             $chartActive[] = $row ? (int) $row->active : 0;
         }
 
+<<<<<<< HEAD
         // ─────────────────────────────────────────────────────────
         // Revenue Trend (last 6 months)
         // ─────────────────────────────────────────────────────────
@@ -263,6 +309,13 @@ class DashboardController extends Controller
             'pendingSettlements',
             'totalWalletBalance',
             'recentActivity'
+=======
+        return view('admin.dashboard', array_merge($stats, compact(
+            'activeCampaigns',
+            'chartLabels',
+            'chartTotal',
+            'chartActive'
+>>>>>>> origin/master
         )));
     }
 

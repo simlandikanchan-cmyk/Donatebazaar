@@ -1255,12 +1255,12 @@ body {
                             <div class="c-actions">
                                 <form action="{{ route('admin.campaign.approve', $c->id) }}" method="POST" style="flex:1;" onsubmit="return handleSub(this,'Approving…')">
                                     @csrf
-                                    <button class="btn btn-g" style="width:100%;">
+                                    <button class="btn btn-green btn-g">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                                         Approve
                                     </button>
                                 </form>
-                                <button type="button" onclick="openReject({{ $c->id }})" class="btn btn-r" style="flex:1;">
+                                <button type="button" onclick="openReject({{ $c->id }})" class="btn btn-red">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                                     Reject
                                 </button>
@@ -1339,7 +1339,7 @@ body {
                                 @else
                                 <form action="{{ route('admin.campaign.resume', $c->id) }}" method="POST" style="flex:1;" onsubmit="return handleSub(this,'Resuming…')">
                                     @csrf
-                                    <button class="btn btn-g" style="width:100%;">
+                                    <button class="btn btn-green btn-g">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                         Resume
                                     </button>
@@ -1576,8 +1576,8 @@ body {
             <textarea id="pauseReason" name="reason" rows="3" placeholder="Or type a custom reason…" class="modal-ta"></textarea>
             <p id="pauseErr" class="modal-err">⚠ Please provide a reason before pausing.</p>
             <div class="modal-acts">
-                <button type="button" onclick="closePause()" class="modal-btn modal-cancel">Cancel</button>
-                <button type="submit" id="pauseBtn" class="modal-btn modal-y-btn">⏸ Pause Campaign</button>
+                <button type="button" onclick="closePause()" class="btn btn-secondary modal-btn modal-cancel">Cancel</button>
+                <button type="submit" id="pauseBtn" class="btn btn-yellow modal-btn modal-y-btn">⏸ Pause Campaign</button>
             </div>
         </form>
     </div>
@@ -1611,8 +1611,8 @@ body {
             <textarea id="rejectReason" name="reason" rows="3" placeholder="Or type a custom reason…" class="modal-ta"></textarea>
             <p id="rejectErr" class="modal-err">⚠ Please provide a reason before rejecting.</p>
             <div class="modal-acts">
-                <button type="button" onclick="closeReject()" class="modal-btn modal-cancel">Cancel</button>
-                <button type="submit" id="rejectBtn" class="modal-btn modal-r-btn">✕ Reject Campaign</button>
+                <button type="button" onclick="closeReject()" class="btn btn-secondary modal-btn modal-cancel">Cancel</button>
+                <button type="submit" id="rejectBtn" class="btn btn-red modal-btn modal-r-btn">✕ Reject Campaign</button>
             </div>
         </form>
     </div>

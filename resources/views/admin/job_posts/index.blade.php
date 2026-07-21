@@ -124,11 +124,23 @@ tbody tr:hover{background:var(--surface2)}
   .stats-grid{grid-template-columns:1fr!important}
 }
 @media(max-width:380px){
+<<<<<<< HEAD
   .filter-row{flex-direction:column;align-items:stretch;gap:8px;}
   .ftab-select{margin-top:4px;}
   .sinp{width:100%;}
   .filter-right{width:100%;}
   .sort-sel{width:100%;}
+=======
+  .sec-hdr h2{font-size:clamp(16px,4.5vw,18px)}.sec-hdr p{font-size:11px}
+  .stats-grid{gap:8px}.stat-card{padding:14px 10px}.stat-num{font-size:clamp(18px,5vw,20px)}.stat-lbl{font-size:9px}
+  .filter-row{gap:6px}.sinp{font-size:11px;height:34px;padding:0 10px}.filter-right{gap:4px}.filter-right .btn{font-size:11px;height:32px;padding:0 10px;flex:1;justify-content:center}
+  tbody tr{padding:10px}.table{margin:0 -10px;width:calc(100% + 20px)}
+  tbody td{font-size:11px;padding:5px 4px}
+  tbody td::before{font-size:8px;min-width:55px}
+  .act-btns{gap:4px}.act-btn{font-size:10px;padding:5px 8px;height:28px}
+  .pagination-wrap{flex-direction:column;gap:8px;padding:12px 14px}
+  .empty-state{padding:30px 16px}
+>>>>>>> origin/master
 }
 </style>
 @endpush
@@ -492,15 +504,15 @@ tbody tr:hover{background:var(--surface2)}
 
           <td data-label="Actions">
             <div class="act-btns">
-              <a href="{{ route('admin.job_posts.show', $job->id) }}" class="act-btn ab-view">
+              <a href="{{ route('admin.job_posts.show', $job->id) }}" class="btn btn-secondary act-btn ab-view">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                 <span>View</span>
               </a>
-              <a href="{{ route('admin.job_posts.edit', $job->id) }}" class="act-btn ab-edit">
+              <a href="{{ route('admin.job_posts.edit', $job->id) }}" class="btn btn-secondary act-btn ab-edit">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                 <span>Edit</span>
               </a>
-              <button type="button" onclick="confirmDelete({{ $job->id }}, '{{ addslashes($job->title) }}')" class="act-btn ab-delete">
+              <button type="button" onclick="confirmDelete({{ $job->id }}, '{{ addslashes($job->title) }}')" class="btn btn-red act-btn ab-delete">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                 <span>Delete</span>
               </button>
@@ -553,10 +565,10 @@ tbody tr:hover{background:var(--surface2)}
     </div>
     <div class="modal-body">Are you sure you want to delete <strong id="deleteJobTitle">"Job Title"</strong>? All applicants for this listing will also lose access.</div>
     <div class="modal-acts">
-      <button type="button" onclick="closeDelete()" class="modal-btn modal-cancel">Cancel</button>
+      <button type="button" onclick="closeDelete()" class="btn btn-secondary modal-btn modal-cancel">Cancel</button>
       <form id="deleteForm" method="POST" style="flex:1;">
         @csrf @method('DELETE')
-        <button type="submit" class="modal-btn modal-red" style="width:100%;">🗑 Delete Permanently</button>
+        <button type="submit" class="btn btn-red modal-btn modal-red">🗑 Delete Permanently</button>
       </form>
     </div>
   </div>

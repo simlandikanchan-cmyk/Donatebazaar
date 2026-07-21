@@ -219,8 +219,8 @@ tbody tr:hover .cat-icon-box{transform:scale(1.08) rotate(-3deg);}
     <h3 id="modalTitle">Delete Category?</h3>
     <p id="modalMsg">This will permanently remove <strong id="modalCatName"></strong>. Campaigns using this category may be affected.</p>
     <div class="modal-acts">
-      <button class="modal-cancel" onclick="closeModal()">Cancel</button>
-      <button class="modal-del" onclick="confirmDelete()">Yes, Delete</button>
+      <button class="btn btn-secondary modal-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-red modal-del" onclick="confirmDelete()">Yes, Delete</button>
     </div>
   </div>
 </div>
@@ -367,8 +367,8 @@ tbody tr:hover .cat-icon-box{transform:scale(1.08) rotate(-3deg);}
             <td><span class="campaign-count {{ ($category->campaigns_count??0)==0?'zero':'' }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>{{ $category->campaigns_count??0 }}</span></td>
             <td>
               <div class="actions">
-                <a href="{{ route('admin.categories.edit',$category->id) }}" class="act-btn act-edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</a>
-                <button type="button" class="act-btn act-del" onclick="openModal('{{ $category->id }}','{{ addslashes($category->name) }}','{{ route('admin.categories.destroy',$category->id) }}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Delete</button>
+                <a href="{{ route('admin.categories.edit',$category->id) }}" class="btn btn-secondary act-btn act-edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</a>
+                <button type="button" class="btn btn-red act-btn act-del" onclick="openModal('{{ $category->id }}','{{ addslashes($category->name) }}','{{ route('admin.categories.destroy',$category->id) }}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Delete</button>
               </div>
             </td>
           </tr>
@@ -431,8 +431,8 @@ tbody tr:hover .cat-icon-box{transform:scale(1.08) rotate(-3deg);}
         </label>
         <div class="grid-count-badge">{{ $category->campaigns_count??0 }} campaigns</div>
         <div class="grid-actions">
-          <a href="{{ route('admin.categories.edit',$category->id) }}" class="act-btn act-edit" style="font-size:11px;padding:4px 10px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</a>
-          <button type="button" class="act-btn act-del" style="font-size:11px;padding:4px 10px;" onclick="openModal('{{ $category->id }}','{{ addslashes($category->name) }}','{{ route('admin.categories.destroy',$category->id) }}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Delete</button>
+          <a href="{{ route('admin.categories.edit',$category->id) }}" class="btn btn-secondary act-btn act-edit" style="font-size:11px;padding:4px 10px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</a>
+          <button type="button" class="btn btn-red act-btn act-del" onclick="openModal('{{ $category->id }}','{{ addslashes($category->name) }}','{{ route('admin.categories.destroy',$category->id) }}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Delete</button>
         </div>
       </div>
       @endforeach
@@ -454,10 +454,10 @@ tbody tr:hover .cat-icon-box{transform:scale(1.08) rotate(-3deg);}
   <div class="bulk-bar" id="bulkBar">
     <span class="bulk-count" id="bulkCount">0 selected</span>
     <div class="bulk-acts">
-      <button type="button" class="bulk-btn bulk-btn-del" onclick="openBulkModal()">
+      <button type="button" class="btn btn-red bulk-btn bulk-btn-del" onclick="openBulkModal()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Delete
       </button>
-      <button type="button" class="bulk-btn bulk-btn-cancel" onclick="clearSelection()">Cancel</button>
+      <button type="button" class="btn btn-secondary bulk-btn bulk-btn-cancel" onclick="clearSelection()">Cancel</button>
     </div>
   </div>
 </div>

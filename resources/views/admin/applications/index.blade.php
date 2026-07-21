@@ -62,10 +62,16 @@ tbody tr:hover{background:var(--surface2)}
   tbody td.action-cell::before{padding-top:4px}
   .action-cell .c-btn{flex:1;min-width:0}
 }
+<<<<<<< HEAD
 @media(max-width:380px){
   .ftab-select{margin-top:4px;}
   .sec-search input{width:100%;max-width:none;}
 }
+=======
+@media(max-width:640px){.stat{padding:14px 16px}.sec-hdr>div:last-child{flex-direction:column;align-items:stretch}.sec-hdr>div:last-child .ftabs{overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;padding-bottom:2px}}
+@media(max-width:480px){.stat{padding:12px 14px}.stat-val{font-size:15px}.stat-lbl{font-size:9px}}
+@media(max-width:380px){.stat{padding:10px 12px}.stat-val{font-size:13px}.pagination-wrap{flex-direction:column;gap:8px;text-align:center}}
+>>>>>>> origin/master
 </style>
 @endpush
 
@@ -219,19 +225,19 @@ tbody tr:hover{background:var(--surface2)}
             @endif
           </td>
           <td class="action-cell" data-label="Actions">
-            <a href="{{ route('admin.applications.show', $app->id) }}" class="c-btn c-btn-view" title="View details">
+            <a href="{{ route('admin.applications.show', $app->id) }}" class="btn btn-secondary c-btn c-btn-view" title="View details">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
               View
             </a>
             @if($app->status === 'pending' || $app->status === 'under_review')
             <form method="POST" action="{{ route('admin.applications.approve', $app->id) }}" onsubmit="return handleSub(this,'Approving…')" style="display:inline">
               @csrf
-              <button type="submit" class="c-btn c-btn-approve" title="Approve">
+              <button type="submit" class="btn btn-green c-btn c-btn-approve" title="Approve">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                 Approve
               </button>
             </form>
-            <button type="button" class="c-btn c-btn-reject" onclick="openReject({{ $app->id }})" title="Reject">
+            <button type="button" class="btn btn-red c-btn c-btn-reject" onclick="openReject({{ $app->id }})" title="Reject">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
               Reject
             </button>
@@ -290,8 +296,8 @@ tbody tr:hover{background:var(--surface2)}
       <textarea id="rejectReason" name="rejection_reason" rows="3" placeholder="Or type a custom reason…" class="modal-ta"></textarea>
       <p id="rejectErr" class="modal-err">⚠ Please provide a reason before rejecting.</p>
       <div class="modal-acts">
-        <button type="button" onclick="closeReject()" class="modal-btn modal-cancel">Cancel</button>
-        <button type="submit" id="rejectBtn" class="modal-btn modal-red">✕ Reject Application</button>
+        <button type="button" onclick="closeReject()" class="btn btn-secondary modal-btn modal-cancel">Cancel</button>
+        <button type="submit" id="rejectBtn" class="btn btn-red modal-btn modal-red">✕ Reject Application</button>
       </div>
     </form>
   </div>

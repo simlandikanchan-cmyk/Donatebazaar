@@ -78,4 +78,13 @@ class Donation extends Model
     {
         return $this->hasMany(Refund::class);
     }
+<<<<<<< HEAD
 }
+=======
+
+    public function items()
+    {
+        return $this->hasMany(DonationItem::class);
+    }
+}
+>>>>>>> origin/master
