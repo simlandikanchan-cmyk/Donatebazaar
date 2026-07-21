@@ -80,10 +80,6 @@ class CampaignProduct extends Model
             'approved_by'
         );
     }
-<<<<<<< HEAD
-}
-=======
-
     /*
     |--------------------------------------------------------------------------
     | Reservations — stock currently held by donors mid-checkout
@@ -103,4 +99,3 @@ class CampaignProduct extends Model
         return app(ProductReservationService::class)->availableQuantity($this);
     }
 }
->>>>>>> origin/master

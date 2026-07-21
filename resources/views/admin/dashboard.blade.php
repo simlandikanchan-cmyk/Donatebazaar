@@ -100,58 +100,15 @@
   <span class="hero-particle" style="--x:25%;--y:70%;--s:3px;--d:3.8s"></span>
   <span class="hero-particle" style="--x:55%;--y:80%;--s:4px;--d:5s"></span>
   <div class="hero-left">
-<<<<<<< HEAD
-    <div class="hero-greeting">
-      <div class="hero-avatar">
-        @if(auth()->user()->avatar)
-          <img src="{{ asset('storage/' . auth()->user()->avatar) }}" alt="">
-        @else
-          {{ strtoupper(substr(auth()->user()->name ?? 'A', 0, 1)) }}
-        @endif
-      </div>
-      <div>
-        <div class="hero-tag"><span class="hero-tag-dot"></span>{{ $greeting }}, Administrator</div>
-        <div class="hero-name">{{ auth()->user()->name ?? 'Admin' }}</div>
-      </div>
-    </div>
-    <div class="hero-sub">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="hero-sub-ico"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-      Here's your platform overview for today. Manage campaigns, job posts, and keep DonateBazaar running smoothly.
-    </div>
-    <div class="hero-badges">
-      @if($cntPending > 0)
-        <span class="hero-badge hb-amber">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="hero-badge-ico"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          {{ $cntPending }} awaiting review
-        </span>
-=======
     <div class="hero-tag"><span class="hero-tag-dot"></span>{{ $greeting }}, Administrator</div>
-    <div class="hero-name">{{ auth()->user()->name ?? 'Admin' }} <span class="wave">👋</span></div>
+    <div class="hero-name">{{ auth()->user()->name ?? 'Admin' }}</div>
     <div class="hero-sub">Every donation tells a story of hope. Together, we're turning compassion into action — one campaign at a time.</div>
     <div class="hero-badges">
       @if($cntPending > 0)
         <span class="hero-badge hb-amber"><span class="hb-count" data-count="{{ $cntPending }}">0</span> awaiting review</span>
->>>>>>> origin/master
       @else
-        <span class="hero-badge hb-green">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="hero-badge-ico"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          All caught up
-        </span>
+        <span class="hero-badge hb-green">All caught up</span>
       @endif
-<<<<<<< HEAD
-      <span class="hero-badge hb-green">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="hero-badge-ico"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-        {{ $cntActive }} active
-      </span>
-      <span class="hero-badge hb-purple">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="hero-badge-ico"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-        {{ $approvalRate }}% approved
-      </span>
-      <span class="hero-badge hb-teal">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="hero-badge-ico"><path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-        {{ $activeJobs }} open jobs
-      </span>
-=======
       <span class="hero-badge hb-green"><span class="hb-count" data-count="{{ $cntActive }}">0</span> active campaigns</span>
       <span class="hero-badge hb-purple"><span class="hb-count" data-count="{{ $approvalRate }}">0</span>% approval rate</span>
       <span class="hero-badge hb-teal"><span class="hb-count" data-count="{{ $activeJobs }}">0</span> open jobs</span>
@@ -159,7 +116,6 @@
     <div class="hero-ticker">
       <span class="hero-ticker-dot"></span>
       <div class="hero-ticker-track" id="tickerTrack"></div>
->>>>>>> origin/master
     </div>
   </div>
   <div class="hero-right">
@@ -232,8 +188,6 @@
     <div class="stat-icon si-purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
     <div class="stat-body"><div class="stat-lbl">Donations Today</div><div class="stat-val sv-purple">{{ $donationsToday }}</div><div class="stat-foot">Received in last 24h</div></div>
   </div>
-<<<<<<< HEAD
-=======
       <div class="stat">
         <div class="stat-icon si-teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></div>
         <div class="stat-body"><div class="stat-lbl">Active Jobs</div><div class="stat-val sv-teal">{{ $activeJobs }}</div><div class="stat-foot"><a href="{{ route('admin.job_posts.create') }}">+ Post new job →</a></div></div>
@@ -266,8 +220,6 @@
         <div class="stat-icon si-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
         <div class="stat-body"><div class="stat-lbl">Success Rate</div><div class="stat-val sv-green">{{ $successRate }}%</div><div class="stat-foot">Campaigns completed</div></div>
       </div>
-
->>>>>>> origin/master
 </div>
 
 <div class="analytics-row">
@@ -967,15 +919,9 @@ function fetchGrid(page){
 document.querySelectorAll('.ftab').forEach(function(tab){
   tab.addEventListener('click',function(){
     document.querySelectorAll('.ftab').forEach(function(t){t.classList.remove('on');});
-<<<<<<< HEAD
-    this.classList.add('on');state=this.dataset.filter;
-    document.getElementById('ftabSelect').value=state;
-    fetchGrid(1);
-=======
     this.classList.add('on');state=this.dataset.filter;fetchGrid(1);
     var sel=document.getElementById('ftabSelect');
     if(sel)sel.value=state;
->>>>>>> origin/master
   });
 });
 var ftabSelect=document.getElementById('ftabSelect');
@@ -994,12 +940,8 @@ document.getElementById('ftabSelect').addEventListener('change',function(){
 window.setFilter=function(f){
   state=f;
   document.querySelectorAll('.ftab').forEach(function(t){t.classList.toggle('on',t.dataset.filter===f);});
-<<<<<<< HEAD
-  document.getElementById('ftabSelect').value=f;
-=======
   var sel=document.getElementById('ftabSelect');
   if(sel)sel.value=f;
->>>>>>> origin/master
   fetchGrid(1);
   var el=document.getElementById('cGrid');
   if(el)el.scrollIntoView({behavior:'smooth',block:'start'});

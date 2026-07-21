@@ -97,30 +97,20 @@
 @media(max-width:1200px){.stats-grid{grid-template-columns:repeat(3,1fr);}}
 @media(max-width:860px){.stats-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:520px){.stats-grid{grid-template-columns:1fr;}}
-<<<<<<< HEAD
 
 @media(max-width:380px){
   .stats-grid{gap:8px;}
-  .stat{padding:10px 12px;gap:8px;}
-  .stat-icon{width:30px;height:30px;border-radius:8px;}
-  .stat-icon svg{width:13px;height:13px;}
-  .stat-val{font-size:1rem;}
-  .toolbar{gap:8px;}
-  .toolbar-left{gap:6px;flex-direction:column;align-items:stretch;}
-  .search-wrap{min-width:0;width:100%;}
-  .search-input,.search-input:focus{width:100%;}
-  .cp-bulkbar{flex-direction:column;gap:8px;padding:10px 14px;}
-  .cp-bulk-acts{width:100%;justify-content:center;}
-  .p-table{font-size:11px;}
-  .p-table th,.p-table td{padding:8px 8px;}
-  .cmp-title{max-width:140px;font-size:12px;}
-  .cmp-actions{gap:4px;}
-  .cmp-view,.cmp-edit{padding:0 8px;font-size:11px;}
-  .pagination-wrap{flex-direction:column;align-items:center;text-align:center;}
+  .stat{border-radius:10px;padding:12px 10px;}
+  .stat-icon{width:32px;height:32px;}
+  .stat-icon svg{width:14px;height:14px;}
+  .stat-value{font-size:clamp(16px,4.5vw,18px);}
+  .stat-label{font-size:9px;}
+  .table td,.table th{padding:7px 5px;font-size:10px;}
+  .table .col-campaign,.table .col-raised{display:none;}
+  .pagination-wrap{flex-direction:column;gap:8px;}
+  .search-input{font-size:11px;height:34px;padding:0 10px;}
+  .search-wrap{min-width:0;}
 }
-=======
-@media(max-width:380px){.search-input{font-size:11px;height:34px;padding:0 10px}.search-wrap{min-width:0}.stats-grid{gap:8px}.stat{border-radius:10px;padding:12px 10px}.stat-inner{flex-direction:row;gap:10px}.stat-icon{width:32px;height:32px}.stat-icon svg{width:14px;height:14px}.stat-content{text-align:left}.stat-value{font-size:clamp(16px,4.5vw,18px)}.stat-label{font-size:9px}.table td,.table th{padding:7px 5px;font-size:10px}.table .col-campaign,.table .col-raised,.table th.col-campaign,.table th.col-raised{display:none}.pagination-wrap{flex-direction:column;gap:8px}.clear-btn{font-size:11px;height:34px;padding:0 10px}}
->>>>>>> origin/master
 </style>
 @endpush
 

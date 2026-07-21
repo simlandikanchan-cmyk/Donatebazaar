@@ -62,16 +62,14 @@ tbody tr:hover{background:var(--surface2)}
   tbody td.action-cell::before{padding-top:4px}
   .action-cell .c-btn{flex:1;min-width:0}
 }
-<<<<<<< HEAD
-@media(max-width:380px){
-  .ftab-select{margin-top:4px;}
-  .sec-search input{width:100%;max-width:none;}
-}
-=======
 @media(max-width:640px){.stat{padding:14px 16px}.sec-hdr>div:last-child{flex-direction:column;align-items:stretch}.sec-hdr>div:last-child .ftabs{overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;padding-bottom:2px}}
 @media(max-width:480px){.stat{padding:12px 14px}.stat-val{font-size:15px}.stat-lbl{font-size:9px}}
-@media(max-width:380px){.stat{padding:10px 12px}.stat-val{font-size:13px}.pagination-wrap{flex-direction:column;gap:8px;text-align:center}}
->>>>>>> origin/master
+@media(max-width:380px){
+  .stat{padding:10px 12px}
+  .stat-val{font-size:13px}
+  .pagination-wrap{flex-direction:column;gap:8px;text-align:center}
+  .sec-search input{width:100%;max-width:none;}
+}
 </style>
 @endpush
 

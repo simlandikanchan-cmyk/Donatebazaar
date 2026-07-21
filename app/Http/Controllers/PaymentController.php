@@ -12,16 +12,12 @@ use App\Models\Donation;
 use App\Models\DonationItem;
 use App\Models\ProductReservation;
 use App\Models\Refund;
-<<<<<<< HEAD
+use App\Exceptions\InsufficientStockException;
 use App\Models\User;
 use App\Models\WalletTransaction;
 use App\Services\CouponService;
-use App\Services\WalletService;
-=======
-use App\Exceptions\InsufficientStockException;
-use App\Services\CouponService;
 use App\Services\ProductReservationService;
->>>>>>> origin/master
+use App\Services\WalletService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -515,24 +511,14 @@ class PaymentController extends Controller
         session([
             'donation_amount' => $amount,
             'donation_original_amount' => $enteredAmount,
-<<<<<<< HEAD
             'donation_discount' => $couponData ? $couponData['discount'] : 0,
             'donation_coupon_code' => $couponData ? $couponData['code'] : null,
             'donation_coupon_id' => $couponData ? $couponData['id'] : null,
             'donation_campaign' => (string) $campaign->id,
             'donation_session_at' => now()->timestamp,
+            'donation_reservation_ids' => $reservationIds,
             'donation_cart' => [
                 'ids' => $request->input('product_ids', ''),
-=======
-            'donation_discount'      => $couponData ? $couponData['discount'] : 0,
-            'donation_coupon_code'   => $couponData ? $couponData['code'] : null,
-            'donation_coupon_id'     => $couponData ? $couponData['id'] : null,
-            'donation_campaign'      => (string) $campaign->id,
-            'donation_session_at'    => now()->timestamp,
-            'donation_reservation_ids' => $reservationIds,
-            'donation_cart'          => [
-                'ids'  => $request->input('product_ids', ''),
->>>>>>> origin/master
                 'qtys' => $request->input('product_qtys', ''),
                 'type' => $request->input('donation_type', 'money'),
             ],

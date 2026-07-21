@@ -158,11 +158,7 @@ class EventController extends Controller
     public function show(Event $event): View
     {
         $event->load(['campaign', 'user', 'registrations.user', 'volunteerAssignments.volunteer.user'])
-<<<<<<< HEAD
             ->loadCount('registrations');
-=======
-              ->loadCount('registrations');
->>>>>>> origin/master
 
         // Auto-expire if event date has passed
         // Auto-expire if event date + end_time has passed.

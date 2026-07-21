@@ -4,24 +4,17 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Campaign;
-<<<<<<< HEAD
 use App\Models\CampaignSettlement;
 use App\Models\ContactMessage;
 use App\Models\Donation;
 use App\Models\JobPostApplication;
-=======
-use App\Models\Donation;
->>>>>>> origin/master
 use App\Models\User;
 use App\Models\Volunteer;
 use App\Models\VolunteerApplication;
 use App\Models\Wallet;
 use Illuminate\Http\Request;
-<<<<<<< HEAD
-use Illuminate\Support\Str;
-=======
 use Illuminate\Support\Facades\Cache;
->>>>>>> origin/master
+use Illuminate\Support\Str;
 
 class DashboardController extends Controller
 {
@@ -67,28 +60,6 @@ class DashboardController extends Controller
             ->groupBy('campaign_state')
             ->pluck('count', 'campaign_state');
 
-<<<<<<< HEAD
-        $cntPending = Campaign::where('campaign_state', 'pending')->count();
-        $cntPaused = Campaign::where('campaign_state', 'paused')->count();
-        $cntRejected = Campaign::where('campaign_state', 'rejected')->count();
-        $cntCompleted = Campaign::where('campaign_state', 'completed')->count();
-
-        $cntActive = Campaign::where('campaign_state', 'active')
-            ->where(function ($q) use ($startOfDay) {
-                $q->whereNull('end_date')->orWhere('end_date', '>=', $startOfDay);
-            })->count();
-
-        $cntExpired = Campaign::where('campaign_state', 'expired')
-            ->orWhere(function ($q) use ($startOfDay) {
-                $q->where('campaign_state', 'active')
-                    ->whereNotNull('end_date')
-                    ->where('end_date', '<', $startOfDay);
-            })->count();
-
-        $totalCampaigns = Campaign::count();
-        $reviewed = $cntActive + $cntRejected;
-        $approvalRate = $reviewed > 0 ? round(($cntActive / $reviewed) * 100) : 0;
-=======
         $totalCampaigns = (int) $counts->sum();
         $cntPending     = (int) ($counts['pending'] ?? 0);
         $cntActive      = (int) ($counts['active'] ?? 0);
@@ -98,7 +69,6 @@ class DashboardController extends Controller
         $cntCompleted   = (int) ($counts['completed'] ?? 0);
 
         $approvalRate = $totalCampaigns > 0 ? round(($cntActive / $totalCampaigns) * 100) : 0;
->>>>>>> origin/master
 
         return compact(
             'totalCampaigns', 'cntPending', 'cntActive', 'cntPaused',
@@ -243,7 +213,6 @@ class DashboardController extends Controller
             $chartActive[] = $row ? (int) $row->active : 0;
         }
 
-<<<<<<< HEAD
         // ─────────────────────────────────────────────────────────
         // Revenue Trend (last 6 months)
         // ─────────────────────────────────────────────────────────
@@ -288,7 +257,7 @@ class DashboardController extends Controller
         $topCampLabels = array_reverse($topCampLabels);
         $topCampValues = array_reverse($topCampValues);
 
-        return view('admin.dashboard', array_merge($counts, compact(
+        return view('admin.dashboard', array_merge($stats, compact(
             'activeCampaigns',
             'chartLabels',
             'chartTotal',
@@ -297,25 +266,11 @@ class DashboardController extends Controller
             'revData',
             'topCampLabels',
             'topCampValues',
-            'volunteerCount',
-            'pendingVolunteerApps',
-            'totalUsers',
-            'newUsersToday',
-            'totalDonations',
-            'donationsToday',
-            'totalRevenue',
             'unreadMessages',
             'pendingJobApplicants',
             'pendingSettlements',
             'totalWalletBalance',
             'recentActivity'
-=======
-        return view('admin.dashboard', array_merge($stats, compact(
-            'activeCampaigns',
-            'chartLabels',
-            'chartTotal',
-            'chartActive'
->>>>>>> origin/master
         )));
     }
 

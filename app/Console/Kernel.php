@@ -11,16 +11,7 @@ class Kernel extends ConsoleKernel
     {
 
         $schedule->command('campaigns:expire')->hourly();
-
-<<<<<<< HEAD
-=======
         $schedule->command('reservations:prune')->everyFiveMinutes();
-
-        
-
-
-
->>>>>>> origin/master
         $schedule->command('telescope:prune', ['--hours' => 24])->daily();
 
     }

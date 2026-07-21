@@ -168,11 +168,7 @@
             </tr>
             @empty
             <tr class="empty-row">
-<<<<<<< HEAD
               <td colspan="10">
-=======
-                <td colspan="9">
->>>>>>> origin/master
                 <div class="empty-inner">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg>
                   <strong>No volunteers found</strong>
@@ -301,18 +297,39 @@ tbody tr:hover{background:var(--surface2);}
 .hero-badge.hb-purple{background:rgba(37,99,235,.12);color:var(--a);border-color:rgba(37,99,235,.22);}
 [data-theme="dark"] .hero-badge.hb-purple{color:#93c5fd;}
 
-@media(max-width:860px){.search-wrap{display:none}}
-<<<<<<< HEAD
-@media(max-width:600px){.filter-bar{flex-direction:column;align-items:stretch}.filter-inp{width:100%}}
-@media(max-width:380px){.stats-grid{grid-template-columns:1fr;gap:8px;}.stat{padding:10px 12px;}.stat-icon{width:30px;height:30px;}.stat-icon svg{width:13px;height:13px;}}
-=======
 @media(max-width:1100px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:900px){.filter-inp{width:220px}.filter-city-wrap .filter-inp{width:170px}}
+@media(max-width:860px){.search-wrap{display:none}}
 @media(max-width:640px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:600px){.filter-bar{flex-direction:column;align-items:stretch}.filter-inp,.filter-city-wrap .filter-inp{width:100%}.filter-city-wrap{width:100%}.filter-btn{width:100%;justify-content:center}.filter-sel{width:100%}}
-@media(max-width:540px){.stats-grid{grid-template-columns:1fr}.table-wrap td:nth-child(3),.table-wrap th:nth-child(3),.table-wrap td:nth-child(5),.table-wrap th:nth-child(5),.table-wrap td:nth-child(6),.table-wrap th:nth-child(6),.table-wrap td:nth-child(8),.table-wrap th:nth-child(8){display:none}.stat-gap{gap:8px}}
+@media(max-width:600px){
+  .filter-bar{flex-direction:column;align-items:stretch}
+  .filter-inp,.filter-city-wrap .filter-inp,.filter-sel{width:100%}
+  .filter-city-wrap{width:100%}
+  .filter-btn{width:100%;justify-content:center}
+}
+@media(max-width:540px){
+  .stats-grid{grid-template-columns:1fr}
+  .table-wrap td:nth-child(3),.table-wrap th:nth-child(3),
+  .table-wrap td:nth-child(5),.table-wrap th:nth-child(5),
+  .table-wrap td:nth-child(6),.table-wrap th:nth-child(6),
+  .table-wrap td:nth-child(8),.table-wrap th:nth-child(8){display:none}
+  .stat-gap{gap:8px}
+}
 @media(max-width:480px){.table-wrap td:nth-child(7),.table-wrap th:nth-child(7){display:none}}
-@media(max-width:380px){.page-hdr{padding:14px 12px}.page-hdr-left h2{font-size:clamp(15px,4.5vw,17px)}.stats-grid{grid-template-columns:1fr;gap:6px}.stat-card{padding:10px 12px;gap:8px}.stat-num{font-size:clamp(16px,4.5vw,18px)}.stat-lbl{font-size:9px}.filter-bar{padding:12px 10px;gap:6px}.filter-inp,.filter-sel,.filter-btn{height:32px;font-size:11px}.table-wrap td:nth-child(4),.table-wrap th:nth-child(4){display:none}.table td,.table th{padding:7px 5px;font-size:10px}.select-wrap .si{display:none}.filter-select{padding:0 22px 0 8px;background-position:right 5px center;background-size:11px}.pagination-wrap{flex-direction:column;gap:8px;padding:12px 14px}}
->>>>>>> origin/master
+@media(max-width:380px){
+  .page-hdr{padding:14px 12px}
+  .page-hdr-left h2{font-size:clamp(15px,4.5vw,17px)}
+  .stats-grid{grid-template-columns:1fr;gap:6px}
+  .stat-card{padding:10px 12px;gap:8px}
+  .stat-num{font-size:clamp(16px,4.5vw,18px)}
+  .stat-lbl{font-size:9px}
+  .filter-bar{padding:12px 10px;gap:6px}
+  .filter-inp,.filter-sel,.filter-btn{height:32px;font-size:11px}
+  .table-wrap td:nth-child(4),.table-wrap th:nth-child(4){display:none}
+  .table td,.table th{padding:7px 5px;font-size:10px}
+  .pagination-wrap{flex-direction:column;gap:8px;padding:12px 14px}
+  .stat-icon{width:30px;height:30px}
+  .stat-icon svg{width:13px;height:13px}
+}
 </style>
 @endpush

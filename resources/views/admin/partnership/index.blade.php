@@ -158,7 +158,7 @@ td{padding:12px 16px;font-size:13px;vertical-align:middle;}
 
 @media(max-width:860px){.stats-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:600px){.stats-grid{grid-template-columns:1fr 1fr}.search-input{width:160px;}.search-input:focus{width:180px;}}
-<<<<<<< HEAD
+@media(max-width:480px){.stats-grid{grid-template-columns:1fr 1fr;gap:8px;}.stat{padding:12px 14px;gap:10px;}.stat-icon{width:32px;height:32px;border-radius:8px;}.stat-icon svg{width:13px;height:13px;}.stat-val{font-size:1.1rem;}.toolbar{flex-direction:column;align-items:stretch;gap:8px;}.toolbar-left{gap:6px;flex-wrap:wrap;}.search-input,.search-input:focus{width:100%;}.toolbar-right{width:100%;}.export-btn{flex:1;justify-content:center;}}
 @media(max-width:380px){
   .stats-grid{grid-template-columns:1fr;gap:8px;}
   .stat{padding:10px 12px;gap:8px;}
@@ -181,10 +181,6 @@ td{padding:12px 16px;font-size:13px;vertical-align:middle;}
   .act-btn{padding:4px 8px;font-size:10.5px;}
   .act-btn svg{width:9px;height:9px;}
 }
-=======
-@media(max-width:480px){.page-hdr{padding:16px 14px}.page-hdr-left h2{font-size:clamp(16px,4.5vw,18px)}.stats-grid{grid-template-columns:1fr 1fr;gap:8px}.stat-card{padding:14px 10px}.stat-num{font-size:clamp(18px,5vw,22px)}.stat-lbl{font-size:10px}.toolbar{flex-direction:column;align-items:stretch;gap:8px}.toolbar-left{gap:6px;flex-wrap:wrap}.search-input{width:100%!important;min-width:0}.search-input:focus{width:100%!important}.toolbar-right{width:100%}.toolbar-right .export-btn{flex:1;justify-content:center}.table-wrap{overflow-x:auto}.table th,.table td{padding:10px 8px;font-size:11px}.table .col-desc{display:none}.table th.col-desc{display:none}.status-pill{font-size:10px;padding:3px 8px}.filter-btn{font-size:11px;height:32px;padding:0 10px}}
-@media(max-width:380px){.page-hdr{padding:12px 10px}.page-hdr-left h2{font-size:clamp(14px,4.5vw,16px)}.stats-grid{grid-template-columns:1fr;gap:6px}.stat-card{padding:12px 8px;flex-direction:row;gap:10px}.stat-num{font-size:clamp(16px,5vw,20px)}.stat-lbl{font-size:9px}.toolbar-left{flex-wrap:wrap}.filter-select{font-size:11px;height:32px;padding:0 25px 0 10px}.table .col-type,.table .col-created{display:none}.table th.col-type,.table th.col-created{display:none}.pagination-wrap{gap:6px;flex-wrap:wrap;justify-content:center}.page-btn{font-size:11px;height:30px;min-width:30px}.bulk-bar{flex-direction:column;gap:6px}.bulk-bar .btn{width:100%;justify-content:center}}
->>>>>>> origin/master
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 </style>
