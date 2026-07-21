@@ -9,20 +9,19 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-public function up(): void
-{
-    Schema::table('users', function (Blueprint $table) {
-        $table->string('avatar')->nullable()->after('email');
-        $table->string('cover_image')->nullable()->after('avatar');
-        $table->text('bio')->nullable()->after('cover_image');
-    });
-}
+    public function up(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('avatar')->nullable()->after('email');
+            $table->string('cover_image')->nullable()->after('avatar');
+            $table->text('bio')->nullable()->after('cover_image');
+        });
+    }
 
-public function down(): void
-{
-    Schema::table('users', function (Blueprint $table) {
-        $table->dropColumn(['avatar', 'cover_image', 'bio']);
-    });
-}
-
+    public function down(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn(['avatar', 'cover_image', 'bio']);
+        });
+    }
 };

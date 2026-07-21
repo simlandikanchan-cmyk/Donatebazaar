@@ -4,11 +4,10 @@ namespace App\Services\Blog;
 
 use App\Mail\BlogCreatedMail;
 use App\Models\Blog;
-
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class BlogService
 {
@@ -30,11 +29,11 @@ class BlogService
         $count = Blog::where(
             'slug',
             'LIKE',
-            $slug . '%'
+            $slug.'%'
         )->count();
 
         if ($count > 0) {
-            $slug .= '-' . ($count + 1);
+            $slug .= '-'.($count + 1);
         }
 
         $data['slug'] = $slug;
@@ -149,19 +148,17 @@ class BlogService
             $count = Blog::where(
                 'slug',
                 'LIKE',
-                $slug . '%'
+                $slug.'%'
             )
-
-            ->where(
-                'id',
-                '!=',
-                $blog->id
-            )
-
-            ->count();
+                ->where(
+                    'id',
+                    '!=',
+                    $blog->id
+                )
+                ->count();
 
             if ($count > 0) {
-                $slug .= '-' . ($count + 1);
+                $slug .= '-'.($count + 1);
             }
 
             $data['slug'] = $slug;
@@ -245,7 +242,7 @@ class BlogService
         bool $submitNow
     ): string {
 
-        if (!$submitNow) {
+        if (! $submitNow) {
             return Blog::STATUS_DRAFT;
         }
 

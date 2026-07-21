@@ -12,21 +12,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('reports', function (Blueprint $table) {
-    $table->id();
-    $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->id();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
 
-    $table->unsignedBigInteger('reportable_id');
-    $table->string('reportable_type');
+            $table->unsignedBigInteger('reportable_id');
+            $table->string('reportable_type');
 
-    $table->text('reason');
+            $table->text('reason');
 
-    $table->enum('status', ['pending', 'reviewed', 'rejected'])
-          ->default('pending');
+            $table->enum('status', ['pending', 'reviewed', 'rejected'])
+                ->default('pending');
 
-    $table->timestamps();
+            $table->timestamps();
 
-    $table->index(['reportable_id', 'reportable_type']);
-});
+            $table->index(['reportable_id', 'reportable_type']);
+        });
     }
 
     /**

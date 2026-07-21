@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('categories', function (Blueprint $table) {
-    $table->string('icon')->nullable();   // icon class
-    $table->string('color')->nullable();  // UI color
-    $table->boolean('is_active')->default(true);
-    });
+            $table->string('icon')->nullable();   // icon class
+            $table->string('color')->nullable();  // UI color
+            $table->boolean('is_active')->default(true);
+        });
     }
 
     /**

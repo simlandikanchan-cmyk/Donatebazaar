@@ -30,7 +30,7 @@ class CampaignCreatedMail extends Mailable
                     $this->campaign->user->name,
                 ),
             ],
-            subject: 'Your Campaign Has Been Submitted — ' . config('app.name'),
+            subject: 'Your Campaign Has Been Submitted — '.config('app.name'),
         );
     }
 
@@ -40,7 +40,7 @@ class CampaignCreatedMail extends Mailable
             view: 'emails.campaign-created',
             with: [
                 'campaign' => $this->campaign,
-                'user'     => $this->campaign->user,
+                'user' => $this->campaign->user,
             ],
         );
     }

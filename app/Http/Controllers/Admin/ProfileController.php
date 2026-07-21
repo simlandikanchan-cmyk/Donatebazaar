@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
@@ -21,12 +22,13 @@ class ProfileController extends Controller
             ->get()
             ->map(function ($session) use ($request) {
                 $session->is_current = $session->id === $request->session()->getId();
-                $session->last_active = \Carbon\Carbon::createFromTimestamp($session->last_activity)->diffForHumans();
+                $session->last_active = Carbon::createFromTimestamp($session->last_activity)->diffForHumans();
+
                 return $session;
             });
 
         return view('admin.profile.show', [
-            'user'     => $request->user(),
+            'user' => $request->user(),
             'sessions' => $sessions,
         ]);
     }
@@ -34,8 +36,8 @@ class ProfileController extends Controller
     public function update(Request $request): RedirectResponse
     {
         $request->validate([
-            'name'  => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $request->user()->id],
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$request->user()->id],
         ]);
 
         $user = $request->user();
@@ -74,7 +76,7 @@ class ProfileController extends Controller
     {
         $request->validate([
             'current_password' => ['required', 'string'],
-            'password'         => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
         $user = $request->user();

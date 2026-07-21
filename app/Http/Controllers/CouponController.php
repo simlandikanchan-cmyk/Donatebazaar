@@ -17,22 +17,22 @@ class CouponController extends Controller
     public function check(Request $request, CouponService $couponService): JsonResponse
     {
         $request->validate([
-            'code'       => 'required|string',
-            'amount'     => 'required|numeric|min:1',
+            'code' => 'required|string',
+            'amount' => 'required|numeric|min:1',
             'campaign_id' => 'nullable|integer|exists:campaigns,id',
         ]);
 
-        $user     = Auth::user();
+        $user = Auth::user();
         $campaign = $request->campaign_id ? Campaign::find($request->campaign_id) : null;
-        $amount   = (float) $request->amount;
+        $amount = (float) $request->amount;
 
         $result = $couponService->validate($request->code, $user, $campaign, $amount);
 
         return response()->json([
-            'valid'            => $result['valid'],
-            'discount_amount'  => $result['discount_amount'],
+            'valid' => $result['valid'],
+            'discount_amount' => $result['discount_amount'],
             'discounted_total' => $result['discounted_total'],
-            'message'          => $result['message'],
+            'message' => $result['message'],
         ]);
     }
 }

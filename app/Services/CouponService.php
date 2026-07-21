@@ -36,26 +36,26 @@ class CouponService
             return $this->invalid($amount, $message, $coupon);
         }
 
-        $discount       = $coupon->computeDiscount($amount);
+        $discount = $coupon->computeDiscount($amount);
         $discountedTotal = round($amount - $discount, 2);
 
         return [
-            'valid'            => true,
-            'discount_amount'  => $discount,
+            'valid' => true,
+            'discount_amount' => $discount,
             'discounted_total' => $discountedTotal,
-            'message'          => $message,
-            'coupon'           => $coupon,
+            'message' => $message,
+            'coupon' => $coupon,
         ];
     }
 
     private function invalid(float $amount, string $message, ?Coupon $coupon = null): array
     {
         return [
-            'valid'            => false,
-            'discount_amount'  => 0.0,
+            'valid' => false,
+            'discount_amount' => 0.0,
             'discounted_total' => $amount,
-            'message'          => $message,
-            'coupon'           => $coupon,
+            'message' => $message,
+            'coupon' => $coupon,
         ];
     }
 }

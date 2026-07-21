@@ -25,8 +25,12 @@ class KycUploadController extends Controller
     {
         abort_unless(Auth::id() === $campaign->user_id, 403);
 
-        // FIXED: scoped by campaign_id, not just user_id — otherwise a user
-        // with multiple campaigns would see another campaign's KYC status here.
+        if (KycVerification::where('user_id', Auth::id())
+            ->where('status', KycVerification::STATUS_APPROVED)
+            ->exists()) {
+            return view('kyc.upload', compact('campaign'))->with('existingKyc', null)->with('kycAlreadyApproved', true);
+        }
+
         $existingKyc = KycVerification::where('user_id', Auth::id())
             ->where('campaign_id', $campaign->id)
             ->latest()
@@ -69,13 +73,13 @@ class KycUploadController extends Controller
 
         abort_unless($kyc->document_url && Storage::disk('private')->exists($kyc->document_url), 404);
 
-        $file     = Storage::disk('private')->get($kyc->document_url);
+        $file = Storage::disk('private')->get($kyc->document_url);
         $mimeType = Storage::disk('private')->mimeType($kyc->document_url);
         $fileName = basename($kyc->document_url);
 
         return response($file, 200)
             ->header('Content-Type', $mimeType)
-            ->header('Content-Disposition', 'inline; filename="' . $fileName . '"');
+            ->header('Content-Disposition', 'inline; filename="'.$fileName.'"');
     }
 
     /**
@@ -87,10 +91,18 @@ class KycUploadController extends Controller
     {
         abort_unless(Auth::id() === $campaign->user_id, 403);
 
+        if (KycVerification::where('user_id', Auth::id())
+            ->where('status', KycVerification::STATUS_APPROVED)
+            ->exists()) {
+            return redirect()
+                ->route('campaign.show', $campaign->id)
+                ->with('info', 'KYC already approved. No need to re-upload.');
+        }
+
         $validated = $request->validate([
-            'document_type'   => ['required', 'in:pan,aadhaar,passport,other'],
+            'document_type' => ['required', 'in:pan,aadhaar,passport,other'],
             'document_number' => ['required', 'string', 'max:255'],
-            'document_file'   => ['required', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
+            'document_file' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
         ]);
 
         // FIXED: look up the existing record for THIS campaign only, so
@@ -105,20 +117,20 @@ class KycUploadController extends Controller
         }
 
         $path = $request->file('document_file')
-            ->store('kyc-documents/' . Auth::id() . '/' . $campaign->id, 'private');
+            ->store('kyc-documents/'.Auth::id().'/'.$campaign->id, 'private');
 
         $kyc = KycVerification::updateOrCreate(
             [
-                'user_id'     => Auth::id(),
+                'user_id' => Auth::id(),
                 'campaign_id' => $campaign->id,
             ],
             [
-                'document_type'    => $validated['document_type'],
-                'document_number'  => $validated['document_number'],
-                'document_url'     => $path,
-                'status'           => 'pending',
-                'verified_by'      => null,
-                'verified_at'      => null,
+                'document_type' => $validated['document_type'],
+                'document_number' => $validated['document_number'],
+                'document_url' => $path,
+                'status' => 'pending',
+                'verified_by' => null,
+                'verified_at' => null,
                 'rejection_reason' => null,
             ]
         );

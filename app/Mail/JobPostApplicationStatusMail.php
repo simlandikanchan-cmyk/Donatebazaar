@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Mail;
 
 use App\Models\JobPostApplication;
@@ -6,7 +7,6 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
 class JobPostApplicationStatusMail extends Mailable
-
 {
     use SerializesModels;
 
@@ -15,6 +15,6 @@ class JobPostApplicationStatusMail extends Mailable
     public function build()
     {
         return $this->subject('Your Application Update – DonateBazaar')
-                    ->view('emails.job_post_application_status');
+            ->view('emails.job_post_application_status');
     }
 }

@@ -4,13 +4,13 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
+use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\Auth\OtpController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
-use App\Http\Controllers\Auth\OtpController;
-use App\Http\Controllers\Auth\GoogleController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -28,19 +28,19 @@ Route::middleware('auth')->group(function () {
     Route::get('verify-email', EmailVerificationPromptController::class)->name('verification.notice');
     Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
         ->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
-        Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
-            ->middleware('throttle:6,1')->name('verification.send');
+    Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
+        ->middleware('throttle:6,1')->name('verification.send');
     Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])->name('password.confirm');
     Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']);
     Route::put('password', [PasswordController::class, 'update'])->name('password.update');
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
 
-Route::get('/otp-login',  [OtpController::class, 'login'])->name('otp.login');
+Route::get('/otp-login', [OtpController::class, 'login'])->name('otp.login');
 Route::get('/verify-otp', [OtpController::class, 'verifyPage'])->name('otp.verify');
-Route::post('/send-otp',  [OtpController::class, 'sendOtp'])->middleware('throttle:5,1')->name('otp.send');
-Route::post('/verify-otp',[OtpController::class, 'verifyOtp'])->middleware('throttle:10,1')->name('otp.verify.post');
-Route::post('/resend-otp',[OtpController::class, 'resend'])->middleware('throttle:3,1')->name('otp.resend');
+Route::post('/send-otp', [OtpController::class, 'sendOtp'])->middleware('throttle:5,1')->name('otp.send');
+Route::post('/verify-otp', [OtpController::class, 'verifyOtp'])->middleware('throttle:10,1')->name('otp.verify.post');
+Route::post('/resend-otp', [OtpController::class, 'resend'])->middleware('throttle:3,1')->name('otp.resend');
 
-Route::get('/auth/google',          [GoogleController::class, 'redirect'])->name('auth.google');
+Route::get('/auth/google', [GoogleController::class, 'redirect'])->name('auth.google');
 Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('auth.google.callback');

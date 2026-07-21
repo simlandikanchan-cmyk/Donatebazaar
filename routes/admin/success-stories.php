@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
 
-    Route::get('/success-stories',                  [SuccessStoryController::class, 'index'])->name('success-stories.index');
+    Route::get('/success-stories', [SuccessStoryController::class, 'index'])->name('success-stories.index');
     Route::post('/success-stories/{campaign}/toggle', [SuccessStoryController::class, 'toggleFeatured'])->name('success-stories.toggle');
 
 });

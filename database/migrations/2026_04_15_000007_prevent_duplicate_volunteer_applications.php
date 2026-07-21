@@ -33,26 +33,26 @@ return new class extends Migration
     public function up(): void
     {
         // Step 1: Remove exact duplicates — keep the row with the lowest id
-        $duplicates = DB::select("
+        $duplicates = DB::select('
             SELECT id FROM volunteer_applications va
             WHERE id NOT IN (
                 SELECT MIN(id)
                 FROM volunteer_applications
                 GROUP BY volunteer_id, COALESCE(campaign_id, 0), COALESCE(ngo_id, 0)
             )
-        ");
+        ');
 
-        if (!empty($duplicates)) {
+        if (! empty($duplicates)) {
             $ids = array_column($duplicates, 'id');
             DB::table('volunteer_applications')->whereIn('id', $ids)->delete();
         }
 
         // Step 2: Enforce that at least one of campaign_id or ngo_id is non-null
-        DB::statement("
+        DB::statement('
             ALTER TABLE volunteer_applications
             ADD CONSTRAINT chk_volunteer_target
             CHECK (campaign_id IS NOT NULL OR ngo_id IS NOT NULL)
-        ");
+        ');
 
         // Step 3: Unique index on (volunteer_id, campaign_id) for campaign applications
         // MariaDB NULLs don't conflict in unique indexes, so this only prevents
@@ -65,10 +65,10 @@ return new class extends Migration
 
     public function down(): void
     {
-        DB::statement("
+        DB::statement('
             ALTER TABLE volunteer_applications
             DROP CONSTRAINT chk_volunteer_target
-        ");
+        ');
 
         Schema::table('volunteer_applications', function (Blueprint $table) {
             $table->dropUnique('uq_volunteer_campaign');

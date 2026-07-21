@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class CampaignSettlement extends Model
 {
@@ -18,6 +18,24 @@ class CampaignSettlement extends Model
         'status',
         'transfer_reference',
         'paid_at',
+        'approved_by',
+        'approved_at',
+        'rejected_by',
+        'rejected_at',
+        'rejection_reason',
+        'gateway_reference',
+        'processed_at',
+        'failed_at',
+        'failed_reason',
+        'correlation_id',
+        'trace_id',
+        'risk_score',
+        'risk_verdict',
+        'risk_version',
+        'evaluated_at',
+        'payout_account_id',
+        'retry_count',
+        'next_retry_at',
     ];
 
     protected $casts = [
@@ -25,6 +43,12 @@ class CampaignSettlement extends Model
         'platform_fee' => 'decimal:2',
         'net_amount' => 'decimal:2',
         'paid_at' => 'datetime',
+        'approved_at' => 'datetime',
+        'rejected_at' => 'datetime',
+        'processed_at' => 'datetime',
+        'failed_at' => 'datetime',
+        'rejection_reason' => 'string',
+        'failed_reason' => 'string',
     ];
 
     /**
@@ -52,6 +76,22 @@ class CampaignSettlement extends Model
     }
 
     /**
+     * Admin who approved the settlement.
+     */
+    public function approver()
+    {
+        return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    /**
+     * Payout account snapshot for this settlement.
+     */
+    public function payoutAccount()
+    {
+        return $this->belongsTo(PayoutAccount::class, 'payout_account_id');
+    }
+
+    /**
      * Donations through settlement items
      */
     public function donations()
@@ -60,7 +100,7 @@ class CampaignSettlement extends Model
             Donation::class,
             'settlement_items'
         )->withPivot('amount')
-         ->withTimestamps();
+            ->withTimestamps();
     }
 
     /**
@@ -80,6 +120,46 @@ class CampaignSettlement extends Model
     }
 
     /**
+     * Check if settlement is awaiting admin approval
+     */
+    public function isPendingApproval()
+    {
+        return $this->status === 'pending_approval';
+    }
+
+    /**
+     * Check if settlement was approved by admin (payout queued).
+     */
+    public function isApproved()
+    {
+        return $this->status === 'approved';
+    }
+
+    /**
+     * Check if settlement is being processed (payout in flight).
+     */
+    public function isProcessing()
+    {
+        return $this->status === 'processing';
+    }
+
+    /**
+     * Check if settlement is waiting for retry.
+     */
+    public function isRetryPending()
+    {
+        return $this->status === 'retry_pending';
+    }
+
+    /**
+     * Check if settlement was rejected by admin
+     */
+    public function isRejected()
+    {
+        return $this->status === 'rejected';
+    }
+
+    /**
      * Check if settlement failed
      */
     public function isFailed()
@@ -92,7 +172,7 @@ class CampaignSettlement extends Model
      */
     public function getFormattedGrossAmountAttribute()
     {
-        return '₹' . number_format($this->gross_amount, 2);
+        return '₹'.number_format($this->gross_amount, 2);
     }
 
     /**
@@ -100,7 +180,7 @@ class CampaignSettlement extends Model
      */
     public function getFormattedPlatformFeeAttribute()
     {
-        return '₹' . number_format($this->platform_fee, 2);
+        return '₹'.number_format($this->platform_fee, 2);
     }
 
     /**
@@ -108,6 +188,6 @@ class CampaignSettlement extends Model
      */
     public function getFormattedNetAmountAttribute()
     {
-        return '₹' . number_format($this->net_amount, 2);
+        return '₹'.number_format($this->net_amount, 2);
     }
 }

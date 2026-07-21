@@ -41,13 +41,13 @@ return new class extends Migration
             $messages = DB::table('contact_messages')->get();
             foreach ($messages as $msg) {
                 DB::table('contacts')->insertOrIgnore([
-                    'name'        => $msg->name,
-                    'email'       => $msg->email,
-                    'subject'     => $msg->subject ?? 'Contact',
-                    'message'     => $msg->message,
-                    'is_read'     => $msg->is_read ?? false,
-                    'created_at'  => $msg->created_at,
-                    'updated_at'  => $msg->updated_at,
+                    'name' => $msg->name,
+                    'email' => $msg->email,
+                    'subject' => $msg->subject ?? 'Contact',
+                    'message' => $msg->message,
+                    'is_read' => $msg->is_read ?? false,
+                    'created_at' => $msg->created_at,
+                    'updated_at' => $msg->updated_at,
                 ]);
             }
 

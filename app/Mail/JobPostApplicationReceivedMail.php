@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Mail;
 
 use App\Models\JobPostApplication;
@@ -13,7 +14,7 @@ class JobPostApplicationReceivedMail extends Mailable
 
     public function build()
     {
-        return $this->subject('New Application: ' . $this->application->jobPost->title)
-                    ->view('emails.job_post_application_received');
+        return $this->subject('New Application: '.$this->application->jobPost->title)
+            ->view('emails.job_post_application_received');
     }
 }

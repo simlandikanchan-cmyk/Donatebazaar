@@ -23,19 +23,19 @@ class NotificationController extends Controller
                 $data = $notification->data;
 
                 return [
-                    'id'         => $notification->id,
-                    'type'       => $data['type'] ?? 'info',
-                    'title'      => $data['title'] ?? ($data['campaign'] ?? 'Notification'),
-                    'message'    => $data['message'] ?? '',
-                    'url'        => $data['url'] ?? null,
-                    'read_at'    => $notification->read_at?->toIso8601String(),
+                    'id' => $notification->id,
+                    'type' => $data['type'] ?? 'info',
+                    'title' => $data['title'] ?? ($data['campaign'] ?? 'Notification'),
+                    'message' => $data['message'] ?? '',
+                    'url' => $data['url'] ?? null,
+                    'read_at' => $notification->read_at?->toIso8601String(),
                     'created_at' => $notification->created_at->diffForHumans(),
                 ];
             });
 
         return response()->json([
             'notifications' => $notifications,
-            'unread_count'  => $user->unreadNotifications()->count(),
+            'unread_count' => $user->unreadNotifications()->count(),
         ]);
     }
 
@@ -52,7 +52,7 @@ class NotificationController extends Controller
         $notification->markAsRead();
 
         return response()->json([
-            'ok'          => true,
+            'ok' => true,
             'unread_count' => $request->user()->unreadNotifications()->count(),
         ]);
     }
@@ -65,7 +65,7 @@ class NotificationController extends Controller
         $request->user()->unreadNotifications()->update(['read_at' => now()]);
 
         return response()->json([
-            'ok'          => true,
+            'ok' => true,
             'unread_count' => 0,
         ]);
     }

@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::table('partnerships', function (Blueprint $table) {
@@ -45,7 +46,7 @@ return new class extends Migration {
                 'timeline',
                 'priority_score',
                 'reviewed_at',
-                
+
             ]);
 
             $table->dropForeign(['reviewed_by']);

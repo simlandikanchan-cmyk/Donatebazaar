@@ -9,24 +9,24 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-public function up()
-{
-    if (! Schema::hasTable('blog_status_logs')) {
-        Schema::create('blog_status_logs', function (Blueprint $table) {
-        $table->id();
+    public function up()
+    {
+        if (! Schema::hasTable('blog_status_logs')) {
+            Schema::create('blog_status_logs', function (Blueprint $table) {
+                $table->id();
 
-        $table->foreignId('blog_id')->constrained()->cascadeOnDelete();
-        $table->foreignId('changed_by')->nullable()->constrained('users')->nullOnDelete();
+                $table->foreignId('blog_id')->constrained()->cascadeOnDelete();
+                $table->foreignId('changed_by')->nullable()->constrained('users')->nullOnDelete();
 
-        $table->string('from_status')->nullable();
-        $table->string('to_status');
+                $table->string('from_status')->nullable();
+                $table->string('to_status');
 
-        $table->text('note')->nullable();
+                $table->text('note')->nullable();
 
-        $table->timestamps();
-    });
+                $table->timestamps();
+            });
+        }
     }
-}
 
     /**
      * Reverse the migrations.

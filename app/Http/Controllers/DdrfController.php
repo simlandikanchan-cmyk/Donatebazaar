@@ -28,7 +28,7 @@ class DdrfController extends Controller
         $disasterCampaigns = Campaign::where('campaign_state', 'active')
             ->where(function ($q) {
                 $q->whereNull('end_date')
-                  ->orWhere('end_date', '>=', now());
+                    ->orWhere('end_date', '>=', now());
             })
             ->whereHas('category', function ($q) {
                 $q->where('slug', 'disaster-relief');
@@ -52,7 +52,7 @@ class DdrfController extends Controller
                 // only if there are no donation rows yet (e.g. brand new
                 // campaign where the sum is null).
                 $raised = (float) ($campaign->donations_sum_amount ?? $campaign->raised_amount ?? 0);
-                $goal   = (float) ($campaign->goal_amount > 0 ? $campaign->goal_amount : 1);
+                $goal = (float) ($campaign->goal_amount > 0 ? $campaign->goal_amount : 1);
                 $donors = (int) ($campaign->donations_count ?? 0);
 
                 $daysLeft = $campaign->end_date
@@ -69,21 +69,21 @@ class DdrfController extends Controller
                 }
 
                 return [
-                    'id'          => $campaign->id,
-                    'title'       => $campaign->title,
-                    'slug'        => $campaign->slug,
-                    'category'    => $campaign->category?->slug,
+                    'id' => $campaign->id,
+                    'title' => $campaign->title,
+                    'slug' => $campaign->slug,
+                    'category' => $campaign->category?->slug,
                     'description' => $campaign->description,
-                    'image'       => $campaign->cover_image
-                                        ? asset('storage/' . $campaign->cover_image)
+                    'image' => $campaign->cover_image
+                                        ? asset('storage/'.$campaign->cover_image)
                                         : asset('images/placeholder-relief.jpg'),
-                    'location'    => $campaign->location ?? 'India',
-                    'raised'      => $raised,
-                    'goal'        => $campaign->goal_amount,
-                    'percent'     => min(100, round(($raised / $goal) * 100)),
-                    'donors'      => $donors,
-                    'days_left'   => $daysLeft,
-                    'urgency'     => $urgency,
+                    'location' => $campaign->location ?? 'India',
+                    'raised' => $raised,
+                    'goal' => $campaign->goal_amount,
+                    'percent' => min(100, round(($raised / $goal) * 100)),
+                    'donors' => $donors,
+                    'days_left' => $daysLeft,
+                    'urgency' => $urgency,
                 ];
             });
 
@@ -94,7 +94,7 @@ class DdrfController extends Controller
             ['name' => 'Wipro Cares',           'logo' => asset('images/partners/wipro.png')],
             ['name' => 'HCL Foundation',        'logo' => asset('images/partners/hcl.png')],
             ['name' => 'Reliance Foundation',   'logo' => asset('images/partners/reliance.png')],
-            ['name' => 'Azim Premji Foundation','logo' => asset('images/partners/azim-premji.png')],
+            ['name' => 'Azim Premji Foundation', 'logo' => asset('images/partners/azim-premji.png')],
             ['name' => 'HDFC Bank CSR',         'logo' => asset('images/partners/hdfc.png')],
             ['name' => 'Mahindra Rise',         'logo' => asset('images/partners/mahindra.png')],
             ['name' => 'Godrej & Boyce',        'logo' => asset('images/partners/godrej.png')],
@@ -103,10 +103,10 @@ class DdrfController extends Controller
 
         return [
             'disasterCampaigns' => $disasterCampaigns,
-            'csrPartners'       => $csrPartners,
-            'totalRaised'       => $disasterCampaigns->sum('raised'),
-            'totalDonors'       => $disasterCampaigns->sum('donors'),
-            'activeCamps'       => $disasterCampaigns->count(),
+            'csrPartners' => $csrPartners,
+            'totalRaised' => $disasterCampaigns->sum('raised'),
+            'totalDonors' => $disasterCampaigns->sum('donors'),
+            'activeCamps' => $disasterCampaigns->count(),
         ];
     }
 }

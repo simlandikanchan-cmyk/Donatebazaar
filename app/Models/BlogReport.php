@@ -9,6 +9,6 @@ class BlogReport extends Model
     protected $fillable = [
         'blog_id',
         'user_id',
-        'reason'
+        'reason',
     ];
 }

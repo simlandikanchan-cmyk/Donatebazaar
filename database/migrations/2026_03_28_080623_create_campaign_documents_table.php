@@ -12,16 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('campaign_documents', function (Blueprint $table) {
-    $table->id();
+            $table->id();
 
-    $table->foreignId('campaign_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('campaign_id')->constrained()->cascadeOnDelete();
 
-    $table->string('file_url');
+            $table->string('file_url');
 
-    $table->string('document_type')->nullable(); // optional label
+            $table->string('document_type')->nullable(); // optional label
 
-    $table->timestamps();
-});
+            $table->timestamps();
+        });
     }
 
     /**

@@ -28,23 +28,23 @@ class KycRequestedNotification extends Notification implements ShouldQueue
 
         return (new MailMessage)
             ->subject('Action Required: Upload KYC to Activate Your Campaign')
-            ->greeting('Hello ' . $notifiable->name . ',')
-            ->line('Your campaign **"' . $this->campaign->title . '"** is pending approval.')
+            ->greeting('Hello '.$notifiable->name.',')
+            ->line('Your campaign **"'.$this->campaign->title.'"** is pending approval.')
             ->line('Before we can approve it, we need you to verify your identity by submitting KYC documents.')
-            ->when($this->adminMessage, fn ($mail) => $mail->line('**Note from admin:** ' . $this->adminMessage))
+            ->when($this->adminMessage, fn ($mail) => $mail->line('**Note from admin:** '.$this->adminMessage))
             ->action('Upload KYC Documents', $url)
             ->line('Once your KYC is approved, your campaign will be reviewed for activation.')
-            ->salutation('Thanks, ' . config('app.name') . ' Team');
+            ->salutation('Thanks, '.config('app.name').' Team');
     }
 
     public function toDatabase(object $notifiable): array
     {
         return [
-            'type'        => 'kyc_requested',
+            'type' => 'kyc_requested',
             'campaign_id' => $this->campaign->id,
-            'campaign'    => $this->campaign->title,
-            'message'     => $this->adminMessage ?: 'Please upload your KYC documents to proceed with campaign approval.',
-            'url'         => route('kyc.upload.form', ['campaign' => $this->campaign->id]),
+            'campaign' => $this->campaign->title,
+            'message' => $this->adminMessage ?: 'Please upload your KYC documents to proceed with campaign approval.',
+            'url' => route('kyc.upload.form', ['campaign' => $this->campaign->id]),
         ];
     }
 }

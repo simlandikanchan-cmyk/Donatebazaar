@@ -11,10 +11,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
         Route::post('bulk-delete', 'bulkDelete')->name('partnership.bulk-delete');
     });
 
-    Route::get('/partnerships',            [PartnershipAdminController::class, 'index'])->name('partnership.index');
-    Route::get('/partnerships/{id}',       [PartnershipAdminController::class, 'show'])->name('partnership.show');
-    Route::post('/partnerships/{id}',      [PartnershipAdminController::class, 'update'])->name('partnership.update');
+    Route::get('/partnerships', [PartnershipAdminController::class, 'index'])->name('partnership.index');
+    Route::get('/partnerships/{id}', [PartnershipAdminController::class, 'show'])->name('partnership.show');
+    Route::post('/partnerships/{id}', [PartnershipAdminController::class, 'update'])->name('partnership.update');
     Route::get('/partnership/delete/{id}', [PartnershipAdminController::class, 'deletePage'])->name('partnership.deletePage');
-    Route::delete('/partnership/{id}',     [PartnershipAdminController::class, 'delete'])->name('partnership.delete');
+    Route::delete('/partnership/{id}', [PartnershipAdminController::class, 'delete'])->name('partnership.delete');
 
 });

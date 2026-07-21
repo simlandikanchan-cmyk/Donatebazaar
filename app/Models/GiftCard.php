@@ -18,19 +18,19 @@ class GiftCard extends Model
     ];
 
     protected $casts = [
-        'send_at'     => 'datetime',
+        'send_at' => 'datetime',
         'redeemed_at' => 'datetime',
-        'expires_at'  => 'datetime',
-        'amount'      => 'decimal:2',
+        'expires_at' => 'datetime',
+        'amount' => 'decimal:2',
     ];
 
     public static function generateCode(): string
     {
         do {
             $code = 'DNBZ-'
-                . strtoupper(Str::random(4))
-                . '-'
-                . strtoupper(Str::random(4));
+                .strtoupper(Str::random(4))
+                .'-'
+                .strtoupper(Str::random(4));
         } while (self::where('code', $code)->exists());
 
         return $code;
@@ -46,7 +46,18 @@ class GiftCard extends Model
         return $this->belongsTo(Campaign::class, 'redeemed_on_campaign');
     }
 
-    public function isRedeemed(): bool { return $this->status === 'redeemed'; }
-    public function isExpired(): bool  { return $this->expires_at && $this->expires_at->isPast(); }
-    public function isPaid(): bool     { return $this->payment_status === 'completed'; }
+    public function isRedeemed(): bool
+    {
+        return $this->status === 'redeemed';
+    }
+
+    public function isExpired(): bool
+    {
+        return $this->expires_at && $this->expires_at->isPast();
+    }
+
+    public function isPaid(): bool
+    {
+        return $this->payment_status === 'completed';
+    }
 }

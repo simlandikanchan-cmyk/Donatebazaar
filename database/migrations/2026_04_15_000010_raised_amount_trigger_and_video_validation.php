@@ -35,9 +35,9 @@ return new class extends Migration
     public function up(): void
     {
         // A) Trigger: sync raised_amount after each payment status change
-        DB::unprepared("
+        DB::unprepared('
             DROP TRIGGER IF EXISTS trg_sync_raised_amount_insert
-        ");
+        ');
 
         DB::unprepared("
             CREATE TRIGGER trg_sync_raised_amount_insert
@@ -60,9 +60,9 @@ return new class extends Migration
             END
         ");
 
-        DB::unprepared("
+        DB::unprepared('
             DROP TRIGGER IF EXISTS trg_sync_raised_amount_update
-        ");
+        ');
 
         DB::unprepared("
             CREATE TRIGGER trg_sync_raised_amount_update

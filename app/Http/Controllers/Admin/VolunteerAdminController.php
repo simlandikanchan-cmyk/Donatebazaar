@@ -24,14 +24,14 @@ class VolunteerAdminController extends Controller
     {
         $query = Volunteer::with('user')
             ->when($request->search, function ($q) use ($request) {
-                $s = '%' . $request->search . '%';
+                $s = '%'.$request->search.'%';
                 $q->where(function ($wq) use ($s) {
                     $wq->whereHas('user', function ($uq) use ($s) {
                         $uq->where('name', 'like', $s)
-                           ->orWhere('email', 'like', $s);
+                            ->orWhere('email', 'like', $s);
                     })
-                    ->orWhere('city', 'like', $s)
-                    ->orWhere('phone', 'like', $s);
+                        ->orWhere('city', 'like', $s)
+                        ->orWhere('phone', 'like', $s);
                 });
             })
             ->latest();
@@ -39,9 +39,9 @@ class VolunteerAdminController extends Controller
         $volunteers = $query->paginate(20)->withQueryString();
 
         $stats = [
-            'total'    => Volunteer::count(),
+            'total' => Volunteer::count(),
             'verified' => Volunteer::where('is_verified', true)->count(),
-            'pending'  => VolunteerApplication::where('status', 'pending')->count(),
+            'pending' => VolunteerApplication::where('status', 'pending')->count(),
         ];
 
         return view('admin.volunteers.index', compact('volunteers', 'stats'));
@@ -54,6 +54,7 @@ class VolunteerAdminController extends Controller
             ->whereDate('event_date', '>=', now())
             ->orderBy('event_date')
             ->get(['id', 'title', 'event_date', 'start_time', 'end_time']);
+
         return view('admin.volunteers.show', compact('volunteer', 'events'));
     }
 
@@ -66,10 +67,10 @@ class VolunteerAdminController extends Controller
                 $q->where('status', 'pending');
             })
             ->when($request->search, function ($q) use ($request) {
-                $s = '%' . $request->search . '%';
+                $s = '%'.$request->search.'%';
                 $q->whereHas('volunteer.user', function ($uq) use ($s) {
                     $uq->where('name', 'like', $s)
-                       ->orWhere('email', 'like', $s);
+                        ->orWhere('email', 'like', $s);
                 });
             })
             ->latest()
@@ -77,8 +78,8 @@ class VolunteerAdminController extends Controller
             ->withQueryString();
 
         $stats = [
-            'total'    => VolunteerApplication::count(),
-            'pending'  => VolunteerApplication::where('status', 'pending')->count(),
+            'total' => VolunteerApplication::count(),
+            'pending' => VolunteerApplication::where('status', 'pending')->count(),
             'approved' => VolunteerApplication::where('status', 'approved')->count(),
             'rejected' => VolunteerApplication::where('status', 'rejected')->count(),
         ];
@@ -89,6 +90,7 @@ class VolunteerAdminController extends Controller
     public function applicationShow(VolunteerApplication $application)
     {
         $application->load('volunteer.user', 'campaign');
+
         return view('admin.volunteers.applications_show', compact('application'));
     }
 
@@ -125,12 +127,12 @@ class VolunteerAdminController extends Controller
                 $q->where('status', $request->status);
             })
             ->when($request->search, function ($q) use ($request) {
-                $s = '%' . $request->search . '%';
+                $s = '%'.$request->search.'%';
                 $q->where(function ($wq) use ($s) {
                     $wq->where('role', 'like', $s)
-                       ->orWhereHas('volunteer.user', function ($uq) use ($s) {
-                           $uq->where('name', 'like', $s)->orWhere('email', 'like', $s);
-                       });
+                        ->orWhereHas('volunteer.user', function ($uq) use ($s) {
+                            $uq->where('name', 'like', $s)->orWhere('email', 'like', $s);
+                        });
                 });
             })
             ->latest();
@@ -138,8 +140,8 @@ class VolunteerAdminController extends Controller
         $assignments = $query->paginate(20)->withQueryString();
 
         $stats = [
-            'total'     => VolunteerAssignment::count(),
-            'active'    => VolunteerAssignment::where('status', 'active')->count(),
+            'total' => VolunteerAssignment::count(),
+            'active' => VolunteerAssignment::where('status', 'active')->count(),
             'completed' => VolunteerAssignment::where('status', 'completed')->count(),
         ];
 
@@ -161,12 +163,12 @@ class VolunteerAdminController extends Controller
     {
         $data = $request->validate([
             'volunteer_id' => 'required|exists:volunteers,id',
-            'event_id'    => 'nullable|exists:events,id',
+            'event_id' => 'nullable|exists:events,id',
             'campaign_id' => 'nullable|exists:campaigns,id',
-            'role'        => 'required|string|max:120',
-            'start_date'  => 'nullable|date',
-            'end_date'    => 'nullable|date|after_or_equal:start_date',
-            'status'      => 'required|in:active,completed,cancelled',
+            'role' => 'required|string|max:120',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'status' => 'required|in:active,completed,cancelled',
         ]);
 
         if (empty($data['event_id']) && empty($data['campaign_id'])) {
@@ -192,12 +194,12 @@ class VolunteerAdminController extends Controller
     {
         $data = $request->validate([
             'volunteer_id' => 'required|exists:volunteers,id',
-            'event_id'    => 'nullable|exists:events,id',
+            'event_id' => 'nullable|exists:events,id',
             'campaign_id' => 'nullable|exists:campaigns,id',
-            'role'        => 'required|string|max:120',
-            'start_date'  => 'nullable|date',
-            'end_date'    => 'nullable|date|after_or_equal:start_date',
-            'status'      => 'required|in:active,completed,cancelled',
+            'role' => 'required|string|max:120',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'status' => 'required|in:active,completed,cancelled',
         ]);
 
         $assignment->update($data);

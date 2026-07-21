@@ -10,18 +10,19 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up()
-{
-    Schema::table('orders', function (Blueprint $table) {
-        $table->enum('status', [
-            'pending',
-            'paid',
-            'processing',
-            'shipped',
-            'delivered',
-            'cancelled'
-        ])->default('pending')->change();
-    });
-}
+    {
+        Schema::table('orders', function (Blueprint $table) {
+            $table->enum('status', [
+                'pending',
+                'paid',
+                'processing',
+                'shipped',
+                'delivered',
+                'cancelled',
+            ])->default('pending')->change();
+        });
+    }
+
     /**
      * Reverse the migrations.
      */

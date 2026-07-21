@@ -40,10 +40,10 @@ return new class extends Migration
         // B) Organization ownership
         Schema::table('organizations', function (Blueprint $table) {
             $table->foreignId('user_id')
-                  ->nullable()
-                  ->after('id')
-                  ->constrained('users')
-                  ->onDelete('set null');
+                ->nullable()
+                ->after('id')
+                ->constrained('users')
+                ->onDelete('set null');
         });
     }
 

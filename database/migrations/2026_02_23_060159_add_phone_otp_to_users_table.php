@@ -9,16 +9,17 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-public function up()
-{
-Schema::table('users', function ($table){
+    public function up()
+    {
+        Schema::table('users', function ($table) {
 
-$table->string('phone')->unique()->nullable();
-$table->string('otp')->nullable();
-$table->timestamp('otp_expire')->nullable();
+            $table->string('phone')->unique()->nullable();
+            $table->string('otp')->nullable();
+            $table->timestamp('otp_expire')->nullable();
 
-});
-}
+        });
+    }
+
     /**
      * Reverse the migrations.
      */

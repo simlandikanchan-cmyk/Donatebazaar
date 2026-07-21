@@ -11,9 +11,9 @@ class CampaignProduct extends Model
 
     protected $casts = [
         'approved_at' => 'datetime',
-        'price'       => 'decimal:2',
-        'created_at'  => 'datetime',
-        'updated_at'  => 'datetime',
+        'price' => 'decimal:2',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     protected $fillable = [

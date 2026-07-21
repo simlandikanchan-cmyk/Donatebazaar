@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -13,6 +13,7 @@ use Illuminate\Validation\ValidationException;
 class OtpController extends Controller
 {
     protected int $otpExpiryMinutes = 5;
+
     protected int $maxOtpAttempts = 5;
 
     public function login()
@@ -35,15 +36,15 @@ class OtpController extends Controller
         $user = User::firstOrCreate(
             ['phone' => $request->phone],
             [
-                'name' => 'User_' . substr($request->phone, -4),
+                'name' => 'User_'.substr($request->phone, -4),
                 'role' => 'donor',
             ]
         );
 
         $user->update([
-            'otp_hash'       => Hash::make($otp),
+            'otp_hash' => Hash::make($otp),
             'otp_expires_at' => now()->addMinutes($this->otpExpiryMinutes),
-            'otp_attempts'   => 0,
+            'otp_attempts' => 0,
         ]);
 
         $this->dispatchOtp($request->phone, $otp);
@@ -64,7 +65,7 @@ class OtpController extends Controller
 
     public function verifyPage()
     {
-        if (!session('otp_phone')) {
+        if (! session('otp_phone')) {
             return redirect()->route('otp.login')->with('error', 'Please enter your phone number first.');
         }
 
@@ -78,7 +79,7 @@ class OtpController extends Controller
     {
         $request->validate([
             'phone' => 'required|digits:10',
-            'otp'   => 'required|digits:6',
+            'otp' => 'required|digits:6',
         ]);
 
         // Guard: the phone being verified must match the one OTP was sent to in this session.
@@ -94,11 +95,11 @@ class OtpController extends Controller
             'otp' => 'Invalid or expired OTP. Please request a new one.',
         ]);
 
-        if (!$user || !$user->otp_hash) {
+        if (! $user || ! $user->otp_hash) {
             $genericError();
         }
 
-        if (!$user->otp_expires_at || $user->otp_expires_at->isPast()) {
+        if (! $user->otp_expires_at || $user->otp_expires_at->isPast()) {
             $user->update(['otp_hash' => null, 'otp_expires_at' => null, 'otp_attempts' => 0]);
             $genericError();
         }
@@ -108,18 +109,18 @@ class OtpController extends Controller
             $genericError();
         }
 
-        if (!Hash::check($request->otp, $user->otp_hash)) {
+        if (! Hash::check($request->otp, $user->otp_hash)) {
             $user->increment('otp_attempts');
             $genericError();
         }
 
         // Success — clear OTP fields, mark phone verified, log in
         $user->update([
-            'otp_hash'          => null,
-            'otp_expires_at'    => null,
-            'otp_attempts'      => 0,
+            'otp_hash' => null,
+            'otp_expires_at' => null,
+            'otp_attempts' => 0,
             'phone_verified_at' => $user->phone_verified_at ?? now(),
-            'last_login_at'     => now(),
+            'last_login_at' => now(),
         ]);
 
         Auth::login($user, true);
@@ -127,13 +128,13 @@ class OtpController extends Controller
         $request->session()->forget('otp_phone');
 
         if ($request->wantsJson()) {
-    return response()->json([
-        'success'  => true,
-        'redirect' => '/user/dashboard',
-    ]);
-}
+            return response()->json([
+                'success' => true,
+                'redirect' => '/user/dashboard',
+            ]);
+        }
 
-return redirect('/user/dashboard');
+        return redirect('/user/dashboard');
 
     }
 
@@ -153,9 +154,9 @@ return redirect('/user/dashboard');
             $otp = (string) random_int(100000, 999999);
 
             $user->update([
-                'otp_hash'       => Hash::make($otp),
+                'otp_hash' => Hash::make($otp),
                 'otp_expires_at' => now()->addMinutes($this->otpExpiryMinutes),
-                'otp_attempts'   => 0,
+                'otp_attempts' => 0,
             ]);
 
             $this->dispatchOtp($request->phone, $otp);
@@ -179,9 +180,8 @@ return redirect('/user/dashboard');
         $message = "Your DonateBazaar OTP is {$otp}. It is valid for {$this->otpExpiryMinutes} minutes. Do not share this with anyone.";
 
         if (app()->environment('local')) {
-            // No SMS gateway connected yet — OTP is written to the log so you can test locally.
-            // Check storage/logs/laravel.log after requesting an OTP.
-            Log::info("OTP for {$phone}: {$otp}");
+            Log::info("OTP dispatched to {$phone}.");
+
             return;
         }
 

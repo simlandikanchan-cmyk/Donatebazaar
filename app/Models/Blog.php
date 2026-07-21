@@ -2,37 +2,37 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
 /**
  * Blog Model
  *
- * @property int         $id
- * @property int         $author_id
- * @property string      $author_role
- * @property string      $title
- * @property string      $slug
+ * @property int $id
+ * @property int $author_id
+ * @property string $author_role
+ * @property string $title
+ * @property string $slug
  * @property string|null $excerpt
- * @property string      $content
+ * @property string $content
  * @property string|null $cover_image
- * @property int|null    $read_time_minutes
- * @property int|null    $category_id
- * @property string      $status
- * @property int|null    $reviewed_by
+ * @property int|null $read_time_minutes
+ * @property int|null $category_id
+ * @property string $status
+ * @property int|null $reviewed_by
  * @property string|null $reviewed_at
  * @property string|null $rejection_reason
- * @property bool        $is_featured
- * @property int         $carousel_order
+ * @property bool $is_featured
+ * @property int $carousel_order
  * @property string|null $featured_at
- * @property int         $views_count
- * @property int         $likes_count
- * @property int         $comments_count
- * @property int         $shares_count
- * @property int         $reports_count
+ * @property int $views_count
+ * @property int $likes_count
+ * @property int $comments_count
+ * @property int $shares_count
+ * @property int $reports_count
  * @property string|null $meta_title
  * @property string|null $meta_description
  * @property string|null $published_at
@@ -43,13 +43,19 @@ class Blog extends Model
 
     // ── Status constants ──────────────────────────────────────────────────────
 
-    const STATUS_DRAFT     = 'draft';
-    const STATUS_PENDING   = 'pending';
-    const STATUS_APPROVED  = 'approved';
-    const STATUS_REJECTED  = 'rejected';
+    const STATUS_DRAFT = 'draft';
+
+    const STATUS_PENDING = 'pending';
+
+    const STATUS_APPROVED = 'approved';
+
+    const STATUS_REJECTED = 'rejected';
+
     const STATUS_PUBLISHED = 'published';
-    const STATUS_ARCHIVED  = 'archived';
-    const STATUS_FLAGGED   = 'flagged';
+
+    const STATUS_ARCHIVED = 'archived';
+
+    const STATUS_FLAGGED = 'flagged';
 
     // ── Fillable ──────────────────────────────────────────────────────────────
 
@@ -63,13 +69,13 @@ class Blog extends Model
     ];
 
     protected $casts = [
-        'is_featured'  => 'boolean',
-        'reviewed_at'  => 'datetime',
-        'featured_at'  => 'datetime',
+        'is_featured' => 'boolean',
+        'reviewed_at' => 'datetime',
+        'featured_at' => 'datetime',
         'published_at' => 'datetime',
-        'created_at'   => 'datetime',
-        'updated_at'   => 'datetime',
-        'deleted_at'   => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
     // ── Slug auto-generation ──────────────────────────────────────────────────
@@ -91,7 +97,7 @@ class Blog extends Model
         });
 
         static::updating(function (Blog $blog) {
-            if ($blog->isDirty('title') && !$blog->isDirty('slug')) {
+            if ($blog->isDirty('title') && ! $blog->isDirty('slug')) {
                 $blog->slug = static::generateUniqueSlug($blog->title, $blog->id);
             }
             if ($blog->isDirty('content')) {
@@ -104,12 +110,12 @@ class Blog extends Model
     {
         $base = Str::slug($title);
         $slug = $base;
-        $i    = 1;
+        $i = 1;
 
         while (
             static::where('slug', $slug)
-                  ->when($exceptId, fn ($q) => $q->where('id', '!=', $exceptId))
-                  ->exists()
+                ->when($exceptId, fn ($q) => $q->where('id', '!=', $exceptId))
+                ->exists()
         ) {
             $slug = "{$base}-{$i}";
             $i++;
@@ -121,6 +127,7 @@ class Blog extends Model
     public static function estimateReadTime(string $content): int
     {
         $wordCount = str_word_count(strip_tags($content));
+
         return max(1, (int) ceil($wordCount / 200)); // avg 200 wpm
     }
 
@@ -147,10 +154,10 @@ class Blog extends Model
     }
 
     public function comments()
-   {
-    return $this->hasMany(\App\Models\BlogComment::class, 'blog_id', 'id')
-                ->whereNull('parent_id')
-                ->latest();
+    {
+        return $this->hasMany(BlogComment::class, 'blog_id', 'id')
+            ->whereNull('parent_id')
+            ->latest();
     }
 
     public function allComments()
@@ -256,7 +263,7 @@ class Blog extends Model
     public function scopeSearch(Builder $q, string $term): Builder
     {
         return $q->whereFullText(['title', 'excerpt', 'content'], $term)
-                 ->orWhere('title', 'like', "%{$term}%");
+            ->orWhere('title', 'like', "%{$term}%");
     }
 
     public function scopeRecent(Builder $q): Builder
@@ -280,7 +287,7 @@ class Blog extends Model
     public function getCoverImageUrlAttribute(): string
     {
         return $this->cover_image
-            ? asset('storage/' . $this->cover_image)
+            ? asset('storage/'.$this->cover_image)
             : asset('images/blog-placeholder.jpg');
     }
 
@@ -292,14 +299,14 @@ class Blog extends Model
     public function getReadableStatusAttribute(): string
     {
         return match ($this->status) {
-            self::STATUS_DRAFT     => 'Draft',
-            self::STATUS_PENDING   => 'Under Review',
-            self::STATUS_APPROVED  => 'Approved',
-            self::STATUS_REJECTED  => 'Rejected',
+            self::STATUS_DRAFT => 'Draft',
+            self::STATUS_PENDING => 'Under Review',
+            self::STATUS_APPROVED => 'Approved',
+            self::STATUS_REJECTED => 'Rejected',
             self::STATUS_PUBLISHED => 'Published',
-            self::STATUS_ARCHIVED  => 'Archived',
-            self::STATUS_FLAGGED   => 'Flagged',
-            default                => ucfirst($this->status),
+            self::STATUS_ARCHIVED => 'Archived',
+            self::STATUS_FLAGGED => 'Flagged',
+            default => ucfirst($this->status),
         };
     }
 
@@ -308,17 +315,17 @@ class Blog extends Model
         return in_array($this->status, [self::STATUS_APPROVED, self::STATUS_PUBLISHED]);
     }
 
-  public function getIsEditableAttribute(): bool
-{
-    return in_array(
-        $this->status,
-        [
-            self::STATUS_DRAFT,
-            self::STATUS_REJECTED,
-            self::STATUS_PENDING,
-        ]
-    );
-}
+    public function getIsEditableAttribute(): bool
+    {
+        return in_array(
+            $this->status,
+            [
+                self::STATUS_DRAFT,
+                self::STATUS_REJECTED,
+                self::STATUS_PENDING,
+            ]
+        );
+    }
 
     // ── Business Logic ────────────────────────────────────────────────────────
 
@@ -332,14 +339,14 @@ class Blog extends Model
         $this->status = $newStatus;
 
         if ($newStatus === self::STATUS_APPROVED || $newStatus === self::STATUS_PUBLISHED) {
-            $this->reviewed_by  = $byUserId;
-            $this->reviewed_at  = now();
+            $this->reviewed_by = $byUserId;
+            $this->reviewed_at = now();
             $this->published_at = $this->published_at ?? now();
         }
 
         if ($newStatus === self::STATUS_REJECTED) {
-            $this->reviewed_by      = $byUserId;
-            $this->reviewed_at      = now();
+            $this->reviewed_by = $byUserId;
+            $this->reviewed_at = now();
             $this->rejection_reason = $note;
         }
 
@@ -347,10 +354,10 @@ class Blog extends Model
 
         if ($saved) {
             $this->statusLogs()->create([
-                'changed_by'  => $byUserId,
+                'changed_by' => $byUserId,
                 'from_status' => $old,
-                'to_status'   => $newStatus,
-                'note'        => $note,
+                'to_status' => $newStatus,
+                'note' => $note,
             ]);
         }
 
@@ -366,21 +373,21 @@ class Blog extends Model
 
         if ($userId) {
             $exists = $this->views()
-                           ->where('user_id', $userId)
-                           ->where('viewed_date', $date)
-                           ->exists();
+                ->where('user_id', $userId)
+                ->where('viewed_date', $date)
+                ->exists();
         } else {
             $exists = $this->views()
-                           ->whereNull('user_id')
-                           ->where('ip_address', $ip)
-                           ->where('viewed_date', $date)
-                           ->exists();
+                ->whereNull('user_id')
+                ->where('ip_address', $ip)
+                ->where('viewed_date', $date)
+                ->exists();
         }
 
-        if (!$exists) {
+        if (! $exists) {
             $this->views()->create([
-                'user_id'     => $userId,
-                'ip_address'  => $userId ? null : $ip,
+                'user_id' => $userId,
+                'ip_address' => $userId ? null : $ip,
                 'viewed_date' => $date,
             ]);
             $this->increment('views_count');
@@ -397,11 +404,13 @@ class Blog extends Model
         if ($like) {
             $like->delete();
             $this->decrement('likes_count');
+
             return false;
         }
 
         $this->likes()->create(['user_id' => $userId]);
         $this->increment('likes_count');
+
         return true;
     }
 

@@ -276,9 +276,9 @@ tbody tr:hover{background:var(--surface2);}
 .flash svg{width:14px;height:14px;flex-shrink:0;}
 
 /* ── RESPONSIVE ── */
-@media(max-width:860px){.search-wrap{display:none}}
-@media(max-width:600px){.filter-bar{flex-direction:column;align-items:stretch}.filter-inp,.filter-sel{width:100%}}
-@media(max-width:380px){.stats-grid{grid-template-columns:1fr;gap:8px;}.stat{padding:10px 12px;}.stat-icon{width:30px;height:30px;}.stat-icon svg{width:13px;height:13px;}}
+@media(max-width:960px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.filter-bar{flex-direction:column;align-items:stretch}.filter-inp,.filter-sel{width:100%}.filter-btn,.filter-clear{width:100%;justify-content:center}}
+@media(max-width:480px){.stats-grid{grid-template-columns:1fr;gap:8px;}.stat{padding:10px 12px;}.stat-icon{width:30px;height:30px;}.stat-icon svg{width:13px;height:13px;}tbody td{padding:8px 8px}thead th{padding:8px 6px;font-size:8px}.applicant-name{font-size:11px}.applicant-email{font-size:10px}.job-name{font-size:11px}.job-type{font-size:10px}.cell-date{font-size:10px}.cell-id{font-size:10px}.act-link{padding:3px 6px;font-size:10px}.cv-link{padding:3px 6px;font-size:10px}}
 </style>
 @endpush
 

@@ -20,12 +20,12 @@ class CategoryProductController extends Controller
             )
             ->get()
             ->map(fn ($p) => [
-                'id'          => $p->id,
-                'name'        => $p->name,
+                'id' => $p->id,
+                'name' => $p->name,
                 'description' => $p->description,
-                'price'       => $p->price,
-                'stock'       => $p->stock,
-                'image_url'   => $p->image_url,   // uses the normalised accessor
+                'price' => $p->price,
+                'stock' => $p->stock,
+                'image_url' => $p->image_url,   // uses the normalised accessor
             ]);
 
         return response()->json($products);

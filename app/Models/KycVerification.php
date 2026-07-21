@@ -13,8 +13,10 @@ class KycVerification extends Model
     |--------------------------------------------------------------------------
     */
 
-    const STATUS_PENDING  = 'pending';
+    const STATUS_PENDING = 'pending';
+
     const STATUS_APPROVED = 'approved';
+
     const STATUS_REJECTED = 'rejected';
 
     /*
@@ -53,14 +55,14 @@ class KycVerification extends Model
     |--------------------------------------------------------------------------
     */
 
-     protected $casts = [
-    'verified_at'         => 'datetime',
-    'document_number'     => 'encrypted', // PAN/Aadhaar numbers stored encrypted at rest
-    'kyc_account_name'    => 'encrypted',
-    'kyc_account_number'  => 'encrypted',
-    'kyc_ifsc'            => 'encrypted',
-    'kyc_bank_name'       => 'encrypted',
-];
+    protected $casts = [
+        'verified_at' => 'datetime',
+        'document_number' => 'encrypted', // PAN/Aadhaar numbers stored encrypted at rest
+        'kyc_account_name' => 'encrypted',
+        'kyc_account_number' => 'encrypted',
+        'kyc_ifsc' => 'encrypted',
+        'kyc_bank_name' => 'encrypted',
+    ];
 
     /*
     |--------------------------------------------------------------------------
@@ -117,7 +119,7 @@ class KycVerification extends Model
     {
         return match ($this->status) {
 
-            self::STATUS_PENDING  => 'Pending',
+            self::STATUS_PENDING => 'Pending',
 
             self::STATUS_APPROVED => 'Verified',
 
@@ -131,7 +133,7 @@ class KycVerification extends Model
     {
         return match ($this->status) {
 
-            self::STATUS_PENDING  => 'warning',
+            self::STATUS_PENDING => 'warning',
 
             self::STATUS_APPROVED => 'success',
 

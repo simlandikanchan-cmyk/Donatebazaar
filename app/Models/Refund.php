@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Refund extends Model
 {
@@ -72,6 +72,6 @@ class Refund extends Model
      */
     public function getFormattedAmountAttribute()
     {
-        return '₹' . number_format($this->amount, 2);
+        return '₹'.number_format($this->amount, 2);
     }
 }

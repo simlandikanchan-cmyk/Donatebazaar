@@ -194,6 +194,10 @@
     <div class="stat-icon si-red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg></div>
     <div class="stat-body"><div class="stat-lbl">Donations</div><div class="stat-val sv-red">{{ $totalDonations }}</div><div class="stat-foot">All time on platform</div></div>
   </div>
+  <div class="stat" onclick="window.location='{{ route('admin.wallets.index') }}'" style="cursor:pointer;">
+    <div class="stat-icon si-teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg></div>
+    <div class="stat-body"><div class="stat-lbl">Wallet Balance</div><div class="stat-val sv-teal">₹{{ number_format($totalWalletBalance) }}</div><div class="stat-foot">Across all wallets →</div></div>
+  </div>
   <div class="stat">
     <div class="stat-icon si-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg></div>
     <div class="stat-body"><div class="stat-lbl">New Today</div><div class="stat-val sv-blue">{{ $newUsersToday }}</div><div class="stat-foot">Users joined today</div></div>
@@ -274,6 +278,17 @@
       </div>
       @if($pendingJobApplicants > 0)
         <span class="pa-badge" style="background:var(--red-lt);color:var(--red);">{{ $pendingJobApplicants }}</span>
+      @else
+        <span class="sp-label" style="font-size:11px;color:var(--text3);">All caught up</span>
+      @endif
+    </a>
+    <a href="{{ route('admin.settlements.index') }}" class="sp-row">
+      <div class="sp-left">
+        <svg class="pa-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+        <span class="sp-label">Settlements pending approval</span>
+      </div>
+      @if($pendingSettlements > 0)
+        <span class="pa-badge" style="background:var(--teal-lt);color:var(--teal);">{{ $pendingSettlements }}</span>
       @else
         <span class="sp-label" style="font-size:11px;color:var(--text3);">All caught up</span>
       @endif

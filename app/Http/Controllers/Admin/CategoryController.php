@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
 use App\Models\Campaign;
-use Illuminate\Support\Str;
+use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
@@ -42,8 +42,8 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'  => 'required|max:255',
-            'icon'  => 'nullable|string|max:100',
+            'name' => 'required|max:255',
+            'icon' => 'nullable|string|max:100',
             'color' => 'nullable|string|max:50',
         ]);
 
@@ -53,14 +53,14 @@ class CategoryController extends Controller
         $count = 1;
 
         while (Category::where('slug', $slug)->exists()) {
-            $slug = $originalSlug . '-' . $count++;
+            $slug = $originalSlug.'-'.$count++;
         }
 
         Category::create([
-            'name'      => $request->name,
-            'slug'      => $slug,
-            'icon'      => $request->icon,
-            'color'     => $request->color,
+            'name' => $request->name,
+            'slug' => $slug,
+            'icon' => $request->icon,
+            'color' => $request->color,
             'is_active' => true,
         ]);
 
@@ -86,8 +86,8 @@ class CategoryController extends Controller
     public function update(Request $request, Category $category)
     {
         $request->validate([
-            'name'  => 'required|max:255',
-            'icon'  => 'nullable|string|max:100',
+            'name' => 'required|max:255',
+            'icon' => 'nullable|string|max:100',
             'color' => 'nullable|string|max:50',
         ]);
 
@@ -101,14 +101,14 @@ class CategoryController extends Controller
                 ->where('id', '!=', $category->id)
                 ->exists()
         ) {
-            $slug = $originalSlug . '-' . $count++;
+            $slug = $originalSlug.'-'.$count++;
         }
 
         $category->update([
-            'name'      => $request->name,
-            'slug'      => $slug,
-            'icon'      => $request->icon,
-            'color'     => $request->color,
+            'name' => $request->name,
+            'slug' => $slug,
+            'icon' => $request->icon,
+            'color' => $request->color,
             'is_active' => $request->has('is_active'),
         ]);
 
@@ -140,7 +140,7 @@ class CategoryController extends Controller
     public function toggle(Category $category)
     {
         $category->update([
-            'is_active' => !$category->is_active
+            'is_active' => ! $category->is_active,
         ]);
 
         return back()->with('success', 'Category status updated');

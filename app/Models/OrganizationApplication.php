@@ -94,27 +94,26 @@ class OrganizationApplication extends Model
 
     protected $casts = [
 
-        'causes'               => 'array',
-        'registration_date'    => 'date',
-        '80g_expiry'           => 'date',
-        'submitted_at'         => 'datetime',
-        'reviewed_at'          => 'datetime',
-        'has_80g'              => 'boolean',
-        'has_fcra'             => 'boolean',
-        'has_12a'              => 'boolean',
-        'has_csr_eligible'     => 'boolean',
-        'has_crowdfunded'      => 'boolean',
-        'campaigns_completed'  => 'integer',
-        'priority_score'       => 'integer',
-        'current_step'         => 'integer',
+        'causes' => 'array',
+        'registration_date' => 'date',
+        '80g_expiry' => 'date',
+        'submitted_at' => 'datetime',
+        'reviewed_at' => 'datetime',
+        'has_80g' => 'boolean',
+        'has_fcra' => 'boolean',
+        'has_12a' => 'boolean',
+        'has_csr_eligible' => 'boolean',
+        'has_crowdfunded' => 'boolean',
+        'campaigns_completed' => 'integer',
+        'priority_score' => 'integer',
+        'current_step' => 'integer',
 
-
-         // sensitive fields — encrypted at rest
-    'pan_number'           => 'encrypted',
-    'bank_name'            => 'encrypted',
-    'bank_account_number'  => 'encrypted',
-    'bank_ifsc'            => 'encrypted',
-    'bank_account_type'    => 'encrypted'
+        // sensitive fields — encrypted at rest
+        'pan_number' => 'encrypted',
+        'bank_name' => 'encrypted',
+        'bank_account_number' => 'encrypted',
+        'bank_ifsc' => 'encrypted',
+        'bank_account_type' => 'encrypted',
 
     ];
 
@@ -132,46 +131,23 @@ class OrganizationApplication extends Model
 
     // ── Helpers ────────────────────────────────────────────────────────────
 
-
-
-
-
-
-    
     public function isDraft(): bool
     {
         return $this->status === 'draft';
     }
-
-
-
-
-
 
     public function isPending(): bool
     {
         return $this->status === 'pending';
     }
 
-
-
-
-
     public function isApproved(): bool
     {
         return $this->status === 'approved';
     }
 
-
-
-
-
-
     public function isRejected(): bool
     {
         return $this->status === 'rejected';
     }
-
-
-
 }

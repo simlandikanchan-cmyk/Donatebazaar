@@ -10,17 +10,16 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-{
-    Schema::table('campaigns', function (Blueprint $table) {
-        $table->text('rejection_reason')->nullable()->after('pause_reason');
-    });
-}
+    {
+        Schema::table('campaigns', function (Blueprint $table) {
+            $table->text('rejection_reason')->nullable()->after('pause_reason');
+        });
+    }
 
-public function down(): void
-{
-    Schema::table('campaigns', function (Blueprint $table) {
-        $table->dropColumn('rejection_reason');
-    });
-}
-
+    public function down(): void
+    {
+        Schema::table('campaigns', function (Blueprint $table) {
+            $table->dropColumn('rejection_reason');
+        });
+    }
 };

@@ -12,17 +12,16 @@ return new class extends Migration
     public function up(): void
     {
 
-    Schema::create('locations', function (Blueprint $table) {
-    $table->id();
-    $table->string('city')->nullable();
-    $table->string('state')->nullable();
-    $table->string('country')->nullable();
-    $table->decimal('latitude', 10, 7)->nullable();
-    $table->decimal('longitude', 10, 7)->nullable();
-    $table->timestamps();
-   });
+        Schema::create('locations', function (Blueprint $table) {
+            $table->id();
+            $table->string('city')->nullable();
+            $table->string('state')->nullable();
+            $table->string('country')->nullable();
+            $table->decimal('latitude', 10, 7)->nullable();
+            $table->decimal('longitude', 10, 7)->nullable();
+            $table->timestamps();
+        });
 
-   
     }
 
     /**

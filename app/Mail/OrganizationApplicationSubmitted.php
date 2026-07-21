@@ -2,10 +2,10 @@
 
 namespace App\Mail;
 
+use App\Models\OrganizationApplication;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use App\Models\OrganizationApplication;
 
 class OrganizationApplicationSubmitted extends Mailable
 {
@@ -20,7 +20,7 @@ class OrganizationApplicationSubmitted extends Mailable
 
     public function build()
     {
-        return $this->subject('NGO Application Received — ' . $this->application->name)
+        return $this->subject('NGO Application Received — '.$this->application->name)
             ->view('emails.org_application_submitted')
             ->with([
                 'applicant' => $this->application->user?->name ?? $this->application->contact_name,

@@ -30,7 +30,7 @@ class DonationReceiptMail extends Mailable
                     $this->donation->donor_name ?? 'Donor'
                 ),
             ],
-            subject: 'Thank You for Your Donation — ' . config('app.name'),
+            subject: 'Thank You for Your Donation — '.config('app.name'),
         );
     }
 
@@ -39,14 +39,14 @@ class DonationReceiptMail extends Mailable
         return new Content(
             view: 'emails.donation-receipt',
             with: [
-                'donation'    => $this->donation,
-                'campaign'    => $this->donation->campaign,
-                'donorName'   => $this->donation->donor_name ?? 'Donor',
-                'amount'      => $this->donation->total_amount,
+                'donation' => $this->donation,
+                'campaign' => $this->donation->campaign,
+                'donorName' => $this->donation->donor_name ?? 'Donor',
+                'amount' => $this->donation->total_amount,
                 'platformFee' => $this->donation->platform_fee,
-                'netAmount'   => $this->donation->net_amount,
-                'receiptNo'   => $this->donation->receipt_number,
-                'paidAt'      => $this->donation->paid_at,
+                'netAmount' => $this->donation->net_amount,
+                'receiptNo' => $this->donation->receipt_number,
+                'paidAt' => $this->donation->paid_at,
             ],
         );
     }

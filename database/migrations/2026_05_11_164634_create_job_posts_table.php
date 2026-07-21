@@ -10,22 +10,21 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-{
-    Schema::create('job_posts', function (Blueprint $table) {
-        $table->id();
-        $table->string('title');
-        $table->text('description');
-        $table->string('type');
-        $table->string('location')->nullable();
-        $table->string('salary')->nullable();
-        $table->enum('status', ['draft', 'active', 'closed'])->default('draft');
-        $table->timestamps();
-    });
-}
+    {
+        Schema::create('job_posts', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->text('description');
+            $table->string('type');
+            $table->string('location')->nullable();
+            $table->string('salary')->nullable();
+            $table->enum('status', ['draft', 'active', 'closed'])->default('draft');
+            $table->timestamps();
+        });
+    }
 
-public function down(): void
-{
-    Schema::dropIfExists('job_posts');
-}
-
+    public function down(): void
+    {
+        Schema::dropIfExists('job_posts');
+    }
 };

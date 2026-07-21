@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class FundraiserLevelHistory extends Model
 {
+    protected $table = 'fundraiser_level_history';
+
     public $timestamps = false; // only has created_at
 
     protected $fillable = [
@@ -22,8 +24,23 @@ class FundraiserLevelHistory extends Model
         'created_at' => 'datetime',
     ];
 
-    public function user()       { return $this->belongsTo(User::class); }
-    public function fromLevel()  { return $this->belongsTo(FundraiserLevel::class, 'from_level_id'); }
-    public function toLevel()    { return $this->belongsTo(FundraiserLevel::class, 'to_level_id'); }
-    public function admin()      { return $this->belongsTo(User::class, 'admin_id'); }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function fromLevel()
+    {
+        return $this->belongsTo(FundraiserLevel::class, 'from_level_id');
+    }
+
+    public function toLevel()
+    {
+        return $this->belongsTo(FundraiserLevel::class, 'to_level_id');
+    }
+
+    public function admin()
+    {
+        return $this->belongsTo(User::class, 'admin_id');
+    }
 }

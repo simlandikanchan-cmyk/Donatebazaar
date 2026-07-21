@@ -114,6 +114,8 @@
               <th>#</th>
               <th>Volunteer</th>
               <th>Phone</th>
+              <th>Country</th>
+              <th>State</th>
               <th>City</th>
               <th>Availability</th>
               <th>Verified</th>
@@ -130,6 +132,8 @@
                 <div class="applicant-email">{{ $v->user?->email ?? '—' }}</div>
               </td>
               <td class="cell-date">{{ $v->phone ?? '—' }}</td>
+              <td>{{ $v->country ?? 'India' }}</td>
+              <td>{{ $v->state ?? '—' }}</td>
               <td>{{ $v->city ?? '—' }}</td>
               <td>
                 @if($v->availability)
@@ -155,7 +159,7 @@
             </tr>
             @empty
             <tr class="empty-row">
-              <td colspan="8">
+              <td colspan="10">
                 <div class="empty-inner">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg>
                   <strong>No volunteers found</strong>

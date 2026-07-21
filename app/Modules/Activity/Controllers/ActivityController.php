@@ -3,10 +3,9 @@
 namespace App\Modules\Activity\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Modules\Activity\Services\ActivityService;
 use App\Modules\Activity\Requests\StoreActivityRequest;
 use App\Modules\Activity\Resources\ActivityResource;
-use Illuminate\Http\Request;
+use App\Modules\Activity\Services\ActivityService;
 
 class ActivityController extends Controller
 {
@@ -33,16 +32,16 @@ class ActivityController extends Controller
         return ActivityResource::collection($feed);
     }
 
-//     public function getFeed()
-// {
-//     return Activity::latest()->paginate(10);
-// }
+    //     public function getFeed()
+    // {
+    //     return Activity::latest()->paginate(10);
+    // }
 
     public function store(StoreActivityRequest $request)
     {
         $activity = $this->service->createActivity([
             'user_id' => auth()->id(),
-            ...$request->validated()
+            ...$request->validated(),
         ]);
 
         return new ActivityResource($activity);

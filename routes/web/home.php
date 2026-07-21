@@ -1,9 +1,9 @@
 <?php
 
+use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NewsletterController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ChatbotController;
 use Spatie\Health\Http\Controllers\HealthCheckResultsController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');

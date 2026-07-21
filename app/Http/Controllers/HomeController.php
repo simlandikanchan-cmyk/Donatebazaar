@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Blog;
 use App\Models\Campaign;
 use App\Models\Category;
-use App\Models\Blog;
 
 class HomeController extends Controller
 {
@@ -25,17 +24,17 @@ class HomeController extends Controller
         //   "Featured Campaigns" name); falls back to latest active campaigns so
         //   the section is never empty if nothing has been marked featured yet.
         $campaigns = Campaign::with([
-                'user:id,name,avatar',
-                'user.kycVerification',
-                'category',
-            ])
+            'user:id,name,avatar',
+            'user.kycVerification',
+            'category',
+        ])
             ->withCount(['donations as donors_count' => function ($q) {
                 $q->where('payment_status', 'completed');
             }])
             ->where('campaign_state', 'active')
             ->where(function ($q) {
                 $q->whereNull('end_date')
-                  ->orWhereDate('end_date', '>=', now());
+                    ->orWhereDate('end_date', '>=', now());
             })
             ->orderByDesc('is_featured')
             ->latest()
@@ -48,10 +47,10 @@ class HomeController extends Controller
         $categories = Category::active()
             ->withCount(['campaigns' => function ($query) {
                 $query->where('campaign_state', 'active')
-                      ->where(function ($q) {
-                          $q->whereNull('end_date')
+                    ->where(function ($q) {
+                        $q->whereNull('end_date')
                             ->orWhereDate('end_date', '>=', now());
-                      });
+                    });
             }])
             ->get();
 

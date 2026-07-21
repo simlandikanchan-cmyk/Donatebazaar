@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-Schema::create('payment_logs', function (Blueprint $table) {
-    $table->id();
-    $table->string('transaction_id');
-    $table->string('event'); // success, failed, refund
-    $table->json('payload')->nullable();
-    $table->timestamps();
-});
+        Schema::create('payment_logs', function (Blueprint $table) {
+            $table->id();
+            $table->string('transaction_id');
+            $table->string('event'); // success, failed, refund
+            $table->json('payload')->nullable();
+            $table->timestamps();
+        });
     }
 
     /**

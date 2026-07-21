@@ -16,6 +16,7 @@ class DonationRefundMail extends Mailable
     use Queueable, SerializesModels;
 
     public Donation $donation;
+
     public Refund $refund;
 
     public function __construct(Donation $donation, Refund $refund)
@@ -33,7 +34,7 @@ class DonationRefundMail extends Mailable
                     $this->donation->donor_name ?? 'Donor'
                 ),
             ],
-            subject: 'Refund Processed — ' . config('app.name'),
+            subject: 'Refund Processed — '.config('app.name'),
         );
     }
 
@@ -42,14 +43,14 @@ class DonationRefundMail extends Mailable
         return new Content(
             view: 'emails.donation-refund',
             with: [
-                'donation'  => $this->donation,
-                'refund'    => $this->refund,
-                'campaign'  => $this->donation->campaign,
+                'donation' => $this->donation,
+                'refund' => $this->refund,
+                'campaign' => $this->donation->campaign,
                 'donorName' => $this->donation->donor_name ?? 'Donor',
-                'amount'    => $this->refund->amount,
-                'reason'    => $this->refund->reason,
+                'amount' => $this->refund->amount,
+                'reason' => $this->refund->reason,
                 'processedAt' => $this->refund->processed_at,
-                'refundId'  => $this->refund->id,
+                'refundId' => $this->refund->id,
             ],
         );
     }

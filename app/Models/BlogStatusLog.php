@@ -11,7 +11,7 @@ class BlogStatusLog extends Model
         'changed_by',
         'from_status',
         'to_status',
-        'note'
+        'note',
     ];
 
     public function blog()

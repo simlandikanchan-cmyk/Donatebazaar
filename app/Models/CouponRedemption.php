@@ -22,7 +22,7 @@ class CouponRedemption extends Model
 
     protected $casts = [
         'discount_amount' => 'decimal:2',
-        'created_at'      => 'datetime',
+        'created_at' => 'datetime',
     ];
 
     public function coupon(): BelongsTo

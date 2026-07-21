@@ -17,7 +17,7 @@ class JobPostController extends Controller
     {
         $jobPosts = JobPost::withCount('applications')
             ->when($request->search, function ($query) use ($request) {
-                $query->where('title', 'like', '%' . $request->search . '%');
+                $query->where('title', 'like', '%'.$request->search.'%');
             })
             ->when($request->status, function ($query) use ($request) {
                 $query->where('status', $request->status);
@@ -48,14 +48,14 @@ class JobPostController extends Controller
         );
 
         // Generate unique slug
-        $data['slug'] = Str::slug($data['title']) . '-' . uniqid();
+        $data['slug'] = Str::slug($data['title']).'-'.uniqid();
 
         // Checkbox fields
         $data['is_remote'] = $request->boolean('is_remote');
         $data['featured'] = $request->boolean('featured');
 
         // Convert comma-separated skills into JSON array
-        if (!empty($data['skills'])) {
+        if (! empty($data['skills'])) {
             $data['skills'] = collect(explode(',', $data['skills']))
                 ->map(fn ($skill) => trim($skill))
                 ->filter()
@@ -114,7 +114,7 @@ class JobPostController extends Controller
 
         // Regenerate slug if title changed
         if ($jobPost->title !== $data['title']) {
-            $data['slug'] = Str::slug($data['title']) . '-' . uniqid();
+            $data['slug'] = Str::slug($data['title']).'-'.uniqid();
         }
 
         // Checkbox fields
@@ -122,7 +122,7 @@ class JobPostController extends Controller
         $data['featured'] = $request->boolean('featured');
 
         // Convert skills string to array
-        if (!empty($data['skills'])) {
+        if (! empty($data['skills'])) {
             $data['skills'] = collect(explode(',', $data['skills']))
                 ->map(fn ($skill) => trim($skill))
                 ->filter()
@@ -135,7 +135,7 @@ class JobPostController extends Controller
         // Set publish time when moving from draft to active
         if (
             $data['status'] === 'active' &&
-            !$jobPost->published_at
+            ! $jobPost->published_at
         ) {
             $data['published_at'] = now();
         }

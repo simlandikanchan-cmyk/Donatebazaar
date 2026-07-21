@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('campaigns', function (Blueprint $table) {
-        $table->enum('kyc_status', ['pending','approved','rejected'])
-          ->default('pending')
-          ->after('status');
-    });
+            $table->enum('kyc_status', ['pending', 'approved', 'rejected'])
+                ->default('pending')
+                ->after('status');
+        });
     }
 
     /**

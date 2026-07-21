@@ -10,23 +10,23 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-{
-    Schema::create('job_post_applications', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('job_post_id')->constrained('job_posts')->onDelete('cascade');
-        $table->string('name');
-        $table->string('email');
-        $table->string('phone')->nullable();
-        $table->text('cover_letter')->nullable();
-        $table->string('cv_path')->nullable();
-        $table->text('admin_notes')->nullable();
-        $table->enum('status', ['pending', 'shortlisted', 'rejected'])->default('pending');
-        $table->timestamps();
-    });
-}
+    {
+        Schema::create('job_post_applications', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('job_post_id')->constrained('job_posts')->onDelete('cascade');
+            $table->string('name');
+            $table->string('email');
+            $table->string('phone')->nullable();
+            $table->text('cover_letter')->nullable();
+            $table->string('cv_path')->nullable();
+            $table->text('admin_notes')->nullable();
+            $table->enum('status', ['pending', 'shortlisted', 'rejected'])->default('pending');
+            $table->timestamps();
+        });
+    }
 
-public function down(): void
-{
-    Schema::dropIfExists('job_post_applications');
-}
+    public function down(): void
+    {
+        Schema::dropIfExists('job_post_applications');
+    }
 };

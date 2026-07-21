@@ -15,7 +15,7 @@ class SuccessStoryController extends Controller
         $query = Campaign::completed()
             ->with('category:id,name,slug')
             ->when($request->search, function ($q) use ($request) {
-                $q->where('title', 'like', '%' . $request->search . '%');
+                $q->where('title', 'like', '%'.$request->search.'%');
             })
             ->when($request->filled('featured'), function ($q) use ($request) {
                 $q->where('is_featured', $request->featured === '1');
@@ -27,7 +27,7 @@ class SuccessStoryController extends Controller
 
         $stats = [
             'completed' => Campaign::completed()->count(),
-            'featured'  => Campaign::completed()->where('is_featured', true)->count(),
+            'featured' => Campaign::completed()->where('is_featured', true)->count(),
         ];
 
         return view('admin.success-stories.index', compact('campaigns', 'stats'));

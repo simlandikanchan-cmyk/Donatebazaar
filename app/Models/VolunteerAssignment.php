@@ -13,12 +13,12 @@ class VolunteerAssignment extends Model
         'role',
         'start_date',
         'end_date',
-        'status'
+        'status',
     ];
 
     protected $casts = [
         'start_date' => 'date:Y-m-d',
-        'end_date'   => 'date:Y-m-d',
+        'end_date' => 'date:Y-m-d',
     ];
 
     public function volunteer()

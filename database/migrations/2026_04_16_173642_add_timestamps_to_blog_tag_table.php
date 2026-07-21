@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('blog_tag', function (Blueprint $table) {
-        $table->timestamps();
-});
+            $table->timestamps();
+        });
     }
 
     /**

@@ -14,7 +14,7 @@ return new class extends Migration
                 'payment_id',
                 'order_id',
                 'payment_method',
-                'payment_gateway'
+                'payment_gateway',
             ]);
 
             // OPTIONAL: keep payment_status OR remove it also

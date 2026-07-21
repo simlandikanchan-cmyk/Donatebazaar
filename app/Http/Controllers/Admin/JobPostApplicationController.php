@@ -25,9 +25,9 @@ class JobPostApplicationController extends Controller
             })
             ->when($request->search, function ($query) use ($request) {
                 $query->where(function ($q) use ($request) {
-                    $q->where('name', 'like', '%' . $request->search . '%')
-                      ->orWhere('email', 'like', '%' . $request->search . '%')
-                      ->orWhere('phone', 'like', '%' . $request->search . '%');
+                    $q->where('name', 'like', '%'.$request->search.'%')
+                        ->orWhere('email', 'like', '%'.$request->search.'%')
+                        ->orWhere('phone', 'like', '%'.$request->search.'%');
                 });
             })
             ->latest()
@@ -40,13 +40,13 @@ class JobPostApplicationController extends Controller
 
         // Dashboard statistics
         $stats = [
-            'total'       => JobPostApplication::count(),
-            'new'         => JobPostApplication::where('status', 'new')->count(),
-            'pending'     => JobPostApplication::where('status', 'pending')->count(),
+            'total' => JobPostApplication::count(),
+            'new' => JobPostApplication::where('status', 'new')->count(),
+            'pending' => JobPostApplication::where('status', 'pending')->count(),
             'shortlisted' => JobPostApplication::where('status', 'shortlisted')->count(),
             'interviewed' => JobPostApplication::where('status', 'interviewed')->count(),
-            'hired'       => JobPostApplication::where('status', 'hired')->count(),
-            'rejected'    => JobPostApplication::where('status', 'rejected')->count(),
+            'hired' => JobPostApplication::where('status', 'hired')->count(),
+            'rejected' => JobPostApplication::where('status', 'rejected')->count(),
         ];
 
         return view(
@@ -119,11 +119,11 @@ class JobPostApplicationController extends Controller
      */
     public function downloadCv(JobPostApplication $jobPostApplication)
     {
-        if (!$jobPostApplication->cv_path) {
+        if (! $jobPostApplication->cv_path) {
             return back()->with('error', 'CV file is not available.');
         }
 
-        if (!Storage::disk('public')->exists($jobPostApplication->cv_path)) {
+        if (! Storage::disk('public')->exists($jobPostApplication->cv_path)) {
             return back()->with('error', 'CV file not found.');
         }
 
@@ -131,7 +131,7 @@ class JobPostApplicationController extends Controller
 
         $filename = str($jobPostApplication->name)
             ->slug()
-            ->append('-cv.' . $extension);
+            ->append('-cv.'.$extension);
 
         return Storage::disk('public')->download(
             $jobPostApplication->cv_path,

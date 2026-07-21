@@ -9,15 +9,15 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-public function up(): void
-{
-    Schema::table('contacts', function (Blueprint $table) {
-        $table->string('name');
-        $table->string('email');
-        $table->string('subject');
-        $table->text('message');
-    });
-}
+    public function up(): void
+    {
+        Schema::table('contacts', function (Blueprint $table) {
+            $table->string('name');
+            $table->string('email');
+            $table->string('subject');
+            $table->text('message');
+        });
+    }
 
     /**
      * Reverse the migrations.

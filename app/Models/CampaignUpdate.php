@@ -2,16 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class CampaignUpdate extends Model
-
-
-
 {
-
-
     use HasFactory;
 
     protected $fillable = [
@@ -23,13 +18,8 @@ class CampaignUpdate extends Model
         'created_by',
     ];
 
-    
-
     public function campaign()
     {
         return $this->belongsTo(Campaign::class);
     }
-
-
-
 }

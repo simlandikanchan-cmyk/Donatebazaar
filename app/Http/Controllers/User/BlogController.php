@@ -3,20 +3,16 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-
+use App\Http\Requests\Blog\StoreBlogRequest;
+use App\Http\Requests\Blog\UpdateBlogRequest;
 use App\Models\Blog;
 use App\Models\Category;
 use App\Models\Tag;
-
+use App\Services\Blog\BlogService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
-
-use App\Services\Blog\BlogService;
-
-use App\Http\Requests\Blog\StoreBlogRequest;
-use App\Http\Requests\Blog\UpdateBlogRequest;
 
 class BlogController extends Controller
 {
@@ -36,7 +32,7 @@ class BlogController extends Controller
         $query = Blog::byAuthor(Auth::id())
             ->with([
                 'category:id,name,slug',
-                'tags:id,name,slug'
+                'tags:id,name,slug',
             ])
             ->latest();
 
@@ -117,7 +113,7 @@ class BlogController extends Controller
         $blog->load([
             'category',
             'tags',
-            'statusLogs.actor'
+            'statusLogs.actor',
         ]);
 
         return view(
@@ -276,14 +272,11 @@ class BlogController extends Controller
     {
         return match ($status) {
 
-            Blog::STATUS_PENDING =>
-                'Blog submitted for review!',
+            Blog::STATUS_PENDING => 'Blog submitted for review!',
 
-            Blog::STATUS_PUBLISHED =>
-                'Blog published successfully!',
+            Blog::STATUS_PUBLISHED => 'Blog published successfully!',
 
-            default =>
-                'Blog saved as draft.',
+            default => 'Blog saved as draft.',
         };
     }
 }

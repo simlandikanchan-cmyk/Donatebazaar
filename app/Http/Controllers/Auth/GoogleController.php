@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Mail\WelcomeGoogleMail;
+use App\Mail\WelcomeMail;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
@@ -37,16 +37,18 @@ class GoogleController extends Controller
         } catch (InvalidStateException $e) {
             Log::warning('Google OAuth invalid state', [
                 'error' => $e->getMessage(),
-                'ip'    => request()->ip(),
+                'ip' => request()->ip(),
             ]);
+
             return redirect()->route('login')
                 ->with('error', 'Session expired. Please try again.');
 
         } catch (\Exception $e) {
             Log::error('Google OAuth failed', [
                 'error' => $e->getMessage(),
-                'ip'    => request()->ip(),
+                'ip' => request()->ip(),
             ]);
+
             return redirect()->route('login')
                 ->with('error', 'Google login failed. Please try again.');
         }
@@ -56,6 +58,7 @@ class GoogleController extends Controller
             Log::warning('Google OAuth returned no email', [
                 'google_id' => $googleUser->getId(),
             ]);
+
             return redirect()->route('login')
                 ->with('error', 'Could not retrieve email from Google.');
         }
@@ -71,6 +74,7 @@ class GoogleController extends Controller
                     if (empty($existing->google_id)) {
                         $existing->update(['google_id' => $googleUser->getId()]);
                     }
+
                     return $existing;
                 }
 
@@ -78,10 +82,10 @@ class GoogleController extends Controller
                 $isNewUser = true;
 
                 return User::create([
-                    'name'              => $googleUser->name ?? 'Google User',
-                    'email'             => $googleUser->email,
-                    'google_id'         => $googleUser->getId(),
-                    'password'          => bcrypt(Str::random(32)),
+                    'name' => $googleUser->name ?? 'Google User',
+                    'email' => $googleUser->email,
+                    'google_id' => $googleUser->getId(),
+                    'password' => bcrypt(Str::random(32)),
                     'email_verified_at' => now(),
                 ]);
             });
@@ -91,6 +95,7 @@ class GoogleController extends Controller
                 'email' => $googleUser->email,
                 'error' => $e->getMessage(),
             ]);
+
             return redirect()->route('login')
                 ->with('error', 'Something went wrong. Please try again.');
         }
@@ -98,17 +103,17 @@ class GoogleController extends Controller
         // Send welcome email only to new users
         if ($isNewUser) {
             try {
-                Mail::to($user->email)->send(new WelcomeGoogleMail($user));
+                Mail::to($user->email)->send(new WelcomeMail($user));
 
                 Log::info('Welcome email sent', [
                     'user_id' => $user->id,
-                    'email'   => $user->email,
+                    'email' => $user->email,
                 ]);
             } catch (\Exception $e) {
                 // Don't block login if email fails
                 Log::error('Welcome email failed', [
                     'user_id' => $user->id,
-                    'error'   => $e->getMessage(),
+                    'error' => $e->getMessage(),
                 ]);
             }
         }
@@ -119,11 +124,11 @@ class GoogleController extends Controller
 
         Log::info('Google OAuth login success', [
             'user_id' => $user->id,
-            'email'   => $user->email,
-            'ip'      => request()->ip(),
+            'email' => $user->email,
+            'ip' => request()->ip(),
         ]);
 
         return redirect()->intended(route('dashboard'))
-            ->with('success', 'Welcome, ' . $user->name . '!');
+            ->with('success', 'Welcome, '.$user->name.'!');
     }
 }

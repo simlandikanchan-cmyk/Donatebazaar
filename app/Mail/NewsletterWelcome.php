@@ -21,6 +21,6 @@ class NewsletterWelcome extends Mailable
     public function build()
     {
         return $this->subject('Welcome to our Newsletter!')
-                    ->view('emails.newsletter-welcome');
+            ->view('emails.newsletter-welcome');
     }
 }

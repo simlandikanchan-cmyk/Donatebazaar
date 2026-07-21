@@ -11,21 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-          Schema::table('campaigns', function (Blueprint $table) {
-    $table->foreignId('location_id')->nullable()->constrained()->nullOnDelete();
-});
+        Schema::table('campaigns', function (Blueprint $table) {
+            $table->foreignId('location_id')->nullable()->constrained()->nullOnDelete();
+        });
 
-Schema::table('users', function (Blueprint $table) {
-    $table->foreignId('location_id')->nullable()->constrained()->nullOnDelete();
-});
+        Schema::table('users', function (Blueprint $table) {
+            $table->foreignId('location_id')->nullable()->constrained()->nullOnDelete();
+        });
 
-Schema::table('ngos', function (Blueprint $table) {
-    $table->foreignId('location_id')->nullable()->constrained()->nullOnDelete();
-});
+        Schema::table('ngos', function (Blueprint $table) {
+            $table->foreignId('location_id')->nullable()->constrained()->nullOnDelete();
+        });
 
-Schema::table('events', function (Blueprint $table) {
-    $table->foreignId('location_id')->nullable()->constrained()->nullOnDelete();
-});
+        Schema::table('events', function (Blueprint $table) {
+            $table->foreignId('location_id')->nullable()->constrained()->nullOnDelete();
+        });
     }
 
     /**
