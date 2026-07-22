@@ -13,6 +13,7 @@ class ProductReservation extends Model
         'session_id',
         'donation_id',
         'expires_at',
+        'idempotency_key',
     ];
 
     protected $casts = [

@@ -278,16 +278,40 @@ tbody tr:hover{background:var(--surface2);}
 .flash svg{width:14px;height:14px;flex-shrink:0;}
 
 /* ── RESPONSIVE ── */
-<<<<<<< HEAD
 @media(max-width:960px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:600px){.filter-bar{flex-direction:column;align-items:stretch}.filter-inp,.filter-sel{width:100%}.filter-btn,.filter-clear{width:100%;justify-content:center}}
-@media(max-width:480px){.stats-grid{grid-template-columns:1fr;gap:8px;}.stat{padding:10px 12px;}.stat-icon{width:30px;height:30px;}.stat-icon svg{width:13px;height:13px;}tbody td{padding:8px 8px}thead th{padding:8px 6px;font-size:8px}.applicant-name{font-size:11px}.applicant-email{font-size:10px}.job-name{font-size:11px}.job-type{font-size:10px}.cell-date{font-size:10px}.cell-id{font-size:10px}.act-link{padding:3px 6px;font-size:10px}.cv-link{padding:3px 6px;font-size:10px}}
-=======
 @media(max-width:860px){.search-wrap{display:none}}
-@media(max-width:600px){.filter-bar{flex-direction:column;align-items:stretch}.filter-inp,.filter-sel{width:100%}}
-@media(max-width:480px){.filter-bar{padding:14px;gap:8px}.filter-inp,.filter-sel{font-size:12px;height:34px;padding:0 10px;width:100%}.stats-grid{grid-template-columns:repeat(2,1fr);gap:8px}.stat{padding:14px 12px}.stat-icon{width:36px;height:36px}.stat-value{font-size:clamp(16px,4.5vw,18px)}.stat-label{font-size:10px}.table-wrap{padding:0}.table th,.table td{padding:8px 6px;font-size:11px}.table .col-created{display:none}.table th.col-created{display:none}}
-@media(max-width:380px){.stats-grid{grid-template-columns:1fr 1fr;gap:6px}.stat{padding:10px 8px;gap:8px}.stat-icon{width:30px;height:30px}.stat-value{font-size:clamp(14px,4vw,16px)}.stat-label{font-size:9px}.filter-bar{padding:12px 10px}.filter-inp,.filter-sel{font-size:11px;height:32px}.table .col-email,.table .col-status{display:none}.table th.col-email,.table th.col-status{display:none}.empty-state{padding:30px 16px}.empty-state p{font-size:13px}.flash{font-size:12px;padding:10px 12px}}
->>>>>>> origin/master
+@media(max-width:600px){
+  .filter-bar{flex-direction:column;align-items:stretch}
+  .filter-inp,.filter-sel{width:100%}
+  .filter-btn,.filter-clear{width:100%;justify-content:center}
+}
+@media(max-width:480px){
+  .stats-grid{grid-template-columns:repeat(2,1fr);gap:8px}
+  .stat{padding:14px 12px}
+  .stat-icon{width:36px;height:36px}
+  .stat-value{font-size:clamp(16px,4.5vw,18px)}
+  .stat-label{font-size:10px}
+  .table-wrap{padding:0}
+  .table th,.table td{padding:8px 6px;font-size:11px}
+  .table .col-created{display:none}
+}
+@media(max-width:380px){
+  .stats-grid{grid-template-columns:1fr 1fr;gap:6px}
+  .stat{padding:10px 8px}
+  .stat-icon{width:30px;height:30px}
+  .stat-value{font-size:clamp(14px,4vw,16px)}
+  .stat-label{font-size:9px}
+  .filter-bar{padding:12px 10px}
+  .filter-inp,.filter-sel{font-size:11px;height:32px}
+  .table .col-email,.table .col-status{display:none}
+  .empty-state{padding:30px 16px}
+  .flash{font-size:12px;padding:10px 12px}
+  .applicant-name{font-size:11px}
+  .applicant-email{font-size:10px}
+  .job-name{font-size:11px}
+  .cell-date{font-size:10px}
+  .act-link{padding:3px 6px;font-size:10px}
+}
 </style>
 @endpush
 

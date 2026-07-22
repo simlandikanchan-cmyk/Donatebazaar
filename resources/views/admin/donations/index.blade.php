@@ -17,14 +17,10 @@
 .ab-refund{background:var(--amber-lt);color:var(--amber);border-color:rgba(245,158,11,.18)}
 .ab-refund:hover{background:var(--amber);color:#fff;border-color:var(--amber)}
 .dn-anon{font-style:italic;color:var(--text3)}
-<<<<<<< HEAD
+@media(max-width:960px){.don-stats-grid{grid-template-columns:repeat(2,1fr)!important}}
 @media(max-width:640px){
+  .don-stats-grid{grid-template-columns:repeat(2,1fr)!important;gap:12px}
   .stats-grid{grid-template-columns:repeat(2,1fr) !important;}
-}
-@media(max-width:380px){
-  .filter-row{flex-direction:column;align-items:stretch;gap:8px;}
-  .ftab-select{margin-top:4px;}
-  .sinp{width:100%;}
 }
 @media(max-width:600px){
   #donationTable thead{display:none}
@@ -39,16 +35,14 @@
   #donationTable .cell-date{white-space:normal}
   #donationTable .cell-mono{font-size:12px}
 }
+@media(max-width:480px){.don-stats-grid{grid-template-columns:1fr!important}}
 @media(max-width:380px){
+  .don-stats-grid .stat{padding:12px 14px}
   #donationTable tbody tr:not(.empty-row){padding:12px 14px}
   #donationTable tbody tr td::before{min-width:65px;font-size:9px}
+  .filter-row{flex-direction:column;align-items:stretch;gap:8px;}
+  .sinp{width:100%;}
 }
-=======
-@media(max-width:960px){.don-stats-grid{grid-template-columns:repeat(2,1fr)!important}}
-@media(max-width:640px){.don-stats-grid{grid-template-columns:repeat(2,1fr)!important;gap:12px}}
-@media(max-width:480px){.don-stats-grid{grid-template-columns:1fr!important}}
-@media(max-width:380px){.don-stats-grid .stat{padding:12px 14px}}
->>>>>>> origin/master
 </style>
 @endpush
 

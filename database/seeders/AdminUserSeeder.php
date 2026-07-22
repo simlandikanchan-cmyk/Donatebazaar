@@ -10,18 +10,20 @@ class AdminUserSeeder extends Seeder
 {
     public function run(): void
     {
+        $email = 'admin@DonateBazaar.com';
+
         User::updateOrCreate(
-            ['email' => 'admin@DonateBazaar.com'],
+            ['email' => $email],
             [
                 'name' => 'Admin',
-                'email' => 'admin@DonateBazaar.com',
+                'email' => $email,
                 'password' => Hash::make('admin@123'),
                 'role' => 'admin',
             ]
         );
 
         $this->command->info(' Admin user created:');
-        $this->command->info('   Email    → admin@donatebazar.com');
+        $this->command->info("   Email    → {$email}");
         $this->command->info('   Password → admin@123');
     }
 }

@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendCampaignProductStatusJob;
 use App\Mail\CampaignProductStatusMail;
 use App\Models\CampaignProduct;
 use App\Models\Category;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Response;
 use Illuminate\View\View;
@@ -70,12 +72,22 @@ class CampaignProductController extends Controller
             $query->whereDate('created_at', '<=', $to);
         }
 
+        // TODO: Replace leading-wildcard LIKE + orWhereHas with a full-text
+        // index or search service (e.g. Scout) once the table grows large.
+
         $products = $query->orderBy($sort, $dir)->paginate(20);
 
-        $cntPending = CampaignProduct::where('approval_status', 'pending')->count();
-        $cntApproved = CampaignProduct::where('approval_status', 'approved')->count();
-        $cntRejected = CampaignProduct::where('approval_status', 'rejected')->count();
-        $cntTotal = CampaignProduct::count();
+        $counts = CampaignProduct::selectRaw("
+            COUNT(*) as total,
+            SUM(approval_status = 'pending') as pending,
+            SUM(approval_status = 'approved') as approved,
+            SUM(approval_status = 'rejected') as rejected
+        ")->first();
+
+        $cntPending = (int) $counts->pending;
+        $cntApproved = (int) $counts->approved;
+        $cntRejected = (int) $counts->rejected;
+        $cntTotal = (int) $counts->total;
 
         $categories = Category::orderBy('name')->get();
 
@@ -141,28 +153,32 @@ class CampaignProductController extends Controller
             'ids.*' => ['integer', 'exists:campaign_products,id'],
         ]);
 
-        $admin = Auth::user();
-        $count = 0;
+        $adminId = Auth::id();
 
-        foreach ($data['ids'] as $id) {
-            $product = CampaignProduct::find($id);
-            if ($product && $product->approval_status === 'pending') {
-                $product->update([
-                    'approval_status' => 'approved',
-                    'approved_by' => Auth::id(),
-                    'approved_at' => now(),
-                    'is_active' => true,
-                ]);
+        $updated = DB::transaction(function () use ($data, $adminId) {
+            $ids = CampaignProduct::whereIn('id', $data['ids'])
+                ->where('approval_status', 'pending')
+                ->pluck('id');
 
-                Mail::to($product->user)->queue(
-                    new CampaignProductStatusMail($product, 'approved', null, $admin)
-                );
-
-                $count++;
+            if ($ids->isEmpty()) {
+                return 0;
             }
-        }
 
-        return back()->with('success', "{$count} product(s) approved.");
+            CampaignProduct::whereIn('id', $ids)->update([
+                'approval_status' => 'approved',
+                'approved_by'     => $adminId,
+                'approved_at'     => now(),
+                'is_active'       => true,
+            ]);
+
+            SendCampaignProductStatusJob::dispatch(
+                $ids->toArray(), 'approved', null, $adminId
+            );
+
+            return $ids->count();
+        });
+
+        return back()->with('success', "{$updated} product(s) approved.");
     }
 
     public function bulkReject(Request $request): RedirectResponse
@@ -173,32 +189,44 @@ class CampaignProductController extends Controller
             'reason' => ['required', 'string', 'max:500'],
         ]);
 
-        $admin = Auth::user();
-        $count = 0;
+        $adminId = Auth::id();
 
-        foreach ($data['ids'] as $id) {
-            $product = CampaignProduct::find($id);
-            if ($product && $product->approval_status === 'pending') {
-                $product->update([
-                    'approval_status' => 'rejected',
-                    'approved_by' => Auth::id(),
-                    'approved_at' => now(),
-                    'is_active' => false,
-                ]);
+        $updated = DB::transaction(function () use ($data, $adminId) {
+            $ids = CampaignProduct::whereIn('id', $data['ids'])
+                ->where('approval_status', 'pending')
+                ->pluck('id');
 
-                Mail::to($product->user)->queue(
-                    new CampaignProductStatusMail($product, 'rejected', $data['reason'], $admin)
-                );
-
-                $count++;
+            if ($ids->isEmpty()) {
+                return 0;
             }
-        }
 
-        return back()->with('success', "{$count} product(s) rejected.");
+            CampaignProduct::whereIn('id', $ids)->update([
+                'approval_status' => 'rejected',
+                'approved_by'     => $adminId,
+                'approved_at'     => now(),
+                'is_active'       => false,
+            ]);
+
+            SendCampaignProductStatusJob::dispatch(
+                $ids->toArray(), 'rejected', $data['reason'], $adminId
+            );
+
+            return $ids->count();
+        });
+
+        return back()->with('success', "{$updated} product(s) rejected.");
     }
 
     public function destroy(CampaignProduct $product): RedirectResponse
     {
+        if ($product->reservations()->where('expires_at', '>', now())->exists()) {
+            return back()->with('error', 'Cannot delete: product has active reservations.');
+        }
+
+        if (\App\Models\DonationItem::where('product_id', $product->id)->exists()) {
+            return back()->with('error', 'Cannot delete: product has associated donation items.');
+        }
+
         $name = $product->name;
         $product->delete();
 
@@ -225,6 +253,8 @@ class CampaignProductController extends Controller
         }
 
         if ($search) {
+            // TODO: Replace leading-wildcard LIKE + orWhereHas with a full-text
+            // index or search service (e.g. Scout) once the table grows large.
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                     ->orWhereHas('campaign', fn ($cq) => $cq->where('title', 'like', "%{$search}%"))
@@ -241,14 +271,12 @@ class CampaignProductController extends Controller
             $query->whereHas('categoryProduct.category', fn ($cq) => $cq->where('id', $categoryId));
         }
 
-        $products = $query->latest()->get();
-
         $headers = [
             'Content-Type' => 'text/csv',
             'Content-Disposition' => 'attachment; filename="campaign-products-'.now()->format('Y-m-d').'.csv"',
         ];
 
-        $callback = function () use ($products) {
+        $callback = function () use ($query) {
             $file = fopen('php://output', 'w');
 
             fputcsv($file, [
@@ -257,7 +285,7 @@ class CampaignProductController extends Controller
                 'Category', 'Approved By', 'Approved At', 'Created At',
             ]);
 
-            foreach ($products as $p) {
+            foreach ($query->latest()->cursor() as $p) {
                 fputcsv($file, [
                     $p->id,
                     $p->name,

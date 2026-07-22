@@ -175,6 +175,7 @@ tbody tr:hover .cat-icon-box{transform:scale(1.08) rotate(-3deg);}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 
 @media(max-width:600px){.stats-grid{grid-template-columns:1fr 1fr}.bulk-bar{margin-left:12px;margin-right:12px;}}
+@media(max-width:480px){.stats-grid{grid-template-columns:1fr 1fr;gap:8px;}.stat{padding:12px 14px;}.stat-icon{width:32px;height:32px;}.stat-val{font-size:1.1rem;}.toolbar-left{flex-direction:column;align-items:stretch;}.search-input,.search-input:focus{width:100%;}.filter-group{width:100%;}.bulk-bar{margin-left:8px;margin-right:8px;}}
 @media(max-width:380px){
   .stats-grid{grid-template-columns:1fr;gap:8px;}
   .stat{padding:10px 12px;gap:8px;}

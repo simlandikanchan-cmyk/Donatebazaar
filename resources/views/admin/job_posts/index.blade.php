@@ -124,23 +124,21 @@ tbody tr:hover{background:var(--surface2)}
   .stats-grid{grid-template-columns:1fr!important}
 }
 @media(max-width:380px){
-<<<<<<< HEAD
   .filter-row{flex-direction:column;align-items:stretch;gap:8px;}
-  .ftab-select{margin-top:4px;}
-  .sinp{width:100%;}
-  .filter-right{width:100%;}
-  .sort-sel{width:100%;}
-=======
-  .sec-hdr h2{font-size:clamp(16px,4.5vw,18px)}.sec-hdr p{font-size:11px}
-  .stats-grid{gap:8px}.stat-card{padding:14px 10px}.stat-num{font-size:clamp(18px,5vw,20px)}.stat-lbl{font-size:9px}
-  .filter-row{gap:6px}.sinp{font-size:11px;height:34px;padding:0 10px}.filter-right{gap:4px}.filter-right .btn{font-size:11px;height:32px;padding:0 10px;flex:1;justify-content:center}
-  tbody tr{padding:10px}.table{margin:0 -10px;width:calc(100% + 20px)}
+  .sinp{width:100%;font-size:11px;height:34px;padding:0 10px;}
+  .filter-right{width:100%;gap:4px;}
+  .filter-right .btn{font-size:11px;height:32px;padding:0 10px;justify-content:center;}
+  .stats-grid{gap:8px}
+  .stat-card{padding:14px 10px}
+  .stat-num{font-size:clamp(18px,5vw,20px)}
+  .stat-lbl{font-size:9px}
+  tbody tr{padding:10px}
+  .table{margin:0 -10px;width:calc(100% + 20px)}
   tbody td{font-size:11px;padding:5px 4px}
   tbody td::before{font-size:8px;min-width:55px}
   .act-btns{gap:4px}.act-btn{font-size:10px;padding:5px 8px;height:28px}
   .pagination-wrap{flex-direction:column;gap:8px;padding:12px 14px}
   .empty-state{padding:30px 16px}
->>>>>>> origin/master
 }
 </style>
 @endpush

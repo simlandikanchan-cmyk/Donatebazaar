@@ -1,27 +1,18 @@
 <?php
 
 namespace App\Providers;
-
-<<<<<<< HEAD
 use App\Contracts\Gateway\GatewayInterface;
 use App\Gateways\RazorpayGateway;
-use App\Models\Campaign;
-use App\Services\FundraiserLevelService;
-use App\Services\LaravelNotificationService;
-use App\Services\NotificationService;
-use App\View\Composers\CampaignShowComposer;
-=======
 use App\Models\Campaign;
 use App\Models\Donation;
 use App\Models\User;
 use App\Models\Volunteer;
 use App\Models\VolunteerApplication;
 use App\Services\FundraiserLevelService;
+use App\Services\LaravelNotificationService;
+use App\Services\NotificationService;
+use App\View\Composers\CampaignShowComposer;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\ServiceProvider;
->>>>>>> origin/master
-use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -29,6 +20,8 @@ use Spatie\Health\Checks\Checks\CacheCheck;
 use Spatie\Health\Checks\Checks\DatabaseCheck;
 use Spatie\Health\Checks\Checks\DebugModeCheck;
 use Spatie\Health\Facades\Health;
+
+use Illuminate\Pagination\Paginator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -81,13 +74,9 @@ class AppServiceProvider extends ServiceProvider
                 ->firstOrFail();
         });
 
-<<<<<<< HEAD
         View::composer('campaigns.show', CampaignShowComposer::class);
-=======
-        // ───────────────────────────────────────────────────────────────
-        // Admin dashboard stats cache invalidation
-        // ───────────────────────────────────────────────────────────────
 
+        // Admin dashboard stats cache invalidation
         $forget = fn () => Cache::forget('admin_dashboard_stats');
 
         Campaign::saved($forget);
@@ -103,7 +92,6 @@ class AppServiceProvider extends ServiceProvider
 
         VolunteerApplication::saved($forget);
         VolunteerApplication::deleted($forget);
->>>>>>> origin/master
 
         // Health Checks
         Health::checks([
