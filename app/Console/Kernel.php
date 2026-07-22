@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Jobs\ReconciliationJob;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -9,17 +10,14 @@ class Kernel extends ConsoleKernel
 {
     protected function schedule(Schedule $schedule)
     {
-
         $schedule->command('campaigns:expire')->hourly();
-        $schedule->command('reservations:prune')->everyFiveMinutes();
+        $schedule->command('product-reservations:prune-expired')->everyFiveMinutes();
         $schedule->command('telescope:prune', ['--hours' => 24])->daily();
-
+        $schedule->job(new ReconciliationJob)->everyFiveMinutes();
     }
 
     protected function commands()
     {
-
         $this->load(__DIR__.'/Commands');
-
     }
 }

@@ -35,6 +35,7 @@ class CampaignProduct extends Model
         'quantity',
 
         'remaining_quantity',
+        'reserved_quantity',
 
         'image',
 
