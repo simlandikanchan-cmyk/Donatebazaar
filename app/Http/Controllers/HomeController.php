@@ -23,6 +23,9 @@ class HomeController extends Controller
         // - Ordering: is_featured campaigns surface first (matches the section's
         //   "Featured Campaigns" name); falls back to latest active campaigns so
         //   the section is never empty if nothing has been marked featured yet.
+
+
+        
         $campaigns = Campaign::with([
             'user:id,name,avatar',
             'user.kycVerification',

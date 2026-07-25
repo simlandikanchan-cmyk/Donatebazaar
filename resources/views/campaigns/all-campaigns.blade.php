@@ -428,10 +428,10 @@
     @endif
 
     @php
-        $raised = $campaign->donations_sum_amount ?? $campaign->raised_amount ?? 0;
+        $raised = $campaign->donations_sum_total_amount ?? $campaign->raised_amount ?? 0;
         $goal        = $campaign->goal_amount ?? 0;
         $percentage  = $goal > 0 ? round(($raised / $goal) * 100) : 0;
-        $donors      = $campaign->donations->count() ?? 0;
+        $donors      = $campaign->donations_count ?? 0;
         $daysLeft    = isset($campaign->end_date)
             ? max(0, now()->diffInDays($campaign->end_date, false))
             : null;

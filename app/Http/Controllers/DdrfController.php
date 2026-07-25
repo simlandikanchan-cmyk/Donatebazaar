@@ -37,7 +37,7 @@ class DdrfController extends Controller
             // (COUNT/SUM at the DB level) instead of loading every donation
             // row into PHP memory just to count or sum them.
             ->withCount('donations')
-            ->withSum('donations', 'amount')
+            ->withSum('donations', 'total_amount')
             ->with(['category:id,slug,name'])
             ->select([
                 'id', 'title', 'slug', 'description', 'cover_image',
@@ -51,7 +51,7 @@ class DdrfController extends Controller
                 // denormalized raised_amount column, falling back to it
                 // only if there are no donation rows yet (e.g. brand new
                 // campaign where the sum is null).
-                $raised = (float) ($campaign->donations_sum_amount ?? $campaign->raised_amount ?? 0);
+                $raised = (float) ($campaign->donations_sum_total_amount ?? $campaign->raised_amount ?? 0);
                 $goal = (float) ($campaign->goal_amount > 0 ? $campaign->goal_amount : 1);
                 $donors = (int) ($campaign->donations_count ?? 0);
 

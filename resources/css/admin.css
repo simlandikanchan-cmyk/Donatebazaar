@@ -14,6 +14,7 @@
   --red:#f04444;--red-lt:rgba(240,68,68,.10);
   --blue:#3b82f6;--blue-lt:rgba(59,130,246,.10);
   --pink:#ec4899;--pink-lt:rgba(236,72,153,.10);
+  --purple:#8b5cf6;--purple-lt:rgba(139,92,246,.10);
   --gray:#6b7280;
   --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
   --r:18px;--r-sm:12px;--r-xs:8px;
@@ -29,6 +30,7 @@
   --sb-bg:#11131e;--sb-txt:rgba(255,255,255,.45);--sb-act:rgba(37,99,235,.20);
   --sb-border:rgba(255,255,255,.04);
   --a-glow:rgba(37,99,235,.30);
+  --purple-lt:rgba(139,92,246,.15);
   --sh:0 1px 2px rgba(0,0,0,.40),0 4px 20px rgba(0,0,0,.25);
   --sh-md:0 4px 16px rgba(0,0,0,.35),0 1px 3px rgba(0,0,0,.25);
   --sh-lg:0 8px 40px rgba(0,0,0,.50);
@@ -192,14 +194,14 @@ svg{display:block;flex-shrink:0;}
 .si-green{background:var(--green-lt);color:var(--green);}
 .si-blue{background:var(--blue-lt);color:var(--blue);}
 .si-pink{background:var(--pink-lt);color:var(--pink);}
-.si-purple{background:var(--pink-lt);color:var(--pink);}
+.si-purple{background:var(--purple-lt);color:var(--purple);}
 .si-red{background:var(--red-lt);color:var(--red);}
 .si-teal{background:rgba(5,196,138,.12);color:#05c48a;}
 .si-gray{background:rgba(107,114,128,.12);color:#6b7280;}
 .stat-body{flex:1;min-width:0;}
 .stat-lbl{font-size:10px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;font-family:var(--mono);margin-bottom:6px;}
 .stat-val{font-family:var(--mono);font-size:2rem;font-weight:800;line-height:1;letter-spacing:-.03em;}
-.sv-a{color:var(--a);}.sv-amber{color:var(--amber);}.sv-green{color:var(--green);}.sv-blue{color:var(--blue);}.sv-pink{color:var(--pink);}.sv-purple{color:var(--pink);}.sv-red{color:var(--red);}.sv-teal{color:#05c48a;}
+.sv-a{color:var(--a);}.sv-amber{color:var(--amber);}.sv-green{color:var(--green);}.sv-blue{color:var(--blue);}.sv-pink{color:var(--pink);}.sv-purple{color:var(--purple);}.sv-red{color:var(--red);}.sv-teal{color:#05c48a;}
 .stat-foot{font-size:11px;color:var(--text3);margin-top:5px;}
 .stat-foot a{color:#05c48a;font-weight:600;}.stat-foot a:hover{text-decoration:underline;}
 

@@ -35,7 +35,7 @@
 }
 .vol-form input:focus,.vol-form select:focus,.vol-form textarea:focus{border-color:var(--purple-main);box-shadow:0 0 0 3px rgba(37,99,235,.16);}
 .vol-form .vol-error{color:var(--err);font-size:12px;margin-top:5px;}
-.vol-submit{width:100%;margin-top:6px;padding:14px;border:none;border-radius:13px;background:linear-gradient(135deg,var(--purple-main),var(--purple-deep));color:#fff;font-size:15px;font-weight:600;cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:0 10px 26px rgba(37,99,235,.32);}
+.vol-submit{width:100%;     justify-content: center;margin-top:6px;padding:14px;border:none;border-radius:13px;background:linear-gradient(135deg,var(--purple-main),var(--purple-deep));color:#fff;font-size:15px;font-weight:600;cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:0 10px 26px rgba(37,99,235,.32);}
 .vol-submit:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(37,99,235,.40);}
 
 .vol-aside{display:flex;flex-direction:column;gap:16px;}
@@ -105,6 +105,7 @@
           @error('phone') <div class="vol-error">{{ $message }}</div> @enderror
         </div>
 
+        <div class="vol-field">
           <label for="country">Country</label>
           <select id="country" name="country">
             <option value="India" @selected(old('country', 'India') === 'India')>India</option>
@@ -130,6 +131,7 @@
           @error('city') <div class="vol-error">{{ $message }}</div> @enderror
         </div>
 
+        <div class="vol-field">
           <label for="availability">Availability <span style="color:var(--err);">*</span></label>
           <select id="availability" name="availability" required>
             <option value="">Select your availability…</option>
@@ -140,6 +142,7 @@
           @error('availability') <div class="vol-error">{{ $message }}</div> @enderror
         </div>
 
+        <div class="vol-field">
           <label for="skills">Skills (comma separated)</label>
           <input id="skills" name="skills" type="text" placeholder="e.g. Teaching, Photography, Event Management" value="{{ old('skills') }}">
           @error('skills') <div class="vol-error">{{ $message }}</div> @enderror

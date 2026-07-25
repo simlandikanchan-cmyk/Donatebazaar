@@ -101,7 +101,7 @@ class OrganizationController extends Controller
             'reviewed_by' => Auth::id(),
             'reviewed_at' => now(),
             'admin_notes' => $request->admin_notes,
-        ]));
+        ]))->load('user');
 
         $recipient = $validated['contact_email'];
         if ($recipient) {

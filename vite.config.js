@@ -67,7 +67,6 @@ export default defineConfig({
                 'resources/css/navbar.css',
                 'resources/js/navbar.js',
 
-<<<<<<< HEAD
                 // Auth
                 'resources/css/auth.css',
                 'resources/js/auth.js',
@@ -76,13 +75,12 @@ export default defineConfig({
                 'resources/css/campaigns-show.css',
                 'resources/js/campaigns-show.js',
 
-                // Footer
-                'resources/js/footer.js',
-=======
                 // Volunteer Apply
                 'resources/css/volunteer-apply.css',
                 'resources/js/volunteer-city.js',
->>>>>>> origin/master
+
+                // Footer
+                'resources/js/footer.js',
             ],
             
             refresh: true,

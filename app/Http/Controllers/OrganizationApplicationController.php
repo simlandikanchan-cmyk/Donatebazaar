@@ -12,13 +12,13 @@ class OrganizationApplicationController extends Controller
 
     private function getOrCreateApplication(): OrganizationApplication
     {
-        return OrganizationApplication::firstOrCreate(
+        return OrganizationApplication::with('user')->firstOrCreate(
             [
                 'user_id' => Auth::id(),
                 'status' => 'draft',
             ],
             ['current_step' => 1]
-        );
+        )->load('user');
     }
 
     private function storeFile(Request $request, string $field, string $folder): ?string
@@ -34,7 +34,8 @@ class OrganizationApplicationController extends Controller
 
     public function step1()
     {
-        $application = OrganizationApplication::where('user_id', Auth::id())
+        $application = OrganizationApplication::with('user')
+            ->where('user_id', Auth::id())
             ->where('status', 'draft')
             ->first();
 
@@ -69,7 +70,8 @@ class OrganizationApplicationController extends Controller
 
     public function step2()
     {
-        $application = OrganizationApplication::where('user_id', Auth::id())
+        $application = OrganizationApplication::with('user')
+            ->where('user_id', Auth::id())
             ->where('status', 'draft')
             ->firstOrFail();
 
@@ -97,7 +99,8 @@ class OrganizationApplicationController extends Controller
 
     public function step3()
     {
-        $application = OrganizationApplication::where('user_id', Auth::id())
+        $application = OrganizationApplication::with('user')
+            ->where('user_id', Auth::id())
             ->where('status', 'draft')
             ->firstOrFail();
 
@@ -134,7 +137,8 @@ class OrganizationApplicationController extends Controller
 
     public function step4()
     {
-        $application = OrganizationApplication::where('user_id', Auth::id())
+        $application = OrganizationApplication::with('user')
+            ->where('user_id', Auth::id())
             ->where('status', 'draft')
             ->firstOrFail();
 

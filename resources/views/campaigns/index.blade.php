@@ -15,7 +15,7 @@
             @forelse($campaigns as $campaign)
 
                 @php
-                    $raised = $campaign->donations->sum('amount');
+                    $raised = $campaign->donations_sum_total_amount ?? $campaign->raised_amount ?? 0;
                     $goal = $campaign->goal_amount;
                     $percent = $goal > 0 ? min(100, round(($raised / $goal) * 100)) : 0;
                 @endphp

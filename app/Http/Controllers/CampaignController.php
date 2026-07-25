@@ -270,7 +270,7 @@ class CampaignController extends Controller
             return back()->with('error', 'Only active campaigns can be paused.');
         }
 
-        $campaign->update(['campaign_state' => Campaign::STATE_PAUSED]);
+        $campaign->pause('Paused by user');
 
         return back()->with('success', 'Campaign paused.');
     }
@@ -289,7 +289,15 @@ class CampaignController extends Controller
             return back()->with('error', 'Only paused campaigns can be resumed.');
         }
 
-        $campaign->update(['campaign_state' => Campaign::STATE_ACTIVE]);
+        if (! $campaign->ownerKycApproved()) {
+            return back()->with('error', 'KYC not approved. Please complete KYC verification before resuming your campaign.');
+        }
+
+        try {
+            $campaign->resume();
+        } catch (\RuntimeException $e) {
+            return back()->with('error', $e->getMessage());
+        }
 
         return back()->with('success', 'Campaign resumed.');
     }
@@ -327,7 +335,7 @@ class CampaignController extends Controller
             return back()->with('error', 'Only rejected campaigns can be resubmitted.');
         }
 
-        $campaign->update(['campaign_state' => Campaign::STATE_PENDING]);
+        $campaign->resubmit();
 
         return back()->with('success', 'Campaign resubmitted for review.');
     }
@@ -339,6 +347,8 @@ class CampaignController extends Controller
     public function index()
     {
         $campaigns = Campaign::where('user_id', Auth::id())
+            ->with('donations')
+            ->withSum('donations', 'total_amount')
             ->latest()
             ->paginate(12);
 
@@ -351,8 +361,9 @@ class CampaignController extends Controller
 
     public function publicCampaigns(Request $request)
     {
-        $query = Campaign::with(['category', 'user'])
+        $query = Campaign::with(['category', 'user', 'donations'])
             ->withCount('donations')
+            ->withSum('donations', 'total_amount')
             ->whereIn('campaign_state', ['active', 'completed']);
 
         if ($request->filled('search')) {
@@ -403,7 +414,9 @@ class CampaignController extends Controller
     {
         $category = Category::where('slug', $slug)->firstOrFail();
 
-        $campaigns = Campaign::with(['category', 'user', 'products'])
+        $campaigns = Campaign::with(['category', 'user', 'products', 'donations'])
+            ->withCount('donations')
+            ->withSum('donations', 'total_amount')
             ->where('category_id', $category->id)
             ->whereIn('campaign_state', ['active', 'completed'])
             ->latest()

@@ -85,4 +85,15 @@ window.Chart = Chart;
     if (data.success) setTimeout(function () { window.toast(data.success, 'success'); }, 200);
     if (data.error) setTimeout(function () { window.toast(data.error, 'error'); }, 200);
   }
+
+  /* ── Button Ripple ── */
+  document.addEventListener('mousedown', function (e) {
+    var btn = e.target.closest('.btn');
+    if (!btn) return;
+    var rect = btn.getBoundingClientRect();
+    var x = ((e.clientX - rect.left) / rect.width * 100).toFixed(1);
+    var y = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
+    btn.style.setProperty('--mx', x + '%');
+    btn.style.setProperty('--my', y + '%');
+  });
 })();
