@@ -27,21 +27,17 @@ class DonationHistoryController extends Controller
             ->where('status', 'active')
             ->count();
 
-        $totalDonated = Donation::where('user_id', $user->id)
-            ->where('payment_status', 'completed')
-            ->sum('total_amount');
+        $stats = Donation::where('user_id', $user->id)
+            ->selectRaw('COALESCE(SUM(CASE WHEN payment_status = ? THEN total_amount ELSE 0 END), 0) as total_donated', ['completed'])
+            ->selectRaw('COUNT(CASE WHEN payment_status = ? THEN 1 END) as completed_count', ['completed'])
+            ->selectRaw('COUNT(CASE WHEN payment_status = ? THEN 1 END) as pending_count', ['pending'])
+            ->selectRaw('COUNT(CASE WHEN is_refunded = 1 THEN 1 END) as refunded_count')
+            ->first();
 
-        $completedCount = Donation::where('user_id', $user->id)
-            ->where('payment_status', 'completed')
-            ->count();
-
-        $pendingCount = Donation::where('user_id', $user->id)
-            ->where('payment_status', 'pending')
-            ->count();
-
-        $refundedCount = Donation::where('user_id', $user->id)
-            ->where('is_refunded', true)
-            ->count();
+        $totalDonated = (float) $stats->total_donated;
+        $completedCount = (int) $stats->completed_count;
+        $pendingCount = (int) $stats->pending_count;
+        $refundedCount = (int) $stats->refunded_count;
 
         return view('donations.history', compact(
             'donations', 'campaigns', 'recurringCount',

@@ -67,9 +67,9 @@ class AppServiceProvider extends ServiceProvider
         // Bootstrap pagination styling
         Paginator::useBootstrapFive();
 
-        // Eager-load category on every {campaign} route binding
+        // Eager-load category + donations on every {campaign} route binding
         Route::bind('campaign', function ($value) {
-            return Campaign::with('category')
+            return Campaign::with(['category', 'donations'])
                 ->where(is_numeric($value) ? 'id' : 'slug', $value)
                 ->firstOrFail();
         });

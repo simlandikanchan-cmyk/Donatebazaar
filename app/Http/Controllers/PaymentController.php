@@ -906,7 +906,8 @@ class PaymentController extends Controller
             |------------------------------------------------------------------
             */
 
-            $donation = Donation::where('id', $request->donation_id)
+            $donation = Donation::with('campaign.category')
+                ->where('id', $request->donation_id)
                 ->where('order_id', $request->razorpay_order_id)
                 ->firstOrFail();
 

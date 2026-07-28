@@ -87,9 +87,20 @@ class CampaignController extends Controller
 
         $request->merge([
             'goal_amount' => str_replace(',', '', $request->goal_amount),
+            'title' => strip_tags($request->title),
         ]);
 
         $request->validate(self::CREATE_RULES);
+
+        // Check duplicate campaign title by same user
+        $existing = Campaign::where('user_id', Auth::id())
+            ->where('title', $request->title)
+            ->whereNull('deleted_at')
+            ->exists();
+
+        if ($existing) {
+            return back()->withErrors(['title' => 'You already have a campaign with this title.'])->withInput();
+        }
 
         // Validate nested uploads (not covered by CREATE_RULES) to prevent
         // arbitrary file types / oversized uploads being stored.
@@ -219,6 +230,7 @@ class CampaignController extends Controller
 
         $request->merge([
             'goal_amount' => str_replace(',', '', $request->goal_amount),
+            'title' => strip_tags($request->title),
         ]);
 
         $request->validate(self::UPDATE_RULES);
@@ -361,7 +373,7 @@ class CampaignController extends Controller
 
     public function publicCampaigns(Request $request)
     {
-        $query = Campaign::with(['category', 'user', 'donations'])
+        $query = Campaign::with(['category', 'user'])
             ->withCount('donations')
             ->withSum('donations', 'total_amount')
             ->whereIn('campaign_state', ['active', 'completed']);
@@ -414,7 +426,7 @@ class CampaignController extends Controller
     {
         $category = Category::where('slug', $slug)->firstOrFail();
 
-        $campaigns = Campaign::with(['category', 'user', 'products', 'donations'])
+        $campaigns = Campaign::with(['category', 'user', 'products'])
             ->withCount('donations')
             ->withSum('donations', 'total_amount')
             ->where('category_id', $category->id)

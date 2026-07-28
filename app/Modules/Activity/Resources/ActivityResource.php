@@ -10,7 +10,7 @@ class ActivityResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'user' => $this->user->name ?? null,
+            'user' => $this->whenLoaded('user', fn () => $this->user->name),
             'type' => $this->type,
             'title' => $this->title,
             'description' => $this->description,

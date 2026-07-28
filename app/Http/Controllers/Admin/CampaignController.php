@@ -312,20 +312,18 @@ class CampaignController extends Controller
             'ids.*' => ['integer', 'exists:campaigns,id'],
         ]);
 
+        $campaigns = Campaign::with('user.kycVerification')->whereIn('id', $data['ids'])->get();
         $done = 0;
         $skipped = 0;
 
-        foreach ($data['ids'] as $id) {
-            $campaign = Campaign::find($id);
-            if (! $campaign || ! $campaign->isPending() || $campaign->isExpired()) {
+        foreach ($campaigns as $campaign) {
+            if (! $campaign->isPending() || $campaign->isExpired()) {
                 $skipped++;
 
                 continue;
             }
 
-            $hasKyc = KycVerification::where('user_id', $campaign->user_id)
-                ->where('status', KycVerification::STATUS_APPROVED)
-                ->exists();
+            $hasKyc = $campaign->user?->kycVerification?->status === KycVerification::STATUS_APPROVED;
             if (! $hasKyc) {
                 $skipped++;
 
@@ -370,12 +368,12 @@ class CampaignController extends Controller
             'reason' => ['required', 'string', 'min:10', 'max:500'],
         ]);
 
+        $campaigns = Campaign::with('user')->whereIn('id', $data['ids'])->get();
         $done = 0;
         $skipped = 0;
 
-        foreach ($data['ids'] as $id) {
-            $campaign = Campaign::find($id);
-            if (! $campaign || ! $campaign->isPending()) {
+        foreach ($campaigns as $campaign) {
+            if (! $campaign->isPending()) {
                 $skipped++;
 
                 continue;
@@ -420,12 +418,12 @@ class CampaignController extends Controller
             'reason' => ['nullable', 'string', 'max:500'],
         ]);
 
+        $campaigns = Campaign::with('user')->whereIn('id', $data['ids'])->get();
         $done = 0;
         $skipped = 0;
 
-        foreach ($data['ids'] as $id) {
-            $campaign = Campaign::find($id);
-            if (! $campaign || ! $campaign->isActive() || $campaign->isExpired() || $campaign->isPaused()) {
+        foreach ($campaigns as $campaign) {
+            if (! $campaign->isActive() || $campaign->isExpired() || $campaign->isPaused()) {
                 $skipped++;
 
                 continue;

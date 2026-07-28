@@ -84,6 +84,7 @@ class PublicBlogController extends Controller
             ]);
 
         $featured = Blog::public()
+            ->with(['author:id,name,avatar', 'category:id,name,slug'])
             ->featured()
             ->take(6)
             ->get();
@@ -131,6 +132,7 @@ class PublicBlogController extends Controller
 
         // Related
         $related = Blog::public()
+            ->with(['author:id,name,avatar', 'category:id,name,slug'])
             ->where('id', '!=', $blog->id)
 
             ->where(function ($q) use ($blog) {

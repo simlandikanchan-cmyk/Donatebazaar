@@ -20,3 +20,5 @@
     </div>
 </div>
 @endsection
+
+@push('styles') @vite(['resources/css/legal.css']) @endpush

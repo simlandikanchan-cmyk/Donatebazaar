@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\PaymentStatus;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class Donation extends Model
@@ -58,6 +60,22 @@ class Donation extends Model
         'is_refunded' => 'boolean',
         'is_anonymous' => 'boolean',
     ];
+
+    protected function paymentStatus(): Attribute
+    {
+        return Attribute::make(
+            set: function (string|PaymentStatus $value): string {
+                if ($value instanceof PaymentStatus) {
+                    return $value->value;
+                }
+                $enum = PaymentStatus::tryFrom($value);
+                if ($enum === null) {
+                    throw new \InvalidArgumentException("Invalid payment status: '$value'");
+                }
+                return $enum->value;
+            },
+        );
+    }
 
     public function campaign()
     {

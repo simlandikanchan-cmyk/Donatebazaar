@@ -12,7 +12,7 @@ class LegalPageController extends Controller
 {
     public function index(): View
     {
-        $pages = LegalPage::orderBy('title')->get();
+        $pages = LegalPage::with('updatedBy')->orderBy('title')->get();
         $all = LegalPage::slugs();
 
         // Merge so every known slug appears even if not yet created.

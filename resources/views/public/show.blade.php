@@ -19,22 +19,13 @@
                 ? max(0, now()->diffInDays($campaign->end_date, false))
                 : null;
 
-    // ── Raised breakdown (money vs product) ──
-    $moneyRaised   = $campaign->moneyRaised();
-    $productRaised = $campaign->productRaised();
+    // ── Raised breakdown — computed in controller to avoid N+1 ──
 
     // Products
     $products = collect();
     try {
         if (method_exists($campaign, 'products')) {
-            $products = $campaign->products()
-                ->where('is_active', 1)
-                ->where('approval_status', 'approved')
-                ->with('categoryProduct')
-                ->withCount(['reservations as active_reserved_sum' => function ($q) {
-                    $q->where('expires_at', '>', now());
-                }])
-                ->get();
+            $products = $campaign->products;
         }
     } catch (\Throwable $e) {}
 
@@ -42,7 +33,7 @@
     $updates = collect();
     try {
         if (method_exists($campaign, 'updates')) {
-            $updates = $campaign->updates()->orderBy('created_at', 'asc')->get();
+            $updates = $campaign->updates->sortBy('created_at');
         }
     } catch (\Throwable $e) {}
 
@@ -499,9 +490,7 @@
                : '' }}">
 
     @php
-        $user = \App\Models\User::where('email', $donation->donor_email)
-                    ->orWhere('name', $donation->donor_name)
-                    ->first();
+        $user = $donation->user;
         $avatar = $user?->profile_photo_path ?? $user?->avatar ?? null;
     @endphp
 
@@ -618,7 +607,7 @@
                     <div class="dp-grid" id="dpGrid">
                         @foreach($products as $idx => $product)
                         @php
-                            $qtyNeeded = max(0, ($product->remaining_quantity ?? 0) - ($product->active_reserved_sum ?? 0));
+                            $qtyNeeded = max(0, ($product->remaining_quantity ?? 0) - ($product->reservations->where('expires_at', '>', now())->count()));
                             $totalQty  = $product->quantity ?? max($qtyNeeded, 1000);
                             $soldPct   = $totalQty > 0 ? min(100, round((($totalQty - $qtyNeeded) / $totalQty) * 100)) : 0;
                             $isFirst   = $idx === 0;
@@ -956,8 +945,8 @@
             </div>
 
             @php
-                $followerCount = $campaign->followers()->count();
-                $isFollowing = auth()->check() ? $campaign->isFollowedBy(auth()->user()) : false;
+                $followerCount = $campaign->followers_count;
+                $isFollowing = auth()->check() ? $campaign->followers->contains('id', auth()->id()) : false;
             @endphp
 
             @auth

@@ -51,4 +51,20 @@ class AuthenticationTest extends TestCase
         $this->assertGuest();
         $response->assertRedirect('/');
     }
+
+    public function test_session_expiry_redirects_to_login(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $this->assertAuthenticated();
+
+        auth()->logout();
+
+        $this->assertGuest();
+
+        $response = $this->get(route('campaign.create'));
+
+        $response->assertRedirect(route('login'));
+    }
 }

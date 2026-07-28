@@ -13,7 +13,7 @@ Route::get('/campaigns/{category}/{slug}', [PublicCampaignController::class, 'sh
 
 Route::middleware('auth')->group(function () {
     Route::get('/campaign/create', [CampaignController::class, 'create'])->name('campaign.create');
-    Route::post('/campaign/store', [CampaignController::class, 'store'])->name('campaign.store');
+    Route::post('/campaign/store', [CampaignController::class, 'store'])->name('campaign.store')->middleware('throttle:5,10');
     Route::get('/campaigns', [CampaignController::class, 'index'])->name('campaigns.index');
     Route::get('/campaign/{campaign}', [CampaignController::class, 'show'])->name('campaign.show');
     Route::get('/campaign/{campaign}/edit', [CampaignController::class, 'edit'])->name('campaign.edit');
@@ -31,7 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/kyc/document/{campaign}', [KycUploadController::class, 'serveDocument'])->name('kyc.document');
 
     Route::get('/user/kyc', function () {
-        $campaigns = Campaign::where('user_id', auth()->id())->get();
+        $campaigns = Campaign::with('kyc')->where('user_id', auth()->id())->get();
 
         return view('kyc.index', compact('campaigns'));
     })->name('user.kyc');

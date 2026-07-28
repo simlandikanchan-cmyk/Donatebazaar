@@ -18,14 +18,31 @@ class PublicCampaignController extends Controller
                     ->latest()
                     ->take(10);
             },
-            'events',
+            'donations.user',
+            'products' => function ($q) {
+                $q->where('is_active', 1)->where('approval_status', 'approved');
+            },
+            'products.categoryProduct',
+            'products.reservations',
+            'updates',
+            'followers' => fn ($q) => $q->take(100),
         ])
+            ->withSum('donations', 'total_amount')
+            ->withCount('followers')
             ->where('slug', $slug)
             ->where(function ($q) use ($category) {
                 $q->whereHas('category', fn ($q) => $q->where('slug', $category))
                     ->orWhereNull('category_id');
             })
             ->firstOrFail();
+
+        $moneyRaised = (float) $campaign->donations
+            ->where('donation_type', 'money')
+            ->sum('total_amount');
+
+        $productRaised = (float) $campaign->donations
+            ->where('donation_type', 'product')
+            ->sum('total_amount');
 
         /*
         |----------------------------------------------------------------------
@@ -65,6 +82,6 @@ class PublicCampaignController extends Controller
             abort(404);
         }
 
-        return view('public.show', compact('campaign'));
+        return view('public.show', compact('campaign', 'moneyRaised', 'productRaised'));
     }
 }

@@ -91,68 +91,23 @@
 </div>
 
 {{-- ══ STATS (5 cards) ══ --}}
-@php $avgDonation = $totalDonationsCount > 0 ? round($totalRaised / $totalDonationsCount) : 0; @endphp
+@php
+$avgDonation = $totalDonationsCount > 0 ? round($totalRaised / $totalDonationsCount) : 0;
+
+$icoTotalRaised = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
+$icoTotalGoal  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>';
+$icoActive     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
+$icoDonations  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2 1 3 3 3h10c2 0 3-1 3-3V7c0-2-1-3-3-3H7C5 4 4 5 4 7z"/><polyline points="16 10 12 14 8 10"/></svg>';
+$icoAllCamps   = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>';
+$icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>';
+@endphp
 <div class="stats-grid">
-    <div class="stat-card">
-        <div class="stat-icon-wrap si-indigo">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        </div>
-        <div class="stat-info">
-            <div class="stat-label">Total Raised</div>
-            <div class="stat-val sv-indigo">₹{{ number_format($totalRaised, 0) }}</div>
-            <div class="stat-foot">{{ $overallPct }}% of total goal</div>
-        </div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-icon-wrap si-pink">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-        </div>
-        <div class="stat-info">
-            <div class="stat-label">Total Goal</div>
-            <div class="stat-val sv-pink">₹{{ number_format($totalGoal, 0) }}</div>
-            <div class="stat-foot">Across {{ $countAll }} campaigns</div>
-        </div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-icon-wrap si-green">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        </div>
-        <div class="stat-info">
-            <div class="stat-label">Active Campaigns</div>
-            <div class="stat-val sv-green">{{ $countActive }}</div>
-            <div class="stat-foot">Live &amp; accepting donations</div>
-        </div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-icon-wrap si-yellow">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2 1 3 3 3h10c2 0 3-1 3-3V7c0-2-1-3-3-3H7C5 4 4 5 4 7z"/><polyline points="16 10 12 14 8 10"/></svg>
-        </div>
-        <div class="stat-info">
-            <div class="stat-label">Total Donations</div>
-            <div class="stat-val sv-yellow">{{ number_format($totalDonationsCount) }}</div>
-            <div class="stat-foot">Avg ₹{{ number_format($avgDonation) }} per donation</div>
-        </div>
-    </div>
-    <a href="{{ url('/user/dashboard') }}#cGrid" class="stat-card is-link" style="cursor:pointer;text-decoration:none;display:flex;">
-        <div class="stat-icon-wrap si-blue">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-        </div>
-        <div class="stat-info">
-            <div class="stat-label">All Campaigns</div>
-            <div class="stat-val sv-blue">{{ $countAll }}</div>
-            <div class="stat-foot">View all →</div>
-        </div>
-    </a>
-    <a href="{{ route('dashboard.wallet') }}" class="stat-card is-link" style="cursor:pointer;text-decoration:none;display:flex;">
-        <div class="stat-icon-wrap si-purple">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-        </div>
-        <div class="stat-info">
-            <div class="stat-label">Wallet</div>
-            <div class="stat-val sv-purple">₹{{ number_format($wallet->available_balance) }}</div>
-            <div class="stat-foot">Available balance →</div>
-        </div>
-    </a>
+    <x-stat-card color="indigo" label="Total Raised" value="₹{{ number_format($totalRaised, 0) }}" footer="{{ $overallPct }}% of total goal" :icon="$icoTotalRaised" />
+    <x-stat-card color="pink" label="Total Goal" value="₹{{ number_format($totalGoal, 0) }}" footer="Across {{ $countAll }} campaigns" :icon="$icoTotalGoal" />
+    <x-stat-card color="green" label="Active Campaigns" value="{{ $countActive }}" footer="Live &amp; accepting donations" :icon="$icoActive" />
+    <x-stat-card color="yellow" label="Total Donations" value="{{ number_format($totalDonationsCount) }}" footer="Avg ₹{{ number_format($avgDonation) }} per donation" :icon="$icoDonations" />
+    <x-stat-card color="blue" label="All Campaigns" value="{{ $countAll }}" footer="View all &rarr;" href="{{ url('/user/dashboard') }}#cGrid" :icon="$icoAllCamps" />
+    <x-stat-card color="purple" label="Wallet" value="₹{{ number_format($wallet->available_balance) }}" footer="Available balance &rarr;" href="{{ route('dashboard.wallet') }}" :icon="$icoWallet" />
 </div>
 
 {{-- ══ RECENT DONOR ACTIVITY ══ --}}
@@ -169,76 +124,48 @@
         @php
             $initial = $donation->is_anonymous ? '?' : strtoupper(substr(trim($donation->donor_name) ?: 'D', 0, 1));
         @endphp
-        <div class="activity-item">
-            <div class="activity-dot-col">
-                <div class="activity-dot d-green"><span class="ad-letter">{{ $initial }}</span></div>
-                <div class="activity-line"></div>
-            </div>
-            <div class="activity-body">
-                <div class="activity-body-top">
-                    <div class="activity-lbl">
-                        @if($donation->is_anonymous)
-                            <span>Someone</span>
-                        @else
-                            {{ $donation->donor_name ?? 'A donor' }}
-                        @endif
-                        donated
-                    </div>
-                    <div class="activity-amt">+₹{{ number_format($donation->total_amount) }}</div>
-                </div>
-                <div class="activity-sub">
-                    to <span>{{ $donation->campaign?->title ?? 'a campaign' }}</span>
-                    @if($donation->message)
-                        · "{{ Str::limit($donation->message, 60) }}"
+        <x-activity-item color="green" :initial="$initial">
+            <div class="activity-body-top">
+                <div class="activity-lbl">
+                    @if($donation->is_anonymous)
+                        <span>Someone</span>
+                    @else
+                        {{ $donation->donor_name ?? 'A donor' }}
                     @endif
+                    donated
                 </div>
+                <div class="activity-amt">+₹{{ number_format($donation->total_amount) }}</div>
             </div>
-        </div>
+            <div class="activity-sub">
+                to <span>{{ $donation->campaign?->title ?? 'a campaign' }}</span>
+                @if($donation->message)
+                    · "{{ Str::limit($donation->message, 60) }}"
+                @endif
+            </div>
+        </x-activity-item>
         @endforeach
     </div>
 </div>
 @endif
 
-{{-- ══ ONBOARDING CHECKLIST (new users) ══ --}}
-@php
-    $checklist = [];
-    if (!$kyc || $kyc->status !== 'approved') {
-        $checklist[] = ['label' => 'Complete KYC Verification', 'sub' => 'Submit identity documents', 'url' => url('/user/kyc'), 'done' => false];
-    } else {
-        $checklist[] = ['label' => 'KYC Verified', 'sub' => 'Identity confirmed', 'url' => '#', 'done' => true];
-    }
-    $campaignCount = $campaigns->count();
-    if ($campaignCount === 0) {
-        $checklist[] = ['label' => 'Create Your First Campaign', 'sub' => 'Start fundraising', 'url' => route('campaign.create'), 'done' => false];
-    } else {
-        $checklist[] = ['label' => 'Campaigns Created', 'sub' => $campaignCount.' campaign(s) live', 'url' => '#', 'done' => true];
-    }
-    $pendingItems = array_filter($checklist, fn($i) => !$i['done']);
-@endphp
-@if(!empty($pendingItems))
-<div class="checklist-card">
-    <div class="checklist-title">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-        Getting Started
-    </div>
-    <div class="checklist-grid">
-        @foreach($checklist as $item)
-        <div class="checklist-item {{ $item['done'] ? 'done' : '' }}">
-            <div class="checklist-ico {{ $item['done'] ? 'done' : 'pending' }}">
-                @if($item['done'])
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                @else
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
-                @endif
-            </div>
-            <div class="checklist-body">
-                <div class="checklist-lbl">{{ $item['label'] }}</div>
-                <div class="checklist-sub">{{ $item['sub'] }}</div>
-            </div>
-            @if(!$item['done'])
-            <a href="{{ $item['url'] }}" class="checklist-action">Go →</a>
-            @endif
+{{-- ══ PENDING TASKS / ALERTS ══ --}}
+@if($pendingTasks->isNotEmpty())
+<div class="pending-card">
+    <div class="pending-hdr">
+        <div class="pending-title">
+            <svg class="pending-title-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+            Action Needed
         </div>
+        <span class="pending-count">{{ $pendingTasks->count() }} task{{ $pendingTasks->count() !== 1 ? 's' : '' }}</span>
+    </div>
+    <div class="pending-list">
+        @foreach($pendingTasks as $task)
+        <x-pending-item
+            :icon="$task['icon']"
+            :label="$task['label']"
+            :sub="$task['sub']"
+            :url="$task['url']"
+        />
         @endforeach
     </div>
 </div>
@@ -264,7 +191,7 @@
         <div class="impact-ring-hdr">Funding Health</div>
         <div class="impact-ring-sub">Overall goal completion</div>
         <div class="impact-ring-wrap">
-            <svg viewBox="0 0 120 120" width="150" height="150">
+            <svg viewBox="0 0 120 120" class="impact-ring-svg">
                 <defs>
                     <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                         <stop offset="0%" stop-color="#2563eb"/>
@@ -319,6 +246,50 @@
     </div>
 </div>
 
+{{-- ══ WALLET MINI-VIEW ══ --}}
+@if($recentTransactions->isNotEmpty())
+<div class="wallet-mini-card">
+    <div class="wallet-mini-hdr">
+        <div class="wallet-mini-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+            Wallet Activity
+        </div>
+        <a href="{{ route('dashboard.wallet') }}" class="wallet-mini-link">Full Wallet →</a>
+    </div>
+    <div class="wallet-mini-bal">
+        <div class="wallet-mini-bal-lbl">Available Balance</div>
+        <div class="wallet-mini-bal-val">₹{{ number_format($wallet->available_balance, 2) }}</div>
+    </div>
+    <div class="wallet-mini-list">
+        @foreach($recentTransactions as $tx)
+        @php
+            $txIcon = $tx->type === 'credit' ? 'plus' : 'minus';
+            $txColor = $tx->type === 'credit' ? 'var(--green)' : 'var(--red)';
+            $txLabel = ucfirst(str_replace('_', ' ', $tx->source));
+        @endphp
+        <div class="wallet-mini-item">
+            <div class="wallet-mini-item-left">
+                <div class="wallet-mini-ico" style="background:{{ $tx->type === 'credit' ? 'var(--green-lt)' : 'rgba(239,68,68,.12)' }};color:{{ $txColor }};">
+                    @if($tx->type === 'credit')
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14m-7-7h14"/></svg>
+                    @else
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 12h14"/></svg>
+                    @endif
+                </div>
+                <div>
+                    <div class="wallet-mini-lbl">{{ $txLabel }}</div>
+                    <div class="wallet-mini-sub">{{ $tx->created_at->diffForHumans() }}</div>
+                </div>
+            </div>
+            <div class="wallet-mini-amt" style="color:{{ $txColor }};">
+                {{ $tx->type === 'credit' ? '+' : '-' }}₹{{ number_format(abs($tx->amount), 2) }}
+            </div>
+        </div>
+        @endforeach
+    </div>
+</div>
+@endif
+
 {{-- ══ CAMPAIGN COMPARISON BAR CHART ══ --}}
 @php $campChartData = $campaigns->count() > 1 ? $campaigns->map(fn($c) => ['title' => Str::limit($c->title, 22), 'raised' => (float)$c->raised_amount, 'goal' => (float)$c->goal_amount])->values() : collect(); @endphp
 @if($campaigns->count() > 1)
@@ -360,6 +331,193 @@
     </a>
     @endforeach
 </div>
+
+{{-- ══ LEVEL PROGRESS + TOP CAMPAIGN ══ --}}
+@php
+    $achievements = [
+        ['ico'=>'target','lbl'=>'First Campaign', 'sub'=>'Create your first campaign', 'done'=>$countAll > 0, 'color'=>'var(--blue)'],
+        ['ico'=>'heart','lbl'=>'First Donation', 'sub'=>'Receive your first donation', 'done'=>$totalDonationsCount > 0, 'color'=>'var(--pink)'],
+        ['ico'=>'shield','lbl'=>'KYC Verified', 'sub'=>'Complete identity verification', 'done'=>$kyc && $kyc->status === 'approved', 'color'=>'var(--green)'],
+        ['ico'=>'zap','lbl'=>'Active Fundraiser', 'sub'=>'Have a live campaign', 'done'=>$countActive > 0, 'color'=>'var(--yellow)'],
+        ['ico'=>'award','lbl'=>'Goal Crusher', 'sub'=>'Reach 100% on any campaign', 'done'=>$campaigns->contains(fn($c)=>($c->goal_amount>0 && ($c->raised_amount/$c->goal_amount)>=1)), 'color'=>'var(--accent)'],
+        ['ico'=>'refresh','lbl'=>'Recurring Ready', 'sub'=>'Set up recurring donations', 'done'=>$recurringCount > 0, 'color'=>'var(--purple)'],
+    ];
+    $earnedCount = count(array_filter($achievements, fn($a)=>$a['done']));
+@endphp
+<div class="insight-row">
+    @if($nextLevel)
+    <div class="insight-card level-card">
+        <div class="insight-card-hdr">
+            <div class="insight-card-title">Fundraiser Level</div>
+            <div class="level-badge" style="--lbg:{{ $currentLevelModel?->badge_color ?? 'var(--accent)' }}">{{ $levelName }}</div>
+        </div>
+        <div class="level-next">Next: <strong>{{ $nextLevel->level_name }}</strong></div>
+        <div class="level-bar-wrap">
+            <div class="level-bar">
+                <div class="level-fill" id="levelFill" style="width:0%"></div>
+            </div>
+            <div class="level-pct">{{ $levelProgress }}%</div>
+        </div>
+        <div class="level-reqs">
+            <div class="level-req {{ $campaignsCompleted >= $nextLevel->min_campaigns_completed ? 'done' : '' }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                {{ $campaignsCompleted }}/{{ $nextLevel->min_campaigns_completed }} campaigns
+            </div>
+        </div>
+    </div>
+    @endif
+
+    @if($topCampaign)
+    @php
+        $tcr = $topCampaign->raised_amount ?? 0;
+        $tcg = $topCampaign->goal_amount > 0 ? $topCampaign->goal_amount : 1;
+        $tcp = min(100, round(($tcr / $tcg) * 100));
+    @endphp
+    <div class="insight-card top-campaign-card">
+        <div class="insight-card-hdr">
+            <div class="insight-card-title">Top Performer</div>
+            <span class="badge b-active">Active</span>
+        </div>
+        <div class="tpc-title">{{ $topCampaign->title }}</div>
+        <div class="tpc-stats">
+            <div class="tpc-stat">
+                <div class="tpc-stat-val">₹{{ number_format($tcr) }}</div>
+                <div class="tpc-stat-lbl">Raised</div>
+            </div>
+            <div class="tpc-stat">
+                <div class="tpc-stat-val">{{ $topCampaign->donations_count }}</div>
+                <div class="tpc-stat-lbl">Donors</div>
+            </div>
+            <div class="tpc-stat">
+                <div class="tpc-stat-val">{{ $tcp }}%</div>
+                <div class="tpc-stat-lbl">Funded</div>
+            </div>
+        </div>
+        <div class="tpc-bar"><div class="tpc-fill" style="width:{{ $tcp }}%"></div></div>
+        <a href="{{ route('campaign.show', $topCampaign->id) }}" class="tpc-link">View Campaign →</a>
+    </div>
+    @endif
+</div>
+
+{{-- ══ ACHIEVEMENT BADGES ══ --}}
+<div class="achieve-card">
+    <div class="achieve-hdr">
+        <div class="achieve-title">Achievements</div>
+        <div class="achieve-count">{{ $earnedCount }}/{{ count($achievements) }} earned</div>
+    </div>
+    <div class="achieve-grid">
+        @foreach($achievements as $a)
+        <div class="achieve-item {{ $a['done'] ? 'earned' : '' }}" title="{{ $a['sub'] }}">
+            <div class="achieve-ico" style="--ac:{{ $a['color'] }}">
+                @if($a['ico']==='target')
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                @elseif($a['ico']==='heart')
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                @elseif($a['ico']==='shield')
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                @elseif($a['ico']==='zap')
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                @elseif($a['ico']==='award')
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+                @elseif($a['ico']==='refresh')
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+                @endif
+            </div>
+            <div class="achieve-lbl">{{ $a['lbl'] }}</div>
+        </div>
+        @endforeach
+    </div>
+</div>
+
+{{-- ══ UPCOMING EVENTS ══ --}}
+@php
+    $allEvents = $myEvents->merge($registeredEvents->pluck('event'))->sortBy('event_date')->take(5);
+@endphp
+@if($allEvents->isNotEmpty())
+<div class="events-card">
+    <div class="events-hdr">
+        <div class="events-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            Upcoming Events
+        </div>
+        @if($allEvents->count() > 3)
+        <a href="{{ url('/events') }}" class="events-link">View all →</a>
+        @endif
+    </div>
+    <div class="events-list">
+        @foreach($allEvents as $event)
+        @php
+            $daysUntil = now()->startOfDay()->diffInDays(\Carbon\Carbon::parse($event->event_date)->startOfDay(), false);
+            $isUrgent = $daysUntil !== null && $daysUntil >= 0 && $daysUntil <= 3;
+            $isToday = $daysUntil === 0;
+        @endphp
+        <div class="events-item">
+            <div class="events-date {{ $isUrgent ? 'urgent' : '' }}">
+                <div class="events-date-day">{{ \Carbon\Carbon::parse($event->event_date)->format('d') }}</div>
+                <div class="events-date-mon">{{ \Carbon\Carbon::parse($event->event_date)->format('M') }}</div>
+            </div>
+            <div class="events-body">
+                <div class="events-body-title">{{ $event->title }}</div>
+                <div class="events-body-meta">
+                    @if($event->location)
+                    <span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:11px;height:11px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        {{ $event->location }}
+                    </span>
+                    @endif
+                    @if($daysUntil !== null && $daysUntil >= 0)
+                    <span class="events-countdown {{ $isUrgent ? 'urgent' : '' }}">
+                        @if($isToday)
+                        Today
+                        @elseif($daysUntil === 1)
+                        Tomorrow
+                        @else
+                        {{ $daysUntil }} days away
+                        @endif
+                    </span>
+                    @elseif($daysUntil !== null && $daysUntil < 0)
+                    <span class="events-countdown">Past</span>
+                    @endif
+                </div>
+            </div>
+        </div>
+        @endforeach
+    </div>
+</div>
+@endif
+
+{{-- ══ RECENT BLOG POSTS ══ --}}
+@if($recentBlogs->isNotEmpty())
+<div class="insight-card blog-section">
+    <div class="insight-card-hdr">
+        <div class="insight-card-title">Recent Blog Posts</div>
+        <a href="{{ url('/user/dashboard/blogs') }}" class="insight-link">View all →</a>
+    </div>
+    <div class="blog-list">
+        @foreach($recentBlogs as $blog)
+        @php
+            $bs = $blog->status;
+            $bc = $bs === 'approved' ? 'b-active' : ($bs === 'pending' ? 'b-pending' : ($bs === 'draft' ? 'b-paused' : 'b-default'));
+            $bl = ucfirst($bs);
+        @endphp
+        <div class="blog-item">
+            <div class="blog-info">
+                <div class="blog-title">{{ $blog->title }}</div>
+                <div class="blog-meta">
+                    <span class="badge {{ $bc }}" style="font-size:9px;padding:2px 6px;">{{ $bl }}</span>
+                    <span>{{ $blog->views_count }} views</span>
+                    <span>{{ $blog->created_at->diffForHumans() }}</span>
+                </div>
+            </div>
+            <a href="{{ url('/user/dashboard/blogs') }}" class="btn btn-secondary" style="flex-shrink:0;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                View
+            </a>
+        </div>
+        @endforeach
+    </div>
+</div>
+@endif
 
 {{-- ══ CAMPAIGNS SECTION ══ --}}
 <div class="sec-hdr" id="cGrid">
@@ -745,10 +903,12 @@ document.querySelectorAll('.stat-val').forEach(function (el) {
     }
 });
 
-/* ── Animate overall funding bar ── */
+/* ── Animate progress bars ── */
 setTimeout(function(){
     var bar = document.getElementById('overallBar');
     if (bar) bar.style.width = '{{ $overallPct }}%';
+    var lvl = document.getElementById('levelFill');
+    if (lvl) lvl.style.width = '{{ $levelProgress }}%';
 }, 700);
 
 /* ── Animate impact ring ── */
@@ -983,7 +1143,23 @@ var campChart;
         }
     });
 })();
+/* ── 3D Tilt on campaign cards ── */
+var tiltCards = document.querySelectorAll('#campaignGrid .c-card');
+tiltCards.forEach(function(card){
+    card.addEventListener('mousemove', function(e){
+        var rect = this.getBoundingClientRect();
+        var x = (e.clientX - rect.left) / rect.width;
+        var y = (e.clientY - rect.top) / rect.height;
+        var tiltX = (y - .5) * -12;
+        var tiltY = (x - .5) * 12;
+        this.style.transform = 'translateY(-6px) perspective(1200px) rotateX(' + tiltX + 'deg) rotateY(' + tiltY + 'deg)';
+    });
+    card.addEventListener('mouseleave', function(){
+        this.style.transform = 'translateY(0) perspective(1200px) rotateX(0deg) rotateY(0deg)';
+    });
+});
 
 });
+
 </script>
 @endpush

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Campaign;
+use App\Models\FundraiserLevel;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,9 +20,43 @@ class ProfileController extends Controller
     // -------------------------------------------------------------------------
     public function show(Request $request): View
     {
-        return view('profile.show', [
-            'user' => $request->user(),
-        ]);
+        $user = $request->user();
+        $campaignCount = $user->campaigns()->whereNotIn('campaign_state', ['expired', 'rejected'])->count();
+        $campIds = $user->campaigns()->whereNotIn('campaign_state', ['expired', 'rejected'])->pluck('id');
+        $donationCount = 0;
+        $donationTotal = 0;
+        if ($campIds->isNotEmpty()) {
+            $donationCount = \App\Models\Donation::whereIn('campaign_id', $campIds)->whereNotNull('paid_at')->count();
+            $donationTotal = Campaign::whereIn('id', $campIds)->sum('raised_amount');
+        }
+        $userCampaigns = $user->campaigns()->withCount('donations')->whereNotIn('campaign_state', ['expired', 'rejected'])->latest()->get();
+
+        /* ── Fundraiser Level ── */
+        $levelName = $user->fundraiserLevelName();
+        $currentLevel = $user->assignedLevel;
+        $nextLevel = null;
+        $levelProgress = 0;
+        $campaignsCompleted = 0;
+        $totalRaisedAll = 0;
+        if ($currentLevel) {
+            $nextLevel = FundraiserLevel::nextAfter($currentLevel->level_number);
+            if ($nextLevel) {
+                $campaignsCompleted = $user->campaigns()->whereIn('campaign_state', ['completed', 'active'])->count();
+                $totalRaisedAll = Campaign::where('user_id', $user->id)->sum('raised_amount');
+                $campPct = $nextLevel->min_campaigns_completed > 0
+                    ? min(100, ($campaignsCompleted / $nextLevel->min_campaigns_completed) * 100)
+                    : 100;
+                $raisedPct = $nextLevel->min_raised_percent > 0
+                    ? min(100, ($totalRaisedAll / $nextLevel->min_raised_percent) * 100)
+                    : 100;
+                $levelProgress = min(100, round(($campPct + $raisedPct) / 2));
+            }
+        }
+
+        return view('profile.show', compact(
+            'user', 'campaignCount', 'donationCount', 'donationTotal', 'userCampaigns',
+            'levelName', 'currentLevel', 'nextLevel', 'levelProgress', 'campaignsCompleted', 'totalRaisedAll'
+        ));
     }
 
     // -------------------------------------------------------------------------

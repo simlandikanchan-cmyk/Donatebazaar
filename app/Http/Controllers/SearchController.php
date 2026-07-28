@@ -39,6 +39,7 @@ class SearchController extends Controller
             ->get();
 
         $blogs = Blog::public()
+            ->with(['author:id,name,avatar', 'category:id,name,slug'])
             ->where(function ($w) use ($q) {
                 $w->where('title', 'like', "%{$q}%")
                     ->orWhere('content', 'like', "%{$q}%")

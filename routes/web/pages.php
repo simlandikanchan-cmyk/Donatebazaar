@@ -32,6 +32,9 @@ Route::get('/newsletter/unsubscribe/{token}', [NewsletterController::class, 'uns
 
 Route::get('/search', [SearchController::class, 'index'])->name('search');
 
+Route::get('/privacy', function () {
+    return redirect()->route('privacy');
+});
 Route::get('/privacy-policy', [LegalController::class, 'privacy'])->name('privacy');
 Route::get('/terms-of-service', [LegalController::class, 'terms'])->name('terms');
 Route::get('/refund-cancellation', [LegalController::class, 'refund'])->name('refund');

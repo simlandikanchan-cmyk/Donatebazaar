@@ -114,11 +114,11 @@ class TransactionBoundaryTest extends TestCase
     }
 
     #[Test]
-    public function processing_settlement_without_gateway_reference_calls_gateway(): void
+    public function retry_pending_settlement_without_gateway_reference_calls_gateway(): void
     {
         $settlement = CampaignSettlement::factory()->create([
             'organization_id' => $this->org->id,
-            'status' => 'processing',
+            'status' => 'retry_pending',
             'processed_at' => now(),
             'gateway_reference' => null,
         ]);
@@ -144,17 +144,22 @@ class TransactionBoundaryTest extends TestCase
     }
 
     #[Test]
-    public function processing_settlement_with_gateway_reference_skips_gateway_call(): void
+    public function retry_pending_settlement_with_gateway_reference_still_calls_gateway(): void
     {
         $settlement = CampaignSettlement::factory()->create([
             'organization_id' => $this->org->id,
-            'status' => 'processing',
+            'status' => 'retry_pending',
             'processed_at' => now(),
             'gateway_reference' => 'PAYOUT_123',
         ]);
 
         $gateway = $this->createMock(GatewayInterface::class);
-        $gateway->expects($this->never())->method('initiatePayout');
+        $gateway->expects($this->once())->method('initiatePayout')->willReturn(
+            \App\Contracts\Gateway\PayoutResult::success(
+                gatewayReference: 'PAYOUT_123',
+                providerStatus: 'paid'
+            )
+        );
 
         $service = new SettlementService(
             walletService: app(\App\Services\WalletService::class),
@@ -166,7 +171,8 @@ class TransactionBoundaryTest extends TestCase
         $result = $service->processSettlementPayout($settlement);
 
         $this->assertTrue($result['success']);
-        $this->assertSame('processing', $settlement->status);
+        $settlement->refresh();
+        $this->assertSame('paid', $settlement->status);
     }
 
     #[Test]

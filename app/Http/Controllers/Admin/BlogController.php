@@ -307,7 +307,8 @@ class BlogController extends Controller
             $count = Blog::whereIn('id', $ids)->delete(); // soft delete
             $msg = $count.' blog'.($count === 1 ? '' : 's').' deleted.';
         } else {
-            $pending = Blog::whereIn('id', $ids)
+            $pending = Blog::with('author')
+                ->whereIn('id', $ids)
                 ->where('status', Blog::STATUS_PENDING)
                 ->get();
 

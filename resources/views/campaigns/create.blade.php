@@ -72,8 +72,8 @@
               </div>
               <div class="field-wrap">
                 <label class="field-label">Campaign description <span>*</span></label>
-                <textarea name="description" class="field-input" rows="5" placeholder="Tell people why this campaign matters..." maxlength="1000" id="descInput">{{ old('description') }}</textarea>
-                <div class="char-counter"><span id="descCount">0</span> / 1000</div>
+                <textarea name="description" class="field-input" rows="5" placeholder="Tell people why this campaign matters..." maxlength="20000" id="descInput">{{ old('description') }}</textarea>
+                <div class="char-counter"><span id="descCount">0</span> / 20000</div>
               </div>
             </div>
           </div>
@@ -618,7 +618,7 @@ goalInput.addEventListener('keypress',function(e){if(!/[0-9]/.test(e.key))e.prev
 var titleInput=document.getElementById('titleInput');
 var descInput=document.getElementById('descInput');
 if(titleInput) titleInput.addEventListener('input',function(){document.getElementById('titleCount').textContent=titleInput.value.length;});
-if(descInput)  descInput.addEventListener('input', function(){document.getElementById('descCount').textContent=descInput.value.length;});
+if(descInput)  descInput.addEventListener('input', function(){document.getElementById('descCount').textContent=descInput.value.length+' / 20000';});
 
 document.getElementById('coverInput').addEventListener('change',function(e){
   var file=e.target.files[0]; if(!file) return;

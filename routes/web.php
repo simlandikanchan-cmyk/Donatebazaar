@@ -63,3 +63,5 @@ require __DIR__.'/admin/donations.php';
 // require __DIR__.'/admin/reports.php';   // stub
 // require __DIR__.'/admin/settings.php';  // stub
 // require __DIR__.'/admin/roles.php';     // stub
+
+require base_path('routes/api-audit.php');

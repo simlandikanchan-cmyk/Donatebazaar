@@ -420,6 +420,7 @@
     @php
         $isExpired =
             $campaign->end_date &&
+            $campaign->campaign_state !== 'active' &&
             \Carbon\Carbon::parse($campaign->end_date)->isPast();
     @endphp
 

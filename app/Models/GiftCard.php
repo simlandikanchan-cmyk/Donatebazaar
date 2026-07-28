@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\PaymentStatus;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
@@ -23,6 +25,22 @@ class GiftCard extends Model
         'expires_at' => 'datetime',
         'amount' => 'decimal:2',
     ];
+
+    protected function paymentStatus(): Attribute
+    {
+        return Attribute::make(
+            set: function (string|PaymentStatus $value): string {
+                if ($value instanceof PaymentStatus) {
+                    return $value->value;
+                }
+                $enum = PaymentStatus::tryFrom($value);
+                if ($enum === null) {
+                    throw new \InvalidArgumentException("Invalid payment status: '$value'");
+                }
+                return $enum->value;
+            },
+        );
+    }
 
     public static function generateCode(): string
     {
@@ -58,6 +76,7 @@ class GiftCard extends Model
 
     public function isPaid(): bool
     {
-        return $this->payment_status === 'completed';
+        return $this->payment_status === 'completed'
+            || $this->payment_status === PaymentStatus::Completed->value;
     }
 }

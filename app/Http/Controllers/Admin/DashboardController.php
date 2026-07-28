@@ -107,13 +107,6 @@ class DashboardController extends Controller
 
         extract($stats);
 
-        $totalUsers = User::count();
-        $newUsersToday = User::whereDate('created_at', today())->count();
-
-        $totalDonations = Donation::count();
-        $donationsToday = Donation::whereDate('created_at', today())->count();
-        $totalRevenue = Donation::sum('total_amount');
-
         // ─────────────────────────────────────────────────────────
         // Pending Actions counts
         // ─────────────────────────────────────────────────────────
