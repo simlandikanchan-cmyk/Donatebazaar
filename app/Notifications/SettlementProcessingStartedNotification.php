@@ -17,7 +17,14 @@ class SettlementProcessingStartedNotification extends Notification implements Sh
 
     public function via(object $notifiable): array
     {
-        return ['mail', 'database'];
+        $channels = [];
+        if ($notifiable->preferNotification('settlement_processing_started', 'email')) {
+            $channels[] = 'mail';
+        }
+        if ($notifiable->preferNotification('settlement_processing_started', 'database')) {
+            $channels[] = 'database';
+        }
+        return $channels;
     }
 
     public function toMail(object $notifiable): MailMessage

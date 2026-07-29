@@ -17,7 +17,14 @@ class SettlementRequestedNotification extends Notification implements ShouldQueu
 
     public function via(object $notifiable): array
     {
-        return ['mail', 'database'];
+        $channels = [];
+        if ($notifiable->preferNotification('settlement_requested', 'email')) {
+            $channels[] = 'mail';
+        }
+        if ($notifiable->preferNotification('settlement_requested', 'database')) {
+            $channels[] = 'database';
+        }
+        return $channels;
     }
 
     public function toMail(object $notifiable): MailMessage

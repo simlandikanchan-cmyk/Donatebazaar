@@ -18,7 +18,14 @@ class FundsAvailableNotification extends Notification implements ShouldQueue
 
     public function via(object $notifiable): array
     {
-        return ['mail', 'database'];
+        $channels = [];
+        if ($notifiable->preferNotification('funds_available', 'email')) {
+            $channels[] = 'mail';
+        }
+        if ($notifiable->preferNotification('funds_available', 'database')) {
+            $channels[] = 'database';
+        }
+        return $channels;
     }
 
     public function toMail(object $notifiable): MailMessage

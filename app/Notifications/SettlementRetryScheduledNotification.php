@@ -17,7 +17,14 @@ class SettlementRetryScheduledNotification extends Notification implements Shoul
 
     public function via(object $notifiable): array
     {
-        return ['mail', 'database'];
+        $channels = [];
+        if ($notifiable->preferNotification('settlement_retry_scheduled', 'email')) {
+            $channels[] = 'mail';
+        }
+        if ($notifiable->preferNotification('settlement_retry_scheduled', 'database')) {
+            $channels[] = 'database';
+        }
+        return $channels;
     }
 
     public function toMail(object $notifiable): MailMessage

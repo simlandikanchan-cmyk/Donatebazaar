@@ -1182,12 +1182,22 @@ class PaymentController extends Controller
 
                 // Store for emailing after commit — NOT inside transaction
                 $donationToMail = $donation->fresh();
+                $ownerForNotif = $donation->campaign->user;
             });
 
-            // Transaction committed — now safe to send email.
+            // Transaction committed — now safe to send email & notifications.
             // DB lock is released; slow mail server cannot affect DB state.
             if ($donationToMail) {
                 $this->sendReceiptEmail($donationToMail);
+            }
+
+            if (isset($ownerForNotif) && $ownerForNotif && $donationToMail) {
+                $ownerForNotif->notify(new \App\Notifications\DonationReceived(
+                    amount: (float) $donationToMail->net_amount,
+                    donorName: $donationToMail->donor_name ?? $donationToMail->donor_email ?? 'Anonymous',
+                    campaignTitle: $donationToMail->campaign->title,
+                    campaignId: $donationToMail->campaign_id,
+                ));
             }
 
         } finally {
