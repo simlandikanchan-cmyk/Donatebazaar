@@ -1,29 +1,7 @@
 {{-- resources/views/public/blogs/show.blade.php --}}
 @extends('layouts.app')
 
-@section('title', $blog->meta_title ?: $blog->title)
-
-@push('meta')
-    <meta name="description" content="{{ $blog->meta_description ?: Str::limit(strip_tags($blog->content), 160) }}">
-    <meta property="og:title" content="{{ $blog->meta_title ?: $blog->title }}">
-    <meta property="og:description" content="{{ $blog->meta_description ?: Str::limit(strip_tags($blog->content), 160) }}">
-    <meta property="og:url" content="{{ request()->url() }}">
-    <meta property="og:type" content="article">
-    <meta property="og:site_name" content="DonateBazaar">
-    @if($blog->cover_image)
-    <meta property="og:image" content="{{ $blog->cover_image_url ?? Storage::url($blog->cover_image) }}">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="{{ $blog->cover_image_url ?? Storage::url($blog->cover_image) }}">
-    @else
-    <meta name="twitter:card" content="summary">
-    @endif
-    <meta name="twitter:title" content="{{ $blog->meta_title ?: $blog->title }}">
-    <meta name="twitter:description" content="{{ $blog->meta_description ?: Str::limit(strip_tags($blog->content), 160) }}">
-    <meta property="article:published_time" content="{{ ($blog->published_at ?? $blog->created_at)->toIso8601String() }}">
-    @if($blog->author)<meta property="article:author" content="{{ $blog->author->name }}">@endif
-    @if($blog->category)<meta property="article:section" content="{{ $blog->category->name }}">@endif
-    @foreach($blog->tags as $tag)<meta property="article:tag" content="{{ $tag->name }}">@endforeach
-@endpush
+@section('title', $blog->title)
 
 @push('styles') @vite(['resources/css/public/blog-show.css']) @endpush
 
@@ -33,13 +11,12 @@
 <div id="reading-progress-bar"></div>
 
 {{-- ── COVER ── --}}
-<div class="relative w-full overflow-hidden cover-wrap" style="max-height:520px; min-height:200px;">
+<div class="relative w-full overflow-hidden" style="max-height:520px; min-height:200px;">
     @if($blog->cover_image)
     <img src="{{ $blog->cover_image_url ?? Storage::url($blog->cover_image) }}"
          class="w-full object-cover"
          style="max-height:520px; min-height:200px;"
-         alt="{{ $blog->title }}"
-         loading="eager">
+         alt="{{ $blog->title }}">
     <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(12,10,9,0.82) 0%, rgba(12,10,9,0.2) 55%, transparent 100%)"></div>
     @else
     <div class="w-full flex items-end" style="min-height:220px; background: linear-gradient(135deg,#1c1917 0%,#292524 60%,#3d2b1a 100%);">
@@ -132,7 +109,7 @@
 
             {{-- ── CONTENT ── --}}
             <div class="prose-custom max-w-none mb-10" id="article-body">
-                {!! $blog->content !!}
+                {!! nl2br(e($blog->content)) !!}
             </div>
 
             {{-- Tags --}}
@@ -179,7 +156,7 @@
                 {{-- Tweet --}}
                 <a href="https://twitter.com/intent/tweet?url={{ urlencode(request()->url()) }}&text={{ urlencode($blog->title) }}"
                    target="_blank" rel="noopener"
-                   class="share-twitter flex items-center gap-2 px-4 py-2 rounded-full border border-stone-200 text-stone-600 text-sm">
+                   class="flex items-center gap-2 px-4 py-2 rounded-full border border-stone-200 text-stone-600 text-sm hover:border-sky-400 hover:text-sky-500 hover:bg-sky-50 transition-colors">
                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                     </svg>
@@ -195,7 +172,7 @@
             </div>
 
             {{-- ── AUTHOR CARD ── --}}
-            <div class="author-card flex gap-5 bg-gradient-to-br from-stone-50 to-amber-50/40 rounded-2xl p-6 mb-12 border border-stone-100">
+            <div class="flex gap-5 bg-gradient-to-br from-stone-50 to-amber-50/40 rounded-2xl p-6 mb-12 border border-stone-100">
                 @if($blog->author->avatar ?? false)
                     <img src="{{ Storage::url($blog->author->avatar) }}"
                          class="w-16 h-16 rounded-full object-cover ring-4 ring-white shadow-md flex-shrink-0" alt="{{ $blog->author->name }}">
@@ -219,7 +196,7 @@
 
             {{-- ── COMMENTS ── --}}
             <section id="comments">
-                <h2 class="comment-heading text-2xl font-bold text-stone-900 mb-6 flex items-center gap-3"
+                <h2 class="text-2xl font-bold text-stone-900 mb-6 flex items-center gap-3"
                     style="font-family:'DM Mono', monospace;">
                     {{ $blog->comments_count ?? 0 }}
                     {{ Str::plural('Comment', $blog->comments_count ?? 0) }}
@@ -280,7 +257,7 @@
                 {{-- Comment list --}}
                 <div class="space-y-6">
                 @forelse($blog->comments->whereNull('parent_id') as $comment)
-                <div class="comment-item flex gap-3">
+                <div class="flex gap-3">
                     {{-- Avatar --}}
                     @if($comment->author->avatar ?? false)
                         <img src="{{ Storage::url($comment->author->avatar) }}"
@@ -429,7 +406,7 @@
 
                 {{-- Write CTA --}}
                 @auth
-                <div class="sidebar-cta bg-stone-900 rounded-2xl p-5 text-center">
+                <div class="bg-stone-900 rounded-2xl p-5 text-center">
                     <p class="text-stone-400 text-xs mb-1">Inspired by this post?</p>
                     <p class="text-stone-200 text-sm font-medium mb-4">Write your own story.</p>
                     <a href="{{ route('user.blogs.create') }}"

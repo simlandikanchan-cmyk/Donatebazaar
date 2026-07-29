@@ -268,8 +268,10 @@ class BlogService
 
     private function sanitizeContent(string $content): string
     {
-        $allowed = '<strong><em><b><i><u><h2><h3><h4><p><br><ul><ol><li><a><blockquote><pre><code><hr><img>';
+        // Collapse <br> tags into newlines; preserve line breaks so nl2br() works.
+        $content = preg_replace('#<br\s*/?>#i', "\n", $content);
+        $content = strip_tags($content);
 
-        return trim(strip_tags($content, $allowed));
+        return trim($content);
     }
 }

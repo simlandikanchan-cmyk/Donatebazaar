@@ -1025,18 +1025,15 @@ if(toolbar && textarea){
         var after = text.substring(end);
         var wrap;
         switch(cmd){
-            case 'bold': wrap = ['<strong>', '</strong>']; break;
-            case 'italic': wrap = ['<em>', '</em>']; break;
+            case 'bold': wrap = ['**', '**']; break;
+            case 'italic': wrap = ['*', '*']; break;
             case 'underline': wrap = ['<u>', '</u>']; break;
-            case 'heading': wrap = ['<h2>', '</h2>']; selected = selected || 'Heading'; break;
-            case 'bullet':
-                var lines = (selected || 'List item').split('\n');
-                var lis = lines.map(function(l){ return '<li>' + l + '</li>'; }).join('');
-                wrap = ['<ul>' + lis, '</ul>']; break;
+            case 'heading': wrap = ['\n## ', '\n']; selected = selected || 'Heading'; break;
+            case 'bullet': wrap = ['\n- ', '']; selected = selected || 'List item'; break;
             case 'link':
                 var url = prompt('Enter URL:', 'https://');
                 if(!url) return;
-                wrap = ['<a href="' + url.replace(/"/g,'&quot;') + '">', '</a>']; selected = selected || 'link text';
+                wrap = ['[', ']('+url+')']; selected = selected || 'link text';
                 break;
         }
         if(wrap){
