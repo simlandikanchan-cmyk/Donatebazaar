@@ -73,17 +73,17 @@
         </div>
     </div>
     <div class="wb-right">
-        <a href="{{ route('campaign.create') }}" class="btn btn-primary">
+        <a href="{{ route('campaign.create') }}" class="wb-btn wb-btn-primary">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
             New Campaign
         </a>
         @if(!$kyc || $kyc->status !== 'approved')
-        <a href="{{ url('/user/kyc') }}" class="btn btn-yellow">
+        <a href="{{ url('/user/kyc') }}" class="wb-btn wb-btn-yellow">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
             {{ $kyc ? 'KYC '.ucfirst($kyc->status) : 'Submit KYC' }}
         </a>
         @endif
-        <a href="{{ route('profile.show') }}" class="btn btn-secondary">
+        <a href="{{ route('profile.show') }}" class="wb-btn wb-btn-ghost">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
             My Profile
         </a>

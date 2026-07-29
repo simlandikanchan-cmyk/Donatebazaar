@@ -2,11 +2,7 @@
 
 namespace Tests\Unit\Gateway;
 
-use App\Contracts\Gateway\GatewayInterface;
-use App\Contracts\Gateway\PayoutResult;
-use App\Exceptions\DuplicateRequestException;
 use App\Exceptions\GatewayException;
-use App\Exceptions\InvalidSignatureException;
 use App\Exceptions\PermanentFailureException;
 use App\Exceptions\TemporaryFailureException;
 use App\Exceptions\TimeoutException;
@@ -59,13 +55,10 @@ class RazorpayGatewayTest extends TestCase
 
         $result = $this->gateway->initiatePayout($org, 500.00, $settlement);
 
-        $this->assertInstanceOf(PayoutResult::class, $result);
-        $this->assertTrue($result->success);
-        $this->assertStringStartsWith('PAYOUT_', $result->gatewayReference);
-        $this->assertSame('processed', $result->providerStatus);
-        $this->assertFalse($result->retryable);
-        $this->assertNull($result->failureReason);
-        $this->assertSame(500.00, $result->metadata['amount']);
+        $this->assertIsArray($result);
+        $this->assertStringStartsWith('PAYOUT_', $result['gateway_reference']);
+        $this->assertSame('processed', $result['provider_status']);
+        $this->assertSame(500.00, $result['metadata']['amount']);
     }
 
     #[Test]

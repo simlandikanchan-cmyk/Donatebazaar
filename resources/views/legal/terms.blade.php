@@ -49,4 +49,4 @@
 </div>
 @endsection
 
-@push('styles') @vite(['resources/css/legal.css']) @endpush
+@push('styles') @vite(['resources/css/public/legal.css']) @endpush

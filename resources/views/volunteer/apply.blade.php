@@ -194,7 +194,7 @@ var _cities = @json($cities);
 
   function loadStates(country) {
     if (country === 'India') {
-      fetch('/api/states/india')
+       fetch('/api/v1/states/india')
         .then(function(r) { return r.json(); })
         .then(function(states) {
           stateEl.innerHTML = '<option value="">Select state</option>';
@@ -305,5 +305,5 @@ var _cities = @json($cities);
 })();
 </script>
 
-@vite(['resources/css/volunteer-apply.css', 'resources/js/volunteer-city.js'])
+@vite(['resources/css/public/volunteer-apply.css', 'resources/js/public/volunteer-city.js'])
 @endsection

@@ -2,7 +2,7 @@
 
 @section('content')
 
-@push('styles') @vite(['resources/css/how-it-works.css']) @endpush
+@push('styles') @vite(['resources/css/public/how-it-works.css']) @endpush
 
 
 {{-- ═══ HERO ═══ --}}

@@ -3,7 +3,7 @@
 
 @section('title', $blog->title)
 
-@push('styles') @vite(['resources/css/blog-show.css']) @endpush
+@push('styles') @vite(['resources/css/public/blog-show.css']) @endpush
 
 @section('content')
 

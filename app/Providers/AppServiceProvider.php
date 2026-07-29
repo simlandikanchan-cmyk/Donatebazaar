@@ -1,13 +1,19 @@
 <?php
 
 namespace App\Providers;
-use App\Contracts\Gateway\GatewayInterface;
 use App\Gateways\RazorpayGateway;
 use App\Models\Campaign;
 use App\Models\Donation;
 use App\Models\User;
 use App\Models\Volunteer;
 use App\Models\VolunteerApplication;
+use App\Repositories\CampaignRepository;
+use App\Repositories\CategoryRepository;
+use App\Repositories\DonationRepository;
+use App\Repositories\SearchRepository;
+use App\Repositories\SettlementRepository;
+use App\Repositories\UserRepository;
+use App\Repositories\WalletRepository;
 use App\Services\FundraiserLevelService;
 use App\Services\LaravelNotificationService;
 use App\Services\NotificationService;
@@ -15,6 +21,8 @@ use App\View\Composers\CampaignShowComposer;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Spatie\Health\Checks\Checks\CacheCheck;
 use Spatie\Health\Checks\Checks\DatabaseCheck;
@@ -32,20 +40,11 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->singleton(FundraiserLevelService::class);
         $this->app->singleton(NotificationService::class, LaravelNotificationService::class);
-        $this->app->singleton(GatewayInterface::class, function ($app) {
-            $keyId = config('services.razorpay.key_id');
-            $keySecret = config('services.razorpay.key_secret');
-            $webhookSecret = config('services.razorpay.webhook_secret');
 
-            if (! $keyId || ! $keySecret || ! $webhookSecret) {
-                if ($app->environment('production')) {
-                    throw new \RuntimeException('Razorpay credentials are not configured. Set RAZORPAY_KEY, RAZORPAY_SECRET, and RAZORPAY_WEBHOOK_SECRET in your environment.');
-                }
-
-                $keyId = $keyId ?: 'test_key';
-                $keySecret = $keySecret ?: 'test_secret';
-                $webhookSecret = $webhookSecret ?: 'test_webhook_secret';
-            }
+        $this->app->singleton(RazorpayGateway::class, function ($app) {
+            $keyId = config('services.razorpay.key') ?: env('RAZORPAY_KEY', 'test_key');
+            $keySecret = config('services.razorpay.secret') ?: env('RAZORPAY_SECRET', 'test_secret');
+            $webhookSecret = env('RAZORPAY_WEBHOOK_SECRET', 'test_webhook_secret');
 
             return new RazorpayGateway(
                 keyId: $keyId,
@@ -53,6 +52,14 @@ class AppServiceProvider extends ServiceProvider
                 webhookSecret: $webhookSecret
             );
         });
+
+        $this->app->singleton(DonationRepository::class);
+        $this->app->singleton(CampaignRepository::class);
+        $this->app->singleton(WalletRepository::class);
+        $this->app->singleton(SettlementRepository::class);
+        $this->app->singleton(UserRepository::class);
+        $this->app->singleton(CategoryRepository::class);
+        $this->app->singleton(SearchRepository::class);
 
         if ($this->app->environment('local')) {
             $this->app->register(TelescopeServiceProvider::class);
@@ -99,5 +106,9 @@ class AppServiceProvider extends ServiceProvider
             CacheCheck::new(),
             DebugModeCheck::new(),
         ]);
+
+        if (App::environment('production') || env('FORCE_HTTPS', false)) {
+            URL::forceScheme('https');
+        }
     }
 }

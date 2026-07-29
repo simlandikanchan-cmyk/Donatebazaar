@@ -1,0 +1,45 @@
+# Git
+.git
+.gitignore
+
+# Environment
+.env
+.env.backup
+
+# Dependencies
+/vendor
+/node_modules
+
+# Build artifacts
+/public/build
+/public/hot
+
+# Laravel
+/storage/framework/cache/data/*
+/storage/framework/cache/data
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/logs/*
+/storage/debugbar/*
+/stellar
+.bootstrap.php.cache
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Database dumps
+*.sql
+*.sql.gz
+
+# Reports
+*.md
+full_app_report.md
+salary_report.md

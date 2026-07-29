@@ -24,7 +24,7 @@
 @endsection
 
 @push('page_styles')
-@vite('resources/css/campaigns-show.css')
+@vite('resources/css/public/campaigns-show.css')
 @endpush
 
 @section('content')
@@ -49,5 +49,5 @@
 @endsection
 
 @push('page_scripts')
-@vite('resources/js/campaigns-show.js')
+@vite('resources/js/public/campaigns-show.js')
 @endpush

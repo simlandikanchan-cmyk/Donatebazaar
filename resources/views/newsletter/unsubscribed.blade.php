@@ -36,4 +36,4 @@
 </div>
 @endsection
 
-@push('styles') @vite(['resources/css/newsletter-unsubscribed.css']) @endpush
+@push('styles') @vite(['resources/css/public/newsletter-unsubscribed.css']) @endpush

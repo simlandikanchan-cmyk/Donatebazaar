@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Queue;
 
-use App\Contracts\Gateway\GatewayInterface;
 use App\Exceptions\PermanentFailureException;
 use App\Exceptions\TemporaryFailureException;
 use App\Exceptions\TimeoutException;

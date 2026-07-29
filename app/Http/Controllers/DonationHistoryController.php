@@ -2,38 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Campaign;
 use App\Models\Donation;
 use App\Models\RecurringDonation;
+use App\Repositories\CampaignRepository;
+use App\Repositories\DonationRepository;
 use Illuminate\Support\Facades\Auth;
 
 class DonationHistoryController extends Controller
 {
+    public function __construct(
+        private DonationRepository $donationRepo,
+        private CampaignRepository $campaignRepo,
+    ) {}
+
     public function index()
     {
         $user = Auth::user();
 
-        $donations = Donation::where('user_id', $user->id)
-            ->with(['campaign' => function ($q) {
-                $q->select('id', 'title', 'slug', 'cover_image', 'goal_amount', 'raised_amount', 'category_id')
-                    ->with('category:id,name,slug');
-            }, 'refunds'])
-            ->orderByRaw("FIELD(payment_status, 'completed', 'pending', 'failed', 'refunded')")
-            ->latest('created_at')
-            ->paginate(15);
-
-        $campaigns = Campaign::where('user_id', $user->id)->get();
+        $donations = $this->donationRepo->getUserDonations($user->id);
+        $campaigns = $this->campaignRepo->getUserCampaigns($user->id, 9999);
         $recurringCount = RecurringDonation::where('user_id', $user->id)
             ->where('status', 'active')
             ->count();
 
-        $stats = Donation::where('user_id', $user->id)
-            ->selectRaw('COALESCE(SUM(CASE WHEN payment_status = ? THEN total_amount ELSE 0 END), 0) as total_donated', ['completed'])
-            ->selectRaw('COUNT(CASE WHEN payment_status = ? THEN 1 END) as completed_count', ['completed'])
-            ->selectRaw('COUNT(CASE WHEN payment_status = ? THEN 1 END) as pending_count', ['pending'])
-            ->selectRaw('COUNT(CASE WHEN is_refunded = 1 THEN 1 END) as refunded_count')
-            ->first();
-
+        $stats = $this->donationRepo->getUserStats($user->id);
         $totalDonated = (float) $stats->total_donated;
         $completedCount = (int) $stats->completed_count;
         $pendingCount = (int) $stats->pending_count;

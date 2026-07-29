@@ -134,4 +134,4 @@ $hasResults = $total > 0;
 </div>
 @endsection
 
-@push('styles') @vite(['resources/css/search.css']) @endpush
+@push('styles') @vite(['resources/css/public/search.css']) @endpush

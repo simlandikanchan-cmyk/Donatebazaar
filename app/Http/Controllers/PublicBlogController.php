@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\Blog\RecordBlogViewAction;
-use App\Actions\Blog\ToggleBlogLikeAction;
 use App\Http\Requests\Blog\ReportBlogRequest;
 use App\Http\Requests\Blog\StoreBlogCommentRequest;
 use App\Models\Blog;
@@ -107,8 +105,7 @@ class PublicBlogController extends Controller
     */
 
     public function show(
-        string $slug,
-        RecordBlogViewAction $recordView
+        string $slug
     ): View {
 
         $blog = Blog::public()
@@ -124,11 +121,7 @@ class PublicBlogController extends Controller
             ->firstOrFail();
 
         // Record view
-        $recordView->execute(
-            $blog,
-            Auth::id(),
-            request()->ip()
-        );
+        $blog->increment('views_count');
 
         // Related
         $related = Blog::public()
@@ -242,8 +235,7 @@ class PublicBlogController extends Controller
     */
 
     public function toggleLike(
-        Blog $blog,
-        ToggleBlogLikeAction $action
+        Blog $blog
     ): JsonResponse|RedirectResponse {
 
         abort_unless(
@@ -251,10 +243,8 @@ class PublicBlogController extends Controller
             404
         );
 
-        $liked = $action->execute(
-            $blog,
-            Auth::id()
-        );
+        $user = Auth::user();
+        $liked = $user ? $blog->likes()->toggle($user->id)->attached() : false;
 
         if (request()->wantsJson()) {
 

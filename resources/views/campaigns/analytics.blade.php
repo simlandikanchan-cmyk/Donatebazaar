@@ -181,7 +181,7 @@
                         <tr>
                             <td class="dim">{{ $i + 1 }}</td>
                             <td class="name">{{ $donor->donor_name }}</td>
-                            <td class="dim">{{ $donor->donor_email }}</td>
+                            <td class="dim">{{ \Illuminate\Support\Str::mask($donor->donor_email, '*', 2, strpos($donor->donor_email, '@') - 2) }}</td>
                             <td class="num">{{ $donor->donations }}</td>
                             <td class="num accent">₹{{ number_format($donor->total, 0) }}</td>
                         </tr>

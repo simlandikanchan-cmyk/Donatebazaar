@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&family=DM+Mono:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
 
-@push('styles') @vite(['resources/css/ddrf.css']) @endpush
+@push('styles') @vite(['resources/css/public/ddrf.css']) @endpush
 @endpush
 
 @section('content')

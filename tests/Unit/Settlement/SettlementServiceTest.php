@@ -8,7 +8,7 @@ use App\Events\SettlementManualReviewRequired;
 use App\Events\SettlementRejected;
 use App\Events\SettlementRequested;
 use App\Exceptions\InsufficientWalletBalanceException;
-use App\Contracts\Gateway\GatewayInterface;
+use App\Gateways\RazorpayGateway;
 use App\Models\Campaign;
 use App\Models\CampaignSettlement;
 use App\Models\Donation;
@@ -61,7 +61,7 @@ class SettlementServiceTest extends TestCase
 
     private function service(): SettlementService
     {
-        $gateway = $this->createMock(GatewayInterface::class);
+        $gateway = $this->createMock(RazorpayGateway::class);
 
         return new SettlementService(
             new WalletService(),

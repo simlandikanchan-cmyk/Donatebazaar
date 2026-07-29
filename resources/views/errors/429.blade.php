@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@push('styles') @vite(['resources/css/errors.css']) @endpush
+@push('styles') @vite(['resources/css/public/errors.css']) @endpush
 
 @section('content')
 <div id="error-root">

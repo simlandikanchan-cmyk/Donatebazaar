@@ -6,35 +6,43 @@ use App\Exceptions\InsufficientWalletBalanceException;
 use App\Models\CampaignSettlement;
 use App\Models\Donation;
 use App\Models\Organization;
-use App\Models\Wallet;
+use App\Repositories\DonationRepository;
+use App\Repositories\SettlementRepository;
+use App\Repositories\WalletRepository;
 use App\Services\SettlementService;
 use App\Services\WalletService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class WalletController extends Controller
 {
-    /**
-     * Org/user wallet dashboard: balances + ledger + request-payout form.
-     */
+    public function __construct(
+        private WalletService $walletService,
+        private SettlementService $settlementService,
+        private WalletRepository $walletRepo,
+        private DonationRepository $donationRepo,
+        private SettlementRepository $settlementRepo,
+    ) {}
+
     public function index(Request $request): View
     {
         $user = auth()->user();
-        $wallet = app(WalletService::class)->getOrCreateWallet($user);
+        $wallet = $this->walletService->getOrCreateWallet($user);
 
         $transactions = $wallet->transactions()
             ->latest()
             ->paginate(20);
 
-        // Eligible donations: completed, not refunded, hold window matured,
-        // not already settled, and not locked in a pending/approved settlement.
-        $lockedIds = DB::table('settlement_items')
-            ->join('campaign_settlements', 'campaign_settlements.id', '=', 'settlement_items.campaign_settlement_id')
-            ->whereIn('campaign_settlements.status', ['pending_approval', 'approved'])
-            ->pluck('settlement_items.donation_id')
-            ->all();
+        $org = $this->orgFor($user);
+        $orgId = $org?->id;
+
+        $lockedIds = $orgId
+            ? $this->walletRepo->getDonationIdsFromSettlements(
+                [$orgId],
+                ['pending_approval', 'approved']
+            )->all()
+            : [];
 
         $eligible = Donation::where('user_id', $user->id)
             ->where('payment_status', 'completed')
@@ -46,13 +54,14 @@ class WalletController extends Controller
             ->with('campaign:id,title')
             ->get();
 
-        $pendingSettlements = CampaignSettlement::where('organization_id', $this->orgIdFor($user))
-            ->whereIn('status', ['pending_approval', 'approved'])
-            ->with('settlementItems')
-            ->latest()
-            ->get();
+        $pendingSettlements = $orgId
+            ? CampaignSettlement::where('organization_id', $orgId)
+                ->whereIn('status', ['pending_approval', 'approved', 'failed'])
+                ->with('settlementItems', 'payoutAttempt')
+                ->latest()
+                ->get()
+            : collect();
 
-        $org = $this->orgFor($user);
         $payoutAccounts = $org ? $org->payoutAccounts()->latest()->get() : collect();
 
         return view('wallet.dashboard', compact(
@@ -60,9 +69,6 @@ class WalletController extends Controller
         ));
     }
 
-    /**
-     * Submit a payout/settlement request (locks funds, pending admin approval).
-     */
     public function requestPayout(Request $request): RedirectResponse
     {
         $user = auth()->user();
@@ -83,12 +89,8 @@ class WalletController extends Controller
         }
 
         try {
-            $settlement = app(SettlementService::class)->requestSettlement($org, $donationIds);
-        } catch (InsufficientWalletBalanceException $e) {
-            return redirect()
-                ->route('dashboard.wallet')
-                ->with('error', $e->getMessage());
-        } catch (\InvalidArgumentException $e) {
+            $settlement = $this->settlementService->requestSettlement($org, $donationIds);
+        } catch (InsufficientWalletBalanceException | \InvalidArgumentException $e) {
             return redirect()
                 ->route('dashboard.wallet')
                 ->with('error', $e->getMessage());
@@ -99,19 +101,11 @@ class WalletController extends Controller
             ->with('success', 'Payout request submitted. It is now pending admin approval.');
     }
 
-    /**
-     * Resolve the org record for the authenticated user (if any).
-     */
     protected function orgFor($user): ?Organization
     {
         return Organization::where('user_id', $user->id)->first();
     }
 
-    /**
-     * Resolve the user's org, auto-creating a personal "individual"
-     * organization for standalone fundraisers who have none. Settlements are
-     * org-scoped, so every payout request needs an owning organization.
-     */
     protected function ensureOrgFor($user): Organization
     {
         $org = $this->orgFor($user);
@@ -127,9 +121,6 @@ class WalletController extends Controller
         ]);
     }
 
-    /**
-     * Save a payout account (bank/UPI) for the user's organization.
-     */
     public function savePayoutAccount(Request $request): RedirectResponse
     {
         $user = auth()->user();
@@ -153,11 +144,6 @@ class WalletController extends Controller
 
         return redirect()
             ->route('dashboard.wallet')
-            ->with('success', 'Payout account saved successfully.');
-    }
-
-    protected function orgIdFor($user): ?int
-    {
-        return $this->orgFor($user)?->id;
+            ->with('success', 'Payout account saved.');
     }
 }

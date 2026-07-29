@@ -2,8 +2,6 @@
 
 namespace App\Gateways;
 
-use App\Contracts\Gateway\GatewayInterface;
-use App\Contracts\Gateway\PayoutResult;
 use App\Exceptions\DuplicateRequestException;
 use App\Exceptions\GatewayException;
 use App\Exceptions\InvalidSignatureException;
@@ -15,7 +13,7 @@ use App\Models\Organization;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 
-class RazorpayGateway implements GatewayInterface
+class RazorpayGateway
 {
     public function __construct(
         private readonly string $keyId,
@@ -23,7 +21,7 @@ class RazorpayGateway implements GatewayInterface
         private readonly string $webhookSecret
     ) {}
 
-    public function initiatePayout(Organization $org, float $amount, CampaignSettlement $settlement): PayoutResult
+    public function initiatePayout(Organization $org, float $amount, CampaignSettlement $settlement): array
     {
         $account = $org->payoutAccounts()->where('is_verified', true)->first();
 
@@ -41,16 +39,16 @@ class RazorpayGateway implements GatewayInterface
 
         $reference = 'PAYOUT_'.$settlement->id.'_'.time();
 
-        return PayoutResult::success(
-            gatewayReference: $reference,
-            providerStatus: 'processed',
-            metadata: [
+        return [
+            'gateway_reference' => $reference,
+            'provider_status' => 'processed',
+            'metadata' => [
                 'account_number' => $account->masked_account_number,
                 'ifsc_code' => $account->ifsc_code,
                 'amount' => $amount,
                 'currency' => 'INR',
             ]
-        );
+        ];
     }
 
     public function getPayoutStatus(string $gatewayReference): array

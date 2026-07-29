@@ -8,7 +8,7 @@
 @section('title', 'Register – ' . $event->title)
 
 @section('content')
-@push('styles') @vite(['resources/css/events-register.css']) @endpush
+@push('styles') @vite(['resources/css/public/events-register.css']) @endpush
 
 <div class="reg-wrap">
 

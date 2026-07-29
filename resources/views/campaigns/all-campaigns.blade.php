@@ -3,7 +3,7 @@
 @section('content')
 
 @push('styles')
-    @vite(['resources/css/campaigns.css'])
+    @vite(['resources/css/public/campaigns.css'])
 @endpush
 
 
@@ -673,7 +673,7 @@
 
 
 @push('scripts')
-    @vite(['resources/js/campaigns.js'])
+    @vite(['resources/js/public/campaigns.js'])
 @endpush
 
 @endsection

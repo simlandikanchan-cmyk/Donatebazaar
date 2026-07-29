@@ -2,7 +2,7 @@
 
 @section('content')
 
-@push('styles') @vite(['resources/css/campaigns-old.css']) @endpush
+@push('styles') @vite(['resources/css/public/campaigns-old.css']) @endpush
 
 <div class="page-shell">
     <div class="shell-inner">

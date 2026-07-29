@@ -173,7 +173,7 @@
 </button>
 @endsection
 
-@push('styles') @vite(['resources/css/impact.css']) @endpush
+@push('styles') @vite(['resources/css/public/impact.css']) @endpush
 
 @push('scripts')
 <script>

@@ -2,7 +2,7 @@
 
 namespace App\Services\Reconciliation;
 
-use App\Contracts\Gateway\GatewayInterface;
+use App\Gateways\RazorpayGateway;
 use App\Events\SettlementCancelled;
 use App\Events\SettlementFailed;
 use App\Events\SettlementPaid;
@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Log;
 class ReconciliationService
 {
     public function __construct(
-        private readonly GatewayInterface $gateway,
+        private readonly RazorpayGateway $gateway,
         private readonly SettlementStateMachine $stateMachine,
         private readonly int $batchSize = 100,
         private readonly int $processingStuckMinutes = 30

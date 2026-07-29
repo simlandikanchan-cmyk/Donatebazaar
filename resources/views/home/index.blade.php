@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
 @push('styles')
-    @vite(['resources/css/home.css'])
+    @vite(['resources/css/public/home.css'])
 @endpush
 
 @push('scripts')
-    @vite(['resources/js/home.js'])
+    @vite(['resources/js/public/home.js'])
 @endpush
 
 @section('content')

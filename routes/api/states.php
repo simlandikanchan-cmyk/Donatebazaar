@@ -8,4 +8,4 @@ Route::get('/states/{country}', function (string $country) {
     }
 
     return response()->json(config('india.states', []));
-});
+})->name('states');

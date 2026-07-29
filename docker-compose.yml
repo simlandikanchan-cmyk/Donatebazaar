@@ -1,0 +1,189 @@
+x-env: &env
+  APP_NAME: ${APP_NAME:-DonateBazaar}
+  APP_ENV: ${APP_ENV:-production}
+  APP_DEBUG: ${APP_DEBUG:-false}
+  APP_URL: ${APP_URL:-http://localhost}
+  APP_KEY: ${APP_KEY}
+
+  DB_CONNECTION: mysql
+  DB_HOST: mysql
+  DB_PORT: 3306
+  DB_DATABASE: ${DB_DATABASE:-donatebazaar}
+  DB_USERNAME: ${DB_USERNAME:-donatebazaar}
+  DB_PASSWORD: ${DB_PASSWORD:-secret}
+
+  CACHE_STORE: redis
+  REDIS_HOST: redis
+  REDIS_PASSWORD: ${REDIS_PASSWORD:-null}
+  REDIS_PORT: 6379
+
+  SESSION_DRIVER: redis
+  QUEUE_CONNECTION: redis
+
+  MAIL_MAILER: ${MAIL_MAILER:-log}
+  MAIL_HOST: ${MAIL_HOST:-127.0.0.1}
+  MAIL_PORT: ${MAIL_PORT:-2525}
+  MAIL_USERNAME: ${MAIL_USERNAME:-}
+  MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+  MAIL_ENCRYPTION: ${MAIL_ENCRYPTION:-tls}
+  MAIL_FROM_ADDRESS: ${MAIL_FROM_ADDRESS:-hello@example.com}
+  MAIL_FROM_NAME: ${MAIL_FROM_NAME:-DonateBazaar}
+
+  FILESYSTEM_DISK: ${FILESYSTEM_DISK:-local}
+  AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+  AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+  AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION:-us-east-1}
+  AWS_BUCKET: ${AWS_BUCKET:-}
+
+  RAZORPAY_KEY: ${RAZORPAY_KEY:-}
+  RAZORPAY_SECRET: ${RAZORPAY_SECRET:-}
+
+  GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+  GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+  GOOGLE_REDIRECT_URI: ${GOOGLE_REDIRECT_URI:-}
+
+  CLOUDINARY_URL: ${CLOUDINARY_URL:-}
+
+  TELESCOPE_ENABLED: ${TELESCOPE_ENABLED:-false}
+  DEBUGBAR_ENABLED: ${DEBUGBAR_ENABLED:-false}
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: fundraise-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-donatebazaar}
+      MYSQL_USER: ${DB_USERNAME:-donatebazaar}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootsecret}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: fundraise-redis
+    restart: unless-stopped
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  php:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+      target: ${BUILD_TARGET:-base}
+    container_name: fundraise-php
+    restart: unless-stopped
+    environment:
+      <<: *env
+    volumes:
+      - .:/var/www
+      - storage-data:/var/www/storage
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - backend
+
+  nginx:
+    image: nginx:alpine
+    container_name: fundraise-nginx
+    restart: unless-stopped
+    ports:
+      - "${NGINX_PORT:-80}:80"
+      - "${NGINX_SSL_PORT:-443}:443"
+    volumes:
+      - .:/var/www
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+    networks:
+      - backend
+
+  queue-worker:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+      target: ${BUILD_TARGET:-base}
+    container_name: fundraise-queue
+    restart: unless-stopped
+    environment:
+      <<: *env
+    volumes:
+      - .:/var/www
+      - storage-data:/var/www/storage
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: php artisan queue:work redis --sleep=3 --tries=3 --max-time=3600
+    networks:
+      - backend
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+      target: ${BUILD_TARGET:-base}
+    container_name: fundraise-scheduler
+    restart: unless-stopped
+    environment:
+      <<: *env
+    volumes:
+      - .:/var/www
+      - storage-data:/var/www/storage
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: php artisan schedule:work
+    networks:
+      - backend
+
+  # Development only — runs Vite dev server with hot reload
+  vite:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+      target: dev
+    container_name: fundraise-vite
+    profiles:
+      - dev
+    environment:
+      <<: *env
+    volumes:
+      - .:/var/www
+    ports:
+      - "5173:5173"
+    depends_on:
+      - php
+    command: npm run dev
+    networks:
+      - backend
+
+volumes:
+  mysql-data:
+  redis-data:
+  storage-data:
+
+networks:
+  backend:
+    driver: bridge

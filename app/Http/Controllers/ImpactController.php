@@ -4,9 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Campaign;
 use App\Models\Donation;
+use App\Repositories\CampaignRepository;
 
 class ImpactController extends Controller
 {
+    public function __construct(
+        private CampaignRepository $campaignRepo,
+    ) {}
+
     public function index()
     {
         $completedCampaigns = Campaign::where('campaign_state', Campaign::STATE_COMPLETED)
@@ -28,11 +33,7 @@ class ImpactController extends Controller
 
         $livesImpacted = (int) ($totalRaised / 500);
 
-        $statesCovered = Campaign::where('campaign_state', Campaign::STATE_COMPLETED)
-            ->whereNotNull('location')
-            ->selectRaw('DISTINCT location')
-            ->get()
-            ->count();
+        $statesCovered = count($this->campaignRepo->getUniqueLocations());
 
         $featured = Campaign::where('campaign_state', Campaign::STATE_COMPLETED)
             ->with('category:id,name,slug')

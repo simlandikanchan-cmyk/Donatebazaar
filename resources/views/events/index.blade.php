@@ -5,7 +5,7 @@
 
 @section('content')
 
-@push('styles') @vite(['resources/css/events-index.css']) @endpush
+@push('styles') @vite(['resources/css/public/events-index.css']) @endpush
 
 {{-- ── HERO ── --}}
 <section class="ev-hero">

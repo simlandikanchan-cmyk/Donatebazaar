@@ -7,7 +7,7 @@
     <title>{{ $campaign->title }} — DonateBazaar</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-@push('styles') @vite(['resources/css/campaigns-show-new.css']) @endpush
+@push('styles') @vite(['resources/css/public/campaigns-show-new.css']) @endpush
 </head>
 <body>
 

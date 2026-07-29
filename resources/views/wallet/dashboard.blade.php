@@ -42,12 +42,17 @@ $icoLocked     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
                                     <span class="badge b-pending" style="font-size:10px;padding:2px 8px;margin-left:8px;">Pending approval</span>
                                 @elseif($ps->isApproved())
                                     <span class="badge b-active" style="font-size:10px;padding:2px 8px;margin-left:8px;">Approved — payout in progress</span>
+                                @elseif($ps->status === 'failed')
+                                    <span class="badge" style="font-size:10px;padding:2px 8px;margin-left:8px;background:var(--red-lt);color:var(--red);">Payout failed</span>
                                 @endif
                             </div>
                             <div class="activity-amt">₹{{ number_format($ps->net_amount, 2) }}</div>
                         </div>
                         @if($ps->rejection_reason)
                             <div class="activity-sub" style="color:var(--red);">Rejected: {{ $ps->rejection_reason }}</div>
+                        @endif
+                        @if($ps->status === 'failed' && $ps->payoutAttempt->first()?->error_message)
+                            <div class="activity-sub" style="color:var(--red);">Failed: {{ $ps->payoutAttempt->first()->error_message }}</div>
                         @endif
                     </div>
                 </div>

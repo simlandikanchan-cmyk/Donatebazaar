@@ -8,6 +8,7 @@ use App\Models\Organization;
 use App\Models\User;
 use App\Models\Wallet;
 use App\Models\WalletTransaction;
+use App\Notifications\FundsAvailableNotification;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
@@ -104,7 +105,6 @@ class WalletService
 
     public function releaseMaturedReserves(): int
     {
-        $count = 0;
         $cutoff = now()->subDays(self::DEFAULT_HOLD_DAYS);
 
         $matured = Donation::with('campaign')
@@ -113,59 +113,78 @@ class WalletService
             ->whereNotNull('paid_at')
             ->where('paid_at', '<=', $cutoff)
             ->whereNull('released_at')
-            ->get();
+            ->get()
+            ->groupBy(fn ($d) => $this->ownerForDonation($d)?->id);
 
-        foreach ($matured as $donation) {
-            $owner = $this->ownerForDonation($donation);
+        $totalReleased = 0;
+
+        foreach ($matured as $ownerId => $donations) {
+            if (! $ownerId) {
+                continue;
+            }
+
+            $owner = User::find($ownerId);
             if (! $owner) {
                 continue;
             }
 
             $wallet = $this->getOrCreateWallet($owner);
-            $lock = Cache::lock('wallet_release_'.$wallet->id, 10);
+            $lock = Cache::lock('wallet_release_'.$wallet->id, 30);
+
             if (! $lock->get()) {
                 continue;
             }
 
+            $releasedAmount = 0;
+            $releasedCount = 0;
+
             try {
-                $released = DB::transaction(function () use ($wallet, $donation) {
+                DB::transaction(function () use ($wallet, $donations, &$releasedAmount, &$releasedCount) {
                     $locked = Wallet::lockForUpdate()->findOrFail($wallet->id);
 
-                    $tx = WalletTransaction::where('wallet_id', $locked->id)
-                        ->where('source', WalletTransaction::SOURCE_DONATION)
-                        ->where('reference_type', Donation::class)
-                        ->where('reference_id', $donation->id)
-                        ->where('type', 'credit')
-                        ->first();
+                    foreach ($donations as $donation) {
+                        $tx = WalletTransaction::where('wallet_id', $locked->id)
+                            ->where('source', WalletTransaction::SOURCE_DONATION)
+                            ->where('reference_type', Donation::class)
+                            ->where('reference_id', $donation->id)
+                            ->where('type', 'credit')
+                            ->first();
 
-                    if (! $tx) {
-                        return 0;
+                        if (! $tx) {
+                            continue;
+                        }
+
+                        $amount = (float) $tx->amount;
+                        if ((float) $locked->reserved_balance < $amount) {
+                            continue;
+                        }
+
+                        $locked->reserved_balance = (float) $locked->reserved_balance - $amount;
+                        $locked->balance = (float) $locked->balance + $amount;
+
+                        $this->record($locked, 'credit', $amount, WalletTransaction::SOURCE_ADJUSTMENT, $donation->id, Donation::class, 'Reserve matured');
+
+                        $donation->released_at = now();
+                        $donation->save();
+
+                        $releasedAmount += $amount;
+                        $releasedCount++;
                     }
 
-                    $amount = (float) $tx->amount;
-                    if ((float) $locked->reserved_balance < $amount) {
-                        return 0;
-                    }
-
-                    $locked->reserved_balance = (float) $locked->reserved_balance - $amount;
-                    $locked->balance = (float) $locked->balance + $amount;
                     $locked->save();
-
-                    $this->record($locked, 'credit', $amount, WalletTransaction::SOURCE_ADJUSTMENT, $donation->id, Donation::class, 'Reserve matured');
-
-                    $donation->released_at = now();
-                    $donation->save();
-
-                    return 1;
                 });
 
-                $count += $released;
+                if ($releasedCount > 0) {
+                    $owner->notify(new FundsAvailableNotification($releasedAmount, $releasedCount));
+                }
+
+                $totalReleased += $releasedCount;
             } finally {
                 $lock->release();
             }
         }
 
-        return $count;
+        return $totalReleased;
     }
 
     public function releaseReservesForDonations(Wallet $wallet, array $donations): int
@@ -246,15 +265,15 @@ class WalletService
         ]);
     }
 
-    protected function ownerForDonation(Donation $donation): ?User
+    public function ownerForDonation(Donation $donation): ?User
     {
-        if ($donation->user_id) {
-            return User::find($donation->user_id);
-        }
-
-        $campaign = $donation->campaign;
+        $campaign = $donation->campaign()->withoutGlobalScopes()->first();
         if ($campaign && $campaign->user_id) {
             return User::find($campaign->user_id);
+        }
+
+        if ($donation->user_id) {
+            return User::find($donation->user_id);
         }
 
         return null;

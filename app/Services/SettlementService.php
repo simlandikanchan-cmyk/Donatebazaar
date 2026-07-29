@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-use App\Contracts\Gateway\GatewayInterface;
-use App\Contracts\Gateway\PayoutResult;
 use App\Events\RiskEvaluationCompleted;
 use App\Events\SettlementAutoApproved;
 use App\Events\SettlementCancelled;
@@ -29,6 +27,7 @@ use App\Models\WalletTransaction;
 use App\Services\Risk\RiskEngine;
 use App\Services\Risk\RiskEvaluationResult;
 use App\Services\Settlement\SettlementStateMachine;
+use App\Gateways\RazorpayGateway;
 use Illuminate\Support\Facades\DB;
 
 class SettlementService
@@ -37,7 +36,7 @@ class SettlementService
         private readonly WalletService $walletService,
         private readonly SettlementStateMachine $stateMachine,
         private readonly RiskEngine $riskEngine,
-        private readonly GatewayInterface $gateway
+        private readonly RazorpayGateway $gateway
     ) {}
 
     /**
@@ -276,7 +275,6 @@ class SettlementService
             event(new SettlementProcessingStarted($settlement));
 
             try {
-                /** @var PayoutResult $result */
                 $result = $this->gateway->initiatePayout($org, $amount, $settlement);
 
                 $this->stateMachine->transition($settlement, 'paid', [
@@ -286,7 +284,7 @@ class SettlementService
 
                 $settlement->update([
                     'paid_at' => now(),
-                    'gateway_reference' => $result->gatewayReference,
+                    'gateway_reference' => $result['gateway_reference'],
                     'retry_count' => 0,
                     'next_retry_at' => null,
                 ]);
@@ -297,7 +295,7 @@ class SettlementService
                     'campaign_settlement_id' => $settlement->id,
                 ]);
 
-                event(new SettlementPaid($settlement, $result->gatewayReference));
+                event(new SettlementPaid($settlement, $result['gateway_reference']));
 
                 return ['success' => true, 'message' => 'Payout completed successfully.'];
             } catch (PermanentFailureException|TimeoutException|TemporaryFailureException $e) {

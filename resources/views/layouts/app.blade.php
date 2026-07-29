@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>@yield('title', 'FundRaise')</title>
+    <title>@yield('title', 'DonateBazaar')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     {{-- Tailwind + JS --}}
-    @vite(['resources/css/app.css', 'resources/css/footer.css', 'resources/js/app.js', 'resources/css/chatbot.css', 'resources/js/chatbot.js', 'resources/css/navbar.css', 'resources/js/navbar.js'])
+    @vite(['resources/css/public/app.css', 'resources/css/public/footer.css', 'resources/js/public/app.js', 'resources/css/public/chatbot.css', 'resources/js/public/chatbot.js', 'resources/css/public/navbar.css', 'resources/js/public/navbar.js'])
 
     {{-- Preconnects --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">

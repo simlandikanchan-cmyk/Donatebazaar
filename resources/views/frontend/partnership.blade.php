@@ -2,7 +2,7 @@
 
 @section('content')
 
-@push('styles') @vite(['resources/css/partnership.css']) @endpush
+@push('styles') @vite(['resources/css/public/partnership.css']) @endpush
 
 {{-- ══ TOAST CONTAINER ══ --}}
 <div class="toast-stack" id="toastStack" role="status" aria-live="polite" aria-atomic="false"></div>

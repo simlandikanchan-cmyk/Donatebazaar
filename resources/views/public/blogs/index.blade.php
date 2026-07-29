@@ -4,7 +4,7 @@
 
 @section('content')
 
-@push('styles') @vite(['resources/css/blogs.css']) @endpush
+@push('styles') @vite(['resources/css/public/blogs.css']) @endpush
 
 {{-- ═══ HERO ═══ --}}
 <section class="blog-hero">

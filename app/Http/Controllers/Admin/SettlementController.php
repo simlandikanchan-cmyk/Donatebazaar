@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Jobs\ProcessSettlementPayout;
 use App\Models\CampaignSettlement;
 use App\Models\Refund;
+use App\Repositories\SettlementRepository;
 use App\Services\SettlementService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -13,9 +14,11 @@ use Illuminate\View\View;
 
 class SettlementController extends Controller
 {
-    /**
-     * List all settlements, filterable by status, pending_approval first.
-     */
+    public function __construct(
+        private SettlementService $settlementService,
+        private SettlementRepository $settlementRepo,
+    ) {}
+
     public function index(Request $request): View
     {
         $query = CampaignSettlement::with(['organization', 'settlementItems'])
@@ -36,9 +39,6 @@ class SettlementController extends Controller
         return view('admin.settlements.index', compact('settlements'));
     }
 
-    /**
-     * Settlement detail: org, items, payout account, scrutiny flags.
-     */
     public function show(CampaignSettlement $settlement): View
     {
         $settlement->load(['organization.payoutAccounts', 'settlementItems.donation.campaign']);
@@ -47,7 +47,6 @@ class SettlementController extends Controller
         $payoutAccounts = $org?->payoutAccounts()->latest()->get() ?? collect();
         $payout = $payoutAccounts->firstWhere('is_verified', true);
 
-        // "Needs extra scrutiny" heuristics.
         $flags = [];
         if ((float) $settlement->net_amount >= 100000) {
             $flags[] = 'High value (≥ ₹100,000)';
@@ -72,14 +71,10 @@ class SettlementController extends Controller
         ));
     }
 
-    /**
-     * Admin approves a pending_approval settlement.
-     * Debits pending_settlement_balance, marks approved, queues payout.
-     */
     public function approve(Request $request, CampaignSettlement $settlement): RedirectResponse
     {
         try {
-            app(SettlementService::class)->approveSettlement($settlement, auth()->user());
+            $this->settlementService->approveSettlement($settlement, auth()->user());
         } catch (\InvalidArgumentException $e) {
             return redirect()
                 ->route('admin.settlements.show', $settlement)
@@ -93,9 +88,6 @@ class SettlementController extends Controller
             ->with('success', 'Settlement approved. Payout processing started.');
     }
 
-    /**
-     * Admin rejects a pending_approval settlement (requires a reason).
-     */
     public function reject(Request $request, CampaignSettlement $settlement): RedirectResponse
     {
         $data = $request->validate([
@@ -103,7 +95,7 @@ class SettlementController extends Controller
         ]);
 
         try {
-            app(SettlementService::class)->rejectSettlement($settlement, auth()->user(), $data['reason']);
+            $this->settlementService->rejectSettlement($settlement, auth()->user(), $data['reason']);
         } catch (\InvalidArgumentException $e) {
             return redirect()
                 ->route('admin.settlements.show', $settlement)

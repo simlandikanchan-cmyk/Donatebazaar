@@ -307,25 +307,6 @@ class PaymentController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | Helper — resolve the wallet owner for a donation (its campaign creator)
-    |--------------------------------------------------------------------------
-    */
-
-    private function resolveWalletOwner(Donation $donation): ?User
-    {
-        if ($donation->user_id) {
-            return User::find($donation->user_id);
-        }
-
-        $campaign = $donation->campaign;
-        if ($campaign && $campaign->user_id) {
-            return User::find($campaign->user_id);
-        }
-
-        return null;
-    }
-
-    /*
     |--------------------------------------------------------------------------
     | Helper — build campaign public URL
     |--------------------------------------------------------------------------
@@ -962,7 +943,7 @@ class PaymentController extends Controller
 
                 // Credit the owner's wallet (held in reserve for the hold
                 // window). Idempotent against webhook retries.
-                $owner = $this->resolveWalletOwner($lockedDonation);
+                $owner = app(WalletService::class)->ownerForDonation($lockedDonation);
                 if ($owner) {
                     app(WalletService::class)->credit(
                         app(WalletService::class)->getOrCreateWallet($owner),
@@ -1179,7 +1160,7 @@ class PaymentController extends Controller
 
                 // Credit the owner's wallet (held in reserve for the hold
                 // window). Idempotent against webhook retries.
-                $owner = $this->resolveWalletOwner($donation);
+                $owner = app(WalletService::class)->ownerForDonation($donation);
                 if ($owner) {
                     app(WalletService::class)->credit(
                         app(WalletService::class)->getOrCreateWallet($owner),
@@ -1296,7 +1277,7 @@ class PaymentController extends Controller
                 // Debit the owner's wallet (reserved first while hold active).
                 // Inside the same lock/transaction as the refund — no second lock.
                 try {
-                    $owner = $this->resolveWalletOwner($donation);
+                    $owner = app(WalletService::class)->ownerForDonation($donation);
                     if ($owner) {
                         $wallet = app(WalletService::class)
                             ->getOrCreateWallet($owner);

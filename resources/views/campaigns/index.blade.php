@@ -2,7 +2,7 @@
 
 @section('content')
 
-@push('styles') @vite(['resources/css/campaigns-index.css']) @endpush
+@push('styles') @vite(['resources/css/public/campaigns-index.css']) @endpush
 
 
 <section class="campaign-section">

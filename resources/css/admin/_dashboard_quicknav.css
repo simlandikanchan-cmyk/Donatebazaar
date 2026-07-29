@@ -1,0 +1,33 @@
+/* ══════════════════════════════════════
+   ADMIN — Dashboard Quick Nav
+   ══════════════════════════════════════ */
+
+.qnav{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px;margin-bottom:24px;}
+.qnav-card{display:flex;flex-direction:column;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px 10px;text-align:center;transition:transform var(--ease),box-shadow var(--ease),border-color var(--ease);box-shadow:var(--sh);animation:fadeUp .4s ease both;cursor:pointer;text-decoration:none;position:relative;overflow:hidden;}
+.qnav-card::before{content:'';position:absolute;inset:0;opacity:0;background:radial-gradient(ellipse at 50% 0%,var(--qc,rgba(37,99,235,.08)) 0%,transparent 70%);transition:opacity var(--ease);}
+.qnav-card:hover{transform:translateY(-4px);box-shadow:var(--sh-md);border-color:rgba(37,99,235,.2);}
+.qnav-card:hover::before{opacity:1;}
+.qnav-ico{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;transition:transform var(--ease);}
+.qnav-card:hover .qnav-ico{transform:scale(1.12);}
+.qnav-ico svg{width:18px;height:18px;}
+.qnav-lbl{font-size:12px;font-weight:600;color:var(--text);}
+.qnav-sub{font-size:10px;color:var(--text3);}
+
+/* ══════════════════════════════════════
+   RESPONSIVE — Quick Nav
+   ══════════════════════════════════════ */
+@media(max-width:1200px){
+  .qnav{grid-template-columns:repeat(4,1fr)}
+}
+@media(max-width:640px){
+  .qnav{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:480px){
+  .qnav{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:380px){
+  .qnav{grid-template-columns:repeat(1,1fr)}
+  .qnav-card{flex-direction:row;text-align:left;padding:12px 14px;gap:12px}
+  .qnav-card .qnav-ico{width:34px;height:34px;flex-shrink:0}
+  .qnav-card .qnav-ico svg{width:15px;height:15px}
+}

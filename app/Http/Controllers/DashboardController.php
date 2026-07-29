@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Campaign;
 use App\Models\CampaignSettlement;
-use App\Models\Donation;
-use App\Models\Event;
 use App\Models\FundraiserLevel;
 use App\Models\Organization;
 use App\Models\RecurringDonation;
+use App\Repositories\CampaignRepository;
+use App\Repositories\UserRepository;
+use App\Repositories\WalletRepository;
 use App\Services\WalletService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -18,26 +19,17 @@ class DashboardController extends Controller
 {
     public function __construct(
         private WalletService $walletService,
+        private CampaignRepository $campaignRepo,
+        private WalletRepository $walletRepo,
+        private UserRepository $userRepo,
     ) {}
 
     public function index(Request $request): View
     {
         $user = $request->user()->load(['kycVerification', 'fundraiserLevel']);
 
-        $campaigns = Campaign::where('user_id', $user->id)
-            ->with('category:id,name')
-            ->withCount('donations')
-            ->latest()
-            ->paginate(20);
-
-        $monthlyData = Cache::remember("dashboard.monthly_data.{$user->id}", 300, function () use ($user) {
-            return Campaign::where('user_id', $user->id)
-                ->whereYear('created_at', now()->year)
-                ->selectRaw('MONTH(created_at) as month, SUM(raised_amount) as total')
-                ->groupBy('month')
-                ->orderBy('month')
-                ->pluck('total', 'month');
-        });
+        $campaigns = $this->campaignRepo->getUserCampaigns($user->id);
+        $monthlyData = $this->campaignRepo->getUserMonthlyData($user->id);
 
         $recurringDonations = RecurringDonation::where('user_id', $user->id)
             ->with('campaign:id,title')
@@ -50,14 +42,11 @@ class DashboardController extends Controller
         $recentDonations = collect();
         $totalDonationsCount = 0;
         if ($campaignIds->isNotEmpty()) {
-            $donationQuery = Donation::whereIn('campaign_id', $campaignIds)
-                ->whereNotNull('paid_at');
-            $recentDonations = (clone $donationQuery)
-                ->with('campaign:id,title')
-                ->latest()
-                ->take(6)
-                ->get();
-            $totalDonationsCount = $donationQuery->count();
+            $recentDonations = $this->walletRepo->getRecentTransactions(0);
+            $recentDonations = $campaignIds->isNotEmpty()
+                ? \App\Models\Donation::whereIn('campaign_id', $campaignIds)->whereNotNull('paid_at')->with('campaign:id,title')->latest()->take(6)->get()
+                : collect();
+            $totalDonationsCount = \App\Models\Donation::whereIn('campaign_id', $campaignIds)->whereNotNull('paid_at')->count();
         }
 
         $kyc = $user->kycVerification;
@@ -68,14 +57,7 @@ class DashboardController extends Controller
 
         $wallet = $this->walletService->getOrCreateWallet($user);
 
-        $topCampaign = Cache::remember("dashboard.top_campaign.{$user->id}", 300, function () use ($user) {
-            return Campaign::where('user_id', $user->id)
-                ->where('campaign_state', 'active')
-                ->with('category:id,name')
-                ->withCount('donations')
-                ->orderByDesc('raised_amount')
-                ->first();
-        });
+        $topCampaign = $this->campaignRepo->getTopCampaign($user->id);
 
         $nextLevel = null;
         $levelProgress = 0;
@@ -85,9 +67,8 @@ class DashboardController extends Controller
         if ($currentLevelModel) {
             $nextLevel = FundraiserLevel::nextAfter($currentLevelModel->level_number);
             if ($nextLevel) {
-                $campaignsCompleted = Campaign::where('user_id', $user->id)
-                    ->whereIn('campaign_state', ['completed', 'active'])->count();
-                $totalRaisedAll = Campaign::where('user_id', $user->id)->sum('raised_amount');
+                $campaignsCompleted = $this->campaignRepo->countByUserAndStates($user->id, ['completed', 'active']);
+                $totalRaisedAll = $this->campaignRepo->sumRaisedByUser($user->id);
                 $campPct = $nextLevel->min_campaigns_completed > 0
                     ? min(100, ($campaignsCompleted / $nextLevel->min_campaigns_completed) * 100)
                     : 100;
@@ -98,38 +79,12 @@ class DashboardController extends Controller
             }
         }
 
-        $recentBlogs = Cache::remember("dashboard.recent_blogs.{$user->id}", 300, function () use ($user) {
-            return \App\Models\Blog::where('author_id', $user->id)
-                ->latest()
-                ->take(3)
-                ->get(['id', 'title', 'status', 'views_count', 'created_at', 'published_at']);
-        });
+        $recentBlogs = $this->userRepo->getBlogsByAuthor($user->id);
+        $myEvents = $this->userRepo->getEventsByUser($user->id);
+        $registeredEvents = $this->userRepo->getUserRegisteredEvents($user);
+        $recentTransactions = $this->walletRepo->getRecentTransactions($wallet->id);
+        $totalCampaigns = $this->campaignRepo->countByUser($user->id);
 
-        $myEvents = Cache::remember("dashboard.my_events.{$user->id}", 300, function () use ($user) {
-            return Event::where('user_id', $user->id)
-                ->whereIn('status', ['active', 'pending'])
-                ->where('event_date', '>=', now()->subDay())
-                ->latest('event_date')
-                ->take(5)
-                ->get();
-        });
-        $registeredEvents = Cache::remember("dashboard.registered_events.{$user->id}", 300, function () use ($user) {
-            return $user->eventRegistrations()
-                ->with('event')
-                ->whereHas('event', fn($q) => $q->whereIn('status', ['active', 'pending'])->where('event_date', '>=', now()->subDay()))
-                ->latest()
-                ->take(5)
-                ->get();
-        });
-
-        $recentTransactions = Cache::remember("dashboard.recent_tx.{$user->id}", 300, function () use ($wallet) {
-            return $wallet->transactions()
-                ->latest()
-                ->take(5)
-                ->get();
-        });
-
-        $totalCampaigns = Campaign::where('user_id', $user->id)->count();
         $pendingTasks = Cache::remember("dashboard.pending_tasks.{$user->id}", 300, function () use ($user, $kyc, $campaignIds, $totalCampaigns) {
             $tasks = collect();
             if (!$kyc || $kyc->status !== 'approved') {
@@ -185,12 +140,8 @@ class DashboardController extends Controller
         $allLevels = FundraiserLevel::orderBy('level_number')->get();
         $nextLevel = FundraiserLevel::nextAfter($currentLevel->level_number);
 
-        $campaignsCompleted = Campaign::where('user_id', $user->id)
-            ->whereIn('campaign_state', [Campaign::STATE_COMPLETED, Campaign::STATE_ACTIVE])
-            ->count();
-
-        $totalRaised = Campaign::where('user_id', $user->id)
-            ->sum('raised_amount');
+        $campaignsCompleted = $this->campaignRepo->countByUserAndStates($user->id, [Campaign::STATE_COMPLETED, Campaign::STATE_ACTIVE]);
+        $totalRaised = $this->campaignRepo->sumRaisedByUser($user->id);
 
         $completionPct = 0;
         if ($nextLevel) {
@@ -198,14 +149,16 @@ class DashboardController extends Controller
                 ? min(100, ($campaignsCompleted / $nextLevel->min_campaigns_completed) * 100)
                 : 100;
             $raisedPct = $nextLevel->min_raised_percent > 0
-                ? min(100, ($campaignsCompleted > 0 ? 100 : 0))
+                ? min(100, ($totalRaised / $nextLevel->min_raised_percent) * 100)
                 : 100;
-            $completionPct = min(100, ($campPct + $raisedPct) / 2);
+            $completionPct = min(100, round(($campPct + $raisedPct) / 2));
         }
 
-        return view('user.fundraiser-level', compact(
-            'userLevel', 'currentLevel', 'allLevels', 'nextLevel',
-            'campaignsCompleted', 'totalRaised', 'completionPct'
+        $history = $userLevel?->history()->with(['fromLevel', 'toLevel'])->latest()->get() ?? collect();
+
+        return view('user.level', compact(
+            'user', 'currentLevel', 'allLevels', 'nextLevel',
+            'campaignsCompleted', 'totalRaised', 'completionPct', 'history'
         ));
     }
 }

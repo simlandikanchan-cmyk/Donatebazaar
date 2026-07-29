@@ -50,4 +50,4 @@ function toggleFaq(btn) {
 </script>
 @endpush
 
-@push('styles') @vite(['resources/css/faq.css']) @endpush
+@push('styles') @vite(['resources/css/public/faq.css']) @endpush

@@ -2,7 +2,7 @@
 
 @section('content')
 
-@push('styles') @vite(['resources/css/payment.css']) @endpush
+@push('styles') @vite(['resources/css/public/payment.css']) @endpush
 
 <div class="min-h-screen flex items-center justify-center px-4 py-10"
      style="background: linear-gradient(180deg,#F8FAFC 0%,#EEF2FF 100%);">

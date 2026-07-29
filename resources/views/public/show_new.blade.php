@@ -2,7 +2,7 @@
 
 @section('content')
 
-@push('styles') @vite(['resources/css/public-show-new.css']) @endpush
+@push('styles') @vite(['resources/css/public/public-show-new.css']) @endpush
 
 
 @php

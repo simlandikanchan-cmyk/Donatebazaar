@@ -12,15 +12,21 @@ use App\Models\User;
 use App\Models\Volunteer;
 use App\Models\VolunteerApplication;
 use App\Models\Wallet;
+use App\Repositories\CampaignRepository;
+use App\Repositories\DonationRepository;
+use App\Repositories\SettlementRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class DashboardController extends Controller
 {
-    /**
-     * Campaign-state query scope shared by the page and the AJAX grid.
-     */
+    public function __construct(
+        private CampaignRepository $campaignRepo,
+        private DonationRepository $donationRepo,
+        private SettlementRepository $settlementRepo,
+    ) {}
+
     private function scopeState($query, string $state)
     {
         $startOfDay = now()->startOfDay();
@@ -46,27 +52,22 @@ class DashboardController extends Controller
                                 ->where('end_date', '<', $startOfDay);
                         });
                 });
-            default: // 'all'
+            default:
                 return $query;
         }
     }
 
-    /**
-     * Compute the status counts used by the stat cards, filter tabs and doughnut.
-     */
     private function computeCounts(): array
     {
-        $counts = Campaign::selectRaw("campaign_state, COUNT(*) as count")
-            ->groupBy('campaign_state')
-            ->pluck('count', 'campaign_state');
+        $stateCounts = $this->campaignRepo->getAdminDashboardStats()['stateCounts'];
 
-        $totalCampaigns = (int) $counts->sum();
-        $cntPending     = (int) ($counts['pending'] ?? 0);
-        $cntActive      = (int) ($counts['active'] ?? 0);
-        $cntPaused      = (int) ($counts['paused'] ?? 0);
-        $cntExpired     = (int) ($counts['expired'] ?? 0);
-        $cntRejected    = (int) ($counts['rejected'] ?? 0);
-        $cntCompleted   = (int) ($counts['completed'] ?? 0);
+        $totalCampaigns = (int) array_sum($stateCounts);
+        $cntPending     = (int) ($stateCounts['pending'] ?? 0);
+        $cntActive      = (int) ($stateCounts['active'] ?? 0);
+        $cntPaused      = (int) ($stateCounts['paused'] ?? 0);
+        $cntExpired     = (int) ($stateCounts['expired'] ?? 0);
+        $cntRejected    = (int) ($stateCounts['rejected'] ?? 0);
+        $cntCompleted   = (int) ($stateCounts['completed'] ?? 0);
 
         $approvalRate = $totalCampaigns > 0 ? round(($cntActive / $totalCampaigns) * 100) : 0;
 
@@ -94,7 +95,7 @@ class DashboardController extends Controller
             $avgDonation  = $totalDonations > 0 ? (int) round($totalRevenue / $totalDonations) : 0;
             $uniqueDonors = Donation::whereNotNull('user_id')->distinct('user_id')->count('user_id');
             $successRate  = ($counts['totalCampaigns'] ?? 0) > 0
-                ? round((Campaign::where('campaign_state', 'completed')->count() / $counts['totalCampaigns']) * 100)
+                ? round(($this->campaignRepo->countByState('completed') / $counts['totalCampaigns']) * 100)
                 : 0;
 
             return array_merge($counts, compact(
@@ -105,23 +106,11 @@ class DashboardController extends Controller
             ));
         });
 
-        extract($stats);
-
-        // ─────────────────────────────────────────────────────────
-        // Pending Actions counts
-        // ─────────────────────────────────────────────────────────
         $unreadMessages = ContactMessage::where('is_read', false)->count();
         $pendingJobApplicants = JobPostApplication::where('status', 'pending')->count();
-
-        // ─────────────────────────────────────────────────────────
-        // Wallet / Settlement stats
-        // ─────────────────────────────────────────────────────────
-        $pendingSettlements = CampaignSettlement::where('status', 'pending_approval')->count();
+        $pendingSettlements = $this->settlementRepo->getPendingCount();
         $totalWalletBalance = Wallet::sum('balance');
 
-        // ─────────────────────────────────────────────────────────
-        // Recent Activity — merged timeline
-        // ─────────────────────────────────────────────────────────
         $recentDonations = Donation::with('campaign')
             ->where('payment_status', 'completed')
             ->latest()
@@ -174,15 +163,10 @@ class DashboardController extends Controller
             ->take(12)
             ->values();
 
-        // Initial grid shows the Active (+ Paused) list, matching the default tab.
         $activeCampaigns = $this->scopeState(
             Campaign::with('user', 'category')->whereIn('campaign_state', ['active', 'paused']),
             'active'
         )->latest()->paginate(12, ['*'], 'cpage');
-
-        // ─────────────────────────────────────────────────────────
-        // Monthly Chart (last 6 months)
-        // ─────────────────────────────────────────────────────────
 
         $monthlyData = Campaign::selectRaw("
                 DATE_FORMAT(created_at, '%Y-%m') as month,
@@ -206,10 +190,6 @@ class DashboardController extends Controller
             $chartActive[] = $row ? (int) $row->active : 0;
         }
 
-        // ─────────────────────────────────────────────────────────
-        // Revenue Trend (last 6 months)
-        // ─────────────────────────────────────────────────────────
-
         $revenueData = Donation::selectRaw("
                 DATE_FORMAT(created_at, '%Y-%m') as month,
                 SUM(total_amount) as revenue
@@ -231,10 +211,6 @@ class DashboardController extends Controller
             $revData[] = $row ? (float) $row->revenue : 0;
         }
 
-        // ─────────────────────────────────────────────────────────
-        // Top Campaigns by Funds Raised
-        // ─────────────────────────────────────────────────────────
-
         $topCampaigns = Campaign::where('raised_amount', '>', 0)
             ->orderByDesc('raised_amount')
             ->take(5)
@@ -252,25 +228,15 @@ class DashboardController extends Controller
 
         return view('admin.dashboard', array_merge($stats, compact(
             'activeCampaigns',
-            'chartLabels',
-            'chartTotal',
-            'chartActive',
-            'revLabels',
-            'revData',
-            'topCampLabels',
-            'topCampValues',
-            'unreadMessages',
-            'pendingJobApplicants',
-            'pendingSettlements',
-            'totalWalletBalance',
+            'chartLabels', 'chartTotal', 'chartActive',
+            'revLabels', 'revData',
+            'topCampLabels', 'topCampValues',
+            'unreadMessages', 'pendingJobApplicants',
+            'pendingSettlements', 'totalWalletBalance',
             'recentActivity'
         )));
     }
 
-    /**
-     * AJAX endpoint powering the server-driven campaign grid
-     * (filter / search / sort / pagination across every state).
-     */
     public function campaigns(Request $request)
     {
         $state = $request->input('state', 'active');

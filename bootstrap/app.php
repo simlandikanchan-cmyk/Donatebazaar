@@ -24,6 +24,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             WebpImageMiddleware::class,
         ]);
+
+        $middleware->trustProxies(at: '*');
     })
     ->withProviders([  // ← ADD THIS ENTIRE BLOCK
         RiskServiceProvider::class,

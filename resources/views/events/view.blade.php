@@ -7,7 +7,7 @@
 <title>{{ $event->title }} — DonateBazaar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-@vite(['resources/css/user.css', 'resources/css/events-view.css'])
+@vite(['resources/css/user/user.css', 'resources/css/public/events-view.css'])
 
 @php
     if ($event->status === 'active') {
