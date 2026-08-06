@@ -39,7 +39,7 @@ class BlogController extends Controller
         $sort = $request->input('sort', 'latest');
         $search = $request->input('search', '');
 
-        $query = Blog::with('author');
+        $query = Blog::with(['author', 'category:id,name']);
 
         if ($status !== 'all') {
             $query->where('status', $status);
@@ -48,8 +48,8 @@ class BlogController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
-                    ->orWhereHas('author', fn ($q2) => $q2->where('name', 'like', "%{$search}%")
-                    );
+                    ->orWhere('content', 'like', "%{$search}%")
+                    ->orWhereHas('author', fn ($q2) => $q2->where('name', 'like', "%{$search}%"));
             });
         }
 
@@ -59,11 +59,18 @@ class BlogController extends Controller
             default => $query->latest(),
         };
 
+        $categories = Category::where('is_active', true)->orderBy('name')->get(['id', 'name']);
+
         return view('admin.blogs.index', [
             'blogs' => $query->paginate(15)->withQueryString(),
-            'pendingCount' => Blog::where('status', Blog::STATUS_PENDING)->count(),
-            'publishedCount' => Blog::where('status', Blog::STATUS_PUBLISHED)->count(), // was approvedCount
-            'rejectedCount' => Blog::where('status', Blog::STATUS_REJECTED)->count(),
+            'pendingCount'      => Blog::where('status', Blog::STATUS_PENDING)->count(),
+            'publishedCount'    => Blog::where('status', Blog::STATUS_PUBLISHED)->count(),
+            'rejectedCount'     => Blog::where('status', Blog::STATUS_REJECTED)->count(),
+            'archivedCount'     => Blog::where('status', Blog::STATUS_ARCHIVED)->count(),
+            'flaggedCount'      => Blog::where('status', Blog::STATUS_FLAGGED)->count(),
+            'draftCount'        => Blog::where('status', Blog::STATUS_DRAFT)->count(),
+            'categories'        => $categories,
+            'activeSearch'      => $search,
         ]);
     }
 
@@ -129,10 +136,30 @@ class BlogController extends Controller
 
         $data['author_id'] = Auth::id();
         $data['author_role'] = 'admin';
-        $data['status'] = Blog::STATUS_PUBLISHED;
-        $data['published_at'] = now();
-        $data['reviewed_by'] = Auth::id();
-        $data['reviewed_at'] = now();
+        $action = $request->input('action', 'publish');
+
+        if ($action === 'draft') {
+            $data['status'] = Blog::STATUS_DRAFT;
+            $data['published_at'] = null;
+            $data['reviewed_by'] = null;
+            $data['reviewed_at'] = null;
+        } elseif ($action === 'schedule') {
+            $data['status'] = Blog::STATUS_PENDING;
+            $data['reviewed_by'] = Auth::id();
+            $data['reviewed_at'] = now();
+            $scheduledDate = $request->input('scheduled_at_date');
+            $scheduledTime = $request->input('scheduled_at_time', '00:00');
+            if ($scheduledDate) {
+                $data['published_at'] = $scheduledDate.' '.$scheduledTime;
+            } else {
+                $data['published_at'] = now();
+            }
+        } else {
+            $data['status'] = Blog::STATUS_PUBLISHED;
+            $data['published_at'] = now();
+            $data['reviewed_by'] = Auth::id();
+            $data['reviewed_at'] = now();
+        }
 
         unset($data['tag_ids']);
 

@@ -43,7 +43,7 @@
 <div class="main">
 
     <header class="topbar">
-        <div style="display:flex;align-items:center;gap:10px;">
+        <div class="topbar-left-wrap">
             <button class="hamburger" id="hamburger" aria-label="Menu">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
             </button>
@@ -68,10 +68,10 @@
                 <option value="date-desc">Newest first</option>
                 <option value="date-asc">Oldest first</option>
             </select>
-            <button class="tb-btn" title="Notifications">
+            <x-button variant="primary" type="button" class="tb-btn">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
                 @if(isset($sidebarPending) && ($sidebarPending > 0 || $sidebarRejected > 0))<span class="notif-dot"></span>@endif
-            </button>
+            </x-button>
             <div class="theme-toggle">
                 <input type="checkbox" id="themeToggle">
                 <label for="themeToggle">
@@ -81,10 +81,10 @@
                     </div>
                 </label>
             </div>
-            <a href="{{ route('campaign.create') }}" class="create-btn">
+            <x-button variant="primary" href="{{ route('campaign.create') }}">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
                 New Campaign
-            </a>
+            </x-button>
             @auth
             <div class="av-wrap" id="avWrap">
                 <div class="t-avatar" title="Account">
@@ -130,6 +130,7 @@
 </div>{{-- /.main --}}
 </div>{{-- /.shell --}}
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 @vite('resources/js/user/user.js')
 @stack('page_scripts')
 </body>

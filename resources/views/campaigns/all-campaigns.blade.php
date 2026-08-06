@@ -136,8 +136,8 @@
     </div>
 
     <div class="fm-footer">
-        <button class="fm-clear-btn" onclick="clearAllFilters()">Clear All</button>
-        <button class="fm-apply-btn" onclick="applyModalFilters()">Apply Filters</button>
+                <x-button variant="primary" type="button" class="fm-clear-btn" onclick="clearAllFilters()">Clear All</x-button>
+                <x-button variant="primary" type="button" class="fm-apply-btn" onclick="applyModalFilters()">Apply Filters</x-button>
     </div>
 </div>
 
@@ -173,7 +173,7 @@
                 <input type="text" name="search" placeholder="Search campaigns, causes, NGOs…" value="{{ request('search') }}">
                 @if(request('category'))<input type="hidden" name="category" value="{{ request('category') }}">@endif
                 @if(request('sort'))<input type="hidden" name="sort" value="{{ request('sort') }}">@endif
-                <button type="submit" class="hero-search-btn">Search</button>
+                <x-button variant="primary" type="submit">Search</x-button>
             </form>
 
             <div class="hero-causes">
@@ -267,11 +267,11 @@
             <span class="results-count">{{ $campaigns->total() ?? $campaigns->count() }} campaigns</span>
 
             {{-- Filter button --}}
-            <button class="filter-trigger-btn" onclick="openFilterModal()" id="filterTriggerBtn">
+            <x-button variant="primary" type="button" class="filter-trigger-btn" onclick="openFilterModal()">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4h18M7 12h10M11 20h2"/></svg>
                 Filters
                 <span class="filter-badge" id="filterBadge" style="display:none">0</span>
-            </button>
+            </x-button>
 
             <form method="GET" action="{{ url()->current() }}" id="sortForm">
                 @if(request('search'))<input type="hidden" name="search" value="{{ request('search') }}">@endif
@@ -285,12 +285,12 @@
             </form>
 
             <div class="view-toggle">
-                <button class="view-btn active" id="gridBtn" onclick="setView('grid')" title="Grid view">
+                <x-button variant="primary" type="button" class="view-btn active">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-                </button>
-                <button class="view-btn" id="listBtn" onclick="setView('list')" title="List view">
+                </x-button>
+                <x-button variant="primary" type="button" class="view-btn">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-                </button>
+                </x-button>
             </div>
         </div>
     </div>
@@ -405,10 +405,10 @@
             <div>
 
                 {{-- Mobile/tablet drawer toggle --}}
-                <button class="sidebar-toggle-btn" onclick="openSidebar()" aria-label="Open filters and stats">
+                <x-button variant="secondary" type="button">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4h18M7 12h10M11 20h2"/></svg>
                     Filters &amp; Stats
-                </button>
+                </x-button>
 
                 {{-- Active filter chips --}}
                 <div class="active-filters" id="activeFilters"></div>
@@ -586,7 +586,7 @@
             @if ($page == $campaigns->currentPage())
                 <span class="page-btn active">{{ $page }}</span>
             @else
-                <a href="{{ $url }}" class="page-btn">{{ $page }}</a>
+                <x-button variant="secondary" href="{{ $url }}" class="page-btn">{{ $page }}</x-button>
             @endif
         @endforeach
 
@@ -655,14 +655,14 @@
         <h2 class="cta-title reveal d1">Start Your Own <em>Campaign</em></h2>
         <p class="cta-sub reveal d2">Medical emergency, education, disaster relief — whatever the cause, our team verifies and supports your fundraiser from day one.</p>
         <div class="cta-btns reveal d3">
-            <a href="/campaign/create" class="btn btn-accent btn-lg">
+            <x-button variant="primary" size="lg" href="/campaign/create">
                 Start Fundraiser
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 4v16m8-8H4"/></svg>
-            </a>
-            <a href="{{ url('/about') }}" class="btn btn-white btn-lg">
+            </x-button>
+            <x-button variant="outline" size="lg" href="{{ url('/about') }}" style="--btn-fg:#fff;--btn-bd:rgba(255,255,255,.35);--btn-bg-h:rgba(255,255,255,.12);--btn-fg-h:#fff;--btn-bd-h:rgba(255,255,255,.6)">
                 How It Works
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </a>
+            </x-button>
         </div>
     </div>
 </section>

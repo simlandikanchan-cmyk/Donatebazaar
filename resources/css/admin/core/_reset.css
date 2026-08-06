@@ -1,0 +1,35 @@
+/* ══════════════════════════════════════
+   BASE — Reset & Global Primitives
+   ══════════════════════════════════════ */
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+html,body{height:100%;}
+html{overflow-x:hidden;}
+
+body{
+  font-family:var(--font);
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+  transition:background var(--transition),color var(--transition);
+}
+
+a{text-decoration:none;color:inherit;}
+button{cursor:pointer;font-family:var(--font);}
+svg{display:block;flex-shrink:0;}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:100px;}
+[data-theme="dark"] ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);}
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.14);}
+
+/* ── Selection & Focus ── */
+::selection{background:rgba(37,99,235,.18);color:inherit;}
+:focus-visible{outline:2px solid var(--a);outline-offset:2px;border-radius:4px;}

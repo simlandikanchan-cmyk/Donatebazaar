@@ -42,7 +42,7 @@
           </div>
           <div class="toggle-track"><div class="toggle-thumb"></div></div>
         </label>
-        <div class="cert-expand {{ old('has_fcra', $application->has_fcra ?? false) ? 'open' : '' }}" id="sectionFcra" style="grid-template-columns:1fr">
+        <div class="cert-expand {{ old('has_fcra', $application->has_fcra ?? false) ? 'open' : '' }}" id="sectionFcra" style="--grid-cols:1fr">
           <div class="field-wrap">
             <label class="field-label">FCRA number</label>
             <input type="text" name="fcra_number" class="field-input" value="{{ old('fcra_number', $application->fcra_number ?? '') }}" placeholder="e.g. 083781234">
@@ -60,7 +60,7 @@
           </div>
           <div class="toggle-track"><div class="toggle-thumb"></div></div>
         </label>
-        <div class="cert-expand {{ old('has_12a', $application->has_12a ?? false) ? 'open' : '' }}" id="section12a" style="grid-template-columns:1fr">
+        <div class="cert-expand {{ old('has_12a', $application->has_12a ?? false) ? 'open' : '' }}" id="section12a" style="--grid-cols:1fr">
           <div class="field-wrap">
             <label class="field-label">12A number</label>
             <input type="text" name="12a_number" class="field-input" value="{{ old('12a_number', $application->{'12a_number'} ?? '') }}" placeholder="e.g. MH/12A/2018/0002">
@@ -83,7 +83,7 @@
       <div class="field-grid">
         <div class="field-wrap">
           <label class="field-label">PAN number</label>
-          <input type="text" name="pan_number" class="field-input" value="{{ old('pan_number', $application->pan_number ?? '') }}" placeholder="e.g. AAABC1234D" style="text-transform:uppercase">
+          <input type="text" name="pan_number" class="field-input input-upper" value="{{ old('pan_number', $application->pan_number ?? '') }}" placeholder="e.g. AAABC1234D">
         </div>
         <div class="field-wrap">
           <label class="field-label">NGO Darpan ID</label>
@@ -112,7 +112,7 @@
         </div>
         <div class="field-wrap">
           <label class="field-label">IFSC code</label>
-          <input type="text" name="bank_ifsc" class="field-input" value="{{ old('bank_ifsc', $application->bank_ifsc ?? '') }}" placeholder="SBIN0001234" style="text-transform:uppercase">
+          <input type="text" name="bank_ifsc" class="field-input input-upper" value="{{ old('bank_ifsc', $application->bank_ifsc ?? '') }}" placeholder="SBIN0001234">
         </div>
       </div>
 

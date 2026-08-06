@@ -14,7 +14,7 @@
   --surface3:    #1e1f35;
   --border:      rgba(255, 255, 255, 0.06);
   --border2:     rgba(255, 255, 255, 0.10);
-  --text:        #f0f1ff;
+  --text:        #eff6ff;
   --text2:       #a5b4c8;
   --text3:       #5a6579;
   --accent-glow: rgba(99, 102, 241, 0.25);
@@ -141,7 +141,7 @@ svg:not([width]):not([height]) {
   font-weight:    600;
   letter-spacing: .14em;
   text-transform: uppercase;
-  color:          var(--accent);
+  color:          var(--primary);
   font-family:    var(--font-mono);
   display:        inline-flex;
   align-items:    center;
@@ -152,7 +152,7 @@ svg:not([width]):not([height]) {
   content:       '';
   width:         20px;
   height:        2px;
-  background:    var(--accent);
+  background:    var(--primary);
   border-radius: 2px;
   flex-shrink:   0;
 }
@@ -168,7 +168,7 @@ svg:not([width]):not([height]) {
 }
 .section-title em {
   font-style: normal;
-  color:      var(--accent);
+  color:      var(--primary);
 }
 
 .section-sub {
@@ -260,12 +260,7 @@ svg:not([width]):not([height]) {
   position:   absolute;
   inset:      0;
   z-index:    1;
-  background: linear-gradient(
-    110deg,
-    rgba(5, 5, 20, .92)  0%,
-    rgba(10, 10, 35, .82) 45%,
-    rgba(15, 15, 40, .5)  100%
-  );
+  background: linear-gradient(160deg, var(--dark-bg), var(--slate-900) 50%, var(--secondary-ink));
 }
 
 .hero-grid {
@@ -333,14 +328,14 @@ svg:not([width]):not([height]) {
 
 .hero-title {
   font-family:   var(--font-display);
-  font-size:     clamp(2.8rem, 5.5vw, 4.2rem);
-  font-weight:   500;
-  line-height:   1.2;
-  color:         #fff;
-  margin-bottom: 24px;
-  max-width:     720px;
+  font-size:     clamp(2.8rem, 4vw, 3.4rem);
+  font-weight:   700;
+  line-height:   1.1;
+  color:         var(--white);
+  margin-bottom: 20px;
+  max-width:     680px;
 }
-.hero-title em    { font-style: normal; color: #93c5fd; }
+.hero-title em    { font-style: normal; color: var(--primary-tint); }
 .hero-title .line2 {
   display:   block;
   color:     rgba(255, 255, 255, .65);
@@ -362,6 +357,18 @@ svg:not([width]):not([height]) {
   gap:           12px;
   flex-wrap:     wrap;
   margin-bottom: 56px;
+}
+
+/* Dark hero overlay → white outline button (matches home.css) */
+.hero-btns .btn--outline {
+  --btn-fg:     var(--white);
+  --btn-bd:     rgba(255,255,255,.35);
+  --btn-bg-h:   rgba(255,255,255,.12);
+  --btn-fg-h:   var(--white);
+  --btn-bd-h:   rgba(255,255,255,.6);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: 1px solid white;
 }
 
 .hero-trust {
@@ -435,7 +442,7 @@ svg:not([width]):not([height]) {
 .float-card-num {
   font-size:   22px;
   font-weight: 700;
-  color:       #fff;
+  color:       var(--white);
   font-family: var(--font-mono);
   line-height: 1;
 }
@@ -462,7 +469,7 @@ svg:not([width]):not([height]) {
 .hero-stat-val {
   font-family:   var(--font-mono);
   font-size:     clamp(18px, 2.2vw, 26px);
-  color:         #fff;
+  color:         var(--white);
   display:       block;
   font-weight:   700;
   line-height:   1;
@@ -485,7 +492,7 @@ svg:not([width]):not([height]) {
    2. MARQUEE
 ═══════════════════════════════════════════════════════════ */
 .marquee-band {
-  background:    #07080f;
+  background:    var(--dark-bg-deep);
   overflow:      hidden;
   padding:       0;
   border-top:    1px solid rgba(255, 255, 255, .04);
@@ -518,7 +525,7 @@ svg:not([width]):not([height]) {
   width:         4px;
   height:        4px;
   border-radius: 50%;
-  background:    var(--accent2);
+  background:    var(--secondary);
   flex-shrink:   0;
 }
 @keyframes marquee {
@@ -609,10 +616,10 @@ svg:not([width]):not([height]) {
   color:          var(--text);
   margin-bottom:  24px;
 }
-.purpose-headline em { font-style: normal; color: var(--accent); }
+.purpose-headline em { font-style: normal; color: var(--primary); }
 
 .purpose-quote {
-  border-left:   3px solid var(--accent);
+  border-left:   3px solid var(--primary);
   padding:       16px 20px;
   background:    var(--accent-glow);
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
@@ -664,8 +671,8 @@ svg:not([width]):not([height]) {
   transition:    all var(--transition);
 }
 .chip:hover {
-  border-color: var(--accent);
-  color:        var(--accent);
+  border-color: var(--primary);
+  color:        var(--primary);
   background:   var(--accent-glow);
 }
 
@@ -673,7 +680,7 @@ svg:not([width]):not([height]) {
    5. STATS STRIP
 ═══════════════════════════════════════════════════════════ */
 .stats-strip {
-  background: linear-gradient(160deg, #07080f 0%, #0d0e1a 50%, #13141f 100%);
+  background: linear-gradient(160deg, var(--dark-bg-deep) 0%, var(--dark-bg) 50%, var(--dark-surface) 100%);
   position:   relative;
   overflow:   hidden;
   contain:    layout;
@@ -718,7 +725,7 @@ svg:not([width]):not([height]) {
   left:             50%;
   right:            50%;
   height:           2px;
-  background:       linear-gradient(90deg, var(--accent), var(--accent2));
+  background:       linear-gradient(90deg, var(--primary), var(--secondary));
   transition:       left .4s ease, right .4s ease;
 }
 .stat-tile:hover::after { left: 0; right: 0; }
@@ -734,18 +741,18 @@ svg:not([width]):not([height]) {
   justify-content: center;
   margin:          0 auto 16px;
 }
-.stat-tile-icon svg { width: 20px; height: 20px; color: #93c5fd; }
+.stat-tile-icon svg { width: 20px; height: 20px; color: var(--primary-tint); }
 
 .stat-tile-num {
   font-family:   var(--font-mono);
   font-size:     clamp(36px, 4vw, 52px);
   font-weight:   700;
-  color:         #fff;
+  color:         var(--white);
   display:       block;
   line-height:   1;
   margin-bottom: 10px;
 }
-.stat-tile-num .suf { color: var(--accent); }
+.stat-tile-num .suf { color: var(--primary); }
 .stat-tile-lbl {
   font-size:      10.5px;
   letter-spacing: 1.4px;
@@ -804,8 +811,8 @@ svg:not([width]):not([height]) {
   position:      absolute;
   bottom:        -20px;
   right:         -20px;
-  background:    linear-gradient(135deg, var(--accent), var(--accent2));
-  color:         #fff;
+  background:    linear-gradient(135deg, var(--primary), var(--secondary));
+  color:         var(--white);
   border-radius: var(--radius);
   padding:       18px 24px;
   box-shadow:    0 16px 40px rgba(99, 102, 241, .45);
@@ -867,7 +874,7 @@ svg:not([width]):not([height]) {
   color:          var(--text);
   margin-bottom:  20px;
 }
-.journey-text h2 em { font-style: normal; color: var(--accent); }
+.journey-text h2 em { font-style: normal; color: var(--primary); }
 .journey-text p {
   font-size:     14.5px;
   line-height:   1.85;
@@ -890,7 +897,7 @@ svg:not([width]):not([height]) {
   top:        30px;
   bottom:     0;
   width:      1px;
-  background: linear-gradient(to bottom, var(--accent), transparent);
+  background: linear-gradient(to bottom, var(--primary), transparent);
 }
 .tl-item:last-child::before { display: none; }
 
@@ -907,15 +914,15 @@ svg:not([width]):not([height]) {
   z-index:         1;
   transition:      transform var(--transition);
 }
-.tl-dot.done   { background: rgba(99, 102, 241, .12); border: 2px solid var(--accent); }
+.tl-dot.done   { background: rgba(99, 102, 241, .12); border: 2px solid var(--primary); }
 .tl-dot.active {
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
   box-shadow: 0 0 0 6px rgba(99, 102, 241, .15);
 }
 .tl-dot svg { width: 12px; height: 12px; }
 .tl-item:hover .tl-dot { transform: scale(1.15); }
 
-.tl-year  { font-size: 10.5px; font-weight: 700; color: var(--accent); font-family: var(--font-mono); margin-bottom: 2px; }
+.tl-year  { font-size: 10.5px; font-weight: 700; color: var(--primary); font-family: var(--font-mono); margin-bottom: 2px; }
 .tl-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 3px; font-family: var(--font); }
 .tl-desc  { font-size: 12.5px; color: var(--text3); font-family: var(--font); line-height: 1.6; }
 
@@ -924,7 +931,7 @@ svg:not([width]):not([height]) {
 ═══════════════════════════════════════════════════════════ */
 .how-section {
   padding:    110px 0;
-  background: linear-gradient(160deg, #07080f 0%, #0d0e1a 50%, #13141f 100%);
+  background: linear-gradient(160deg, var(--dark-bg-deep) 0%, var(--dark-bg) 50%, var(--dark-surface) 100%);
   position:   relative;
   overflow:   hidden;
   contain:    layout;
@@ -957,7 +964,7 @@ svg:not([width]):not([height]) {
   background: radial-gradient(circle, rgba(139, 92, 246, .07) 0%, transparent 70%);
 }
 
-.how-section .section-title { color: #fff; }
+.how-section .section-title { color: var(--white); }
 .how-section .section-sub   { color: rgba(255, 255, 255, .45); }
 
 .how-grid {
@@ -978,13 +985,13 @@ svg:not([width]):not([height]) {
   width:           38px;
   height:          38px;
   border-radius:   50%;
-  background:      linear-gradient(135deg, var(--accent), var(--accent2));
+  background:      linear-gradient(135deg, var(--primary), var(--secondary));
   display:         flex;
   align-items:     center;
   justify-content: center;
   font-size:       13px;
   font-weight:     700;
-  color:           #fff;
+  color:           var(--white);
   font-family:     var(--font-mono);
   z-index:         2;
   box-shadow:      0 6px 20px rgba(99, 102, 241, .5);
@@ -1021,7 +1028,7 @@ svg:not([width]):not([height]) {
   left:             0;
   right:            0;
   height:           2px;
-  background:       linear-gradient(90deg, var(--accent), var(--accent2));
+  background:       linear-gradient(90deg, var(--primary), var(--secondary));
   transform:        scaleX(0);
   transform-origin: left;
   transition:       transform .4s ease;
@@ -1060,17 +1067,17 @@ svg:not([width]):not([height]) {
   border-color: rgba(99, 102, 241, .35);
   transform:    scale(1.08) rotate(-5deg);
 }
-.how-icon svg { width: 26px; height: 26px; color: #93c5fd; }
+.how-icon svg { width: 26px; height: 26px; color: var(--primary-tint); }
 
 .how-title {
   font-size:     18px;
   font-weight:   600;
-  color:         #fff;
+  color:         var(--white);
   margin-bottom: 12px;
   font-family:   var(--font);
   transition:    color .2s;
 }
-.how-card-wrap:hover .how-title { color: #c7d2fe; }
+.how-card-wrap:hover .how-title { color: var(--primary-tint-2); }
 
 .how-desc {
   font-size:     13.5px;
@@ -1093,7 +1100,7 @@ svg:not([width]):not([height]) {
   font-family:   var(--font-mono);
   background:    rgba(99, 102, 241, .1);
   border:        1px solid rgba(99, 102, 241, .2);
-  color:         #93c5fd;
+  color:         var(--primary-tint);
   transition:    background .2s;
 }
 .how-card-wrap:hover .how-tag { background: rgba(99, 102, 241, .18); }
@@ -1172,7 +1179,7 @@ svg:not([width]):not([height]) {
   left:       0;
   right:      0;
   height:     3px;
-  background: var(--tc-color, var(--accent));
+  background: var(--tc-color, var(--primary));
   opacity:    0;
   transition: opacity var(--transition);
 }
@@ -1269,10 +1276,10 @@ svg:not([width]):not([height]) {
   border-color: rgba(99, 102, 241, .2);
 }
 
-.t-quote-icon     { color: var(--accent); opacity: .3; flex-shrink: 0; }
+.t-quote-icon     { color: var(--primary); opacity: .3; flex-shrink: 0; }
 .t-quote-icon svg { width: 28px; height: 28px; }
 .t-stars          { display: flex; gap: 3px; }
-.t-star           { color: #f59e0b; font-size: 13px; }
+.t-star           { color: var(--warning); font-size: 13px; }
 
 .t-text {
   font-size:   14px;
@@ -1295,13 +1302,13 @@ svg:not([width]):not([height]) {
   border-radius:   50%;
   object-fit:      cover;
   flex-shrink:     0;
-  background:      linear-gradient(135deg, var(--accent), var(--accent2));
+  background:      linear-gradient(135deg, var(--primary), var(--secondary));
   display:         flex;
   align-items:     center;
   justify-content: center;
   font-size:       15px;
   font-weight:     700;
-  color:           #fff;
+  color:           var(--white);
   font-family:     var(--font-mono);
 }
 .t-name     { font-size: 13.5px; font-weight: 600; color: var(--text); font-family: var(--font); }
@@ -1313,7 +1320,7 @@ svg:not([width]):not([height]) {
   right:         16px;
   font-size:     10px;
   font-weight:   700;
-  color:         var(--accent);
+  color:         var(--primary);
   background:    var(--accent-glow);
   padding:       3px 10px;
   border-radius: 100px;
@@ -1322,14 +1329,14 @@ svg:not([width]):not([height]) {
 }
 
 .testimonial-card.featured {
-  background:   linear-gradient(135deg, var(--accent), var(--accent2));
+  background:   linear-gradient(135deg, var(--primary), var(--secondary));
   border-color: transparent;
 }
 .testimonial-card.featured .t-text       { color: rgba(255, 255, 255, .85); font-style: normal; }
-.testimonial-card.featured .t-name       { color: #fff; }
+.testimonial-card.featured .t-name       { color: var(--white); }
 .testimonial-card.featured .t-location   { color: rgba(255, 255, 255, .6); }
 .testimonial-card.featured .t-quote-icon { color: rgba(255, 255, 255, .3); opacity: 1; }
-.testimonial-card.featured .t-star       { color: #fde68a; }
+.testimonial-card.featured .t-star       { color: var(--warning-tint); }
 
 /* ═══════════════════════════════════════════════════════════
    10. IMPACT NUMBERS
@@ -1461,8 +1468,8 @@ svg:not([width]):not([height]) {
   color:      var(--text3);
   transition: transform .35s ease;
 }
-.faq-item.open .faq-chevron     { background: var(--accent); border-color: var(--accent); }
-.faq-item.open .faq-chevron svg { transform: rotate(180deg); color: #fff; }
+.faq-item.open .faq-chevron     { background: var(--primary); border-color: var(--primary); }
+.faq-item.open .faq-chevron svg { transform: rotate(180deg); color: var(--white); }
 
 .faq-a {
   max-height: 0;
@@ -1534,7 +1541,7 @@ svg:not([width]):not([height]) {
 
 .team-info  { padding: 20px; }
 .team-name  { font-size: 15.5px; font-weight: 600; color: var(--text); font-family: var(--font); margin-bottom: 3px; }
-.team-role  { font-size: 12px; color: var(--accent); font-family: var(--font-mono); font-weight: 600; letter-spacing: .04em; margin-bottom: 10px; }
+.team-role  { font-size: 12px; color: var(--primary); font-family: var(--font-mono); font-weight: 600; letter-spacing: .04em; margin-bottom: 10px; }
 .team-bio   { font-size: 12.5px; color: var(--text3); line-height: 1.65; font-family: var(--font); font-weight: 300; }
 
 .team-avatar-placeholder {
@@ -1545,7 +1552,7 @@ svg:not([width]):not([height]) {
   justify-content: center;
   font-size:       56px;
   font-weight:     700;
-  color:           #fff;
+  color:           var(--white);
   font-family:     var(--font-mono);
 }
 
@@ -1557,7 +1564,7 @@ svg:not([width]):not([height]) {
   overflow:   hidden;
   padding:    120px 0;
   text-align: center;
-  background: linear-gradient(160deg, #07080f 0%, #0d0e1a 50%, #13141f 100%);
+  background: linear-gradient(160deg, var(--dark-bg-deep) 0%, var(--dark-bg) 50%, var(--dark-surface) 100%);
   contain:    layout;
 }
 .cta-section::before {
@@ -1587,11 +1594,11 @@ svg:not([width]):not([height]) {
   font-family:   var(--font-display);
   font-size:     clamp(2rem, 4.5vw, 3.2rem);
   font-weight:   700;
-  color:         #fff;
+  color:         var(--white);
   margin-bottom: 16px;
   line-height:   1.1;
 }
-.cta-title em { font-style: normal; color: #93c5fd; }
+.cta-title em { font-style: normal; color: var(--primary-tint); }
 
 .cta-sub {
   font-size:     15px;
@@ -1632,8 +1639,8 @@ svg:not([width]):not([height]) {
   width:           44px;
   height:          44px;
   border-radius:   50%;
-  background:      var(--accent);
-  color:           #fff;
+  background:      linear-gradient(135deg, var(--primary), var(--secondary));
+  color:           var(--white);
   border:          none;
   cursor:          pointer;
   display:         flex;
@@ -1657,7 +1664,7 @@ svg:not([width]):not([height]) {
    RESPONSIVE
 ═══════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
-  .hero-title    { font-size: clamp(2.2rem, 7vw, 3rem); }
+  .hero-title    { font-size: clamp(2.2rem, 3.5vw, 2.8rem); }
   .hero-desc     { font-size: 15px; }
   .hero-btns     { gap: 10px; }
   .hero-trust    { gap: 16px; }

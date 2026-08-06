@@ -199,10 +199,10 @@
                                       required>{{ old('message') }}</textarea>
                         </div>
 
-                        <button type="submit" class="btn btn-accent btn-block">
+                        <x-button variant="primary" type="submit">
                             <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                             Send Message
-                        </button>
+                        </x-button>
 
                         <p class="form-footer-note">
                             <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>

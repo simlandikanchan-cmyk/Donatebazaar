@@ -18,7 +18,7 @@ $hasResults = $total > 0;
                 <div class="search-form-wrap">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
                     <input type="text" name="q" class="search-input" placeholder="Search campaigns, blogs, events…" value="{{ old('q', $query) }}" autocomplete="off" autofocus>
-                    <button type="submit" class="btn btn-primary search-submit">Search</button>
+                    <x-button variant="primary" type="submit">Search</x-button>
                 </div>
             </form>
         </div>

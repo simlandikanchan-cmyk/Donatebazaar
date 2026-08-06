@@ -243,21 +243,21 @@
             </div>
           </div>
 
-          <div class="form-nav">
-            <button type="button" class="btn-back" id="btnBack" style="display:none;" onclick="changeStep(-1)">
+          <nav class="wizard-nav" id="wizardNav" aria-label="Campaign wizard navigation">
+            <button type="button" class="wizard-nav__btn wizard-nav__btn--back" id="btnBack" data-nav="back" aria-label="Go back to previous step">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
               Back
             </button>
-            <div style="flex:1;"></div>
-            <button type="button" class="btn-next" id="btnNext" onclick="changeStep(1)">
+            <div class="wizard-nav__spacer"></div>
+            <button type="button" class="wizard-nav__btn wizard-nav__btn--primary" id="btnNext" data-nav="next" aria-label="Continue to next step">
               Continue
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </button>
-            <button type="submit" class="btn-next" id="btnSubmit" style="display:none;">
+            <button type="submit" class="wizard-nav__btn wizard-nav__btn--primary" id="btnSubmit" data-nav="submit" aria-label="Submit campaign and complete KYC">
               Submit &amp; complete KYC
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             </button>
-          </div>
+          </nav>
 
         </div>
       </form>
@@ -291,110 +291,235 @@ var categoryProductsMap = {};
 </script>
 
 <script>
-var currentStep  = 1;
-var totalSteps   = 6;   /* KYC is now its own page — only 6 steps here */
-var productCount = 0;
-var updateCount  = 0;
+var WizardState = {
+  currentStep: 1,
+  totalSteps: 6,
+  isNavigating: false,
+  isSubmitting: false,
+  _boundHandlers: null,
 
-var stepMeta = {
-  1:{badge:'Step 1 of 6',heading:'Campaign basics',         sub:'Start with the essential information about your campaign.'},
-  2:{badge:'Step 2 of 6',heading:'Additional details',      sub:"Help donors understand where, when, and how you'll fundraise."},
-  3:{badge:'Step 3 of 6',heading:'Updates & documents',     sub:'At least one update with title & description is required.'},
-  4:{badge:'Step 4 of 6',heading:'Cover image',             sub:'A great image makes your campaign stand out and builds trust.'},
-  5:{badge:'Step 5 of 6',heading:'Fundraiser products',     sub:'Optional — add products donors can purchase to support your cause.'},
-  6:{badge:'Step 6 of 6',heading:'Review & submit',         sub:'Almost there — check everything, then submit to begin KYC.'},
+  stepMeta: {
+    1:{badge:'Step 1 of 6',heading:'Campaign basics',         sub:'Start with the essential information about your campaign.'},
+    2:{badge:'Step 2 of 6',heading:'Additional details',      sub:"Help donors understand where, when, and how you'll fundraise."},
+    3:{badge:'Step 3 of 6',heading:'Updates & documents',     sub:'At least one update with title & description is required.'},
+    4:{badge:'Step 4 of 6',heading:'Cover image',             sub:'A great image makes your campaign stand out and builds trust.'},
+    5:{badge:'Step 5 of 6',heading:'Fundraiser products',     sub:'Optional — add products donors can purchase to support your cause.'},
+    6:{badge:'Step 6 of 6',heading:'Review & submit',         sub:'Almost there — check everything, then submit to begin KYC.'},
+  },
+
+  progressMap: {1:'16.6%',2:'33.2%',3:'49.8%',4:'66.4%',5:'83%',6:'100%'},
+
+  els: {},
+
+  init: function(){
+    this.restoreStep();
+    this.cacheElements();
+    this.bindEvents();
+    this.applyStep();
+  },
+
+  cacheElements: function(){
+    this.els.btnBack    = document.getElementById('btnBack');
+    this.els.btnNext    = document.getElementById('btnNext');
+    this.els.btnSubmit  = document.getElementById('btnSubmit');
+    this.els.nav        = document.getElementById('wizardNav');
+    this.els.progressBar= document.getElementById('progressBar');
+    this.els.stepBadge  = document.getElementById('stepBadge');
+    this.els.stepHeading= document.getElementById('stepHeading');
+    this.els.stepSub    = document.getElementById('stepSub');
+    this.els.stepCounter= document.getElementById('stepCounter');
+  },
+
+  bindEvents: function(){
+    if (this._boundHandlers) return;
+    this._boundHandlers = true;
+
+    this.els.btnBack.addEventListener('click', this.goBack.bind(this));
+    this.els.btnNext.addEventListener('click', this.goNext.bind(this));
+
+    var form = document.getElementById('campaignForm');
+    form.addEventListener('submit', this.onFormSubmit.bind(this));
+  },
+
+  restoreStep: function(){
+    try {
+      var saved = sessionStorage.getItem('campaign_wizard_step');
+      if (saved !== null) {
+        var step = parseInt(saved, 10);
+        if (step >= 1 && step <= this.totalSteps) {
+          this.currentStep = step;
+        }
+      }
+    } catch(e) { /* sessionStorage unavailable */ }
+  },
+
+  persistStep: function(){
+    try {
+      sessionStorage.setItem('campaign_wizard_step', String(this.currentStep));
+    } catch(e) { /* sessionStorage unavailable */ }
+  },
+
+  applyStep: function(){
+    this.updateNav();
+    this.updateHeader();
+    this.updateDots(0, this.currentStep);
+    this.updateProgress();
+    this.updateStepCounter();
+  },
+
+  goBack: function(){
+    if (this.isNavigating || this.currentStep <= 1) return;
+    this.changeStep(-1);
+  },
+
+  goNext: function(){
+    if (this.isNavigating || this.currentStep >= this.totalSteps) return;
+    if (!this.validateStep(this.currentStep)) return;
+    this.changeStep(1);
+  },
+
+  changeStep: function(dir){
+    this.isNavigating = true;
+    var prev = this.currentStep;
+    this.currentStep = Math.max(1, Math.min(this.totalSteps, this.currentStep + dir));
+    this.persistStep();
+
+    document.getElementById('step-' + prev).classList.remove('active');
+    document.getElementById('step-' + this.currentStep).classList.add('active');
+
+    this.updateDots(prev, this.currentStep);
+    this.updateNav();
+    this.updateHeader();
+    this.updateProgress();
+    this.updateStepCounter();
+
+    if (this.currentStep === 6) populateReview();
+    if (this.currentStep === 5) renderSuggestions();
+
+    window.scrollTo({top:0, behavior:'smooth'});
+
+    var self = this;
+    requestAnimationFrame(function(){ self.isNavigating = false; });
+  },
+
+  updateNav: function(){
+    var s = this.currentStep;
+    var t = this.totalSteps;
+
+    this.els.btnBack.classList.toggle('wizard-nav__btn--hidden', s <= 1);
+    this.els.btnNext.classList.toggle('wizard-nav__btn--hidden', s >= t);
+    this.els.btnSubmit.classList.toggle('wizard-nav__btn--hidden', s !== t);
+
+    var spacer = this.els.nav.querySelector('.wizard-nav__spacer');
+    if (spacer) {
+      spacer.style.display = (s > 1 && s < t) ? '' : 'none';
+    }
+  },
+
+  updateHeader: function(){
+    var m = this.stepMeta[this.currentStep];
+    this.els.stepBadge.textContent   = m.badge;
+    this.els.stepHeading.textContent = m.heading;
+    this.els.stepSub.textContent     = m.sub;
+  },
+
+  updateDots: function(prev, current){
+    if (prev > 0) {
+      var pd=document.getElementById('dot-'+prev), pl=document.getElementById('label-'+prev), pi=document.getElementById('sitem-'+prev);
+      if(current>prev){
+        pd.classList.remove('active'); pd.classList.add('done');
+        pd.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;"><path d="M20 6L9 17l-5-5"/></svg>';
+        pl.classList.remove('active'); pl.classList.add('done'); pi.classList.remove('active');
+      } else {
+        pd.classList.remove('done','active'); pd.classList.add('active'); pd.textContent=prev;
+        pl.classList.remove('active','done'); pl.classList.add('active');
+      }
+    }
+    var cd=document.getElementById('dot-'+current), cl=document.getElementById('label-'+current);
+    cd.classList.remove('done'); cd.classList.add('active'); cd.textContent=current;
+    cl.classList.remove('done'); cl.classList.add('active');
+    document.getElementById('sitem-'+current).classList.add('active');
+  },
+
+  updateProgress: function(){
+    this.els.progressBar.style.width = this.progressMap[this.currentStep];
+  },
+
+  updateStepCounter: function(){
+    this.els.stepCounter.textContent = this.currentStep;
+  },
+
+  onFormSubmit: function(e){
+    if (this.isSubmitting) return;
+    this.isSubmitting = true;
+    this.els.btnSubmit.disabled = true;
+    this.els.btnSubmit.setAttribute('aria-busy','true');
+    this.els.btnSubmit.classList.add('wizard-nav__btn--loading');
+    var goal = document.getElementById('goalAmount');
+    if (goal) goal.value = goal.value.replace(/,/g,'');
+  },
+
+  validateStep: function(step){
+    if(step===1){
+      var title = document.querySelector('[name=title]').value.trim();
+      if(!title){ showToast('Please enter a campaign title.'); document.querySelector('[name=title]').focus(); return false; }
+      if(title.length < 5){ showToast('Campaign title must be at least 5 characters long.'); document.querySelector('[name=title]').focus(); return false; }
+      var goalRaw = document.getElementById('goalAmount').value.replace(/,/g, '').trim();
+      if(!goalRaw){ showToast('Please enter a goal amount.'); document.getElementById('goalAmount').focus(); return false; }
+      if(isNaN(parseFloat(goalRaw)) || parseFloat(goalRaw) <= 0){ showToast('Goal amount must be a valid number greater than 0.'); document.getElementById('goalAmount').focus(); return false; }
+      if(!document.querySelector('[name=category_id]').value){ showToast('Please select a category.'); document.querySelector('[name=category_id]').focus(); return false; }
+      var desc = document.querySelector('[name=description]').value.trim();
+      if(!desc){ showToast('Please enter a campaign description.'); document.querySelector('[name=description]').focus(); return false; }
+      if(desc.length < 20){ showToast('Description must be at least 20 characters long.'); document.querySelector('[name=description]').focus(); return false; }
+    }
+    if(step===3){
+      var entries=document.querySelectorAll('.update-entry');
+      if(entries.length===0){ showToast('Please add at least one update or document before continuing.'); return false; }
+      var hasValid=false;
+      for(var i=0;i<entries.length;i++){
+        var title=entries[i].querySelector('[data-ufield="title"]').value.trim();
+        var body=entries[i].querySelector('[data-ufield="body"]').value.trim();
+        if(title && body){ hasValid=true; }
+        if(body && !title){ showToast('Please enter a title for update #'+(i+1)+'.'); return false; }
+        if(title && !body){ showToast('Please enter a description for update #'+(i+1)+'.'); return false; }
+      }
+      if(!hasValid){ showToast('Each update needs both a title and a description.'); return false; }
+    }
+    if(step===4){
+      var coverInput=document.getElementById('coverInput');
+      if(!coverInput.files || coverInput.files.length===0){
+        document.getElementById('uploadZone').classList.add('required-error');
+        showToast('Please upload a cover image before continuing.');
+        return false;
+      }
+      if(coverInput.files[0].size > 2 * 1024 * 1024){
+        document.getElementById('uploadZone').classList.add('required-error');
+        showToast('Image size must be less than 2MB.');
+        coverInput.value = '';
+        document.getElementById('uploadPrompt').style.display = '';
+        document.getElementById('imagePreview').classList.remove('show');
+        return false;
+      }
+    }
+    if(step===5){
+      var items=document.querySelectorAll('.product-item');
+      for(var i=0;i<items.length;i++){
+        var item=items[i];
+        var name=item.querySelector('[data-field="name"]').value.trim();
+        var price=item.querySelector('[data-field="price"]').value.trim();
+        var qty=item.querySelector('[data-field="stock"]').value.trim();
+        if(name && !price){showToast('Enter a price for "'+name+'".'); return false;}
+        if(name && !qty)  {showToast('Enter a quantity for "'+name+'".'); return false;}
+        if(price && !name){showToast('Enter a name for the product with price ₹'+price+'.'); return false;}
+      }
+    }
+    return true;
+  }
 };
-var progressMap = {1:'16.6%',2:'33.2%',3:'49.8%',4:'66.4%',5:'83%',6:'100%'};
 
-function changeStep(dir){
-  if(dir===1 && !validateStep(currentStep)) return;
-  var prev = currentStep;
-  currentStep = Math.max(1, Math.min(totalSteps, currentStep+dir));
-  if(currentStep===6) populateReview();
-  if(currentStep===5) renderSuggestions();
-
-  document.getElementById('step-'+prev).classList.remove('active');
-  document.getElementById('step-'+currentStep).classList.add('active');
-  updateDots(prev, currentStep);
-  updateNav();
-  updateHeader();
-  document.getElementById('progressBar').style.width = progressMap[currentStep];
-  document.getElementById('stepCounter').textContent = currentStep;
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-function updateHeader(){
-  var m = stepMeta[currentStep];
-  document.getElementById('stepBadge').textContent   = m.badge;
-  document.getElementById('stepHeading').textContent = m.heading;
-  document.getElementById('stepSub').textContent     = m.sub;
-}
-
-function updateDots(prev, current){
-  var pd=document.getElementById('dot-'+prev), pl=document.getElementById('label-'+prev), pi=document.getElementById('sitem-'+prev);
-  if(current>prev){
-    pd.classList.remove('active'); pd.classList.add('done');
-    pd.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;"><path d="M20 6L9 17l-5-5"/></svg>';
-    pl.classList.remove('active'); pl.classList.add('done'); pi.classList.remove('active');
-  } else {
-    pd.classList.remove('done','active'); pd.classList.add('active'); pd.textContent=prev;
-    pl.classList.remove('active','done'); pl.classList.add('active');
-  }
-  var cd=document.getElementById('dot-'+current), cl=document.getElementById('label-'+current);
-  cd.classList.remove('done'); cd.classList.add('active'); cd.textContent=current;
-  cl.classList.remove('done'); cl.classList.add('active');
-  document.getElementById('sitem-'+current).classList.add('active');
-}
-
-function updateNav(){
-  document.getElementById('btnBack').style.display   = currentStep>1?'inline-flex':'none';
-  document.getElementById('btnNext').style.display   = currentStep<totalSteps?'inline-flex':'none';
-  document.getElementById('btnSubmit').style.display = currentStep===totalSteps?'inline-flex':'none';
-}
-
-/* ── VALIDATION ── */
-function validateStep(step){
-  if(step===1){
-    if(!document.querySelector('[name=title]').value.trim())       {showToast('Please enter a campaign title.'); return false;}
-    if(!document.getElementById('goalAmount').value.trim())        {showToast('Please enter a goal amount.'); return false;}
-    if(!document.querySelector('[name=category_id]').value)        {showToast('Please select a category.'); return false;}
-    if(!document.querySelector('[name=description]').value.trim()) {showToast('Please enter a campaign description.'); return false;}
-  }
-  if(step===3){
-    var entries=document.querySelectorAll('.update-entry');
-    if(entries.length===0){ showToast('Please add at least one update or document before continuing.'); return false; }
-    var hasValid=false;
-    for(var i=0;i<entries.length;i++){
-      var title=entries[i].querySelector('[data-ufield="title"]').value.trim();
-      var body=entries[i].querySelector('[data-ufield="body"]').value.trim();
-      if(title && body){ hasValid=true; }
-      if(body && !title){ showToast('Please enter a title for update #'+(i+1)+'.'); return false; }
-      if(title && !body){ showToast('Please enter a description for update #'+(i+1)+'.'); return false; }
-    }
-    if(!hasValid){ showToast('Each update needs both a title and a description.'); return false; }
-  }
-  if(step===4){
-    var coverInput=document.getElementById('coverInput');
-    if(!coverInput.files || coverInput.files.length===0){
-      document.getElementById('uploadZone').classList.add('required-error');
-      showToast('Please upload a cover image before continuing.');
-      return false;
-    }
-  }
-  if(step===5){
-    var items=document.querySelectorAll('.product-item');
-    for(var i=0;i<items.length;i++){
-      var item=items[i];
-      var name=item.querySelector('[data-field="name"]').value.trim();
-      var price=item.querySelector('[data-field="price"]').value.trim();
-      var qty=item.querySelector('[data-field="stock"]').value.trim();
-      if(name && !price){showToast('Enter a price for "'+name+'".'); return false;}
-      if(name && !qty)  {showToast('Enter a quantity for "'+name+'".'); return false;}
-      if(price && !name){showToast('Enter a name for the product with price ₹'+price+'.'); return false;}
-    }
-  }
-  return true;
-}
+document.addEventListener('DOMContentLoaded', function(){
+  WizardState.init();
+});
 
 /* ── TOAST ── */
 function showToast(html, type, duration){
@@ -414,6 +539,7 @@ document.getElementById('campaignForm').addEventListener('submit', function(){
 });
 
 /* ── UPDATES ── */
+var updateCount = 0;
 document.getElementById('addUpdateBtn').addEventListener('click',function(){addUpdate();});
 function addUpdate(){
   updateCount++;
@@ -452,6 +578,7 @@ function showDocName(id,input){
 }
 
 /* ── PRODUCTS ── */
+var productCount = 0;
 function renderSuggestions(){
   var wrap=document.getElementById('suggestionsWrap');
   wrap.innerHTML='';

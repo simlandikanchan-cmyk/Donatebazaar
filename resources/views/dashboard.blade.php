@@ -73,20 +73,20 @@
         </div>
     </div>
     <div class="wb-right">
-        <a href="{{ route('campaign.create') }}" class="wb-btn wb-btn-primary">
+        <x-button variant="primary" href="{{ route('campaign.create') }}" class="wb-btn wb-btn-primary">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
             New Campaign
-        </a>
+        </x-button>
         @if(!$kyc || $kyc->status !== 'approved')
-        <a href="{{ url('/user/kyc') }}" class="wb-btn wb-btn-yellow">
+        <x-button variant="primary" href="{{ url('/user/kyc') }}" class="wb-btn wb-btn-yellow">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
             {{ $kyc ? 'KYC '.ucfirst($kyc->status) : 'Submit KYC' }}
-        </a>
+        </x-button>
         @endif
-        <a href="{{ route('profile.show') }}" class="wb-btn wb-btn-ghost">
+        <x-button variant="primary" href="{{ route('profile.show') }}" class="wb-btn wb-btn-ghost">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
             My Profile
-        </a>
+        </x-button>
     </div>
 </div>
 
@@ -509,10 +509,10 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
                     <span>{{ $blog->created_at->diffForHumans() }}</span>
                 </div>
             </div>
-            <a href="{{ url('/user/dashboard/blogs') }}" class="btn btn-secondary" style="flex-shrink:0;">
+            <x-button variant="secondary" href="{{ url('/user/dashboard/blogs') }}">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                 View
-            </a>
+            </x-button>
         </div>
         @endforeach
     </div>
@@ -548,13 +548,10 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
             <option value="rejected">Rejected ({{ $countRejected }})</option>
             <option value="expired">Expired ({{ $countExpired }})</option>
         </select>
-        <div class="view-toggle">
-            <button class="vt-btn on" id="btnGrid" title="Grid view">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-            </button>
-            <button class="vt-btn" id="btnList" title="List view">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-            </button>
+        <select class="view-select" id="viewSelect">
+                <option value="grid">Grid View</option>
+                <option value="list">List View</option>
+            </select>
         </div>
     </div>
 </div>
@@ -665,37 +662,37 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
             </div>
 
             <div class="c-actions">
-                <a href="{{ route('campaign.show', $campaign->id) }}" class="btn btn-secondary">
+                <x-button variant="secondary" href="{{ route('campaign.show', $campaign->id) }}" class="btn btn-secondary">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                     View
-                </a>
-                <a href="{{ route('campaign.edit', $campaign->id) }}" class="btn btn-secondary">
+                </x-button>
+                <x-button variant="secondary" href="{{ route('campaign.edit', $campaign->id) }}" class="btn btn-secondary">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                     Edit
-                </a>
+                </x-button>
                 @if($fv === 'active')
                 <form action="{{ route('campaign.pause', $campaign->id) }}" method="POST" onsubmit="return handleSub(this,'Pausing…')">
                     @csrf
-                    <button class="btn btn-secondary">
+                     <x-button variant="secondary" type="submit">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         Pause
-                    </button>
+                    </x-button>
                 </form>
                 @elseif($fv === 'paused')
                 <form action="{{ route('campaign.resume', $campaign->id) }}" method="POST" onsubmit="return handleSub(this,'Resuming…')">
                     @csrf
-                    <button class="btn btn-secondary">
+                    <x-button variant="secondary" type="submit">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         Resume
-                    </button>
+                    </x-button>
                 </form>
                 @elseif($fv === 'rejected')
                 <form action="{{ route('campaign.resubmit', $campaign->id) }}" method="POST" onsubmit="return handleSub(this,'Resubmitting…')">
                     @csrf
-                    <button class="btn btn-secondary">
+                    <x-button variant="secondary" type="submit">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                         Resubmit
-                    </button>
+                    </x-button>
                 </form>
                 @endif
             </div>
@@ -774,25 +771,25 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
             @endif
         </div>
         <div class="c-list-actions">
-            <a href="{{ route('campaign.show', $campaign->id) }}" class="btn btn-secondary">
+            <x-button variant="secondary" href="{{ route('campaign.show', $campaign->id) }}" class="btn btn-secondary">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>View
-            </a>
-            <a href="{{ route('campaign.edit', $campaign->id) }}" class="btn btn-secondary">
+            </x-button>
+            <x-button variant="secondary" href="{{ route('campaign.edit', $campaign->id) }}" class="btn btn-secondary">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>Edit
-            </a>
+            </x-button>
             @if($fv === 'active')
             <form action="{{ route('campaign.pause', $campaign->id) }}" method="POST" onsubmit="return handleSub(this,'…')">
                 @csrf
-                <button class="btn btn-secondary">
+                <x-button variant="secondary" type="submit">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Pause
-                </button>
+                </x-button>
             </form>
             @elseif($fv === 'paused')
             <form action="{{ route('campaign.resume', $campaign->id) }}" method="POST" onsubmit="return handleSub(this,'…')">
                 @csrf
-                <button class="btn btn-secondary">
+                <x-button variant="secondary" type="submit">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Resume
-                </button>
+                </x-button>
             </form>
             @endif
         </div>
@@ -813,10 +810,10 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
     </div>
     <div class="empty-title">Start your first fundraiser</div>
     <div class="empty-sub">Create a campaign and start making a difference in the world today.</div>
-    <a href="{{ route('campaign.create') }}" class="btn btn-primary">
+    <x-button variant="primary" href="{{ route('campaign.create') }}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
         Create Campaign
-    </a>
+    </x-button>
 </div>
 @endif
 
@@ -842,23 +839,23 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
             <span class="rec-amt-val">₹{{ number_format($rd->amount) }}/{{ $rd->frequency }}</span>
         </div>
         <div class="rec-actions">
-            <a href="{{ route('recurring.show', $rd->id) }}" class="btn btn-secondary">
+            <x-button variant="secondary" href="{{ route('recurring.show', $rd->id) }}" class="btn btn-secondary">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                 View
-            </a>
+            </x-button>
             @if($rd->status === 'active')
             <form action="{{ route('recurring.pause', $rd->id) }}" method="POST">
                 @csrf @method('PATCH')
-                <button class="btn btn-secondary">
+                <x-button variant="secondary" type="submit">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6"/></svg>Pause
-                </button>
+                </x-button>
             </form>
             @elseif($rd->status === 'paused')
             <form action="{{ route('recurring.resume', $rd->id) }}" method="POST">
                 @csrf @method('PATCH')
-                <button class="btn btn-green">
+                <x-button variant="primary" type="submit">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/></svg>Resume
-                </button>
+                </x-button>
             </form>
             @endif
         </div>
@@ -1006,19 +1003,18 @@ if (mobileSort) mobileSort.addEventListener('change', function(){
 
 var grid    = document.getElementById('campaignGrid');
 var list    = document.getElementById('campaignList');
-var btnGrid = document.getElementById('btnGrid');
-var btnList = document.getElementById('btnList');
+var viewSelect = document.getElementById('viewSelect');
 
-btnGrid.addEventListener('click', function(){
-    grid.style.display = ''; list.style.display = 'none';
-    btnGrid.classList.add('on'); btnList.classList.remove('on');
-    applyFilters();
-});
-btnList.addEventListener('click', function(){
-    grid.style.display = 'none'; list.style.display = '';
-    btnList.classList.add('on'); btnGrid.classList.remove('on');
-    applyFilters();
-});
+if (viewSelect) {
+    viewSelect.addEventListener('change', function(){
+        if (this.value === 'grid') {
+            grid.style.display = ''; list.style.display = 'none';
+        } else {
+            grid.style.display = 'none'; list.style.display = '';
+        }
+        applyFilters();
+    });
+}
 
 window.handleSub = function(form, txt){
     form.querySelectorAll('button[type=submit]').forEach(function(b){ b.disabled = true; b.textContent = txt; });

@@ -315,9 +315,9 @@
 
     {{-- SUBMIT --}}
     <div class="form-nav">
-        <button type="submit" class="btn-submit">
+        <x-button variant="primary" type="submit">
             Submit Partnership Request
-        </button>
+        </x-button>
     </div>
 
 </div>
@@ -523,7 +523,7 @@ if (form) {
 
         submitBtn.disabled = true;
         submitBtn.innerHTML =
-            '<div class="btn-spinner"></div>' +
+            '<div class="spinner"></div>' +
             '<span>Submitting…</span>';
 
         toast({

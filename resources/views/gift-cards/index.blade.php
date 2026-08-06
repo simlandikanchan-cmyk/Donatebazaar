@@ -74,7 +74,6 @@
 
 /* ── Buy button ── */
 .gc-buy-wrap{padding-top:12px;}
-.gc-buy-btn{width:100%;padding:14px;border:none;border-radius:12px;font-family:var(--font-mono);font-size:14px;font-weight:600;color:#fff;cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 4px 18px var(--accent-glow);transition:opacity var(--tr),transform var(--tr),box-shadow var(--tr);}
 .gc-buy-btn:hover:not(:disabled){opacity:0.92;transform:translateY(-1px);box-shadow:0 8px 26px var(--accent-glow);}
 .gc-buy-btn:disabled{cursor:not-allowed;opacity:0.75;}
 
@@ -165,9 +164,9 @@
                 </div>
                 <div class="gc-amt-pills" id="amtPills">
                     @foreach([100,250,500,1000,2000,5000,10000,20000] as $a)
-                    <button onclick="setAmt({{ $a }}, this)" class="gc-amt-pill {{ $a===500 ? 'active' : '' }}">
+                    <x-button variant="secondary" type="button" class="gc-amt-pill {{ $a===500 ? 'active' : '' }}" onclick="setAmt({{ $a }}, this)">
                         ₹{{ number_format($a) }}
-                    </button>
+                    </x-button>
                     @endforeach
                 </div>
                 <div class="gc-custom-row">
@@ -252,9 +251,9 @@
 
     {{-- Buy button --}}
     <div class="gc-buy-wrap">
-        <button id="buyBtn" onclick="initiatePurchase()" class="gc-buy-btn">
+        <x-button variant="secondary" type="button">
             Purchase &amp; Send Gift Card — ₹<span id="btnAmt">500</span>
-        </button>
+        </x-button>
     </div>
 
     {{-- Mobile redeem link --}}

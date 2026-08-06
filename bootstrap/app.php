@@ -2,6 +2,8 @@
 
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\CheckAccountStatus;
+use App\Http\Middleware\SecureHeadersMiddleware;
+use App\Http\Middleware\TrackPageLoad;
 use App\Http\Middleware\WebpImageMiddleware;
 use App\Providers\RiskServiceProvider;  // ← ADD THIS LINE
 use Illuminate\Foundation\Application;
@@ -23,11 +25,13 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->web(append: [
             WebpImageMiddleware::class,
+            SecureHeadersMiddleware::class,
+            TrackPageLoad::class,
         ]);
 
         $middleware->trustProxies(at: '*');
     })
-    ->withProviders([  // ← ADD THIS ENTIRE BLOCK
+    ->withProviders([
         RiskServiceProvider::class,
     ])
     ->withExceptions(function (Exceptions $exceptions) {

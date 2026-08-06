@@ -1,40 +1,13 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
+
+@push('page_css')
+@vite('resources/css/admin/entries/misc.css')
+@endpush
+
 
 @section('sidebar_legal', 'active')
 @section('page_title', 'Legal Pages')
 @section('page_subtitle', 'Manage Privacy, Terms, Refund & Cookie policies')
-
-@push('page_styles')
-<style>
-.main-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;}
-.card-head{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--border);background:var(--surface2);}
-.card-head-icon{width:30px;height:30px;border-radius:8px;background:var(--a-lt);color:var(--a);display:flex;align-items:center;justify-content:center;}
-.card-head-icon svg{width:14px;height:14px;}
-.card-head-title{font-size:11.5px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.09em;font-family:var(--mono);}
-.card-head-count{font-size:10.5px;color:var(--text3);font-family:var(--mono);background:var(--surface);border:1px solid var(--border2);padding:2px 8px;border-radius:100px;}
-.table-wrap{overflow-x:auto;}
-table{width:100%;border-collapse:collapse;}
-thead th{padding:10px 18px;text-align:left;font-size:10px;font-family:var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--text3);background:var(--surface2);border-bottom:1px solid var(--border);font-weight:500;white-space:nowrap;}
-thead th:last-child{text-align:right;}
-tbody tr{border-bottom:1px solid var(--border);transition:background var(--ease);}
-tbody tr:last-child{border-bottom:none;}
-tbody tr:hover{background:var(--surface2);}
-td{padding:14px 18px;font-size:13px;vertical-align:middle;}
-.legal-name{font-weight:600;color:var(--text);font-size:13.5px;}
-.legal-sub{font-size:11.5px;color:var(--text3);font-family:var(--mono);margin-top:2px;}
-.legal-meta{font-size:12px;color:var(--text3);}
-.status-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:100px;font-size:10.5px;font-weight:600;font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;}
-.s-active{background:rgba(5,196,138,.12);color:var(--green);border:1px solid rgba(5,196,138,.22);}
-.s-inactive{background:rgba(100,116,139,.08);color:var(--text3);border:1px solid var(--border2);}
-.actions{display:flex;align-items:center;justify-content:flex-end;gap:5px;}
-.act-btn{display:inline-flex;align-items:center;gap:4px;padding:5px 11px;border-radius:7px;font-size:11.5px;font-weight:500;text-decoration:none;border:1px solid transparent;transition:all .15s;cursor:pointer;font-family:var(--font);white-space:nowrap;}
-.act-btn svg{width:11px;height:11px;}
-.act-edit{background:var(--blue-lt);color:var(--blue);border-color:rgba(59,130,246,.18);}
-.act-edit:hover{background:var(--blue);color:#fff;transform:translateY(-1px);}
-.act-view{background:var(--surface2);color:var(--text2);border-color:var(--border2);}
-.act-view:hover{border-color:var(--a);color:var(--a);background:var(--a-lt);}
-</style>
-@endpush
 
 @section('content')
 <div class="main-card">

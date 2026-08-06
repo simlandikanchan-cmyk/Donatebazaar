@@ -19,7 +19,6 @@
 .vol-empty{background:#fff;border:1px solid rgba(20,20,40,.10);border-radius:16px;padding:40px;text-align:center;color:#6b7188;}
 .vol-act{display:flex;gap:6px;}
 .vol-act form{display:inline;}
-.vbtn{display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border:none;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;transition:transform .15s,box-shadow .15s;text-decoration:none;font-family:inherit;}
 .vbtn:hover{transform:translateY(-1px);}
 .vbtn-approve{background:#dcfce7;color:#15803d;}
 .vbtn-approve:hover{box-shadow:0 3px 10px rgba(21,128,61,.25);}
@@ -52,12 +51,12 @@
                   <form method="POST" action="{{ route('admin.volunteer.status', $app->id) }}">
                     @csrf
                     <input type="hidden" name="status" value="approved">
-                    <button type="submit" class="btn btn-green vbtn vbtn-approve">&#10003; Approve</button>
+                    <x-button variant="primary" type="submit" class="vbtn vbtn-approve">&#10003; Approve</x-button>
                   </form>
                   <form method="POST" action="{{ route('admin.volunteer.status', $app->id) }}">
                     @csrf
                     <input type="hidden" name="status" value="rejected">
-                    <button type="submit" class="btn btn-red vbtn vbtn-reject">&#10007; Reject</button>
+                    <x-button variant="destructive" type="submit" class="vbtn">&#10007; Reject</x-button>
                   </form>
                 </div>
               @else

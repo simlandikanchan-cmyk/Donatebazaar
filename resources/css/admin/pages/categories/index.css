@@ -1,0 +1,20 @@
+/* ══════════════════════════════════════
+   ADMIN — Pages: Categories index
+   ══════════════════════════════════════ */
+
+/* ── TABLE ROW (used as <tr> inside .table-wrap) ── */
+.table-wrap tr.cat-row{display:table-row;padding:0;border:0;border-radius:0;background:transparent;gap:0;box-shadow:none;}
+.table-wrap tr.cat-row:hover{border-color:transparent;box-shadow:none;}
+.table-wrap tr.cat-row.row-selected{background:var(--a-lt);box-shadow:none;}
+
+/* ── ICON BOX (table view) ── */
+.cat-icon-box{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:9px;background:var(--surface2);border:1px solid var(--border);flex-shrink:0;font-size:16px;overflow:hidden;}
+.cat-icon-box img{width:100%;height:100%;object-fit:cover;}
+.cat-icon-box svg{width:16px;height:16px;color:var(--text3);}
+
+/* ── GRID VIEW TOGGLES (cat-toggle / cat-toggle-txt) ──
+   Grid card layout (.cat-grid / .cat-grid-item / .grid-icon-box /
+   .grid-check) is defined in index-grid.css ─ no duplicates here. ── */
+.cat-toggle{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:var(--r-xs);font-size:11px;font-weight:600;font-family:var(--mono);border:1px solid var(--border2);background:var(--surface2);color:var(--text2);cursor:pointer;transition:all var(--ease);}
+.cat-toggle:hover{background:var(--surface3);}
+.cat-toggle-txt{font-size:11px;color:var(--text3);}

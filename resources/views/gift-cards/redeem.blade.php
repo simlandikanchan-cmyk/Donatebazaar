@@ -37,7 +37,6 @@
 .gr-code-row{display:flex;gap:10px;}
 .gr-code-input{flex:1;height:48px;border-radius:9px;border:1.5px solid var(--border2);padding:0 14px;font-size:16px;font-family:var(--font-mono);letter-spacing:.08em;text-transform:uppercase;outline:none;background:var(--surface2);color:var(--text);transition:border-color var(--tr),box-shadow var(--tr);}
 .gr-code-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow);}
-.gr-code-btn{padding:0 22px;height:48px;background:var(--accent);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;transition:opacity var(--tr);}
 .gr-code-btn:hover{opacity:.9;}
 .gr-code-btn:disabled{opacity:.6;cursor:not-allowed;}
 .gr-code-hint{font-size:11px;color:var(--text3);margin-top:8px;}
@@ -122,7 +121,6 @@
     .gr-camp-grid{grid-template-columns:1fr;max-height:none;gap:8px;}
     .gr-card{padding:14px;}
     .gr-code-row{flex-direction:column;gap:8px;}
-    .gr-code-btn{height:44px;}
     .hiw-grid{grid-template-columns:1fr;gap:0;}
     .hiw-item{text-align:left;display:flex;align-items:flex-start;gap:12px;padding:12px 4px;}
     .hiw-icon{margin:0;flex-shrink:0;}
@@ -181,7 +179,7 @@
                     <div class="gr-card-step"><span class="s-num">1</span>Gift card code</div>
                     <div class="gr-code-row">
                         <input type="text" id="giftCode" placeholder="DNBZ-XXXX-XXXX" maxlength="14" class="gr-code-input" autocomplete="off" inputmode="text">
-                        <button type="button" onclick="checkCode()" id="checkBtn" class="gr-code-btn">Check</button>
+                        <x-button variant="primary" type="button" class="gr-code-btn">Check</x-button>
                     </div>
                     <p class="gr-code-hint">Format: XXXX-XXXX-XXXX &mdash; we'll check it automatically once complete.</p>
                     <div id="codeStatus" class="gr-status" role="status" aria-live="polite"></div>
@@ -255,8 +253,8 @@
                 </div>
 
                 <div class="gr-step-actions">
-                    <button type="button" class="gr-btn-secondary" onclick="gotoStep(1)">Back</button>
-                    <button type="button" class="gr-btn-primary" id="step2NextBtn" disabled onclick="gotoStep(3)">Continue</button>
+                    <x-button variant="primary" type="button" class="gr-btn-secondary">Back</x-button>
+                    <x-button variant="primary" type="button">Continue</x-button>
                 </div>
             </section>
 
@@ -277,8 +275,8 @@
                 </div>
 
                 <div class="gr-step-actions">
-                    <button type="button" class="gr-btn-secondary" onclick="gotoStep(2)">Back</button>
-                    <button type="button" class="gr-btn-primary" onclick="tryGotoReview()">Review donation</button>
+                    <x-button variant="primary" type="button" class="gr-btn-secondary">Back</x-button>
+                    <x-button variant="primary" type="button">Review donation</x-button>
                 </div>
             </section>
 
@@ -302,7 +300,7 @@
                     <div class="gr-review-row">
                         <span class="gr-review-label">Donor name</span>
                         <span class="gr-review-value" id="reviewName"></span>
-                        <button type="button" class="btn btn-secondary gr-review-change" onclick="gotoStep(3)">Change</button>
+                        <x-button variant="secondary" type="button" class="gr-review-change">Change</x-button>
                     </div>
                     <div class="gr-review-row">
                         <span class="gr-review-label">Donor email</span>
@@ -316,8 +314,8 @@
                 </div>
 
                 <div class="gr-step-actions">
-                    <button type="button" class="gr-btn-secondary" onclick="gotoStep(3)">Back</button>
-                    <button type="submit" id="redeemBtn" class="gr-btn-primary">Redeem Gift Card &amp; Donate</button>
+                    <x-button variant="primary" type="button" class="gr-btn-secondary">Back</x-button>
+                    <x-button variant="primary" type="submit">Redeem Gift Card &amp; Donate</x-button>
                 </div>
             </section>
 

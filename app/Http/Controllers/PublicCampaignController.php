@@ -5,36 +5,87 @@ namespace App\Http\Controllers;
 use App\Models\Campaign;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Contracts\Cache\Store;
 
 class PublicCampaignController extends Controller
 {
     public function show($category, $slug)
     {
-        $campaign = Campaign::with([
-            'category',
-            'user',
-            'donations' => function ($q) {
-                $q->where('payment_status', 'completed')
-                    ->latest()
-                    ->take(10);
-            },
-            'donations.user',
-            'products' => function ($q) {
-                $q->where('is_active', 1)->where('approval_status', 'approved');
-            },
-            'products.categoryProduct',
-            'products.reservations',
-            'updates',
-            'followers' => fn ($q) => $q->take(100),
-        ])
-            ->withSum('donations', 'total_amount')
-            ->withCount('followers')
-            ->where('slug', $slug)
-            ->where(function ($q) use ($category) {
-                $q->whereHas('category', fn ($q) => $q->where('slug', $category))
-                    ->orWhereNull('category_id');
-            })
-            ->firstOrFail();
+        $cacheKey = "campaign:show:{$category}:{$slug}:" . (auth()->id() ?? 'guest');
+        $tags = ["campaign:{$slug}"];
+
+        try {
+            $campaign = Cache::tags($tags)->remember($cacheKey, 300, function () use ($category, $slug) {
+                return Campaign::with([
+                    'category',
+                    'user',
+                    'donations' => function ($q) {
+                        $q->where('payment_status', 'completed')
+                            ->latest()
+                            ->take(10);
+                    },
+                    'donations.user',
+                    'products' => function ($q) {
+                        $q->where('is_active', 1)->where('approval_status', 'approved');
+                    },
+                    'products.categoryProduct',
+                    'products.reservations',
+                    'updates',
+                    'followers' => fn ($q) => $q->take(100),
+                    'events' => function ($q) {
+                        $q->where('status', 'active')
+                            ->where('show_on_campaign', true)
+                            ->where('event_date', '>=', now()->toDateString())
+                            ->orderBy('event_date')
+                            ->take(6);
+                    },
+                ])
+                    ->withSum('donations', 'total_amount')
+                    ->withCount('followers')
+                    ->where('slug', $slug)
+                    ->where(function ($q) use ($category) {
+                        $q->whereHas('category', fn ($q) => $q->where('slug', $category))
+                            ->orWhereNull('category_id');
+                    })
+                    ->firstOrFail();
+            });
+        } catch (\Throwable $e) {
+            $campaign = Cache::remember($cacheKey, 300, function () use ($category, $slug) {
+                return Campaign::with([
+                    'category',
+                    'user',
+                    'donations' => function ($q) {
+                        $q->where('payment_status', 'completed')
+                            ->latest()
+                            ->take(10);
+                    },
+                    'donations.user',
+                    'products' => function ($q) {
+                        $q->where('is_active', 1)->where('approval_status', 'approved');
+                    },
+                    'products.categoryProduct',
+                    'products.reservations',
+                    'updates',
+                    'followers' => fn ($q) => $q->take(100),
+                    'events' => function ($q) {
+                        $q->where('status', 'active')
+                            ->where('show_on_campaign', true)
+                            ->where('event_date', '>=', now()->toDateString())
+                            ->orderBy('event_date')
+                            ->take(6);
+                    },
+                ])
+                    ->withSum('donations', 'total_amount')
+                    ->withCount('followers')
+                    ->where('slug', $slug)
+                    ->where(function ($q) use ($category) {
+                        $q->whereHas('category', fn ($q) => $q->where('slug', $category))
+                            ->orWhereNull('category_id');
+                    })
+                    ->firstOrFail();
+            });
+        }
 
         $moneyRaised = (float) $campaign->donations
             ->where('donation_type', 'money')
@@ -63,9 +114,9 @@ class PublicCampaignController extends Controller
             $campaign->end_date &&
             Carbon::parse($campaign->end_date)->endOfDay()->isPast()
         ) {
-            // Update DB so next request is instant
             $campaign->update(['campaign_state' => 'expired']);
             $campaign->campaign_state = 'expired';
+            Cache::forget($cacheKey);
         }
 
         /*

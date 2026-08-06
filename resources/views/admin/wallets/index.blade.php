@@ -1,4 +1,9 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
+
+@push('page_css')
+@vite('resources/css/admin/entries/finance.css')
+@endpush
+
 
 @section('sidebar_wallets', 'active')
 @section('page_title', 'Wallets')

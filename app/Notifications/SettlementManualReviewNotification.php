@@ -54,3 +54,4 @@ class SettlementManualReviewNotification extends Notification implements ShouldQ
         ];
     }
 }
+

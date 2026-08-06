@@ -1,202 +1,98 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
+
+@push('page_css')
+@vite('resources/css/admin/entries/blogs.css')
+@endpush
+
 
 @section('sidebar_blogs', 'active')
 @section('page_title', 'Blog Posts')
-@section('page_subtitle', 'Manage and review')
+@section('page_subtitle', 'Manage and review blog content')
 
 @section('topbar_left')
 <div class="search-wrap">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-  <input class="search-input" id="searchInput" type="text" placeholder="Search blogs…" autocomplete="off">
+  <svg class="si" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+  <input class="search-input" id="searchInput" type="text" name="search" placeholder="Search blogs…" value="{{ request('search') }}" autocomplete="off">
+  @if(request('search'))
+  <a href="{{ route('admin.blogs.index', request()->except(['search','page'])) }}" class="search-clear" aria-label="Clear search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </a>
+  @endif
 </div>
-<button class="tb-btn" title="Notifications">
+<x-button variant="primary" type="button" class="tb-btn">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
   <span class="notif-dot"></span>
-</button>
-<a href="{{ route('admin.blogs.create') }}" class="btn-create">
+</x-button>
+<x-button variant="primary" href="{{ route('admin.blogs.create') }}">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
   New Post
-</a>
+</x-button>
 @endsection
 
-@push('page_styles')
-<style>
-/* ── index page-specific ── */
-.search-wrap{position:relative;width:230px;}
-.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:13px;height:13px;color:var(--text3);pointer-events:none;}
-.search-input{width:100%;height:36px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:0 12px 0 32px;font-size:12px;color:var(--text);font-family:var(--font);outline:none;transition:border-color var(--ease),box-shadow var(--ease);}
-.search-input::placeholder{color:var(--text3);}
-.search-input:focus{border-color:var(--a);box-shadow:0 0 0 3px var(--a-glow);}
-.btn-create{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 16px;background:var(--a);color:#fff;border-radius:var(--r-sm);font-size:12.5px;font-weight:600;border:none;transition:opacity var(--ease),box-shadow var(--ease);font-family:var(--font);text-decoration:none;white-space:nowrap;}
-.btn-create:hover{opacity:.88;box-shadow:0 4px 14px rgba(37,99,235,.35);}
-.btn-create svg{width:13px;height:13px;}
-.sort-select{height:34px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--r-xs);padding:0 28px 0 10px;font-size:11.5px;color:var(--text2);font-family:var(--font);outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%239096b4' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;transition:border-color var(--ease);}
-.sort-select:focus{border-color:var(--a);}
-.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;box-shadow:var(--sh);display:flex;align-items:center;gap:14px;transition:transform var(--ease),box-shadow var(--ease);animation:fadeUp .4s ease both;}
-.stat-card:hover{transform:translateY(-2px);box-shadow:var(--sh-md);}
-.stat-card:nth-child(1){animation-delay:.05s}.stat-card:nth-child(2){animation-delay:.10s}.stat-card:nth-child(3){animation-delay:.15s}.stat-card:nth-child(4){animation-delay:.20s}
-.si-red{background:var(--red-lt);color:var(--red);}
-.sv-blue{color:var(--blue);}.sv-amber{color:var(--amber);}.sv-green{color:var(--green);}.sv-red{color:var(--red);}
-.stat-num{font-family:var(--mono);font-size:1.9rem;font-weight:800;line-height:1;letter-spacing:-.03em;}
-.stat-name{font-size:10px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.07em;margin-top:3px;}
-.flash-success{background:var(--green-lt);border:1px solid rgba(5,196,138,.25);color:#065f46;padding:11px 14px;border-radius:var(--r-sm);font-size:13px;font-weight:500;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
-[data-theme="dark"] .flash-success{color:var(--green);}
-.sec-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;animation:fadeUp .4s .2s ease both;}
-.sec-title{font-family:var(--mono);font-size:15px;font-weight:800;color:var(--text);letter-spacing:-.02em;}
-.sec-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-.fcnt{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;border-radius:100px;font-size:9.5px;padding:0 3px;background:var(--a-lt);color:var(--a);font-weight:700;font-family:var(--mono);}
-
-/* bulk bar */
-.bulk-bar{display:none;align-items:center;justify-content:space-between;gap:12px;background:linear-gradient(135deg,var(--a-lt),rgba(155,89,245,.12));border:1px solid rgba(37,99,235,.3);border-radius:var(--r);padding:10px 16px;margin-bottom:14px;animation:fadeUp .25s ease both;flex-wrap:wrap}
-.bulk-bar.show{display:flex}
-.bulk-left{font-size:12.5px;color:var(--text);font-weight:500}
-.bulk-left strong{font-family:var(--mono);font-size:13px;color:var(--a)}
-.bulk-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.bb-btn{display:inline-flex;align-items:center;gap:5px;height:32px;padding:0 14px;border-radius:var(--r-xs);font-size:12px;font-weight:600;cursor:pointer;border:1px solid transparent;transition:all var(--ease);font-family:var(--font)}
-.bb-btn svg{width:12px;height:12px}
-.bb-publish{background:var(--surface);color:var(--green);border-color:rgba(5,196,138,.25)}
-.bb-publish:hover{background:var(--green);color:#fff}
-.bb-delete{background:var(--surface);color:var(--red);border-color:rgba(240,68,68,.25)}
-.bb-delete:hover{background:var(--red);color:#fff}
-.bb-clear{background:transparent;color:var(--text3);border-color:transparent}
-.bb-clear:hover{color:var(--text)}
-
-.table-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;animation:fadeUp .4s .25s ease both;}
-.table-scroll{overflow-x:auto;}
-.table-scroll::-webkit-scrollbar{height:5px;}
-.table-scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:100px;}
-table{width:100%;min-width:920px;border-collapse:collapse;}
-thead tr{border-bottom:2px solid var(--border);}
-thead th{padding:11px 14px;text-align:left;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.09em;font-family:var(--mono);background:var(--surface2);white-space:nowrap;}
-.col-check{width:42px;text-align:center!important;padding-left:14px!important;padding-right:0!important;}
-tbody tr{border-bottom:1px solid var(--border);transition:background var(--ease);}
-tbody tr:last-child{border-bottom:none;}
-tbody tr:hover{background:var(--surface2);}
-tbody tr.row-hidden{display:none;}
-.row-select{width:16px;height:16px;accent-color:var(--a);cursor:pointer;}
-tbody td{padding:13px 14px;font-size:13px;color:var(--text2);vertical-align:middle;}
-.title-cell{display:flex;align-items:center;gap:10px;}
-.blog-thumb{width:44px;height:34px;border-radius:7px;overflow:hidden;flex-shrink:0;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;}
-.blog-thumb img{width:100%;height:100%;object-fit:cover;}
-.blog-thumb svg{width:14px;height:14px;color:var(--border2);}
-.title-primary{font-size:13px;font-weight:600;color:var(--text);line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px;}
-.title-id{font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:1px;}
-.author-cell{display:flex;align-items:center;gap:7px;}
-.author-av{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--mono);}
-.b-pending{background:var(--amber-lt);color:#b45309;border:1px solid rgba(245,158,11,.25);}
-.b-published{background:var(--green-lt);color:#065f46;border:1px solid rgba(5,196,138,.25);}
-.b-rejected{background:var(--red-lt);color:#991b1b;border:1px solid rgba(240,68,68,.25);}
-.b-draft{background:var(--surface3);color:var(--text3);border:1px solid var(--border2);}
-.b-archived{background:var(--blue-lt);color:#1e40af;border:1px solid rgba(59,130,246,.25);}
-.b-flagged{background:#fdf2f8;color:#9d174d;border:1px solid rgba(236,72,153,.25);}
-[data-theme="dark"] .b-pending{color:var(--amber);}
-[data-theme="dark"] .b-published{color:var(--green);}
-[data-theme="dark"] .b-rejected{color:var(--red);}
-[data-theme="dark"] .b-draft{color:var(--text2);}
-[data-theme="dark"] .b-archived{color:var(--blue);}
-[data-theme="dark"] .b-flagged{color:#f9a8d4;}
-.cat-tag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:500;background:var(--a-lt);color:var(--a);border:1px solid rgba(37,99,235,.18);}
-td.date-cell{font-family:var(--mono);font-size:11.5px;color:var(--text3);white-space:nowrap;}
-.date-ago{font-size:10.5px;margin-top:2px;}
-.actions{display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
-.act-btn{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid transparent;transition:opacity var(--ease),transform var(--ease);white-space:nowrap;font-family:var(--font);text-decoration:none;background:none;}
-.act-btn:hover{opacity:.82;transform:scale(.97);}
-.act-btn svg{width:11px;height:11px;flex-shrink:0;}
-.ab-view{background:var(--a-lt);color:var(--a);border-color:rgba(37,99,235,.2);}
-.ab-edit{background:var(--amber-lt);color:var(--amber);border-color:rgba(245,158,11,.2);}
-.ab-delete{background:var(--red-lt);color:var(--red);border-color:rgba(240,68,68,.2);padding:5px 8px;}
-.ab-approve{background:var(--green-lt);color:var(--green);border-color:rgba(5,196,138,.2);}
-.ab-archive{background:var(--blue-lt);color:var(--blue);border-color:rgba(59,130,246,.2);}
-.ab-feature{background:var(--amber-lt);color:var(--amber);border-color:rgba(245,158,11,.2);}
-/* contextual inline actions */
-tbody tr:not([data-status="pending"]) .js-approve{display:none}
-tbody tr:not([data-status="published"]) .js-archive,
-tbody tr:not([data-status="published"]) .js-feature{display:none}
-.empty-row td{padding:56px 20px;text-align:center;}
-.empty-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--text3);}
-.empty-wrap svg{width:40px;height:40px;opacity:.25;}
-.empty-wrap p{font-size:13px;}
-.table-footer{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;border-top:1px solid var(--border);background:var(--surface2);flex-wrap:wrap;gap:6px;}
-.tfoot-count{font-size:11.5px;color:var(--text3);font-family:var(--mono);}
-.tfoot-count strong{color:var(--text);font-weight:600;}
-
-@media(max-width:760px){
-  .sec-right{width:100%}
-  .sort-select,.sec-right .sort-select{flex:1;min-width:120px}
-  table{min-width:0}
-  thead{display:none}
-  tbody tr{display:block;border:1px solid var(--border);border-radius:var(--r-sm);margin-bottom:12px;padding:6px 2px;background:var(--surface)}
-  tbody tr.row-hidden{display:none}
-  tbody td{display:flex;align-items:flex-start;gap:10px;padding:9px 14px;border:none!important;text-align:left;white-space:normal}
-  tbody td.col-check{display:none}
-  tbody td::before{content:attr(data-label);font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-family:var(--mono);min-width:84px;padding-top:2px}
-  tbody td.title-cell::before{display:none}
-  tbody td.actions::before{display:none}
-  tbody td.actions{justify-content:flex-start;flex-wrap:wrap}
-  .title-primary{max-width:none}
-}
-@media(max-width:640px){.stat-card{padding:14px 16px;gap:10px}.stat-num{font-size:1.4rem}}
-@media(max-width:480px){
-  .stat-card{padding:12px 14px;gap:8px}.stat-num{font-size:1.2rem}.stat-name{font-size:9px}
-  .sec-header{flex-direction:column;align-items:flex-start}
-  .bulk-bar{flex-direction:column;align-items:stretch;gap:10px}.bulk-actions{justify-content:center}
-}
-@media(max-width:380px){
-  .stat-card{padding:10px 12px}.stat-card .stat-icon{width:32px;height:32px;border-radius:8px}.stat-card .stat-icon svg{width:13px;height:13px}
-  .bulk-left{text-align:center}
-  .sec-hdr{gap:8px;}
-  .sec-right{flex-direction:column;align-items:stretch;gap:6px;width:100%;}
-  .search-input{width:100%;}
-}
-</style>
-@endpush
 @section('content')
 @php
   $cntPending   = $pendingCount   ?? 0;
   $cntPublished = $publishedCount ?? 0;
   $cntRejected  = $rejectedCount  ?? 0;
-  $cntTotal     = $cntPending + $cntPublished + $cntRejected;
+  $cntArchived  = $archivedCount  ?? 0;
+  $cntFlagged   = $flaggedCount   ?? 0;
+  $cntDraft     = $draftCount     ?? 0;
+  $cntTotal     = $cntPending + $cntPublished + $cntRejected + $cntArchived + $cntFlagged + $cntDraft;
   $activeStatus = request('status', 'all');
   $activeSort   = request('sort',   'latest');
 @endphp
 
 <div class="stats-grid">
-  <div class="stat-card">
-    <div class="stat-icon si-blue">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
-    </div>
-    <div>
-      <div class="stat-num sv-blue" id="statTotal">{{ $cntTotal }}</div>
-      <div class="stat-name">Total</div>
-    </div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-icon si-amber">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-    </div>
-    <div>
-      <div class="stat-num sv-amber" id="statPending">{{ $cntPending }}</div>
-      <div class="stat-name">Pending</div>
+  <div class="stat">
+    <div class="stat-icon si-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg></div>
+    <div class="stat-body">
+      <div class="stat-lbl">Total</div>
+      <div class="stat-val sv-blue" id="statTotal">{{ $cntTotal }}</div>
+      <div class="stat-foot">All blog posts</div>
     </div>
   </div>
-  <div class="stat-card">
-    <div class="stat-icon si-green">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-    </div>
-    <div>
-      <div class="stat-num sv-green" id="statPublished">{{ $cntPublished }}</div>
-      <div class="stat-name">Published</div>
-    </div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-icon si-red">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-    </div>
-    <div>
-      <div class="stat-num sv-red" id="statRejected">{{ $cntRejected }}</div>
-      <div class="stat-name">Rejected</div>
+  <div class="stat">
+    <div class="stat-icon si-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+    <div class="stat-body">
+      <div class="stat-lbl">Pending</div>
+      <div class="stat-val sv-amber" id="statPending">{{ $cntPending }}</div>
+      <div class="stat-foot">Awaiting review</div>
     </div>
   </div>
+  <div class="stat">
+    <div class="stat-icon si-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+    <div class="stat-body">
+      <div class="stat-lbl">Published</div>
+      <div class="stat-val sv-green" id="statPublished">{{ $cntPublished }}</div>
+      <div class="stat-foot">Live on site</div>
+    </div>
+  </div>
+  <div class="stat">
+    <div class="stat-icon si-red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+    <div class="stat-body">
+      <div class="stat-lbl">Rejected</div>
+      <div class="stat-val sv-red" id="statRejected">{{ $cntRejected }}</div>
+      <div class="stat-foot">Declined</div>
+    </div>
+  </div>
+  @if($cntArchived || $cntFlagged)
+  <div class="stat">
+    <div class="stat-icon si-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8v13H3V8m2-4h14a2 2 0 012 2v2H3V6a2 2 0 012-2z"/></svg></div>
+    <div class="stat-body">
+      <div class="stat-lbl">Archived</div>
+      <div class="stat-val sv-amber">{{ $cntArchived }}</div>
+      <div class="stat-foot">Stored drafts</div>
+    </div>
+  </div>
+  <div class="stat">
+    <div class="stat-icon si-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.31 6.343l-2.12-2.12a1 1 0 00-1.41 0L4 8.12v2.47m4.31-4.25l2.12 2.12A4 4 0 016 12v4a4 4 0 004 4h2a4 4 0 004-4v-4a4 4 0 01-1.31-3.27v-.65a1 1 0 00-1-1h-.34l-2.12-2.12a1 1 0 00-1.41 0z"/></svg></div>
+    <div class="stat-body">
+      <div class="stat-lbl">Flagged</div>
+      <div class="stat-val sv-blue">{{ $cntFlagged }}</div>
+      <div class="stat-foot">Needs attention</div>
+    </div>
+  </div>
+  @endif
 </div>
 
 @if(session('success'))
@@ -209,41 +105,54 @@ tbody tr:not([data-status="published"]) .js-feature{display:none}
 <div class="sec-header">
   <div class="sec-title">All Blog Posts</div>
   <div class="sec-right">
-    <select class="sort-select" id="catFilter">
+    <select class="filter-sel" id="catFilter">
       <option value="all">All categories</option>
+      @foreach($categories as $cat)
+      <option value="{{ $cat->name }}" {{ request('category') === $cat->name ? 'selected' : '' }}>{{ $cat->name }}</option>
+      @endforeach
     </select>
-    <select class="sort-select" id="sortSelect">
+    <select class="filter-sel" id="sortSelect">
       <option value="latest" {{ $activeSort === 'latest' ? 'selected' : '' }}>Latest first</option>
       <option value="oldest" {{ $activeSort === 'oldest' ? 'selected' : '' }}>Oldest first</option>
       <option value="title"  {{ $activeSort === 'title'  ? 'selected' : '' }}>Title A–Z</option>
     </select>
     <div class="ftabs" id="ftabs">
-      <button class="ftab {{ $activeStatus === 'all'       ? 'on' : '' }}" data-status="all"><span class="fcnt" id="fcntAll">{{ $cntTotal }}</span> All</button>
-      <button class="ftab {{ $activeStatus === 'pending'   ? 'on' : '' }}" data-status="pending"><span class="fcnt" id="fcntPending">{{ $cntPending }}</span> Pending</button>
-      <button class="ftab {{ $activeStatus === 'published' ? 'on' : '' }}" data-status="published"><span class="fcnt" id="fcntPublished">{{ $cntPublished }}</span> Published</button>
-      <button class="ftab {{ $activeStatus === 'rejected'  ? 'on' : '' }}" data-status="rejected"><span class="fcnt" id="fcntRejected">{{ $cntRejected }}</span> Rejected</button>
+      <button class="ftab {{ $activeStatus === 'all'       ? 'on' : '' }}" data-status="all"><span class="cnt" id="fcntAll">{{ $cntTotal }}</span> All</button>
+      <button class="ftab {{ $activeStatus === 'pending'   ? 'on' : '' }}" data-status="pending"><span class="cnt" id="fcntPending">{{ $cntPending }}</span> Pending</button>
+      <button class="ftab {{ $activeStatus === 'published' ? 'on' : '' }}" data-status="published"><span class="cnt" id="fcntPublished">{{ $cntPublished }}</span> Published</button>
+      <button class="ftab {{ $activeStatus === 'rejected'  ? 'on' : '' }}" data-status="rejected"><span class="cnt" id="fcntRejected">{{ $cntRejected }}</span> Rejected</button>
+      @if($cntArchived || $cntFlagged)
+      <button class="ftab {{ $activeStatus === 'archived'  ? 'on' : '' }}" data-status="archived"><span class="cnt">{{ $cntArchived }}</span> Archived</button>
+      <button class="ftab {{ $activeStatus === 'flagged'   ? 'on' : '' }}" data-status="flagged"><span class="cnt">{{ $cntFlagged }}</span> Flagged</button>
+      @endif
     </div>
-    <select class="ftab-select" onchange="var btn=document.querySelector('.ftab[data-status=&quot;'+this.value+'&quot;]');if(btn)btn.click();">
+    <select class="ftab-select" id="ftabSelect">
       <option value="all" {{ $activeStatus === 'all' ? 'selected' : '' }}>All ({{ $cntTotal }})</option>
       <option value="pending" {{ $activeStatus === 'pending' ? 'selected' : '' }}>Pending ({{ $cntPending }})</option>
       <option value="published" {{ $activeStatus === 'published' ? 'selected' : '' }}>Published ({{ $cntPublished }})</option>
       <option value="rejected" {{ $activeStatus === 'rejected' ? 'selected' : '' }}>Rejected ({{ $cntRejected }})</option>
+      @if($cntArchived || $cntFlagged)
+      <option value="archived" {{ $activeStatus === 'archived' ? 'selected' : '' }}>Archived ({{ $cntArchived }})</option>
+      <option value="flagged" {{ $activeStatus === 'flagged' ? 'selected' : '' }}>Flagged ({{ $cntFlagged }})</option>
+      @endif
     </select>
   </div>
 </div>
 
-<div class="bulk-bar" id="bulkBar">
-  <div class="bulk-left"><strong id="bulkCount">0</strong> selected</div>
-  <div class="bulk-actions">
-    <button class="bb-btn bb-publish" id="bulkPublish">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-      Publish
-    </button>
-    <button class="btn btn-red bb-btn bb-delete" id="bulkDelete">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
-      Delete
-    </button>
-    <button class="btn btn-secondary bb-btn bb-clear" id="bulkClear">Clear</button>
+<div class="table-bulk-bar" id="bulkBar">
+  <div class="table-bulk-inner">
+    <div class="table-bulk-left"><strong id="bulkCount">0</strong> selected</div>
+    <div class="table-bulk-actions">
+      <x-button variant="primary" type="button" class="bb-btn bb-publish" id="bulkPublish">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Publish
+      </x-button>
+      <x-button variant="destructive" type="button" class="bb-btn bb-delete" id="bulkDelete">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4h8v2M19 6l-1 14a2 2 0 01-1.995 1.858L6 17l-1-14H4"/></svg>
+        Delete
+      </x-button>
+      <x-button variant="secondary" type="button" class="bb-btn bb-clear" id="bulkClear">Clear</x-button>
+    </div>
   </div>
 </div>
 
@@ -258,7 +167,7 @@ tbody tr:not([data-status="published"]) .js-feature{display:none}
           <th>Category</th>
           <th>Status</th>
           <th>Published</th>
-          <th>Actions</th>
+          <th class="th-actions">Actions</th>
         </tr>
       </thead>
       <tbody id="tbody">
@@ -295,28 +204,32 @@ tbody tr:not([data-status="published"]) .js-feature{display:none}
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                 @endif
               </div>
-              <div>
-                <div class="title-primary" title="{{ $blog->title }}">{{ $blog->title }}</div>
+              <div class="title-info">
+                <div class="title-primary" title="{{ $blog->title }}">{{ \Illuminate\Support\Str::limit($blog->title ?? 'Untitled', 60) }}</div>
                 <div class="title-id">#{{ $blog->id }}</div>
               </div>
             </div>
           </td>
           <td data-label="Author">
             <div class="author-cell">
-              <div class="author-av">{{ strtoupper(substr($blog->author->name ?? 'U', 0, 2)) }}</div>
-              <span style="font-size:12.5px;font-weight:500;color:var(--text);">{{ $blog->author->name ?? 'Unknown' }}</span>
+              @if($blog->author->avatar)
+                <img class="author-img" src="{{ asset('storage/'.$blog->author->avatar) }}" alt="{{ $blog->author->name }}">
+              @else
+                <div class="author-av">{{ strtoupper(substr($blog->author->name ?? 'U', 0, 2)) }}</div>
+              @endif
+              <span class="author-name">{{ $blog->author->name ?? 'Unknown' }}</span>
             </div>
           </td>
           <td data-label="Category">
             @if($catName)
               <span class="cat-tag">{{ $catName }}</span>
             @else
-              <span style="color:var(--text3);font-size:12px;">—</span>
+              <span class="cell-muted">—</span>
             @endif
           </td>
           <td data-label="Status">
             <span class="badge b-{{ $status }}">
-              <span class="badge-dot"></span>{{ ucfirst($status) }}
+              <span class="badge-dot"></span>{{ $blog->readable_status ?? ucfirst($status) }}
             </span>
           </td>
           <td class="date-cell" data-label="Published">
@@ -325,31 +238,34 @@ tbody tr:not([data-status="published"]) .js-feature{display:none}
           </td>
           <td data-label="Actions">
             <div class="actions">
-              <a href="{{ route('admin.blogs.show', $blog) }}" class="btn btn-secondary act-btn ab-view">
+              <x-button variant="secondary" href="{{ route('admin.blogs.show', $blog) }}" class="ab-view ab-view-compact">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                Review
-              </a>
-              <a href="{{ route('admin.blogs.edit', $blog) }}" class="btn btn-secondary act-btn ab-edit">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path stroke-linecap="round" stroke-linejoin="round" d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                Edit
-              </a>
-              <button type="button" class="btn btn-green act-btn ab-approve js-approve" data-id="{{ $blog->id }}">
+                <span class="btn-label">View</span>
+              </x-button>
+              <x-button variant="secondary" href="{{ route('admin.blogs.edit', $blog) }}" class="ab-edit ab-edit-compact">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5"/><path stroke-linecap="round" stroke-linejoin="round" d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                <span class="btn-label">Edit</span>
+              </x-button>
+              @if($status === 'pending')
+              <x-button variant="secondary" type="button" class="ab-approve js-approve" data-id="{{ $blog->id }}">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                Approve
-              </button>
-              <button type="button" class="btn btn-green act-btn ab-feature js-feature" data-id="{{ $blog->id }}" data-featured="{{ $blog->is_featured ? '1' : '0' }}">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                {{ $blog->is_featured ? 'Unfeature' : 'Feature' }}
-              </button>
-              <button type="button" class="btn btn-green act-btn ab-archive js-archive" data-id="{{ $blog->id }}">
+                <span class="btn-label">Approve</span>
+              </x-button>
+              @elseif($status === 'published')
+              <x-button variant="secondary" type="button" class="ab-archive js-archive" data-id="{{ $blog->id }}">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8v13H3V8m2-4h14a2 2 0 012 2v2H3V6a2 2 0 012-2z"/></svg>
-                Archive
-              </button>
+                <span class="btn-label">Archive</span>
+              </x-button>
+              @endif
+              <x-button variant="secondary" type="button" class="ab-feature js-feature" data-id="{{ $blog->id }}" data-featured="{{ $blog->is_featured ? '1' : '0' }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <span class="btn-label">{{ $blog->is_featured ? 'Unfeature' : 'Feature' }}</span>
+              </x-button>
               <form method="POST" action="{{ route('admin.blogs.destroy', $blog) }}" style="display:inline;" onsubmit="return confirm('Delete \'{{ addslashes($blog->title) }}\'?')">
                 @csrf @method('DELETE')
-                <button type="submit" class="btn btn-red act-btn ab-delete" title="Delete">
+                <x-button variant="destructive" type="submit" class="ab-delete ab-delete-compact" aria-label="Delete">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                </button>
+                </x-button>
               </form>
             </div>
           </td>
@@ -360,6 +276,7 @@ tbody tr:not([data-status="published"]) .js-feature{display:none}
             <div class="empty-wrap">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
               <p>No blog posts found.</p>
+              <a href="{{ route('admin.blogs.create') }}" class="empty-cta">Create your first post</a>
             </div>
           </td>
         </tr>
@@ -369,6 +286,7 @@ tbody tr:not([data-status="published"]) .js-feature{display:none}
             <div class="empty-wrap">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
               <p>No results match your filters.</p>
+              <button class="clear-filters-btn" type="button">Clear all filters</button>
             </div>
           </td>
         </tr>
@@ -376,13 +294,18 @@ tbody tr:not([data-status="published"]) .js-feature{display:none}
     </table>
   </div>
   <div class="table-footer">
-    <div class="tfoot-count">Showing <strong id="cntVisF">{{ $blogs->total() }}</strong> of <strong id="cntTotalF">{{ $cntTotal }}</strong> results</div>
-    <div style="font-size:11px;color:var(--text3);font-family:var(--mono);">Total {{ $cntTotal }} posts</div>
+    <div class="tfoot-count">Showing <strong id="cntVisF">{{ $blogs->count() }}</strong> of <strong id="cntTotalF">{{ $blogs->total() }}</strong> results</div>
+    <div class="tfoot-total">Total {{ $blogs->total() }} posts</div>
   </div>
 </div>
 
 @if($blogs->hasPages())
-<div class="pagination-wrap">{{ $blogs->appends(request()->query())->links('vendor.pagination.admin') }}</div>
+<div class="pagination-wrap">
+  <div class="pagination-info">
+    Page {{ $blogs->currentPage() }} of {{ $blogs->lastPage() }}
+  </div>
+  {{ $blogs->appends(request()->query())->links('vendor.pagination.admin') }}
+</div>
 @endif
 @endsection
 
@@ -393,7 +316,6 @@ tbody tr:not([data-status="published"]) .js-feature{display:none}
 
   var csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-  /* live counts (server-provided, adjusted on actions) */
   var counts = {
     total:     parseInt(document.getElementById('statTotal').textContent, 10) || 0,
     pending:   parseInt(document.getElementById('statPending').textContent, 10) || 0,
@@ -434,16 +356,7 @@ tbody tr:not([data-status="published"]) .js-feature{display:none}
   var noRow = document.getElementById('noResultsRow');
   var bulkBar = document.getElementById('bulkBar');
 
-  /* build category filter options from rendered rows */
-  (function(){
-    var cats = {};
-    rows.forEach(function(r){ var c = r.dataset.category || ''; if(c) cats[c] = true; });
-    var sel = document.getElementById('catFilter');
-    Object.keys(cats).sort().forEach(function(c){
-      var o = document.createElement('option'); o.value = c; o.textContent = c; sel.appendChild(o);
-    });
-  })();
-
+  /* client-side filter for rows on current page (category + search match) */
   function applyFilters(){
     var q   = (document.getElementById('searchInput').value || '').toLowerCase().trim();
     var cat = document.getElementById('catFilter').value;
@@ -451,8 +364,7 @@ tbody tr:not([data-status="published"]) .js-feature{display:none}
     rows.forEach(function(r){
       var mS  = !q   || (r.dataset.search || '').includes(q);
       var mC  = cat === 'all' || (r.dataset.category || '') === cat;
-      var mSt = activeStatus === 'all' || r.dataset.status === activeStatus;
-      var show = mS && mC && mSt;
+      var show = mS && mC;
       r.classList.toggle('row-hidden', !show);
       if(show) vis++;
     });
@@ -461,13 +373,28 @@ tbody tr:not([data-status="published"]) .js-feature{display:none}
     if(noRow) noRow.style.display = (vis === 0 && rows.length > 0) ? '' : 'none';
   }
 
-  var st;
+  /* server-side search with debounce */
+  var _st;
   document.getElementById('searchInput').addEventListener('input', function(){
-    clearTimeout(st);
-    st = setTimeout(applyFilters, 180);
+    clearTimeout(_st);
+    _st = setTimeout(function(){
+      var url = new URL(window.location.href);
+      var v = document.getElementById('searchInput').value.trim();
+      if(v) url.searchParams.set('search', v); else url.searchParams.delete('search');
+      url.searchParams.set('page', 1);
+      window.location.href = url.toString();
+    }, 500);
   });
-  document.getElementById('catFilter').addEventListener('change', applyFilters);
 
+  /* category filter → server-side */
+  document.getElementById('catFilter').addEventListener('change', function(){
+    var url = new URL(window.location.href);
+    if(this.value !== 'all') url.searchParams.set('category', this.value); else url.searchParams.delete('category');
+    url.searchParams.set('page', 1);
+    window.location.href = url.toString();
+  });
+
+  /* status tabs */
   document.querySelectorAll('.ftab').forEach(function(tab){
     tab.addEventListener('click', function(){
       var url = new URL(window.location.href);
@@ -477,10 +404,31 @@ tbody tr:not([data-status="published"]) .js-feature{display:none}
     });
   });
 
+  /* sort select */
   document.getElementById('sortSelect').addEventListener('change', function(){
     var url = new URL(window.location.href);
     url.searchParams.set('sort', this.value);
     url.searchParams.set('status', '{{ $activeStatus }}');
+    url.searchParams.set('page', 1);
+    window.location.href = url.toString();
+  });
+
+  /* mobile status select */
+  document.getElementById('ftabSelect').addEventListener('change', function(){
+    var url = new URL(window.location.href);
+    url.searchParams.set('status', this.value);
+    url.searchParams.set('page', 1);
+    window.location.href = url.toString();
+  });
+
+  /* clear all filters */
+  var _cf = document.querySelector('.clear-filters-btn');
+  if(_cf) _cf.addEventListener('click', function(){
+    var url = new URL(window.location.href);
+    url.searchParams.delete('status');
+    url.searchParams.delete('search');
+    url.searchParams.delete('category');
+    url.searchParams.delete('sort');
     url.searchParams.set('page', 1);
     window.location.href = url.toString();
   });
@@ -533,11 +481,10 @@ tbody tr:not([data-status="published"]) .js-feature{display:none}
         counts.published++;
         if(old === 'pending') counts.pending = Math.max(0, counts.pending - 1);
         else if(old === 'rejected') counts.rejected = Math.max(0, counts.rejected - 1);
-        else if(old !== 'published') counts.total++; /* draft/archived/flagged were not in total */
+        else if(old !== 'published') counts.total++;
       });
       writeCounts();
       syncBulkBar();
-      applyFilters();
       toast(d.msg || 'Published.', 'success');
     });
   });
@@ -563,7 +510,6 @@ tbody tr:not([data-status="published"]) .js-feature{display:none}
       rows = Array.from(document.querySelectorAll('#tbody tr[data-id]'));
       writeCounts();
       syncBulkBar();
-      applyFilters();
       toast(d.msg || 'Deleted.', 'success');
     });
   });
@@ -578,7 +524,9 @@ tbody tr:not([data-status="published"]) .js-feature{display:none}
     }
     if(typeof featured !== 'undefined'){
       var fBtn = tr.querySelector('.js-feature');
-      if(fBtn){ fBtn.dataset.featured = featured ? '1' : '0'; fBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> ' + (featured ? 'Unfeature' : 'Feature'); }
+      if(fBtn){
+        fBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> <span class="btn-label">' + (featured ? 'Unfeature' : 'Feature') + '</span>';
+      }
     }
   }
 
@@ -602,7 +550,6 @@ tbody tr:not([data-status="published"]) .js-feature{display:none}
         counts.pending = Math.max(0, counts.pending - 1);
         counts.published++;
         writeCounts();
-        applyFilters();
         toast(d.message || 'Approved.', 'success');
       });
     });
@@ -618,7 +565,6 @@ tbody tr:not([data-status="published"]) .js-feature{display:none}
         counts.published = Math.max(0, counts.published - 1);
         counts.total = Math.max(0, counts.total - 1);
         writeCounts();
-        applyFilters();
         toast(d.message || 'Archived.', 'success');
       });
     });
@@ -636,10 +582,6 @@ tbody tr:not([data-status="published"]) .js-feature{display:none}
       });
     });
   });
-
-@if(session('success'))
-  setTimeout(function(){ toast(@json(session('success')), 'success'); }, 200);
-@endif
 
   syncBulkBar();
   applyFilters();

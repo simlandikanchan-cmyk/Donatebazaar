@@ -148,16 +148,9 @@ body {
 .warn-banner-title { font-size: 11.5px; font-weight: 700; color: var(--yellow); margin-bottom: 2px; font-family: var(--font-mono); }
 .warn-banner-body  { font-size: 11.5px; color: var(--text2); }
 
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 16px; border-radius: var(--radius-sm); font-size: 12.5px; font-weight: 600; cursor: pointer; border: 1px solid transparent; font-family: var(--font); transition: opacity var(--transition), transform var(--transition); text-decoration: none; white-space: nowrap; width: 100%; }
 .btn:hover  { opacity: 0.87; transform: translateY(-1px); }
 .btn:active { transform: translateY(0); }
 .btn[disabled] { opacity: 0.38; cursor: not-allowed; transform: none; pointer-events: none; }
-.btn svg { width: 13px; height: 13px; }
-.btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 4px 14px rgba(37,99,235,0.3); }
-.btn-pause   { background: rgba(245,158,11,0.10); color: var(--yellow); border-color: rgba(245,158,11,0.25); }
-.btn-resume  { background: rgba(16,185,129,0.10); color: var(--green);  border-color: rgba(16,185,129,0.25); }
-.btn-ghost   { background: var(--surface2); color: var(--text2); border-color: var(--border2); }
-.btn + .btn  { margin-top: 8px; }
 
 .sidebar-stack { display: flex; flex-direction: column; gap: 14px; position: sticky; top: 74px; }
 
@@ -180,18 +173,14 @@ body {
 .modal-ta:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
 .modal-err { font-size: 11px; color: var(--red); margin-top: 5px; display: none; font-family: var(--font-mono); }
 .modal-acts { display: flex; gap: 8px; margin-top: 14px; }
-.modal-btn { flex: 1; padding: 10px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: opacity var(--transition); font-family: var(--font); }
 .modal-btn:hover { opacity: 0.88; }
 .modal-cancel { background: var(--surface2); color: var(--text2); border: 1px solid var(--border2); }
-.modal-y-btn  { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; }
-.modal-g-btn  { background: linear-gradient(135deg, #16a34a, #15803d); color: #fff; }
 
 .toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
 .toast { display: flex; align-items: center; gap: 10px; padding: 12px 15px; border-radius: 12px; font-size: 13px; font-weight: 500; color: #fff; min-width: 240px; box-shadow: var(--shadow-lg); pointer-events: all; animation: toastIn 0.35s cubic-bezier(.4,0,.2,1) both; }
 .toast svg { width: 15px; height: 15px; flex-shrink: 0; }
 .toast-success { background: linear-gradient(135deg, #15803d, #16a34a); }
 .toast-error   { background: linear-gradient(135deg, #dc2626, #ef4444); }
-.toast-close { margin-left: auto; width: 18px; height: 18px; border-radius: 4px; background: rgba(255,255,255,0.2); border: none; cursor: pointer; color: #fff; font-size: 12px; display: flex; align-items: center; justify-content: center; }
 @keyframes toastIn { from { opacity: 0; transform: translateX(20px) scale(0.96); } to { opacity: 1; transform: translateX(0) scale(1); } }
 @keyframes fadeUp  { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -367,15 +356,15 @@ body {
                                 <div class="warn-banner-body">{{ $campaign->pause_reason }}</div>
                             </div>
                         </div>
-                        <button type="button" onclick="openModal('resumeModal')" class="btn btn-resume">
+                        <x-button variant="primary" type="button">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                             Resume Campaign
-                        </button>
+                        </x-button>
                         @elseif($campaign->isActive())
-                        <button type="button" onclick="openModal('pauseModal')" class="btn btn-pause">
+                        <x-button variant="primary" type="button">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                             Pause Campaign
-                        </button>
+                        </x-button>
                         @elseif($campaign->isPending())
                         <div style="text-align:center;padding:8px 0;font-size:12px;color:var(--text3);">
                             Campaign is awaiting admin approval. You can still edit content.
@@ -396,11 +385,10 @@ body {
                         </div>
                     </div>
                     <div class="card-body">
-                        <button type="submit" class="btn btn-primary" id="saveBtn"
-                                {{ $campaign->isPaused() ? 'disabled' : '' }}>
+                        <x-button variant="primary" type="submit" {{ $campaign->isPaused() ? 'disabled' : '' }}>
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
                             Save Changes
-                        </button>
+                        </x-button>
                         <a href="{{ route('campaign.show', $campaign->id) }}" class="btn btn-ghost" style="margin-top:8px;display:inline-flex;">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                             Cancel
@@ -466,8 +454,8 @@ body {
                 <div class="char-counter"><span id="pauseCount">0</span>/500</div>
                 <p id="pauseErr" class="modal-err">Please provide a reason (min 10 characters).</p>
                 <div class="modal-acts">
-                    <button type="button" onclick="closeModal('pauseModal')" class="modal-btn modal-cancel">Cancel</button>
-                    <button type="submit" id="pauseSubmitBtn" class="modal-btn modal-y-btn">⏸ Pause Campaign</button>
+                    <x-button variant="secondary" type="button" class="modal-btn">Cancel</x-button>
+                    <x-button variant="primary" type="submit" class="modal-btn modal-y-btn">⏸ Pause Campaign</x-button>
                 </div>
             </form>
         </div>
@@ -498,8 +486,8 @@ body {
                 <div class="char-counter"><span id="resumeCount">0</span>/500</div>
                 <p id="resumeErr" class="modal-err">Please provide a reason (min 10 characters).</p>
                 <div class="modal-acts">
-                    <button type="button" onclick="closeModal('resumeModal')" class="modal-btn modal-cancel">Cancel</button>
-                    <button type="submit" id="resumeSubmitBtn" class="modal-btn modal-g-btn">▶ Resume Campaign</button>
+                    <x-button variant="secondary" type="button" class="modal-btn">Cancel</x-button>
+                    <x-button variant="primary" type="submit" class="modal-btn">▶ Resume Campaign</x-button>
                 </div>
             </form>
         </div>

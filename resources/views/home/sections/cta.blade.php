@@ -4,7 +4,7 @@
         <div>
             <h2 class="cta-title">Start Your Fundraiser Today</h2>
             <p class="cta-sub">Start raising funds for urgent needs like medical care, education, and disaster relief — it takes just a few minutes to make a difference.</p>
-            <a href="/campaign/create" class="btn btn-accent btn-lg">Start Fundraiser</a>
+            <x-button variant="primary" size="lg" href="/campaign/create">Start Fundraiser</x-button>
         </div>
     </div>
 </section>

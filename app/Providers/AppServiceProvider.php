@@ -107,6 +107,18 @@ class AppServiceProvider extends ServiceProvider
             DebugModeCheck::new(),
         ]);
 
+        if (App::environment('local')) {
+            \DB::listen(function ($query) {
+                if ($query->time > 100) {
+                    \Log::channel('slow_queries')->info('Slow Query', [
+                        'sql' => $query->sql,
+                        'bindings' => $query->bindings,
+                        'time_ms' => $query->time,
+                    ]);
+                }
+            });
+        }
+
         if (App::environment('production') || env('FORCE_HTTPS', false)) {
             URL::forceScheme('https');
         }

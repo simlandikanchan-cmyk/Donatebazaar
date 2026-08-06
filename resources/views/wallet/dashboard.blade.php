@@ -16,13 +16,6 @@ $icoLocked     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
     <x-stat-card color="pink" label="Locked in Settlement" value="₹{{ number_format($wallet->pending_settlement_balance, 2) }}" footer="Pending admin approval" :icon="$icoLocked" />
 </div>
 
-@if(session('success'))
-    <div class="alert alert-success" style="margin-bottom:16px;padding:12px 16px;border-radius:12px;background:var(--green-lt);color:var(--green);font-size:13px;font-weight:500;">{{ session('success') }}</div>
-@endif
-@if(session('error'))
-    <div class="alert alert-error" style="margin-bottom:16px;padding:12px 16px;border-radius:12px;background:var(--red-lt);color:var(--red);font-size:13px;font-weight:500;">{{ session('error') }}</div>
-@endif
-
 @if($pendingSettlements->isNotEmpty())
     <div class="activity-card" style="margin-bottom:24px;">
         <div class="activity-hdr">
@@ -98,7 +91,7 @@ $icoLocked     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
             <input type="text" name="account_number" placeholder="Account Number" class="wallet-input">
             <input type="text" name="ifsc_code" placeholder="IFSC Code" class="wallet-input">
             <input type="text" name="upi_id" placeholder="UPI ID (or leave blank)" class="wallet-input">
-            <button type="submit" class="btn btn-primary wallet-save-btn">Save</button>
+            <x-button variant="primary" type="submit">Save</x-button>
         </form>
     </div>
 </div>
@@ -137,7 +130,7 @@ $icoLocked     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
                     </tbody>
                 </table>
             </div>
-            <button type="submit" class="btn btn-primary" style="margin-top:16px;">Request Payout</button>
+            <x-button variant="primary" type="submit">Request Payout</x-button>
         </form>
     @endif
 </div>

@@ -71,7 +71,11 @@ class CampaignShowComposer
 
         $publicUrl = null;
         try {
-            if ($campaign->category && $campaign->slug) {
+            if (
+                in_array($campaign->campaign_state, ['active', 'completed', 'expired']) &&
+                $campaign->category &&
+                $campaign->slug
+            ) {
                 $publicUrl = route('campaign.public', ['category' => $campaign->category->slug, 'slug' => $campaign->slug]);
             }
         } catch (\Throwable $e) {

@@ -1,271 +1,166 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
+
+@push('page_css')
+@vite('resources/css/admin/entries/messages.css')
+@endpush
+
 
 @section('sidebar_messages', 'active')
 @section('page_title', $message->subject ?? 'Message')
 @section('page_subtitle', 'Message details')
 
-@push('page_styles')
-<style>
-.breadcrumb{display:flex;align-items:center;gap:6px;margin-bottom:20px;animation:fadeUp .35s ease both}
-.breadcrumb a{font-size:11.5px;color:var(--text3);font-family:var(--mono);transition:color var(--ease)}
-.breadcrumb a:hover{color:var(--a)}
-.breadcrumb .bc-sep{font-size:11.5px;color:var(--text3);font-family:var(--mono)}
-.breadcrumb .bc-cur{font-size:11.5px;color:var(--text2);font-weight:600;font-family:var(--mono)}
-.page-hdr{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:22px;flex-wrap:wrap;animation:fadeUp .4s .05s ease both}
-.page-hdr-left h2{font-family:var(--mono);font-size:20px;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
-.page-hdr-left p{font-size:12px;color:var(--text3);margin-top:4px}
-.back-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:var(--r-sm);background:var(--surface);border:1px solid var(--border2);color:var(--text2);font-size:12.5px;font-weight:600;transition:all var(--ease);font-family:var(--font);text-decoration:none}
-.back-btn:hover{background:var(--a-lt);color:var(--a);border-color:var(--a);transform:translateX(-2px)}
-.back-btn svg{width:13px;height:13px}
-.detail-grid{display:grid;grid-template-columns:1fr 300px;gap:18px;align-items:start}
-.detail-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;animation:fadeUp .4s .10s ease both}
-.dc-head{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--surface2)}
-.dc-head-left{display:flex;align-items:center;gap:13px}
-.sender-av{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--mono);box-shadow:0 4px 14px rgba(37,99,235,.3)}
-.sender-name{font-size:15px;font-weight:700;color:var(--text);line-height:1.3}
-.sender-email{font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:2px}
-.dc-body{padding:24px 22px}
-.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px}
-.info-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px 16px}
-.info-lbl{font-size:9.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.10em;font-family:var(--mono);margin-bottom:6px}
-.info-val{font-size:13px;font-weight:600;color:var(--text);line-height:1.4}
-.info-val a{color:var(--a)}
-.info-val a:hover{text-decoration:underline}
-.msg-lbl{font-size:9.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.10em;font-family:var(--mono);margin-bottom:10px;display:flex;align-items:center;gap:8px}
-.msg-lbl::after{content:'';flex:1;height:1px;background:var(--border)}
-.msg-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:18px 20px;line-height:1.8;color:var(--text2);font-size:13.5px;white-space:pre-line}
-.dc-foot{display:flex;align-items:center;justify-content:space-between;padding:14px 22px;border-top:1px solid var(--border);background:var(--surface2);gap:10px;flex-wrap:wrap}
-.act-btn{display:inline-flex;align-items:center;gap:5px;padding:9px 16px;border-radius:var(--r-xs);font-size:12px;font-weight:600;cursor:pointer;border:1px solid transparent;transition:all var(--ease);white-space:nowrap;font-family:var(--font);text-decoration:none}
-.act-btn:hover{transform:translateY(-1px)}
-.act-btn:active{transform:scale(.96)}
-.act-btn svg{width:13px;height:13px}
-.ab-reply{background:var(--a-lt);color:var(--a);border-color:rgba(37,99,235,.2)}
-.ab-reply:hover{background:var(--a);color:#fff;box-shadow:0 4px 14px rgba(37,99,235,.35)}
-.ab-delete{background:var(--red-lt);color:var(--red);border-color:rgba(240,68,68,.2)}
-.ab-delete:hover{background:var(--red);color:#fff;box-shadow:0 4px 14px rgba(240,68,68,.3)}
-.badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:4px 9px;border-radius:7px;text-transform:uppercase;letter-spacing:.07em;font-family:var(--mono)}
-.badge-dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0}
-.b-new{background:rgba(59,130,246,.12);color:#1d4ed8;border:1px solid rgba(59,130,246,.2)}
-.b-read{background:rgba(5,196,138,.12);color:#065f46;border:1px solid rgba(5,196,138,.2)}
-[data-theme="dark"] .b-new{color:#93c5fd}
-[data-theme="dark"] .b-read{color:#34d399}
-.side-panel{display:flex;flex-direction:column;gap:16px}
-.side-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;animation:fadeUp .4s ease both}
-.side-card:nth-child(1){animation-delay:.15s}
-.side-card:nth-child(2){animation-delay:.22s}
-.sc-head{padding:12px 18px;border-bottom:1px solid var(--border);background:var(--surface2);font-family:var(--mono);font-size:10.5px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.09em}
-.sc-body{padding:4px 0}
-.sc-row{display:flex;flex-direction:column;gap:3px;padding:11px 18px;border-bottom:1px solid var(--border)}
-.sc-row:last-child{border-bottom:none}
-.sc-key{font-size:10px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em}
-.sc-val{font-size:13px;font-weight:600;color:var(--text);word-break:break-all;line-height:1.4}
-.sc-val.muted{color:var(--text2);font-weight:400}
-.qa-btn{display:flex;align-items:center;gap:10px;width:100%;padding:11px 18px;border:none;background:transparent;color:var(--text2);font-size:13px;font-weight:500;text-align:left;transition:background var(--ease),color var(--ease);cursor:pointer;text-decoration:none;border-bottom:1px solid var(--border)}
-.qa-btn:last-child{border-bottom:none}
-.qa-btn:hover{background:var(--surface2);color:var(--text)}
-.qa-btn.danger:hover{background:var(--red-lt);color:var(--red)}
-.qa-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.qa-icon svg{width:13px;height:13px}
-.qi-purple{background:var(--a-lt);color:var(--a)}
-.qi-gray{background:var(--surface3);color:var(--text3)}
-.qi-red{background:var(--red-lt);color:var(--red)}
-.reply-modal{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px}
-.reply-backdrop{position:absolute;inset:0;background:rgba(10,11,20,.55);backdrop-filter:blur(2px);animation:fadeIn .2s ease both}
-.reply-card{position:relative;width:100%;max-width:560px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh-lg,0 20px 60px rgba(0,0,0,.3));overflow:hidden;animation:fadeUp .25s ease both}
-.reply-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border);background:var(--surface2)}
-.reply-head h3{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--text)}
-.reply-x{width:30px;height:30px;border-radius:8px;border:none;background:var(--surface3);color:var(--text3);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all var(--ease)}
-.reply-x:hover{background:var(--red-lt);color:var(--red)}
-.reply-body{padding:18px 20px;display:flex;flex-direction:column;gap:14px;max-height:60vh;overflow-y:auto}
-.r-field{display:flex;flex-direction:column;gap:6px}
-.r-field label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.09em;font-family:var(--mono)}
-.r-field input,.r-field textarea{width:100%;padding:10px 12px;border-radius:var(--r-xs);border:1px solid var(--border2);background:var(--surface2);color:var(--text);font-size:13px;font-family:var(--font);outline:none;transition:border-color var(--ease),box-shadow var(--ease);resize:vertical}
-.r-field input:focus,.r-field textarea:focus{border-color:var(--a);box-shadow:0 0 0 3px var(--a-glow);background:var(--surface)}
-.r-field input[readonly]{color:var(--text3);font-family:var(--mono)}
-.reply-quote{background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--a);border-radius:var(--r-xs);padding:12px 14px}
-.rq-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;font-family:var(--mono);color:var(--text3);margin-bottom:6px}
-.rq-text{font-size:12.5px;line-height:1.6;color:var(--text2);white-space:pre-line;max-height:140px;overflow-y:auto}
-.reply-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 20px;border-top:1px solid var(--border);background:var(--surface2);flex-wrap:wrap}
-.reply-mailto{font-size:12px;font-weight:600;color:var(--a);text-decoration:none}
-.reply-mailto:hover{text-decoration:underline}
-.reply-actions{display:flex;align-items:center;gap:8px}
-.reply-cancel{height:38px;padding:0 16px;border-radius:var(--r-xs);border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:12.5px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all var(--ease)}
-.reply-cancel:hover{background:var(--surface3);color:var(--text)}
-.reply-send{height:38px;padding:0 18px;border-radius:var(--r-xs);border:none;background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;font-size:12.5px;font-weight:600;cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:6px;box-shadow:0 4px 14px rgba(37,99,235,.35);transition:all var(--ease)}
-.reply-send:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(37,99,235,.45)}
-.reply-send svg{width:14px;height:14px;flex-shrink:0}
-.reply-send:disabled{opacity:.6;cursor:not-allowed;transform:none}
-@media(max-width:960px){.detail-grid{grid-template-columns:1fr}.side-panel{flex-direction:row;flex-wrap:wrap}.side-card{flex:1;min-width:240px}}
-@media(max-width:600px){.info-grid{grid-template-columns:1fr}.dc-foot{flex-direction:column;align-items:stretch}.act-btn{justify-content:center}}
-@media(max-width:480px){.card-body{padding:16px 14px}.msg-bubble{padding:12px 14px;font-size:13px}.msg-author{font-size:12px}.msg-date{font-size:10px}.msg-text{font-size:13px}.hdr-left h2{font-size:16px}.side-card{padding:14px}.side-card h4{font-size:13px}.side-card p{font-size:12px}.side-card .label{font-size:10px}.msg-count{font-size:12px}.reply-area{padding:14px}.reply-area textarea{font-size:13px}.reply-area .btn{font-size:12px;padding:9px 16px}}
-@media(max-width:380px){.card-body{padding:12px 10px}.msg-bubble{padding:10px 12px;font-size:12px}.msg-text{font-size:12px}.msg-author{font-size:11px}.msg-date{font-size:9px}.hdr-left h2{font-size:14px}.hdr-left span{font-size:11px}.side-card{padding:12px 10px;min-width:0}.side-card h4{font-size:12px}.side-card p{font-size:11px}.label{font-size:9px}.msg-count{font-size:11px}.reply-area{padding:12px 10px}.reply-area textarea{font-size:12px;min-height:70px}.reply-area .btn{font-size:11px;padding:8px 14px;width:100%;justify-content:center}.detail-grid{gap:10px}.info-grid{gap:6px}.info-row{padding:8px 0}.info-label{font-size:9px}.info-value{font-size:12px}.dc-foot{gap:6px}.act-btn{font-size:12px;padding:8px 14px;height:36px}}
-</style>
-@endpush
-
 @section('content')
-<div class="breadcrumb">
-  <a href="{{ route('admin.dashboard') }}">Dashboard</a>
-  <span class="bc-sep">/</span>
-  <a href="{{ route('admin.messages') }}">Messages</a>
-  <span class="bc-sep">/</span>
-  <span class="bc-cur">{{ $message->name }}</span>
-</div>
+@php
+  $isRead = (bool) $message->is_read;
+  $initials = strtoupper(substr($message->name ?? 'U', 0, 1));
+@endphp
+<div class="msg-show">
 
-<div class="page-hdr">
-  <div class="page-hdr-left">
-    <h2>Message from {{ $message->name }}</h2>
-    <p>Received {{ $message->created_at->diffForHumans() }} &middot; {{ $message->created_at->format('d M Y, h:i A') }}</p>
-  </div>
-  <a href="{{ route('admin.messages') }}" class="btn btn-secondary back-btn">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-    Back to Messages
-  </a>
-</div>
-
-@php $isRead = (bool) $message->is_read; @endphp
-<div class="detail-grid">
-
-  <div class="detail-card">
-    <div class="dc-head">
-      <div class="dc-head-left">
-        <div class="sender-av">{{ strtoupper(substr($message->name??'U',0,1)) }}</div>
-        <div>
-          <div class="sender-name">{{ $message->name }}</div>
-          <div class="sender-email">{{ $message->email }}</div>
-        </div>
+  <!-- Hero Header -->
+  <div class="msg-hero">
+    <a href="{{ route('admin.messages') }}" class="msg-hero-back" aria-label="Back to messages">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg>
+    </a>
+    <div class="msg-hero-avatar">{{ $initials }}</div>
+    <div class="msg-hero-body">
+      <h1 class="msg-hero-title">{{ $message->subject ?? 'Message' }}</h1>
+      <div class="msg-hero-meta">
+        <span class="msg-hero-from">{{ $message->name }} &lt;{{ $message->email }}&gt;</span>
+        <span class="msg-hero-sep" aria-hidden="true">·</span>
+        <time datetime="{{ $message->created_at->toIso8601String() }}">{{ $message->created_at->format('d M Y · h:i A') }}</time>
+        <span class="msg-hero-sep" aria-hidden="true">·</span>
+        <span class="msg-hero-relative">{{ $message->created_at->diffForHumans() }}</span>
       </div>
-      <span class="badge b-{{ $isRead ? 'read' : 'new' }}">
-        <span class="badge-dot"></span>{{ $isRead ? 'Read' : 'New' }}
-      </span>
     </div>
-
-    <div class="dc-body">
-      <div class="info-grid">
-        <div class="info-box">
-          <div class="info-lbl">Sender Name</div>
-          <div class="info-val">{{ $message->name }}</div>
-        </div>
-        <div class="info-box">
-          <div class="info-lbl">Email Address</div>
-          <div class="info-val">
-            <a href="mailto:{{ $message->email }}">{{ $message->email }}</a>
-          </div>
-        </div>
-        <div class="info-box">
-          <div class="info-lbl">Subject</div>
-          <div class="info-val">{{ $message->subject ?? '—' }}</div>
-        </div>
-        <div class="info-box">
-          <div class="info-lbl">Received On</div>
-          <div class="info-val">{{ $message->created_at->format('d M Y · h:i A') }}</div>
-        </div>
-      </div>
-
-      <div class="msg-lbl">Full Message</div>
-      <div class="msg-box">{{ $message->message }}</div>
-    </div>
-
-    <div class="dc-foot">
-      <button type="button" class="btn btn-secondary act-btn ab-reply reply-open">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
-        Reply via Email
+    <div class="msg-hero-actions">
+      <button type="button" class="msg-star-btn" id="starBtn" aria-label="Star message" title="Star">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
       </button>
-      <form action="{{ route('admin.messages.delete', $message->id) }}" method="POST" style="display:inline;">
-        @csrf @method('DELETE')
-        <button type="submit" class="btn btn-red act-btn ab-delete" onclick="return confirm('Delete this message permanently?')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
-          Delete Message
-        </button>
-      </form>
+      <x-button variant="primary" type="button" class="reply-open" size="sm">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+        Reply
+      </x-button>
     </div>
   </div>
 
-  <div class="side-panel">
+  <!-- Main Content -->
+  <div class="msg-content-grid">
 
-    <div class="side-card">
-      <div class="sc-head">Message Info</div>
-      <div class="sc-body">
-        <div class="sc-row">
-          <div class="sc-key">Message ID</div>
-          <div class="sc-val">#{{ $message->id }}</div>
-        </div>
-        <div class="sc-row">
-          <div class="sc-key">Status</div>
-          <div class="sc-val">
-            <span class="badge b-{{ $isRead ? 'read' : 'new' }}">
-              <span class="badge-dot"></span>{{ $isRead ? 'Read' : 'Unread' }}
-            </span>
-          </div>
-        </div>
-        <div class="sc-row">
-          <div class="sc-key">Received</div>
-          <div class="sc-val muted">{{ $message->created_at->format('d M Y') }}</div>
-        </div>
-        <div class="sc-row">
-          <div class="sc-key">Time</div>
-          <div class="sc-val muted">{{ $message->created_at->format('h:i A') }}</div>
-        </div>
-        <div class="sc-row">
-          <div class="sc-key">Relative</div>
-          <div class="sc-val muted">{{ $message->created_at->diffForHumans() }}</div>
-        </div>
+    <!-- Left Column: Message -->
+    <div class="msg-main">
+      <div class="msg-body-card">
+        <div class="msg-body-content">{{ $message->message }}</div>
       </div>
     </div>
 
-    <div class="side-card">
-      <div class="sc-head">Quick Actions</div>
-      <div class="sc-body">
-        <button type="button" class="btn btn-secondary qa-btn reply-open">
-          <span class="qa-icon qi-purple">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
-          </span>
-          Reply via Email
-        </button>
-        <button type="button" class="btn btn-secondary qa-btn" id="toggleReadBtn">
-          <span class="qa-icon qi-gray">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9l9 6 9-6"/></svg>
-          </span>
-          Mark as Unread
-        </button>
-        <a href="{{ route('admin.messages') }}" class="btn btn-secondary qa-btn">
-          <span class="qa-icon qi-gray">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-          </span>
-          All Messages
-        </a>
-        <form action="{{ route('admin.messages.delete', $message->id) }}" method="POST">
-          @csrf @method('DELETE')
-          <button type="submit" class="btn btn-red qa-btn danger" onclick="return confirm('Delete this message permanently?')">
-            <span class="qa-icon qi-red">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
-            </span>
+    <!-- Right Column: Sidebar -->
+    <aside class="msg-sidebar">
+
+      <!-- Quick Actions -->
+      <div class="msg-sidebar-card msg-actions-card">
+        <div class="msg-sidebar-header">Actions</div>
+        <div class="msg-sidebar-body">
+          <button type="button" class="msg-action-btn msg-action-primary reply-open">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+            Reply via Email
+          </button>
+          <button type="button" class="msg-action-btn msg-action-secondary" id="toggleReadBtn">
+            @if($isRead)
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9l9 6 9-6"/></svg>
+              Mark as Unread
+            @else
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              Mark as Read
+            @endif
+          </button>
+          <a href="{{ route('admin.messages') }}" class="msg-action-btn msg-action-ghost">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+            All Messages
+          </a>
+          <div class="msg-sidebar-divider"></div>
+          <button type="button" class="msg-action-btn msg-action-danger" onclick="if(confirm('Delete this message?')) document.getElementById('deleteForm').submit();">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
             Delete Message
           </button>
-        </form>
+          <form action="{{ route('admin.messages.delete', $message->id) }}" method="POST" id="deleteForm" style="display:none;">@csrf @method('DELETE')</form>
+        </div>
       </div>
-    </div>
 
+      <!-- Message Details -->
+      <div class="msg-sidebar-card msg-meta-card">
+        <div class="msg-sidebar-header">Details</div>
+        <div class="msg-sidebar-body">
+          <div class="msg-detail-row">
+            <div class="msg-detail-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div class="msg-detail-content">
+              <div class="msg-detail-label">From</div>
+              <div class="msg-detail-value">{{ $message->name }}</div>
+              <div class="msg-detail-sub">{{ $message->email }}</div>
+            </div>
+          </div>
+          <div class="msg-detail-row">
+            <div class="msg-detail-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+            <div class="msg-detail-content">
+              <div class="msg-detail-label">Received</div>
+              <div class="msg-detail-value">{{ $message->created_at->format('d M Y · h:i A') }}</div>
+              <div class="msg-detail-sub">{{ $message->created_at->diffForHumans() }}</div>
+            </div>
+          </div>
+          @if($message->subject)
+          <div class="msg-detail-row">
+            <div class="msg-detail-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            </div>
+            <div class="msg-detail-content">
+              <div class="msg-detail-label">Subject</div>
+              <div class="msg-detail-value">{{ $message->subject }}</div>
+            </div>
+          </div>
+          @endif
+          <div class="msg-detail-row">
+            <div class="msg-detail-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div class="msg-detail-content">
+              <div class="msg-detail-label">Status</div>
+              <div class="msg-detail-value">
+                <span class="msg-status-badge msg-status-{{ $isRead ? 'read' : 'unread' }}">
+                  <span class="msg-status-dot"></span>
+                  {{ $isRead ? 'Read' : 'Unread' }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </aside>
   </div>
 </div>
 
-<div class="reply-modal" id="replyModal" style="display:none;">
+<!-- Reply Modal -->
+<div class="reply-modal" id="replyModal" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="replyModalTitle">
   <div class="reply-backdrop" data-reply-close></div>
   <div class="reply-card">
     <div class="reply-head">
-      <h3>Reply to {{ $message->name }}</h3>
-      <button type="button" class="reply-x" data-reply-close aria-label="Close">✕</button>
+      <h3 id="replyModalTitle">Reply to {{ $message->name }}</h3>
+      <button type="button" class="reply-x" data-reply-close aria-label="Close reply modal">✕</button>
     </div>
     <div class="reply-body">
       <div class="r-field">
-        <label>To</label>
-        <input type="text" value="{{ $message->email }}" readonly>
+        <label for="replyTo">To</label>
+        <input type="email" id="replyTo" value="{{ $message->email }}" readonly>
       </div>
       <div class="r-field">
-        <label>Subject</label>
+        <label for="replySubject">Subject</label>
         <input type="text" id="replySubject" value="Re: {{ $message->subject ?? 'Your message' }}">
       </div>
       <div class="r-field">
-        <label>Message</label>
+        <label for="replyBody">Message</label>
         <textarea id="replyBody" rows="6" placeholder="Write your reply…"></textarea>
       </div>
       <div class="reply-quote">
@@ -276,11 +171,11 @@
     <div class="reply-foot">
       <a class="reply-mailto" href="mailto:{{ $message->email }}">Open in email app instead</a>
       <div class="reply-actions">
-        <button type="button" class="btn btn-secondary reply-cancel" data-reply-close>Cancel</button>
-        <button type="button" class="btn btn-primary reply-send" id="replySend">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+        <x-button variant="secondary" type="button" class="reply-cancel">Cancel</x-button>
+        <x-button variant="primary" type="button" class="reply-send" id="replySend">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
           Send Reply
-        </button>
+        </x-button>
       </div>
     </div>
   </div>
@@ -310,25 +205,40 @@
     }, 4200);
   }
 
+  /* star toggle */
+  var starBtn = document.getElementById('starBtn');
+  if(starBtn){
+    starBtn.addEventListener('click', function(){
+      var active = starBtn.classList.toggle('is-starred');
+      starBtn.setAttribute('aria-label', active ? 'Unstar message' : 'Star message');
+      starBtn.setAttribute('title', active ? 'Unstar' : 'Star');
+      toast(active ? 'Message starred.' : 'Star removed.', 'success');
+    });
+  }
+
   /* mark as read / unread */
-  var btn = document.getElementById('toggleReadBtn');
-  if(btn){
+  var toggleBtn = document.getElementById('toggleReadBtn');
+  if(toggleBtn){
     var url = "{{ route('admin.messages.toggle-read', $message->id) }}";
-    btn.addEventListener('click', function(){
+    toggleBtn.addEventListener('click', function(){
       fetch(url, { method: 'POST', headers: { 'X-CSRF-TOKEN': csrf, 'Accept':'application/json' } })
       .then(function(r){ return r.json(); })
       .then(function(d){
         if(!d.ok) return;
-        var badges = document.querySelectorAll('.badge');
+        var badges = document.querySelectorAll('.msg-status-badge');
         badges.forEach(function(b){
-          b.className = 'badge b-' + (d.is_read ? 'read' : 'new');
-          b.innerHTML = '<span class="badge-dot"></span>' + (d.is_read ? 'Read' : 'New');
+          b.className = 'msg-status-badge msg-status-' + (d.is_read ? 'read' : 'unread');
+          b.innerHTML = '<span class="msg-status-dot"></span>' + (d.is_read ? 'Read' : 'Unread');
         });
-        btn.querySelector('span.qa-icon').innerHTML = d.is_read
-          ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9l9 6 9-6"/></svg>'
-          : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
-        btn.childNodes[btn.childNodes.length-1].textContent = d.is_read ? ' Mark as Unread' : ' Mark as Read';
-
+        var icon = toggleBtn.querySelector('svg');
+        var label = toggleBtn.childNodes[toggleBtn.childNodes.length - 1];
+        if(d.is_read){
+          icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M3 9l9 6 9-6"/>';
+          label.textContent = ' Mark as Unread';
+        } else {
+          icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>';
+          label.textContent = ' Mark as Read';
+        }
         var chip = document.getElementById('sidebarUnread');
         if(chip){
           var cur = parseInt(chip.textContent, 10) || 0;

@@ -1,57 +1,24 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
+
+@push('page_css')
+@vite('resources/css/admin/entries/misc.css')
+@endpush
+
 
 @section('sidebar_fundraiser_levels', 'active')
 @section('page_title', 'Fundraiser Levels')
-@section('page_subtitle', 'Configure fundraiser progression & requirements')
+@section('page_subtitle', 'Configure fundraiser ')
 
 @section('topbar_left')
-  <a href="{{ route('admin.dashboard') }}" class="back-btn">
+  <x-button variant="secondary" href="{{ route('admin.dashboard') }}">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5m7 7l-7-7 7-7"/></svg>
     Dashboard
-  </a>
-  <a href="{{ route('admin.fundraiser-levels.create') }}" class="add-btn">
+  </x-button>
+  <x-button variant="primary" href="{{ route('admin.fundraiser-levels.create') }}">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
     Add Level
-  </a>
+  </x-button>
 @endsection
-
-@push('page_styles')
-<style>
-.main-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;}
-.card-head{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--border);background:var(--surface2);}
-.card-head-icon{width:30px;height:30px;border-radius:8px;background:var(--a-lt);color:var(--a);display:flex;align-items:center;justify-content:center;}
-.card-head-icon svg{width:14px;height:14px;}
-.card-head-title{font-size:11.5px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.09em;font-family:var(--mono);}
-.card-head-count{font-size:10.5px;color:var(--text3);font-family:var(--mono);background:var(--surface);border:1px solid var(--border2);padding:2px 8px;border-radius:100px;}
-.level-list{display:flex;flex-direction:column;gap:14px;padding:20px;}
-.level-card{display:flex;align-items:flex-start;gap:16px;border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;background:var(--surface2);transition:border-color .2s,box-shadow .2s;}
-.level-card:hover{border-color:var(--border2);box-shadow:var(--sh-md);}
-.level-badge{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;flex-shrink:0;font-family:var(--mono);}
-.level-main{flex:1;min-width:0;}
-.level-name{font-size:15px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px;}
-.def-pill{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;font-family:var(--mono);padding:2px 7px;border-radius:100px;background:var(--a-lt);color:var(--a);border:1px solid rgba(37,99,235,.2);}
-.level-desc{font-size:12.5px;color:var(--text3);margin-top:3px;line-height:1.5;}
-.level-attrs{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
-.attr{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-family:var(--mono);color:var(--text2);background:var(--surface);border:1px solid var(--border2);padding:4px 9px;border-radius:100px;}
-.attr svg{width:11px;height:11px;color:var(--text3);}
-.apr-pill{font-size:10px;font-weight:700;font-family:var(--mono);text-transform:uppercase;letter-spacing:.04em;padding:3px 9px;border-radius:100px;}
-.ap-yes{background:rgba(245,158,11,.12);color:#d97706;border:1px solid rgba(245,158,11,.22);}
-.ap-no{background:rgba(5,196,138,.12);color:var(--green);border:1px solid rgba(5,196,138,.22);}
-.actions{display:flex;align-items:center;gap:5px;flex-shrink:0;}
-.act-btn{display:inline-flex;align-items:center;gap:4px;padding:5px 11px;border-radius:7px;font-size:11.5px;font-weight:500;text-decoration:none;border:1px solid transparent;transition:all .15s;cursor:pointer;font-family:var(--font);white-space:nowrap;}
-.act-btn svg{width:11px;height:11px;}
-.act-edit{background:var(--blue-lt);color:var(--blue);border-color:rgba(59,130,246,.18);}
-.act-edit:hover{background:var(--blue);color:#fff;transform:translateY(-1px);}
-.act-del{background:var(--red-lt);color:var(--red);border-color:rgba(240,68,68,.18);}
-.act-del:hover{background:var(--red);color:#fff;transform:translateY(-1px);}
-.empty-state{padding:64px 24px;text-align:center;}
-.empty-icon-wrap{width:64px;height:64px;border-radius:18px;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 16px;}
-.empty-state h3{font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;}
-.back-btn{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 16px;background:var(--surface2);color:var(--text2);border:1px solid var(--border2);border-radius:var(--r-sm);font-size:12.5px;font-weight:600;cursor:pointer;transition:all var(--ease);font-family:var(--font);text-decoration:none;}
-.back-btn:hover{border-color:var(--a);color:var(--a);background:var(--a-lt);}
-.back-btn svg{width:13px;height:13px;}
-</style>
-@endpush
 
 @section('content')
 <div class="main-card">
@@ -89,7 +56,7 @@
         <div class="actions">
           <a href="{{ route('admin.fundraiser-levels.edit', $level->id) }}" class="btn btn-secondary act-btn act-edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</a>
           <form method="POST" action="{{ route('admin.fundraiser-levels.destroy', $level->id) }}" onsubmit="return confirm('Delete this level?');">@csrf @method('DELETE')
-            <button type="submit" class="btn btn-red act-btn act-del"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg></button>
+            <x-button variant="destructive" type="submit" class="act-del"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg></x-button>
           </form>
         </div>
       </div>

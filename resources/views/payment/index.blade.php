@@ -237,26 +237,19 @@
                 auto-open Razorpay on page load. Prevents the modal from
                 re-opening when the user refreshes after a completed payment.
             --}}
-            <button id="rzp-button" type="button"
-                    class="btn btn-primary w-full"
-                    data-payment-status="{{ $donation->payment_status ?? 'pending' }}">
-
-                <span class="flex items-center justify-center gap-2">
-
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                         width="17"
-                         height="17"
-                         viewBox="0 0 24 24"
-                         fill="none"
-                         stroke="currentColor"
-                         stroke-width="2">
-                        <rect x="3" y="11" width="18" height="11" rx="2"/>
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                    </svg>
-
-                    Pay ₹{{ number_format($amount, 2) }} Securely
-                </span>
-            </button>
+            <x-button id="rzp-button" type="button" variant="primary" fullWidth data-payment-status="{{ $donation->payment_status ?? 'pending' }}">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     width="17"
+                     height="17"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2"/>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+                Pay ₹{{ number_format($amount, 2) }} Securely
+            </x-button>
 
             {{-- Cancel / Back link --}}
             <a id="cancel-link"
@@ -422,11 +415,7 @@
             cancelLink.style.visibility = "hidden";
 
             payBtn.innerHTML = `
-                <span class="flex items-center justify-center gap-2">
-                    <span class="btn-spinner"></span>
-                    Verifying Payment...
-                </span>
-            `;
+                <span class="spinner"><span class="btn__label">Verifying Payment...</span></span>`;
 
             // Guarantee the "Verifying" state is visible for at least 1s,
             // even if the server responds instantly, so the user actually
@@ -517,11 +506,7 @@
         payBtn.disabled = true;
 
         payBtn.innerHTML = `
-            <span class="flex items-center justify-center gap-2">
-                <span class="btn-spinner"></span>
-                Opening Payment Gateway...
-            </span>
-        `;
+            <span class="spinner"><span class="btn__label">Opening Payment Gateway...</span></span>`;
 
         rzp.open();
     });

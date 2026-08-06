@@ -6,7 +6,7 @@ class RetryPolicy
 {
     public function __construct(
         private readonly int $maxRetries = 4,
-        private readonly array $backoffMinutes = [2, 5, 15, 60],
+        private readonly array $backoffMinutes = [1, 5, 15, 60],
         private readonly int $maxJitterSeconds = 30
     ) {}
 

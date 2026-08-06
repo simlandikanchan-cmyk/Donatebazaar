@@ -8,10 +8,10 @@
         <h2>Edit Blog</h2>
         <p>Update "{{ Str::limit($blog->title, 50) }}"</p>
     </div>
-    <a href="{{ route('user.blogs.index') }}" class="btn btn-secondary">
+    <x-button variant="secondary" href="{{ route('user.blogs.index') }}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
         Back to Blogs
-    </a>
+    </x-button>
 </div>
 
 <form action="{{ route('user.blogs.update', $blog) }}" method="POST" enctype="multipart/form-data">
@@ -140,33 +140,26 @@
     <div class="action-bar">
         <p class="action-bar-info">All changes will be saved and submitted for review.</p>
         <div class="action-btns">
-            <a href="{{ route('user.blogs.index') }}" class="btn btn-secondary">
+            <x-button variant="secondary" href="{{ route('user.blogs.index') }}">
                 Cancel
-            </a>
-            <button type="submit"
-                    name="action"
-                    value="draft"
-                    class="btn btn-secondary">
+            </x-button>
+            <x-button variant="secondary" type="submit">
                 Save Draft
-            </button>
+            </x-button>
             @if($blog->status == 'draft')
-                <button type="submit"
-                        name="action"
-                        value="publish"
-                        class="btn btn-primary">
+                <x-button variant="primary" type="submit">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                     </svg>
                     Publish Blog
-                </button>
+                </x-button>
             @else
-                <button type="submit"
-                        class="btn btn-primary">
+                <x-button variant="primary" type="submit">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                     </svg>
                     Update Blog
-                </button>
+                </x-button>
             @endif
         </div>
     </div>

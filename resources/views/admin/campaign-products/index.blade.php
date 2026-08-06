@@ -1,70 +1,13 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
+
+@push('page_css')
+@vite('resources/css/admin/entries/campaigns.css')
+@endpush
+
 
 @section('page_title', 'Campaign Products')
 @section('page_subtitle', 'Review and manage fundraiser products')
 @section('sidebar_campaign-products', 'active')
-
-@push('page_styles')
-<style>
-/* ── Toolbar / filters (shared admin design system) ── */
-.toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
-.toolbar-left{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-.search-wrap{position:relative;}
-.search-wrap .si{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--text3);pointer-events:none;}
-.search-input{width:240px;height:38px;padding:0 12px 0 34px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--r-sm);font-size:12.5px;color:var(--text);font-family:var(--font);outline:none;transition:border-color var(--ease),box-shadow var(--ease),width .3s ease;}
-.search-input::placeholder{color:var(--text3);}
-.search-input:focus{border-color:var(--a);box-shadow:0 0 0 3px var(--a-glow);width:280px;}
-.select-wrap{position:relative;}
-.select-wrap .si{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--text3);pointer-events:none;z-index:1;}
-.filter-select{height:38px;padding:0 30px 0 34px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--r-sm);font-size:12.5px;color:var(--text2);font-family:var(--font);outline:none;cursor:pointer;transition:all var(--ease);appearance:none;-webkit-appearance:none;-moz-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239096b4' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center;background-size:13px;}
-.filter-select:hover,.filter-select:focus{border-color:var(--a);color:var(--a);background-color:var(--a-lt);box-shadow:0 0 0 3px var(--a-glow);}
-.date-input{height:38px;padding:0 12px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--r-sm);font-size:12.5px;color:var(--text2);font-family:var(--font);outline:none;cursor:pointer;transition:all var(--ease);color-scheme:light;}
-.date-input:hover,.date-input:focus{border-color:var(--a);color:var(--a);background-color:var(--a-lt);}
-.filter-sep{color:var(--text3);font-size:13px;}
-.clear-btn{display:inline-flex;align-items:center;gap:5px;height:38px;padding:0 13px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--r-sm);font-size:12px;color:var(--text3);text-decoration:none;transition:all var(--ease);}
-.clear-btn:hover{border-color:var(--red);color:var(--red);background:var(--red-lt);}
-.toolbar-right{display:flex;align-items:center;gap:8px;}
-.export-btn{display:inline-flex;align-items:center;gap:6px;height:38px;padding:0 15px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--r-sm);font-size:12.5px;font-weight:500;color:var(--text2);text-decoration:none;cursor:pointer;transition:all var(--ease);}
-.export-btn:hover{border-color:var(--green);color:var(--green);background:rgba(5,196,138,.06);}
-.export-btn svg{width:14px;height:14px;}
-
-/* ── Card header variants ── */
-.card-head-right{display:flex;align-items:center;gap:8px;}
-.card-head-count{font-size:10.5px;color:var(--text3);font-family:var(--mono);}
-
-/* ── Bulk action bar ── */
-.cp-bulkbar{display:none;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 20px;background:var(--a-lt);border-bottom:1px solid var(--a);}
-.cp-bulkbar strong{color:var(--a);font-family:var(--mono);}
-.cp-bulk-acts{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-.cp-bulk-btn{display:inline-flex;align-items:center;gap:5px;height:34px;padding:0 14px;border-radius:var(--r-sm);font-size:12px;font-weight:600;border:1px solid transparent;cursor:pointer;font-family:var(--font);transition:all var(--ease);}
-.cp-bulk-approve{background:var(--green);color:#fff;}
-.cp-bulk-approve:hover{filter:brightness(1.05);}
-.cp-bulk-reject{background:var(--red);color:#fff;}
-.cp-bulk-reject:hover{filter:brightness(1.05);}
-.cp-bulk-clear{background:var(--surface);border-color:var(--border2);color:var(--text3);}
-.cp-bulk-clear:hover{color:var(--text2);border-color:var(--text3);}
-
-/* ── Table action buttons ── */
-.cp-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
-.cp-del{width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--border2);border-radius:var(--r-sm);background:var(--surface);color:var(--text3);cursor:pointer;transition:all var(--ease);}
-.cp-del:hover{border-color:var(--red);color:var(--red);background:var(--red-lt);}
-.cp-del svg{width:14px;height:14px;}
-.cp-meta{font-size:11px;color:var(--text3);line-height:1.5;}
-.meta-name{color:var(--text2);font-weight:600;}
-
-@media(max-width:960px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:860px){
-  .search-input{width:100%;}.search-input:focus{width:100%;}
-  .search-wrap{flex:1;min-width:180px;}
-  .filter-bar-inner{flex-direction:column;align-items:stretch;}
-}
-@media(max-width:700px){.toolbar{flex-direction:column;align-items:stretch}.toolbar-left{flex-wrap:wrap}.select-wrap{flex:1;min-width:0}.filter-select{width:100%}.date-input{width:100%}.filter-sep{text-align:center}.toolbar-right{width:100%}.toolbar-right .export-btn{flex:1;justify-content:center}}
-@media(max-width:640px){.card-head{flex-direction:column;align-items:flex-start;gap:8px}.cp-bulkbar{flex-direction:column;align-items:stretch;gap:10px}.cp-bulk-acts{justify-content:center}}
-@media(max-width:540px){.stats-grid{grid-template-columns:1fr 1fr;gap:10px}.stat{padding:12px 14px}.stat-icon{width:32px;height:32px;border-radius:8px}.stat-icon svg{width:13px;height:13px}.stat-val{font-size:15px}}
-@media(max-width:480px){.stats-grid{grid-template-columns:1fr}}
-@media(max-width:380px){.toolbar-left{gap:4px;}.search-wrap{min-width:0;width:100%;}.select-wrap{width:100%;}.filter-select{width:100%;}.date-input{flex:1;min-width:0;}.filter-sep{display:none;}.toolbar-right{width:100%;}.export-btn{width:100%;justify-content:center;}.p-table{font-size:11px;}.p-table th,.p-table td{padding:8px 8px;}.stats-grid{gap:6px;}.stat{padding:10px 12px;gap:8px;}.stat-icon{width:30px;height:30px;border-radius:8px;}.stat-icon svg{width:13px;height:13px;}.stat-val{font-size:1rem;}.cp-bulkbar{padding:10px 14px;flex-direction:column;gap:8px;}}
-</style>
-@endpush
 
 @section('content')
 
@@ -193,15 +136,15 @@
   <div id="bulkBar" class="cp-bulkbar">
     <span><strong id="bulkCount">0</strong> product(s) selected</span>
     <div class="cp-bulk-acts">
-      <button type="button" class="btn btn-green cp-bulk-btn cp-bulk-approve" onclick="bulkApprove()">
+      <x-button variant="primary" type="button" class="cp-bulk-approve">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"/></svg>
         Approve All
-      </button>
-      <button type="button" class="btn btn-red cp-bulk-btn cp-bulk-reject" onclick="openBulkRejectModal()">
+      </x-button>
+      <x-button variant="destructive" type="button" class="cp-bulk-reject">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
         Reject All
-      </button>
-      <button type="button" class="btn btn-secondary cp-bulk-btn cp-bulk-clear" onclick="clearSelection()">Clear Selection</button>
+      </x-button>
+      <x-button variant="secondary" type="button" class="cp-bulk-clear">Clear Selection</x-button>
     </div>
   </div>
 
@@ -342,12 +285,11 @@
                 @if($product->approval_status === 'pending')
                   <form action="{{ route('admin.campaign-products.approve', $product) }}" method="POST" style="display:inline;">
                     @csrf
-                    <button type="submit" class="btn btn-green c-btn c-btn-approve">Approve</button>
+                    <x-button variant="primary" type="submit" class="c-btn">Approve</x-button>
                   </form>
-                  <button type="button" class="btn btn-red c-btn c-btn-reject"
-                          onclick="showRejectModal({{ $product->id }}, '{{ addslashes($product->name) }}')">
+                  <x-button variant="destructive" type="button" class="c-btn" onclick="showRejectModal({{ $product->id }}, '{{ addslashes($product->name) }}')">
                     Reject
-                  </button>
+                  </x-button>
                 @else
                   <span class="cp-meta">
                     @if($product->approved_by && $product->approved_at)
@@ -361,9 +303,9 @@
                       onsubmit="return confirm('Delete product &quot;{{ addslashes($product->name) }}&quot;? This cannot be undone.')">
                   @csrf
                   @method('DELETE')
-                  <button type="submit" class="btn btn-red cp-del" title="Delete product">
+                  <x-button variant="destructive" type="submit" class="cp-del">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m2 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg>
-                  </button>
+                  </x-button>
                 </form>
               </div>
             </td>
@@ -399,8 +341,8 @@
       <div class="modal-lbl">Reason <span>*</span></div>
       <textarea name="reason" class="modal-ta" rows="3" placeholder="Provide a reason for rejection..." required minlength="10" maxlength="500" style="width:100%;"></textarea>
       <div class="modal-acts">
-        <button type="button" class="btn btn-secondary modal-btn modal-cancel" onclick="closeRejectModal()">Cancel</button>
-        <button type="submit" class="btn btn-red modal-btn modal-red">Reject Product</button>
+        <x-button variant="secondary" type="button" class="modal-btn">Cancel</x-button>
+        <x-button variant="destructive" type="submit" class="modal-btn">Reject Product</x-button>
       </div>
     </form>
   </div>
@@ -427,8 +369,8 @@
       <div class="modal-lbl">Reason <span>*</span></div>
       <textarea name="reason" class="modal-ta" rows="3" placeholder="Provide a reason for rejection..." required minlength="10" maxlength="500" style="width:100%;"></textarea>
       <div class="modal-acts">
-        <button type="button" class="btn btn-secondary modal-btn modal-cancel" onclick="closeBulkRejectModal()">Cancel</button>
-        <button type="submit" class="btn btn-red modal-btn modal-red">Reject Products</button>
+        <x-button variant="secondary" type="button" class="modal-btn">Cancel</x-button>
+        <x-button variant="destructive" type="submit" class="modal-btn">Reject Products</x-button>
       </div>
     </form>
   </div>

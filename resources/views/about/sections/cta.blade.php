@@ -9,14 +9,14 @@
         </h2>
         <p class="cta-sub reveal d2">Join 50,000+ donors already making a difference across India. Every rupee counts — start giving or start a campaign today.</p>
         <div class="cta-btns reveal d3">
-            <a href="{{ route('campaigns.index') }}" class="btn btn-white" style="font-size:15px;padding:15px 34px">
+            <x-button variant="primary" href="{{ route('campaigns.index') }}">
                 Donate Now
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </a>
-            <a href="/campaign/create" class="btn btn-outline" style="font-size:15px;padding:15px 34px">
+            </x-button>
+            <x-button variant="outline" href="/campaign/create">
                 Start Fundraiser
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 4v16m8-8H4"/></svg>
-            </a>
+            </x-button>
         </div>
         <div class="cta-trust reveal d4">
             <div class="cta-trust-item">

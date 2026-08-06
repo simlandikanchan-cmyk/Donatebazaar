@@ -268,6 +268,12 @@ class CampaignController extends Controller
             $message = 'You are now following this campaign — you\'ll be notified about new events.';
         }
 
+        // The public campaign page is cached per user — clear it so the
+        // Follow button state and follower count update immediately.
+        $categorySlug = optional($campaign->category)->slug;
+        Cache::forget("campaign:show:{$categorySlug}:{$campaign->slug}:" . $user->id);
+        Cache::forget("campaign:show:{$categorySlug}:{$campaign->slug}:guest");
+
         return back()->with('success', $message);
     }
 
@@ -320,8 +326,55 @@ class CampaignController extends Controller
             }
         }
 
+        if ($request->filled('location') && $request->location !== 'all') {
+            $locationLabel = ucwords(str_replace('_', ' ', $request->location));
+            $query->where(function ($q) use ($locationLabel) {
+                $q->where('location', 'like', "%{$locationLabel}%")
+                    ->orWhere('location_text', 'like', "%{$locationLabel}%");
+            });
+        }
+
+        if ($request->filled('campaign_type') && $request->campaign_type !== 'all') {
+            switch ($request->campaign_type) {
+                case 'active':
+                    $query->where('campaign_state', 'active');
+                    break;
+                case 'closed':
+                    $query->where('campaign_state', 'completed');
+                    break;
+                case 'urgent':
+                    $query->where('is_urgent', true);
+                    break;
+                case 'newly_launched':
+                    $query->where('created_at', '>=', now()->subDays(7));
+                    break;
+                case 'most_raised':
+                    $query->orderByDesc('raised_amount');
+                    break;
+            }
+        }
+
+        if ($request->filled('funding') && $request->funding !== 'any') {
+            switch ($request->funding) {
+                case 'lt25':
+                    $query->whereRaw('(raised_amount / NULLIF(goal_amount, 0)) * 100 < 25');
+                    break;
+                case '25to75':
+                    $query->whereRaw('(raised_amount / NULLIF(goal_amount, 0)) * 100 BETWEEN 25 AND 75');
+                    break;
+                case 'gt75':
+                    $query->whereRaw('(raised_amount / NULLIF(goal_amount, 0)) * 100 > 75');
+                    break;
+                case '100':
+                    $query->where('goal_amount', '>', 0)->whereColumn('raised_amount', '>=', 'goal_amount');
+                    break;
+            }
+        }
+
         switch ($request->sort) {
             case 'most_funded': $query->orderByDesc('raised_amount');
+                break;
+            case 'most_donors': $query->orderByDesc('donations_count');
                 break;
             case 'ending_soon': $query->orderBy('end_date');
                 break;

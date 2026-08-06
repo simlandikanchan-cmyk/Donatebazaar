@@ -1,14 +1,12 @@
 <div class="db-navbar__actions">
 
-    <a href="{{ route('search') }}" class="db-icon-btn" aria-label="Search">
+    <x-button variant="outline" iconOnly href="{{ route('search') }}" aria-label="Search">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-    </a>
+    </x-button>
 
     @auth
 
-        <a href="{{ Route::has('campaign.create') ? route('campaign.create') : '/campaign/create' }}"
-           class="db-btn db-btn--primary"
-           aria-label="Start a new fundraiser">
+        <x-button variant="primary" href="{{ Route::has('campaign.create') ? route('campaign.create') : '/campaign/create' }}">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
                  stroke="currentColor" stroke-width="2.8" stroke-linecap="round"
                  aria-hidden="true" focusable="false">
@@ -16,16 +14,15 @@
                 <line x1="5" y1="12" x2="19" y2="12"/>
             </svg>
             Start Fundraise
-        </a>
+        </x-button>
 
         @php $unread = (int) auth()->user()->unreadNotifications()->count(); @endphp
         <div class="db-notif" id="notif-wrapper">
-            <button class="db-icon-btn"
-                    id="notif-btn"
-                    aria-label="Notifications{{ $unread > 0 ? " — {$unread} unread" : '' }}"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                    aria-controls="notif-panel">
+            <x-button variant="outline" iconOnly type="button" id="notif-btn"
+                     aria-haspopup="true"
+                     aria-expanded="false"
+                     aria-controls="notif-panel"
+                     aria-label="Notifications">
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
                       stroke="currentColor" stroke-width="1.8"
                       stroke-linecap="round" stroke-linejoin="round"
@@ -40,7 +37,7 @@
                 @else
                     <span class="db-badge" id="notif-badge" hidden aria-hidden="true">0</span>
                 @endif
-            </button>
+            </x-button>
 
             <div class="db-dropdown db-notif__panel"
                  id="notif-panel"
@@ -185,8 +182,8 @@
 
     @else
 
-        <a href="{{ route('login') }}" class="db-btn db-btn--ghost">Log in</a>
-        <a href="{{ route('register') }}" class="db-btn db-btn--primary">Get Started</a>
+        <x-button variant="outline" href="{{ route('login') }}">Log in</x-button>
+        <x-button variant="primary" href="{{ route('register') }}">Get Started</x-button>
 
     @endauth
 

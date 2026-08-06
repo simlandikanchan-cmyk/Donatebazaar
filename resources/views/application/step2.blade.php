@@ -12,7 +12,7 @@
         <div class="field-wrap">
           <label class="field-label">Full name <span class="req">*</span></label>
           <input type="text" name="contact_name" class="field-input" value="{{ old('contact_name', $application->contact_name ?? '') }}" placeholder="e.g. Priya Sharma">
-          @error('contact_name')<p class="field-hint" style="color:var(--danger)">{{ $message }}</p>@enderror
+          @error('contact_name')<p class="field-hint field-hint--err">{{ $message }}</p>@enderror
         </div>
         <div class="field-wrap">
           <label class="field-label">Role / designation</label>
@@ -23,7 +23,7 @@
       <div class="field-wrap">
         <label class="field-label">Email address <span class="req">*</span></label>
         <input type="email" name="contact_email" class="field-input" value="{{ old('contact_email', $application->contact_email ?? '') }}" placeholder="contact@yourorg.org">
-        @error('contact_email')<p class="field-hint" style="color:var(--danger)">{{ $message }}</p>@enderror
+        @error('contact_email')<p class="field-hint field-hint--err">{{ $message }}</p>@enderror
       </div>
 
       <div class="field-grid">
@@ -33,7 +33,7 @@
             <span class="prefix-icon">+91</span>
             <input type="tel" name="contact_phone" class="field-input" value="{{ old('contact_phone', $application->contact_phone ?? '') }}" placeholder="98765 43210">
           </div>
-          @error('contact_phone')<p class="field-hint" style="color:var(--danger)">{{ $message }}</p>@enderror
+          @error('contact_phone')<p class="field-hint field-hint--err">{{ $message }}</p>@enderror
         </div>
         <div class="field-wrap">
           <label class="field-label">WhatsApp</label>

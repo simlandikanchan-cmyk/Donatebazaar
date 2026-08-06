@@ -56,3 +56,4 @@ class SettlementPaidNotification extends Notification implements ShouldQueue
         ];
     }
 }
+

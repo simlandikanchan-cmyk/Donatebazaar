@@ -309,7 +309,7 @@ select.field-input{
 
 /* Expandable cert section */
 .cert-expand{margin-top:12px;display:none;padding-top:14px;border-top:1px solid var(--indigo-pale)}
-.cert-expand.open{display:grid;grid-template-columns:1fr 1fr;gap:14px;animation:panelIn .25s ease}
+.cert-expand.open{display:grid;grid-template-columns:var(--grid-cols,1fr 1fr);gap:14px;animation:panelIn .25s ease}
 
 /* ══════════════════════════════════════════
    CAUSE CHIPS
@@ -353,12 +353,6 @@ select.field-input{
 .doc-upload-item.uploaded .doc-icon svg{color:var(--green)}
 .doc-name{font-size:13.5px;font-weight:500;color:var(--ink)}
 .doc-size{font-size:11.5px;color:var(--ink-muted);margin-top:2px}
-.doc-upload-btn{
-  display:inline-flex;align-items:center;gap:6px;padding:7px 16px;
-  border-radius:100px;border:1.5px solid var(--border);
-  background:var(--white);color:var(--ink-soft);font-size:12px;font-weight:500;
-  cursor:pointer;font-family:var(--font);transition:.2s;flex-shrink:0;
-}
 .doc-upload-btn:hover{border-color:var(--purple-main);color:var(--purple-main)}
 .doc-upload-item.uploaded .doc-upload-btn{border-color:var(--green-border);color:var(--green)}
 
@@ -414,33 +408,14 @@ select.field-input{
   display:flex;justify-content:space-between;align-items:center;
   margin-top:38px;padding-top:28px;border-top:1px solid var(--indigo-pale);
 }
-.btn-back{
-  display:inline-flex;align-items:center;gap:8px;
-  background:transparent;color:var(--ink-soft);
-  border:1.5px solid var(--border);padding:13px 22px;border-radius:14px;
-  font-family:var(--font);font-size:14px;font-weight:400;cursor:pointer;
-  text-decoration:none;
-  transition:border-color .2s,color .2s,background .2s;
-}
 .btn-back:hover{border-color:var(--purple-light);color:var(--purple-main);background:var(--purple-mist)}
-.btn-back svg{width:15px;height:15px}
 
-.btn-next{
-  display:inline-flex;align-items:center;gap:10px;
-  background:linear-gradient(135deg,var(--purple-main) 0%,var(--indigo-main) 100%);
-  color:var(--white);border:none;padding:14px 32px;border-radius:14px;
-  font-family:var(--font);font-size:14px;font-weight:500;cursor:pointer;
-  box-shadow:0 6px 22px rgba(37,99,235,.42),0 2px 6px rgba(37,99,235,.28);
-  transition:opacity .2s,transform .2s,box-shadow .2s;
-  position:relative;overflow:hidden;letter-spacing:.02em;
-}
 .btn-next::before{
   content:'';position:absolute;inset:0;
   background:linear-gradient(135deg,rgba(255,255,255,.14),transparent);
 }
 .btn-next:hover{opacity:.93;transform:translateY(-2px);box-shadow:0 10px 30px rgba(37,99,235,.48)}
 .btn-next:active{transform:scale(.97)}
-.btn-next svg{width:15px;height:15px}
 
 /* ══════════════════════════════════════════
    TOAST
@@ -576,12 +551,23 @@ select.field-input{
 @media(max-width:640px){
   .card-header,.card-body{padding-left:22px;padding-right:22px}
   .form-nav{flex-direction:column-reverse;gap:12px}
-  .btn-back,.btn-next{width:100%;justify-content:center}
   .cert-expand.open{grid-template-columns:1fr}
 }
 @media(max-width:600px){
   .field-grid,.field-grid-3{grid-template-columns:1fr}
 }
+
+/* —€—€ UTILITY CLASSES —€—€ */
+.field-hint--mt{margin-top:-10px}
+.field-stack{display:flex;flex-direction:column;gap:10px}
+.alert{padding:14px 18px;border-radius:var(--radius-sm);font-size:13px;line-height:1.6;border:1px solid;margin-bottom:24px;}
+.alert-danger{background:var(--danger-bg);border-color:rgba(220,38,38,.2);border-left:4px solid var(--danger);color:#991b1b;}
+.alert ul{padding-left:18px;margin:0;}
+.btn-icon-sm{width:15px;height:15px;flex-shrink:0;}
+.btn-icon-xs{width:13px;height:13px;flex-shrink:0;}
+.stepper-icon{width:14px;height:14px;flex-shrink:0;}
+.input-upper{text-transform:uppercase;}
+.field-hint--err{color:var(--danger);}
 </style>
 </head>
 <body>
@@ -619,15 +605,15 @@ select.field-input{
         <div class="stext"><strong>Approved</strong>Go live on platform</div>
       </div>
     </div>
-    <a href="{{ route('dashboard') }}" class="btn-dashboard">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px">
+    <x-button variant="primary" href="{{ route('dashboard') }}">
+      <svg class="btn-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <rect x="3" y="3" width="7" height="7" rx="1"/>
         <rect x="14" y="3" width="7" height="7" rx="1"/>
         <rect x="14" y="14" width="7" height="7" rx="1"/>
         <rect x="3" y="14" width="7" height="7" rx="1"/>
       </svg>
       Go to dashboard
-    </a>
+    </x-button>
   </div>
 </div>
 
@@ -650,7 +636,7 @@ select.field-input{
       <div class="stepper-item {{ $currentStep == 1 ? 'active' : ($currentStep > 1 ? 'done' : '') }}" id="sitem-1">
         <div class="stepper-dot {{ $currentStep == 1 ? 'active' : ($currentStep > 1 ? 'done' : '') }}">
           @if($currentStep > 1)
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px"><path d="M20 6L9 17l-5-5"/></svg>
+            <svg class="stepper-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
           @else
             1
           @endif
@@ -662,7 +648,7 @@ select.field-input{
       <div class="stepper-item {{ $currentStep == 2 ? 'active' : ($currentStep > 2 ? 'done' : '') }}" id="sitem-2">
         <div class="stepper-dot {{ $currentStep == 2 ? 'active' : ($currentStep > 2 ? 'done' : '') }}">
           @if($currentStep > 2)
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px"><path d="M20 6L9 17l-5-5"/></svg>
+            <svg class="stepper-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
           @else
             2
           @endif
@@ -674,7 +660,7 @@ select.field-input{
       <div class="stepper-item {{ $currentStep == 3 ? 'active' : ($currentStep > 3 ? 'done' : '') }}" id="sitem-3">
         <div class="stepper-dot {{ $currentStep == 3 ? 'active' : ($currentStep > 3 ? 'done' : '') }}">
           @if($currentStep > 3)
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px"><path d="M20 6L9 17l-5-5"/></svg>
+            <svg class="stepper-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
           @else
             3
           @endif
@@ -724,13 +710,13 @@ select.field-input{
 
         {{-- Validation errors --}}
         @if ($errors->any())
-          <div style="background:var(--danger-bg);border:1px solid rgba(220,38,38,.2);border-left:4px solid var(--danger);color:#991b1b;padding:14px 18px;border-radius:14px;font-size:13px;margin-bottom:24px;line-height:1.6;">
-            <ul style="padding-left:18px">
+          <x-alert type="danger">
+            <ul>
               @foreach ($errors->all() as $error)
                 <li>{{ $error }}</li>
               @endforeach
             </ul>
-          </div>
+          </x-alert>
         @endif
 
         {{-- Navigation --}}
@@ -738,12 +724,12 @@ select.field-input{
 
           {{-- Back button --}}
           @if($currentStep > 1)
-            <a href="{{ route('application.step' . ($currentStep - 1)) }}" class="btn-back">
+            <x-button variant="secondary" href="{{ route('application.step' . ($currentStep - 1)) }}">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M19 12H5M12 19l-7-7 7-7"/>
               </svg>
               Back
-            </a>
+            </x-button>
           @else
             <div></div>
           @endif
@@ -752,19 +738,19 @@ select.field-input{
 
           {{-- Next / Submit button --}}
           @if($currentStep < 4)
-            <button type="submit" form="step-form" class="btn-next">
+            <x-button variant="primary" type="submit">
               Save &amp; continue
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M5 12h14M12 5l7 7-7 7"/>
               </svg>
-            </button>
+            </x-button>
           @else
-            <button type="submit" form="step-form" class="btn-next" onclick="showSuccess(event)">
+            <x-button variant="primary" type="submit">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M5 13l4 4L19 7"/>
               </svg>
               Submit application
-            </button>
+            </x-button>
           @endif
 
         </div>
@@ -795,7 +781,7 @@ select.field-input{
     item.querySelector('.doc-size').textContent =
       input.files[0].name + ' · ' + (input.files[0].size / 1024).toFixed(0) + ' KB';
     item.querySelector('.doc-upload-btn').innerHTML = `
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px">
+      <svg class="btn-icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M20 6L9 17l-5-5"/>
       </svg> Uploaded`;
   }

@@ -55,3 +55,4 @@ class SettlementRetryScheduledNotification extends Notification implements Shoul
         ];
     }
 }
+

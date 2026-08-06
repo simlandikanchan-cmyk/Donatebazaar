@@ -13,10 +13,10 @@
             <p>Share your story, insights, and campaign updates with your supporters</p>
         </div>
     </div>
-    <a href="{{ url('/user/dashboard/blogs') }}" class="btn btn-secondary">
+    <x-button variant="secondary" href="{{ url('/user/dashboard/blogs') }}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M12 19l-7-7 7-7"/></svg>
         My Blogs
-    </a>
+    </x-button>
 </div>
 
 @if($errors->any())
@@ -126,15 +126,15 @@
                     </div>
                 </div>
                 <div class="editor-toolbar" id="editorToolbar">
-                    <button type="button" class="tb-btn" data-cmd="bold" title="Bold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4h8a4 4 0 014 4 4 4 0 01-4 4H6z"/><path d="M6 12h9a4 4 0 014 4 4 4 0 01-4 4H6z"/></svg></button>
-                    <button type="button" class="tb-btn" data-cmd="italic" title="Italic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="4" x2="10" y2="4"/><line x1="14" y1="20" x2="5" y2="20"/><line x1="15" y1="4" x2="9" y2="20"/></svg></button>
-                    <button type="button" class="tb-btn" data-cmd="underline" title="Underline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3v7a6 6 0 006 6 6 6 0 006-6V3"/><line x1="4" y1="21" x2="20" y2="21"/></svg></button>
+                    <x-button variant="primary" type="button" class="tb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4h8a4 4 0 014 4 4 4 0 01-4 4H6z"/><path d="M6 12h9a4 4 0 014 4 4 4 0 01-4 4H6z"/></svg></x-button>
+                    <x-button variant="primary" type="button" class="tb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="4" x2="10" y2="4"/><line x1="14" y1="20" x2="5" y2="20"/><line x1="15" y1="4" x2="9" y2="20"/></svg></x-button>
+                    <x-button variant="primary" type="button" class="tb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3v7a6 6 0 006 6 6 6 0 006-6V3"/><line x1="4" y1="21" x2="20" y2="21"/></svg></x-button>
                     <span class="tb-divider"></span>
-                    <button type="button" class="tb-btn" data-cmd="heading" title="Heading"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 12h12M6 4v16M18 4v16"/></svg></button>
-                    <button type="button" class="tb-btn" data-cmd="bullet" title="Bullet list"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></button>
-                    <button type="button" class="tb-btn" data-cmd="link" title="Insert link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg></button>
+                    <x-button variant="primary" type="button" class="tb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 12h12M6 4v16M18 4v16"/></svg></x-button>
+                    <x-button variant="primary" type="button" class="tb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></x-button>
+                    <x-button variant="primary" type="button" class="tb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg></x-button>
                     <span class="tb-divider"></span>
-                    <button type="button" class="tb-btn" data-cmd="preview" title="Preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                    <x-button variant="primary" type="button" class="tb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></x-button>
                 </div>
                 <div class="editor-wrap">
                     <textarea id="blogContent" name="content" rows="20"
@@ -193,14 +193,14 @@
                     </p>
                 </div>
                 <div class="action-btns">
-                    <button type="submit" name="submit_now" value="0" class="btn btn-secondary">
+                    <x-button variant="secondary" type="submit">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
                         Save Draft
-                    </button>
-                    <button type="submit" name="submit_now" value="1" class="btn btn-primary">
+                    </x-button>
+                    <x-button variant="primary" type="submit">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
                         Submit for Review
-                    </button>
+                    </x-button>
                 </div>
             </div>
 
@@ -533,15 +533,8 @@
     border-radius: var(--radius-sm) var(--radius-sm) 0 0;
     flex-wrap: wrap;
 }
-.tb-btn {
-    width: 30px; height: 30px; border-radius: 6px;
-    display: flex; align-items: center; justify-content: center;
-    border: none; background: transparent; cursor: pointer;
-    color: var(--text3); transition: all 0.12s;
-}
 .tb-btn:hover { background: var(--surface); color: var(--text); }
 .tb-btn:active { transform: scale(0.92); }
-.tb-btn svg { width: 15px; height: 15px; }
 .tb-divider { width: 1px; height: 18px; background: var(--border); margin: 0 4px; }
 
 .editor-wrap { border: 1px solid var(--border2); border-radius: 0 0 var(--radius-sm) var(--radius-sm); }

@@ -1,77 +1,14 @@
-{{-- resources/views/admin/applications/index.blade.php --}}
+﻿{{-- resources/views/admin/applications/index.blade.php --}}
 @extends('layouts.admin')
+
+@push('page_css')
+@vite('resources/css/admin/entries/applications.css')
+@endpush
+
 
 @section('sidebar_applications', 'active')
 @section('page_title', 'NGO Applications')
 @section('page_subtitle', 'Review and manage NGO onboarding applications')
-
-@push('page_styles')
-<style>
-.flash-ok{background:rgba(5,196,138,.09);border:1px solid rgba(5,196,138,.25);color:#065f46;padding:12px 16px;border-radius:var(--r-sm);font-size:13px;font-weight:500;margin-bottom:18px;display:flex;align-items:center;gap:8px}
-[data-theme="dark"] .flash-ok{color:#34d399}
-.flash-ok svg{width:15px;height:15px;flex-shrink:0}
-.sec-search{position:relative;display:flex;align-items:center}
-.sec-search svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--text3);pointer-events:none}
-.sec-search input{height:38px;width:230px;max-width:46vw;padding:0 12px 0 34px;border-radius:var(--r-sm);border:1px solid var(--border2);background:var(--surface2);color:var(--text);font-size:12.5px;font-family:var(--font);outline:none;transition:border-color var(--ease),box-shadow var(--ease)}
-.sec-search input:focus{border-color:var(--a);box-shadow:0 0 0 3px var(--a-glow);background:var(--surface)}
-.sec-search input::placeholder{color:var(--text3)}
-.table-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);animation:fadeUp .4s .15s ease both}
-.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.table-scroll::-webkit-scrollbar{height:5px}
-.table-scroll::-webkit-scrollbar-track{background:var(--surface2)}
-.table-scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:100px}
-table{width:100%;min-width:900px;border-collapse:collapse}
-thead{background:var(--surface2)}
-thead th{padding:13px 16px;text-align:left;font-size:10px;text-transform:uppercase;color:var(--text3);font-family:var(--mono);white-space:nowrap;letter-spacing:.08em;font-weight:700;border-bottom:1px solid var(--border)}
-tbody td{padding:14px 16px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle;color:var(--text2)}
-tbody tr:last-child td{border-bottom:none}
-tbody tr{transition:background var(--ease)}
-tbody tr:hover{background:var(--surface2)}
-.org-cell .org-name{font-weight:700;color:var(--text);font-size:13.5px;display:block}
-.org-cell .org-loc{font-size:11px;color:var(--text3);margin-top:3px;font-family:var(--mono);display:flex;align-items:center;gap:4px}
-.org-cell .org-loc svg{width:11px;height:11px;flex-shrink:0}
-.u-cell{display:flex;align-items:center;gap:10px}
-.u-cell .u-av{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;font-size:11px;font-weight:700;font-family:var(--mono);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.u-cell .u-name{font-weight:600;color:var(--text);font-size:13px;display:block}
-.u-cell .u-email{font-size:10.5px;color:var(--text3);margin-top:1px;font-family:var(--mono)}
-.type-chip{display:inline-flex;padding:4px 11px;border-radius:100px;font-size:10.5px;font-weight:600;font-family:var(--mono);background:var(--a-lt);color:var(--a);border:1px solid rgba(37,99,235,.15)}
-.contact-cell .u-name{font-weight:600;color:var(--text);font-size:12.5px;display:block}
-.contact-cell .u-email{font-size:10.5px;color:var(--text3);margin-top:2px;font-family:var(--mono)}
-.date-cell{font-family:var(--mono);font-size:12px;color:var(--text2);white-space:nowrap}
-.id-cell{font-family:var(--mono);font-size:12px;color:var(--text3);font-weight:600;white-space:nowrap}
-.action-cell{display:flex;gap:5px;flex-wrap:nowrap}
-.action-cell .c-btn{padding:6px 10px;font-size:11px}
-.action-cell .c-btn svg{width:11px;height:11px}
-.empty-state{padding:60px 20px;text-align:center}
-.empty-state svg{width:44px;height:44px;margin:0 auto 14px;display:block;opacity:.2}
-.empty-state strong{display:block;font-family:var(--mono);font-size:15px;font-weight:700;color:var(--text2);margin-bottom:5px}
-.empty-state p{font-size:13px;color:var(--text3)}
-/* Badge overrides for review status */
-.b-review{background:rgba(59,130,246,.15);color:#1d4ed8;border:1px solid rgba(59,130,246,.25)}
-[data-theme="dark"] .b-review{color:#93c5fd}
-/* Mobile card layout */
-@media(max-width:860px){
-  .sec-search{order:2;width:100%}
-  .sec-search input{width:100%;max-width:none}
-  table{min-width:0}
-  thead{display:none}
-  tbody tr{display:block;margin-bottom:12px;padding:10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);box-shadow:var(--sh)}
-  tbody td{display:flex;align-items:flex-start;gap:8px;padding:7px 6px;border:none!important;text-align:left}
-  tbody td::before{content:attr(data-label);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);font-family:var(--mono);min-width:70px;flex-shrink:0;padding-top:2px}
-  tbody td.action-cell{flex-wrap:wrap;gap:5px}
-  tbody td.action-cell::before{padding-top:4px}
-  .action-cell .c-btn{flex:1;min-width:0}
-}
-@media(max-width:640px){.stat{padding:14px 16px}.sec-hdr>div:last-child{flex-direction:column;align-items:stretch}.sec-hdr>div:last-child .ftabs{overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;padding-bottom:2px}}
-@media(max-width:480px){.stat{padding:12px 14px}.stat-val{font-size:15px}.stat-lbl{font-size:9px}}
-@media(max-width:380px){
-  .stat{padding:10px 12px}
-  .stat-val{font-size:13px}
-  .pagination-wrap{flex-direction:column;gap:8px;text-align:center}
-  .sec-search input{width:100%;max-width:none;}
-}
-</style>
-@endpush
 
 @section('content')
 
@@ -153,7 +90,7 @@ tbody tr:hover{background:var(--surface2)}
 </div>
 
 {{-- TABLE --}}
-<div class="table-card">
+<div class="table-card apps-table">
   <div class="table-scroll">
     <table>
       <thead>
@@ -230,15 +167,15 @@ tbody tr:hover{background:var(--surface2)}
             @if($app->status === 'pending' || $app->status === 'under_review')
             <form method="POST" action="{{ route('admin.applications.approve', $app->id) }}" onsubmit="return handleSub(this,'Approving…')" style="display:inline">
               @csrf
-              <button type="submit" class="btn btn-green c-btn c-btn-approve" title="Approve">
+              <x-button variant="primary" type="submit" class="c-btn">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                 Approve
-              </button>
+              </x-button>
             </form>
-            <button type="button" class="btn btn-red c-btn c-btn-reject" onclick="openReject({{ $app->id }})" title="Reject">
+            <x-button variant="destructive" type="button" class="c-btn" onclick="openReject({{ $app->id }})" title="Reject">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
               Reject
-            </button>
+            </x-button>
             @endif
           </td>
         </tr>
@@ -294,8 +231,8 @@ tbody tr:hover{background:var(--surface2)}
       <textarea id="rejectReason" name="rejection_reason" rows="3" placeholder="Or type a custom reason…" class="modal-ta"></textarea>
       <p id="rejectErr" class="modal-err">⚠ Please provide a reason before rejecting.</p>
       <div class="modal-acts">
-        <button type="button" onclick="closeReject()" class="btn btn-secondary modal-btn modal-cancel">Cancel</button>
-        <button type="submit" id="rejectBtn" class="btn btn-red modal-btn modal-red">✕ Reject Application</button>
+        <x-button variant="secondary" type="button" class="modal-btn">Cancel</x-button>
+        <x-button variant="destructive" type="submit" class="modal-btn">✕ Reject Application</x-button>
       </div>
     </form>
   </div>
@@ -356,7 +293,7 @@ window.handleSub=function(form,txt){
   return true;
 };
 
-/* ── CLIENT-SIDE FILTER + SEARCH ── */
+/* —€—€ CLIENT-SIDE FILTER + SEARCH —€—€ */
 var rows   = Array.from(document.querySelectorAll('#tbody tr[data-id]'));
 var noRow  = document.querySelector('#tbody .empty-state');
 var activeFilter = 'all';

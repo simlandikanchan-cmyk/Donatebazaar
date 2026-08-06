@@ -53,3 +53,4 @@ class CampaignRejectedNotification extends Notification implements ShouldQueue
         ];
     }
 }
+

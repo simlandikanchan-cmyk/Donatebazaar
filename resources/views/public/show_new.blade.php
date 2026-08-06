@@ -384,14 +384,11 @@ of
 @foreach([100,500,1000,2000,5000,10000,20000,30000,40000] as $amt)
 
 
-<button
-type="button"
-class="amount-btn border rounded-xl py-2"
-onclick="selectAmount({{ $amt }},this)">
+<x-button variant="primary" type="button" class="amount-btn border rounded-xl py-2">
 
 ₹{{ $amt }}
 
-</button>
+</x-button>
 
 
 @endforeach
@@ -417,12 +414,11 @@ required
 class="w-full border p-3 rounded-lg mb-4">
 
 
-<button
-class="btn-donate w-full py-3 rounded-lg">
+<x-button variant="primary" type="button" class="w-full py-3 rounded-lg">
 
 Donate Now
 
-</button>
+</x-button>
 
 
 </form>

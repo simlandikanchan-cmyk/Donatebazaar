@@ -66,6 +66,15 @@
 @media(max-width:960px){.stat-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:600px){.filter-bar{flex-direction:column;align-items:stretch;}}
 @media(max-width:480px){.stat-grid{grid-template-columns:1fr;}}
+@media(max-width:768px){
+    .campaign-row{flex-wrap:wrap;gap:10px;}
+    .row-chips{order:3;width:100%;margin-top:2px;}
+    .row-actions{order:4;width:100%;margin-top:8px;justify-content:flex-end;}
+    .row-actions .btn{padding:7px 14px;font-size:11px;gap:6px;}
+    .row-actions .btn svg{width:13px;height:13px;}
+    .row-link-icon{width:30px;height:30px;}
+    .row-link-icon svg{width:12px;height:12px;}
+}
 </style>
 @endpush
 
@@ -216,10 +225,10 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
         <h3>No campaigns yet</h3>
         <p>Create your first campaign to start the KYC verification process and get approved for fundraising.</p>
-        <a href="{{ route('campaign.create') }}" class="btn btn-primary">
+        <x-button variant="primary" href="{{ route('campaign.create') }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
             Create Campaign
-        </a>
+        </x-button>
     </div>
 </div>
 @endif

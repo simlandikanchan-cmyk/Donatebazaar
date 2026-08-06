@@ -152,8 +152,8 @@
             </form>
         @else
             <div class="db-drawer__auth">
-                <a href="{{ route('login') }}" class="db-drawer__auth-btn db-drawer__auth-btn--ghost">Log in</a>
-                <a href="{{ route('register') }}" class="db-drawer__auth-btn db-drawer__auth-btn--primary">Get Started</a>
+                <x-button variant="ghost" href="{{ route('login') }}" class="db-drawer__auth-btn db-drawer__auth-btn--ghost">Log in</x-button>
+                <x-button variant="primary" href="{{ route('register') }}" class="db-drawer__auth-btn db-drawer__auth-btn--primary">Get Started</x-button>
             </div>
         @endauth
     </div>

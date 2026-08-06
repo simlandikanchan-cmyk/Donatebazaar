@@ -22,14 +22,14 @@
             </p>
 
             <div class="hero-btns">
-                <a href="{{ route('campaigns.index') }}" class="btn btn-white">
+                <x-button variant="primary" href="{{ route('campaigns.index') }}">
                     Donate Now
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                </a>
-                <a href="/campaign/create" class="btn btn-outline">
+                </x-button>
+                <x-button variant="outline" href="/campaign/create">
                     Start Fundraiser
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 4v16m8-8H4"/></svg>
-                </a>
+                </x-button>
             </div>
 
             <div class="hero-trust">

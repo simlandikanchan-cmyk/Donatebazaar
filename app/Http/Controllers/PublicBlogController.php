@@ -150,6 +150,17 @@ class PublicBlogController extends Controller
             ->take(3)
             ->get();
 
+        // Same category (sidebar carousel)
+        $categoryBlogs = $blog->category_id
+            ? Blog::public()
+                ->with(['author:id,name,avatar', 'category:id,name,slug'])
+                ->where('category_id', $blog->category_id)
+                ->where('id', '!=', $blog->id)
+                ->latest('published_at')
+                ->take(8)
+                ->get()
+            : collect();
+
         $isLiked = Auth::check()
             && $blog->isLikedBy(Auth::id());
 
@@ -158,6 +169,7 @@ class PublicBlogController extends Controller
             compact(
                 'blog',
                 'related',
+                'categoryBlogs',
                 'isLiked'
             )
         );

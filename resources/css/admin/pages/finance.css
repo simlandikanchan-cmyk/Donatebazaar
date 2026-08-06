@@ -1,0 +1,105 @@
+/* ══════════════════════════════════════
+   ADMIN — Pages: Finance (donations, settlements, wallets, coupons, gift-cards)
+   ══════════════════════════════════════ */
+
+/* ── COUPONS / GIFT-CARDS: STATS GRID ── */
+.cp-stats-grid,.gc-stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:20px;}
+.cp-stat-card,.gc-stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);padding:16px;display:flex;flex-direction:column;gap:4px;}
+.cp-stat-label,.gc-stat-label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-family:var(--mono);}
+.cp-stat-value,.gc-stat-value{font-size:20px;font-weight:800;color:var(--text);font-family:var(--mono);letter-spacing:-.02em;}
+
+/* ── COUPONS: FILTER FORM ── */
+.cp-filter-form,.gc-filter-form{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:18px;}
+.cp-filter-form>*{flex:1;min-width:150px;}
+.gc-filter-form>*{flex:1;min-width:150px;}
+.cp-input,.gc-input{height:38px;padding:0 12px;border:1px solid var(--border2);border-radius:var(--r-sm);font-size:13px;font-family:var(--font);color:var(--text);background:var(--surface);outline:none;transition:border-color var(--ease),box-shadow var(--ease);}
+.cp-input:focus,.gc-input:focus{border-color:var(--a);box-shadow:0 0 0 3px var(--a-glow);}
+.cp-select,.gc-select{height:38px;padding:0 30px 0 12px;border:1px solid var(--border2);border-radius:var(--r-sm);font-size:13px;font-family:var(--font);color:var(--text);background:var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M1 3l4 4 4-4' fill='none' stroke='%23939AB1' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 12px center;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;}
+.cp-select:focus,.gc-select:focus{border-color:var(--a);}
+.cp-btn-clear,.gc-btn-clear{display:inline-flex;align-items:center;gap:5px;height:38px;padding:0 14px;border-radius:var(--r-sm);font-size:12.5px;font-weight:600;background:var(--surface2);color:var(--text2);border:1px solid var(--border2);cursor:pointer;transition:all var(--ease);font-family:var(--font);white-space:nowrap;}
+.cp-btn-clear:hover,.gc-btn-clear:hover{background:var(--surface3);color:var(--text);}
+.cp-btn-primary,.gc-btn-primary{display:inline-flex;align-items:center;gap:5px;height:38px;padding:0 16px;border-radius:var(--r-sm);font-size:12.5px;font-weight:600;background:linear-gradient(135deg,var(--a),var(--a2));color:var(--white);border:none;cursor:pointer;transition:all var(--ease);font-family:var(--font);white-space:nowrap;}
+.cp-btn-primary:hover,.gc-btn-primary:hover{box-shadow:0 4px 14px rgba(37,99,235,.35);}
+.cp-flash-success,.gc-flash-success{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:var(--r-sm);background:var(--green-lt);border:1px solid rgba(5,196,138,.2);color:var(--green);font-size:12px;font-weight:600;margin-bottom:14px;}
+
+/* ── COUPONS: TABLE ── */
+.cp-table-wrap,.gc-table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow-x:auto;}
+.cp-table,.gc-table{width:100%;border-collapse:collapse;font-size:13px;}
+.cp-table thead,.gc-table thead{background:var(--surface2);}
+.cp-table th,.gc-table th{text-align:left;padding:12px 16px;font-size:10.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-family:var(--mono);border-bottom:1px solid var(--border);white-space:nowrap;}
+.cp-table td,.gc-table td{padding:13px 16px;border-bottom:1px solid var(--border);vertical-align:middle;color:var(--text2);}
+.cp-table tbody tr:last-child td,.gc-table tbody tr:last-child td{border-bottom:none;}
+.cp-table tbody tr:hover,.gc-table tbody tr:hover{background:var(--surface2);}
+.cp-mono{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--text);letter-spacing:-.01em;}
+.cp-code,.gc-code{font-family:var(--mono);font-size:12.5px;font-weight:700;color:var(--a);letter-spacing:.02em;}
+.cp-amount,.gc-amount{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--text);}
+.cp-badge,.gc-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:100px;font-size:10.5px;font-weight:700;font-family:var(--mono);}
+.cp-primary-name,.gc-primary-name{font-size:13px;font-weight:600;color:var(--text);}
+.cp-secondary,.gc-secondary-email{font-size:10.5px;color:var(--text3);font-family:var(--mono);margin-top:1px;display:block;}
+.cp-actions,.gc-actions{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap;}
+.cp-action-btn,.gc-action-btn{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:var(--r-xs);border:1px solid transparent;cursor:pointer;transition:all var(--ease);text-decoration:none;background:var(--surface2);color:var(--text2);border-color:var(--border2);}
+.cp-action-btn:hover,.gc-action-btn:hover{background:var(--a-lt);color:var(--a);border-color:var(--a);}
+.cp-action-view,.gc-action-view{background:var(--surface2);color:var(--text2);border-color:var(--border2);}
+.cp-action-view:hover,.gc-action-view:hover{background:var(--a-lt);color:var(--a);border-color:var(--a);}
+.cp-action-cancel,.gc-action-cancel{background:var(--red-lt);color:var(--red);border-color:rgba(240,68,68,.2);}
+.cp-action-cancel:hover,.gc-action-cancel:hover{background:var(--red);color:var(--white);border-color:var(--red);}
+.cp-action-btn svg,.gc-action-btn svg{width:15px;height:15px;}
+.cp-pagination,.gc-pagination{margin-top:20px;display:flex;align-items:center;justify-content:center;}
+.cp-empty,.gc-empty{text-align:center;padding:48px 20px;color:var(--text3);font-size:13px;}
+.cp-scroll,.gc-scroll{overflow-x:auto;}
+.cp-visually-hidden,.gc-visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+
+/* ── GIFT-CARD SHOW ── */
+.amount-val{font-size:26px;font-weight:800;color:var(--text);font-family:var(--mono);letter-spacing:-.02em;}
+.code-val{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--a);word-break:break-all;}
+.detail-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 16px;border-bottom:1px solid var(--border);}
+.detail-row:last-child{border-bottom:none;}
+.detail-val{font-size:13px;font-weight:600;color:var(--text);font-family:var(--mono);text-align:right;word-break:break-word;}
+.gc-theme-dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex-shrink:0;}
+.gc-theme-label{font-size:12px;color:var(--text2);font-family:var(--mono);}
+.message-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px 14px;font-size:12.5px;color:var(--text2);line-height:1.6;}
+.status-form{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.ab-back,.ab-cancel,.ab-resend{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--r-xs);font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);transition:all var(--ease);font-family:var(--font);text-decoration:none;white-space:nowrap;}
+.ab-back:hover,.ab-cancel:hover,.ab-resend:hover{background:var(--surface3);color:var(--text);}
+.ab-back svg,.ab-cancel svg,.ab-resend svg{width:13px;height:13px;}
+.ab-resend{background:var(--a-lt);color:var(--a);border-color:rgba(37,99,235,.2);}
+.ab-resend:hover{background:var(--a);color:var(--white);}
+
+/* ── DONATIONS: REFUND ROW ── */
+.dn-failedr,.dn-pendingr{background:rgba(240,68,68,.025);}
+.dn-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden;background:var(--surface);}
+.dn-kv{display:flex;justify-content:space-between;gap:10px;padding:9px 14px;border-bottom:1px solid var(--border);font-size:12.5px;}
+.dn-kv span:first-child{color:var(--text3);font-family:var(--mono);font-size:11px;}
+.dn-kv span:last-child{font-weight:600;color:var(--text);text-align:right;}
+.dn-kv:nth-last-child(2):nth-child(odd),.dn-kv:last-child{border-bottom:none;}
+.don-stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:20px;}
+.swrap{display:flex;flex-direction:column;gap:3px;}
+.ab-refund{display:inline-flex;align-items:center;gap:5px;padding:6px 11px;border-radius:var(--r-xs);font-size:11.5px;font-weight:600;background:var(--red-lt);color:var(--red);border:1px solid rgba(240,68,68,.2);cursor:pointer;transition:all var(--ease);font-family:var(--font);white-space:nowrap;}
+.ab-refund:hover{background:var(--red);color:var(--white);}
+.ab-refund svg{width:12px;height:12px;}
+
+/* ── WALLETS: FORM ── */
+.wa-form{display:flex;flex-direction:column;gap:12px;}
+.wa-field{display:flex;flex-direction:column;gap:5px;}
+.wa-field label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);}
+.wa-input,.wa-select{height:38px;padding:0 12px;border:1px solid var(--border2);border-radius:var(--r-sm);font-size:13px;font-family:var(--font);color:var(--text);background:var(--surface);outline:none;transition:border-color var(--ease),box-shadow var(--ease);}
+.wa-input:focus,.wa-select:focus{border-color:var(--a);box-shadow:0 0 0 3px var(--a-glow);}
+.wa-select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M1 3l4 4 4-4' fill='none' stroke='%23939AB1' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;cursor:pointer;}
+.wa-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:var(--r-xs);font-size:12.5px;font-weight:600;background:linear-gradient(135deg,var(--a),var(--a2));color:var(--white);border:none;cursor:pointer;transition:all var(--ease);font-family:var(--font);}
+.wa-btn:hover{box-shadow:0 4px 14px rgba(37,99,235,.35);}
+
+/* ── DONATION KV (k/v) ── */
+.k{font-size:11px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;}
+.v{font-size:12.5px;font-weight:600;color:var(--text);text-align:right;word-break:break-word;}
+.dn-processed{background:var(--a-lt);color:var(--a);border:1px solid rgba(37,99,235,.2);}
+
+/* ── GIFT-CARD DATE / RESEND ── */
+.gc-date{font-family:var(--mono);font-size:11.5px;color:var(--text3);white-space:nowrap;}
+.gc-action-resend{display:inline-flex;align-items:center;gap:5px;padding:6px 11px;border-radius:var(--r-xs);font-size:11.5px;font-weight:600;background:var(--a-lt);color:var(--a);border:1px solid rgba(37,99,235,.2);cursor:pointer;transition:all var(--ease);font-family:var(--font);white-space:nowrap;}
+.gc-action-resend:hover{background:var(--a);color:var(--white);}
+.gc-action-resend svg{width:12px;height:12px;}
+
+/* ── GIFT-CARD SHOW GRID (2-col, gap 16) ── */
+.gc-grid{grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
+.gc-grid .detail-card{margin-bottom:0;padding:22px 24px;}
+.detail-card.full{grid-column:1/-1;}

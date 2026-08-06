@@ -56,3 +56,4 @@ class CampaignUpdatedNotification extends Notification implements ShouldQueue
         ];
     }
 }
+

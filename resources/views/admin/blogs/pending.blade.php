@@ -1,4 +1,9 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
+
+@push('page_css')
+@vite('resources/css/admin/entries/blogs.css')
+@endpush
+
 @section('content')
 <div class="p-8">
   <h2 class="text-2xl font-bold mb-6">Pending Review ({{ $blogs->total() }})</h2>
@@ -24,18 +29,18 @@
       </div>
  
       <div class="flex gap-3 mt-5 pt-4 border-t">
-        <a href="{{ route('admin.blogs.show', $blog) }}" class="btn btn-ghost">Preview</a>
+        <x-button variant="ghost" href="{{ route('admin.blogs.show', $blog) }}">Preview</x-button>
  
         <form method="POST" action="{{ route('admin.blogs.approve', $blog) }}">
           @csrf
-          <button class="btn btn-green">✓ Approve</button>
+          <x-button variant="primary" type="button">✓ Approve</x-button>
         </form>
  
         <form method="POST" action="{{ route('admin.blogs.reject', $blog) }}"
               onsubmit="return promptReason(this)">
           @csrf
           <input type="hidden" name="reason" id="reject_reason_{{ $blog->id }}">
-          <button class="btn btn-red" data-id="{{ $blog->id }}">✗ Reject</button>
+          <x-button variant="destructive" type="button">✗ Reject</x-button>
         </form>
       </div>
     </div>

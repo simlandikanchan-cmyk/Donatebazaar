@@ -17,10 +17,11 @@ use Illuminate\Support\Facades\Log;
 class ProcessSettlementJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    public int $tries = 3;
 
     public int $timeout = 120;
 
-    public int $tries = 1;
+    public array $backoff = [60, 300, 900];
 
     public function __construct(
         public readonly CampaignSettlement $settlement,

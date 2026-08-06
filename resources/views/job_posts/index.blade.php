@@ -28,11 +28,11 @@
         <h1>Work that <em>matters.</em></h1>
         <p class="hero-desc">We're building the future of giving. Join a team driven by purpose, not just profit — where every line of code helps someone, somewhere.</p>
         <div class="hero-actions">
-            <a href="#open-roles" class="btn-primary">
+            <x-button variant="primary" href="#open-roles">
                 View Open Roles
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </a>
-            <a href="/about" class="btn-outline">Our Story</a>
+            </x-button>
+            <x-button variant="outline" href="/about">Our Story</x-button>
         </div>
     </div>
     <div class="hero-right">
@@ -176,11 +176,9 @@
                 $types  = ['full-time','part-time','contract','internship','freelance','remote','volunteer'];
                 $active = request('type', '');
             @endphp
-            <button type="button" class="type-btn {{ ($active === '' || $active === null) ? 'active' : '' }}"
-                    data-type="" onclick="setType(this)">All</button>
+            <x-button variant="secondary" type="button" class="{{ ($active === '' || $active null) ? 'active' : }}">All</x-button>
             @foreach($types as $t)
-            <button type="button" class="type-btn {{ $active === $t ? 'active' : '' }}"
-                    data-type="{{ $t }}" onclick="setType(this)">{{ ucfirst($t) }}</button>
+            <x-button variant="secondary" type="button" class="{{ $active === $t ? 'active' : '' }}">{{ ucfirst($t) }}</x-button>
             @endforeach
         </div>
 
@@ -296,10 +294,10 @@
         <h2>Don't see the right role?</h2>
         <p>We're always on the lookout for exceptional people. Send us your profile and we'll reach out when something fits.</p>
     </div>
-    <a href="mailto:careers@donatebazaar.com" class="cta-btn">
+    <x-button variant="primary" href="mailto:careers@donatebazaar.com" class="cta-btn">
         Send Open Application
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-    </a>
+    </x-button>
 </div>
 
 {{-- FOOTER --}}

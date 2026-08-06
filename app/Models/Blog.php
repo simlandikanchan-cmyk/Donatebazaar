@@ -282,6 +282,20 @@ class Blog extends Model
         return $q->orderByRaw('(views_count + (likes_count * 3) + (comments_count * 2)) DESC');
     }
 
+    public function statusLabel(): string
+    {
+        return match ($this->status) {
+            self::STATUS_DRAFT => 'Draft',
+            self::STATUS_PENDING => 'Under Review',
+            self::STATUS_APPROVED => 'Approved',
+            self::STATUS_REJECTED => 'Rejected',
+            self::STATUS_PUBLISHED => 'Published',
+            self::STATUS_ARCHIVED => 'Archived',
+            self::STATUS_FLAGGED => 'Flagged',
+            default => ucfirst($this->status),
+        };
+    }
+
     // ── Accessors ─────────────────────────────────────────────────────────────
 
     public function getCoverImageUrlAttribute(): string

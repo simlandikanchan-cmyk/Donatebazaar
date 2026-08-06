@@ -156,8 +156,8 @@ class DashboardController extends Controller
 
         $history = $userLevel?->history()->with(['fromLevel', 'toLevel'])->latest()->get() ?? collect();
 
-        return view('user.level', compact(
-            'user', 'currentLevel', 'allLevels', 'nextLevel',
+        return view('user.fundraiser-level', compact(
+            'user', 'userLevel', 'currentLevel', 'allLevels', 'nextLevel',
             'campaignsCompleted', 'totalRaised', 'completionPct', 'history'
         ));
     }

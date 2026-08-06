@@ -3,7 +3,7 @@
 .page-bg{
 
 background:
-linear-gradient(120deg,#eef2ff,#f8fafc,#ffffff);
+linear-gradient(120deg,var(--primary-tint-bg),var(--slate-50),var(--white));
 
 min-height:100vh;
 
@@ -59,7 +59,7 @@ animation:float 6s ease-in-out infinite;
 
 .btn-donate{
 
-background:linear-gradient(45deg,#6366f1,#9333ea);
+background:linear-gradient(45deg,var(--primary-light),var(--primary-hover));
 
 color:white;
 
@@ -93,7 +93,7 @@ background:white;
 
 .amount-btn.active{
 
-background:#4f46e5;
+background:var(--indigo);
 
 color:white;
 

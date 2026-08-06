@@ -1,15 +1,13 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
+
+@push('page_css')
+@vite('resources/css/admin/entries/organizations.css')
+@endpush
+
 
 @section('page_title', 'Delete Partnership')
 @section('page_subtitle', 'Confirm removal')
 @section('sidebar_partnerships', 'active')
-
-@push('page_styles')
-<style>
-@media(max-width:640px){.delete-card{margin-top:30px!important}}
-@media(max-width:480px){.delete-card .btn-row{flex-direction:column!important}.delete-card .btn-row>form,.delete-card .btn-row>a{width:100%!important}}
-</style>
-@endpush
 
 @section('content')
 <div class="delete-card" style="max-width:520px;margin:60px auto;">
@@ -31,9 +29,9 @@
       <form method="POST" action="{{ route('admin.partnership.delete',$partnership->id) }}" style="flex:1;">
         @csrf
         @method('DELETE')
-        <button class="btn btn-red">
+        <x-button variant="destructive" type="submit">
           Yes, Delete
-        </button>
+        </x-button>
       </form>
       <a href="{{ route('admin.partnership.index') }}" style="flex:1;padding:11px;border-radius:10px;font-size:13px;font-weight:500;border:none;text-align:center;text-decoration:none;background:#e5e7eb;color:#374151;">
         Cancel

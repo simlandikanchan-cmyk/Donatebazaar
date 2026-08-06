@@ -25,6 +25,32 @@
         }
         .error { color: #c0392b; }
         .success { color: #27ae60; }
+        .btn--primary {
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn--primary:hover { background: #1d4ed8; }
+        .btn--primary:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn--secondary {
+            background: #fff;
+            color: #333;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn--secondary:hover { background: #f5f5f5; }
+        .btn--secondary:disabled { opacity: 0.6; cursor: not-allowed; }
     </style>
 </head>
 <body>
@@ -42,13 +68,13 @@
 <input type="text" id="otp" placeholder="Enter OTP" maxlength="6" inputmode="numeric">
 <br>
 
-<button id="verifyBtn" type="button" class="btn btn-primary" onclick="verifyOTP()">Verify OTP</button>
+<x-button variant="primary" type="button" id="verifyBtn" onclick="verifyOTP()">Verify OTP</x-button>
 
 <br><br>
 
-<button id="resendBtn" type="button" class="btn btn-secondary" onclick="resendOTP()" disabled>
+<x-button variant="secondary" type="button" id="resendBtn" onclick="resendOTP()">
     Resend OTP (30s)
-</button>
+</x-button>
 
 <div id="message"></div>
 

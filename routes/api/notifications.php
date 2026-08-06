@@ -3,7 +3,7 @@
 use App\Http\Controllers\NotificationPreferenceController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth')->group(function () {
     Route::get('notification-types', [NotificationPreferenceController::class, 'getTypes'])->name('notification.types');
     Route::get('notification-preferences', [NotificationPreferenceController::class, 'index'])->name('notification.preferences.index');
     Route::post('notification-preferences', [NotificationPreferenceController::class, 'store'])->name('notification.preferences.store');

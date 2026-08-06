@@ -10,8 +10,10 @@ trait HasNotificationPreferences
 {
     public static function bootHasNotificationPreferences(): void
     {
-        static::created(function ($user) {
-            $user->initializeDefaultPreferences();
+        static::saved(function ($user) {
+            if ($user->wasRecentlyCreated) {
+                $user->initializeDefaultPreferences();
+            }
         });
     }
 
@@ -83,12 +85,16 @@ trait HasNotificationPreferences
 
         foreach ($defaults as $type => $channels) {
             foreach ($channels as $channel => $settings) {
-                $this->notificationPreferences()->create([
-                    'notification_type' => $type,
-                    'channel' => $channel,
-                    'enabled' => $settings['enabled'],
-                    'frequency' => $settings['frequency'] ?? 'immediate',
-                ]);
+                $this->notificationPreferences()->firstOrCreate(
+                    [
+                        'notification_type' => $type,
+                        'channel' => $channel,
+                    ],
+                    [
+                        'enabled' => $settings['enabled'],
+                        'frequency' => $settings['frequency'] ?? 'immediate',
+                    ]
+                );
             }
         }
     }

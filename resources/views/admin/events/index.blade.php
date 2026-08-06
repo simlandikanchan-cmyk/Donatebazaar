@@ -1,5 +1,10 @@
-{{-- resources/views/admin/events/index.blade.php --}}
+﻿{{-- resources/views/admin/events/index.blade.php --}}
 @extends('layouts.admin')
+
+@push('page_css')
+@vite('resources/css/admin/entries/events.css')
+@endpush
+
 
 @section('sidebar_events', 'active')
 @section('page_title', 'Events')
@@ -16,198 +21,22 @@
 </div>
 @endsection
 
-@push('page_styles')
-<style>
-/* ── FILTER BAR ── */
-.filter-bar{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;box-shadow:var(--sh);margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;animation:fadeUp .4s .1s ease both;}
-.filter-inp,.filter-sel{height:36px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:0 12px;font-size:12.5px;color:var(--text);font-family:var(--font);outline:none;transition:border-color var(--ease),box-shadow var(--ease);}
-.filter-inp{width:200px;}
-.filter-inp:focus,.filter-sel:focus{border-color:var(--a);box-shadow:0 0 0 3px var(--a-glow);}
-.filter-inp::placeholder{color:var(--text3);}
-.filter-sel{cursor:pointer;min-width:140px;}
-.filter-date{width:150px;}
-.filter-btn{height:36px;padding:0 18px;background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;border:none;border-radius:var(--r-sm);font-size:12.5px;font-weight:600;font-family:var(--font);cursor:pointer;transition:opacity var(--ease),transform var(--ease);box-shadow:0 3px 10px rgba(37,99,235,.3);}
-.filter-btn:hover{opacity:.88;transform:translateY(-1px);}
-.filter-clear{height:36px;padding:0 14px;background:transparent;border:1px solid var(--border2);border-radius:var(--r-sm);font-size:12px;color:var(--text3);font-family:var(--font);cursor:pointer;transition:all var(--ease);text-decoration:none;display:inline-flex;align-items:center;gap:5px;}
-.filter-clear:hover{border-color:var(--red);color:var(--red);}
-.filter-spacer{margin-left:auto;}
-.filter-count{font-size:12px;color:var(--text3);font-family:var(--mono);white-space:nowrap;}
-.filter-div{width:1px;height:22px;background:var(--border2);flex-shrink:0;}
-
-/* topbar quick-filter search extras */
-.search-wrap{position:relative;}
-.s-inp-kbd{position:absolute;right:9px;top:50%;transform:translateY(-50%);font-size:9.5px;color:var(--text3);background:var(--surface);border:1px solid var(--border2);border-radius:4px;padding:1px 4px;font-family:var(--mono);pointer-events:none;}
-.s-inp-kbd.hide{display:none;}
-.s-inp-clear{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:22px;height:22px;border:none;background:transparent;color:var(--text3);cursor:pointer;display:none;align-items:center;justify-content:center;border-radius:6px;}
-.s-inp-clear:hover{background:var(--surface2);color:var(--text);}
-.s-inp-clear svg{width:11px;height:11px;}
-.s-inp-clear.show{display:flex;}
-
-/* active filter chips */
-.active-filters{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px;animation:fadeUp .25s ease both;}
-.af-label{font-size:11px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;}
-.filter-chip{display:inline-flex;align-items:center;gap:6px;background:var(--a-lt);color:var(--a);border:1px solid rgba(37,99,235,.25);padding:4px 6px 4px 11px;border-radius:100px;font-size:11.5px;font-weight:600;text-decoration:none;}
-.chip-x{width:16px;height:16px;border-radius:50%;background:rgba(37,99,235,.15);color:var(--a);display:flex;align-items:center;justify-content:center;transition:background .15s;}
-.chip-x:hover{background:var(--a);color:#fff;}
-.chip-x svg{width:8px;height:8px;}
-.clear-all-btn{font-size:11.5px;font-weight:600;color:var(--text3);text-decoration:underline;text-underline-offset:2px;}
-.clear-all-btn:hover{color:var(--red);}
-
-/* ── SECTION HEADER ── */
-.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;}
-.sec-ttl{font-family:var(--mono);font-size:16px;font-weight:700;color:var(--text);letter-spacing:-.02em;display:flex;align-items:center;gap:9px;}
-.sec-ttl svg{width:17px;height:17px;color:var(--a);}
-.sec-right{font-size:12px;color:var(--text3);font-family:var(--mono);}
-
-/* clickable stat cards */
-.stat{cursor:pointer;transition:transform .15s,box-shadow .2s,border-color .2s;text-decoration:none;display:flex;}
-.stat:hover{transform:translateY(-2px);box-shadow:var(--sh-lg);}
-.stat.stat-on{border-color:var(--a);box-shadow:0 0 0 3px var(--a-glow);}
-
-/* ── EVENT LIST (table) ── */
-.table-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;animation:fadeUp .4s .18s ease both;}
-.table-wrap{overflow-x:auto;}
-table{width:100%;border-collapse:collapse;}
-thead{background:var(--surface2);border-bottom:1px solid var(--border);}
-thead th{padding:12px 16px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--text3);font-family:var(--mono);white-space:nowrap;position:sticky;top:0;background:var(--surface2);z-index:2;}
-tbody td{padding:14px 16px;border-bottom:1px solid var(--border);vertical-align:middle;}
-tbody tr:last-child td{border-bottom:none;}
-tbody tr{transition:background var(--ease);}
-tbody tr:hover{background:var(--surface2);}
-tbody tr.row-selected{background:var(--a-lt);}
-.th-check,.td-check{width:36px;padding-right:0;}
-.chk{width:14px;height:14px;accent-color:var(--a);cursor:pointer;}
-
-/* event cell */
-.ev-cell{display:flex;align-items:center;gap:13px;min-width:240px;}
-.ev-thumb{width:52px;height:52px;border-radius:12px;object-fit:cover;flex-shrink:0;background:var(--surface3);border:1px solid var(--border);}
-.ev-thumb-ph{width:52px;height:52px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--a-lt),rgba(13,148,136,.18));color:var(--a);}
-.ev-thumb-ph svg{width:20px;height:20px;}
-.ev-title{font-size:13.5px;font-weight:600;color:var(--text);line-height:1.25;}
-.ev-goal{font-size:11px;color:var(--text3);margin-top:3px;font-family:var(--mono);display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
-.ev-loc{display:inline-flex;align-items:center;gap:3px;color:var(--text2);}
-.ev-loc svg{width:10px;height:10px;}
-
-.cell-id{font-family:var(--mono);font-size:11px;color:var(--text3);font-weight:500;}
-.campaign-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:8px;font-size:11.5px;font-weight:600;color:var(--text2);background:var(--surface2);border:1px solid var(--border2);max-width:180px;}
-.campaign-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.organizer-name{font-size:13px;font-weight:500;color:var(--text2);}
-.cell-date{font-family:var(--mono);font-size:11.5px;color:var(--text3);line-height:1.5;}
-.cell-date .dt-time{display:block;color:var(--text2);font-size:10.5px;}
-
-/* progress */
-.prog-wrap{min-width:130px;}
-.prog-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:5px;}
-.prog-amt{font-family:var(--mono);font-size:11.5px;font-weight:700;color:var(--text2);}
-.prog-pct{font-family:var(--mono);font-size:10px;color:var(--text3);}
-.prog-bar{height:6px;border-radius:100px;background:var(--surface3);overflow:hidden;}
-.prog-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--a),var(--a2));transition:width .6s cubic-bezier(.4,0,.2,1);}
-.prog-fill.pf-full{background:linear-gradient(90deg,var(--green),#06d99a);}
-.prog-fill.pf-none{background:var(--surface3);}
-
-/* participants */
-.participants-val{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--text2);}
-.participants-total{color:var(--text3);font-weight:400;}
-.participants-full{display:inline-block;margin-left:6px;font-size:9px;font-weight:700;color:var(--red);background:var(--red-lt);padding:1px 6px;border-radius:100px;text-transform:uppercase;letter-spacing:.05em;}
-
-/* status badge (definitions) */
-.b-draft{background:rgba(107,114,128,.85);color:#fff;}
-[data-theme="dark"] .b-draft{color:#cbd0e0;background:rgba(107,114,128,.5);}
-
-/* actions */
-.act-wrap{display:flex;gap:6px;align-items:center;flex-wrap:nowrap;}
-.act-link{display:inline-flex;align-items:center;gap:5px;padding:6px 11px;border-radius:7px;font-size:11.5px;font-weight:500;color:var(--text2);background:var(--surface2);border:1px solid var(--border2);transition:all var(--ease);text-decoration:none;cursor:pointer;font-family:var(--font);}
-.act-link:hover{background:var(--surface3);color:var(--text);transform:translateY(-1px);}
-.act-link svg{width:11px;height:11px;}
-.act-icon{width:30px;height:30px;padding:0;justify-content:center;gap:0;flex-shrink:0;position:relative;}
-.act-icon svg{width:13px;height:13px;}
-.act-icon[title]:hover::after{content:attr(title);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--text);color:#fff;font-size:10.5px;font-weight:600;padding:4px 8px;border-radius:6px;white-space:nowrap;z-index:30;pointer-events:none;box-shadow:0 4px 12px rgba(0,0,0,.2);}
-.act-icon[title]:hover::before{content:'';position:absolute;bottom:100%;left:50%;transform:translateX(-50%);border:4px solid transparent;border-top-color:var(--text);margin-bottom:-2px;z-index:30;pointer-events:none;}
-.act-edit{color:var(--a);background:var(--a-lt);border-color:rgba(37,99,235,.2);}
-.act-edit:hover{background:var(--a);color:#fff;border-color:var(--a);}
-.act-approve{color:#059669;background:var(--green-lt);border-color:rgba(5,196,138,.25);}
-.act-approve:hover{background:var(--green);color:#fff;border-color:var(--green);}
-.act-reject{color:var(--red);background:var(--red-lt);border-color:rgba(240,68,68,.25);}
-.act-reject:hover{background:var(--red);color:#fff;border-color:var(--red);}
-.act-bell{color:var(--text3);background:var(--surface2);border-color:var(--border2);}
-.act-bell:hover{color:var(--text2);background:var(--surface3);}
-.act-bell.is-on{color:#059669;background:var(--green-lt);border-color:rgba(5,196,138,.3);}
-.act-bell.is-on:hover{color:#059669;background:var(--green-lt);}
-.act-form{display:inline;}
-.act-form button{font-family:var(--font);line-height:normal;}
-
-/* empty */
-.empty-row td{text-align:center;padding:56px 20px;}
-.empty-inner{display:flex;flex-direction:column;align-items:center;gap:10px;}
-.empty-inner svg{width:48px;height:48px;color:var(--text3);opacity:.25;}
-.empty-inner strong{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--text2);}
-.empty-inner span{font-size:13px;color:var(--text3);}
-.empty-inner .reset-btn{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 15px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm);font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;font-family:var(--font);transition:all .15s;text-decoration:none;margin-top:4px;}
-.empty-inner .reset-btn:hover{border-color:var(--a);color:var(--a);}
-
-/* flash */
-.flash{padding:12px 16px;border-radius:var(--r-sm);margin-bottom:20px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:10px;animation:fadeUp .3s ease both;}
-.flash-success{background:var(--green-lt);border:1px solid rgba(5,196,138,.25);color:#059669;}
-.flash-error{background:var(--red-lt);border:1px solid rgba(240,68,68,.25);color:var(--red);}
-.flash svg{width:14px;height:14px;flex-shrink:0;}
-
-/* bulk bar */
-.bulk-bar{position:sticky;bottom:16px;left:0;right:0;margin:16px auto 0;max-width:480px;background:var(--text);color:#fff;border-radius:100px;box-shadow:0 12px 32px rgba(0,0,0,.25);padding:8px 8px 8px 20px;display:flex;align-items:center;justify-content:space-between;gap:14px;transform:translateY(120%);opacity:0;transition:transform .25s cubic-bezier(.4,0,.2,1),opacity .25s ease;z-index:20;}
-.bulk-bar.show{transform:translateY(0);opacity:1;}
-.bulk-count{font-size:12.5px;font-weight:600;font-family:var(--mono);white-space:nowrap;}
-.bulk-acts{display:flex;align-items:center;gap:6px;}
-.bulk-btn{display:inline-flex;align-items:center;gap:5px;height:32px;padding:0 13px;border-radius:100px;font-size:11.5px;font-weight:600;border:none;cursor:pointer;font-family:var(--font);transition:opacity .15s;white-space:nowrap;}
-.bulk-btn svg{width:11px;height:11px;}
-.bulk-btn-del{background:var(--red);color:#fff;}
-.bulk-btn-cancel{background:rgba(255,255,255,.12);color:#fff;}
-.bulk-btn:hover{opacity:.85;}
-
-/* ── MOBILE CARDS ── */
-.ev-cards{display:none;}
-.ev-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;box-shadow:var(--sh);margin-bottom:12px;animation:fadeUp .4s ease both;position:relative;}
-.ev-card.row-selected{background:var(--a-lt);border-color:var(--a);}
-.ev-card-check{position:absolute;top:14px;right:14px;}
-.ev-card-top{display:flex;gap:13px;align-items:flex-start;}
-.ev-card .ev-thumb,.ev-card .ev-thumb-ph{width:56px;height:56px;}
-.ev-card-body{flex:1;min-width:0;}
-.ev-card-meta{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap;}
-.ev-card-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
-.ev-card-stat{display:flex;flex-direction:column;gap:3px;}
-.ev-card-stat .lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-family:var(--mono);}
-.ev-card-stat .val{font-size:12.5px;font-weight:600;color:var(--text2);font-family:var(--mono);}
-.ev-card-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;}
-.ev-card-actions .act-link{flex:1;justify-content:center;}
-
-@media(max-width:860px){.search-wrap{display:none}}
-@media(max-width:980px){
-  .table-card{display:none;}
-  .ev-cards{display:block;}
-}
-@media(max-width:600px){
-  .filter-bar{flex-direction:column;align-items:stretch}
-  .filter-inp,.filter-sel,.filter-date{width:100%}
-  .filter-spacer{display:none;}
-  .bulk-bar{margin-left:12px;margin-right:12px;}
-}
-</style>
-@endpush
-
 @section('content')
-{{-- ── FLASH ── --}}
+{{-- —€—€ FLASH —€—€ --}}
 @if(session('success'))
-  <div class="flash flash-success" role="status">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M20 6L9 17l-5-5"/></svg>
-    {{ session('success') }}
-  </div>
+<div class="alert-ok" role="status">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+  {{ session('success') }}
+</div>
 @endif
 @if(session('error'))
-  <div class="flash flash-error" role="alert">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
-    {{ session('error') }}
-  </div>
+<div class="alert-error" role="alert">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+  {{ session('error') }}
+</div>
 @endif
 
-{{-- ── HERO ── --}}
+{{-- —€—€ HERO —€—€ --}}
 <div class="hero">
   <div class="hero-left">
     <div class="hero-tag"><span class="hero-tag-dot"></span>Campaigns</div>
@@ -233,18 +62,18 @@ tbody tr.row-selected{background:var(--a-lt);}
     </div>
   </div>
   <div class="hero-right">
-    <a href="{{ route('admin.events.create') }}" class="hero-btn hero-btn-primary">
+    <x-button variant="primary" href="{{ route('admin.events.create') }}">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
       New Event
-    </a>
-    <a href="{{ route('admin.campaign.index') }}" class="hero-btn hero-btn-ghost">
+    </x-button>
+    <x-button variant="primary" href="{{ route('admin.campaign.index') }}">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
       All Campaigns
-    </a>
+    </x-button>
   </div>
 </div>
 
-{{-- ── STATS (clickable → filters by status, preserving other filters) ── --}}
+{{-- —€—€ STATS (clickable → filters by status, preserving other filters) —€—€ --}}
 @php
   $mkStatUrl = fn($status) => request()->fullUrlWithQuery(['status' => $status, 'page' => null]);
   $curStatus = request('status');
@@ -302,7 +131,7 @@ tbody tr.row-selected{background:var(--a-lt);}
   </a>
 </div>
 
-{{-- ── FILTER BAR ── --}}
+{{-- —€—€ FILTER BAR —€—€ --}}
 <form method="GET" action="{{ route('admin.events.index') }}" class="filter-bar" id="filterForm">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px;color:var(--text3);flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
   <input class="filter-inp" type="text" name="search" id="filterSearch" placeholder="Search events…" value="{{ request('search') }}">
@@ -313,7 +142,7 @@ tbody tr.row-selected{background:var(--a-lt);}
     @endforeach
   </select>
   <input class="filter-inp filter-date" type="date" name="date" value="{{ request('date') }}">
-  <button type="submit" class="filter-btn">Apply Filters</button>
+  <x-button variant="secondary" type="submit" class="filter-btn">Apply Filters</x-button>
   @if(request('search') || request('status') || request('date'))
     <a href="{{ route('admin.events.index') }}" class="filter-clear">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:11px;height:11px;"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -357,11 +186,11 @@ tbody tr.row-selected{background:var(--a-lt);}
       <span class="chip-x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></span>
     </a>
   @endif
-  <a href="{{ route('admin.events.index') }}" class="clear-all-btn">Clear all</a>
+  <x-button variant="primary" href="{{ route('admin.events.index') }}" class="clear-all-btn">Clear all</x-button>
 </div>
 @endif
 
-{{-- ── TABLE (desktop) ── --}}
+{{-- —€—€ TABLE (desktop) —€—€ --}}
 <div class="sec-hdr">
   <div class="sec-ttl">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
@@ -477,36 +306,36 @@ tbody tr.row-selected{background:var(--a-lt);}
                 <form class="act-form" method="POST" action="{{ route('admin.events.toggleSetting', $event->id) }}">
                   @csrf
                   <input type="hidden" name="field" value="send_notification">
-                  <button type="submit" class="btn btn-secondary act-link act-bell act-icon {{ $event->send_notification ? 'is-on' : '' }}" title="{{ $event->send_notification ? 'Notifications ON — also emails the campaign creator when published (followers are always notified)' : 'Notifications OFF — toggle to also email the campaign creator on publish' }}" aria-label="{{ $event->send_notification ? 'Notify On' : 'Notify' }}">
+                  <x-button variant="secondary" type="submit" class="act-bell act-icon {{ $event->send_notification ? 'is-on' : '' }}" title="{{ $event->send_notification ? 'Notifications ON — also emails the campaign creator when published (followers are always notified)' : 'Notifications OFF — toggle to also email the campaign creator on publish' }}" aria-label="{{ $event->send_notification ? 'Notify On' : 'Notify' }}">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-                  </button>
+                  </x-button>
                 </form>
                 @if($event->status === 'pending')
                   <form class="act-form" method="POST" action="{{ route('admin.events.approve', $event->id) }}" onsubmit="return confirm('Approve and publish this event?')">
                     @csrf
-                    <button type="submit" class="btn btn-green act-link act-approve act-icon" title="Approve" aria-label="Approve">
+                    <x-button variant="primary" type="submit" class="act-approve act-icon">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 6L9 17l-5-5"/></svg>
-                    </button>
+                    </x-button>
                   </form>
                   <form class="act-form" method="POST" action="{{ route('admin.events.reject', $event->id) }}" onsubmit="return confirm('Reject this event?')">
                     @csrf
-                    <button type="submit" class="btn btn-red act-link act-reject act-icon" title="Reject" aria-label="Reject">
+                    <x-button variant="destructive" type="submit" class="act-reject act-icon">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18 6L6 18M6 6l12 12"/></svg>
-                    </button>
+                    </x-button>
                   </form>
                 @elseif($event->status === 'draft')
                   <form class="act-form" method="POST" action="{{ route('admin.events.publish', $event->id) }}">
                     @csrf
-                    <button type="submit" class="btn btn-green act-link act-approve act-icon" title="Publish" aria-label="Publish">
+                    <x-button variant="primary" type="submit" class="act-approve act-icon">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7"/></svg>
-                    </button>
+                    </x-button>
                   </form>
                 @elseif($event->status === 'active')
                   <form class="act-form" method="POST" action="{{ route('admin.events.draft', $event->id) }}" onsubmit="return confirm('Revert this event to draft? It will no longer be public.')">
                     @csrf
-                    <button type="submit" class="btn btn-red act-link act-reject act-icon" title="Unpublish" aria-label="Unpublish">
+                    <x-button variant="destructive" type="submit" class="act-reject act-icon">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 3h22M9 3h6"/></svg>
-                    </button>
+                    </x-button>
                   </form>
                 @endif
               </div>
@@ -520,10 +349,10 @@ tbody tr.row-selected{background:var(--a-lt);}
                 <strong>No events found</strong>
                 <span>No events match your current filters.</span>
                 @if(request('search') || request('status') || request('date'))
-                  <a href="{{ route('admin.events.index') }}" class="reset-btn">
+                  <x-button variant="secondary" href="{{ route('admin.events.index') }}">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h5M20 20v-5h-5M4 9a9 9 0 0114.13-5.36M20 15a9 9 0 01-14.13 5.36"/></svg>
                     Clear filters
-                  </a>
+                  </x-button>
                 @endif
               </div>
             </td>
@@ -534,7 +363,7 @@ tbody tr.row-selected{background:var(--a-lt);}
   </div>
 </div>
 
-{{-- ── CARDS (mobile) ── --}}
+{{-- —€—€ CARDS (mobile) —€—€ --}}
 <div class="ev-cards">
   @forelse($events as $event)
     @php
@@ -604,18 +433,18 @@ tbody tr.row-selected{background:var(--a-lt);}
         <form class="act-form" method="POST" action="{{ route('admin.events.toggleSetting', $event->id) }}">
           @csrf
           <input type="hidden" name="field" value="send_notification">
-          <button type="submit" class="btn btn-secondary act-link act-bell {{ $event->send_notification ? 'is-on' : '' }}">
+          <x-button variant="secondary" type="submit" class="act-bell {{ $event->send_notification ? 'is-on' : '' }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
             {{ $event->send_notification ? 'Notify On' : 'Notify' }}
-          </button>
+          </x-button>
         </form>
         @if($event->status === 'pending')
-          <form class="act-form" method="POST" action="{{ route('admin.events.approve', $event->id) }}">@csrf<button type="submit" class="btn btn-green act-link act-approve">Approve</button></form>
-          <form class="act-form" method="POST" action="{{ route('admin.events.reject', $event->id) }}">@csrf<button type="submit" class="btn btn-red act-link act-reject">Reject</button></form>
+          <form class="act-form" method="POST" action="{{ route('admin.events.approve', $event->id) }}">@csrf<x-button variant="primary" type="submit" class="act-approve">Approve</x-button></form>
+          <form class="act-form" method="POST" action="{{ route('admin.events.reject', $event->id) }}">@csrf<x-button variant="destructive" type="submit" class="act-reject">Reject</x-button></form>
         @elseif($event->status === 'draft')
-          <form class="act-form" method="POST" action="{{ route('admin.events.publish', $event->id) }}">@csrf<button type="submit" class="btn btn-green act-link act-approve">Publish</button></form>
+          <form class="act-form" method="POST" action="{{ route('admin.events.publish', $event->id) }}">@csrf<x-button variant="primary" type="submit" class="act-approve">Publish</x-button></form>
         @elseif($event->status === 'active')
-          <form class="act-form" method="POST" action="{{ route('admin.events.draft', $event->id) }}">@csrf<button type="submit" class="btn btn-red act-link act-reject">Unpublish</button></form>
+          <form class="act-form" method="POST" action="{{ route('admin.events.draft', $event->id) }}">@csrf<x-button variant="destructive" type="submit" class="act-reject">Unpublish</x-button></form>
         @endif
       </div>
     </div>
@@ -626,20 +455,20 @@ tbody tr.row-selected{background:var(--a-lt);}
         <strong>No events found</strong>
         <span>No events match your current filters.</span>
         @if(request('search') || request('status') || request('date'))
-          <a href="{{ route('admin.events.index') }}" class="reset-btn">Clear filters</a>
+          <x-button variant="secondary" href="{{ route('admin.events.index') }}">Clear filters</x-button>
         @endif
       </div>
     </div>
   @endforelse
 </div>
 
-<div class="bulk-bar" id="bulkBar">
-  <span class="bulk-count" id="bulkCount">0 selected</span>
-  <div class="bulk-acts">
-    <button type="button" class="btn btn-red bulk-btn bulk-btn-del" onclick="openBulkConfirm()">
+<div class="table-bulk-bar" id="bulkBar">
+  <span class="table-bulk-count" id="bulkCount">0 selected</span>
+  <div class="table-bulk-acts">
+    <x-button variant="destructive" type="button" class="bulk-btn">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>Delete
-    </button>
-    <button type="button" class="btn btn-secondary bulk-btn bulk-btn-cancel" onclick="clearSelection()">Cancel</button>
+    </x-button>
+    <x-button variant="secondary" type="button" class="bulk-btn">Cancel</x-button>
   </div>
 </div>
 

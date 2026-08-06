@@ -3,7 +3,7 @@
 @section('content')
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=DM+Mono:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=DM+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 @push('styles') @vite(['resources/css/public/public-show.css']) @endpush
 
@@ -168,14 +168,14 @@
             </div>
 
             <div class="hero-cta">
-                <button type="button" class="hero-donate-btn" onclick="scrollToDonate()">
+                <x-button variant="primary" type="button" class="hero-donate-btn" onclick="scrollToDonate()">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
                     Donate Now
-                </button>
-                <button type="button" class="hero-share-btn" onclick="shareCampaign(event)">
+                </x-button>
+                <x-button variant="secondary" type="button" class="hero-share-btn" onclick="shareCampaign(event)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
                     Share
-                </button>
+                </x-button>
             </div>
         </div>
     </div>
@@ -649,11 +649,11 @@
                             </div>
 
                             <div id="dpAddWrap_{{ $product->id }}">
-                                <button type="button" class="dp-add-btn" id="dpAddBtn_{{ $product->id }}"
+                                <x-button variant="primary" type="button" class="dp-add-btn" id="dpAddBtn_{{ $product->id }}"
                                         onclick="addProductToCart({{ $product->id }})">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                                     Add
-                                </button>
+                                </x-button>
                             </div>
                             <div class="dp-counter" id="dpCounter_{{ $product->id }}">
                                 <button type="button" class="dp-minus" onclick="changeQty({{ $product->id }}, -1)">−</button>
@@ -708,13 +708,10 @@
 
                 @if($products->count() > 0)
                 <div style="padding:0 14px 14px;">
-                    <button type="button" class="btn-donate-new"
-                            id="dpDonateBtn"
-                            style="background:linear-gradient(135deg,var(--orange),var(--orange2));box-shadow:0 6px 22px rgba(249,115,22,.4);margin-top:10px;opacity:.5;cursor:not-allowed;"
-                            onclick="submitProductDonation()" disabled>
+                    <x-button variant="primary" type="button" id="dpDonateBtn" disabled onclick="submitProductDonation()">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
                         <span id="dpDonateBtnText">Select Products to Donate</span>
-                    </button>
+                    </x-button>
                 </div>
                 @endif
             </div>{{-- /panelProducts --}}
@@ -752,13 +749,13 @@
 
                     <div class="amt-grid-new">
                         @foreach([100,500,1000,2000,5000,10000,20000,50000,100000] as $amt)
-                        <button type="button" class="amt-btn-new" onclick="pickAmtNew({{ $amt }},this)">
+                        <x-button variant="primary" type="button" class="amt-btn-new" onclick="pickAmtNew({{ $amt }}, this)">
                             ₹{{ $amt >= 1000 ? number_format($amt/1000).'K' : $amt }}
-                        </button>
+                        </x-button>
                         @endforeach
                     </div>
 
-                    <div class="impact-preview-new" id="impactPreviewNew">
+                    <div class="impact-preview-new" id="impactPreviewNew" aria-live="polite">
                         <strong id="impactHeadNew">Your impact</strong>
                         <span id="impactTxtNew"></span>
                     </div>
@@ -788,12 +785,12 @@
                                     Apply
                                 </button>
                             </div>
-                            <div id="couponMsg" style="font-size:12.5px;margin-top:6px;min-height:16px;"></div>
+                            <div id="couponMsg" style="font-size:12.5px;margin-top:6px;min-height:16px;" aria-live="polite"></div>
 
-                            <button type="submit" class="btn-donate-new btn-once">
+                            <x-button variant="primary" type="submit">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
                                 Donate Now
-                            </button>
+                            </x-button>
                         </form>
 
                         <script>
@@ -853,10 +850,10 @@
                             @csrf
                             <input type="hidden" name="frequency" value="weekly">
                             <input type="number" id="amtWeekly" name="amount" placeholder="₹ Amount per week" required min="10" inputmode="decimal" class="custom-input-new" oninput="syncAmtNew('weekly')">
-                            <button type="submit" class="btn-donate-new btn-weekly">
+                            <x-button variant="primary" type="submit">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
                                 Start Weekly Donation
-                            </button>
+                            </x-button>
                         </form>
                         <span class="cancel-lnk">No commitment — <a onclick="alert('Cancel anytime from My Dashboard → Recurring Donations.')">cancel anytime</a></span>
                         @else
@@ -874,10 +871,10 @@
                             @csrf
                             <input type="hidden" name="frequency" value="monthly">
                             <input type="number" id="amtMonthly" name="amount" placeholder="₹ Amount per month" required min="10" inputmode="decimal" class="custom-input-new" oninput="syncAmtNew('monthly')">
-                            <button type="submit" class="btn-donate-new btn-monthly">
+                            <x-button variant="primary" type="submit">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
                                 Start Monthly Donation
-                            </button>
+                            </x-button>
                         </form>
                         <span class="cancel-lnk">No commitment — <a onclick="alert('Cancel anytime from My Dashboard → Recurring Donations.')">cancel anytime</a></span>
                         @else
@@ -952,10 +949,10 @@
             @auth
             <form method="POST" action="{{ route('campaign.follow', $campaign) }}">
                 @csrf
-                <button type="submit" class="btn-follow {{ $isFollowing ? 'is-following' : '' }}">
+                <x-button variant="primary" type="submit" class="btn-follow {{ $isFollowing ? 'is-following' : '' }}">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
                     {{ $isFollowing ? 'Following' : 'Follow' }}
-                </button>
+                </x-button>
             </form>
             @else
             <a href="{{ route('login') . '?redirect=' . urlencode(url()->current()) }}" class="btn-follow">
@@ -965,7 +962,7 @@
             @endauth
             <div class="follow-count">{{ $followerCount }} follower{{ $followerCount !== 1 ? 's' : '' }}</div>
             <br>
-
+            </div>{{-- /Campaign Details card --}}
 
         {{-- ── Share ── --}}
         <div class="share-card reveal-right d2">
@@ -974,22 +971,22 @@
                 Spread the Word
             </div>
             <div class="share-social">
-                <button type="button" class="share-soc-btn s-wa" onclick="shareTo('whatsapp')" aria-label="Share on WhatsApp">
+                <x-button variant="primary" type="button" class="share-soc-btn s-wa" onclick="shareTo('whatsapp')" aria-label="Share on WhatsApp">
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.71.306 1.263.489 1.694.626.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.245-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.885-9.885 9.885M20.52 3.449C18.24 1.245 15.24 0 12.045 0 5.463 0 .104 5.358.101 11.942c0 2.096.547 4.142 1.588 5.945L0 24l6.237-1.633a11.9 11.9 0 005.808 1.48h.002c6.583 0 11.943-5.36 11.946-11.943 0-3.18-1.235-6.17-3.473-8.425"/></svg>
                     WhatsApp
-                </button>
-                <button type="button" class="share-soc-btn s-fb" onclick="shareTo('facebook')" aria-label="Share on Facebook">
+                </x-button>
+                <x-button variant="primary" type="button" class="share-soc-btn s-fb" onclick="shareTo('facebook')" aria-label="Share on Facebook">
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 10-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.78-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0022 12z"/></svg>
                     Facebook
-                </button>
-                <button type="button" class="share-soc-btn s-x" onclick="shareTo('x')" aria-label="Share on X">
+                </x-button>
+                <x-button variant="primary" type="button" class="share-soc-btn s-x" onclick="shareTo('x')" aria-label="Share on X">
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                     X
-                </button>
-                <button type="button" class="share-soc-btn s-copy" onclick="copyLink(this)" aria-label="Copy link">
+                </x-button>
+                <x-button variant="primary" type="button" class="share-soc-btn s-copy" onclick="copyLink(this)" aria-label="Copy campaign link">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
                     Copy
-                </button>
+                </x-button>
             </div>
             <!-- <div class="share-copy-row" onclick="copyLink()">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h12v4M4 4v12h12M20 4v16H4"/></svg>
@@ -1029,13 +1026,13 @@
         </div>
     </div>
     <div class="sdb-right">
-        <button type="button" class="sdb-btn" id="sdbDonateBtn" onclick="scrollToDonate()">
+        <x-button variant="ghost" type="button" class="sdb-btn" onclick="scrollToDonate()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
             <span id="sdbBtnLabel">Donate Now</span>
-        </button>
-        <button type="button" class="sdb-share-btn" onclick="shareCampaign(event)" aria-label="Share">
+        </x-button>
+        <x-button variant="ghost" type="button" class="sdb-share-btn" onclick="shareCampaign(event)" aria-label="Share campaign">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-        </button>
+        </x-button>
     </div>
 </div>
 
@@ -1086,21 +1083,50 @@ window.addEventListener('scroll', function(){
 (function(){
     var bar    = document.getElementById('stickyBar');
     var btnLbl = document.getElementById('sdbBtnLabel');
+    var card   = document.getElementById('donateCardEl');
     var shown  = false;
+    var cardInView = false;
     window._sdbTotal = 0;
 
     function update(){
-        var scrollY    = window.scrollY;
-        var heroH      = document.querySelector('.hero')?.offsetHeight || 500;
-        var shouldShow = scrollY > heroH * 0.6;
-        if(shouldShow !== shown){ bar.classList.toggle('visible', shouldShow); shown = shouldShow; }
+        var scrollY = window.scrollY;
+        if(!cardInView){
+            var heroH      = document.querySelector('.hero')?.offsetHeight || 500;
+            var shouldShow = scrollY > heroH * 0.6;
+            if(shouldShow !== shown){ bar.classList.toggle('visible', shouldShow); shown = shouldShow; }
+        } else if(shown){
+            bar.classList.remove('visible'); shown = false;
+        }
         if(window._sdbTotal > 0){
             btnLbl.textContent = 'Donate Now (₹' + window._sdbTotal.toLocaleString('en-IN') + ')';
         } else {
             var amtOnce = parseFloat(document.getElementById('amtOnce')?.value) || 0;
             btnLbl.textContent = amtOnce > 0 ? 'Donate Now (₹' + amtOnce.toLocaleString('en-IN') + ')' : 'Donate Now';
         }
+        updateChatFloat();
     }
+    if(card && 'IntersectionObserver' in window){
+        var io = new IntersectionObserver(function(entries){
+            cardInView = entries[0].isIntersecting;
+            update();
+        });
+        io.observe(card);
+    }
+    var chatFloat = null;
+    function updateChatFloat(){
+        if(!chatFloat){ chatFloat = document.getElementById('chatToggle') ? document.getElementById('chatToggle').closest('.chat-float-wrap') : null; }
+        if(!chatFloat || !card) return;
+        var cr = card.getBoundingClientRect();
+        var vh = window.innerHeight, vw = window.innerWidth;
+        var collides = cr.bottom > vh - 84 && cr.right > vw - 84;
+        chatFloat.classList.toggle('chat-float-hidden', collides || shown);
+        if(scrollTopBtn){
+            var nearBottom = (document.documentElement.scrollHeight - window.scrollY - window.innerHeight) < 120;
+            scrollTopBtn.classList.toggle('scroll-top-hidden', collides || nearBottom);
+        }
+    }
+    window.addEventListener('resize', updateChatFloat, {passive:true});
+    document.addEventListener('DOMContentLoaded', updateChatFloat);
     window.addEventListener('scroll', update, {passive:true});
     update();
 })();
@@ -1109,7 +1135,7 @@ function scrollToDonate(){
     var card = document.getElementById('donateCardEl');
     if(card){
         card.scrollIntoView({ behavior:'smooth', block:'center' });
-        card.style.boxShadow = '0 0 0 3px rgba(249,115,22,.5), var(--shadow-lg)';
+        card.style.boxShadow = '0 0 0 4px rgba(37,99,235,.45), var(--shadow-lg)';
         setTimeout(function(){ card.style.boxShadow = ''; }, 1800);
     }
 }

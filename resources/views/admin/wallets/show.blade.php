@@ -1,4 +1,9 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
+
+@push('page_css')
+@vite('resources/css/admin/entries/finance.css')
+@endpush
+
 
 @section('sidebar_wallets', 'active')
 @section('page_title', 'Wallet #' . $wallet->id . ' Ledger')
@@ -35,26 +40,24 @@
       <div class="chart-sub">Credit or debit this wallet directly</div>
     </div>
   </div>
-  <form method="POST" action="{{ route('admin.wallets.adjust', $wallet) }}" style="padding:16px;display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;">
+  <form method="POST" action="{{ route('admin.wallets.adjust', $wallet) }}" class="wa-form">
     @csrf
-    <div>
-      <label style="display:block;font-size:11px;color:var(--text3);margin-bottom:4px;font-weight:500;">Direction</label>
-      <select name="direction" style="padding:7px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;">
+    <div class="wa-field">
+      <label>Direction</label>
+      <select name="direction" class="wa-select">
         <option value="credit">Credit (+)</option>
         <option value="debit">Debit (−)</option>
       </select>
     </div>
-    <div>
-      <label style="display:block;font-size:11px;color:var(--text3);margin-bottom:4px;font-weight:500;">Amount</label>
-      <input type="number" step="0.01" name="amount" placeholder="Amount" required
-             style="padding:7px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;width:140px;">
+    <div class="wa-field">
+      <label>Amount</label>
+      <input type="number" step="0.01" name="amount" placeholder="Amount" required class="wa-input" style="width:140px;">
     </div>
-    <div>
-      <label style="display:block;font-size:11px;color:var(--text3);margin-bottom:4px;font-weight:500;">Reason</label>
-      <input type="text" name="notes" placeholder="Reason (required)" required
-             style="padding:7px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;width:220px;">
+    <div class="wa-field">
+      <label>Reason</label>
+      <input type="text" name="notes" placeholder="Reason (required)" required class="wa-input" style="width:220px;">
     </div>
-    <button type="submit" style="padding:7px 18px;border-radius:8px;border:none;background:var(--a);color:#fff;font-size:13px;font-weight:600;cursor:pointer;">Apply</button>
+    <button type="submit" class="wa-btn">Apply</button>
   </form>
 </div>
 

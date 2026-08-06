@@ -61,7 +61,7 @@ class CategoryController extends Controller
             'slug' => $slug,
             'icon' => $request->icon,
             'color' => $request->color,
-            'is_active' => true,
+            'is_active' => $request->has('is_active'),
         ]);
 
         return redirect()->route('admin.categories.index')

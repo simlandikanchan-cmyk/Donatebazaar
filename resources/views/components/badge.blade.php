@@ -4,10 +4,6 @@
 ])
 
 @php
-    $sizeClasses = [
-        'sm' => 'font-size:10px;padding:2px 8px;',
-        'md' => 'font-size:11px;padding:3px 10px;',
-    ];
     $badgeClass = match($type) {
         'active' => 'b-active',
         'pending' => 'b-pending',
@@ -18,8 +14,9 @@
         'verified' => 'b-active',
         default => 'b-default',
     };
+    $sizeClass = $size === 'md' ? 'badge-md' : 'badge-sm';
 @endphp
 
-<span class="badge {{ $badgeClass }}" @if(isset($sizeClasses[$size])) style="{{ $sizeClasses[$size] }}" @endif>
+<span class="badge {{ $badgeClass }} {{ $sizeClass }}">
     {{ $slot }}
 </span>

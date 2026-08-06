@@ -1,4 +1,9 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
+
+@push('page_css')
+@vite('resources/css/admin/entries/finance.css')
+@endpush
+
 
 @section('sidebar_settlements', 'active')
 @section('page_title', 'Settlement #' . $settlement->id)
@@ -157,13 +162,13 @@
             <span style="font-size:10px;padding:1px 7px;border-radius:4px;background:var(--green-lt);color:var(--green);font-weight:600;">Verified</span>
             <form method="POST" action="{{ route('admin.payout-accounts.unverify', $pa) }}" style="display:inline;">
               @csrf
-              <button type="submit" style="font-size:10px;padding:2px 8px;border-radius:4px;border:1px solid var(--red);background:transparent;color:var(--red);font-weight:600;cursor:pointer;">Unverify</button>
+              <x-button type="submit" variant="outline" size="sm">Unverify</x-button>
             </form>
           @else
             <span style="font-size:10px;padding:1px 7px;border-radius:4px;background:var(--yellow-lt);color:var(--yellow);font-weight:600;">Pending</span>
             <form method="POST" action="{{ route('admin.payout-accounts.verify', $pa) }}" style="display:inline;">
               @csrf
-              <button type="submit" style="font-size:10px;padding:2px 8px;border-radius:4px;border:1px solid var(--green);background:transparent;color:var(--green);font-weight:600;cursor:pointer;">Mark Verified</button>
+              <x-button type="submit" variant="outline" size="sm">Mark Verified</x-button>
             </form>
           @endif
         </div>
@@ -204,10 +209,10 @@
     <form method="POST" action="{{ route('admin.settlements.approve', $settlement) }}"
           onsubmit="return confirm(@json($approveConfirm));">
       @csrf
-      <button type="submit" style="padding:10px 24px;border-radius:10px;border:none;background:var(--green);color:#fff;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px;"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+      <x-button type="submit" variant="primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
         Approve Settlement
-      </button>
+      </x-button>
     </form>
     <form method="POST" action="{{ route('admin.settlements.reject', $settlement) }}" style="display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap;"
           onsubmit="return confirm('Reject this settlement and return funds to balance?');">
@@ -215,10 +220,10 @@
       <textarea name="reason" id="rejectReason" rows="2" placeholder="Rejection reason (required)" required
               oninput="document.getElementById('rejectBtn').disabled = this.value.trim() === '';"
              style="padding:9px 14px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;width:260px;max-width:100%;resize:vertical;font-family:inherit;"></textarea>
-      <button type="submit" id="rejectBtn" disabled style="padding:10px 24px;border-radius:10px;border:none;background:var(--red);color:#fff;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px;"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      <x-button type="submit" id="rejectBtn" variant="destructive" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
         Reject
-      </button>
+      </x-button>
     </form>
   </div>
 @endif

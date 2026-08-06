@@ -1,4 +1,4 @@
-﻿/* â•â• ONBOARDING CHECKLIST â•â• */
+/* ══ ONBOARDING CHECKLIST ══ */
 .checklist-card {
     background: var(--glass-bg); border: 1px solid var(--glass-border);
     border-radius: var(--r); padding: 22px;
@@ -8,7 +8,7 @@
     animation: fadeUp .4s .15s ease both;
 }
 .checklist-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
-.checklist-title svg { width: 16px; height: 16px; color: var(--accent); }
+.checklist-title svg { width: 16px; height: 16px; color: var(--primary); }
 .checklist-grid { display: flex; flex-direction: column; gap: 8px; }
 .checklist-item {
     display: flex; align-items: center; gap: 12px;
@@ -23,12 +23,12 @@
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0; font-size: 13px;
 }
-.checklist-ico.pending { background: var(--accent-lt); color: var(--accent); }
+.checklist-ico.pending { background: var(--accent-lt); color: var(--primary); }
 .checklist-ico.done    { background: var(--green-lt);  color: var(--green); }
 .checklist-body { flex: 1; min-width: 0; }
 .checklist-lbl { font-size: 12.5px; font-weight: 600; color: var(--text); }
 .checklist-sub { font-size: 11px; color: var(--text3); margin-top: 1px; }
-.checklist-action { font-size: 11px; font-weight: 600; color: var(--accent); white-space: nowrap; text-decoration: none; }
+.checklist-action { font-size: 11px; font-weight: 600; color: var(--primary); white-space: nowrap; text-decoration: none; }
 .checklist-action:hover { text-decoration: underline; }
 
 @media (max-width: 1280px) { .stats-grid { grid-template-columns: repeat(3, 1fr); } }
@@ -37,47 +37,339 @@
 .sms-search { position: relative; }
 .sms-search svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 13px; height: 13px; color: var(--text3); pointer-events: none; }
 .sms-input { width: 100%; height: 36px; padding: 0 10px 0 30px; border: 1px solid var(--border2); border-radius: var(--r-sm); font-size: 12.5px; color: var(--text); font-family: var(--font); background: var(--surface2); outline: none; transition: border-color var(--ease); }
-.sms-input:focus { border-color: var(--accent); background: var(--surface); }
+.sms-input:focus { border-color: var(--primary); background: var(--surface); }
 .sms-sort { height: 36px; padding: 0 10px; border: 1px solid var(--border2); border-radius: var(--r-sm); font-size: 12.5px; color: var(--text); font-family: var(--font); background: var(--surface2); outline: none; cursor: pointer; transition: border-color var(--ease); }
-.sms-sort:focus { border-color: var(--accent); }
-@media (max-width: 860px)  {
-  .sidebar { transform: translateX(-100%); }
-  .sidebar.open { transform: translateX(0); }
-  .main { margin-left: 0; }
-  .hamburger { display: flex; }
-  .search-wrap, .sort-sel { display: none; }
-  .sidebar-mobile-search { display: flex; }
-  .welcome-banner { flex-direction: column; align-items: flex-start; }
-  .ftab-select { display: block; }
-  .ftabs { display: none; }
-  .wb-glow.g1 { width: 160px; height: 160px; top: -60px; right: -30px; }
-  .wb-glow.g2 { width: 130px; height: 130px; bottom: -70px; left: -20px; }
+.sms-sort:focus { border-color: var(--primary); }
+
+/* ── Tablet & Mobile (≤860px) ── */
+@media (max-width: 860px) {
+    .sidebar { transform: translateX(-100%); box-shadow: none; }
+    .sidebar.open { transform: translateX(0); box-shadow: 4px 0 24px rgba(0,0,0,.15); }
+    .main { margin-left: 0; width: 100%; }
+    .hamburger { display: flex; }
+    .search-wrap, .sort-sel { display: none; }
+    .sidebar-mobile-search { display: flex; }
+    .welcome-banner { flex-direction: column; align-items: flex-start; gap: 14px; }
+    .welcome-banner .wb-right { width: 100%; display: flex; flex-wrap: wrap; gap: 8px; }
+    .welcome-banner .wb-btn { flex: 1; min-width: 120px; justify-content: center; }
+    .ftab-select { display: block; }
+    .ftabs { display: none; }
+    .view-toggle { display: none; }
+    .view-select { display: block; }
+    .topbar { padding: 0 12px; gap: 8px; height: 54px; }
+    .topbar-left-wrap { gap: 8px; }
+    .topbar-left h1 { font-size: 14px; }
+    .topbar-left p { display: none; }
+    .topbar-right { gap: 4px; }
+    .topbar-right .tb-btn { display: none; }
+    .topbar-right .theme-toggle { display: none; }
+    .topbar-right .create-btn { display: none; }
+    .body { padding: 16px 12px 48px; }
+    .wb-glow.g1 { width: 140px; height: 140px; top: -50px; right: -20px; }
+    .wb-glow.g2 { width: 110px; height: 110px; bottom: -60px; left: -15px; }
+    .insight-row { grid-template-columns: 1fr; }
+    .analytics-row { grid-template-columns: 1fr; }
+    .chart-wrap { height: 180px; }
+    .impact-ring-wrap { width: 110px; height: 110px; }
+    .impact-ring-pct { font-size: 1.15rem; }
 }
-@media (max-width: 600px)  {
-  .topbar { padding: 0 16px; }
-  .body { padding: 14px 14px 48px; }
-  .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-  .stat-card { padding: 16px 18px; gap: 12px; }
-  .stat-icon-wrap { width: 36px; height: 36px; border-radius: 10px; }
-  .stat-icon-wrap svg { width: 15px; height: 15px; }
-  .stat-val { font-size: 1.4rem; }
-  .c-grid { grid-template-columns: 1fr; }
-  .qnav { grid-template-columns: repeat(2, 1fr); }
-  .welcome-banner { padding: 22px 20px; }
-  .wb-name { font-size: 20px; }
-  .wb-glow.g1 { width: 120px; height: 120px; }
-  .wb-glow.g2 { width: 100px; height: 100px; }
-  .analytics-row { gap: 10px; }
-  .chart-wrap { height: 160px; }
-  .welcome-banner::after { width: 140px; height: 140px; top: -40px; right: -40px; }
-  .impact-ring-wrap { width: 120px; height: 120px; }
-  .impact-ring-pct { font-size: 1.25rem; }
-  .impact-ring-foot { font-size: 10px; }
-  .pending-card { padding: 16px; }
-  .wallet-mini-card { padding: 16px; }
-  .wallet-mini-bal-val { font-size: 18px; }
-  .events-card { padding: 16px; }
-  .events-date { width: 40px; height: 44px; }
-  .events-date-day { font-size: 14px; }
+
+/* ── Small Mobile (≤600px) ── */
+@media (max-width: 600px) {
+    .topbar { padding: 0 10px; height: 52px; }
+    .topbar-left h1 { font-size: 14px; }
+    .topbar-left p { display: none; }
+    .hamburger { width: 32px; height: 32px; }
+    .hamburger svg { width: 14px; height: 14px; }
+    .body { padding: 12px 10px 40px; }
+    .stats-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .stat-card { padding: 14px 16px; gap: 10px; }
+    .stat-icon-wrap { width: 34px; height: 34px; border-radius: 9px; }
+    .stat-icon-wrap svg { width: 14px; height: 14px; }
+    .stat-val { font-size: 1.3rem; }
+    .stat-label { font-size: 9.5px; }
+    .stat-foot { font-size: 9.5px; }
+    .welcome-banner { padding: 18px 14px; gap: 10px; }
+    .wb-name { font-size: 18px; }
+    .wb-sub { font-size: 11px; gap: 8px; }
+    .wb-badges { gap: 6px; flex-wrap: wrap; }
+    .wb-badge { font-size: 9px; padding: 3px 8px; }
+    .wb-btn { font-size: 12px; padding: 8px 12px; }
+    .wb-glow.g1 { width: 100px; height: 100px; top: -40px; right: -20px; }
+    .wb-glow.g2 { width: 80px; height: 80px; bottom: -40px; left: -10px; }
+    .welcome-banner::after { width: 80px; height: 80px; top: -25px; right: -25px; }
+    .c-grid { grid-template-columns: 1fr; gap: 12px; }
+    .c-card { border-radius: 14px; }
+    .c-thumb img, .c-thumb-placeholder { height: 140px; }
+    .c-body { padding: 12px 14px; }
+    .c-title { font-size: 13px; }
+    .c-actions { flex-direction: column; gap: 6px; }
+    .c-actions .btn { width: 100%; justify-content: center; }
+    .qnav { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .qnav-card { padding: 14px 12px; gap: 10px; }
+    .qnav-ico { width: 36px; height: 36px; }
+    .qnav-ico svg { width: 16px; height: 16px; }
+    .qnav-lbl { font-size: 11.5px; }
+    .qnav-sub { font-size: 9.5px; }
+    .chart-wrap { height: 150px; }
+    .chart-title { font-size: 13px; }
+    .chart-sub { font-size: 10px; }
+    .impact-ring-wrap { width: 100px; height: 100px; }
+    .impact-ring-pct { font-size: 1.1rem; }
+    .impact-ring-lbl { font-size: 8px; }
+    .impact-ring-foot { font-size: 9px; }
+    .impact-ring-card { padding: 14px; }
+    .insight-card { padding: 16px; }
+    .level-bar-wrap { margin: 8px 0; }
+    .level-req { font-size: 11px; }
+    .pending-card { padding: 14px; }
+    .wallet-mini-card { padding: 14px; }
+    .wallet-mini-bal-val { font-size: 17px; }
+    .wallet-mini-item { padding: 6px 4px; }
+    .events-card { padding: 14px; }
+    .events-date { width: 36px; height: 38px; border-radius: 8px; }
+    .events-date-day { font-size: 12px; }
+    .events-date-mon { font-size: 8px; }
+    .events-body-title { font-size: 12px; }
+    .events-body-meta { font-size: 9.5px; gap: 6px; }
+    .events-item { padding: 8px 10px; gap: 8px; }
+    .achieve-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .achieve-item { padding: 8px 6px; }
+    .achieve-ico { width: 32px; height: 32px; }
+    .achieve-ico svg { width: 14px; height: 14px; }
+    .achieve-lbl { font-size: 10px; }
+    .blog-item { padding: 10px 0; }
+    .blog-title { font-size: 13px; }
+    .blog-meta { font-size: 10px; gap: 6px; }
+    .sec-hdr { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .sec-right { width: 100%; flex-wrap: wrap; }
+    .ftabs { padding: 2px; gap: 1px; }
+    .ftab { padding: 4px 8px; font-size: 10px; gap: 3px; }
+    .ftab .cnt { min-width: 12px; height: 12px; font-size: 8px; padding: 0 2px; }
+    .view-select { font-size: 12px; height: 36px; }
+    .rec-card { flex-wrap: wrap; gap: 10px; padding: 14px; }
+    .rec-actions { flex-shrink: 1; width: 100%; justify-content: flex-end; }
+    .rec-amount { text-align: left; }
+    .rec-icon { width: 36px; height: 36px; }
+    .rec-icon svg { width: 16px; height: 16px; }
+    .rec-title { font-size: 13px; }
+    .rec-amt-val { font-size: 14px; }
+    .wallet-stats-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .wallet-pa-item { min-width: 100%; }
+    .wallet-input { min-width: 100%; }
+    .checklist-card { padding: 16px; }
+    .activity-card { padding: 14px; }
+    .activity-item { padding: 8px 10px; gap: 8px; }
+    .activity-dot-col { display: none; }
+    .activity-body-top { flex-direction: column; gap: 2px; }
+    .activity-amt { font-size: 13px; }
+}
+
+/* ── Extra Small (≤400px) ── */
+@media (max-width: 400px) {
+    .topbar { padding: 0 8px; }
+    .body { padding: 10px 8px 36px; }
+    .stats-grid { grid-template-columns: 1fr; gap: 6px; }
+    .stat-card { padding: 12px 14px; gap: 8px; flex-direction: row; }
+    .stat-icon-wrap { width: 30px; height: 30px; border-radius: 7px; }
+    .stat-icon-wrap svg { width: 12px; height: 12px; }
+    .stat-val { font-size: 1.15rem; }
+    .stat-label { font-size: 8.5px; }
+    .stat-foot { font-size: 8.5px; }
+    .welcome-banner { padding: 14px 10px; }
+    .wb-name { font-size: 16px; }
+    .wb-sub { font-size: 10px; }
+    .wb-badge { font-size: 8px; padding: 2px 6px; }
+    .wb-btn { font-size: 11px; padding: 7px 10px; }
+    .wb-glow.g1 { width: 80px; height: 80px; top: -30px; right: -15px; }
+    .wb-glow.g2 { width: 60px; height: 60px; bottom: -30px; left: -8px; }
+    .welcome-banner::after { width: 60px; height: 60px; top: -20px; right: -20px; }
+    .c-grid { gap: 8px; }
+    .c-card { border-radius: 12px; }
+    .c-thumb img, .c-thumb-placeholder { height: 120px; }
+    .c-body { padding: 10px 12px; }
+    .c-title { font-size: 12px; -webkit-line-clamp: 1; }
+    .prog-raised { font-size: 13px; }
+    .qnav { grid-template-columns: 1fr 1fr; gap: 6px; }
+    .qnav-card { padding: 12px 10px; gap: 8px; }
+    .qnav-ico { width: 32px; height: 32px; }
+    .qnav-ico svg { width: 14px; height: 14px; }
+    .qnav-lbl { font-size: 11px; }
+    .qnav-sub { font-size: 8.5px; }
+    .chart-wrap { height: 130px; }
+    .impact-ring-wrap { width: 80px; height: 80px; }
+    .impact-ring-pct { font-size: 1rem; }
+    .impact-ring-lbl { font-size: 7px; }
+    .impact-ring-foot { font-size: 8px; }
+    .impact-ring-card { padding: 12px; }
+    .insight-card { padding: 12px; }
+    .level-bar-wrap { margin: 6px 0; }
+    .level-req { font-size: 10px; }
+    .pending-card { padding: 12px; }
+    .wallet-mini-card { padding: 12px; }
+    .wallet-mini-bal-val { font-size: 15px; }
+    .wallet-mini-item { padding: 5px 3px; }
+    .wallet-mini-lbl { font-size: 10px; }
+    .wallet-mini-sub { font-size: 8px; }
+    .wallet-mini-amt { font-size: 10.5px; }
+    .events-card { padding: 12px; }
+    .events-date { width: 30px; height: 32px; border-radius: 6px; }
+    .events-date-day { font-size: 11px; }
+    .events-date-mon { font-size: 7px; }
+    .events-body-title { font-size: 11px; }
+    .events-body-meta { font-size: 8.5px; }
+    .events-item { padding: 6px 8px; gap: 6px; }
+    .achieve-grid { grid-template-columns: repeat(2, 1fr); gap: 4px; }
+    .achieve-item { padding: 6px 4px; }
+    .achieve-ico { width: 28px; height: 28px; }
+    .achieve-ico svg { width: 12px; height: 12px; }
+    .achieve-lbl { font-size: 9px; }
+    .blog-item { padding: 8px 0; }
+    .blog-title { font-size: 12px; }
+    .blog-meta { font-size: 9px; }
+    .ftab { padding: 3px 6px; font-size: 9px; }
+    .ftab .cnt { min-width: 10px; height: 10px; font-size: 7px; }
+    .rec-card { padding: 10px; gap: 8px; }
+    .rec-title { font-size: 12px; }
+    .rec-amt-val { font-size: 13px; }
+    .rec-sub { font-size: 10px; }
+    .wallet-stats-grid { grid-template-columns: 1fr; }
+    .wallet-pa-grid { flex-direction: column; }
+    .wallet-pa-item { min-width: 100%; }
+    .wallet-table th, .wallet-table td { padding: 6px 4px; font-size: 10px; }
+    .checklist-card { padding: 12px; }
+    .checklist-item { padding: 8px 10px; gap: 8px; }
+    .checklist-ico { width: 24px; height: 24px; font-size: 11px; }
+    .checklist-lbl { font-size: 11px; }
+    .checklist-sub { font-size: 10px; }
+    .activity-card { padding: 12px; }
+    .activity-hdr { margin-bottom: 10px; }
+    .activity-title { font-size: 13px; }
+    .activity-item { padding: 6px 8px; gap: 6px; }
+    .activity-lbl { font-size: 11px; }
+    .activity-amt { font-size: 12px; }
+    .activity-sub { font-size: 10px; }
+    .view-select { font-size: 10px; height: 28px; }
+}
+
+/* ── Tiny Mobile (≤360px) ── */
+@media (max-width: 360px) {
+    .topbar { padding: 0 6px; height: 48px; }
+    .topbar-left-wrap { gap: 6px; }
+    .hamburger { width: 28px; height: 28px; }
+    .hamburger svg { width: 12px; height: 12px; }
+    .topbar-left h1 { font-size: 13px; }
+    .body { padding: 8px 6px 32px; }
+    .stats-grid { gap: 4px; }
+    .stat-card { padding: 10px 12px; gap: 6px; }
+    .stat-icon-wrap { width: 26px; height: 26px; border-radius: 6px; }
+    .stat-icon-wrap svg { width: 10px; height: 10px; }
+    .stat-val { font-size: 1rem; }
+    .stat-label { font-size: 7.5px; }
+    .stat-foot { font-size: 7.5px; }
+    .welcome-banner { padding: 12px 8px; gap: 8px; }
+    .wb-name { font-size: 14px; }
+    .wb-sub { font-size: 9px; }
+    .wb-badge { font-size: 7px; padding: 2px 5px; }
+    .wb-btn { font-size: 10px; padding: 6px 8px; }
+    .wb-glow.g1 { width: 60px; height: 60px; top: -20px; right: -10px; }
+    .wb-glow.g2 { width: 50px; height: 50px; bottom: -20px; left: -5px; }
+    .welcome-banner::after { width: 50px; height: 50px; top: -15px; right: -15px; }
+    .c-grid { gap: 6px; }
+    .c-card { border-radius: 10px; }
+    .c-thumb img, .c-thumb-placeholder { height: 100px; }
+    .c-body { padding: 8px 10px; }
+    .c-title { font-size: 11px; }
+    .c-actions { gap: 4px; }
+    .qnav { grid-template-columns: 1fr 1fr; gap: 4px; }
+    .qnav-card { padding: 10px 8px; gap: 6px; }
+    .qnav-ico { width: 28px; height: 28px; }
+    .qnav-ico svg { width: 12px; height: 12px; }
+    .qnav-lbl { font-size: 10px; }
+    .qnav-sub { font-size: 7.5px; }
+    .chart-wrap { height: 110px; }
+    .impact-ring-wrap { width: 70px; height: 70px; }
+    .impact-ring-pct { font-size: 0.85rem; }
+    .impact-ring-lbl { font-size: 6px; }
+    .impact-ring-foot { font-size: 7px; }
+    .impact-ring-card { padding: 10px; }
+    .insight-card { padding: 10px; }
+    .level-bar-wrap { margin: 4px 0; }
+    .level-req { font-size: 9px; }
+    .pending-card { padding: 10px; }
+    .wallet-mini-card { padding: 10px; }
+    .wallet-mini-bal-val { font-size: 13px; }
+    .wallet-mini-item { padding: 4px 2px; }
+    .wallet-mini-lbl { font-size: 9px; }
+    .wallet-mini-sub { font-size: 7px; }
+    .wallet-mini-amt { font-size: 9px; }
+    .events-card { padding: 10px; }
+    .events-date { width: 26px; height: 28px; border-radius: 5px; }
+    .events-date-day { font-size: 10px; }
+    .events-date-mon { font-size: 6px; }
+    .events-body-title { font-size: 10px; }
+    .events-body-meta { font-size: 7.5px; }
+    .events-item { padding: 4px 6px; gap: 4px; }
+    .achieve-grid { grid-template-columns: repeat(2, 1fr); gap: 3px; }
+    .achieve-item { padding: 4px 3px; }
+    .achieve-ico { width: 24px; height: 24px; }
+    .achieve-ico svg { width: 10px; height: 10px; }
+    .achieve-lbl { font-size: 8px; }
+    .blog-item { padding: 6px 0; }
+    .blog-title { font-size: 11px; }
+    .blog-meta { font-size: 8px; }
+    .ftab { padding: 2px 5px; font-size: 8px; }
+    .ftab .cnt { min-width: 8px; height: 8px; font-size: 6px; }
+    .rec-card { padding: 8px; gap: 6px; }
+    .rec-title { font-size: 11px; }
+    .rec-amt-val { font-size: 12px; }
+    .rec-sub { font-size: 8px; }
+    .rec-icon { width: 30px; height: 30px; }
+    .rec-icon svg { width: 14px; height: 14px; }
+    .dh-stats { gap: 4px; }
+    .dh-stat { padding: 10px 12px; gap: 8px; }
+    .dh-stat-icon { width: 30px; height: 30px; border-radius: 8px; }
+    .dh-stat-icon svg { width: 14px; height: 14px; }
+    .dh-stat-num { font-size: 16px; }
+    .dh-stat-lbl { font-size: 8px; }
+    .dh-filter-select { font-size: 10px; height: 28px; padding: 5px 24px 5px 8px; }
+    .dh-search-input { font-size: 11px; padding: 6px 10px 6px 28px; }
+    .dh-row { padding: 10px 12px; gap: 8px; }
+    .dh-avatar { width: 34px; height: 34px; border-radius: 8px; }
+    .dh-avatar svg { width: 14px; height: 14px; }
+    .dh-title { font-size: 11px; }
+    .dh-amount { font-size: 13px; }
+    .dh-chip { font-size: 8px; padding: 3px 8px; gap: 4px; }
+    .dh-chip .dot { width: 4px; height: 4px; }
+    .dh-meta-item { font-size: 9px; }
+    .dh-actions { gap: 4px; }
+    .dh-pagination .page-link { min-width: 26px; height: 26px; padding: 0 6px; font-size: 10px; }
+    .dh-pagination .pagination-info { font-size: 10px; }
+    .dh-refund-row { grid-template-columns: 1fr; gap: 6px; }
+    .dh-refund-details { padding: 10px 12px; }
+    .dh-refund-label { font-size: 8px; }
+    .dh-refund-value { font-size: 10px; }
+    .wallet-stats-grid { gap: 4px; }
+    .wallet-pa-item { padding: 8px 10px; }
+    .wallet-table th, .wallet-table td { padding: 4px 3px; font-size: 9px; }
+    .checklist-card { padding: 10px; }
+    .checklist-item { padding: 6px 8px; gap: 6px; }
+    .checklist-ico { width: 20px; height: 20px; font-size: 9px; }
+    .checklist-lbl { font-size: 10px; }
+    .checklist-sub { font-size: 8px; }
+    .activity-card { padding: 10px; }
+    .activity-title { font-size: 11px; }
+    .activity-item { padding: 4px 6px; gap: 4px; }
+    .activity-lbl { font-size: 10px; }
+    .activity-amt { font-size: 11px; }
+    .activity-sub { font-size: 8px; }
+    .view-select { font-size: 9px; height: 24px; }
+    .topbar-right { gap: 4px; }
+    .av-wrap .t-avatar { width: 28px; height: 28px; font-size: 10px; }
+    .av-dd { min-width: 160px; }
+    .av-dd .dd-item { padding: 7px 12px; font-size: 11px; }
+    .av-dd .dd-hdr { padding: 10px 12px; }
+    .av-dd .dd-name { font-size: 12px; }
+    .av-dd .dd-email { font-size: 10px; }
 }
 

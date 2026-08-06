@@ -64,14 +64,14 @@
                 </span>
             </div>
             <div class="ddrf-hero-btns">
-                <a href="{{ route('all.campaigns') }}?type=disaster" class="btn btn-accent" style="font-size:15px;padding:14px 32px">
+                <x-button variant="primary" href="{{ route('all.campaigns') }}?type=disaster">
                     Donate to Relief
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
-                </a>
-                <a href="{{ route('partnership') }}" class="btn btn-white" style="font-size:15px;padding:14px 32px">
+                </x-button>
+                <x-button variant="outline" href="{{ route('partnership') }}">
                     Apply For Partnership
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                </a>
+                </x-button>
             </div>
         </div>
 
@@ -151,13 +151,15 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
                         {{ $campaign['donors'] ?? 0 }} donors
                     </span>
-<a href="{{ route('campaign.public', [
+<x-button variant="primary" href="{{ route('campaign.public', [
     'category' => $campaign['category'],
+    'slug'     => $campaign['slug']
+]) }}" class="cf-btn"> $campaign['category'],
     'slug'     => $campaign['slug']
 ]) }}" class="cf-btn">
                         Donate Now
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                    </a>
+                    </x-button>
                 </div>
             </div>
             @empty
@@ -165,10 +167,10 @@
                 <div class="no-campaigns-icon">🆘</div>
                 <h3>No Active Campaigns Right Now</h3>
                 <p>There are currently no active disaster relief campaigns. Check back soon — new campaigns launch within hours of a disaster.</p>
-                <a href="{{ route('campaign.create') }}" class="btn btn-accent" style="font-size:14px;padding:12px 26px">
+                <x-button variant="outline" href="{{ route('campaign.create') }}">
                     Start a Relief Campaign
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 4v16m8-8H4"/></svg>
-                </a>
+                </x-button>
             </div>
             @endforelse
         </div>
@@ -251,10 +253,10 @@
                     <div class="hiw-step"><div class="hiw-step-num">3</div><div class="hiw-step-body"><div class="hiw-step-title">Track &amp; Get Your 80G</div><div class="hiw-step-desc">Receive real-time field updates, photo/video proof of delivery, and your 80G tax certificate — all from your donor dashboard.</div></div></div>
                 </div>
                 <div class="hiw-col-cta">
-                    <a href="{{ route('all.campaigns') }}?type=disaster" class="btn btn-accent" style="font-size:14px;padding:12px 26px">
+                    <x-button variant="primary" href="{{ route('all.campaigns') }}?type=disaster">
                         Donate Now
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                    </a>
+                    </x-button>
                 </div>
             </div>
             <div class="hiw-col reveal-right">
@@ -268,10 +270,10 @@
                     <div class="hiw-step"><div class="hiw-step-num">3</div><div class="hiw-step-body"><div class="hiw-step-title">Receive Milestone-Based Funds</div><div class="hiw-step-desc">Funds are released in tranches as you upload field proof — photos, bills, delivery reports — keeping donors informed and confident.</div></div></div>
                 </div>
                 <div class="hiw-col-cta">
-                    <a href="{{ route('campaign.create') }}" class="btn btn-accent" style="font-size:14px;padding:12px 26px">
+                    <x-button variant="outline" href="{{ route('campaign.create') }}">
                         Start a Relief Campaign
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 4v16m8-8H4"/></svg>
-                    </a>
+                    </x-button>
                 </div>
             </div>
         </div>
@@ -411,14 +413,14 @@
         <h2 class="ddrf-cta-title reveal d1">Together, We <em>Rebuild</em></h2>
         <p class="ddrf-cta-sub reveal d2">Donate, volunteer, partner with us for CSR — every action, big or small, brings us closer to a world where no community suffers alone.</p>
         <div class="ddrf-cta-btns reveal d3">
-            <a href="{{ route('all.campaigns') }}?type=disaster" class="btn btn-accent" style="font-size:15px;padding:15px 34px">
+            <x-button variant="primary" href="{{ route('all.campaigns') }}?type=disaster">
                 Donate to Relief
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
-            </a>
-            <a href="{{ route('campaign.create') }}" class="btn btn-white" style="font-size:15px;padding:15px 34px">
+            </x-button>
+            <x-button variant="outline" href="{{ route('campaign.create') }}">
                 Start Relief Campaign
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 4v16m8-8H4"/></svg>
-            </a>
+            </x-button>
         </div>
     </div>
 </section>

@@ -6,10 +6,10 @@
                 <h2 class="section-title reveal d1">Questions <em>donors</em> ask us most</h2>
                 <p class="reveal d2">We believe in full transparency — about our process, our fees, and our purpose. Here are the answers to what matters most.</p>
                 <div style="margin-top:28px" class="reveal d3">
-                    <a href="{{ url('/contact') }}" class="btn btn-accent">
+                    <x-button variant="primary" href="{{ url('/contact') }}">
                         Ask Us Anything
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                    </a>
+                    </x-button>
                 </div>
             </div>
 

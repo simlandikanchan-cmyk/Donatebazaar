@@ -69,12 +69,12 @@
   <div class="qk-acts">
     <a href="{{ route('admin.campaign.show',$campaign->id) }}" class="btn btn-secondary c-btn c-btn-view" style="flex:1;">Open Full Page</a>
     @if($state === 'pending')
-      <form action="{{ route('admin.campaign.approve',$campaign->id) }}" method="POST" style="flex:1;" onsubmit="return handleSub(this,'Approving…')">@csrf<button class="btn btn-green c-btn c-btn-approve">Approve</button></form>
+      <form action="{{ route('admin.campaign.approve',$campaign->id) }}" method="POST" style="flex:1;" onsubmit="return handleSub(this,'Approving…')">@csrf<x-button variant="primary" type="submit" class="c-btn">Approve</x-button></form>
       <button type="button" onclick="closeQuick();openReject({{ $campaign->id }})" class="btn btn-red c-btn c-btn-reject">Reject</button>
     @elseif($state === 'active')
       <button type="button" onclick="closeQuick();openPause({{ $campaign->id }})" class="btn btn-secondary c-btn c-btn-pause" style="flex:1;">Pause</button>
     @elseif($state === 'paused')
-      <form action="{{ route('admin.campaign.resume',$campaign->id) }}" method="POST" style="flex:1;" onsubmit="return handleSub(this,'Resuming…')">@csrf<button class="btn btn-green c-btn c-btn-resume">Resume</button></form>
+      <form action="{{ route('admin.campaign.resume',$campaign->id) }}" method="POST" style="flex:1;" onsubmit="return handleSub(this,'Resuming…')">@csrf<x-button variant="primary" type="submit" class="c-btn">Resume</x-button></form>
     @endif
   </div>
 </div>

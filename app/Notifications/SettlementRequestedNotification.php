@@ -52,3 +52,4 @@ class SettlementRequestedNotification extends Notification implements ShouldQueu
         ];
     }
 }
+

@@ -1,4 +1,9 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
+
+@push('page_css')
+@vite('resources/css/admin/entries/finance.css')
+@endpush
+
 
 @section('sidebar_settlements', 'active')
 @section('page_title', 'Settlements')
@@ -29,7 +34,7 @@
         <option value="processing" @selected(request('status')==='processing')>Processing</option>
         <option value="failed" @selected(request('status')==='failed')>Failed</option>
       </select>
-      <button type="submit" style="padding:7px 14px;border-radius:8px;border:none;background:var(--a);color:#fff;font-size:13px;font-weight:600;cursor:pointer;">Filter</button>
+      <x-button type="submit" variant="primary" size="sm">Filter</x-button>
     </form>
   </div>
   <div style="overflow-x:auto;">

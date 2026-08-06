@@ -182,10 +182,10 @@
 
                         <div id="productList" class="product-list"></div>
 
-                        <button type="button" class="add-product-btn" id="addProductBtn">
+                        <x-button variant="primary" type="button" class="add-product-btn">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
                             Add a product
-                        </button>
+                        </x-button>
 
                         <div class="grand-total-card grand-total-hidden" id="grandTotalCard">
                             <div>
@@ -256,19 +256,19 @@
                     </div>
 
                     <div class="form-nav">
-                        <button type="button" class="btn-back" id="btnBack" style="display:none;" onclick="changeStep(-1)">
+                        <x-button variant="secondary" type="button">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                             Back
-                        </button>
+                        </x-button>
                         <div style="flex:1;"></div>
-                        <button type="button" class="btn-next" id="btnNext" onclick="changeStep(1)">
+                        <x-button variant="primary" type="button">
                             Continue
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                        </button>
-                        <button type="submit" class="btn-next" id="btnSubmit" style="display:none;">
+                        </x-button>
+                        <x-button variant="primary" type="submit">
                             Submit campaign
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg>
-                        </button>
+                        </x-button>
                     </div>
 
                 </div>
@@ -448,9 +448,9 @@ function addProduct(name, price, desc) {
                     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2zM16 3H8l-2 4h12l-2-4z"/></svg>' +
                     'Product ' + id +
                 '</span>' +
-                '<button type="button" class="remove-product-btn" onclick="removeProduct(' + id + ')">' +
+                '<x-button variant="primary" type="button" class="remove-product-btn">' +
                     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>' +
-                '</button>' +
+                '</x-button>' +
             '</div>' +
             '<div class="field-stack">' +
                 '<div class="field-wrap">' +

@@ -22,8 +22,8 @@
     <div class="modal-sub">Does this look good?</div>
     <img class="modal-preview" id="modalPreviewImg" src="" alt="Preview">
     <div class="modal-acts">
-      <button type="button" class="modal-btn modal-cancel" onclick="cancelUpload()">Cancel</button>
-      <button type="button" class="modal-btn modal-confirm" id="confirmUploadBtn">Upload</button>
+      <x-button variant="secondary" type="button" class="modal-btn">Cancel</x-button>
+      <x-button variant="primary" type="button" class="modal-btn">Upload</x-button>
     </div>
   </div>
 </div>
@@ -42,13 +42,13 @@
     @else
       <img class="cover-img" src="" id="coverImg" style="display:none;" alt="">
     @endif
-    <button type="button" class="cover-edit-btn" onclick="document.getElementById('coverInput').click()" title="Change cover photo">
+    <x-button variant="primary" type="button" class="cover-edit-btn">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
         <circle cx="12" cy="13" r="4"/>
       </svg>
       {{ $user->cover_image ? 'Edit' : 'Add' }}
-    </button>
+    </x-button>
   </div>
 
   {{-- Hero inner --}}
@@ -89,15 +89,15 @@
     </div>
 
     <div class="hero-actions">
-      <button class="btn btn-primary" onclick="switchTab('about')">
+      <x-button variant="primary" type="button">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
         Edit Profile
-      </button>
+      </x-button>
       @if(Route::has('campaigns.create'))
-      <a href="{{ route('campaigns.create') }}" class="btn btn-accent">
+      <x-button variant="primary" href="{{ route('campaigns.create') }}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         New Campaign
-      </a>
+      </x-button>
       @endif
     </div>
   </div>
@@ -139,7 +139,7 @@
             <div class="card-sub">Public info</div>
           </div>
         </div>
-        <button class="card-edit-btn" onclick="switchTab('about')">Edit</button>
+        <x-button variant="secondary" type="button">Edit</x-button>
       </div>
       <div class="card-body">
         @if($user->bio)
@@ -258,18 +258,18 @@
   <div>
     {{-- Tab bar --}}
     <div class="tab-bar">
-      <button class="tab-btn on" id="tb-campaigns" onclick="switchTab('campaigns')">
+      <x-button variant="secondary" type="button" class="tab-btn on">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
         <span>Campaigns</span> <span class="tab-cnt">{{ $campaignCount }}</span>
-      </button>
-      <button class="tab-btn" id="tb-about" onclick="switchTab('about')">
+      </x-button>
+      <x-button variant="secondary" type="button" class="tab-btn">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
         <span>About &amp; Edit</span>
-      </button>
-      <button class="tab-btn" id="tb-settings" onclick="switchTab('settings')">
+      </x-button>
+      <x-button variant="secondary" type="button" class="tab-btn">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path stroke-linecap="round" d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
         <span>Settings</span>
-      </button>
+      </x-button>
     </div>
 
     {{-- ══ CAMPAIGNS TAB ══ --}}
@@ -340,11 +340,10 @@
             @endif
           </div>
           <div class="cf-actions">
-            <button class="btn btn-sm" type="button"
-              onclick="if(navigator.clipboard){navigator.clipboard.writeText(window.location.origin+'/campaigns/{{ $campId }}').then(function(){toast('Link copied!','success')})}">
+            <x-button variant="primary" size="sm" type="button">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
               Share
-            </button>
+            </x-button>
             @if(Route::has('campaigns.edit') && isset($campaign->id))
             <a href="{{ route('campaigns.edit', $campaign->id) }}" class="btn btn-sm">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
@@ -368,10 +367,10 @@
         <h3>No campaigns yet</h3>
         <p>Start your first campaign and make a real difference.</p>
         @if(Route::has('campaigns.create'))
-          <a href="{{ route('campaigns.create') }}" class="btn btn-primary" style="display:inline-flex;">
+          <x-button variant="primary" href="{{ route('campaigns.create') }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             Start a Campaign
-          </a>
+          </x-button>
         @endif
       </div>
       @endforelse
@@ -418,7 +417,7 @@
               <textarea name="bio" rows="3" placeholder="Tell people a little about yourself...">{{ old('bio',$user->bio) }}</textarea>
               @error('bio')<div class="field-err">{{ $message }}</div>@enderror
             </div>
-            <button type="submit" class="save-btn">Save Changes</button>
+            <x-button variant="primary" type="submit">Save Changes</x-button>
           </form>
         </div>
       </div>
@@ -465,7 +464,7 @@
                 <input type="password" name="password_confirmation" placeholder="Repeat new password">
               </div>
             </div>
-            <button type="submit" class="save-btn ghost">Update Password</button>
+            <x-button variant="primary" type="submit" class="ghost">Update Password</x-button>
           </form>
         </div>
       </div>
@@ -567,7 +566,7 @@
             </div>
           </div>
           <div style="margin-top:16px;">
-            <button class="save-btn" type="button" onclick="toast('Settings saved!','success')">Save Settings</button>
+            <x-button variant="primary" type="button">Save Settings</x-button>
           </div>
         </div>
       </div>
@@ -587,9 +586,9 @@
         </div>
         <div class="card-body">
           <p style="font-size:12.5px;color:var(--text2);margin-bottom:16px;line-height:1.7;">These actions are permanent and cannot be undone. Please be absolutely certain before proceeding.</p>
-          <button class="btn btn-red save-btn danger" type="button" onclick="toast('Account deletion requires a confirmation email.','error')">
+          <x-button variant="destructive" type="button" class="danger">
             Delete My Account
-          </button>
+          </x-button>
         </div>
       </div>
 
@@ -669,11 +668,9 @@
 .act-stat-lbl{font-size:9.5px;font-weight:700;font-family:var(--mono);text-transform:uppercase;letter-spacing:.07em;margin-top:3px;}
 
 .tab-bar{display:flex;gap:2px;background:var(--surface2);border:1px solid var(--border);padding:3px;border-radius:13px;margin-bottom:18px;}
-.tab-btn{flex:1;padding:8px 14px;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--text3);transition:all var(--ease);font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;position:relative;}
 .tab-btn:hover{color:var(--a);background:var(--surface2);}
 .tab-btn.on{background:var(--surface);color:var(--a);box-shadow:0 1px 6px rgba(37,99,235,.12);}
 .tab-btn:focus-visible{outline:2px solid var(--a);outline-offset:2px;}
-.tab-btn svg{width:12px;height:12px;transition:transform var(--ease);}
 .tab-btn:hover svg{transform:scale(1.1);}
 .tab-cnt{display:inline-flex;align-items:center;justify-content:center;min-width:17px;height:17px;border-radius:100px;font-size:9.5px;padding:0 4px;background:var(--a-lt);color:var(--a);font-weight:700;font-family:var(--mono);transition:all var(--ease);}
 .tab-btn.on .tab-cnt{background:var(--a);color:#fff;box-shadow:0 2px 8px rgba(37,99,235,.3);}
@@ -712,7 +709,6 @@
 .cf-actions{display:flex;gap:5px;}
 
 .btn-sm{padding:7px 12px;font-size:12px;border-radius:8px;}
-.btn-danger{background:var(--red-lt);color:var(--red);border-color:rgba(240,68,68,.18);}
 .btn-danger:hover{background:var(--red);color:#fff;}
 
 .field{margin-bottom:14px;}
@@ -771,7 +767,6 @@
 .modal-sub{font-size:12px;color:var(--text3);margin-bottom:14px;}
 .modal-preview{width:100%;max-height:190px;object-fit:cover;border-radius:var(--r-sm);margin-bottom:14px;border:1px solid var(--border);}
 .modal-acts{display:flex;gap:8px;}
-.modal-btn{flex:1;padding:10px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:var(--font);transition:all var(--ease);}
 .modal-btn:hover{transform:translateY(-1px);}
 .modal-cancel{background:var(--surface2);color:var(--text2);border:1px solid var(--border2);}
 .modal-cancel:hover{background:var(--border2);}
@@ -798,7 +793,6 @@
   .profile-grid{grid-template-columns:250px 1fr;}
   .cover-bg{height:180px;min-height:180px;}
   .hero-name{font-size:21px;}
-  .tab-btn{font-size:11px;padding:6px 10px;}
 }
 @media(max-width:900px){
   .profile-grid{grid-template-columns:1fr;}

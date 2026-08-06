@@ -9,15 +9,15 @@
     right: -4px;
     width: 20px;
     height: 20px;
-    background: #ef4444;
-    color: #fff;
+    background: var(--danger);
+    color: var(--white);
     border-radius: 50%;
     font-size: 11px;
     font-weight: 700;
     display: none;
     align-items: center;
     justify-content: center;
-    border: 2px solid #fff;
+    border: 2px solid var(--white);
     line-height: 1;
 }
 .chat-badge.show {
@@ -65,11 +65,11 @@
     background: transparent;
 }
 #chatMessages::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
+    background: var(--slate-300);
     border-radius: 10px;
 }
 #chatMessages::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8;
+    background: var(--slate-400);
 }
 
 /* --- User message --- */
@@ -80,8 +80,8 @@
     animation: msg-in 0.2s ease-out;
 }
 .chat-msg-user .bubble {
-    background: linear-gradient(135deg, #2563eb , #0d9488);
-    color: #fff;
+    background: linear-gradient(135deg, var(--primary) , var(--secondary));
+    color: var(--white);
     padding: 10px 16px;
     border-radius: 18px 18px 4px 18px;
     max-width: 80%;
@@ -102,11 +102,11 @@
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #2563eb , #0d9488);
+    background: linear-gradient(135deg, var(--primary) , var(--secondary));
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #fff;
+    color: var(--white);
     font-size: 14px;
     flex-shrink: 0;
     margin-right: 10px;
@@ -114,8 +114,8 @@
 }
 .chat-msg-bot .bubble {
     position: relative;
-    background: #f1f5f9;
-    color: #1e293b;
+    background: var(--slate-100);
+    color: var(--slate-800);
     padding: 10px 16px;
     border-radius: 18px 18px 18px 4px;
     max-width: 75%;
@@ -150,7 +150,7 @@
     color: rgba(255, 255, 255, 0.7);
 }
 .chat-msg-bot .bubble .timestamp {
-    color: #94a3b8;
+    color: var(--slate-400);
 }
 
 /* --- Copy button --- */
@@ -162,12 +162,12 @@
     height: 26px;
     border-radius: 6px;
     background: rgba(255, 255, 255, 0.8);
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--slate-200);
     cursor: pointer;
     display: none;
     align-items: center;
     justify-content: center;
-    color: #94a3b8;
+    color: var(--slate-400);
     font-size: 12px;
     transition: all 0.15s;
     backdrop-filter: blur(4px);
@@ -176,8 +176,8 @@
     display: flex;
 }
 .chat-msg-bot .bubble .copy-btn:hover {
-    background: #fff;
-    color: #2563eb ;
+    background: var(--white);
+    color: var(--primary) ;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -192,17 +192,17 @@
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #2563eb , #0d9488);
+    background: linear-gradient(135deg, var(--primary) , var(--secondary));
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #fff;
+    color: var(--white);
     font-size: 14px;
     flex-shrink: 0;
     margin-right: 10px;
 }
 .chat-typing .dots {
-    background: #f1f5f9;
+    background: var(--slate-100);
     padding: 12px 18px;
     border-radius: 18px 18px 18px 4px;
     display: flex;
@@ -212,7 +212,7 @@
 .chat-typing .dots span {
     width: 8px;
     height: 8px;
-    background: #94a3b8;
+    background: var(--slate-400);
     border-radius: 50%;
     display: inline-block;
     animation: dot-bounce 1.4s ease-in-out infinite;
@@ -235,9 +235,9 @@
 
 /* --- Quick suggestion chips --- */
 .chat-suggestion-chip {
-    background: #eff6ff;
-    color: #2563eb ;
-    border: 1px solid #bfdbfe;
+    background: var(--primary-tint-bg);
+    color: var(--primary) ;
+    border: 1px solid var(--primary-tint-2);
     padding: 6px 14px;
     border-radius: 20px;
     font-size: 13px;
@@ -247,9 +247,9 @@
     white-space: nowrap;
 }
 .chat-suggestion-chip:hover {
-    background: #2563eb ;
-    color: #fff;
-    border-color: #2563eb ;
+    background: linear-gradient(135deg, var(--primary), var(--secondary)) ;
+    color: var(--white);
+    border-color: transparent ;
 }
 
 /* --- Scroll-to-bottom button --- */
@@ -260,14 +260,14 @@
     width: 34px;
     height: 34px;
     border-radius: 50%;
-    background: #fff;
-    border: 1px solid #e2e8f0;
+    background: var(--white);
+    border: 1px solid var(--slate-200);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     display: none;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: #64748b;
+    color: var(--slate-500);
     font-size: 13px;
     transition: all 0.2s;
     z-index: 2;
@@ -276,8 +276,8 @@
     display: flex;
 }
 .chat-scroll-bottom:hover {
-    background: #f8fafc;
-    color: #2563eb ;
+    background: var(--slate-50);
+    color: var(--primary) ;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
@@ -290,23 +290,23 @@
     margin-top: 8px;
     padding: 5px 12px;
     border-radius: 8px;
-    border: 1px solid #e2e8f0;
-    background: #fff;
-    color: #2563eb ;
+    border: 1px solid var(--slate-200);
+    background: var(--white);
+    color: var(--primary) ;
     font-size: 13px;
     cursor: pointer;
     transition: all 0.15s;
     font-family: inherit;
 }
 .chat-retry-btn:hover {
-    background: #eff6ff;
-    border-color: #2563eb ;
+    background: var(--primary-tint-bg);
+    border-color: var(--primary) ;
 }
 
 /* --- Markdown inside bubbles --- */
 .chat-msg-bot .bubble pre {
-    background: #1e293b;
-    color: #e2e8f0;
+    background: var(--slate-800);
+    color: var(--slate-200);
     padding: 10px 12px;
     border-radius: 8px;
     overflow-x: auto;
@@ -316,7 +316,7 @@
     font-family: 'DM Mono', 'Courier New', monospace;
 }
 .chat-msg-bot .bubble code {
-    background: #e2e8f0;
+    background: var(--slate-200);
     padding: 2px 6px;
     border-radius: 4px;
     font-size: 13px;
@@ -328,12 +328,12 @@
     font-size: 13px;
 }
 .chat-msg-bot .bubble a {
-    color: #2563eb ;
+    color: var(--primary) ;
     text-decoration: underline;
     word-break: break-all;
 }
 .chat-msg-bot .bubble a:hover {
-    color: #2563eb ;
+    color: var(--primary) ;
 }
 .chat-msg-bot .bubble strong {
     font-weight: 600;
@@ -352,7 +352,7 @@
     scrollbar-width: thin;
 }
 #chatInput:focus {
-    border-color: #2563eb ;
+    border-color: var(--primary) ;
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
     outline: none;
 }

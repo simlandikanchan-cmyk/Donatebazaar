@@ -18,14 +18,14 @@
             <p class="e-desc">An unexpected error occurred on our end. Our team has been notified and is working on a fix.</p>
             <p class="e-desc">Please try again in a few moments.</p>
             <div class="e-actions">
-                <a href="/" class="btn-home">
+                <x-button variant="primary" href="/">
                     <svg viewBox="0 0 24 24"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 001 1h3a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1h3a1 1 0 001-1V10"/></svg>
                     Back to Home
-                </a>
-                <button class="btn-back" onclick="window.history.back()">
+                </x-button>
+                <x-button variant="secondary" type="button">
                     <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
                     Go Back
-                </button>
+                </x-button>
             </div>
         </div>
     </div>

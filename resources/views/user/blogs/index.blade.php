@@ -16,10 +16,10 @@
         <div class="page-hdr-title">My Blogs</div>
         <div class="page-hdr-sub" id="subLabel">{{ $blogTotal }} post{{ $blogTotal !== 1 ? 's' : '' }} total</div>
     </div>
-    <a href="{{ url('/user/dashboard/blogs/create') }}" class="btn btn-primary">
+    <x-button variant="primary" href="{{ url('/user/dashboard/blogs/create') }}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
         Write a Blog
-    </a>
+    </x-button>
 </div>
 
 <div class="stats-row">
@@ -111,15 +111,15 @@
                 <span class="blog-date">{{ $blog->created_at->format('d M Y') }}</span>
                 <div class="blog-actions">
                     @if(in_array($blog->status, ['draft','rejected']))
-                    <a href="{{ route('user.blogs.edit', $blog) }}" class="btn btn-secondary">
+                    <x-button variant="secondary" href="{{ route('user.blogs.edit', $blog) }}">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                         Edit
-                    </a>
+                    </x-button>
                     @endif
-                    <a href="{{ route('user.blogs.show', $blog) }}" class="btn btn-accent">
+                    <x-button variant="primary" href="{{ route('user.blogs.show', $blog) }}">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                         View
-                    </a>
+                    </x-button>
                 </div>
             </div>
         </div>
@@ -134,10 +134,10 @@
     </div>
     <div class="empty-title" id="emptyTitle">No blogs yet</div>
     <p class="empty-sub" id="emptySub">Start writing your first blog post to share your story with the world.</p>
-    <a href="{{ url('/user/dashboard/blogs/create') }}" class="btn btn-primary" id="emptyBtn">
+    <x-button variant="primary" href="{{ url('/user/dashboard/blogs/create') }}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
         Write Your First Blog
-    </a>
+    </x-button>
 </div>
 @endsection
 

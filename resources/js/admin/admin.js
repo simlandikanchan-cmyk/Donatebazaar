@@ -85,7 +85,7 @@ window.Chart = Chart;
   }
 
   /* ── Toast System ── */
-  window.toast = function (msg, type) {
+  window.toast = function (msg, type, undoCallback, undoLabel) {
     type = type || 'success';
     const icons = {
       success:
@@ -97,19 +97,32 @@ window.Chart = Chart;
     const el = document.createElement('div');
     el.className =
       'toast toast-' + (type === 'success' ? 'ok' : type === 'error' ? 'err' : 'warn');
+    let undoHtml = '';
+    if (typeof undoCallback === 'function') {
+      undoHtml = '<button class="toast-undo">' + (undoLabel || 'Undo') + '</button>';
+    }
     el.innerHTML =
       (icons[type] || '') +
       '<span>' +
       msg +
-      '</span><button class="toast-x" onclick="this.parentElement.remove()">✕</button>';
+      '</span>' +
+      undoHtml +
+      '<button class="toast-x" onclick="this.parentElement.remove()">✕</button>';
     if (toastWrap) {
       toastWrap.appendChild(el);
-      setTimeout(function () {
+      const timeout = setTimeout(function () {
         el.style.transition = 'opacity .3s,transform .3s';
         el.style.opacity = '0';
         el.style.transform = 'translateX(20px)';
         setTimeout(function () { el.remove(); }, 300);
-      }, 4200);
+      }, 5000);
+      if (typeof undoCallback === 'function') {
+        el.querySelector('.toast-undo').addEventListener('click', function () {
+          clearTimeout(timeout);
+          undoCallback();
+          el.remove();
+        });
+      }
     }
   };
 
@@ -248,7 +261,7 @@ window.Chart = Chart;
         type: 'doughnut',
         data: {
           labels: ['Active', 'Pending', 'Paused', 'Rejected', 'Expired'],
-          datasets: [{ data: config.doughnutData, backgroundColor: ['#0d9488', '#f59e0b', '#f97316', '#f43f5e', '#94a3b8'], borderColor: ib, borderWidth: 3, hoverOffset: 10 }]
+          datasets: [{ data: config.doughnutData, backgroundColor: ['#0d9488', '#f59e0b', '#ea580c', '#f43f5e', '#94a3b8'], borderColor: ib, borderWidth: 3, hoverOffset: 10 }]
         },
         options: {
           responsive: true, maintainAspectRatio: false,

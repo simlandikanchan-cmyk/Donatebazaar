@@ -17,15 +17,15 @@
         <p>{{ $blog->created_at->format('d M Y') }} · {{ ucfirst($blog->status) }}</p>
     </div>
     <div class="page-hdr-actions">
-        <a href="{{ url('/user/dashboard/blogs') }}" class="btn btn-secondary">
+        <x-button variant="secondary" href="{{ url('/user/dashboard/blogs') }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
             Back
-        </a>
+        </x-button>
         @if($blog->status === 'draft' || $blog->status === 'rejected')
-        <a href="{{ route('user.blogs.edit', $blog) }}" class="btn btn-primary">
+        <x-button variant="primary" href="{{ route('user.blogs.edit', $blog) }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
             Edit Blog
-        </a>
+        </x-button>
         @endif
     </div>
 </div>

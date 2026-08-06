@@ -12,14 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('donations', function (Blueprint $table) {
-            $table->string('payment_gateway')->nullable()->after('order_id');
+            if (!Schema::hasColumn('donations', 'payment_gateway')) {
+                $table->string('payment_gateway')->nullable()->after('order_id');
+            }
         });
     }
 
     public function down(): void
     {
         Schema::table('donations', function (Blueprint $table) {
-            $table->dropColumn('payment_gateway');
+            if (Schema::hasColumn('donations', 'payment_gateway')) {
+                $table->dropColumn('payment_gateway');
+            }
         });
     }
 };

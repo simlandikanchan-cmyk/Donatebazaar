@@ -230,7 +230,13 @@ class EventController extends Controller
             $event->refresh();
         }
 
-        return view('events.view', compact('event'));
+        // Public visitors and non-owners see the public event page.
+        // Owners see the admin/management view.
+        if (auth()->check() && auth()->id() === $event->user_id) {
+            return view('events.view', compact('event'));
+        }
+
+        return view('public.events-show', compact('event'));
     }
 
     /*

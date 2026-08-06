@@ -81,10 +81,10 @@
                 </a>
                 <form action="{{ route('campaign.follow', $campaign->id) }}" method="POST" style="flex:1;">
                     @csrf
-                    <button class="btn btn-accent">
+                    <x-button variant="primary" type="submit">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
                         Unfollow
-                    </button>
+                    </x-button>
                 </form>
             </div>
         </div>
@@ -105,10 +105,10 @@
     </div>
     <div class="empty-title">No saved campaigns yet</div>
     <div class="empty-sub">When you follow a campaign, it will appear here so you can track its progress.</div>
-    <a href="{{ route('all.campaigns') }}" class="btn btn-primary">
+    <x-button variant="primary" href="{{ route('all.campaigns') }}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
         Browse Campaigns
-    </a>
+    </x-button>
 </div>
 @endif
 

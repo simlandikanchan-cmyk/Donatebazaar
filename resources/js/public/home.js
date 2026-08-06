@@ -229,14 +229,28 @@ function initCampaigns() {
   }
 
   // Filter button clicks — delegate to parent for better perf
-  const filterParent = $('.camp-filter-btns') ?? document;
+  const filterParent = $('#campFilterWrap') ?? document;
+  const filterSelect = $('#campFilterSelect');
+
+  function syncSelect(cat) {
+    if (filterSelect && filterSelect.value !== cat) filterSelect.value = cat;
+  }
+
   filterParent.addEventListener('click', (e) => {
     const btn = e.target.closest('.camp-filter-btn');
     if (!btn) return;
 
     $$('.camp-filter-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
+    syncSelect(btn.dataset.cat);
     applyFilter(btn.dataset.cat);
+    container?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  // Mobile dropdown — mirrors the pill buttons
+  filterSelect?.addEventListener('change', (e) => {
+    $$('.camp-filter-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === e.target.value));
+    applyFilter(e.target.value);
     container?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 
@@ -501,7 +515,7 @@ if (document.readyState === 'loading') {
     var prevBtn  = document.getElementById('hbsPrev');
     var nextBtn  = document.getElementById('hbsNext');
     var dotsWrap = document.getElementById('hbsDots');
-    if (!track) return;
+    if (!track || !prevBtn || !nextBtn) return;
  
     var cards     = track.querySelectorAll('.hbs-card');
     var total     = cards.length;
@@ -555,6 +569,15 @@ if (document.readyState === 'loading') {
  
     function init() { current = 0; buildDots(); goTo(0); }
     init(); startAuto();
+
+    var resizeTimer = null;
+    window.addEventListener('resize', function () {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function () {
+            buildDots();
+            goTo(Math.min(current, maxIndex()));
+        }, 150);
+    }, { passive: true });
  
     var rt;
     window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(init, 160); });

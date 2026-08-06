@@ -1,0 +1,33 @@
+/* ══════════════════════════════════════
+   ADMIN — Components: Page Header
+   Two legacy header patterns (.page-hdr / .page-header) are unified
+   here; aliases share the same rules — one implementation.
+   ══════════════════════════════════════ */
+
+.page-hdr,.page-header{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:22px;flex-wrap:wrap;}
+.page-header{align-items:flex-start;gap:16px;margin-bottom:24px;}
+.page-hdr-left,.page-header-left{min-width:0;flex:1;}
+.page-hdr-left h2,.page-title{font-size:20px;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2;margin:0 0 4px;}
+.page-title{font-size:22px;}
+.page-hdr-left p,.page-desc{font-size:12px;color:var(--text3);margin:0;font-family:var(--mono);}
+.page-desc{font-size:13px;margin-top:3px;}
+.page-hdr-right,.page-header-right{display:flex;align-items:center;gap:10px;flex-shrink:0;flex-wrap:wrap;}
+.page-header-actions{display:flex;align-items:center;gap:10px;flex-shrink:0;flex-wrap:wrap;}
+.page-hdr-icon{width:40px;height:40px;border-radius:12px;background:var(--a-lt);color:var(--a);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.page-hdr-icon svg{width:18px;height:18px;}
+
+/* ── DETAIL TOOLBAR (campaign/job detail headers) ── */
+.detail-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;gap:12px;flex-wrap:wrap;}
+.top-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.tb-action{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--r-sm);font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);text-decoration:none;transition:all var(--ease);font-family:var(--font);white-space:nowrap;}
+.tb-action:hover{background:var(--surface3);color:var(--text);border-color:var(--border2);}
+.tb-action svg{width:14px;height:14px;flex-shrink:0;}
+.tb-action.primary{background:var(--a);color:var(--white);border-color:var(--a);}
+.tb-action.primary:hover{background:var(--a-hover);border-color:var(--a-hover);}
+.tb-action.destructive{color:var(--red);border-color:rgba(240,68,68,.2);}
+.tb-action.destructive:hover{background:var(--red-lt);border-color:var(--red);}
+
+/* ── MSG BACK (detail header back link) ── */
+.msg-back{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--a);text-decoration:none;margin-bottom:14px;transition:color var(--ease);}
+.msg-back:hover{color:var(--a2);}
+.msg-back svg{width:14px;height:14px;flex-shrink:0;}

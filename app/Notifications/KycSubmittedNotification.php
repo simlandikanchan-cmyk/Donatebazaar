@@ -57,3 +57,4 @@ class KycSubmittedNotification extends Notification implements ShouldQueue
         ];
     }
 }
+

@@ -50,3 +50,4 @@ class FundsAvailableNotification extends Notification implements ShouldQueue
         ];
     }
 }
+

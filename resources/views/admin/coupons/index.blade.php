@@ -1,47 +1,15 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
+
+@push('page_css')
+@vite('resources/css/admin/entries/finance.css')
+@endpush
+
 
 @section('sidebar_coupons', 'active')
 @section('page_title', 'Coupons')
 @section('page_subtitle', 'Manage discount coupons & promo codes')
 
 @section('content')
-
-<style>
-    .cp-stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-bottom:24px; }
-    .cp-stat-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px; }
-    .cp-stat-label { font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:.08em; font-family:var(--font-mono); }
-    .cp-stat-value { font-size:22px; font-weight:700; font-family:var(--font-mono); margin-top:4px; }
-
-    .cp-filter-form { display:flex; gap:10px; margin-bottom:18px; flex-wrap:wrap; align-items:center; }
-    .cp-visually-hidden { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
-    .cp-input, .cp-select { height:36px; border-radius:9px; border:1px solid var(--border2); background:var(--surface2); padding:0 12px; font-size:12.5px; color:var(--text); outline:none; }
-    .cp-input { flex:1; min-width:200px; }
-    .cp-btn { height:36px; padding:0 18px; border:none; border-radius:9px; font-size:12.5px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; text-decoration:none; }
-    .cp-btn-primary { background:#6366f1; color:#fff; }
-    .cp-btn-clear { background:var(--surface2); color:var(--text2); border:1px solid var(--border2); text-decoration:none; display:inline-flex; align-items:center; padding:0 16px; }
-
-    .cp-flash-success { background:rgba(16,185,129,0.09); border:1px solid rgba(16,185,129,0.25); color:#065f46; padding:10px 14px; border-radius:10px; font-size:13px; margin-bottom:16px; }
-
-    .cp-table-wrap { background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden; }
-    .cp-scroll { overflow-x:auto; }
-    .cp-table { width:100%; border-collapse:collapse; min-width:880px; }
-    .cp-table thead th { padding:10px 14px; font-size:10px; font-weight:700; color:var(--text3); text-transform:uppercase; letter-spacing:.08em; text-align:left; white-space:nowrap; position:sticky; top:0; background:var(--surface2); border-bottom:1px solid var(--border); z-index:1; }
-    .cp-table tbody tr { border-bottom:1px solid var(--border); }
-    .cp-table td { padding:12px 14px; vertical-align:middle; }
-
-    .cp-code { font-family:monospace; font-size:12px; color:var(--text); font-weight:600; }
-    .cp-amount { font-weight:600; color:#10b981; }
-    .cp-primary-name { font-size:12.5px; font-weight:500; color:var(--text); }
-    .cp-secondary { font-size:10.5px; color:var(--text3); }
-    .cp-mono { font-size:11.5px; color:var(--text3); font-family:monospace; white-space:nowrap; }
-    .cp-badge { font-size:10px; font-weight:700; padding:3px 8px; border-radius:100px; text-transform:uppercase; font-family:monospace; }
-    .cp-actions { display:flex; gap:5px; }
-    .cp-action-btn { padding:5px 10px; border-radius:7px; font-size:11px; font-weight:600; text-decoration:none; cursor:pointer; border:1px solid transparent; }
-    .cp-action-view { background:rgba(99,102,241,0.10); color:#6366f1; border-color:rgba(99,102,241,0.2); }
-    .cp-action-cancel { background:rgba(239,68,68,0.10); color:#991b1b; border-color:rgba(239,68,68,0.2); }
-    .cp-empty { padding:48px; text-align:center; color:var(--text3); font-size:13px; }
-    .cp-pagination { padding:12px 16px; border-top:1px solid var(--border); }
-</style>
 
 {{-- Stats --}}
 <div class="cp-stats-grid">
@@ -70,17 +38,17 @@
         @endforeach
     </select>
 
-    <button type="submit" class="cp-btn cp-btn-primary">Search</button>
+    <x-button variant="secondary" type="submit">Search</x-button>
 
     @if(($search ?? '') || ($status ?? 'all') !== 'all')
-    <a href="{{ route('admin.coupons.index') }}" class="cp-btn-clear">Clear filters</a>
+    <x-button variant="primary" href="{{ route('admin.coupons.index') }}" class="cp-btn-clear">Clear filters</x-button>
     @endif
 
-    <a href="{{ route('admin.coupons.create') }}" class="cp-btn cp-btn-primary" style="margin-left:auto;background:#10b981;">+ New Coupon</a>
+    <x-button variant="secondary" href="{{ route('admin.coupons.create') }}">+ New Coupon</x-button>
 </form>
 
 @if(session('success'))
-<div class="cp-flash-success">{{ session('success') }}</div>
+<div class="alert-ok">{{ session('success') }}</div>
 @endif
 
 <div class="cp-table-wrap">
@@ -122,11 +90,11 @@
                     <td><span class="cp-badge" style="background:{{ $statusBadge['bg'] }};color:{{ $statusBadge['color'] }};">{{ $statusBadge['txt'] }}</span></td>
                     <td>
                         <div class="cp-actions">
-                            <a href="{{ route('admin.coupons.edit', $cp) }}" class="cp-action-btn cp-action-view">Edit</a>
+                            <x-button variant="outline" href="{{ route('admin.coupons.edit', $cp) }}">Edit</x-button>
                             @if($cp->is_active)
                             <form method="POST" action="{{ route('admin.coupons.destroy', $cp) }}" onsubmit="return confirm('Deactivate this coupon?');">
                                 @csrf @method('DELETE')
-                                <button type="submit" class="btn btn-secondary cp-action-btn cp-action-cancel">Deactivate</button>
+                                <x-button variant="secondary" type="submit" class="cp-action-cancel">Deactivate</x-button>
                             </form>
                             @endif
                         </div>

@@ -213,12 +213,6 @@ body {
 .action-btn:hover { opacity: 0.86; transform: translateY(-1px); }
 .action-btn:active { transform: scale(0.98); }
 .action-btn svg { width: 13px; height: 13px; }
-.btn-accent {
-    background: var(--accent); color: #fff; border-color: var(--accent);
-    box-shadow: 0 4px 14px rgba(99,102,241,0.28);
-}
-.btn-ghost  { background: var(--surface2); color: var(--text2); border-color: var(--border2); }
-.btn-danger { background: rgba(239,68,68,0.09); color: var(--red); border-color: rgba(239,68,68,0.2); }
 .btn-danger:hover { background: rgba(239,68,68,0.16); }
 .action-btn + .action-btn { margin-top: 8px; }
 
@@ -226,15 +220,6 @@ body {
 .submit-row {
     display: flex; align-items: center; justify-content: flex-end; gap: 10px;
     padding-top: 20px; margin-top: 4px; border-top: 1px solid var(--border);
-}
-.btn-cancel {
-    display: inline-flex; align-items: center; gap: 5px;
-    padding: 9px 18px; border-radius: var(--radius-sm);
-    font-size: 12.5px; font-weight: 600; cursor: pointer;
-    background: var(--surface2); color: var(--text2);
-    border: 1px solid var(--border2); text-decoration: none;
-    transition: background var(--transition), color var(--transition);
-    font-family: var(--font);
 }
 .btn-cancel:hover { background: var(--border); }
 .btn-submit {
@@ -314,6 +299,15 @@ body {
     .body   { padding: 16px 16px 48px; }
     .field-grid-3, .field-grid-2 { grid-template-columns: 1fr; }
 }
+
+/* —€—€ UTILITY CLASSES —€—€ */
+.card--mb{margin-bottom:16px;}
+.card-body--col{display:flex;flex-direction:column;}
+.card-body--gap{gap:10px;}
+.c-avatar{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+.info-row-val--accent{font-size:11px;color:var(--accent);max-width:130px;text-align:right;}
+.text-muted-sm{font-size:12px;color:var(--text3);line-height:1.65;}
+.field-hint--mt{margin-top:8px;}
 </style>
 
 @php
@@ -367,7 +361,7 @@ body {
                     </div>
                 </label>
             </div>
-            <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+            <div class="c-avatar">
                 {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 1)) }}
             </div>
         </div>
@@ -382,7 +376,7 @@ body {
 
                 {{-- Validation errors --}}
                 @if ($errors->any())
-                <div class="card" style="margin-bottom:16px;">
+                <div class="card card--mb">
                     <div class="card-header">
                         <div class="card-icon ic-red">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
@@ -548,7 +542,7 @@ body {
                                 <img src="{{ $event->cover_image ? asset('storage/'.$event->cover_image) : '' }}" alt="Preview"
                                      class="upload-preview {{ $event->cover_image ? 'show' : '' }}" id="editUploadPreview">
                                 <div class="upload-overlay"><span>Click to change</span></div>
-                                <div id="editUploadPlaceholder" {{ $event->cover_image ? 'style=display:none' : '' }}>
+                                <div id="editUploadPlaceholder" @if(!$event->cover_image)class="show"@endif>
                                     <div class="upload-icon">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                                     </div>
@@ -556,7 +550,7 @@ body {
                                     <div class="upload-sub">PNG, JPG, WEBP — max 2MB</div>
                                 </div>
                             </div>
-                            @error('cover_image')<p class="field-hint err-msg" style="margin-top:8px;">{{ $message }}</p>@enderror
+                            @error('cover_image')<p class="field-hint err-msg field-hint--mt">{{ $message }}</p>@enderror
                         </div>
                     </div>
 
@@ -566,10 +560,10 @@ body {
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M12 5l-7 7 7 7"/></svg>
                             Cancel
                         </a>
-                        <button type="submit" class="btn-submit">
+                        <x-button variant="primary" type="submit">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                             Save Changes
-                        </button>
+                        </x-button>
                     </div>
 
                 </form>
@@ -588,7 +582,7 @@ body {
                             <div class="card-title">Event Info</div>
                         </div>
                     </div>
-                    <div class="card-body" style="display:flex;flex-direction:column;">
+                    <div class="card-body card-body--col">
                         <div class="info-row">
                             <span class="info-row-label">Status</span>
                             <span class="status-chip {{ $chipClass }}"><span class="dot"></span>{{ $chipLabel }}</span>
@@ -611,7 +605,7 @@ body {
                         @endif
                         <div class="info-row">
                             <span class="info-row-label">Campaign</span>
-                            <span class="info-row-val" style="font-size:11px;color:var(--accent);max-width:130px;text-align:right;">{{ Str::limit($event->campaign->title, 22) }}</span>
+                            <span class="info-row-val info-row-val--accent">{{ Str::limit($event->campaign->title, 22) }}</span>
                         </div>
                     </div>
                 </div>
@@ -627,10 +621,10 @@ body {
                         </div>
                     </div>
                     <div class="card-body">
-                        <button type="submit" form="editForm" class="action-btn btn-accent">
+                        <x-button variant="primary" type="submit">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                             Save Changes
-                        </button>
+                        </x-button>
                         <a href="{{ route('events.show', $event->id) }}" class="action-btn btn-ghost">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                             View Event
@@ -652,10 +646,10 @@ body {
                             <div class="card-title">Tips</div>
                         </div>
                     </div>
-                    <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
-                        <p style="font-size:12px;color:var(--text3);line-height:1.65;">A clear title and description help donors find and trust your event.</p>
-                        <p style="font-size:12px;color:var(--text3);line-height:1.65;">Setting a goal amount shows your progress and motivates donors.</p>
-                        <p style="font-size:12px;color:var(--text3);line-height:1.65;">Leave Max Participants blank for unlimited registrations.</p>
+                    <div class="card-body card-body--col card-body--gap">
+                        <p class="text-muted-sm">A clear title and description help donors find and trust your event.</p>
+                        <p class="text-muted-sm">Setting a goal amount shows your progress and motivates donors.</p>
+                        <p class="text-muted-sm">Leave Max Participants blank for unlimited registrations.</p>
                     </div>
                 </div>
 

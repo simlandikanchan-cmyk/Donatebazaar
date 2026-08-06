@@ -69,25 +69,25 @@
 
         {{-- ── PERIOD FILTER ── --}}
         <div class="ev-period-wrap">
-            <button class="ev-period-btn" data-period="today" onclick="filterPeriod('today', this)">Today</button>
-            <button class="ev-period-btn" data-period="week" onclick="filterPeriod('week', this)">This Week</button>
-            <button class="ev-period-btn" data-period="month" onclick="filterPeriod('month', this)">This Month</button>
-            <button class="ev-period-btn active" data-period="all" onclick="filterPeriod('all', this)">All Upcoming</button>
+            <x-button variant="primary" type="button" class="ev-period-btn">Today</x-button>
+            <x-button variant="primary" type="button" class="ev-period-btn">This Week</x-button>
+            <x-button variant="primary" type="button" class="ev-period-btn">This Month</x-button>
+            <x-button variant="primary" type="button" class="ev-period-btn active">All Upcoming</x-button>
         </div>
 
         {{-- ── FILTER TABS ── --}}
         <div class="ev-filter-wrap">
             <div class="ev-filter-scroll">
-                <button class="ev-filter-btn active" data-cat="all" onclick="filterCat('all', this)">
+                <x-button variant="primary" type="button" class="ev-filter-btn active" data-cat="all" onclick="filterCat('all', this)">
                     All Events
                     <span class="ev-filter-count">{{ $totalEvents }}</span>
-                </button>
+                </x-button>
                 @foreach($categories as $cat)
                     @if($eventsByCategory->has($cat->id))
-                    <button class="ev-filter-btn" data-cat="{{ $cat->id }}" onclick="filterCat('{{ $cat->id }}', this)">
+                    <x-button variant="primary" type="button" class="ev-filter-btn" data-cat="{{ $cat->id }}" onclick="filterCat('{{ $cat->id }}', this)">
                         {{ $cat->emoji ?? '' }} {{ $cat->name }}
                         <span class="ev-filter-count">{{ $eventsByCategory[$cat->id]->count() }}</span>
-                    </button>
+                    </x-button>
                     @endif
                 @endforeach
             </div>
@@ -134,7 +134,7 @@
                          tabindex="0"
                          role="link"
                          aria-label="View event: {{ $event->title }}"
-                         style="animation-delay:{{ $loop->index * 0.06 }}s;">
+                          style="--delay:{{ $loop->index * 0.06 }}s;">
 
                         {{-- Cover --}}
                         <div class="ev-card-cover">
@@ -252,20 +252,20 @@
 
                             {{-- CTA button --}}
                             @if($canRegister)
-                                <a href="{{ route('events.register', $event->id) }}" class="ev-reg-btn">
+                                <x-button variant="primary" href="{{ route('events.register', $event->id) }}">
                                     Register
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
                                     </svg>
-                                </a>
+                                </x-button>
                             @elseif($event->hasEnded())
-                                <span class="ev-reg-btn disabled">Event Ended</span>
+                                <x-button variant="primary" disabled>Event Ended</x-button>
                             @elseif($event->isFull())
-                                <span class="ev-reg-btn disabled">Full</span>
+                                <x-button variant="primary" disabled>Full</x-button>
                             @else
-                                <a href="{{ route('events.show', $event->id) }}" class="ev-reg-btn" style="background:var(--surface2);color:var(--text2);">
+                                <x-button variant="secondary" href="{{ route('events.show', $event->id) }}">
                                     View Details
-                                </a>
+                                </x-button>
                             @endif
                         </div>
                     </div>
@@ -294,7 +294,7 @@
             </svg>
             <div class="ev-empty-title">No matching events</div>
             <div class="ev-empty-sub">Try adjusting your search, category, or time period.</div>
-            <button type="button" class="ev-reg-btn" onclick="resetFilters()">Clear filters</button>
+            <x-button variant="secondary" type="button">Clear filters</x-button>
         </div>
 
     </div>

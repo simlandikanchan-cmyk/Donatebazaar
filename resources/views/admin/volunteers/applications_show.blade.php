@@ -1,55 +1,13 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
+
+@push('page_css')
+@vite('resources/css/admin/entries/jobs.css')
+@endpush
+
 
 @section('sidebar_volunteer_applications', 'active')
 @section('page_title', 'Application #'.$application->id)
 @section('page_subtitle', 'Reviewing volunteer application details')
-
-@push('page_styles')
-<style>
-.hero-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:28px 30px;box-shadow:var(--sh);margin-bottom:20px;display:flex;align-items:flex-start;justify-content:space-between;gap:20px;animation:fadeUp .35s ease both;position:relative;overflow:hidden}
-.hero-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--a),var(--a2));border-radius:var(--r) var(--r) 0 0}
-.hero-left{display:flex;align-items:center;gap:18px;min-width:0}
-.hero-av{width:58px;height:58px;border-radius:16px;flex-shrink:0;background:linear-gradient(135deg,var(--a),var(--a2));display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:22px;font-weight:800;color:#fff;box-shadow:0 4px 18px rgba(37,99,235,.35)}
-.hero-title{font-family:var(--mono);font-size:22px;font-weight:800;color:var(--text);letter-spacing:-.03em;line-height:1.2}
-.hero-sub{font-size:12px;color:var(--text3);margin-top:5px;font-family:var(--mono)}
-.hero-meta{display:flex;align-items:center;gap:14px;margin-top:10px;flex-wrap:wrap}
-.hero-meta-item{display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--text3);font-family:var(--mono)}
-.hero-meta-item svg{width:12px;height:12px;flex-shrink:0}
-.hero-right{display:flex;flex-direction:column;align-items:flex-end;gap:12px;flex-shrink:0}
-
-.detail-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:24px;box-shadow:var(--sh);margin-bottom:20px;animation:fadeUp .4s ease both}
-.detail-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.info-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:16px 18px;transition:border-color var(--ease),box-shadow var(--ease)}
-.info-box:hover{border-color:rgba(37,99,235,.25);box-shadow:0 0 0 3px var(--a-lt)}
-.info-label{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.14em;margin-bottom:7px;font-family:var(--mono)}
-.info-value{font-size:14px;font-weight:600;color:var(--text);line-height:1.5;word-break:break-word;font-family:var(--mono)}
-.info-value.empty{color:var(--text3);font-weight:400}
-
-.flash-ok{background:rgba(5,196,138,.09);border:1px solid rgba(5,196,138,.25);color:#065f46;padding:12px 16px;border-radius:var(--r-sm);font-size:13px;font-weight:500;margin-bottom:18px;display:flex;align-items:center;gap:8px}
-[data-theme="dark"] .flash-ok{color:#34d399}
-.flash-ok svg{width:15px;height:15px;flex-shrink:0}
-.flash-err{background:var(--red-lt);border:1px solid rgba(240,68,68,.25);color:var(--red);padding:12px 16px;border-radius:var(--r-sm);font-size:13px;font-weight:500;margin-bottom:18px;display:flex;align-items:center;gap:8px}
-[data-theme="dark"] .flash-err{color:#f87171}
-.flash-err svg{width:15px;height:15px;flex-shrink:0}
-
-.action-bar{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
-.action-bar form{display:inline}
-
-.btn-approve{display:inline-flex;align-items:center;gap:7px;padding:10px 22px;border-radius:var(--r-sm);font-size:13px;font-weight:600;font-family:var(--font);border:none;cursor:pointer;transition:all var(--ease);text-decoration:none;background:rgba(5,196,138,.12);color:#047857;border:1px solid rgba(5,196,138,.25)}
-.btn-approve:hover{background:var(--green);color:#fff;border-color:var(--green);transform:translateY(-1px);box-shadow:0 4px 14px rgba(5,196,138,.35)}
-[data-theme="dark"] .btn-approve{color:#34d399}
-[data-theme="dark"] .btn-approve:hover{color:#fff}
-
-.btn-reject{display:inline-flex;align-items:center;gap:7px;padding:10px 22px;border-radius:var(--r-sm);font-size:13px;font-weight:600;font-family:var(--font);border:none;cursor:pointer;transition:all var(--ease);text-decoration:none;background:rgba(240,68,68,.12);color:#b91c1c;border:1px solid rgba(240,68,68,.25)}
-.btn-reject:hover{background:var(--red);color:#fff;border-color:var(--red);transform:translateY(-1px);box-shadow:0 4px 14px rgba(240,68,68,.35)}
-[data-theme="dark"] .btn-reject{color:#f87171}
-[data-theme="dark"] .btn-reject:hover{color:#fff}
-@media(max-width:960px){.detail-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:640px){.detail-grid{grid-template-columns:1fr}.hero-card{flex-direction:column;align-items:stretch;padding:22px 20px}.hero-right{align-items:flex-start}.hero-title{font-size:18px}}
-@media(max-width:480px){.hero-card{padding:18px 16px}.hero-title{font-size:16px}.hero-sub{font-size:11px}.info-box{padding:12px 14px}.info-value{font-size:12px}}
-@media(max-width:380px){.hero-av{width:44px;height:44px;font-size:18px;border-radius:12px}.info-value{font-size:11px}.action-bar{flex-direction:column}.action-bar .btn-approve,.action-bar .btn-reject{width:100%;justify-content:center}}
-</style>
-@endpush
 
 @section('content')
 
@@ -60,7 +18,7 @@
 </div>
 @endif
 @if(session('error'))
-<div class="flash-err">
+<div class="flash-error">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
   {{ session('error') }}
 </div>
@@ -171,17 +129,17 @@
     <div class="action-bar">
       <form method="POST" action="{{ route('admin.volunteer_applications.approve', $application) }}">
         @csrf
-        <button type="submit" class="btn btn-green btn-approve" onclick="return confirm('Approve this application? The volunteer will be marked as verified and notified via email.')">
+        <x-button variant="primary" type="submit">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
           Approve & Verify
-        </button>
+        </x-button>
       </form>
       <form method="POST" action="{{ route('admin.volunteer_applications.reject', $application) }}">
         @csrf
-        <button type="submit" class="btn btn-red btn-reject" onclick="return confirm('Reject this application? The applicant will be notified via email.')">
+        <x-button variant="destructive" type="submit">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
           Reject
-        </button>
+        </x-button>
       </form>
     </div>
   </div>
@@ -197,13 +155,3 @@
 
 @endsection
 
-@push('page_styles')
-<style>
-.b-shortlisted{background:rgba(5,196,138,.85);color:#fff;padding:4px 12px;border-radius:6px;font-size:11px;font-weight:600;font-family:var(--mono);display:inline-block}
-.b-rejected{background:rgba(240,68,68,.12);color:var(--red);border:1px solid rgba(240,68,68,.22);padding:4px 12px;border-radius:6px;font-size:11px;font-weight:600;font-family:var(--mono);display:inline-block}
-.b-pending{background:rgba(245,158,11,.12);color:#b45309;border:1px solid rgba(245,158,11,.22);padding:4px 12px;border-radius:6px;font-size:11px;font-weight:600;font-family:var(--mono);display:inline-block}
-[data-theme="dark"] .b-pending{color:#fbbf24}
-[data-theme="dark"] .b-rejected{color:#f87171}
-.filter-clear:hover{border-color:var(--a);color:var(--a)}
-</style>
-@endpush

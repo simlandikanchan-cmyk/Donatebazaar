@@ -86,7 +86,11 @@
     $bankHolder = $kyc?->kyc_account_name   ?? null;
 
     /* campaign updates */
-    $updates = $campaign->updates ?? collect();
+    try {
+        $updates = $campaign->updates ?? collect();
+    } catch (\Illuminate\Database\QueryException $e) {
+        $updates = collect();
+    }
 
     /* public page link, if category/slug are set up */
     $publicUrl = null;
@@ -430,14 +434,14 @@
                                             </span>
                                             @if($kycAadhaarUrl)
                                             <div style="display:flex;gap:5px;">
-                                                <a href="{{ $kycAadhaarUrl }}" target="_blank" class="kyc-doc-btn kyc-doc-btn-view">
+                                                <x-button variant="outline" href="{{ $kycAadhaarUrl }}" target="_blank">
                                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                                                     Open
-                                                </a>
-                                                <a href="{{ $kycAadhaarUrl }}" download class="kyc-doc-btn kyc-doc-btn-dl">
+                                                </x-button>
+                                                <x-button variant="outline" href="{{ $kycAadhaarUrl }}">
                                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                                                     DL
-                                                </a>
+                                                </x-button>
                                             </div>
                                             @endif
                                         </div>
@@ -464,14 +468,14 @@
                                             </span>
                                             @if($kycPanUrl)
                                             <div style="display:flex;gap:5px;">
-                                                <a href="{{ $kycPanUrl }}" target="_blank" class="kyc-doc-btn kyc-doc-btn-view">
+                                                <x-button variant="outline" href="{{ $kycPanUrl }}" target="_blank">
                                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                                                     Open
-                                                </a>
-                                                <a href="{{ $kycPanUrl }}" download class="kyc-doc-btn kyc-doc-btn-dl">
+                                                </x-button>
+                                                <x-button variant="outline" href="{{ $kycPanUrl }}">
                                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                                                     DL
-                                                </a>
+                                                </x-button>
                                             </div>
                                             @endif
                                         </div>
@@ -509,14 +513,14 @@
                                         <div class="kyc-selfie-sub">Photo holding your Aadhaar or PAN card next to your face, used to verify your identity against submitted documents.</div>
                                         @if($kycSelfieUrl)
                                         <div style="margin-top:10px;display:flex;gap:6px;">
-                                            <a href="{{ $kycSelfieUrl }}" target="_blank" class="kyc-doc-btn kyc-doc-btn-view">
+                                            <x-button variant="outline" href="{{ $kycSelfieUrl }}" target="_blank">
                                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                                                 View full size
-                                            </a>
-                                            <a href="{{ $kycSelfieUrl }}" download class="kyc-doc-btn kyc-doc-btn-dl">
+                                            </x-button>
+                                            <x-button variant="outline" href="{{ $kycSelfieUrl }}">
                                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                                                 Download
-                                            </a>
+                                            </x-button>
                                         </div>
                                         @endif
                                     </div>
@@ -835,7 +839,7 @@
                     </div>
                     <div class="card-body">
                         @if($publicUrl)
-                        <a href="{{ $publicUrl }}" target="_blank" class="action-btn btn-accent">
+                        <a href="{{ $publicUrl }}" target="_blank" rel="noopener noreferrer" class="action-btn btn-accent">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                             View Public Page
                         </a>
@@ -860,7 +864,7 @@
                             Create Event
                         </a>
                         <a href="{{ url('/user/dashboard') }}" class="action-btn btn-ghost">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M12 5l-7 7 7 7"/></svg>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M12 5l-7 7 7-7"/></svg>
                             Back to Dashboard
                         </a>
                     </div>

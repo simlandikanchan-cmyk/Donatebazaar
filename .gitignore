@@ -1,5 +1,4 @@
-﻿.env
-.env.backup
+﻿# Laravel
 /vendor
 /node_modules
 /public/build
@@ -7,8 +6,32 @@
 /public/storage
 .phpunit.result.cache
 
-# Removed from repo: debug scripts and local SQL backups
-kyc_backup_before_encryption.sql
+# Environment
+.env
+.env.backup
+.env.production
+
+# Debug artifacts
+test_boot_debug.php
+test_boot_debug2.php
 debug.php
 check_blade.php
+parse_routes.py
+parse_routes2.py
+filtered_routes.txt
+routes.json
+routes_full.txt
+full_app_report.md
+
+# Database dumps — never commit
 *.sql
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

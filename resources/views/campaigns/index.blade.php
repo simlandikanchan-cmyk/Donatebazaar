@@ -56,9 +56,9 @@
                         </div>
 
                         {{-- Button --}}
-                        <a href="#" class="btn-donate">
+                        <x-button variant="primary" href="#">
                             Donate Now
-                        </a>
+                        </x-button>
 
                     </div>
 

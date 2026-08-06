@@ -55,3 +55,4 @@ class DonationReceived extends Notification implements ShouldQueue
         ];
     }
 }
+

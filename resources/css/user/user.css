@@ -1,3 +1,4 @@
+@import '../base/_variables.css';
 @import '../_core.css';
 @import '../_components.css';
 @import '../_components_continued.css';
@@ -8,3 +9,6 @@
 @import '_dashboard_events.css';
 @import '_dashboard_activity.css';
 @import '_dashboard_onboarding.css';
+
+/* BUTTON SYSTEM - single source of truth (resources/css/components/_button.css) */
+@import '../components/_button.css';

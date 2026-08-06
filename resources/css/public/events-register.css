@@ -45,7 +45,7 @@ body {
     font-weight:600;
     font-family:'DM Mono',monospace;
     letter-spacing:.04em;
-    color:#065f46;
+    color:var(--success-deep);
     background:rgba(16,185,129,.08);
     border:1px solid rgba(16,185,129,.2);
     border-radius:100px;
@@ -117,8 +117,9 @@ body {
     color:var(--text2);
     margin-bottom:6px;
 }
+.reg-label--muted{font-weight:400;color:var(--text3);}
 .reg-label .req {
-    color:#dc2626;
+    color:var(--danger-hover);
     font-weight:600;
 }
 .reg-input {
@@ -143,12 +144,12 @@ body {
     box-shadow:0 0 0 3px rgba(15,13,10,.06);
 }
 .reg-input.error {
-    border-color:#dc2626;
-    background:#fef2f2;
+    border-color:var(--danger-hover);
+    background:var(--danger-tint-bg);
 }
 .reg-error {
     font-size:12px;
-    color:#dc2626;
+    color:var(--danger-hover);
     margin-top:5px;
 }
 .reg-textarea {
@@ -159,8 +160,8 @@ body {
 .reg-btn {
     display:block;
     width:100%;
-    background:linear-gradient(135deg,var(--accent),var(--accent2));
-    color:#fff;
+    background:linear-gradient(135deg,var(--primary),var(--secondary));
+    color:var(--white);
     font-family:'DM Sans',sans-serif;
     font-size:14px;
     font-weight:600;
@@ -205,9 +206,9 @@ body {
     display:flex;
     gap:12px;
     align-items:flex-start;
-    background:#fef2f2;
+    background:var(--danger-tint-bg);
     border:1px solid rgba(220,38,38,.15);
-    color:#b91c1c;
+    color:var(--danger-dark);
     border-radius:var(--radius-sm);
     padding:14px 18px;
     font-size:13px;
@@ -215,7 +216,7 @@ body {
 }
 .flash-error svg {
     width:18px;height:18px;
-    fill:#dc2626;
+    fill:var(--danger-hover);
     flex-shrink:0;
     margin-top:1px;
 }

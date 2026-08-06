@@ -55,3 +55,4 @@ class SettlementCancelledNotification extends Notification implements ShouldQueu
         ];
     }
 }
+

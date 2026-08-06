@@ -8,8 +8,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800&family=DM+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-@vite(['resources/css/admin/admin.css'])
+
+
+@vite('resources/css/admin/entries/core.css')
+@stack('page_css')
 @stack('page_styles')
+
+
 </head>
 <body>
 
@@ -225,6 +230,10 @@
     </div>
     <div class="tb-right">
       @yield('topbar_left')
+      <div class="page-load" title="Server response time">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span>{{ number_format((microtime(true) - ($pageLoadStart ?? microtime(true))) * 1000, 1) }} ms</span>
+      </div>
       <div class="theme-wrap">
         <input type="checkbox" id="themeToggle">
         <label for="themeToggle">

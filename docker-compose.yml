@@ -137,6 +137,22 @@ services:
     networks:
       - backend
 
+  supervisor:
+    image: alpine/supervisor:latest
+    container_name: fundraise-supervisor
+    restart: unless-stopped
+    volumes:
+      - ./supervisor/queue-worker.conf:/etc/supervisor.d/queue-worker.ini
+      - .:/var/www
+      - storage-data:/var/www/storage
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - backend
+
   scheduler:
     build:
       context: .

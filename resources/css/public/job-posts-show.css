@@ -134,7 +134,7 @@
             letter-spacing: 0.04em; border-radius: 2px;
             transition: background .2s, transform .15s;
         }
-        .btn-apply:hover { background: #a83a20; transform: translateY(-2px); }
+        .btn-apply:hover { background: var(--warm-accent-dark); transform: translateY(-2px); }
         .btn-share {
             display: inline-flex; align-items: center; gap: 0.5rem;
             padding: 0.85rem 1.5rem;
@@ -200,7 +200,7 @@
         .content p {
             font-size: 0.95rem;
             line-height: 1.85;
-            color: #3a3530;
+            color: var(--warm-ink-4);
             margin-bottom: 0.9rem;
         }
         .content p:last-child { margin-bottom: 0; }
@@ -211,7 +211,7 @@
         .content li {
             font-size: 0.95rem;
             line-height: 1.75;
-            color: #3a3530;
+            color: var(--warm-ink-4);
             margin-bottom: 0.35rem;
         }
         .content strong { font-weight: 600; color: var(--ink); }
@@ -271,7 +271,7 @@
         .detail-row:last-child { border-bottom: none; padding-bottom: 0; }
         .detail-label { color: var(--muted); flex-shrink: 0; }
         .detail-val { font-weight: 500; text-align: right; }
-        .detail-val.green { color: #2d6a4f; }
+        .detail-val.green { color: var(--warm-green); }
         .detail-val.accent { color: var(--accent); }
 
         /* ─── APPLY CARD ──────────────────────────── */
@@ -304,8 +304,8 @@
         }
 
         .flash { padding: 0.85rem 1rem; border-radius: 3px; font-size: 0.85rem; margin-bottom: 1rem; }
-        .flash-success { background: rgba(255,255,255,.08); color: #189d68; border: 1px solid rgba(110,231,183,.2); }
-        .flash-error   { background: rgba(200,75,47,.15); color: #a72a2a; border: 1px solid rgba(200,75,47,.25); }
+        .flash-success { background: rgba(255,255,255,.08); color: var(--success-mid); border: 1px solid rgba(110,231,183,.2); }
+        .flash-error   { background: rgba(200,75,47,.15); color: var(--danger-3-dark); border: 1px solid rgba(200,75,47,.25); }
 
         .field { margin-bottom: 1rem; }
         .field label {
@@ -333,7 +333,7 @@
             color: rgba(255,255,255,.5);
             padding: 0.5rem 0.75rem;
         }
-        .field-error { font-size: 0.75rem; color: #a72a2a; margin-top: 0.35rem; }
+        .field-error { font-size: 0.75rem; color: var(--danger-3-dark); margin-top: 0.35rem; }
 
         .submit-btn {
             width: 100%; padding: 0.9rem;
@@ -345,7 +345,7 @@
             margin-top: 0.25rem;
             display: flex; align-items: center; justify-content: center; gap: 0.5rem;
         }
-        .submit-btn:hover { background: #a83a20; transform: translateY(-1px); }
+        .submit-btn:hover { background: var(--warm-accent-dark); transform: translateY(-1px); }
         .submit-btn:active { transform: translateY(0); }
 
         /* ─── SIMILAR ROLES ───────────────────────── */

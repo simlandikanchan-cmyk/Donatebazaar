@@ -14,14 +14,14 @@
             <h1>Real Impact,<br><em>Real Stories</em></h1>
             <p>Every completed campaign represents lives changed, communities strengthened, and hope restored.</p>
             <div class="impact-hero-btns">
-                <a href="{{ route('all.campaigns') }}" class="btn btn-white">
+                <x-button variant="primary" href="{{ route('all.campaigns') }}">
                     Donate Now
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                </a>
-                <a href="{{ route('campaign.create') }}" class="btn btn-outline">
+                </x-button>
+                <x-button variant="outline" href="{{ route('campaign.create') }}">
                     Start Fundraiser
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 4v16m8-8H4"/></svg>
-                </a>
+                </x-button>
             </div>
         </div>
     </div>
@@ -106,7 +106,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
             <h3>No completed campaigns yet</h3>
             <p>Impact stories will appear here as campaigns reach their goals.</p>
-            <a href="{{ route('all.campaigns') }}" class="btn btn-accent">Support Active Campaigns</a>
+            <x-button variant="primary" href="{{ route('all.campaigns') }}">Support Active Campaigns</x-button>
         </div>
         @else
         <div class="impact-grid">
@@ -160,8 +160,8 @@
             <h2>Want to Create Your Own Impact?</h2>
             <p>Start a campaign and join the community of changemakers.</p>
             <div class="impact-cta-actions">
-                <a href="{{ route('campaign.create') }}" class="btn btn-white">Start a Campaign</a>
-                <a href="{{ route('all.campaigns') }}" class="btn btn-outline">Support a Campaign</a>
+                <x-button variant="primary" href="{{ route('campaign.create') }}">Start a Campaign</x-button>
+                <x-button variant="outline" href="{{ route('all.campaigns') }}">Support a Campaign</x-button>
             </div>
         </div>
     </div>

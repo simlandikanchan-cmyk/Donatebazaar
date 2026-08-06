@@ -18,19 +18,25 @@
         <div class="camp-filter-sticky">
             <div class="camp-filter-wrap" id="campFilterWrap">
 
-                <button class="camp-filter-btn active" data-cat="all">
+                <x-button variant="secondary" type="button" class="camp-filter-btn active" data-cat="all">
                     All
-                </button>
+                </x-button>
 
                 @foreach($categories as $category)
-                    <button
-                        class="camp-filter-btn"
-                        data-cat="{{ $category->slug }}"
-                    >
+                    <x-button variant="secondary" type="button" class="camp-filter-btn" data-cat="{{ $category->slug }}">
                         {{ $category->name }}
-                    </button>
+                    </x-button>
                 @endforeach
 
+            </div>
+
+            <div class="camp-filter-select-wrap">
+                <select class="camp-filter-select" id="campFilterSelect" aria-label="Filter campaigns by category">
+                    <option value="all" selected>All Categories</option>
+                    @foreach($categories as $category)
+                        <option value="{{ $category->slug }}">{{ $category->name }}</option>
+                    @endforeach
+                </select>
             </div>
         </div>
 
@@ -156,13 +162,10 @@
                         </div>
 
                         {{-- BUTTON --}}
-                        <a
-                            href="{{ $campUrl }}"
-                            class="btn btn-accent btn-block camp-donate-btn"
-                        >
+                        <x-button variant="primary" href="{{ $campUrl }}">
                             Donate Now
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                        </a>
+                        </x-button>
 
                     </div>
                 </div>

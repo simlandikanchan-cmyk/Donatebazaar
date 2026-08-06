@@ -1,0 +1,7 @@
+/* ══════════════════════════════════════
+   ADMIN — Utilities: Color Helpers
+   Semantic tints already exist as si/sv variants in components/_stats.css
+   ══════════════════════════════════════ */
+
+.text-green{color:var(--green);}
+.text-red{color:var(--red);}

@@ -1,0 +1,665 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   BUTTON SYSTEM — SINGLE SOURCE OF TRUTH
+   ═══════════════════════════════════════════════════════════════════════
+   Every button in the application renders from this file.
+
+   Canonical API (emitted by <x-button>):
+     .btn                     base (structure + states)
+     .btn--primary            primary action (blue)
+     .btn--secondary          neutral surface action
+     .btn--outline            bordered, transparent
+     .btn--ghost              borderless, transparent
+     .btn--destructive        destructive action (red)
+     .btn--link               text link styled as button
+     .btn--active             pressed/toggled state
+     .btn--sm / .btn--md / .btn--lg
+     .btn--full               width: 100%
+     .btn--pill               fully rounded
+     .btn--icon               icon-only square
+     .btn--loading            spinner replaces label, clicks blocked
+     .spinner                 the one spinner used everywhere
+
+   Colors/sizes derive exclusively from design tokens in base/_variables.css.
+   No raw hex values are allowed below.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── 1. BASE ─────────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--btn-gap);
+  padding: var(--btn-pad-y) var(--btn-pad-x);
+  min-height: var(--btn-min-h);
+  border-radius: var(--btn-radius);
+  font-family: var(--font, 'DM Sans', sans-serif);
+  font-size: var(--btn-font-size);
+  font-weight: var(--btn-fw);
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  border: 1px solid var(--btn-bd, transparent);
+  background: var(--btn-bg, var(--surface2));
+  color: var(--btn-fg, var(--text2));
+  box-shadow: var(--btn-sh, none);
+  transition: background var(--transition), color var(--transition),
+              border-color var(--transition), box-shadow var(--transition),
+              transform var(--transition), opacity var(--transition);
+  position: relative;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.btn:hover {
+  background: var(--btn-bg-h, var(--surface3));
+  color: var(--btn-fg-h, var(--text));
+  border-color: var(--btn-bd-h, var(--btn-bd, transparent));
+  box-shadow: var(--btn-sh-h, var(--btn-sh, none));
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: translateY(0) scale(0.97);
+  transition-duration: 0.08s;
+}
+
+/* Visible, keyboard-only focus ring (WCAG 2.4.7) */
+.btn:focus-visible {
+  outline: 3px solid var(--btn-ring, rgba(37, 99, 235, 0.4));
+  outline-offset: 2px;
+  border-radius: inherit;
+}
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Label keeps layout so loading never changes width (never swap innerHTML) */
+.btn__label { display: inline-flex; align-items: center; gap: var(--btn-gap); }
+.btn__icon  { display: inline-flex; flex-shrink: 0; }
+.btn .btn__icon + .btn__label,
+.btn .btn__label + .btn__icon { margin: 0; }
+
+/* ── 2. SPINNER (one spinner component everywhere) ───────────────────── */
+.spinner,
+.btn-spinner {
+  width: var(--spinner-size, 16px);
+  height: var(--spinner-size, 16px);
+  border-radius: 50%;
+  border: 2px solid var(--spinner-track, rgba(128, 128, 128, 0.3));
+  border-top-color: var(--spinner-fg, currentColor);
+  animation: btn-spin 0.7s linear infinite;
+  flex-shrink: 0;
+  display: inline-block;
+  vertical-align: middle;
+}
+.btn .spinner { display: none; position: absolute; left: 50%; top: 50%; margin: calc(var(--spinner-size, 16px) / -2) 0 0 calc(var(--spinner-size, 16px) / -2); }
+.btn--loading .spinner { display: inline-block; }
+.btn--loading .btn__label { visibility: hidden; }
+.btn--loading,
+.btn--loading:hover,
+.btn--loading:active { transform: none; pointer-events: none; }
+
+@keyframes btn-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner, .btn-spinner { animation-duration: 1.4s; }
+  .btn, .btn svg { transition-duration: 0.01ms; }
+}
+
+/* ── 3. VARIANTS ─────────────────────────────────────────────────────── */
+.btn--primary {
+  --btn-bg: linear-gradient(135deg, var(--primary), var(--secondary));
+  --btn-fg: var(--white);
+  --btn-bg-h: linear-gradient(135deg, var(--primary-hover), var(--secondary-hover));
+  --btn-fg-h: var(--white);
+  --btn-sh: var(--btn-sh-primary);
+  --btn-sh-h: var(--btn-sh-primary-lg);
+  --btn-ring: var(--btn-sh-primary);
+}
+.btn--primary:active { --btn-bg: linear-gradient(135deg, var(--primary-active), var(--secondary-hover)); }
+
+.btn--secondary {
+  --btn-bg: var(--surface);
+  --btn-fg: var(--text2);
+  --btn-bd: var(--border2);
+  --btn-bg-h: var(--surface3);
+  --btn-fg-h: var(--text);
+  --btn-bd-h: var(--border2);
+  --btn-sh: var(--btn-sh-neutral);
+  --btn-sh-h: var(--btn-sh-neutral-lg);
+}
+
+.btn--outline {
+  --btn-bg: transparent;
+  --btn-fg: var(--text2);
+  --btn-bd: var(--border2);
+  --btn-bg-h: var(--accent-glow, rgba(37, 99, 235, 0.18));
+  --btn-fg-h: var(--primary);
+  --btn-bd-h: var(--primary);
+  --btn-sh: none;
+}
+
+.btn--ghost {
+  --btn-bg: transparent;
+  --btn-fg: var(--text2);
+  --btn-bg-h: var(--surface3);
+  --btn-fg-h: var(--text);
+  --btn-sh: none;
+}
+
+.btn--destructive {
+  --btn-bg: var(--danger);
+  --btn-fg: var(--white);
+  --btn-bg-h: var(--danger-hover);
+  --btn-fg-h: var(--white);
+  --btn-sh: var(--btn-sh-danger);
+  --btn-sh-h: var(--btn-sh-danger-lg);
+  --btn-ring: var(--btn-sh-danger);
+}
+.btn--destructive:active { --btn-bg: var(--danger-dark); }
+
+.btn--link {
+  --btn-bg: transparent;
+  --btn-fg: var(--primary);
+  --btn-pad-x: 8px;
+  --btn-pad-y: 4px;
+  --btn-min-h: auto;
+  --btn-bg-h: transparent;
+  --btn-fg-h: var(--primary-hover);
+  --btn-sh: none;
+}
+.btn--link:hover { text-decoration: underline; }
+.btn--link:focus-visible { outline-offset: 4px; }
+
+/* Pressed / toggled state for segmented controls */
+.btn--active {
+  --btn-bg: var(--primary);
+  --btn-fg: var(--white);
+  --btn-bg-h: var(--primary-hover);
+  --btn-fg-h: var(--white);
+  --btn-sh: var(--btn-sh-primary);
+  --btn-sh-h: var(--btn-sh-primary-lg);
+  --btn-ring: var(--btn-sh-primary);
+}
+
+/* ── 4. SIZES ────────────────────────────────────────────────────────── */
+.btn--sm {
+  padding: var(--btn-pad-y-sm) var(--btn-pad-x-sm);
+  min-height: var(--btn-min-h-sm);
+  border-radius: var(--btn-radius-sm);
+  font-size: var(--btn-font-size-sm);
+  gap: var(--btn-gap-sm);
+}
+.btn--sm svg { width: 14px; height: 14px; }
+.btn--sm .spinner { --spinner-size: 14px; }
+
+.btn--md {
+  padding: var(--btn-pad-y) var(--btn-pad-x);
+  min-height: var(--btn-min-h);
+  border-radius: var(--btn-radius);
+  font-size: var(--btn-font-size);
+  gap: var(--btn-gap);
+}
+
+.btn--lg {
+  padding: var(--btn-pad-y-lg) var(--btn-pad-x-lg);
+  min-height: var(--btn-min-h-lg);
+  border-radius: var(--btn-radius-lg);
+  font-size: var(--btn-font-size-lg);
+  gap: var(--btn-gap-lg);
+}
+.btn--lg svg { width: 18px; height: 18px; }
+.btn--lg .spinner { --spinner-size: 18px; }
+
+/* ── 5. MODIFIERS ────────────────────────────────────────────────────── */
+.btn--full {
+  width: 100%;
+  justify-content: center;
+}
+.btn--pill { border-radius: 999px; }
+
+.btn--icon { padding: 0; width: var(--btn-min-h); }
+.btn--icon.btn--sm { width: var(--btn-min-h-sm); }
+.btn--icon.btn--lg { width: var(--btn-min-h-lg); }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   LEGACY COMPATIBILITY ALIASES
+   ═══════════════════════════════════════════════════════════════════════
+   Temporary bridge: every legacy button class renders identically to its
+   canonical mapping so un-migrated markup keeps working. Remove an alias
+   once all usages of the class have been migrated to <x-button>.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Base-shaped classes (provided .btn-like structure on their own) */
+.action-btn, .act-btn, .modal-btn, .bb-btn, .hero-btn, .wb-btn, .c-btn,
+.create-event-btn, .kyc-doc-btn, .doc-expand-btn, .btn-back, .btn-home,
+.btn-next, .btn-submit, .submit-btn, .btn-login, .btn-register, .reg-btn,
+.btn-create, .btn-kyc-now, .btn-close-popup, .btn-dashboard, .btn-apply,
+.btn-gray, .btn-green, .btn-yellow, .btn-red, .btn-danger, .btn-accent,
+.btn-primary, .btn-secondary, .btn-ghost, .btn-outline, .btn-outline-dark,
+.btn-donate, .btn-spotlight, .btn-kyc-view, .btn-white, .hero-search-btn,
+.sidebar-toggle-btn, .ev-reg-btn, .fm-clear-btn, .fm-apply-btn,
+.btn-google, .btn-draft, .btn-edit, .btn-save, .btn-cancel, .btn-share,
+.btn-pause, .btn-resume, .btn-approve, .btn-reject, .btn-publish,
+.btn-schedule, .btn-follow, .btn-monthly, .btn-once, .btn-weekly,
+.btn-donate-new, .add-btn, .add-update-btn, .add-product-btn,
+.remove-update-btn, .remove-product-btn, .back-btn, .back-link,
+.bulk-btn, .bulk-btn-cancel, .bulk-btn-del, .card-edit-btn, .change-img-btn,
+.clear-btn, .clear-all-btn, .cover-edit-btn, .cover-preview-btn,
+.cover-preview-btn-change, .cover-preview-btn-remove, .doc-btn,
+.doc-upload-btn, .dp-add-btn, .export-btn, .filter-btn, .gc-buy-btn,
+.hero-donate-btn, .hero-share-btn, .upload-btn, .reset-btn, .save-btn,
+.search-submit, .share-btn, .slug-lock-btn, .social-btn, .s-upgrade-btn,
+.type-btn, .wallet-save-btn, .assign-btn, .qa-btn, .vbtn, .cv-btn,
+.vbtn-approve, .vbtn-reject, .gr-btn-primary, .gr-btn-secondary,
+.gr-code-btn, .modal-g-btn, .modal-r-btn, .modal-y-btn, .camp-donate-btn,
+.camp-filter-btn, .cp-btn, .cp-btn-clear, .cp-btn-primary, .gc-btn,
+.gc-btn-clear, .gc-btn-primary, .gc-action-btn, .gc-action-cancel,
+.gc-action-resend, .gc-action-view, .cp-action-btn, .cp-action-cancel,
+.cp-action-view, .db-btn, .db-btn--primary, .db-btn--ghost,
+.db-icon-btn, .icon-btn, .editor-btn, .sdb-btn, .sdb-share-btn,
+.tab-btn, .page-btn, .create-btn, .doc-btn, .alert-close, .btn-back-step,
+.btn-modal-cancel, .btn-modal-delete, .cover-preview-actions,
+.main-donate-tab, .amt-btn-new, .bulk-btn-del, .pwd-toggle, .pw-toggle,
+.btn-g, .btn-i, .btn-y, .hero-search-btn, .ev-search-clear, .toast-close,
+.scroll-top, .lightbox-close, .filter-trigger-btn, .fm-close, .sidebar-close,
+.chat-scroll-bottom, .impact-scroll-top {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--btn-gap);
+  padding: var(--btn-pad-y) var(--btn-pad-x);
+  min-height: var(--btn-min-h);
+  border-radius: var(--btn-radius);
+  font-family: var(--font, 'DM Sans', sans-serif);
+  font-size: var(--btn-font-size);
+  font-weight: var(--btn-fw);
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  border: 1px solid var(--btn-bd, transparent);
+  background: var(--btn-bg, var(--surface2));
+  color: var(--btn-fg, var(--text2));
+  box-shadow: var(--btn-sh, none);
+  transition: background var(--transition), color var(--transition),
+              border-color var(--transition), box-shadow var(--transition),
+              transform var(--transition), opacity var(--transition);
+  position: relative;
+  user-select: none;
+}
+.action-btn svg, .act-btn svg, .modal-btn svg, .bb-btn svg, .hero-btn svg,
+.wb-btn svg, .c-btn svg, .create-event-btn svg, .kyc-doc-btn svg,
+.btn svg, .db-icon-btn svg, .icon-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+/* Structure shared with the canonical .btn on hover/active/focus/disabled */
+.action-btn:hover, .act-btn:hover, .modal-btn:hover, .bb-btn:hover,
+.hero-btn:hover, .wb-btn:hover, .c-btn:hover, .create-event-btn:hover,
+.kyc-doc-btn:hover, .doc-expand-btn:hover, .btn-back:hover, .btn-home:hover,
+.btn-next:hover, .btn-submit:hover, .submit-btn:hover, .btn-login:hover,
+.btn-register:hover, .reg-btn:hover, .btn-create:hover, .btn-kyc-now:hover,
+.btn-close-popup:hover, .btn-dashboard:hover, .btn-apply:hover,
+.btn-gray:hover, .btn-green:hover, .btn-yellow:hover, .btn-red:hover,
+.btn-danger:hover, .btn-accent:hover, .btn-primary:hover,
+.btn-secondary:hover, .btn-ghost:hover, .btn-outline:hover,
+.btn-outline-dark:hover, .btn-donate:hover, .btn-spotlight:hover,
+.btn-kyc-view:hover, .btn-white:hover, .hero-search-btn:hover,
+.sidebar-toggle-btn:hover, .ev-reg-btn:hover, .fm-clear-btn:hover,
+.fm-apply-btn:hover, .btn-google:hover, .btn-draft:hover, .btn-edit:hover,
+.btn-save:hover, .btn-cancel:hover, .btn-share:hover, .btn-pause:hover,
+.btn-resume:hover, .btn-approve:hover, .btn-reject:hover,
+.btn-publish:hover, .btn-schedule:hover, .btn-follow:hover,
+.btn-monthly:hover, .btn-once:hover, .btn-weekly:hover,
+.btn-donate-new:hover, .add-btn:hover, .add-update-btn:hover,
+.add-product-btn:hover, .remove-update-btn:hover,
+.remove-product-btn:hover, .back-btn:hover, .back-link:hover,
+.bulk-btn:hover, .bulk-btn-cancel:hover, .bulk-btn-del:hover,
+.card-edit-btn:hover, .change-img-btn:hover, .clear-btn:hover,
+.clear-all-btn:hover, .cover-edit-btn:hover, .cover-preview-btn:hover,
+.cover-preview-btn-change:hover, .cover-preview-btn-remove:hover,
+.doc-btn:hover, .doc-upload-btn:hover, .dp-add-btn:hover,
+.export-btn:hover, .filter-btn:hover, .gc-buy-btn:hover,
+.hero-donate-btn:hover, .hero-share-btn:hover, .upload-btn:hover,
+.reset-btn:hover, .save-btn:hover, .search-submit:hover, .share-btn:hover,
+.slug-lock-btn:hover, .social-btn:hover, .s-upgrade-btn:hover,
+.type-btn:hover, .wallet-save-btn:hover, .assign-btn:hover,
+.qa-btn:hover, .vbtn:hover, .cv-btn:hover, .vbtn-approve:hover,
+.vbtn-reject:hover, .gr-btn-primary:hover, .gr-btn-secondary:hover,
+.gr-code-btn:hover, .modal-g-btn:hover, .modal-r-btn:hover,
+.modal-y-btn:hover, .camp-donate-btn:hover, .camp-filter-btn:hover,
+.cp-btn:hover, .cp-btn-clear:hover, .cp-btn-primary:hover, .gc-btn:hover,
+.gc-btn-clear:hover, .gc-btn-primary:hover, .gc-action-btn:hover,
+.gc-action-cancel:hover, .gc-action-resend:hover, .gc-action-view:hover,
+.cp-action-btn:hover, .cp-action-cancel:hover, .cp-action-view:hover,
+.db-btn:hover, .db-btn--primary:hover, .db-btn--ghost:hover,
+.db-icon-btn:hover, .icon-btn:hover, .editor-btn:hover, .sdb-btn:hover,
+.sdb-share-btn:hover, .tab-btn:hover, .page-btn:hover, .create-btn:hover,
+.doc-btn:hover, .alert-close:hover, .btn-back-step:hover,
+.btn-modal-cancel:hover, .btn-modal-delete:hover, .main-donate-tab:hover,
+.amt-btn-new:hover, .pwd-toggle:hover, .pw-toggle:hover, .btn-g:hover,
+.btn-i:hover, .btn-y:hover, .ev-search-clear:hover, .toast-close:hover,
+.scroll-top:hover, .lightbox-close:hover, .filter-trigger-btn:hover,
+.fm-close:hover, .sidebar-close:hover, .chat-scroll-bottom:hover,
+.impact-scroll-top:hover {
+  background: var(--btn-bg-h, var(--surface3));
+  color: var(--btn-fg-h, var(--text));
+  border-color: var(--btn-bd-h, var(--btn-bd, transparent));
+  box-shadow: var(--btn-sh-h, var(--btn-sh, none));
+  transform: translateY(-1px);
+}
+
+.action-btn:active, .act-btn:active, .modal-btn:active, .bb-btn:active,
+.hero-btn:active, .wb-btn:active, .c-btn:active, .btn:active,
+.hero-search-btn:active, .fm-apply-btn:active, .fm-clear-btn:active,
+.btn-back:active, .btn-next:active, .btn-submit:active, .submit-btn:active,
+.btn-create:active, .btn-kyc-now:active, .btn-login:active,
+.btn-register:active, .reg-btn:active, .btn-home:active,
+.btn-donate:active, .btn-spotlight:active, .btn-white:active,
+.create-event-btn:active, .kyc-doc-btn:active, .doc-expand-btn:active,
+.hero-btn-primary:active, .hero-btn-ghost:active, .ev-reg-btn:active,
+.btn-gray:active, .btn-green:active, .btn-yellow:active, .btn-red:active,
+.btn-danger:active, .btn-accent:active, .btn-primary:active,
+.btn-secondary:active, .btn-ghost:active, .btn-outline:active,
+.btn-outline-dark:active, .btn-kyc-view:active, .btn-google:active,
+.btn-draft:active, .btn-edit:active, .btn-save:active, .btn-cancel:active,
+.btn-share:active, .btn-pause:active, .btn-resume:active,
+.btn-approve:active, .btn-reject:active, .btn-publish:active,
+.btn-schedule:active, .btn-follow:active, .btn-monthly:active,
+.btn-once:active, .btn-weekly:active, .btn-donate-new:active,
+.add-btn:active, .back-btn:active, .bulk-btn:active,
+.bulk-btn-cancel:active, .bulk-btn-del:active, .card-edit-btn:active,
+.change-img-btn:active, .clear-btn:active, .clear-all-btn:active,
+.cover-edit-btn:active, .cover-preview-btn:active,
+.cover-preview-btn-change:active, .cover-preview-btn-remove:active,
+.doc-btn:active, .doc-upload-btn:active, .dp-add-btn:active,
+.export-btn:active, .filter-btn:active, .gc-buy-btn:active,
+.hero-donate-btn:active, .hero-share-btn:active, .upload-btn:active,
+.reset-btn:active, .save-btn:active, .search-submit:active,
+.share-btn:active, .slug-lock-btn:active, .social-btn:active,
+.s-upgrade-btn:active, .type-btn:active, .wallet-save-btn:active,
+.assign-btn:active, .qa-btn:active, .vbtn:active, .cv-btn:active,
+.vbtn-approve:active, .vbtn-reject:active, .gr-btn-primary:active,
+.gr-btn-secondary:active, .gr-code-btn:active, .modal-g-btn:active,
+.modal-r-btn:active, .modal-y-btn:active, .camp-donate-btn:active,
+.camp-filter-btn:active, .cp-btn:active, .cp-btn-clear:active,
+.cp-btn-primary:active, .gc-btn:active, .gc-btn-clear:active,
+.gc-btn-primary:active, .gc-action-btn:active, .gc-action-cancel:active,
+.gc-action-resend:active, .gc-action-view:active, .cp-action-btn:active,
+.cp-action-cancel:active, .cp-action-view:active, .db-btn:active,
+.db-btn--primary:active, .db-btn--ghost:active, .db-icon-btn:active,
+.icon-btn:active, .editor-btn:active, .sdb-btn:active, .sdb-share-btn:active,
+.tab-btn:active, .page-btn:active, .create-btn:active, .alert-close:active,
+.btn-back-step:active, .btn-modal-cancel:active, .btn-modal-delete:active,
+.main-donate-tab:active, .amt-btn-new:active, .pwd-toggle:active,
+.pw-toggle:active, .btn-g:active, .btn-i:active, .btn-y:active,
+.ev-search-clear:active, .toast-close:active, .scroll-top:active,
+.lightbox-close:active, .filter-trigger-btn:active, .fm-close:active,
+.sidebar-close:active, .chat-scroll-bottom:active,
+.impact-scroll-top:active {
+  transform: translateY(0) scale(0.97);
+  transition-duration: 0.08s;
+}
+
+.action-btn:focus-visible, .act-btn:focus-visible, .modal-btn:focus-visible,
+.bb-btn:focus-visible, .hero-btn:focus-visible, .wb-btn:focus-visible,
+.c-btn:focus-visible, .btn:focus-visible, .btn-back:focus-visible,
+.btn-next:focus-visible, .btn-submit:focus-visible, .submit-btn:focus-visible,
+.btn-login:focus-visible, .btn-register:focus-visible, .reg-btn:focus-visible,
+.btn-create:focus-visible, .btn-kyc-now:focus-visible,
+.btn-close-popup:focus-visible, .btn-home:focus-visible,
+.btn-donate:focus-visible, .btn-spotlight:focus-visible,
+.btn-white:focus-visible, .create-event-btn:focus-visible,
+.kyc-doc-btn:focus-visible, .doc-expand-btn:focus-visible,
+.hero-btn-primary:focus-visible, .hero-btn-ghost:focus-visible,
+.hero-search-btn:focus-visible, .fm-apply-btn:focus-visible,
+.fm-clear-btn:focus-visible, .ev-reg-btn:focus-visible, .btn-gray:focus-visible,
+.btn-green:focus-visible, .btn-yellow:focus-visible, .btn-red:focus-visible,
+.btn-danger:focus-visible, .btn-accent:focus-visible,
+.btn-primary:focus-visible, .btn-secondary:focus-visible,
+.btn-ghost:focus-visible, .btn-outline:focus-visible,
+.btn-outline-dark:focus-visible, .btn-kyc-view:focus-visible,
+.btn-google:focus-visible, .btn-draft:focus-visible, .btn-edit:focus-visible,
+.btn-save:focus-visible, .btn-cancel:focus-visible, .btn-share:focus-visible,
+.btn-pause:focus-visible, .btn-resume:focus-visible,
+.btn-approve:focus-visible, .btn-reject:focus-visible,
+.btn-publish:focus-visible, .btn-schedule:focus-visible,
+.btn-follow:focus-visible, .btn-monthly:focus-visible, .btn-once:focus-visible,
+.btn-weekly:focus-visible, .btn-donate-new:focus-visible,
+.add-btn:focus-visible, .back-btn:focus-visible, .bulk-btn:focus-visible,
+.bulk-btn-cancel:focus-visible, .bulk-btn-del:focus-visible,
+.card-edit-btn:focus-visible, .change-img-btn:focus-visible,
+.clear-btn:focus-visible, .clear-all-btn:focus-visible,
+.cover-edit-btn:focus-visible, .cover-preview-btn:focus-visible,
+.cover-preview-btn-change:focus-visible, .cover-preview-btn-remove:focus-visible,
+.doc-btn:focus-visible, .doc-upload-btn:focus-visible,
+.dp-add-btn:focus-visible, .export-btn:focus-visible,
+.filter-btn:focus-visible, .gc-buy-btn:focus-visible,
+.hero-donate-btn:focus-visible, .hero-share-btn:focus-visible,
+.upload-btn:focus-visible, .reset-btn:focus-visible, .save-btn:focus-visible,
+.search-submit:focus-visible, .share-btn:focus-visible,
+.slug-lock-btn:focus-visible, .social-btn:focus-visible,
+.s-upgrade-btn:focus-visible, .type-btn:focus-visible,
+.wallet-save-btn:focus-visible, .assign-btn:focus-visible, .qa-btn:focus-visible,
+.vbtn:focus-visible, .cv-btn:focus-visible, .vbtn-approve:focus-visible,
+.vbtn-reject:focus-visible, .gr-btn-primary:focus-visible,
+.gr-btn-secondary:focus-visible, .gr-code-btn:focus-visible,
+.modal-g-btn:focus-visible, .modal-r-btn:focus-visible,
+.modal-y-btn:focus-visible, .camp-donate-btn:focus-visible,
+.camp-filter-btn:focus-visible, .cp-btn:focus-visible,
+.cp-btn-clear:focus-visible, .cp-btn-primary:focus-visible,
+.gc-btn:focus-visible, .gc-btn-clear:focus-visible, .gc-btn-primary:focus-visible,
+.gc-action-btn:focus-visible, .gc-action-cancel:focus-visible,
+.gc-action-resend:focus-visible, .gc-action-view:focus-visible,
+.cp-action-btn:focus-visible, .cp-action-cancel:focus-visible,
+.cp-action-view:focus-visible, .db-btn:focus-visible,
+.db-btn--primary:focus-visible, .db-btn--ghost:focus-visible,
+.db-icon-btn:focus-visible, .icon-btn:focus-visible, .editor-btn:focus-visible,
+.sdb-btn:focus-visible, .sdb-share-btn:focus-visible, .tab-btn:focus-visible,
+.page-btn:focus-visible, .create-btn:focus-visible, .alert-close:focus-visible,
+.btn-back-step:focus-visible, .btn-modal-cancel:focus-visible,
+.btn-modal-delete:focus-visible, .main-donate-tab:focus-visible,
+.amt-btn-new:focus-visible, .pwd-toggle:focus-visible, .pw-toggle:focus-visible,
+.btn-g:focus-visible, .btn-i:focus-visible, .btn-y:focus-visible,
+.ev-search-clear:focus-visible, .toast-close:focus-visible,
+.scroll-top:focus-visible, .lightbox-close:focus-visible,
+.filter-trigger-btn:focus-visible, .fm-close:focus-visible,
+.sidebar-close:focus-visible, .chat-scroll-bottom:focus-visible,
+.impact-scroll-top:focus-visible {
+  outline: 3px solid var(--btn-ring, rgba(37, 99, 235, 0.4));
+  outline-offset: 2px;
+}
+
+.action-btn:disabled, .act-btn:disabled, .modal-btn:disabled,
+.bb-btn:disabled, .hero-btn:disabled, .wb-btn:disabled, .c-btn:disabled,
+.btn:disabled, .btn-back:disabled, .btn-next:disabled,
+.btn-submit:disabled, .submit-btn:disabled, .btn-login:disabled,
+.btn-register:disabled, .reg-btn:disabled, .btn-create:disabled,
+.btn-kyc-now:disabled, .btn-close-popup:disabled, .btn-home:disabled,
+.btn-donate:disabled, .btn-spotlight:disabled, .btn-white:disabled,
+.create-event-btn:disabled, .kyc-doc-btn:disabled, .doc-expand-btn:disabled,
+.hero-btn-primary:disabled, .hero-btn-ghost:disabled,
+.hero-search-btn:disabled, .fm-apply-btn:disabled, .fm-clear-btn:disabled,
+.ev-reg-btn:disabled, .btn-gray:disabled, .btn-green:disabled,
+.btn-yellow:disabled, .btn-red:disabled, .btn-danger:disabled,
+.btn-accent:disabled, .btn-primary:disabled, .btn-secondary:disabled,
+.btn-ghost:disabled, .btn-outline:disabled, .btn-outline-dark:disabled,
+.btn-kyc-view:disabled, .btn-google:disabled, .btn-draft:disabled,
+.btn-edit:disabled, .btn-save:disabled, .btn-cancel:disabled,
+.btn-share:disabled, .btn-pause:disabled, .btn-resume:disabled,
+.btn-approve:disabled, .btn-reject:disabled, .btn-publish:disabled,
+.btn-schedule:disabled, .btn-follow:disabled, .btn-monthly:disabled,
+.btn-once:disabled, .btn-weekly:disabled, .btn-donate-new:disabled,
+.add-btn:disabled, .back-btn:disabled, .bulk-btn:disabled,
+.bulk-btn-cancel:disabled, .bulk-btn-del:disabled, .card-edit-btn:disabled,
+.change-img-btn:disabled, .clear-btn:disabled, .clear-all-btn:disabled,
+.cover-edit-btn:disabled, .cover-preview-btn:disabled,
+.cover-preview-btn-change:disabled, .cover-preview-btn-remove:disabled,
+.doc-btn:disabled, .doc-upload-btn:disabled, .dp-add-btn:disabled,
+.export-btn:disabled, .filter-btn:disabled, .gc-buy-btn:disabled,
+.hero-donate-btn:disabled, .hero-share-btn:disabled, .upload-btn:disabled,
+.reset-btn:disabled, .save-btn:disabled, .search-submit:disabled,
+.share-btn:disabled, .slug-lock-btn:disabled, .social-btn:disabled,
+.s-upgrade-btn:disabled, .type-btn:disabled, .wallet-save-btn:disabled,
+.assign-btn:disabled, .qa-btn:disabled, .vbtn:disabled, .cv-btn:disabled,
+.vbtn-approve:disabled, .vbtn-reject:disabled, .gr-btn-primary:disabled,
+.gr-btn-secondary:disabled, .gr-code-btn:disabled, .modal-g-btn:disabled,
+.modal-r-btn:disabled, .modal-y-btn:disabled, .camp-donate-btn:disabled,
+.camp-filter-btn:disabled, .cp-btn:disabled, .cp-btn-clear:disabled,
+.cp-btn-primary:disabled, .gc-btn:disabled, .gc-btn-clear:disabled,
+.gc-btn-primary:disabled, .gc-action-btn:disabled, .gc-action-cancel:disabled,
+.gc-action-resend:disabled, .gc-action-view:disabled,
+.cp-action-btn:disabled, .cp-action-cancel:disabled,
+.cp-action-view:disabled, .db-btn:disabled, .db-btn--primary:disabled,
+.db-btn--ghost:disabled, .db-icon-btn:disabled, .icon-btn:disabled,
+.editor-btn:disabled, .sdb-btn:disabled, .sdb-share-btn:disabled,
+.tab-btn:disabled, .page-btn:disabled, .create-btn:disabled,
+.alert-close:disabled, .btn-back-step:disabled, .btn-modal-cancel:disabled,
+.btn-modal-delete:disabled, .main-donate-tab:disabled,
+.amt-btn-new:disabled, .pwd-toggle:disabled, .pw-toggle:disabled,
+.btn-g:disabled, .btn-i:disabled, .btn-y:disabled,
+.ev-search-clear:disabled, .toast-close:disabled, .scroll-top:disabled,
+.lightbox-close:disabled, .filter-trigger-btn:disabled, .fm-close:disabled,
+.sidebar-close:disabled, .chat-scroll-bottom:disabled,
+.impact-scroll-top:disabled,
+.vbtn-disabled, .btn-disabled, .b-closed, .sp-closed {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ── Variant mappings (each legacy class maps to exactly one variant) ── */
+
+/* primary */
+.btn-accent, .btn-primary, .btn-donate, .btn-next, .btn-submit, .submit-btn,
+.btn-login, .btn-register, .reg-btn, .btn-create, .btn-home, .btn-kyc-now,
+.btn-dashboard, .btn-apply, .hero-btn-primary, .wb-btn-primary, .bb-approve,
+.bb-publish, .ab-approve, .ab-feature, .ab-archive, .c-btn-approve,
+.c-btn-resume, .af-approve, .btn-green, .fm-apply-btn, .hero-search-btn,
+.btn-google, .btn-draft, .btn-publish, .btn-schedule, .btn-donate-new,
+.add-btn, .bulk-btn, .cp-btn-primary, .gc-btn-primary, .gr-btn-primary,
+.modal-g-btn, .db-btn--primary, .amt-btn-new, .cp-bulk-btn, .faq-tab-btn,
+.dp-add-btn, .add-update-btn, .add-product-btn, .cover-preview-btn-change,
+.save-btn, .upload-btn, .search-submit, .slug-lock-btn, .btn-approve,
+.btn-resume, .vbtn-approve, .btn-save, .doc-upload-btn, .export-btn,
+.cover-preview-btn, .gc-action-resend {
+  --btn-bg: var(--primary);
+  --btn-fg: var(--white);
+  --btn-bg-h: var(--primary-hover);
+  --btn-fg-h: var(--white);
+  --btn-sh: var(--btn-sh-primary);
+  --btn-sh-h: var(--btn-sh-primary-lg);
+  --btn-ring: var(--btn-sh-primary);
+}
+
+/* secondary */
+.btn-secondary, .btn-gray, .btn-yellow, .bb-pause, .bb-clear,
+.modal-cancel, .modal-amber, .c-btn-pause, .c-btn-view, .ab-view, .ab-edit,
+.act-btn, .fm-clear-btn, .hero-btn-ghost, .wb-btn-ghost, .act-link,
+.c-btn-back, .btn-back-step, .btn-cancel, .btn-share, .btn-modal-cancel,
+.btn-pause, .btn-follow, .modal-y-btn, .gc-btn-clear, .cp-btn-clear,
+.cp-action-cancel, .gc-action-cancel, .cv-btn, .btn-back, .back-btn,
+.back-link, .db-btn, .db-btn--ghost, .gr-code-btn, .btn-spotlight,
+.bulk-btn-cancel, .card-edit-btn, .change-img-btn, .clear-btn,
+.clear-all-btn, .reset-btn, .wallet-save-btn, .assign-btn, .qa-btn,
+.tab-btn, .page-btn, .btn-edit, .cover-preview-btn-remove, .doc-btn,
+.filter-btn, .share-btn, .social-btn, .s-upgrade-btn, .type-btn,
+.hero-donate-btn, .hero-share-btn, .sidebar-toggle-btn, .ev-reg-btn,
+.gc-buy-btn, .camp-donate-btn, .camp-filter-btn, .modal-btn, .create-btn {
+  --btn-bg: var(--surface);
+  --btn-fg: var(--text2);
+  --btn-bd: var(--border2);
+  --btn-bg-h: var(--surface3);
+  --btn-fg-h: var(--text);
+  --btn-bd-h: var(--border2);
+  --btn-sh: var(--btn-sh-neutral);
+  --btn-sh-h: var(--btn-sh-neutral-lg);
+}
+
+/* destructive */
+.btn-red, .btn-danger, .bb-reject, .ab-delete, .modal-red, .c-btn-reject,
+.af-reject, .bulk-btn-del, .btn-reject, .btn-modal-delete, .modal-r-btn,
+.vbtn-reject, .gc-action-btn, .cp-action-btn {
+  --btn-bg: var(--danger);
+  --btn-fg: var(--white);
+  --btn-bg-h: var(--danger-hover);
+  --btn-fg-h: var(--white);
+  --btn-sh: var(--btn-sh-danger);
+  --btn-sh-h: var(--btn-sh-danger-lg);
+  --btn-ring: var(--btn-sh-danger);
+}
+
+/* ghost */
+.btn-ghost, .btn-close-popup, .btn-kyc-view, .doc-expand-btn, .pwd-toggle,
+.pw-toggle, .gc-action-view, .cp-action-view, .icon-btn, .db-icon-btn,
+.editor-btn, .sdb-btn, .sdb-share-btn, .alert-close, .toast-close,
+.scroll-top, .lightbox-close, .fm-close, .sidebar-close, .chat-scroll-bottom,
+.impact-scroll-top {
+  --btn-bg: transparent;
+  --btn-fg: var(--text2);
+  --btn-bg-h: var(--surface3);
+  --btn-fg-h: var(--text);
+  --btn-sh: none;
+}
+
+/* outline */
+.btn-outline-dark, .create-event-btn, .kyc-doc-btn, .kyc-doc-btn-view,
+.kyc-doc-btn-dl, .btn-kyc-view, .doc-btn, .upload-btn, .filter-btn,
+.btn-follow, .btn-monthly, .btn-once, .btn-weekly, .main-donate-tab,
+.cover-preview-btn, .doc-expand-btn, .btn-draft, .btn-apply, .btn-edit {
+  --btn-bg: transparent;
+  --btn-fg: var(--text2);
+  --btn-bd: var(--border2);
+  --btn-bg-h: var(--accent-glow, rgba(37, 99, 235, 0.18));
+  --btn-fg-h: var(--primary);
+  --btn-bd-h: var(--primary);
+  --btn-sh: none;
+}
+
+/* on-dark inverse buttons (photo/gradient heroes) */
+.btn-outline {
+  --btn-fg: var(--white);
+  --btn-bd: rgba(255, 255, 255, 0.35);
+  --btn-bg-h: rgba(255, 255, 255, 0.12);
+  --btn-fg-h: var(--white);
+  --btn-bd-h: rgba(255, 255, 255, 0.6);
+  --btn-sh: none;
+}
+.btn-white {
+  --btn-bg: var(--white);
+  --btn-fg: var(--indigo-ink-2);
+  --btn-bg-h: rgba(255, 255, 255, 0.92);
+  --btn-fg-h: var(--indigo-ink-2);
+  --btn-sh: 0 4px 20px rgba(0, 0, 0, 0.15);
+  --btn-sh-h: 0 12px 32px rgba(0, 0, 0, 0.2);
+}
+
+/* legacy size helpers */
+.btn-sm { padding: var(--btn-pad-y-sm) var(--btn-pad-x-sm); min-height: var(--btn-min-h-sm); border-radius: var(--btn-radius-sm); font-size: var(--btn-font-size-sm); gap: var(--btn-gap-sm); }
+.btn-sm svg { width: 14px; height: 14px; }
+.btn-lg { padding: var(--btn-pad-y-lg) var(--btn-pad-x-lg); min-height: var(--btn-min-h-lg); border-radius: var(--btn-radius-lg); font-size: var(--btn-font-size-lg); gap: var(--btn-gap-lg); }
+.btn-lg svg { width: 18px; height: 18px; }
+.btn-block { width: 100%; justify-content: center; }
+
+/* legacy loading marker (used by newsletter/partnership JS) */
+.btn.is-loading .btn-spinner,
+.btn-spinner { display: inline-block; }
+.btn.is-loading .btn-label { display: none; }

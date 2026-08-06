@@ -1,0 +1,9 @@
+/* ══════════════════════════════════════════════════════════
+   MAIN CSS ENTRY POINT
+   ══════════════════════════════════════════════════════════ */
+
+/* Tailwind CSS */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
