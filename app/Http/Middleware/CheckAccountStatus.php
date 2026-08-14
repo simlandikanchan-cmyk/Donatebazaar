@@ -10,8 +10,16 @@ class CheckAccountStatus
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->user() && $request->user()->isFundraiserSuspended()) {
-            return redirect()->route('login')->with('error', 'Your account has been suspended.');
+        $user = $request->user();
+
+        if ($user) {
+            if (! $user->isAccountActive()) {
+                return redirect()->route('login')->with('error', 'Your account has been deactivated.');
+            }
+
+            if ($user->isFundraiserSuspended()) {
+                return redirect()->route('login')->with('error', 'Your account has been suspended.');
+            }
         }
 
         return $next($request);

@@ -80,10 +80,11 @@ class RiskIntegrationTest extends TestCase
             'total_amount' => 5000.00,
             'platform_fee' => 250.00,
             'net_amount' => 5000.00,
-            'payment_status' => 'completed',
-            'is_refunded' => false,
-            'paid_at' => now()->subDays(10),
         ]);
+        $this->donation->payment_status = 'completed';
+        $this->donation->is_refunded = false;
+        $this->donation->paid_at = now()->subDays(10);
+        $this->donation->save();
     }
 
     private function seedRiskConfig(): void
@@ -158,10 +159,11 @@ class RiskIntegrationTest extends TestCase
             'total_amount' => 1000.00,
             'platform_fee' => 50.00,
             'net_amount' => 1000.00,
-            'payment_status' => 'completed',
-            'is_refunded' => false,
-            'paid_at' => now()->subDays(10),
         ]);
+        $donation->payment_status = 'completed';
+        $donation->is_refunded = false;
+        $donation->paid_at = now()->subDays(10);
+        $donation->save();
 
         return $org;
     }

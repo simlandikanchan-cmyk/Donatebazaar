@@ -75,13 +75,13 @@ class FixWalletCredits extends Command
 
     private function resolveWalletOwner(Donation $donation): ?User
     {
-        if ($donation->user_id) {
-            return User::find($donation->user_id);
-        }
-
-        $campaign = $donation->campaign;
+        $campaign = $donation->campaign()->withoutGlobalScopes()->first();
         if ($campaign && $campaign->user_id) {
             return User::find($campaign->user_id);
+        }
+
+        if ($donation->user_id) {
+            return User::find($donation->user_id);
         }
 
         return null;

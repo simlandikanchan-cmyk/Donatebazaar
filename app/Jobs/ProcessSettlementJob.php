@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Exceptions\TemporaryFailureException;
 use App\Models\CampaignSettlement;
 use App\Models\PayoutAttempt;
 use App\Services\SettlementService;
@@ -17,6 +16,7 @@ use Illuminate\Support\Facades\Log;
 class ProcessSettlementJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
     public int $tries = 3;
 
     public int $timeout = 120;
@@ -51,6 +51,18 @@ class ProcessSettlementJob implements ShouldQueue
         }
 
         $attemptNumber = ($settlement->retry_count ?? 0) + 1;
+
+        // Enforce max retries at the job level — if retry_count already
+        // meets the policy limit, do not attempt again. This is a safety net
+        // in addition to RetrySettlementJob's check.
+        if (($settlement->retry_count ?? 0) >= app(RetryPolicy::class)->maxRetries()) {
+            Log::warning('ProcessSettlementJob: max retries already reached', [
+                'settlement_id' => $settlement->id,
+                'retry_count' => $settlement->retry_count,
+            ]);
+
+            return;
+        }
         $idempotencyKey = PayoutAttempt::generateIdempotencyKey($settlement, $attemptNumber);
 
         $existingAttempt = PayoutAttempt::where('idempotency_key', $idempotencyKey)->first();
@@ -58,8 +70,13 @@ class ProcessSettlementJob implements ShouldQueue
             return;
         }
 
-        $attempt = PayoutAttempt::forSettlement($settlement, $attemptNumber);
-        $attempt->save();
+        // Reuse the attempt when a previous run of this job crashed after
+        // creating it: saving a second row with the same idempotency key
+        // would hit the unique index and leave the settlement stuck.
+        $attempt = $existingAttempt ?? PayoutAttempt::forSettlement($settlement, $attemptNumber);
+        if ($existingAttempt === null) {
+            $attempt->save();
+        }
 
         $attempt->update([
             'started_at' => now(),
@@ -73,7 +90,7 @@ class ProcessSettlementJob implements ShouldQueue
                 $attempt->update([
                     'status' => 'completed',
                     'finished_at' => now(),
-                    'gateway_reference' => $settlement->gateway_reference,
+                    'gateway_reference' => $settlement->fresh()->gateway_reference,
                 ]);
             } else {
                 $attempt->update([
@@ -83,11 +100,13 @@ class ProcessSettlementJob implements ShouldQueue
                 ]);
 
                 if ($result['retryable'] ?? false) {
+                    // The service already transitioned the settlement to
+                    // retry_pending and scheduled the next attempt: do NOT
+                    // rethrow (Laravel would re-run this job and call the
+                    // gateway again), just hand over to the retry job.
                     RetrySettlementJob::dispatch($settlement)->delay(
-                        app(\App\Jobs\RetryPolicy::class)->nextRetryAt($attemptNumber)
+                        app(RetryPolicy::class)->nextRetryAt($attemptNumber)
                     );
-
-                    throw new TemporaryFailureException($result['message']);
                 }
             }
         } catch (\Throwable $e) {

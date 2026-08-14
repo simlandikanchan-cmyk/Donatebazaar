@@ -16,26 +16,7 @@ class CampaignSettlement extends Model
         'platform_fee',
         'net_amount',
         'status',
-        'transfer_reference',
-        'paid_at',
-        'approved_by',
-        'approved_at',
-        'rejected_by',
-        'rejected_at',
-        'rejection_reason',
-        'gateway_reference',
-        'processed_at',
-        'failed_at',
-        'failed_reason',
-        'correlation_id',
-        'trace_id',
-        'risk_score',
-        'risk_verdict',
-        'risk_version',
-        'evaluated_at',
-        'payout_account_id',
-        'retry_count',
-        'next_retry_at',
+        'restored_at',
     ];
 
     protected $casts = [
@@ -47,6 +28,7 @@ class CampaignSettlement extends Model
         'rejected_at' => 'datetime',
         'processed_at' => 'datetime',
         'failed_at' => 'datetime',
+        'restored_at' => 'datetime',
         'rejection_reason' => 'string',
         'failed_reason' => 'string',
     ];
@@ -92,6 +74,14 @@ class CampaignSettlement extends Model
     }
 
     /**
+     * Payout attempts for this settlement (one per retry).
+     */
+    public function payoutAttempt()
+    {
+        return $this->hasMany(PayoutAttempt::class, 'settlement_id');
+    }
+
+    /**
      * Donations through settlement items
      */
     public function donations()
@@ -133,6 +123,14 @@ class CampaignSettlement extends Model
     public function isApproved()
     {
         return $this->status === 'approved';
+    }
+
+    /**
+     * Check if settlement was auto-approved by the risk engine.
+     */
+    public function isAutoApproved()
+    {
+        return $this->status === 'auto_approved';
     }
 
     /**

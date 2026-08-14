@@ -1,25 +1,129 @@
-﻿@extends('layouts.admin')
-
-@push('page_css')
-@vite('resources/css/admin/entries/blogs.css')
-@endpush
-
+@extends('layouts.admin')
 
 @section('sidebar_blogs', 'active')
 @section('page_title', 'Review Post')
 @section('page_subtitle', Str::limit($blog->title ?? 'Blog post', 50))
 
-@section('topbar_left')
-<x-button variant="secondary" href="{{ route('admin.blogs.index') }}">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M12 19l-7-7 7-7"/></svg>
-  All Posts
-</x-button>
-<x-button variant="primary" type="button" class="tb-btn">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-  <span class="notif-dot"></span>
-</x-button>
-@endsection
-
+@push('page_styles')
+<style>
+/* ── show page-specific ── */
+.btn-back{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;background:var(--surface2);color:var(--text2);border-radius:var(--r-sm);font-size:12px;font-weight:600;border:1px solid var(--border2);transition:all var(--ease);text-decoration:none;}
+.btn-back:hover{border-color:var(--a);color:var(--a);background:var(--a-lt);}
+.btn-back svg{width:13px;height:13px;}
+.body{padding:26px 28px 56px;}
+.review-layout{display:flex;gap:20px;align-items:flex-start;}
+.review-content{flex:1;min-width:0;animation:fadeUp .4s .05s both;}
+.content-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;}
+.cover-wrap{aspect-ratio:16/7;background:var(--surface2);overflow:hidden;border-bottom:1px solid var(--border);position:relative;}
+.cover-wrap img{width:100%;height:100%;object-fit:cover;}
+.cover-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--text3);}
+.cover-placeholder svg{width:32px;height:32px;opacity:.3;}
+.cover-placeholder span{font-size:12px;font-family:var(--mono);}
+.prose-area{padding:28px 32px 36px;}
+.blog-cat-tag{font-family:var(--mono);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--a);margin-bottom:10px;}
+.blog-title{font-family:'DM Mono',monospace;font-size:clamp(22px,2.8vw,30px);font-weight:800;line-height:1.2;color:var(--text);margin-bottom:14px;letter-spacing:-.01em;text-transform:capitalize;}
+.blog-byline{display:flex;align-items:center;gap:10px;padding-bottom:18px;border-bottom:1px solid var(--border);margin-bottom:20px;flex-wrap:wrap;}
+.byline-av{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--mono);}
+.byline-text{font-size:12.5px;color:var(--text2);}
+.byline-text strong{color:var(--text);font-weight:600;}
+.byline-sep{width:3px;height:3px;border-radius:50%;background:var(--text3);display:inline-block;margin:0 6px;vertical-align:middle;}
+.engage-strip{display:flex;align-items:center;gap:16px;padding:11px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);margin-bottom:22px;flex-wrap:wrap;}
+.es-item{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2);}
+.es-item svg{width:13px;height:13px;flex-shrink:0;}
+.es-item strong{font-weight:700;color:var(--text);}
+.es-divider{width:1px;height:14px;background:var(--border2);flex-shrink:0;}
+.blog-excerpt{background:var(--a-lt);border-left:3px solid var(--a);border-radius:0 var(--r-sm) var(--r-sm) 0;padding:14px 18px;margin-bottom:22px;font-size:15px;font-style:italic;color:var(--text2);line-height:1.75;}
+.blog-prose{font-size:15px;line-height:1.85;color:var(--text2);}
+.blog-prose p{margin-bottom:1.25rem;}
+.review-panel{width:276px;flex-shrink:0;display:flex;flex-direction:column;gap:14px;position:sticky;top:80px;}
+.panel-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;animation:fadeUp .4s both;}
+.panel-card:nth-child(1){animation-delay:.05s}.panel-card:nth-child(2){animation-delay:.10s}.panel-card:nth-child(3){animation-delay:.15s}.panel-card:nth-child(4){animation-delay:.20s}.panel-card:nth-child(5){animation-delay:.25s}.panel-card:nth-child(6){animation-delay:.30s}
+.panel-head{padding:12px 16px;border-bottom:1px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:space-between;}
+.panel-head-title{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.09em;}
+.panel-head-live{display:inline-flex;align-items:center;gap:4px;font-size:9.5px;font-weight:600;color:var(--green);font-family:var(--mono);}
+.panel-head-live::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.8s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.85)}}
+.panel-body{padding:16px;}
+.meta-row{display:flex;flex-direction:column;gap:2px;margin-bottom:12px;}
+.meta-row:last-child{margin-bottom:0;}
+.meta-key{font-family:var(--mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);}
+.meta-val{font-size:13px;font-weight:600;color:var(--text);margin-top:2px;}
+.meta-val.muted{font-weight:400;color:var(--text2);}
+.b-pending{background:var(--amber-lt);color:#b45309;border:1px solid rgba(245,158,11,.3);}
+.b-approved{background:var(--green-lt);color:#065f46;border:1px solid rgba(5,196,138,.3);}
+.b-rejected{background:var(--red-lt);color:#991b1b;border:1px solid rgba(240,68,68,.3);}
+[data-theme="dark"] .b-pending{color:var(--amber);}
+[data-theme="dark"] .b-approved{color:#34d399;}
+[data-theme="dark"] .b-rejected{color:#f87171;}
+.cat-tag{display:inline-block;padding:3px 10px;border-radius:7px;font-size:11px;font-weight:600;background:var(--a-lt);color:var(--a);border:1px solid rgba(37,99,235,.18);}
+.eng-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.eng-box{background:var(--surface2);border:1px solid var(--border);border-radius:11px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;transition:transform var(--ease),box-shadow var(--ease);}
+.eng-box:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.08);}
+.eng-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.eng-icon svg{width:14px;height:14px;}
+.ei-blue{background:var(--blue-lt);color:var(--blue);}
+.ei-pink{background:rgba(236,72,153,.12);color:#ec4899;}
+.ei-green{background:var(--green-lt);color:var(--green);}
+.ei-yellow{background:var(--amber-lt);color:var(--amber);}
+.eng-num{font-family:var(--mono);font-size:1.45rem;font-weight:800;line-height:1;letter-spacing:-.03em;}
+.en-blue{color:var(--blue);}.en-pink{color:#ec4899;}.en-green{color:var(--green);}.en-yellow{color:var(--amber);}
+.eng-label{font-family:var(--mono);font-size:9.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;}
+.eng-bar-wrap{margin-top:4px;}
+.eng-bar-label{display:flex;justify-content:space-between;font-size:10px;font-family:var(--mono);color:var(--text3);margin-bottom:4px;}
+.eng-bar-track{height:5px;background:var(--surface2);border-radius:100px;overflow:hidden;border:1px solid var(--border);}
+.eng-bar-fill{height:100%;border-radius:100px;transition:width 1s cubic-bezier(.4,0,.2,1);}
+.fill-blue{background:var(--blue);}.fill-pink{background:#ec4899;}.fill-green{background:var(--green);}.fill-yellow{background:var(--amber);}
+.stat-pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.stat-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;text-align:center;}
+.stat-box .sn{font-family:var(--mono);font-size:1.4rem;font-weight:800;color:var(--a);line-height:1;letter-spacing:-.02em;}
+.stat-box .sl{font-size:9.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-family:var(--mono);margin-top:3px;}
+.reject-reason-box{background:var(--red-lt);border:1px solid rgba(240,68,68,.2);border-radius:var(--r-sm);padding:10px 12px;font-size:12.5px;color:var(--red);line-height:1.55;}
+[data-theme="dark"] .reject-reason-box{color:#f87171;}
+.comment-list{display:flex;flex-direction:column;gap:10px;}
+.comment-item{display:flex;gap:8px;align-items:flex-start;}
+.comment-ava{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--mono);}
+.comment-body{flex:1;min-width:0;}
+.comment-name{font-size:11.5px;font-weight:600;color:var(--text);line-height:1.2;}
+.comment-text{font-size:11px;color:var(--text3);margin-top:2px;line-height:1.4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+.comment-time{font-family:var(--mono);font-size:9.5px;color:var(--text3);margin-top:3px;}
+.no-comments{font-family:var(--mono);font-size:12px;color:var(--text3);text-align:center;padding:10px 0;}
+.action-stack{display:flex;flex-direction:column;gap:7px;}
+.act-full{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;padding:10px 14px;border-radius:var(--r-sm);font-size:13px;font-weight:600;cursor:pointer;border:1px solid transparent;transition:opacity var(--ease),transform var(--ease);font-family:var(--font);text-decoration:none;}
+.act-full:hover{opacity:.88;}
+.act-full:active{transform:scale(.98);}
+.act-full svg{width:13px;height:13px;}
+.af-approve{background:var(--green);color:#fff;border-color:var(--green);}
+.af-reject{background:var(--red-lt);color:var(--red);border-color:rgba(240,68,68,.25);}
+[data-theme="dark"] .af-reject{color:#f87171;}
+.af-edit{background:var(--surface2);color:var(--text2);border-color:var(--border2);}
+.af-edit:hover{background:var(--a-lt);color:var(--a);border-color:var(--a);}
+.af-feature{background:var(--amber-lt);color:var(--amber);border-color:rgba(245,158,11,.3);}
+.af-feature:hover{background:var(--amber);color:#fff;border-color:var(--amber);}
+.af-archive{background:var(--blue-lt);color:var(--blue);border-color:rgba(59,130,246,.3);}
+.af-archive:hover{background:var(--blue);color:#fff;border-color:var(--blue);}
+.modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);z-index:500;align-items:center;justify-content:center;}
+.modal-backdrop.open{display:flex;}
+.modal-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:24px;width:420px;max-width:90vw;box-shadow:var(--sh-lg);animation:modalIn .2s ease;}
+@keyframes modalIn{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:none}}
+.modal-icon{width:44px;height:44px;background:var(--red-lt);border-radius:11px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;}
+.modal-icon svg{width:20px;height:20px;color:var(--red);}
+.modal-title{font-family:'DM Mono',monospace;font-size:18px;font-weight:800;color:var(--text);margin-bottom:4px;}
+.modal-sub{font-size:12.5px;color:var(--text3);margin-bottom:16px;}
+.modal-textarea{width:100%;min-height:100px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:10px 13px;font-family:var(--font);font-size:13px;color:var(--text);resize:vertical;outline:none;transition:border-color var(--ease);}
+.modal-textarea:focus{border-color:var(--a);box-shadow:0 0 0 3px var(--a-glow);}
+.modal-textarea::placeholder{color:var(--text3);}
+.modal-error{font-family:var(--mono);font-size:11.5px;color:var(--red);margin-top:5px;display:none;}
+.modal-footer{display:flex;gap:8px;margin-top:16px;justify-content:flex-end;}
+.modal-cancel{padding:7px 14px;border:1px solid var(--border2);background:var(--surface2);border-radius:var(--r-xs);font-family:var(--font);font-size:12.5px;font-weight:500;cursor:pointer;color:var(--text2);transition:background var(--ease);}
+.modal-cancel:hover{background:var(--border);}
+.modal-confirm{padding:7px 16px;background:var(--red);color:#fff;border:none;border-radius:var(--r-xs);font-family:var(--font);font-size:12.5px;font-weight:600;cursor:pointer;transition:opacity var(--ease);}
+.modal-confirm:hover{opacity:.85;}
+@media(max-width:900px){.review-layout{flex-direction:column;}.review-panel{width:100%;position:static;display:grid;grid-template-columns:repeat(2,1fr);}}
+@media(max-width:600px){.review-panel{grid-template-columns:1fr;}}
+@media(max-width:480px){.body{padding:16px 14px 40px}.prose-area{padding:18px 16px 24px}.engage-strip{flex-direction:column;align-items:flex-start;gap:8px}.es-divider{display:none}.blog-byline{flex-direction:column;align-items:flex-start}.blog-title{font-size:clamp(18px,5vw,22px)}.eng-grid{grid-template-columns:1fr 1fr}.stat-pair{grid-template-columns:1fr 1fr}.cover-wrap{aspect-ratio:16/9}}
+@media(max-width:380px){.body{padding:12px 10px 32px}.prose-area{padding:14px 12px 20px}.blog-title{font-size:clamp(16px,5vw,20px)}.blog-prose{font-size:13px}.engage-strip{padding:10px 14px}.eng-box{padding:10px 12px}.eng-num{font-size:1.2rem}.stat-box .sn{font-size:1.1rem}.modal-box{padding:18px}.modal-title{font-size:15px}}
+</style>
+@endpush
 @section('content')
 @php
   $categoryName = null;
@@ -53,6 +157,48 @@
     : collect();
 @endphp
 
+{{-- HERO --}}
+<div class="hero">
+  <div class="hero-left">
+    <div class="hero-tag"><span class="hero-tag-dot"></span>Blog Review</div>
+    <div class="hero-name">{{ Str::limit($blog->title ?? 'Blog Post', 60) }}</div>
+    <div class="hero-sub">Submitted {{ $blog->created_at->format('d M Y') }} by {{ $blog->author->name ?? 'Unknown' }} · {{ $readTime }} min read</div>
+    <div class="hero-badges">
+      @php
+        $statusKey = $blog->status ?? 'pending';
+        $heroMap = [
+          'published' => 'hb-green',
+          'approved'  => 'hb-green',
+          'pending'   => 'hb-amber',
+          'rejected'  => 'hb-red',
+          'archived'  => 'hb-blue',
+          'flagged'   => 'hb-purple',
+          'draft'     => 'hb-gray',
+        ];
+      @endphp
+      <span class="hero-badge {{ $heroMap[$statusKey] ?? 'hb-gray' }}">{{ ucfirst($statusKey) }}</span>
+      @if($blog->is_featured)
+        <span class="hero-badge hb-amber">
+          <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" style="width:10px;height:10px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Featured
+        </span>
+      @endif
+      <span class="hero-badge hb-blue">{{ number_format($views) }} views</span>
+      <span class="hero-badge hb-gray">{{ $wordCount }} words</span>
+      @if($categoryName)
+        <span class="hero-badge hb-purple">{{ $categoryName }}</span>
+      @endif
+    </div>
+  </div>
+  <div class="hero-right">
+    <a href="{{ route('admin.blogs.index') }}" class="hero-btn hero-btn-ghost">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Back to Posts
+    </a>
+  </div>
+</div>
+
+<div class="review-layout">
 <div class="review-content">
   <div class="content-card">
     <div class="cover-wrap">
@@ -259,15 +405,15 @@
         @if($blog->status === 'pending')
           <form method="POST" action="{{ route('admin.blogs.approve', $blog) }}">
             @csrf
-            <x-button variant="primary" type="submit" class="act-full af-approve">
+            <button type="submit" class="btn btn-green act-full af-approve">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
               Approve Post
-            </x-button>
+            </button>
           </form>
-          <x-button variant="destructive" type="button" class="act-full af-reject">
+          <button type="button" class="btn btn-red act-full af-reject" onclick="openRejectModal()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             Reject Post
-          </x-button>
+          </button>
         @elseif($blog->status === 'approved')
           <div class="act-full" style="background:var(--green-lt);color:var(--green);border:1px solid rgba(5,196,138,.3);cursor:default;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
@@ -276,20 +422,35 @@
         @elseif($blog->status === 'rejected')
           <form method="POST" action="{{ route('admin.blogs.approve', $blog) }}">
             @csrf
-            <x-button variant="primary" type="submit" class="act-full af-approve">
+            <button type="submit" class="btn btn-green act-full af-approve">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
               Re-Approve Post
-            </x-button>
+            </button>
           </form>
         @endif
-        <x-button variant="secondary" href="{{ route('admin.blogs.edit', $blog) }}" class="act-full af-edit">
+        <a href="{{ route('admin.blogs.edit', $blog) }}" class="btn btn-secondary act-full af-edit">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path stroke-linecap="round" stroke-linejoin="round" d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
           Edit Post
-        </x-button>
+        </a>
+        <form method="POST" action="{{ route('admin.blogs.feature', $blog) }}">
+          @csrf
+          <button type="submit" class="btn act-full af-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            {{ $blog->is_featured ? 'Unfeature Post' : 'Feature Post' }}
+          </button>
+        </form>
+        <form method="POST" action="{{ route('admin.blogs.archive', $blog) }}" onsubmit="return confirm('Archive \'{{ addslashes($blog->title) }}\'?')">
+          @csrf
+          <button type="submit" class="btn act-full af-archive">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8v13H3V8m2-4h14a2 2 0 012 2v2H3V6a2 2 0 012-2z"/></svg>
+            Archive Post
+          </button>
+        </form>
       </div>
     </div>
   </div>
 </aside>
+</div>{{-- /.review-layout --}}
 
 <div class="modal-backdrop" id="rejectModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"
      onclick="if(event.target===this)closeRejectModal()">
@@ -306,8 +467,8 @@
                 maxlength="1000" aria-describedby="reject-error"></textarea>
       <p class="modal-error" id="reject-error" role="alert">A reason is required before rejecting.</p>
       <div class="modal-footer">
-        <x-button variant="secondary" type="button">Cancel</x-button>
-        <x-button variant="destructive" type="button">Reject post</x-button>
+        <button type="button" class="btn btn-secondary modal-cancel" onclick="closeRejectModal()">Cancel</button>
+        <button type="button" class="btn btn-red modal-confirm" onclick="submitReject()">Reject post</button>
       </div>
     </form>
   </div>

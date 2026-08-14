@@ -3,6 +3,8 @@
    ══════════════════════════════════════ */
 
 /* ── LAYOUT ── */
+
+
 .show-grid{display:grid;grid-template-columns:1fr 320px;gap:18px;align-items:start;}
 .show-sidebar{display:flex;flex-direction:column;gap:14px;}
 .desc-block{font-size:13px;color:var(--text2);line-height:1.75;}
@@ -132,7 +134,7 @@
 
 /* ── LEGACY EVENTS (ev-* old migration) ── */
 .ev-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;}
-.ev-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;display:flex;flex-direction:column;transition:transform var(--ease),box-shadow var(--ease);}
+.ev-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;display:flex;flex-direction:column;transition:transform var(--ease),box-shadow var(--ease);position:relative;}
 .ev-card:hover{transform:translateY(-2px);box-shadow:var(--sh-lg);}
 .ev-card-top{position:relative;}
 .ev-thumb{width:100%;height:130px;object-fit:cover;display:block;}
@@ -146,6 +148,10 @@
 .ev-card-stat span:first-child{font-size:9.5px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.05em;font-family:var(--mono);}
 .ev-card-stat span:last-child{font-size:12.5px;font-weight:700;color:var(--text);font-family:var(--mono);}
 .ev-card-actions{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--border);flex-wrap:wrap;}
+
+/* ── TABLE ROW IMAGES ── */
+.ev-cell .ev-thumb{width:56px;height:56px;flex-shrink:0;}
+.ev-cell .ev-thumb-ph{width:56px;height:56px;font-size:20px;}
 
 /* ── DEADLINE / PARTICIPANTS (old migration) ── */
 .deadline-chip{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:100px;font-size:10.5px;font-weight:700;font-family:var(--mono);background:var(--amber-lt);color:var(--amber);border:1px solid rgba(245,158,11,.25);white-space:nowrap;}

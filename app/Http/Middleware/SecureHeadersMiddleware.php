@@ -16,6 +16,45 @@ class SecureHeadersMiddleware
         $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
         $response->headers->set('Permissions-Policy', 'geolocation=(), microphone=()');
 
+        $vite = '';
+        $hotFile = public_path('hot');
+        if (! app()->environment('production') && is_file($hotFile)) {
+            $origin = trim((string) file_get_contents($hotFile));
+            if ($origin !== '') {
+                $vite = rtrim($origin, '/').' ';
+            }
+        }
+
+        $csp = "default-src 'self'; "
+            ."script-src 'self' 'unsafe-inline' "
+            .$vite
+            .'https://checkout.razorpay.com '
+            .'https://cdn.jsdelivr.net '
+            .'https://www.googletagmanager.com; '
+            ."style-src 'self' 'unsafe-inline' "
+            .$vite
+            .'https://fonts.googleapis.com '
+            .'https://cdnjs.cloudflare.com; '
+            ."img-src 'self' data: https: "
+            .$vite
+            .'; '
+            ."font-src 'self' "
+            .$vite
+            .'https://fonts.gstatic.com '
+            .'https://cdnjs.cloudflare.com; '
+            ."connect-src 'self' ".$vite
+            .'; '
+            ."frame-src 'self' "
+            .'https://www.google.com '
+            .'https://accounts.google.com '
+            .'https://api.razorpay.com '
+            .'https://checkout.razorpay.com; '
+            ."object-src 'none'; "
+            ."base-uri 'self'; "
+            ."form-action 'self'";
+
+        $response->headers->set('Content-Security-Policy', $csp);
+
         if (app()->environment('production') || env('FORCE_HTTPS', false)) {
             $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
         }

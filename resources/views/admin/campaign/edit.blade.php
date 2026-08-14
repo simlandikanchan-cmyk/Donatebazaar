@@ -1,24 +1,124 @@
-﻿@extends('layouts.admin')
-
 @push('page_css')
 @vite('resources/css/admin/entries/campaigns.css')
 @endpush
 
+@extends('layouts.admin')
 
 @section('sidebar_campaigns', 'active')
 
 @section('page_title', 'Edit — '.$campaign->title)
 @section('page_subtitle', 'Modify campaign details')
 
+@push('page_styles')
+<style>
+.page-grid{display:grid;grid-template-columns:1fr 308px;gap:20px;align-items:start;}
+.right-col{position:sticky;top:80px;display:flex;flex-direction:column;gap:16px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;}
+.card:nth-child(1){animation-delay:.05s;}.card:nth-child(2){animation-delay:.10s;}.card:nth-child(3){animation-delay:.15s;}.card:nth-child(4){animation-delay:.20s;}
+.card+.card{margin-top:16px;}
+.card-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.card-header-left{display:flex;align-items:center;gap:10px;}
+.card-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.card-icon svg{width:14px;height:14px;}
+.ic-indigo{background:var(--a-lt);color:var(--a);}
+.ic-green{background:var(--green-lt);color:var(--green);}
+.ic-yellow{background:var(--amber-lt);color:var(--amber);}
+.ic-pink{background:var(--pink-lt);color:var(--pink);}
+.ic-red{background:var(--red-lt);color:var(--red);}
+.ic-blue{background:var(--blue-lt);color:var(--blue);}
+.card-title{font-size:13px;font-weight:700;color:var(--text);letter-spacing:-.01em;font-family:var(--font);}
+.card-sub{font-size:11px;color:var(--text3);margin-top:1px;}
+.card-body{padding:18px;}
+.badge-dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0;}
+.b-pending  {background:rgba(245,158,11,.15);color:#b45309;border:1px solid rgba(245,158,11,.30);}
+.b-active   {background:rgba(16,185,129,.15);color:#065f46;border:1px solid rgba(16,185,129,.30);}
+.b-approved {background:rgba(16,185,129,.15);color:#065f46;border:1px solid rgba(16,185,129,.30);}
+.b-rejected {background:rgba(239,68,68,.15);color:#991b1b;border:1px solid rgba(239,68,68,.30);}
+.b-paused   {background:rgba(99,102,241,.15);color:#3730a3;border:1px solid rgba(99,102,241,.30);}
+.b-expired  {background:rgba(107,114,128,.15);color:#374151;border:1px solid rgba(107,114,128,.30);}
+.b-completed{background:rgba(59,130,246,.15);color:#1e40af;border:1px solid rgba(59,130,246,.30);}
+[data-theme="dark"] .b-pending{color:#fbbf24;}[data-theme="dark"] .b-active{color:#34d399;}[data-theme="dark"] .b-approved{color:#34d399;}[data-theme="dark"] .b-rejected{color:#f87171;}[data-theme="dark"] .b-paused{color:#a5b4fc;}[data-theme="dark"] .b-expired{color:#9ca3af;}[data-theme="dark"] .b-completed{color:#93c5fd;}
+.flash-success{background:rgba(16,185,129,.09);border:1px solid rgba(16,185,129,.25);color:#065f46;padding:11px 14px;border-radius:10px;font-size:13px;font-weight:500;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.flash-error{background:rgba(239,68,68,.09);border:1px solid rgba(239,68,68,.25);color:#dc2626;padding:11px 14px;border-radius:10px;font-size:13px;font-weight:500;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+[data-theme="dark"] .flash-success{color:#34d399;}[data-theme="dark"] .flash-error{color:#f87171;}
+.form-group{margin-bottom:18px;}
+.form-label{display:block;font-size:10.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;font-family:var(--mono);margin-bottom:7px;}
+.form-label span.req{color:var(--red);margin-left:2px;}
+.form-input,.form-select,.form-textarea{width:100%;padding:10px 13px;background:var(--surface2);border:1.5px solid var(--border2);border-radius:var(--r-sm);color:var(--text);font-family:var(--font);font-size:13.5px;outline:none;transition:border-color var(--ease),box-shadow var(--ease),background var(--ease);-webkit-appearance:none;appearance:none;}
+.form-input::placeholder,.form-textarea::placeholder{color:var(--text3);}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--a);background:var(--surface);box-shadow:0 0 0 3px var(--a-lt);}
+.form-input.is-invalid,.form-select.is-invalid,.form-textarea.is-invalid{border-color:var(--red);box-shadow:0 0 0 3px rgba(240,68,68,.10);}
+.form-textarea{resize:vertical;min-height:130px;line-height:1.7;}
+.form-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239096b4' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:34px;cursor:pointer;}
+.form-hint{font-size:11px;color:var(--text3);margin-top:5px;font-family:var(--mono);}
+.form-error{font-size:11px;color:var(--red);margin-top:5px;font-family:var(--mono);display:flex;align-items:center;gap:4px;}
+.form-error::before{content:'\2716';font-size:9px;}
+.input-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.cover-upload-zone{position:relative;border-radius:var(--r-sm);overflow:hidden;border:2px dashed var(--border2);transition:border-color var(--ease),background var(--ease);cursor:pointer;}
+.cover-upload-zone:hover,.cover-upload-zone.drag-over{border-color:var(--a);background:var(--a-lt);}
+.cover-upload-zone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;z-index:2;width:100%;height:100%;}
+.cover-upload-placeholder{padding:28px 20px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:9px;}
+.cover-upload-icon{width:44px;height:44px;border-radius:12px;background:var(--a-lt);color:var(--a);display:flex;align-items:center;justify-content:center;margin:0 auto;}
+.cover-upload-icon svg{width:20px;height:20px;}
+.cover-upload-text{font-size:13px;font-weight:600;color:var(--text2);}
+.cover-upload-hint{font-size:11px;color:var(--text3);font-family:var(--mono);}
+.cover-preview-wrap{position:relative;}
+.cover-preview-img{width:100%;height:200px;object-fit:cover;display:block;}
+.cover-preview-overlay{position:absolute;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;gap:8px;opacity:0;transition:opacity var(--ease);}
+.cover-preview-wrap:hover .cover-preview-overlay{opacity:1;}
+.cover-preview-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;border-radius:8px;font-size:12px;font-weight:600;border:none;cursor:pointer;font-family:var(--font);transition:opacity var(--ease);}
+.cover-preview-btn:hover{opacity:.82;}
+.cover-preview-btn-change{background:#fff;color:#0a0b14;}
+.cover-preview-btn-remove{background:rgba(240,68,68,.85);color:#fff;}
+.cover-preview-btn svg{width:11px;height:11px;}
+.char-count{float:right;font-size:10.5px;font-family:var(--mono);color:var(--text3);transition:color var(--ease);}
+.char-count.warn{color:var(--amber);}
+.char-count.over{color:var(--red);}
+.action-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:10px 16px;border-radius:var(--r-sm);font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid transparent;font-family:var(--font);transition:opacity var(--ease),transform var(--ease),box-shadow var(--ease);text-decoration:none;letter-spacing:.01em;}
+.action-btn:hover{opacity:.88;transform:translateY(-1px);}
+.action-btn svg{width:13px;height:13px;}
+.action-btn+.action-btn{margin-top:8px;}
+.btn-accent{background:var(--a);color:#fff;border-color:var(--a);box-shadow:0 4px 14px rgba(37,99,235,.28);}
+.btn-green{background:var(--green);color:#fff;border-color:var(--green);box-shadow:0 4px 14px rgba(5,196,138,.28);}
+.btn-red{background:rgba(240,68,68,.1);color:#b91c1c;border-color:rgba(240,68,68,.25);}
+.btn-ghost{background:var(--surface2);color:var(--text2);border-color:var(--border2);}
+[data-theme="dark"] .btn-red{color:#f87171;}
+.status-section-label{font-size:9.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.14em;font-family:var(--mono);margin-bottom:10px;}
+.info-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:9px 0;}
+.info-row+.info-row{border-top:1px solid var(--border);}
+.info-row-lbl{color:var(--text3);font-family:var(--mono);letter-spacing:.04em;font-size:10.5px;}
+.unsaved-dot{width:7px;height:7px;border-radius:50%;background:var(--amber);display:inline-block;margin-right:5px;animation:pulse 1.8s ease-in-out infinite;vertical-align:middle;}
+.unsaved-bar{background:rgba(245,158,11,.09);border:1px solid rgba(245,158,11,.25);border-radius:var(--r-sm);padding:10px 13px;font-size:11.5px;font-weight:500;color:#92400e;display:none;align-items:center;gap:8px;margin-bottom:14px;}
+.unsaved-bar.show{display:flex;}
+[data-theme="dark"] .unsaved-bar{color:#fbbf24;}
+.section-divider{display:flex;align-items:center;gap:10px;margin:22px 0 18px;}
+.section-divider-line{flex:1;height:1px;background:var(--border);}
+.section-divider-label{font-size:9.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.14em;font-family:var(--mono);white-space:nowrap;}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity var(--ease);}
+.modal-overlay.show{opacity:1;pointer-events:all;}
+.modal{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);padding:24px;max-width:380px;width:90%;box-shadow:var(--sh-lg);transform:scale(.95);transition:transform var(--ease);}
+.modal-overlay.show .modal{transform:scale(1);}
+.modal-title{font-family:var(--font);font-size:16px;font-weight:800;color:var(--text);margin-bottom:7px;}
+.modal-body{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:18px;}
+.modal-actions{display:flex;gap:8px;}
+.modal-actions .action-btn{flex:1;margin:0;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+@media(max-width:960px){.page-grid{grid-template-columns:1fr;}.right-col{position:static;}.input-row{grid-template-columns:1fr;}}
+@media(max-width:640px){.card-body{padding:14px}.card-header{padding:12px 14px}.cover-preview-img{height:160px}}
+@media(max-width:480px){.cover-preview-img{height:130px}.card-header{flex-direction:column;align-items:flex-start;gap:6px}.char-count{float:none;display:block;text-align:right;margin-top:2px}}
+@media(max-width:380px){.info-row{flex-direction:column;align-items:flex-start;gap:4px}}
+</style>
+@endpush
+
 @section('content')
 
 {{-- Discard Confirm Modal --}}
-<div class="overlay" id="discardModal">
+<div class="modal-overlay" id="discardModal">
     <div class="modal">
-        <div class="modal-ttl">Discard Changes?</div>
-        <p class="modal-sub">You have unsaved changes. Are you sure you want to leave? All edits will be lost.</p>
-        <div class="modal-acts">
-            <x-button variant="secondary" type="button">Keep Editing</x-button>
+        <div class="modal-title">Discard Changes?</div>
+        <p class="modal-body">You have unsaved changes. Are you sure you want to leave? All edits will be lost.</p>
+        <div class="modal-actions">
+            <button type="button" class="btn btn-secondary action-btn btn-ghost" onclick="closeDiscardModal()">Keep Editing</button>
             <a href="{{ route('admin.campaign.show', $campaign->id) }}" class="action-btn btn-red" id="discardConfirmBtn">Discard</a>
         </div>
     </div>
@@ -104,10 +204,10 @@
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
                                         Change
                                     </label>
-                                    <x-button variant="destructive" type="button" class="cover-preview-btn">
+                                    <button type="button" class="btn btn-red cover-preview-btn cover-preview-btn-remove" onclick="removeCover()">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                         Remove
-                                    </x-button>
+                                    </button>
                                 </div>
                             </div>
 
@@ -332,14 +432,14 @@
                     </div>
                 </div>
                 <div class="card-body" style="padding-top:14px;padding-bottom:14px;">
-                    <x-button variant="primary" type="submit">
+                    <button type="submit" class="action-btn btn-accent" id="saveBtn">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
                         Save Changes
-                    </x-button>
-                    <x-button variant="secondary" type="button">
+                    </button>
+                    <button type="button" class="btn btn-secondary action-btn btn-ghost" id="discardBtn">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                         Discard &amp; Go Back
-                    </x-button>
+                    </button>
                     <p style="font-size:10.5px;color:var(--text3);margin-top:10px;font-family:var(--mono);text-align:center;line-height:1.6;">
                         Changes are saved immediately.<br>This cannot be undone.
                     </p>
@@ -436,7 +536,7 @@
 
 @push('page_scripts')
 <script>
-/* —€—€ Char counters —€—€ */
+/* ── Char counters ── */
 function makeCounter(inputId, countId, max) {
     var el  = document.getElementById(inputId);
     var cnt = document.getElementById(countId);
@@ -452,7 +552,7 @@ function makeCounter(inputId, countId, max) {
 makeCounter('title',       'titleCount', 120);
 makeCounter('description', 'descCount',  5000);
 
-/* —€—€ Cover image preview —€—€ */
+/* ── Cover image preview ── */
 var coverInput       = document.getElementById('coverInput');
 var coverZone        = document.getElementById('coverZone');
 var coverPreviewWrap = document.getElementById('coverPreviewWrap');
@@ -497,7 +597,7 @@ coverZone.addEventListener('drop', function(e){
     }
 });
 
-/* —€—€ Unsaved changes tracker —€—€ */
+/* ── Unsaved changes tracker ── */
 var isDirty = false;
 var unsavedBar = document.getElementById('unsavedBar');
 
@@ -519,10 +619,10 @@ document.getElementById('editForm').addEventListener('submit', function(){
     isDirty = false;
 });
 
-/* —€—€ Discard modal —€—€ */
+/* ── Discard modal ── */
 document.getElementById('discardBtn').addEventListener('click', function(){
     if (isDirty) {
-        document.getElementById('discardModal').classList.add('open');
+        document.getElementById('discardModal').classList.add('show');
     } else {
         window.location.href = '{{ route('admin.campaign.show', $campaign->id) }}';
     }
@@ -532,12 +632,12 @@ document.getElementById('discardBtn').addEventListener('click', function(){
 document.getElementById('backBtn').addEventListener('click', function(e){
     if (isDirty) {
         e.preventDefault();
-        document.getElementById('discardModal').classList.add('open');
+        document.getElementById('discardModal').classList.add('show');
     }
 });
 
 function closeDiscardModal() {
-    document.getElementById('discardModal').classList.remove('open');
+    document.getElementById('discardModal').classList.remove('show');
 }
 
 document.getElementById('discardModal').addEventListener('click', function(e){
@@ -555,7 +655,7 @@ window.addEventListener('beforeunload', function(e){
     }
 });
 
-/* —€—€ Save button loading state —€—€ */
+/* ── Save button loading state ── */
 document.getElementById('editForm').addEventListener('submit', function(){
     var btn = document.getElementById('saveBtn');
     btn.disabled = true;
@@ -570,7 +670,7 @@ window.addEventListener('DOMContentLoaded', function(){ showToast(@json(session(
 window.addEventListener('DOMContentLoaded', function(){ showToast(@json(session('error')), 'error'); });
 @endif
 
-/* —€—€ Spin keyframe for save button —€—€ */
+/* ── Spin keyframe for save button ── */
 var style = document.createElement('style');
 style.textContent = '@keyframes spin{to{transform:rotate(360deg);}}';
 document.head.appendChild(style);

@@ -385,7 +385,7 @@ body {
                         </div>
                     </div>
                     <div class="card-body">
-                        <x-button variant="primary" type="submit" {{ $campaign->isPaused() ? 'disabled' : '' }}>
+                        <x-button variant="primary" type="submit" :disabled="$campaign->isPaused()">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
                             Save Changes
                         </x-button>

@@ -40,12 +40,11 @@ class KycController extends Controller
      */
     public function approve(KycVerification $kyc): RedirectResponse
     {
-        $kyc->update([
-            'status' => 'approved',
-            'verified_by' => auth()->id(),
-            'verified_at' => now(),
-            'rejection_reason' => null,
-        ]);
+        $kyc->status = 'approved';
+        $kyc->verified_by = auth()->id();
+        $kyc->verified_at = now();
+        $kyc->rejection_reason = null;
+        $kyc->save();
 
         return back()->with('success', "KYC approved for {$kyc->user->name}.");
     }
@@ -55,12 +54,11 @@ class KycController extends Controller
      */
     public function reject(KycRejectRequest $request, KycVerification $kyc): RedirectResponse
     {
-        $kyc->update([
-            'status' => 'rejected',
-            'rejection_reason' => $request->rejection_reason,
-            'verified_by' => auth()->id(),
-            'verified_at' => now(),
-        ]);
+        $kyc->status = 'rejected';
+        $kyc->rejection_reason = $request->rejection_reason;
+        $kyc->verified_by = auth()->id();
+        $kyc->verified_at = now();
+        $kyc->save();
 
         return back()->with('success', "KYC rejected for {$kyc->user->name}.");
     }
@@ -68,14 +66,6 @@ class KycController extends Controller
     /**
      * Serve the KYC document file to admin.
      */
-    // public function showDocument(KycVerification $kyc)
-    // {
-    //     abort_if(! $kyc->document_url, 404);
-    //     abort_if(! Storage::disk('public')->exists($kyc->document_url), 404);
-
-    //     return Storage::disk('public')->response($kyc->document_url);
-    // }
-
     public function showDocument(KycVerification $kyc)
     {
         abort_if(! $kyc->document_url, 404);

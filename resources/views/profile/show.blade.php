@@ -22,9 +22,37 @@
     <div class="modal-sub">Does this look good?</div>
     <img class="modal-preview" id="modalPreviewImg" src="" alt="Preview">
     <div class="modal-acts">
-      <x-button variant="secondary" type="button" class="modal-btn">Cancel</x-button>
-      <x-button variant="primary" type="button" class="modal-btn">Upload</x-button>
+      <x-button variant="secondary" type="button" class="modal-btn" onclick="cancelUpload()">Cancel</x-button>
+      <x-button variant="primary" type="button" class="modal-btn" id="confirmUploadBtn">Upload</x-button>
     </div>
+  </div>
+</div>
+
+{{-- Delete account modal --}}
+<div class="overlay" id="deleteModal">
+  <div class="modal">
+    <button type="button" class="modal-x" onclick="closeDeleteModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="modal-ttl">Delete your account?</div>
+    <div class="modal-sub">This is permanent and cannot be undone. Enter your password to confirm.</div>
+    <form action="{{ route('profile.destroy') }}" method="POST">
+      @csrf @method('DELETE')
+      <div class="field">
+        <label>Password</label>
+        <div class="pw-wrap">
+          <input type="password" name="password" id="del-pw" placeholder="Enter your password" required>
+          <button type="button" class="pw-eye" onclick="toggleEye('del-pw',this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        @error('password', 'userDeletion')<div class="field-err">{{ $message }}</div>@enderror
+      </div>
+      <div class="modal-acts">
+        <x-button variant="secondary" type="button" onclick="closeDeleteModal()">Keep Account</x-button>
+        <x-button variant="destructive" type="submit">Delete Permanently</x-button>
+      </div>
+    </form>
   </div>
 </div>
 
@@ -42,7 +70,7 @@
     @else
       <img class="cover-img" src="" id="coverImg" style="display:none;" alt="">
     @endif
-    <x-button variant="primary" type="button" class="cover-edit-btn">
+    <x-button variant="primary" type="button" class="cover-edit-btn" onclick="document.getElementById('coverInput').click()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
         <circle cx="12" cy="13" r="4"/>
@@ -89,12 +117,12 @@
     </div>
 
     <div class="hero-actions">
-      <x-button variant="primary" type="button">
+      <x-button variant="primary" type="button" onclick="switchTab('about')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
         Edit Profile
       </x-button>
-      @if(Route::has('campaigns.create'))
-      <x-button variant="primary" href="{{ route('campaigns.create') }}">
+      @if(Route::has('campaign.create'))
+      <x-button variant="primary" href="{{ route('campaign.create') }}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         New Campaign
       </x-button>
@@ -139,7 +167,7 @@
             <div class="card-sub">Public info</div>
           </div>
         </div>
-        <x-button variant="secondary" type="button">Edit</x-button>
+        <x-button variant="secondary" type="button" onclick="switchTab('about')">Edit</x-button>
       </div>
       <div class="card-body">
         @if($user->bio)
@@ -258,15 +286,15 @@
   <div>
     {{-- Tab bar --}}
     <div class="tab-bar">
-      <x-button variant="secondary" type="button" class="tab-btn on">
+      <x-button variant="secondary" type="button" class="tab-btn on" id="tb-campaigns" onclick="switchTab('campaigns')">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
         <span>Campaigns</span> <span class="tab-cnt">{{ $campaignCount }}</span>
       </x-button>
-      <x-button variant="secondary" type="button" class="tab-btn">
+      <x-button variant="secondary" type="button" class="tab-btn" id="tb-about" onclick="switchTab('about')">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
         <span>About &amp; Edit</span>
       </x-button>
-      <x-button variant="secondary" type="button" class="tab-btn">
+      <x-button variant="secondary" type="button" class="tab-btn" id="tb-settings" onclick="switchTab('settings')">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path stroke-linecap="round" d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
         <span>Settings</span>
       </x-button>
@@ -279,12 +307,12 @@
         $goal     = $campaign->goal_amount ?? $campaign->goal ?? 0;
         $raised   = $campaign->raised_amount ?? $campaign->raised ?? 0;
         $pct      = $goal > 0 ? min(100, round(($raised / $goal) * 100)) : 0;
-        $status   = $campaign->status ?? 'active';
+        $status   = $campaign->campaign_state ?? 'active';
         $deadline = isset($campaign->end_date) ? \Carbon\Carbon::parse($campaign->end_date) : null;
         $daysLeft = $deadline ? max(0, now()->diffInDays($deadline, false)) : null;
         $donorCnt = $campaign->donations_count ?? 0;
         $campId   = $campaign->id ?? '';
-        $statusClass = match($status) { 'active'=>'b-active','pending'=>'b-pending','rejected'=>'b-rejected','paused'=>'b-paused', default=>'b-inactive' };
+        $statusClass = match($status) { 'active'=>'b-active','pending'=>'b-pending','rejected'=>'b-rejected','paused'=>'b-paused','expired'=>'b-expired','completed'=>'b-completed', default=>'b-inactive' };
       @endphp
       <div class="camp-card" style="animation-delay:{{ $i * 0.05 }}s;">
         <div class="camp-thumb">
@@ -340,18 +368,18 @@
             @endif
           </div>
           <div class="cf-actions">
-            <x-button variant="primary" size="sm" type="button">
+            <x-button variant="primary" size="sm" type="button" onclick="shareCampaign('{{ addslashes($campaign->title) }}','{{ route('campaign.show', $campaign->id) }}')">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
               Share
             </x-button>
-            @if(Route::has('campaigns.edit') && isset($campaign->id))
-            <a href="{{ route('campaigns.edit', $campaign->id) }}" class="btn btn-sm">
+            @if(Route::has('campaign.edit') && isset($campaign->id))
+            <a href="{{ route('campaign.edit', $campaign->id) }}" class="btn btn-sm">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
               Edit
             </a>
             @endif
-            @if(Route::has('campaigns.show') && isset($campaign->id))
-            <a href="{{ route('campaigns.show', $campaign->id) }}" class="btn btn-sm btn-primary">
+            @if(Route::has('campaign.show') && isset($campaign->id))
+            <a href="{{ route('campaign.show', $campaign->id) }}" class="btn btn-sm btn-primary">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
               View
             </a>
@@ -366,8 +394,8 @@
         </div>
         <h3>No campaigns yet</h3>
         <p>Start your first campaign and make a real difference.</p>
-        @if(Route::has('campaigns.create'))
-          <x-button variant="primary" href="{{ route('campaigns.create') }}">
+        @if(Route::has('campaign.create'))
+          <x-button variant="primary" href="{{ route('campaign.create') }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             Start a Campaign
           </x-button>
@@ -464,7 +492,7 @@
                 <input type="password" name="password_confirmation" placeholder="Repeat new password">
               </div>
             </div>
-            <x-button variant="primary" type="submit" class="ghost">Update Password</x-button>
+            <x-button variant="primary" type="submit" class="ghost" style="margin-top:16px;">Update Password</x-button>
           </form>
         </div>
       </div>
@@ -586,7 +614,7 @@
         </div>
         <div class="card-body">
           <p style="font-size:12.5px;color:var(--text2);margin-bottom:16px;line-height:1.7;">These actions are permanent and cannot be undone. Please be absolutely certain before proceeding.</p>
-          <x-button variant="destructive" type="button" class="danger">
+          <x-button variant="destructive" type="button" class="danger" onclick="openDeleteModal()">
             Delete My Account
           </x-button>
         </div>
@@ -607,8 +635,8 @@
 .cover-bg::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 90% at 80% -10%,rgba(37,99,235,.55) 0%,transparent 60%),radial-gradient(ellipse 50% 60% at 10% 120%,rgba(13,148,136,.35) 0%,transparent 55%),radial-gradient(ellipse 40% 50% at 50% 50%,rgba(59,130,246,.12) 0%,transparent 60%);z-index:0;}
 .cover-bg::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:36px 36px;z-index:0;}
 .cover-bg > img.cover-img{width:100%;height:100%;object-fit:cover;display:block;position:relative;z-index:1;}
-.cover-edit-btn{position:absolute;top:12px;right:14px;z-index:10;display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:var(--r-sm);background:rgba(255,255,255,.92);border:1px solid rgba(255,255,255,.35);color:#1e293b;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all var(--ease);box-shadow:0 1px 4px rgba(0,0,0,.08);}
-.cover-edit-btn:hover{background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.14);}
+.cover-edit-btn{position:absolute;top:12px;right:14px;z-index:10;display:inline-flex;align-items:center;gap:5px;padding:5px 12px;min-height:0;height:30px;border-radius:var(--r-sm);background:rgba(255,255,255,.92);border:1px solid rgba(255,255,255,.35);color:#1e293b;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all var(--ease);box-shadow:0 1px 4px rgba(0,0,0,.08);}
+.cover-edit-btn:hover{background:#fff;color:#1e293b;box-shadow:0 2px 10px rgba(0,0,0,.14);}
 .cover-edit-btn svg{width:11px;height:11px;}
 .hero-inner{padding:0 24px 20px;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:14px;}
 .hero-av-group{display:flex;align-items:flex-end;gap:18px;flex-wrap:wrap;}
@@ -642,6 +670,7 @@
 .stat-pill.active .sp-lbl{color:var(--a);}
 
 .profile-grid{display:grid;grid-template-columns:290px 1fr;gap:16px;align-items:start;}
+.profile-grid > *{min-width:0;}
 .main{max-width:100%;}
 
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:14px;overflow:hidden;animation:fadeUp .4s ease both;transition:box-shadow var(--ease),transform var(--ease);}
@@ -667,7 +696,7 @@
 .act-stat-val{font-family:var(--mono);font-size:20px;font-weight:800;letter-spacing:-.02em;line-height:1;}
 .act-stat-lbl{font-size:9.5px;font-weight:700;font-family:var(--mono);text-transform:uppercase;letter-spacing:.07em;margin-top:3px;}
 
-.tab-bar{display:flex;gap:2px;background:var(--surface2);border:1px solid var(--border);padding:3px;border-radius:13px;margin-bottom:18px;}
+.tab-bar{display:flex;flex-wrap:wrap;gap:6px;background:var(--surface2);border:1px solid var(--border);padding:4px;border-radius:13px;margin-bottom:18px;}
 .tab-btn:hover{color:var(--a);background:var(--surface2);}
 .tab-btn.on{background:var(--surface);color:var(--a);box-shadow:0 1px 6px rgba(37,99,235,.12);}
 .tab-btn:focus-visible{outline:2px solid var(--a);outline-offset:2px;}
@@ -690,6 +719,8 @@
 .b-pending{background:var(--yellow);color:#fff;}
 .b-rejected{background:var(--red);color:#fff;}
 .b-inactive{background:var(--gray);color:#fff;}
+.b-expired{background:#64748b;color:#fff;}
+.b-completed{background:#475569;color:#fff;}
 .b-paused{background:var(--a);color:#fff;}
 .camp-body{padding:14px 15px 15px;}
 .camp-title{font-size:14.5px;font-weight:700;color:var(--text);font-family:var(--mono);letter-spacing:-.01em;margin-bottom:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.3;}
@@ -860,7 +891,34 @@ window.switchTab = function(name){
 var activeUploadForm = null;
 var uploadModal = document.getElementById('uploadModal');
 
-document.getElementById('avatarInput').addEventListener('change', function(){
+window.cancelUpload = function(){
+  if (!uploadModal) return;
+  uploadModal.classList.remove('open');
+  document.body.style.overflow = '';
+  var ai = document.getElementById('avatarInput'); if (ai) ai.value = '';
+  var ci = document.getElementById('coverInput');  if (ci) ci.value = '';
+  activeUploadForm = null;
+};
+
+var deleteModal = document.getElementById('deleteModal');
+window.openDeleteModal = function(){
+  if (!deleteModal) return;
+  deleteModal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  var pw = document.getElementById('del-pw'); if (pw) pw.focus();
+};
+window.closeDeleteModal = function(){
+  if (!deleteModal) return;
+  deleteModal.classList.remove('open');
+  document.body.style.overflow = '';
+};
+
+@if($errors->userDeletion->any())
+  window.openDeleteModal();
+@endif
+
+var ai = document.getElementById('avatarInput');
+if (ai) ai.addEventListener('change', function(){
   var file = this.files[0]; if (!file) return;
   if (file.size > 2*1024*1024){ toast('Avatar must be under 2 MB','error'); this.value=''; return; }
   activeUploadForm = document.getElementById('avatarForm');
@@ -869,11 +927,12 @@ document.getElementById('avatarInput').addEventListener('change', function(){
   liveImg.src  = URL.createObjectURL(file);
   liveImg.style.display = 'block';
   if (initials) initials.style.display = 'none';
-  document.querySelectorAll('.t-av img, .s-uav img').forEach(function(el){ el.src = liveImg.src; });
+  document.querySelectorAll('.t-avatar img, .s-avatar img').forEach(function(el){ el.src = liveImg.src; });
   openUploadModal(file, 'Update profile photo');
 });
 
-document.getElementById('coverInput').addEventListener('change', function(){
+var ci = document.getElementById('coverInput');
+if (ci) ci.addEventListener('change', function(){
   var file = this.files[0]; if (!file) return;
   if (file.size > 5*1024*1024){ toast('Cover must be under 5 MB','error'); this.value=''; return; }
   activeUploadForm = document.getElementById('coverForm');
@@ -894,22 +953,33 @@ function openUploadModal(file, title){
   reader.readAsDataURL(file);
 }
 
-document.getElementById('confirmUploadBtn').addEventListener('click', function(){
+var confirmBtn = document.getElementById('confirmUploadBtn');
+if (confirmBtn) confirmBtn.addEventListener('click', function(){
   if (activeUploadForm) activeUploadForm.submit();
 });
 
-window.cancelUpload = function(){
-  uploadModal.classList.remove('open');
-  document.body.style.overflow = '';
-  document.getElementById('avatarInput').value = '';
-  document.getElementById('coverInput').value  = '';
-  activeUploadForm = null;
+if (uploadModal) uploadModal.addEventListener('click', function(e){ if (e.target === uploadModal) cancelUpload(); });
+if (deleteModal) deleteModal.addEventListener('click', function(e){ if (e.target === deleteModal) closeDeleteModal(); });
+document.addEventListener('keydown', function(e){ if (e.key === 'Escape'){ cancelUpload(); closeDeleteModal(); } });
+
+window.shareCampaign = function(title, url){
+  if (navigator.share) {
+    navigator.share({ title: title, url: url }).catch(function(){});
+  } else if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).then(function(){ toast('Campaign link copied','success'); });
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = url;
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); toast('Campaign link copied','success'); } catch(e){}
+    document.body.removeChild(ta);
+  }
 };
-uploadModal.addEventListener('click', function(e){ if (e.target === uploadModal) cancelUpload(); });
-document.addEventListener('keydown', function(e){ if (e.key === 'Escape') cancelUpload(); });
 
 window.toggleEye = function(inputId, btn){
   var input = document.getElementById(inputId);
+  if (!input) return;
   var isText = input.type === 'text';
   input.type = isText ? 'password' : 'text';
   btn.querySelector('svg').innerHTML = isText

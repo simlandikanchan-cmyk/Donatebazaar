@@ -48,11 +48,12 @@ class CampaignPublicViewTest extends TestCase
             'slug' => 'build-a-school-library',
             'description' => 'Help us build a library with 1000 books for underprivileged children.',
             'goal_amount' => 500000,
-            'raised_amount' => 250000,
             'campaign_state' => Campaign::STATE_ACTIVE,
             'start_date' => now()->subDays(10)->toDateString(),
             'end_date' => now()->addDays(20)->toDateString(),
         ]);
+        $this->campaign->raised_amount = 250000;
+        $this->campaign->save();
     }
 
     private function getPublicUrl(): string
@@ -148,7 +149,7 @@ class CampaignPublicViewTest extends TestCase
 
     public function test_completed_donations_do_not_cause_errors(): void
     {
-        Donation::create([
+        $donation = Donation::create([
             'campaign_id' => $this->campaign->id,
             'user_id' => $this->owner->id,
             'donor_name' => 'John Doe',
@@ -156,9 +157,10 @@ class CampaignPublicViewTest extends TestCase
             'donation_type' => 'money',
             'total_amount' => 5000,
             'net_amount' => 4750,
-            'payment_status' => 'completed',
-            'paid_at' => now(),
         ]);
+        $donation->payment_status = 'completed';
+        $donation->paid_at = now();
+        $donation->save();
 
         $response = $this->get($this->getPublicUrl());
         $response->assertStatus(200);
@@ -187,7 +189,7 @@ class CampaignPublicViewTest extends TestCase
 
     public function test_donors_count_shows_number_of_completed_donations(): void
     {
-        Donation::create([
+        $donation1 = Donation::create([
             'campaign_id' => $this->campaign->id,
             'user_id' => $this->owner->id,
             'donor_name' => 'Alice',
@@ -195,11 +197,12 @@ class CampaignPublicViewTest extends TestCase
             'donation_type' => 'money',
             'total_amount' => 1000,
             'net_amount' => 950,
-            'payment_status' => 'completed',
-            'paid_at' => now(),
         ]);
+        $donation1->payment_status = 'completed';
+        $donation1->paid_at = now();
+        $donation1->save();
 
-        Donation::create([
+        $donation2 = Donation::create([
             'campaign_id' => $this->campaign->id,
             'user_id' => $this->owner->id,
             'donor_name' => 'Bob',
@@ -207,9 +210,10 @@ class CampaignPublicViewTest extends TestCase
             'donation_type' => 'money',
             'total_amount' => 2000,
             'net_amount' => 1900,
-            'payment_status' => 'completed',
-            'paid_at' => now(),
         ]);
+        $donation2->payment_status = 'completed';
+        $donation2->paid_at = now();
+        $donation2->save();
 
         $response = $this->get($this->getPublicUrl());
         $response->assertStatus(200);

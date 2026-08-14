@@ -27,10 +27,11 @@ class CampaignStateTransitionTest extends TestCase
         $this->admin = User::factory()->create(['role' => 'admin']);
         $this->ngo = User::factory()->create(['role' => 'ngo']);
 
-        KycVerification::create([
+        $kyc = KycVerification::create([
             'user_id' => $this->ngo->id,
-            'status' => KycVerification::STATUS_APPROVED,
         ]);
+        $kyc->status = KycVerification::STATUS_APPROVED;
+        $kyc->save();
 
         $this->category = Category::create([
             'name' => 'Health',
@@ -43,16 +44,19 @@ class CampaignStateTransitionTest extends TestCase
 
     private function createCampaign(string $state, array $overrides = []): Campaign
     {
-        return Campaign::create(array_merge([
+        $campaign = Campaign::create(array_merge([
             'user_id' => $this->ngo->id,
             'category_id' => $this->category->id,
             'title' => 'Test Campaign',
             'slug' => 'test-campaign-'.uniqid(),
             'description' => 'Test campaign description',
             'goal_amount' => 100000,
-            'raised_amount' => 0,
             'campaign_state' => $state,
         ], $overrides));
+        $campaign->raised_amount = 0;
+        $campaign->save();
+
+        return $campaign;
     }
 
     public function test_admin_can_approve_pending_campaign(): void

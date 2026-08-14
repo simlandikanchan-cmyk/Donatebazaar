@@ -57,8 +57,8 @@ class OtpController extends Controller
 
         if ($request->wantsJson()) {
             return response()->json([
-                'success'  => true,
-                'message'  => $message,
+                'success' => true,
+                'message' => $message,
                 'redirect' => route('otp.verify'),
             ]);
         }
@@ -99,11 +99,11 @@ class OtpController extends Controller
             'otp' => 'Invalid or expired OTP. Please request a new one.',
         ]);
 
-        if (!$verification || !$verification->otp_hash) {
+        if (! $verification || ! $verification->otp_hash) {
             $genericError();
         }
 
-        if (!$verification->expires_at || $verification->expires_at->isPast()) {
+        if (! $verification->expires_at || $verification->expires_at->isPast()) {
             $verification->delete();
             $genericError();
         }
@@ -113,7 +113,7 @@ class OtpController extends Controller
             $genericError();
         }
 
-        if (!Hash::check($request->otp, $verification->otp_hash)) {
+        if (! Hash::check($request->otp, $verification->otp_hash)) {
             $verification->increment('attempts');
             $genericError();
         }
@@ -123,15 +123,14 @@ class OtpController extends Controller
         $user = User::firstOrCreate(
             ['phone' => $request->phone],
             [
-                'name' => 'User_' . substr($request->phone, -4),
-                'role' => 'donor',
+                'name' => 'User_'.substr($request->phone, -4),
             ]
         );
 
-        $user->update([
-            'phone_verified_at' => $user->phone_verified_at ?? now(),
-            'last_login_at' => now(),
-        ]);
+        $user->role = 'donor';
+        $user->phone_verified_at = $user->phone_verified_at ?? now();
+        $user->last_login_at = now();
+        $user->save();
 
         Auth::login($user, true);
         $request->session()->regenerate();
@@ -195,6 +194,7 @@ class OtpController extends Controller
 
         if (app()->environment('local')) {
             Log::info("OTP sent for {$phone}");
+
             return;
         }
 

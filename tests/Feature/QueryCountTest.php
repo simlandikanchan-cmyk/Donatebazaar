@@ -70,7 +70,7 @@ class QueryCountTest extends TestCase
                 'end_date' => now()->addDays(30 - $i)->toDateString(),
             ]);
 
-            Donation::create([
+            $donation = Donation::create([
                 'campaign_id' => $campaign->id,
                 'user_id' => $this->donor->id,
                 'donor_name' => "Donor {$i}",
@@ -81,9 +81,10 @@ class QueryCountTest extends TestCase
                 'net_amount' => 970 + ($i * 97),
                 'order_id' => "order_{$i}",
                 'currency' => 'INR',
-                'payment_status' => 'completed',
-                'paid_at' => now()->subHours($i),
             ]);
+            $donation->payment_status = 'completed';
+            $donation->paid_at = now()->subHours($i);
+            $donation->save();
 
             CampaignProduct::create([
                 'campaign_id' => $campaign->id,
@@ -216,7 +217,7 @@ class QueryCountTest extends TestCase
 
         for ($i = 0; $i < 15; $i++) {
             $user = User::factory()->create();
-            Donation::create([
+            $donation = Donation::create([
                 'campaign_id' => $campaign->id,
                 'user_id' => $user->id,
                 'donor_name' => "Bulk Donor {$i}",
@@ -226,9 +227,10 @@ class QueryCountTest extends TestCase
                 'net_amount' => 485,
                 'order_id' => "order_bulk_{$i}",
                 'currency' => 'INR',
-                'payment_status' => 'completed',
-                'paid_at' => now()->subMinutes($i),
             ]);
+            $donation->payment_status = 'completed';
+            $donation->paid_at = now()->subMinutes($i);
+            $donation->save();
         }
 
         DB::flushQueryLog();

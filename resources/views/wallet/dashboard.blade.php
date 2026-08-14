@@ -13,7 +13,7 @@ $icoLocked     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 <div class="wallet-stats-grid">
     <x-stat-card color="green" label="Available Balance" value="₹{{ number_format($wallet->balance, 2) }}" footer="{{ $wallet->currency }}" :icon="$icoWalletBal" />
     <x-stat-card color="yellow" label="Reserved (hold window)" value="₹{{ number_format($wallet->reserved_balance, 2) }}" footer="Released after the reserve period" :icon="$icoReserved" />
-    <x-stat-card color="pink" label="Locked in Settlement" value="₹{{ number_format($wallet->pending_settlement_balance, 2) }}" footer="Pending admin approval" :icon="$icoLocked" />
+    <x-stat-card color="pink" label="Locked in Settlement" value="₹{{ number_format($wallet->pending_settlement_balance, 2) }}" footer="Locked until payout or refund" :icon="$icoLocked" />
 </div>
 
 @if($pendingSettlements->isNotEmpty())
@@ -33,6 +33,10 @@ $icoLocked     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
                                 Request #{{ $ps->id }}
                                 @if($ps->isPendingApproval())
                                     <span class="badge b-pending" style="font-size:10px;padding:2px 8px;margin-left:8px;">Pending approval</span>
+                                @elseif($ps->isAutoApproved())
+                                    <span class="badge b-active" style="font-size:10px;padding:2px 8px;margin-left:8px;">Auto-approved — payout in progress</span>
+                                @elseif($ps->status === 'manual_review')
+                                    <span class="badge b-pending" style="font-size:10px;padding:2px 8px;margin-left:8px;">Manual review</span>
                                 @elseif($ps->isApproved())
                                     <span class="badge b-active" style="font-size:10px;padding:2px 8px;margin-left:8px;">Approved — payout in progress</span>
                                 @elseif($ps->status === 'failed')

@@ -59,27 +59,30 @@ class KycController extends Controller
             if ($request->hasFile('kyc_aadhaar')) {
                 if ($existing?->aadhaar_url) {
                     Storage::disk('public')->delete($existing->aadhaar_url);
+                    Storage::disk('private')->delete($existing->aadhaar_url);
                 }
                 $data['aadhaar_url'] = $request->file('kyc_aadhaar')
-                    ->store('kyc_documents', 'public');
+                    ->store('kyc_documents', 'private');
             }
 
             // PAN
             if ($request->hasFile('kyc_pan')) {
                 if ($existing?->pan_url) {
                     Storage::disk('public')->delete($existing->pan_url);
+                    Storage::disk('private')->delete($existing->pan_url);
                 }
                 $data['pan_url'] = $request->file('kyc_pan')
-                    ->store('kyc_documents', 'public');
+                    ->store('kyc_documents', 'private');
             }
 
             // Selfie
             if ($request->hasFile('kyc_selfie')) {
                 if ($existing?->selfie_url) {
                     Storage::disk('public')->delete($existing->selfie_url);
+                    Storage::disk('private')->delete($existing->selfie_url);
                 }
                 $data['selfie_url'] = $request->file('kyc_selfie')
-                    ->store('kyc_documents', 'public');
+                    ->store('kyc_documents', 'private');
             }
 
             // Legacy single document (backward compatibility)
@@ -106,7 +109,7 @@ class KycController extends Controller
             // Clean up any newly uploaded files if DB write failed
             foreach (['aadhaar_url', 'pan_url', 'selfie_url'] as $field) {
                 if (isset($data[$field])) {
-                    Storage::disk('public')->delete($data[$field]);
+                    Storage::disk('private')->delete($data[$field]);
                 }
             }
             if (isset($data['document_url'])) {

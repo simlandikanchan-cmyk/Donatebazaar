@@ -30,6 +30,7 @@ use App\Services\Settlement\SettlementStateMachine;
 use App\Services\WalletService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Queue;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -75,18 +76,21 @@ class SettlementServiceTest extends TestCase
     {
         $campaign = Campaign::factory()->create(['user_id' => $user->id]);
 
-        return Donation::create([
+        $donation = Donation::create([
             'user_id' => $user->id,
             'campaign_id' => $campaign->id,
             'donation_type' => 'money',
             'total_amount' => $netAmount,
             'platform_fee' => round($netAmount * 0.05, 2),
             'net_amount' => $netAmount,
-            'payment_status' => 'completed',
-            'is_refunded' => false,
-            'settlement_status' => $status,
-            'paid_at' => now()->subDays(10),
         ]);
+        $donation->payment_status = 'completed';
+        $donation->is_refunded = false;
+        $donation->settlement_status = $status;
+        $donation->paid_at = now()->subDays(10);
+        $donation->save();
+
+        return $donation;
     }
 
     private function orgWithOwner(): Organization
@@ -225,6 +229,8 @@ class SettlementServiceTest extends TestCase
     #[Test]
     public function state_machine_integration_creates_audit_logs(): void
     {
+        Queue::fake();
+
         $this->seedConfig(approval: 100, manualReview: 100);
         RiskRule::create([
             'name' => 'KYC_VERIFIED',
@@ -257,6 +263,8 @@ class SettlementServiceTest extends TestCase
     #[Test]
     public function wallet_locks_funds_during_request(): void
     {
+        Queue::fake();
+
         $this->seedConfig(approval: 100, manualReview: 100);
         RiskRule::create([
             'name' => 'KYC_VERIFIED',
@@ -341,11 +349,12 @@ class SettlementServiceTest extends TestCase
             'total_amount' => 100.00,
             'platform_fee' => 5.00,
             'net_amount' => 100.00,
-            'payment_status' => 'completed',
-            'is_refunded' => false,
-            'settlement_status' => 'pending',
-            'paid_at' => now()->subDays(10),
         ]);
+        $donation->payment_status = 'completed';
+        $donation->is_refunded = false;
+        $donation->settlement_status = 'pending';
+        $donation->paid_at = now()->subDays(10);
+        $donation->save();
 
         $this->expectException(InsufficientWalletBalanceException::class);
 
@@ -356,6 +365,271 @@ class SettlementServiceTest extends TestCase
         ]);
         $this->assertDatabaseMissing('settlement_items', [
             'donation_id' => $donation->id,
+        ]);
+    }
+
+    #[Test]
+    public function request_settlement_rejects_donations_from_another_organization(): void
+    {        $this->seedConfig(approval: 100, manualReview: 100);
+        RiskRule::create([
+            'name' => 'KYC_VERIFIED',
+            'category' => 'KYC',
+            'weight' => 50,
+            'priority' => 1,
+            'enabled' => true,
+        ]);
+
+        $ownerA = User::factory()->create();
+        $orgA = Organization::factory()->create(['user_id' => $ownerA->id]);
+
+        $ownerB = User::factory()->create();
+        $campaignB = Campaign::factory()->create(['user_id' => $ownerB->id]);
+        $donationB = Donation::create([
+            'user_id' => $ownerB->id,
+            'campaign_id' => $campaignB->id,
+            'donation_type' => 'money',
+            'total_amount' => 100.00,
+            'platform_fee' => 5.00,
+            'net_amount' => 100.00,
+        ]);
+        $donationB->payment_status = 'completed';
+        $donationB->is_refunded = false;
+        $donationB->settlement_status = 'pending';
+        $donationB->paid_at = now()->subDays(10);
+        $donationB->save();
+
+        $wallet = app(WalletService::class)->getOrCreateWallet($ownerA);
+        app(WalletService::class)->credit($wallet, 500.00, WalletTransaction::SOURCE_ADJUSTMENT, 1, User::class);
+
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->service()->requestSettlement($orgA, [$donationB->id]);
+
+        $this->assertDatabaseMissing('campaign_settlements', [
+            'organization_id' => $orgA->id,
+        ]);
+        $this->assertDatabaseMissing('settlement_items', [
+            'donation_id' => $donationB->id,
+        ]);
+    }
+
+    #[Test]
+    public function auto_approved_settlement_payouts_and_debits_pending_balance(): void
+    {
+        $this->seedConfig(approval: 100, manualReview: 100);
+        RiskRule::create([
+            'name' => 'KYC_VERIFIED',
+            'category' => 'KYC',
+            'weight' => 50,
+            'priority' => 1,
+            'enabled' => true,
+        ]);
+
+        $org = $this->orgWithOwner();
+        $owner = $org->owner;
+        $donation = $this->createDonation($owner);
+
+        PayoutAccount::create([
+            'organization_id' => $org->id,
+            'account_holder_name' => 'Test',
+            'bank_name' => 'Test Bank',
+            'account_number' => '1234567890',
+            'ifsc_code' => 'TEST0001234',
+            'is_verified' => true,
+        ]);
+
+        $wallet = app(WalletService::class)->getOrCreateWallet($owner);
+        app(WalletService::class)->credit($wallet, 500.00, WalletTransaction::SOURCE_ADJUSTMENT, 1, User::class);
+
+        Event::fake([
+            SettlementRequested::class,
+            RiskEvaluationCompleted::class,
+            SettlementAutoApproved::class,
+            SettlementManualReviewRequired::class,
+            SettlementRejected::class,
+        ]);
+
+        $gateway = $this->createMock(RazorpayGateway::class);
+        $gateway->method('initiatePayout')->willReturn([
+            'gateway_reference' => 'PAYOUT_TEST_'.uniqid(),
+            'provider_status' => 'processed',
+            'metadata' => [],
+        ]);
+
+        $service = new SettlementService(
+            new WalletService(),
+            new SettlementStateMachine(),
+            $this->riskEngine(),
+            $gateway
+        );
+
+        $settlement = $service->requestSettlement($org, [$donation->id]);
+
+        $this->assertSame('auto_approved', $settlement->status);
+
+        $wallet->refresh();
+        $this->assertSame(400.00, (float) $wallet->balance);
+        $this->assertSame(100.00, (float) $wallet->pending_settlement_balance);
+
+        $result = $service->processSettlementPayout($settlement->fresh());
+
+        $this->assertTrue($result['success']);
+        $this->assertSame('paid', $settlement->fresh()->status);
+        $this->assertNotNull($settlement->fresh()->paid_at);
+
+        $wallet->refresh();
+        $this->assertSame(400.00, (float) $wallet->balance);
+        $this->assertSame(0.00, (float) $wallet->pending_settlement_balance);
+
+        $donation->refresh();
+        $this->assertSame('settled', $donation->settlement_status);
+
+        $this->assertDatabaseHas('wallet_transactions', [
+            'wallet_id' => $wallet->id,
+            'type' => 'debit',
+            'source' => WalletTransaction::SOURCE_SETTLEMENT,
+            'reference_type' => CampaignSettlement::class,
+            'reference_id' => $settlement->id,
+        ]);
+    }
+
+    #[Test]
+    public function risk_rejected_settlement_returns_funds_to_balance(): void
+    {
+        $this->seedConfig(approval: 10, manualReview: 30);
+        RiskRule::create([
+            'name' => 'AML_SCREEN',
+            'category' => 'COMPLIANCE',
+            'weight' => 50,
+            'priority' => 1,
+            'enabled' => true,
+        ]);
+
+        $amlRule = new class implements \App\Services\Risk\RiskRule {
+            public function identifier(): string
+            {
+                return 'AML_SCREEN';
+            }
+
+            public function name(): string
+            {
+                return 'AML_SCREEN';
+            }
+
+            public function evaluate(\App\Services\Risk\Context\RiskContext $context): \App\Services\Risk\RiskRuleResult
+            {
+                return \App\Services\Risk\RiskRuleResult::triggered(true, ['aml_hit' => true]);
+            }
+        };
+        $this->app->instance(\App\Services\Risk\Rules\AmlScreenRule::class, $amlRule);
+
+        $registry = new RiskRuleRegistry(app());
+        $registry->register('AML_SCREEN', \App\Services\Risk\Rules\AmlScreenRule::class);
+
+        $org = $this->orgWithOwner();
+        $owner = $org->owner;
+        $donation = $this->createDonation($owner);
+
+        $wallet = app(WalletService::class)->getOrCreateWallet($owner);
+        app(WalletService::class)->credit($wallet, 500.00, WalletTransaction::SOURCE_ADJUSTMENT, 1, User::class);
+
+        $gateway = $this->createMock(RazorpayGateway::class);
+
+        $service = new SettlementService(
+            new WalletService(),
+            new SettlementStateMachine(),
+            new RiskEngine($registry, new ScoreCalculator(), new VerdictResolver()),
+            $gateway
+        );
+
+        $settlement = $service->requestSettlement($org, [$donation->id]);
+
+        $this->assertSame('rejected', $settlement->status);
+
+        $wallet->refresh();
+        $this->assertSame(500.00, (float) $wallet->balance);
+        $this->assertSame(0.00, (float) $wallet->pending_settlement_balance);
+
+        $this->assertDatabaseHas('wallet_transactions', [
+            'wallet_id' => $wallet->id,
+            'type' => 'credit',
+            'source' => WalletTransaction::SOURCE_SETTLEMENT_REVERSAL,
+            'reference_type' => CampaignSettlement::class,
+            'reference_id' => $settlement->id,
+        ]);
+    }
+
+    #[Test]
+    public function cancel_settlement_returns_funds_when_still_held(): void
+    {
+        $org = $this->orgWithOwner();
+        $owner = $org->owner;
+
+        $wallet = app(WalletService::class)->getOrCreateWallet($owner);
+        app(WalletService::class)->credit($wallet, 500.00, WalletTransaction::SOURCE_ADJUSTMENT, 1, User::class);
+
+        $settlement = CampaignSettlement::factory()->create([
+            'organization_id' => $org->id,
+            'net_amount' => 100.00,
+            'status' => 'requested',
+        ]);
+
+        $locked = $wallet->fresh();
+        $locked->forceFill([
+            'balance' => (float) $locked->balance - 100.00,
+            'pending_settlement_balance' => 100.00,
+        ])->save();
+
+        $this->service()->cancelSettlement($settlement->fresh(), null, 'User changed mind');
+
+        $this->assertSame('cancelled', $settlement->fresh()->status);
+
+        $wallet->refresh();
+        $this->assertSame(500.00, (float) $wallet->balance);
+        $this->assertSame(0.00, (float) $wallet->pending_settlement_balance);
+
+        $this->assertDatabaseHas('wallet_transactions', [
+            'wallet_id' => $wallet->id,
+            'type' => 'credit',
+            'source' => WalletTransaction::SOURCE_SETTLEMENT_REVERSAL,
+            'reference_type' => CampaignSettlement::class,
+            'reference_id' => $settlement->id,
+        ]);
+    }
+
+    #[Test]
+    public function cancel_settlement_does_not_refund_once_funds_debited(): void
+    {
+        $org = $this->orgWithOwner();
+        $owner = $org->owner;
+
+        $wallet = app(WalletService::class)->getOrCreateWallet($owner);
+        app(WalletService::class)->credit($wallet, 500.00, WalletTransaction::SOURCE_ADJUSTMENT, 1, User::class);
+
+        $settlement = CampaignSettlement::factory()->create([
+            'organization_id' => $org->id,
+            'net_amount' => 100.00,
+            'status' => 'processing',
+        ]);
+
+        $locked = $wallet->fresh();
+        $locked->forceFill([
+            'balance' => (float) $locked->balance - 100.00,
+            'pending_settlement_balance' => 0.00,
+        ])->save();
+
+        $this->service()->cancelSettlement($settlement->fresh(), null, 'Cancel after processing');
+
+        $this->assertSame('cancelled', $settlement->fresh()->status);
+
+        $wallet->refresh();
+        $this->assertSame(400.00, (float) $wallet->balance);
+        $this->assertSame(0.00, (float) $wallet->pending_settlement_balance);
+
+        $this->assertDatabaseMissing('wallet_transactions', [
+            'wallet_id' => $wallet->id,
+            'source' => WalletTransaction::SOURCE_SETTLEMENT_REVERSAL,
+            'reference_id' => $settlement->id,
         ]);
     }
 }

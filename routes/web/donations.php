@@ -19,7 +19,8 @@ Route::post('/payment/verify', [PaymentController::class, 'verify'])
     ->middleware('auth');
 
 Route::post('/payment/webhook', [PaymentController::class, 'webhook'])
-    ->name('payment.webhook');
+    ->name('payment.webhook')
+    ->middleware('throttle:120,1');
 
 Route::post('/coupon/validate', [CouponController::class, 'check'])
     ->name('coupon.validate')

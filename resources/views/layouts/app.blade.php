@@ -58,65 +58,75 @@
 
     <!-- Floating Chat Button -->
     @endif
-    <div class="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 z-50 chat-float-wrap">
+    <div class="fixed bottom-5 sm:bottom-6 right-4 sm:right-6 z-50 chat-float-wrap">
         <div class="relative">
             <button
                 id="chatToggle"
-                class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-r from-blue-600 to-teal-600 text-white shadow-lg hover:scale-110 transition duration-300 flex items-center justify-center text-xl sm:text-2xl chat-toggle-pulse"
-                aria-label="Open chat">
+                type="button"
+                class="w-14 h-14 rounded-full bg-gradient-to-r from-blue-600 to-teal-600 text-white shadow-lg hover:scale-110 transition duration-300 flex items-center justify-center text-xl sm:text-2xl chat-toggle-pulse"
+                aria-label="Open chat"
+                aria-expanded="false"
+                aria-controls="chatWindow">
                 <i class="fa-solid fa-comment-dots"></i>
             </button>
-            <span id="chatBadge" class="chat-badge">0</span>
+            <span id="chatBadge" class="chat-badge" aria-hidden="true">0</span>
         </div>
     </div>
 
     <!-- Chat Window -->
     <div
         id="chatWindow"
+        role="dialog"
+        aria-modal="true"
+        aria-label="DonateBazaar AI Chat"
+        aria-hidden="true"
         class="fixed bottom-20 sm:bottom-24 right-4 sm:right-6 w-96 max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl overflow-hidden z-50">
 
         <!-- Header -->
-        <div class="bg-gradient-to-r from-blue-600 to-teal-600 text-white p-4 flex items-center gap-3">
-            <div class="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
+        <div class="bg-gradient-to-r from-blue-600 to-teal-600 text-white px-4 py-3.5 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-white/15 flex items-center justify-center flex-shrink-0 border border-white/20">
                 <i class="fa-solid fa-robot text-lg"></i>
             </div>
             <div class="flex-1 min-w-0">
-                <h2 class="font-bold text-sm leading-tight">DonateBazaar AI</h2>
-                <p class="text-[11px] opacity-80 flex items-center gap-1">
-                    <span class="w-1.5 h-1.5 rounded-full bg-green-400 inline-block"></span>
-                    Online
+                <h2 class="font-bold text-sm leading-tight tracking-tight">DonateBazaar AI</h2>
+                <p class="text-[11px] opacity-90 flex items-center gap-1.5 mt-0.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-300 inline-block flex-shrink-0" aria-hidden="true"></span>
+                    <span>Online</span>
                 </p>
             </div>
-            <button id="chatClear" class="text-white/50 hover:text-white transition p-1 mr-1" aria-label="Clear chat">
+            <button id="chatClear" type="button" class="text-white/60 hover:text-white transition p-2 rounded-lg hover:bg-white/10 min-w-[36px] min-h-[36px] flex items-center justify-center" aria-label="Clear chat history">
                 <i class="fa-solid fa-eraser text-sm"></i>
             </button>
-            <button id="chatClose" class="text-white/70 hover:text-white transition p-1" aria-label="Close chat">
-                <i class="fa-solid fa-xmark text-xl"></i>
+            <button id="chatClose" type="button" class="text-white/80 hover:text-white transition p-2 rounded-lg hover:bg-white/10 min-w-[36px] min-h-[36px] flex items-center justify-center" aria-label="Close chat">
+                <i class="fa-solid fa-xmark text-lg"></i>
             </button>
         </div>
 
         <!-- Messages -->
-        <div id="chatMessages" class="h-80 overflow-y-auto p-4 bg-gray-50/80"></div>
+        <div id="chatMessages" class="h-80 overflow-y-auto p-4 bg-gray-50/80" role="log" aria-live="polite" aria-label="Chat messages"></div>
 
         <!-- Scroll to bottom -->
-        <button id="scrollBottom" class="chat-scroll-bottom" aria-label="Scroll to bottom">
+        <button id="scrollBottom" type="button" class="chat-scroll-bottom" aria-label="Scroll to latest messages">
             <i class="fa-solid fa-chevron-down"></i>
         </button>
 
         <!-- Suggestions -->
-        <div id="chatSuggestions" class="px-4 pb-2 pt-0 bg-gray-50/80 border-t border-gray-100 flex flex-wrap gap-1.5"></div>
+        <div id="chatSuggestions" class="px-4 pb-2.5 pt-2 bg-gray-50/80 border-t border-gray-100 flex flex-wrap gap-2"></div>
 
         <!-- Input -->
         <div class="border-t border-gray-200 p-3 flex items-end gap-2 bg-white">
+            <label for="chatInput" class="sr-only">Type a message</label>
             <textarea
                 id="chatInput"
                 rows="1"
                 placeholder="Type a message..."
-                class="flex-1 border border-gray-300 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-indigo-400 transition"
-                style="scrollbar-width: thin"></textarea>
+                class="flex-1 border border-gray-300 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-indigo-400 transition"
+                style="scrollbar-width: thin; min-height: 44px;"
+                aria-label="Message input"></textarea>
             <button
                 id="sendMessage"
-                class="w-10 h-10 rounded-xl bg-gradient-to-r from-blue-600 to-teal-600 text-white flex items-center justify-center hover:scale-105 transition disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+                type="button"
+                class="w-11 h-11 rounded-xl bg-gradient-to-r from-blue-600 to-teal-600 text-white flex items-center justify-center hover:scale-105 transition disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex-shrink-0 shadow-sm"
                 aria-label="Send message">
                 <i class="fa-solid fa-paper-plane text-sm"></i>
             </button>

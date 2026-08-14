@@ -49,9 +49,12 @@ class AppServiceProvider extends ServiceProvider
             return new RazorpayGateway(
                 keyId: $keyId,
                 keySecret: $keySecret,
-                webhookSecret: $webhookSecret
+                webhookSecret: $webhookSecret,
+                api: new \Razorpay\Api\Api($keyId, $keySecret)
             );
         });
+
+        $this->app->singleton(GiftCardService::class);
 
         $this->app->singleton(DonationRepository::class);
         $this->app->singleton(CampaignRepository::class);
@@ -60,6 +63,15 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(UserRepository::class);
         $this->app->singleton(CategoryRepository::class);
         $this->app->singleton(SearchRepository::class);
+
+        $this->app->singleton(\App\Services\Payment\PaymentOrderService::class);
+        $this->app->singleton(\App\Services\Payment\PaymentVerificationService::class);
+        $this->app->singleton(\App\Services\Payment\PaymentWebhookService::class);
+        $this->app->singleton(\App\Services\Payment\RefundService::class);
+
+        $this->app->singleton(\App\Services\Campaign\CampaignWorkflowService::class);
+        $this->app->singleton(\App\Services\Campaign\CampaignQueryService::class);
+        $this->app->singleton(\App\Services\Blog\AdminBlogService::class);
 
         if ($this->app->environment('local')) {
             $this->app->register(TelescopeServiceProvider::class);

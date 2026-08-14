@@ -6,114 +6,97 @@
 @section('content')
 
 {{-- ══ CURRENT LEVEL CARD ══ --}}
-<div class="welcome-banner" style="background:var(--surface);margin-bottom:22px;">
+<div class="welcome-banner">
     <div class="wb-left">
         <div class="wb-tag">
             <span class="wb-tag-dot" style="background:{{ $currentLevel->badge_color }};box-shadow:0 0 0 3px {{ $currentLevel->badge_color }}33;"></span>
             Current Level
         </div>
-        <div class="wb-name" style="display:flex;align-items:center;gap:12px;">
+        <div class="wb-name">
             {{ $currentLevel->level_name }}
-            <span style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;font-size:16px;font-weight:800;color:#fff;background:{{ $currentLevel->badge_color }};box-shadow:0 4px 14px {{ $currentLevel->badge_color }}44;">
+            <span class="level-number-badge" style="--level-color:{{ $currentLevel->badge_color }};">
                 {{ $currentLevel->level_number }}
             </span>
         </div>
         <div class="wb-sub">{{ $currentLevel->description }}</div>
         <div class="wb-badges">
             @if($userLevel)
-            <span class="wb-badge" style="background:{{ $currentLevel->badge_color }}22;color:{{ $currentLevel->badge_color }};border-color:{{ $currentLevel->badge_color }}44;">
-                {{ ucfirst($userLevel->status) }}
-            </span>
-            <span class="wb-badge wbb-purple">
-                ₹{{ number_format($totalRaised, 0) }} raised
-            </span>
-            <span class="wb-badge wbb-green">
-                {{ $campaignsCompleted }} campaign{{ $campaignsCompleted !== 1 ? 's' : '' }}
-            </span>
+            <span class="wb-badge wbb-green">{{ ucfirst($userLevel->status) }}</span>
+            <span class="wb-badge wbb-purple">₹{{ number_format($totalRaised, 0) }} raised</span>
+            <span class="wb-badge wbb-green">{{ $campaignsCompleted }} campaign{{ $campaignsCompleted !== 1 ? 's' : '' }}</span>
             @if($nextLevel && $nextLevel->max_goal_amount)
-            <span class="wb-badge wbb-yellow">
-                Max goal ₹{{ number_format($nextLevel->max_goal_amount) }}
-            </span>
+            <span class="wb-badge wbb-yellow">Max goal ₹{{ number_format($nextLevel->max_goal_amount) }}</span>
             @endif
             @endif
         </div>
     </div>
     <div class="wb-right">
         @if($nextLevel)
-        <div style="text-align:right;">
-            <div style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-bottom:6px;">Progress to {{ $nextLevel->level_name }}</div>
-            <div style="width:200px;height:7px;background:var(--surface3);border-radius:100px;overflow:hidden;">
-                <div style="height:100%;border-radius:100px;background:linear-gradient(90deg,{{ $currentLevel->badge_color }},{{ $nextLevel->badge_color }});width:{{ $completionPct }}%;transition:width 1.2s cubic-bezier(.4,0,.2,1);"></div>
+        <div class="level-progress-box">
+            <div class="level-progress-label">Progress to {{ $nextLevel->level_name }}</div>
+            <div class="level-progress-track">
+                <div class="level-progress-fill" style="width:{{ $completionPct }}%;background:linear-gradient(90deg,{{ $currentLevel->badge_color }},{{ $nextLevel->badge_color }});"></div>
             </div>
-            <div style="font-size:11px;color:var(--text3);margin-top:4px;font-family:var(--mono);">{{ round($completionPct) }}% complete</div>
+            <div class="level-progress-pct">{{ round($completionPct) }}% complete</div>
         </div>
         @else
-        <div class="wb-badge wbb-purple" style="font-size:13px;padding:8px 18px;">🏆 Maximum level reached</div>
+        <div class="wb-badge wbb-purple wbb-purple-lg">🏆 Maximum level reached</div>
         @endif
     </div>
 </div>
-
 {{-- ══ LEVEL REQUIREMENTS TABLE ══ --}}
-<div class="chart-card" style="margin-bottom:22px;">
+<div class="chart-card">
     <div class="chart-card-hdr">
         <div>
             <div class="chart-title">All Levels</div>
             <div class="chart-sub">Requirements and benefits for each fundraiser level</div>
         </div>
     </div>
-    <div style="overflow-x:auto;">
-        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+    <div class="table-wrap">
+        <table class="level-table">
             <thead>
-                <tr style="border-bottom:2px solid var(--border);">
-                    <th style="text-align:left;padding:10px 12px;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-family:var(--mono);">Level</th>
-                    <th style="text-align:left;padding:10px 12px;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-family:var(--mono);">Max Goal</th>
-                    <th style="text-align:left;padding:10px 12px;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-family:var(--mono);">Max Active</th>
-                    <th style="text-align:left;padding:10px 12px;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-family:var(--mono);">Min Completed</th>
-                    <th style="text-align:left;padding:10px 12px;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-family:var(--mono);">Min Raised %</th>
-                    <th style="text-align:left;padding:10px 12px;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-family:var(--mono);">KYC</th>
-                    <th style="text-align:left;padding:10px 12px;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-family:var(--mono);">Admin Approval</th>
+                <tr>
+                    <th>Level</th>
+                    <th>Max Goal</th>
+                    <th>Max Active</th>
+                    <th>Min Completed</th>
+                    <th>Min Raised %</th>
+                    <th>KYC</th>
+                    <th>Admin Approval</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($allLevels as $level)
                 @php $isCurrent = $level->id === $currentLevel->id; @endphp
-                <tr style="border-bottom:1px solid var(--border);{{ $isCurrent ? 'background:var(--accent-lt);' : '' }} transition:background var(--ease);">
-                    <td style="padding:12px;font-weight:600;">
-                        <div style="display:flex;align-items:center;gap:8px;">
-                            <span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:7px;font-size:12px;font-weight:700;color:#fff;background:{{ $level->badge_color }};">{{ $level->level_number }}</span>
+                <tr class="{{ $isCurrent ? 'is-current' : '' }}">
+                    <td>
+                        <div class="level-table-name">
+                            <span class="level-table-badge" style="background:{{ $level->badge_color }};">{{ $level->level_number }}</span>
                             <span>{{ $level->level_name }}</span>
                             @if($isCurrent)
-                            <span style="font-size:9px;background:var(--accent);color:#fff;padding:2px 7px;border-radius:100px;font-family:var(--mono);font-weight:700;">YOU</span>
+                            <span class="level-table-you">YOU</span>
                             @endif
                         </div>
                     </td>
-                    <td style="padding:12px;color:var(--text2);font-family:var(--mono);font-size:12px;">
-                        {{ $level->max_goal_amount ? '₹'.number_format($level->max_goal_amount) : '∞' }}
-                    </td>
-                    <td style="padding:12px;color:var(--text2);font-family:var(--mono);font-size:12px;">
-                        {{ $level->max_active_campaigns }}
-                    </td>
-                    <td style="padding:12px;color:var(--text2);font-family:var(--mono);font-size:12px;">
-                        {{ $level->min_campaigns_completed }}
-                    </td>
-                    <td style="padding:12px;color:var(--text2);font-family:var(--mono);font-size:12px;">
-                        {{ $level->min_raised_percent }}%
-                    </td>
-                    <td style="padding:12px;">
-                        <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;font-size:10px;font-weight:600;font-family:var(--mono);
+                    <td class="mono">{{ $level->max_goal_amount ? '₹'.number_format($level->max_goal_amount) : '∞' }}</td>
+                    <td class="mono">{{ $level->max_active_campaigns }}</td>
+                    <td class="mono">{{ $level->min_campaigns_completed }}</td>
+                    <td class="mono">{{ $level->min_raised_percent }}%</td>
+                    <td>
+                        <span class="kyc-badge
                             @switch($level->kyc_requirement)
-                                @case('none') background:var(--gray-lt);color:var(--text3); @break
-                                @case('basic') background:var(--yellow-lt);color:var(--yellow); @break
-                                @case('full') background:var(--accent-lt);color:var(--accent); @break
-                                @case('org') background:var(--pink-lt);color:var(--pink); @break
+                                @case('none') kyc-none @break
+                                @case('basic') kyc-basic @break
+                                @case('full') kyc-full @break
+                                @case('org') kyc-org @break
                             @endswitch
                         ">{{ ucfirst($level->kyc_requirement) }}</span>
                     </td>
-                    <td style="padding:12px;">
+                    <td>
                         @if($level->requires_admin_approval)
-                        <span style="color:var(--yellow);font-weight:600;font-size:11px;">Required</span>
+                        <span class="text-warning text-warning-sm">Required</span>
                         @else
-                        <span style="color:var(--text3);font-size:11px;">Auto</span>
+                        <span class="text-muted text-muted-sm">Auto</span>
                         @endif
                     </td>
                 </tr>
@@ -125,14 +108,14 @@
 
 {{-- ══ PROGRESS TO NEXT LEVEL ══ --}}
 @if($nextLevel)
-<div class="chart-card" style="margin-bottom:22px;">
+<div class="chart-card">
     <div class="chart-card-hdr">
         <div>
             <div class="chart-title">Next Level: {{ $nextLevel->level_name }}</div>
             <div class="chart-sub">Requirements to reach {{ $nextLevel->level_name }}</div>
         </div>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;">
+    <div class="next-reqs-grid">
         @php $nextReqs = []; @endphp
         @if($nextLevel->min_campaigns_completed > 0)
             @php
@@ -156,16 +139,16 @@
             @endphp
         @endif
         @foreach($nextReqs as [$label, $current, $required, $pct, $color])
-        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:16px;">
-            <div style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-bottom:8px;">{{ $label }}</div>
-            <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:8px;">
-                <span style="font-size:18px;font-weight:700;color:var(--text);">{{ $current }}</span>
+        <div class="next-req-card">
+            <div class="next-req-label">{{ $label }}</div>
+            <div class="next-req-values">
+                <span class="next-req-current">{{ $current }}</span>
                 @if($required)
-                <span style="font-size:12px;color:var(--text3);font-family:var(--mono);">/ {{ $required }}</span>
+                <span class="next-req-required">/ {{ $required }}</span>
                 @endif
             </div>
-            <div style="height:5px;background:var(--surface3);border-radius:100px;overflow:hidden;">
-                <div style="height:100%;border-radius:100px;background:{{ $color }};width:{{ min($pct,100) }}%;transition:width .8s ease;"></div>
+            <div class="next-req-bar">
+                <div class="next-req-fill" style="width:{{ min($pct,100) }}%;background:{{ $color }};"></div>
             </div>
         </div>
         @endforeach

@@ -1,0 +1,47 @@
+/* ═══════════════════════════════════════════════════════════════════
+   UTILITIES — Animations
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── Keyframes ─────────────────────────────────────────────────────── */
+@keyframes fadeUp   { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
+@keyframes toastIn  { from { opacity:0; transform:translateX(16px) scale(.96); } to { opacity:1; transform:none; } }
+@keyframes pulse    { 0%,100% { box-shadow: 0 0 0 0 rgba(22,163,74,.4); } 50% { box-shadow: 0 0 0 8px rgba(22,163,74,0); } }
+@keyframes shimmer  { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+@keyframes gradShift{ 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+@keyframes iconBounce{ 0% { transform: scale(1); } 25% { transform: scale(1.2) rotate(-5deg); } 50% { transform: scale(1.1) rotate(3deg); } 75% { transform: scale(1.15) rotate(-2deg); } 100% { transform: scale(1) rotate(0deg); } }
+@keyframes wave{0%,100%{transform:rotate(0deg)}10%{transform:rotate(14deg)}20%{transform:rotate(-8deg)}30%{transform:rotate(14deg)}40%{transform:rotate(-4deg)}50%{transform:rotate(10deg)}60%{transform:rotate(0deg)}}
+@keyframes gradBorder { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+@keyframes badgePulse { 0%, 100% { transform: scale(1); opacity: .6; } 50% { transform: scale(1.15); opacity: 0; } }
+
+/* ── Shimmer Skeleton ──────────────────────────────────────────────── */
+.shimmer {
+  background: linear-gradient(90deg, var(--surface2) 25%, var(--surface3) 50%, var(--surface2) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.8s ease-in-out infinite;
+  border-radius: var(--r-xs);
+  color: transparent !important;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* ── Wave ──────────────────────────────────────────────────────────── */
+.wave{display:inline-block;animation:wave 2.5s ease-in-out infinite;transform-origin:70% 70%;}
+.wave svg { width: 18px; height: 18px; display: inline-block; }
+
+/* ── Spinner ──────────────────────────────────────────────────────── */
+.spinner,
+.btn-spinner {
+  width: var(--spinner-size, 16px);
+  height: var(--spinner-size, 16px);
+  border-radius: 50%;
+  border: 2px solid var(--spinner-track, rgba(128, 128, 128, 0.3));
+  border-top-color: var(--spinner-fg, currentColor);
+  animation: btn-spin 0.7s linear infinite;
+  flex-shrink: 0;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner, .btn-spinner { animation-duration: 1.4s; }
+}

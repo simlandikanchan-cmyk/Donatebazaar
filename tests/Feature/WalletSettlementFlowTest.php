@@ -8,6 +8,7 @@ use App\Models\Donation;
 use App\Models\Organization;
 use App\Models\PayoutAccount;
 use App\Models\User;
+use App\Models\Wallet;
 use App\Models\WalletTransaction;
 use App\Services\SettlementService;
 use App\Services\WalletService;
@@ -162,7 +163,7 @@ class WalletSettlementFlowTest extends TestCase
         $this->actingAs($this->orgUser)
             ->get(route('dashboard.wallet'))
             ->assertOk()
-            ->assertSee('Pending admin approval');
+            ->assertSee('Manual review');
     }
 
     #[Test]
@@ -204,10 +205,11 @@ class WalletSettlementFlowTest extends TestCase
             'total_amount' => 500.00,
             'platform_fee' => 25.00,
             'net_amount' => 500.00,
-            'payment_status' => 'completed',
-            'is_refunded' => false,
-            'paid_at' => now()->subDays(10),
         ]);
+        $donation->payment_status = 'completed';
+        $donation->is_refunded = false;
+        $donation->paid_at = now()->subDays(10);
+        $donation->save();
 
         $this->assertNull(Organization::where('user_id', $user->id)->first());
 
@@ -332,10 +334,11 @@ class WalletSettlementFlowTest extends TestCase
             'total_amount' => 500.00,
             'platform_fee' => 25.00,
             'net_amount' => 500.00,
-            'payment_status' => 'completed',
-            'is_refunded' => false,
-            'paid_at' => now()->subDays(10),
         ]);
+        $donation->payment_status = 'completed';
+        $donation->is_refunded = false;
+        $donation->paid_at = now()->subDays(10);
+        $donation->save();
 
         // No payout account → request must be rejected.
         $this->actingAs($user)
@@ -356,5 +359,188 @@ class WalletSettlementFlowTest extends TestCase
             ->post(route('dashboard.wallet.request'), ['donation_ids' => [$donation->id]])
             ->assertRedirect(route('dashboard.wallet'))
             ->assertSessionHas('success');
+    }
+
+    #[Test]
+    public function wallet_page_lists_donations_made_to_my_campaigns_only(): void
+    {
+        // Donor is a DIFFERENT user from the campaign owner (real-world case).
+        $donor = User::factory()->create();
+        $myCampaign = Campaign::create([
+            'title' => 'My Campaign',
+            'slug' => 'my-campaign-'.uniqid(),
+            'user_id' => $this->orgUser->id,
+            'description' => 'Test.',
+            'goal_amount' => 10000.00,
+        ]);
+
+        $myDonation = Donation::create([
+            'user_id' => $donor->id,
+            'campaign_id' => $myCampaign->id,
+            'donation_type' => 'money',
+            'total_amount' => 500.00,
+            'platform_fee' => 25.00,
+            'net_amount' => 475.00,
+        ]);
+        $myDonation->payment_status = 'completed';
+        $myDonation->is_refunded = false;
+        $myDonation->paid_at = now()->subDays(10);
+        $myDonation->save();
+
+        // The owner donated to someone else's campaign — must NOT appear as eligible.
+        $otherCampaign = Campaign::create([
+            'title' => 'Other Campaign',
+            'slug' => 'other-campaign-'.uniqid(),
+            'user_id' => $donor->id,
+            'description' => 'Test.',
+            'goal_amount' => 10000.00,
+        ]);
+
+        $otherDonation = Donation::create([
+            'user_id' => $this->orgUser->id,
+            'campaign_id' => $otherCampaign->id,
+            'donation_type' => 'money',
+            'total_amount' => 700.00,
+            'platform_fee' => 35.00,
+            'net_amount' => 665.00,
+        ]);
+        $otherDonation->payment_status = 'completed';
+        $otherDonation->is_refunded = false;
+        $otherDonation->paid_at = now()->subDays(10);
+        $otherDonation->save();
+
+        $response = $this->actingAs($this->orgUser)
+            ->get(route('dashboard.wallet'))
+            ->assertOk();
+
+        // Only the donation made TO the owner's campaign is eligible.
+        $response->assertSee('My Campaign');
+        $response->assertDontSee('Other Campaign');
+        $this->assertDatabaseHas('donations', ['id' => $myDonation->id]);
+    }
+
+    #[Test]
+    public function wallet_page_hides_donations_already_locked_in_settlement(): void
+    {
+        $donor = User::factory()->create();
+        $campaign = Campaign::create([
+            'title' => 'Locked Campaign',
+            'slug' => 'locked-campaign-'.uniqid(),
+            'user_id' => $this->orgUser->id,
+            'description' => 'Test.',
+            'goal_amount' => 10000.00,
+        ]);
+
+        $donation = Donation::create([
+            'user_id' => $donor->id,
+            'campaign_id' => $campaign->id,
+            'donation_type' => 'money',
+            'total_amount' => 500.00,
+            'platform_fee' => 25.00,
+            'net_amount' => 500.00,
+        ]);
+        $donation->payment_status = 'completed';
+        $donation->is_refunded = false;
+        $donation->paid_at = now()->subDays(10);
+        $donation->save();
+
+        // Fund the wallet so the settlement request succeeds.
+        $wallet = app(WalletService::class)->getOrCreateWallet($this->orgUser);
+        app(WalletService::class)->credit($wallet, 500.00, WalletTransaction::SOURCE_ADJUSTMENT, 77, User::class);
+
+        app(SettlementService::class)->requestSettlement($this->org, [$donation->id]);
+
+        // Donation is now locked in a settlement — must not appear in the eligible list.
+        $this->actingAs($this->orgUser)
+            ->get(route('dashboard.wallet'))
+            ->assertOk()
+            ->assertDontSee('Locked Campaign');
+    }
+
+    #[Test]
+    public function available_balance_equals_wallet_balance_not_minus_settlement_lock(): void
+    {
+        $wallet = app(WalletService::class)->getOrCreateWallet($this->orgUser);
+        $wallet->forceFill([
+            'balance' => 600.00,
+            'pending_settlement_balance' => 400.00,
+        ])->save();
+        $wallet->refresh();
+
+        // Settlement funds are already moved OUT of balance when a payout is
+        // requested, so available must equal the balance (not balance - lock).
+        $this->assertEquals(600.00, $wallet->available_balance);
+    }
+
+    #[Test]
+    public function admin_can_credit_wallet_via_manual_adjustment(): void
+    {
+        $wallet = app(WalletService::class)->getOrCreateWallet($this->orgUser);
+
+        $this->actingAs($this->admin)
+            ->post(route('admin.wallets.adjust', $wallet), [
+                'direction' => 'credit',
+                'amount' => 250.00,
+                'notes' => 'Bonus credit',
+            ])
+            ->assertRedirect(route('admin.wallets.show', $wallet))
+            ->assertSessionHas('success');
+
+        $wallet->refresh();
+        // setUp already credited 500 to this wallet.
+        $this->assertEquals(750.00, (float) $wallet->balance);
+
+        $this->assertDatabaseHas('wallet_transactions', [
+            'wallet_id' => $wallet->id,
+            'type' => 'credit',
+            'source' => 'adjustment',
+            'reference_type' => Wallet::class,
+            'amount' => 250.00,
+        ]);
+
+        // reference_id must be a stored integer (string ids break the
+        // unsignedBigInteger column) and unique per adjustment.
+        $tx = WalletTransaction::where('wallet_id', $wallet->id)
+            ->where('source', 'adjustment')->first();
+        $this->assertIsNumeric($tx->reference_id);
+        $this->assertGreaterThan(0, (int) $tx->reference_id);
+    }
+
+    #[Test]
+    public function admin_can_debit_wallet_via_manual_adjustment(): void
+    {
+        $wallet = app(WalletService::class)->getOrCreateWallet($this->orgUser);
+
+        $this->actingAs($this->admin)
+            ->post(route('admin.wallets.adjust', $wallet), [
+                'direction' => 'debit',
+                'amount' => 120.00,
+                'notes' => 'Correction',
+            ])
+            ->assertRedirect(route('admin.wallets.show', $wallet))
+            ->assertSessionHas('success');
+
+        $wallet->refresh();
+        // setUp already credited 500 to this wallet.
+        $this->assertEquals(380.00, (float) $wallet->balance);
+    }
+
+    #[Test]
+    public function admin_debit_adjustment_fails_gracefully_when_balance_insufficient(): void
+    {
+        $user = User::factory()->create();
+        $wallet = app(WalletService::class)->getOrCreateWallet($user);
+
+        $this->actingAs($this->admin)
+            ->post(route('admin.wallets.adjust', $wallet), [
+                'direction' => 'debit',
+                'amount' => 100.00,
+                'notes' => 'Overdraw attempt',
+            ])
+            ->assertRedirect(route('admin.wallets.show', $wallet))
+            ->assertSessionHas('error');
+
+        $wallet->refresh();
+        $this->assertEquals(0.00, (float) $wallet->balance);
     }
 }

@@ -36,7 +36,7 @@
 .cp-badge,.gc-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:100px;font-size:10.5px;font-weight:700;font-family:var(--mono);}
 .cp-primary-name,.gc-primary-name{font-size:13px;font-weight:600;color:var(--text);}
 .cp-secondary,.gc-secondary-email{font-size:10.5px;color:var(--text3);font-family:var(--mono);margin-top:1px;display:block;}
-.cp-actions,.gc-actions{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap;}
+.cp-actions,.gc-actions{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap;align-items:center;}
 .cp-action-btn,.gc-action-btn{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:var(--r-xs);border:1px solid transparent;cursor:pointer;transition:all var(--ease);text-decoration:none;background:var(--surface2);color:var(--text2);border-color:var(--border2);}
 .cp-action-btn:hover,.gc-action-btn:hover{background:var(--a-lt);color:var(--a);border-color:var(--a);}
 .cp-action-view,.gc-action-view{background:var(--surface2);color:var(--text2);border-color:var(--border2);}
@@ -67,7 +67,7 @@
 
 /* ── DONATIONS: REFUND ROW ── */
 .dn-failedr,.dn-pendingr{background:rgba(240,68,68,.025);}
-.dn-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden;background:var(--surface);}
+.dn-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden;background:var(--surface);padding:12px;}
 .dn-kv{display:flex;justify-content:space-between;gap:10px;padding:9px 14px;border-bottom:1px solid var(--border);font-size:12.5px;}
 .dn-kv span:first-child{color:var(--text3);font-family:var(--mono);font-size:11px;}
 .dn-kv span:last-child{font-weight:600;color:var(--text);text-align:right;}
@@ -79,14 +79,18 @@
 .ab-refund svg{width:12px;height:12px;}
 
 /* ── WALLETS: FORM ── */
-.wa-form{display:flex;flex-direction:column;gap:12px;}
-.wa-field{display:flex;flex-direction:column;gap:5px;}
+.wa-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;align-items:end;}
+.wa-field{display:flex;flex-direction:column;gap:5px;min-width:0;}
 .wa-field label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);}
-.wa-input,.wa-select{height:38px;padding:0 12px;border:1px solid var(--border2);border-radius:var(--r-sm);font-size:13px;font-family:var(--font);color:var(--text);background:var(--surface);outline:none;transition:border-color var(--ease),box-shadow var(--ease);}
+.wa-input,.wa-select{height:38px;width:100%;padding:0 12px;border:1px solid var(--border2);border-radius:var(--r-sm);font-size:13px;font-family:var(--font);color:var(--text);background:var(--surface);outline:none;transition:border-color var(--ease),box-shadow var(--ease);}
 .wa-input:focus,.wa-select:focus{border-color:var(--a);box-shadow:0 0 0 3px var(--a-glow);}
-.wa-select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M1 3l4 4 4-4' fill='none' stroke='%23939AB1' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;cursor:pointer;}
-.wa-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:var(--r-xs);font-size:12.5px;font-weight:600;background:linear-gradient(135deg,var(--a),var(--a2));color:var(--white);border:none;cursor:pointer;transition:all var(--ease);font-family:var(--font);}
+.wa-select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M1 3l4 4 4-4' fill='none' stroke='%23939AB1' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;cursor:pointer;padding-right:30px;}
+.wa-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:38px;padding:0 20px;border-radius:var(--r-xs);font-size:12.5px;font-weight:600;background:linear-gradient(135deg,var(--a),var(--a2));color:var(--white);border:none;cursor:pointer;transition:all var(--ease);font-family:var(--font);white-space:nowrap;}
 .wa-btn:hover{box-shadow:0 4px 14px rgba(37,99,235,.35);}
+@media(max-width:480px){
+  .wa-form{grid-template-columns:1fr;}
+  .wa-btn{width:100%;}
+}
 
 /* ── DONATION KV (k/v) ── */
 .k{font-size:11px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;}

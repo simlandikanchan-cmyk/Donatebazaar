@@ -1,13 +1,38 @@
-﻿@extends('layouts.admin')
-
 @push('page_css')
 @vite('resources/css/admin/entries/finance.css')
 @endpush
 
+@extends('layouts.admin')
 
 @section('sidebar_donations', 'active')
 <!-- @section('page_title', 'Donation #{{ $donation->id }}') -->
 @section('page_subtitle', 'Donation detail & refund history')
+
+@push('page_styles')
+<style>
+.dn-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:100px;font-size:10.5px;font-weight:600;font-family:var(--mono);white-space:nowrap;border:1px solid transparent}
+.dn-completed{background:rgba(5,196,138,.12);color:#059c7f;border-color:rgba(5,196,138,.25)}
+.dn-pending{background:rgba(245,158,11,.12);color:var(--amber);border-color:rgba(245,158,11,.25)}
+.dn-failed{background:rgba(240,68,68,.12);color:var(--red);border-color:rgba(240,68,68,.25)}
+.dn-refunded{background:rgba(107,114,128,.12);color:#6b7280;border-color:rgba(107,114,128,.25)}
+.dn-processed{background:rgba(5,196,138,.12);color:#059c7f;border-color:rgba(5,196,138,.25)}
+.dn-failedr{background:rgba(240,68,68,.12);color:var(--red);border-color:rgba(240,68,68,.25)}
+.dn-pendingr{background:rgba(245,158,11,.12);color:var(--amber);border-color:rgba(245,158,11,.25)}
+.ab-refund{background:var(--amber-lt);color:var(--amber);border-color:rgba(245,158,11,.18)}
+.ab-refund:hover{background:var(--amber);color:#fff;border-color:var(--amber)}
+.ab-view{background:var(--a-lt);color:var(--a);border-color:rgba(37,99,235,.2)}
+.ab-view:hover{background:var(--a);color:#fff;box-shadow:0 4px 14px rgba(37,99,235,.35)}
+.toast-info{background:linear-gradient(135deg,#2563eb,#60a5fa)}
+.dn-anon{font-style:italic;color:var(--text3)}
+.dn-kv{display:flex;flex-direction:column;gap:2px}
+.dn-kv .k{font-size:10px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em}
+.dn-kv .v{font-size:13px;color:var(--text);font-weight:600}
+.dn-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:760px){.dn-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.dn-grid{grid-template-columns:1fr}}
+@media(max-width:380px){.page-hdr{padding:14px 12px}.page-hdr-left h2{font-size:clamp(16px,4.5vw,18px)}.dn-card{padding:14px 12px}.dn-amount{font-size:clamp(20px,6vw,24px)}.dn-meta{font-size:11px}.dn-grid{gap:10px}.dn-kv .v{font-size:12px}.dn-kv .k{font-size:9px}.back-link{font-size:11px;height:32px;padding:0 10px}.flash{font-size:12px;padding:10px 12px}}
+</style>
+@endpush
 
 @section('content')
 
@@ -31,10 +56,10 @@
 @endif
 
 <div style="margin-bottom:18px;">
-  <x-button variant="secondary" href="{{ route('admin.donations.index') }}" class="ab-view">
+  <a href="{{ route('admin.donations.index') }}" class="btn btn-secondary act-btn ab-view" style="text-decoration:none;">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6"/></svg>
     <span>Back to donations</span>
-  </x-button>
+  </a>
 </div>
 
 <div class="hero">
@@ -227,10 +252,10 @@
       <textarea id="refundReason" name="reason" rows="2" placeholder="Reason (optional)…" style="width:100%;margin-top:12px;padding:8px 10px;border:1px solid var(--border2);border-radius:var(--r-sm);font-size:12.5px;font-family:var(--font);background:var(--surface2);color:var(--text);resize:vertical"></textarea>
     </div>
     <div class="modal-acts">
-      <x-button variant="secondary" type="button" class="modal-btn">Cancel</x-button>
+      <button type="button" onclick="closeRefund()" class="btn btn-secondary modal-btn modal-cancel">Cancel</button>
       <form id="refundForm" method="POST" style="flex:1;">
         @csrf
-        <x-button variant="destructive" type="submit" class="modal-btn">↺ Confirm Refund</x-button>
+        <button type="submit" class="btn btn-red modal-btn modal-red">↺ Confirm Refund</button>
       </form>
     </div>
   </div>

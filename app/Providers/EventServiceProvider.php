@@ -11,6 +11,7 @@ use App\Events\SettlementProcessingStarted;
 use App\Events\SettlementRejected;
 use App\Events\SettlementRequested;
 use App\Events\SettlementRetryScheduled;
+use App\Listeners\AutoProcessAutoApprovedSettlement;
 use App\Listeners\ProcessFailedJob;
 use App\Listeners\SendSettlementAutoApprovedNotification;
 use App\Listeners\SendSettlementCancelledNotification;
@@ -32,6 +33,7 @@ class EventServiceProvider extends ServiceProvider
         ],
         SettlementAutoApproved::class => [
             SendSettlementAutoApprovedNotification::class,
+            AutoProcessAutoApprovedSettlement::class,
         ],
         SettlementManualReviewRequired::class => [
             SendSettlementManualReviewRequiredNotification::class,

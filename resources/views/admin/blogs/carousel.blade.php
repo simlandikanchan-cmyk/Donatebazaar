@@ -1,7 +1,31 @@
 ﻿@extends('layouts.admin')
 
-@push('page_css')
-@vite('resources/css/admin/entries/blogs.css')
+@push('page_styles')
+<style>
+.car-wrap{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start;}
+.car-col{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;animation:fadeUp .4s ease both;}
+.car-title{padding:14px 18px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:13px;font-weight:700;color:var(--text);}
+.car-sub{padding:0 18px 12px;font-size:11px;color:var(--text3);}
+.featured-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);}
+.featured-row:last-child{border-bottom:none;}
+.f-pos{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--text3);width:24px;text-align:center;flex-shrink:0;}
+.f-handle{color:var(--text3);cursor:grab;font-size:16px;flex-shrink:0;}
+.f-info{flex:1;min-width:0;}
+.f-name{font-size:13px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.f-meta{font-size:10.5px;color:var(--text3);font-family:var(--mono);margin-top:2px;}
+.f-btn{width:30px;height:30px;padding:0;border-radius:8px;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all .15s;}
+.f-btn:hover{background:var(--a-lt);color:var(--a);border-color:var(--a);}
+.f-btn svg{width:14px;height:14px;}
+.f-up:disabled,.f-down:disabled{opacity:.4;cursor:not-allowed;}
+.f-remove{color:var(--red);border-color:rgba(240,68,68,.25);}
+.f-remove:hover{background:var(--red-lt);color:var(--red);border-color:var(--red);}
+.save-bar{display:flex;align-items:center;gap:12px;padding:12px 14px;border-top:1px solid var(--border);}
+.save-hint{font-size:11px;color:var(--text3);}
+.empty-mini{padding:24px 14px;text-align:center;color:var(--text3);font-size:12.5px;}
+.flash-success{background:var(--green-lt);border:1px solid rgba(5,196,138,.25);color:#059669;padding:10px 14px;border-radius:var(--r-sm);margin-bottom:14px;font-size:12.5px;font-weight:600;}
+.flash-error{background:var(--red-lt);border:1px solid rgba(240,68,68,.25);color:var(--red);padding:10px 14px;border-radius:var(--r-sm);margin-bottom:14px;font-size:12.5px;font-weight:600;}
+@media(max-width:860px){.car-wrap{grid-template-columns:1fr}}
+</style>
 @endpush
 
 
@@ -31,17 +55,17 @@
           <div class="f-name">{{ $blog->title }}</div>
           <div class="f-meta">#{{ $blog->id }} · {{ $blog->author->name ?? '' }}</div>
         </div>
-        <x-button variant="primary" type="button" class="f-btn f-up">
+        <button type="button" class="f-btn f-up" aria-label="Move up">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
-        </x-button>
-        <x-button variant="primary" type="button" class="f-btn f-down">
+        </button>
+        <button type="button" class="f-btn f-down" aria-label="Move down">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-        </x-button>
+        </button>
         <form method="POST" action="{{ route('admin.blogs.feature', $blog) }}" style="display:inline;">
           @csrf
-          <x-button variant="primary" type="submit" class="f-btn f-remove">
+          <button type="submit" class="f-btn f-remove" aria-label="Remove from featured">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          </x-button>
+          </button>
         </form>
       </div>
       @empty
@@ -50,10 +74,10 @@
     </div>
 
     <div class="save-bar">
-      <x-button type="button" variant="primary" id="saveOrder" :disabled="$featured->count() < 2">
+      <button type="button" class="btn btn-primary" id="saveOrder" :disabled="$featured->count() < 2">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:5px;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
         Save Order
-      </x-button>
+      </button>
       <span class="save-hint" id="saveHint">Order applies to the blog home carousel.</span>
     </div>
   </div>
@@ -70,7 +94,7 @@
       </div>
       <form method="POST" action="{{ route('admin.blogs.feature', $blog) }}" style="display:inline;">
         @csrf
-        <x-button type="submit" variant="primary" size="sm">Add</x-button>
+        <button type="submit" class="btn btn-primary btn-sm">Add</button>
       </form>
     </div>
     @empty

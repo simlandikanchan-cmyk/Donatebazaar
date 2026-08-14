@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Jobs\ProcessSettlementPayout;
+use App\Jobs\ProcessSettlementJob;
 use App\Models\Campaign;
 use App\Models\CampaignSettlement;
 use App\Models\Donation;
@@ -10,7 +10,8 @@ use App\Models\Organization;
 use App\Models\PayoutAccount;
 use App\Models\User;
 use App\Models\WalletTransaction;
-use App\Notifications\SettlementFailedNotification;
+use App\Notifications\SettlementProcessingStartedNotification;
+use App\Notifications\SettlementRetryScheduledNotification;
 use App\Services\SettlementService;
 use App\Services\WalletService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -72,10 +73,11 @@ class PayoutProcessingTest extends TestCase
             'total_amount' => 500.00,
             'platform_fee' => 25.00,
             'net_amount' => 500.00,
-            'payment_status' => 'completed',
-            'is_refunded' => false,
-            'paid_at' => now()->subDays(10),
         ]);
+        $this->donation->payment_status = 'completed';
+        $this->donation->is_refunded = false;
+        $this->donation->paid_at = now()->subDays(10);
+        $this->donation->save();
     }
 
     #[Test]
@@ -114,7 +116,9 @@ class PayoutProcessingTest extends TestCase
         ]);
 
         $wallet = $this->walletService->getOrCreateWallet($this->owner);
-        $wallet->update(['balance' => 0, 'pending_settlement_balance' => 0]);
+        $wallet->balance = 0;
+        $wallet->pending_settlement_balance = 0;
+        $wallet->save();
 
         $campaign = Campaign::create([
             'title' => 'Fail Restore Campaign',
@@ -150,7 +154,7 @@ class PayoutProcessingTest extends TestCase
         $this->assertEquals(0.00, (float) $wallet->balance);
 
         $this->assertDatabaseMissing('wallet_transactions', [
-            'source' => \App\Models\WalletTransaction::SOURCE_SETTLEMENT_REVERSAL,
+            'source' => WalletTransaction::SOURCE_SETTLEMENT_REVERSAL,
             'reference_id' => $settlement->id,
         ]);
     }
@@ -317,7 +321,7 @@ class PayoutProcessingTest extends TestCase
         $this->assertNull($settlement->failed_at);
         $this->assertNull($settlement->gateway_reference);
 
-        Queue::assertPushed(ProcessSettlementPayout::class);
+        Queue::assertPushed(ProcessSettlementJob::class);
     }
 
     #[Test]
@@ -372,12 +376,12 @@ class PayoutProcessingTest extends TestCase
 
         Notification::assertSentTo(
             $this->owner,
-            \App\Notifications\SettlementProcessingStartedNotification::class
+            SettlementProcessingStartedNotification::class
         );
 
         Notification::assertSentTo(
             $this->owner,
-            \App\Notifications\SettlementRetryScheduledNotification::class
+            SettlementRetryScheduledNotification::class
         );
     }
 

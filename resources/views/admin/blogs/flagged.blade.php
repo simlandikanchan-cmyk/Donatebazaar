@@ -1,7 +1,25 @@
 ﻿@extends('layouts.admin')
 
-@push('page_css')
-@vite('resources/css/admin/entries/blogs.css')
+@push('page_styles')
+<style>
+.flag-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;margin-bottom:14px;animation:fadeUp .4s ease both;}
+.flag-hdr{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border);}
+.flag-title{font-size:14px;font-weight:700;color:var(--text);}
+.flag-meta{font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:3px;}
+.flag-reports{padding:10px 18px;border-bottom:1px solid var(--border);}
+.report-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
+.report-row:last-child{border-bottom:none;}
+.report-info{flex:1;min-width:0;}
+.report-reason{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700;font-family:var(--mono);background:var(--amber-lt);color:#b45309;margin-left:6px;}
+.report-note{font-size:11px;color:var(--text3);margin-top:3px;font-style:italic;}
+.report-status{font-size:10.5px;color:var(--text3);font-family:var(--mono);margin-top:3px;}
+.report-status.done{color:var(--green);}
+.flag-actions{display:flex;gap:8px;padding:12px 18px;flex-wrap:wrap;}
+.empty-state{display:flex;flex-direction:column;align-items:center;gap:10px;padding:56px 20px;color:var(--text3);}
+.empty-state svg{width:48px;height:48px;opacity:.25;}
+.flash-success{background:var(--green-lt);border:1px solid rgba(5,196,138,.25);color:#059669;padding:10px 14px;border-radius:var(--r-sm);margin-bottom:14px;font-size:12.5px;font-weight:600;}
+.flash-error{background:var(--red-lt);border:1px solid rgba(240,68,68,.25);color:var(--red);padding:10px 14px;border-radius:var(--r-sm);margin-bottom:14px;font-size:12.5px;font-weight:600;}
+</style>
 @endpush
 
 
@@ -50,7 +68,7 @@
       @if($report->status === 'pending')
       <form method="POST" action="{{ route('admin.blogs.reports.dismiss', $report) }}">
         @csrf
-        <x-button type="submit" variant="secondary" size="sm">Dismiss report</x-button>
+        <button type="submit" class="btn btn-secondary btn-sm">Dismiss report</button>
       </form>
       @endif
     </div>
@@ -59,18 +77,18 @@
   @endif
 
   <div class="flag-actions">
-    <x-button href="{{ route('admin.blogs.show', $blog) }}" variant="secondary" size="sm">Preview</x-button>
+    <a href="{{ route('admin.blogs.show', $blog) }}" class="btn btn-secondary btn-sm">Preview</a>
 
     <form method="POST" action="{{ route('admin.blogs.approve', $blog) }}">
       @csrf
-      <x-button type="submit" variant="primary" size="sm">✓ Approve</x-button>
+      <button type="submit" class="btn btn-primary btn-sm">✓ Approve</button>
     </form>
 
     <form method="POST" action="{{ route('admin.blogs.reject', $blog) }}"
           onsubmit="return promptFlagReason(this)">
       @csrf
       <input type="hidden" name="reason" id="flag_reject_reason_{{ $blog->id }}">
-      <x-button type="submit" variant="destructive" size="sm" data-id="{{ $blog->id }}">✗ Reject</x-button>
+      <button type="submit" class="btn btn-red btn-sm" data-id="{{ $blog->id }}">✗ Reject</button>
     </form>
   </div>
 </div>

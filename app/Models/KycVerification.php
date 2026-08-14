@@ -41,12 +41,6 @@ class KycVerification extends Model
         'kyc_account_number',
         'kyc_ifsc',
         'kyc_bank_name',
-
-        'status',
-        'rejection_reason',
-
-        'verified_by',
-        'verified_at',
     ];
 
     /*

@@ -1,14 +1,41 @@
-@import '../base/_variables.css';
-@import '../_core.css';
-@import '../_components.css';
-@import '../_components_continued.css';
-@import '../_animations.css';
+/* ═══════════════════════════════════════════════════════════════════
+   USER PORTAL — CSS Entry Point
+   ═══════════════════════════════════════════════════════════════════ */
 
-@import '_dashboard.css';
-@import '_wallet.css';
-@import '_dashboard_events.css';
-@import '_dashboard_activity.css';
-@import '_dashboard_onboarding.css';
+/* Base */
+@import './base/_variables.css';
+@import './base/_reset.css';
+@import './base/_typography.css';
 
-/* BUTTON SYSTEM - single source of truth (resources/css/components/_button.css) */
+/* Layout */
+@import './layout/_shell.css';
+@import './layout/_sidebar.css';
+@import './layout/_topbar.css';
+@import './layout/_responsive.css';
+
+/* Components */
 @import '../components/_button.css';
+@import './components/_cards.css';
+@import './components/_stats.css';
+@import './components/_analytics.css';
+@import './components/_badges.css';
+@import './components/_quick-nav.css';
+@import './components/_notifications.css';
+@import './components/_glass.css';
+
+/* Utilities */
+@import './utilities/_animations.css';
+@import './utilities/_spacing.css';
+@import './utilities/_display.css';
+@import './utilities/_colors.css';
+
+/* Pages */
+@import './pages/_dashboard.css';
+@import './pages/_wallet.css';
+@import './pages/_saved-campaigns.css';
+@import './pages/_fundraiser-level.css';
+@import './pages/_blogs.css';
+@import './pages/_blog-editor.css';
+@import './pages/_blog-show.css';
+@import './pages/_blog-edit.css';
+@import './pages/_profile.css';

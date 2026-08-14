@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<script>
+  // Apply saved theme before first paint to avoid a flash of the previous color.
+  (function () {
+    try {
+      var t = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  })();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="csrf-token" content="LZEumbJvf6KSjLK00axQDGWSNZQVAittrTZpt8Il">
+<meta name="description" content="Manage your DonateBazaar campaigns, track donations, and grow your fundraising impact.">
+<link rel="icon" href="http://localhost/favicon.ico" type="image/x-icon">
+<title>Dashboard — DonateBazaar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script type="module" src="http://127.0.0.1:5173/@vite/client"></script><link rel="stylesheet" href="http://127.0.0.1:5173/resources/css/user/user.css" /></head>
+<body>
+
+<div class="toast-container" id="toastContainer"
+          >
+</div>
+
+<div class="shell">
+
+
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+<aside class="sidebar" id="sidebar">
+
+    <div class="s-logo">
+        <div class="s-logo-mark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <div>
+            <div class="s-logo-name">DonateBazaar</div>
+            <div class="s-logo-tag">My Portal</div>
+        </div>
+    </div>
+
+    <div class="s-user">
+        <div class="s-avatar">
+                            <img src="http://localhost/storage/avatars/uXnt8hPwIVZgkQl7EUZgM1HfPV6UZN9v5yiMqfSN.jpg" alt="Manas karmakar">
+                    </div>
+        <div style="flex:1;overflow:hidden;">
+            <div class="s-user-name">Manas karmakar</div>
+            <div class="s-user-role">Fundraiser</div>
+        </div>
+        <div class="s-user-dot"></div>
+    </div>
+
+    
+            <div class="kyc-banner kyc-ok">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <div><div class="kyc-banner-title">KYC Verified ✓</div>Your account is fully verified.</div>
+        </div>
+    
+    <div class="sidebar-mobile-search">
+        <div class="sms-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input type="text" class="sms-input" id="mobileSearchInput" placeholder="Search campaigns…" autocomplete="off">
+        </div>
+        <select class="sms-sort" id="mobileSortSelect">
+            <option value="">Sort by…</option>
+            <option value="amount-desc">Amount ↓</option>
+            <option value="amount-asc">Amount ↑</option>
+            <option value="date-desc">Newest first</option>
+            <option value="date-asc">Oldest first</option>
+        </select>
+    </div>
+
+    <div class="s-label">Overview</div>
+    <nav class="s-nav">
+        <a href="http://localhost/user/dashboard" class="s-link active">
+            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            Dashboard
+        </a>
+        <a href="http://localhost/profile" class="s-link ">
+            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+            My Profile
+        </a>
+        <a href="http://localhost/user/dashboard/level" class="s-link ">
+            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            Fundraiser Level
+                                        <span class="s-badge">Lvl 1</span>
+                    </a>
+    </nav>
+
+    <div class="s-label">Campaigns</div>
+    <nav class="s-nav">
+        <a href="http://localhost/campaign/create" class="s-link">
+            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+            New Campaign
+        </a>
+        <a href="http://localhost/user/dashboard#cGrid" class="s-link">
+            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+            All Campaigns
+            <span class="s-badge">2</span>        </a>
+        <a href="http://localhost/user/dashboard/saved-campaigns" class="s-link ">
+            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+            Saved Campaigns
+        </a>
+                                                <a href="http://localhost/user/dashboard#cGrid" class="s-link" onclick="setFilter('expired')">
+            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Expired
+            <span class="s-badge">2</span>
+        </a>
+            </nav>
+
+    <div class="s-label">Identity & KYC</div>
+    <nav class="s-nav">
+                        <a href="http://localhost/user/kyc" class="s-link ">
+            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            KYC Status
+            <span class="s-badge ok">Approved</span>
+        </a>
+            </nav>
+
+    <div class="s-label">Finance</div>
+    <nav class="s-nav">
+        <a href="http://localhost/user/dashboard/wallet" class="s-link ">
+            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+            Wallet
+        </a>
+        <a href="http://localhost/my-recurring-donations" class="s-link ">
+            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            Recurring Donations
+            <span class="s-badge ok">1</span>        </a>
+        <a href="http://localhost/gift-cards" class="s-link ">
+            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/></svg>
+            Gift Cards
+        </a>
+        <a href="http://localhost/donation-history" class="s-link ">
+            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            Donation History
+        </a>
+    </nav>
+
+    <div class="s-label">Volunteer</div>
+    <nav class="s-nav">
+        <a href="http://localhost/my-volunteer-dashboard" class="s-link ">
+            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            My Dashboard
+        </a>
+        <a href="http://localhost/volunteer/apply" class="s-link ">
+            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+            Apply as Volunteer
+        </a>
+    </nav>
+
+    <div class="s-divider"></div>
+
+    <div class="s-label">Blogs</div>
+    <nav class="s-nav">
+        <a href="http://localhost/user/dashboard/blogs" class="s-link ">
+            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+            My Blogs
+            <span class="s-badge">2</span>        </a>
+        <a href="http://localhost/user/dashboard/blogs/create" class="s-link ">
+            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+            Write a Blog
+        </a>
+    </nav>
+        <div class="s-sub">
+                            </div>
+    
+    <div class="s-bottom">
+        <a href="http://localhost/profile" class="s-link" style="color:#64748b;margin-bottom:2px;">
+            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+            My Profile
+        </a>
+        <a href="http://localhost/logout" onclick="event.preventDefault();document.getElementById('__lf').submit();" class="s-link" style="color:#ef4444;">
+            <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+            Sign Out
+        </a>
+        <form id="__lf" action="http://localhost/logout" method="POST" style="display:none;"><input type="hidden" name="_token" value="LZEumbJvf6KSjLK00axQDGWSNZQVAittrTZpt8Il" autocomplete="off"></form>
+    </div>
+
+</aside>
+
+
+<div class="main">
+
+    <header class="topbar">
+        <div class="topbar-left-wrap">
+            <button class="hamburger" id="hamburger" aria-label="Menu">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+                        <div class="topbar-left">
+                <h1>Dashboard</h1>
+                <p>Monday, 10 August 2026</p>
+            </div>
+        </div>
+        <div class="topbar-right">
+                        <div class="search-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                <input class="search-input" id="searchInput" type="text" placeholder="Search campaigns…" autocomplete="off">
+            </div>
+            <select class="sort-sel" id="sortSelect">
+                <option value="">Sort by…</option>
+                <option value="amount-desc">Amount ↓</option>
+                <option value="amount-asc">Amount ↑</option>
+                <option value="date-desc">Newest first</option>
+                <option value="date-asc">Oldest first</option>
+            </select>
+            <button class="btn btn--primary btn--md tb-btn" type="button"
+                        >
+                <span class="btn__label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg></span>
+                    </button>
+            <div class="theme-toggle">
+                <input type="checkbox" id="themeToggle">
+                <label for="themeToggle">
+                    <div class="theme-icons">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path stroke-linecap="round" d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+                    </div>
+                </label>
+            </div>
+            <a class="btn btn--primary btn--md" href="http://localhost/campaign/create"
+                     >
+                <span class="btn__label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                New Campaign</span>
+                    </a>
+                        <div class="av-wrap" id="avWrap">
+                <div class="t-avatar" title="Account">
+                                            <img src="http://localhost/storage/avatars/uXnt8hPwIVZgkQl7EUZgM1HfPV6UZN9v5yiMqfSN.jpg" alt="Manas karmakar">
+                                    </div>
+                <div class="av-dd" id="avDD">
+                    <div class="dd-hdr">
+                        <div class="dd-name">Manas karmakar</div>
+                        <div class="dd-email">yoyo3dmodel@gmail.com</div>
+                    </div>
+                    <a href="http://localhost/profile" class="dd-item accent">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                        View Profile
+                    </a>
+                    <a href="http://localhost/profile/edit" class="dd-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                        Edit Profile
+                    </a>
+                    <a href="http://localhost/my-recurring-donations" class="dd-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                        Recurring Donations
+                    </a>
+                    <div class="dd-sep"></div>
+                    <a href="http://localhost/logout" onclick="event.preventDefault();document.getElementById('__lf').submit();" class="dd-item danger">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                        Sign Out
+                    </a>
+                </div>
+            </div>
+                                </div>
+    </header>
+
+    <div class="body">
+        
+
+<div class="welcome-banner">
+    <span class="wb-glow g1"></span>
+    <span class="wb-glow g2"></span>
+    <svg class="wb-deco" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <circle cx="180" cy="30" r="80" stroke="currentColor" stroke-width=".5" opacity=".06"/>
+        <circle cx="180" cy="30" r="100" stroke="currentColor" stroke-width=".5" opacity=".04"/>
+        <circle cx="180" cy="30" r="120" stroke="currentColor" stroke-width=".5" opacity=".03"/>
+        <path d="M0 200 Q 50 150 100 180 T 200 160" stroke="currentColor" stroke-width=".5" opacity=".04"/>
+    </svg>
+    <div class="wb-left">
+        <div class="wb-tag">
+            <span class="wb-tag-dot"></span>
+            Good morning, Fundraiser
+                    </div>
+        <div class="wb-name">Manas karmakar <span class="wave"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2"/><path d="M14 10V4a2 2 0 0 0-2-2 2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg></span></div>
+        <div class="wb-sub" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+            <span>Here's what's happening with your campaigns today.</span>
+                                </div>
+        <div class="wb-badges">
+                                                                <span class="wb-badge wbb-purple">70% overall funded</span>
+                                </div>
+    </div>
+    <div class="wb-right">
+        <a class="btn btn--primary btn--md wb-btn wb-btn-primary" href="http://localhost/campaign/create"
+                     >
+                <span class="btn__label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+            New Campaign</span>
+                    </a>
+                <a class="btn btn--primary btn--md wb-btn wb-btn-ghost" href="http://localhost/profile"
+                     >
+                <span class="btn__label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+            My Profile</span>
+                    </a>
+    </div>
+</div>
+
+
+<div class="stats-grid">
+    <div class="stat-card">
+
+            <div class="stat-icon-wrap si-indigo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+    
+    <div class="stat-info">
+        <div class="stat-label">Total Raised</div>
+        <div class="stat-val sv-indigo">₹28,100</div>
+                    <div class="stat-foot">70% of total goal</div>
+            </div>
+
+    </div>
+    <div class="stat-card">
+
+            <div class="stat-icon-wrap si-pink">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+        </div>
+    
+    <div class="stat-info">
+        <div class="stat-label">Total Goal</div>
+        <div class="stat-val sv-pink">₹40,000</div>
+                    <div class="stat-foot">Across 2 campaigns</div>
+            </div>
+
+    </div>
+    <div class="stat-card">
+
+            <div class="stat-icon-wrap si-green">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+    
+    <div class="stat-info">
+        <div class="stat-label">Active Campaigns</div>
+        <div class="stat-val sv-green">0</div>
+                    <div class="stat-foot">Live &amp;amp; accepting donations</div>
+            </div>
+
+    </div>
+    <div class="stat-card">
+
+            <div class="stat-icon-wrap si-yellow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2 1 3 3 3h10c2 0 3-1 3-3V7c0-2-1-3-3-3H7C5 4 4 5 4 7z"/><polyline points="16 10 12 14 8 10"/></svg>
+        </div>
+    
+    <div class="stat-info">
+        <div class="stat-label">Total Donations</div>
+        <div class="stat-val sv-yellow">15</div>
+                    <div class="stat-foot">Avg ₹1,873 per donation</div>
+            </div>
+
+    </div>
+    <a href="http://localhost/user/dashboard#cGrid" class="stat-card is-link">
+
+            <div class="stat-icon-wrap si-blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+        </div>
+    
+    <div class="stat-info">
+        <div class="stat-label">All Campaigns</div>
+        <div class="stat-val sv-blue">2</div>
+                    <div class="stat-foot">View all &amp;rarr;</div>
+            </div>
+
+    </a>
+    <a href="http://localhost/user/dashboard/wallet" class="stat-card is-link">
+
+            <div class="stat-icon-wrap si-purple">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+        </div>
+    
+    <div class="stat-info">
+        <div class="stat-label">Wallet</div>
+        <div class="stat-val sv-purple">₹0</div>
+                    <div class="stat-foot">Available balance &amp;rarr;</div>
+            </div>
+
+    </a>
+</div>
+
+
+<div class="activity-card">
+    <div class="activity-hdr">
+        <div class="activity-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+            Recent Donor Activity
+        </div>
+    </div>
+    <div class="activity-list">
+                        <div class="activity-item">
+    <div class="activity-dot-col">
+        <div class="activity-dot d-green"><span class="ad-letter">M</span></div>
+        <div class="activity-line"></div>
+    </div>
+    <div class="activity-body">
+        <div class="activity-body-top">
+                <div class="activity-lbl">
+                                            Manas karmakar
+                                        donated
+                </div>
+                <div class="activity-amt">+₹500</div>
+            </div>
+            <div class="activity-sub">
+                to <span>New campaign</span>
+                            </div>
+    </div>
+</div>
+                        <div class="activity-item">
+    <div class="activity-dot-col">
+        <div class="activity-dot d-green"><span class="ad-letter">P</span></div>
+        <div class="activity-line"></div>
+    </div>
+    <div class="activity-body">
+        <div class="activity-body-top">
+                <div class="activity-lbl">
+                                            pallabi Banerjee
+                                        donated
+                </div>
+                <div class="activity-amt">+₹500</div>
+            </div>
+            <div class="activity-sub">
+                to <span>New campaign</span>
+                            </div>
+    </div>
+</div>
+                        <div class="activity-item">
+    <div class="activity-dot-col">
+        <div class="activity-dot d-green"><span class="ad-letter">M</span></div>
+        <div class="activity-line"></div>
+    </div>
+    <div class="activity-body">
+        <div class="activity-body-top">
+                <div class="activity-lbl">
+                                            Manas karmakar
+                                        donated
+                </div>
+                <div class="activity-amt">+₹100</div>
+            </div>
+            <div class="activity-sub">
+                to <span>New campaign</span>
+                            </div>
+    </div>
+</div>
+                        <div class="activity-item">
+    <div class="activity-dot-col">
+        <div class="activity-dot d-green"><span class="ad-letter">M</span></div>
+        <div class="activity-line"></div>
+    </div>
+    <div class="activity-body">
+        <div class="activity-body-top">
+                <div class="activity-lbl">
+                                            Manas karmakar
+                                        donated
+                </div>
+                <div class="activity-amt">+₹500</div>
+            </div>
+            <div class="activity-sub">
+                to <span>New campaign</span>
+                            </div>
+    </div>
+</div>
+                        <div class="activity-item">
+    <div class="activity-dot-col">
+        <div class="activity-dot d-green"><span class="ad-letter">D</span></div>
+        <div class="activity-line"></div>
+    </div>
+    <div class="activity-body">
+        <div class="activity-body-top">
+                <div class="activity-lbl">
+                                            DonateBaazar Admin
+                                        donated
+                </div>
+                <div class="activity-amt">+₹500</div>
+            </div>
+            <div class="activity-sub">
+                to <span>New campaign</span>
+                            </div>
+    </div>
+</div>
+                        <div class="activity-item">
+    <div class="activity-dot-col">
+        <div class="activity-dot d-green"><span class="ad-letter">D</span></div>
+        <div class="activity-line"></div>
+    </div>
+    <div class="activity-body">
+        <div class="activity-body-top">
+                <div class="activity-lbl">
+                                            DonateBaazar Admin
+                                        donated
+                </div>
+                <div class="activity-amt">+₹500</div>
+            </div>
+            <div class="activity-sub">
+                to <span>New campaign</span>
+                            </div>
+    </div>
+</div>
+            </div>
+</div>
+
+
+
+
+<div class="analytics-row">
+    <div class="chart-card">
+        <div class="chart-card-hdr">
+            <div>
+                <div class="chart-title">Fundraising Overview</div>
+                <div class="chart-sub">Monthly funds raised — last 12 months</div>
+            </div>
+            <div class="chart-legend">
+                <div class="chart-legend-dot"></div>
+                Amount Raised (₹)
+            </div>
+        </div>
+        <div class="chart-wrap"><canvas id="fundChart"></canvas></div>
+    </div>
+
+    <div class="impact-ring-card">
+        <div class="impact-ring-hdr">Funding Health</div>
+        <div class="impact-ring-sub">Overall goal completion</div>
+        <div class="impact-ring-wrap">
+            <svg viewBox="0 0 120 120" class="impact-ring-svg">
+                <defs>
+                    <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#2563eb"/>
+                        <stop offset="100%" stop-color="#0d9488"/>
+                    </linearGradient>
+                </defs>
+                <circle class="impact-ring-bg" cx="60" cy="60" r="52"/>
+                <circle class="impact-ring-fg" id="impactRing" cx="60" cy="60" r="52"/>
+            </svg>
+            <div class="impact-ring-center">
+                <div class="impact-ring-pct" id="impactRingPct">70%</div>
+                <div class="impact-ring-lbl">Funded</div>
+            </div>
+        </div>
+        <div class="impact-ring-foot">
+            <b>&#8377;28,100</b> of &#8377;40,000
+        </div>
+    </div>
+
+    <div class="qs-panel">
+        <div class="qs-title">Campaign Status</div>
+                        <div class="qs-row" role="button" tabindex="0"
+             onclick="setFilter('active')"
+             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setFilter('active');}">
+            <div class="qs-row-left">
+                <div class="qs-dot" style="background:var(--green)"></div>
+                <span class="qs-label">Active</span>
+            </div>
+            <span class="qs-val">0</span>
+        </div>
+                <div class="qs-row" role="button" tabindex="0"
+             onclick="setFilter('inactive')"
+             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setFilter('inactive');}">
+            <div class="qs-row-left">
+                <div class="qs-dot" style="background:var(--blue)"></div>
+                <span class="qs-label">Awaiting Review</span>
+            </div>
+            <span class="qs-val">0</span>
+        </div>
+                <div class="qs-row" role="button" tabindex="0"
+             onclick="setFilter('pending')"
+             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setFilter('pending');}">
+            <div class="qs-row-left">
+                <div class="qs-dot" style="background:var(--yellow)"></div>
+                <span class="qs-label">Pending</span>
+            </div>
+            <span class="qs-val">0</span>
+        </div>
+                <div class="qs-row" role="button" tabindex="0"
+             onclick="setFilter('paused')"
+             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setFilter('paused');}">
+            <div class="qs-row-left">
+                <div class="qs-dot" style="background:var(--accent)"></div>
+                <span class="qs-label">Paused</span>
+            </div>
+            <span class="qs-val">0</span>
+        </div>
+                <div class="qs-row" role="button" tabindex="0"
+             onclick="setFilter('rejected')"
+             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setFilter('rejected');}">
+            <div class="qs-row-left">
+                <div class="qs-dot" style="background:var(--red)"></div>
+                <span class="qs-label">Rejected</span>
+            </div>
+            <span class="qs-val">0</span>
+        </div>
+                <div class="qs-row" role="button" tabindex="0"
+             onclick="setFilter('expired')"
+             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setFilter('expired');}">
+            <div class="qs-row-left">
+                <div class="qs-dot" style="background:var(--gray)"></div>
+                <span class="qs-label">Expired</span>
+            </div>
+            <span class="qs-val">2</span>
+        </div>
+                <div class="qs-progress">
+            <div class="qs-prog-label">
+                <span>Overall funding progress</span>
+                <span>70%</span>
+            </div>
+            <div class="qs-prog-bar">
+                <div class="qs-prog-fill" id="overallBar" style="width:0%"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="chart-card bar-chart-card">
+    <div class="chart-card-hdr">
+        <div>
+            <div class="chart-title">Campaign Comparison</div>
+            <div class="chart-sub">Raised vs goal per campaign</div>
+        </div>
+    </div>
+    <div class="chart-wrap"><canvas id="campChart"></canvas></div>
+</div>
+
+
+<div class="qnav">
+            <a href="http://localhost/campaign/create" class="qnav-card" style="animation-delay:.05s;--qc:var(--accent-lt);">
+        <div class="qnav-ico" style="background:var(--accent-lt);color:var(--accent);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-icon="New Campaign"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+        </div>
+        <div>
+            <div class="qnav-lbl">New Campaign</div>
+            <div class="qnav-sub">Start fundraising</div>
+        </div>
+    </a>
+        <a href="http://localhost/user/dashboard#cGrid" class="qnav-card" style="animation-delay:.10s;--qc:var(--green-lt);">
+        <div class="qnav-ico" style="background:var(--green-lt);color:var(--green);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-icon="All Campaigns"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        </div>
+        <div>
+            <div class="qnav-lbl">All Campaigns</div>
+            <div class="qnav-sub">2 total</div>
+        </div>
+    </a>
+        <a href="http://localhost/profile" class="qnav-card" style="animation-delay:.15s;--qc:rgba(59,130,246,.10);">
+        <div class="qnav-ico" style="background:rgba(59,130,246,.10);color:var(--blue);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-icon="My Profile"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+        </div>
+        <div>
+            <div class="qnav-lbl">My Profile</div>
+            <div class="qnav-sub">View &amp; edit</div>
+        </div>
+    </a>
+        <a href="http://localhost/user/kyc" class="qnav-card" style="animation-delay:.25s;--qc:var(--yellow-lt);">
+        <div class="qnav-ico" style="background:var(--yellow-lt);color:var(--yellow);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-icon="KYC Status"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        </div>
+        <div>
+            <div class="qnav-lbl">KYC Status</div>
+            <div class="qnav-sub">Approved</div>
+        </div>
+    </a>
+        <a href="http://localhost/my-recurring-donations" class="qnav-card" style="animation-delay:.30s;--qc:var(--pink-lt);">
+        <div class="qnav-ico" style="background:var(--pink-lt);color:var(--pink);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-icon="Recurring"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        </div>
+        <div>
+            <div class="qnav-lbl">Recurring</div>
+            <div class="qnav-sub">Manage donations</div>
+        </div>
+    </a>
+        <a href="http://localhost/user/dashboard/blogs" class="qnav-card" style="animation-delay:.35s;--qc:rgba(245,158,11,.10);">
+        <div class="qnav-ico" style="background:rgba(245,158,11,.10);color:var(--yellow);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-icon="My Blogs"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+        </div>
+        <div>
+            <div class="qnav-lbl">My Blogs</div>
+            <div class="qnav-sub">2 posts</div>
+        </div>
+    </a>
+        <a href="http://localhost/user/dashboard/blogs/create" class="qnav-card" style="animation-delay:.40s;--qc:rgba(16,185,129,.10);">
+        <div class="qnav-ico" style="background:rgba(16,185,129,.10);color:var(--green);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-icon="Write Blog"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+        </div>
+        <div>
+            <div class="qnav-lbl">Write Blog</div>
+            <div class="qnav-sub">New post</div>
+        </div>
+    </a>
+        <a href="http://localhost/gift-cards" class="qnav-card" style="animation-delay:.45s;--qc:rgba(236,72,153,.10);">
+        <div class="qnav-ico" style="background:rgba(236,72,153,.10);color:var(--pink);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-icon="Gift Cards"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/></svg>
+        </div>
+        <div>
+            <div class="qnav-lbl">Gift Cards</div>
+            <div class="qnav-sub">Buy &amp; redeem</div>
+        </div>
+    </a>
+        <a href="http://localhost/user/dashboard/wallet" class="qnav-card" style="animation-delay:.50s;--qc:var(--purple-lt);">
+        <div class="qnav-ico" style="background:var(--purple-lt);color:var(--purple);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-icon="Wallet"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+        </div>
+        <div>
+            <div class="qnav-lbl">Wallet</div>
+            <div class="qnav-sub">View balance &amp; payout</div>
+        </div>
+    </a>
+    </div>
+
+
+<div class="insight-row">
+    
+    </div>
+
+
+<div class="achieve-card">
+    <div class="achieve-hdr">
+        <div class="achieve-title">Achievements</div>
+        <div class="achieve-count">5/6 earned</div>
+    </div>
+    <div class="achieve-grid">
+                <div class="achieve-item earned" title="Create your first campaign">
+            <div class="achieve-ico" style="--ac:var(--blue)">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                            </div>
+            <div class="achieve-lbl">First Campaign</div>
+        </div>
+                <div class="achieve-item earned" title="Receive your first donation">
+            <div class="achieve-ico" style="--ac:var(--pink)">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                            </div>
+            <div class="achieve-lbl">First Donation</div>
+        </div>
+                <div class="achieve-item earned" title="Complete identity verification">
+            <div class="achieve-ico" style="--ac:var(--green)">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            </div>
+            <div class="achieve-lbl">KYC Verified</div>
+        </div>
+                <div class="achieve-item " title="Have a live campaign">
+            <div class="achieve-ico" style="--ac:var(--yellow)">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                            </div>
+            <div class="achieve-lbl">Active Fundraiser</div>
+        </div>
+                <div class="achieve-item earned" title="Reach 100% on any campaign">
+            <div class="achieve-ico" style="--ac:var(--accent)">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+                            </div>
+            <div class="achieve-lbl">Goal Crusher</div>
+        </div>
+                <div class="achieve-item earned" title="Set up recurring donations">
+            <div class="achieve-ico" style="--ac:var(--purple)">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+                            </div>
+            <div class="achieve-lbl">Recurring Ready</div>
+        </div>
+            </div>
+</div>
+
+
+
+
+<div class="insight-card blog-section">
+    <div class="insight-card-hdr">
+        <div class="insight-card-title">Recent Blog Posts</div>
+        <a href="http://localhost/user/dashboard/blogs" class="insight-link">View all →</a>
+    </div>
+    <div class="blog-list">
+                        <div class="blog-item">
+            <div class="blog-info">
+                <div class="blog-title">Hope Heals: Why Your Medical Donation Can Save a Life</div>
+                <div class="blog-meta">
+                    <span class="badge b-default" style="font-size:9px;padding:2px 6px;">Published</span>
+                    <span>21 views</span>
+                    <span>1 week ago</span>
+                </div>
+            </div>
+            <a class="btn btn--secondary btn--md" href="http://localhost/user/dashboard/blogs"
+                     >
+                <span class="btn__label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                View</span>
+                    </a>
+        </div>
+                        <div class="blog-item">
+            <div class="blog-info">
+                <div class="blog-title">Why Online Donations Are Transforming Charitable Giving in</div>
+                <div class="blog-meta">
+                    <span class="badge b-default" style="font-size:9px;padding:2px 6px;">Published</span>
+                    <span>10 views</span>
+                    <span>1 month ago</span>
+                </div>
+            </div>
+            <a class="btn btn--secondary btn--md" href="http://localhost/user/dashboard/blogs"
+                     >
+                <span class="btn__label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                View</span>
+                    </a>
+        </div>
+            </div>
+</div>
+
+
+<div class="sec-hdr" id="cGrid">
+    <div class="sec-title">
+        Your Campaigns
+                    <span style="font-size:11px;font-weight:400;color:var(--text3);font-family:var(--mono);margin-left:8px;">
+                1–2 of 2
+            </span>
+            </div>
+    <div class="sec-right">
+        <div class="ftabs" id="ftabs">
+            <button class="ftab on" data-filter="all">All <span class="cnt">2</span></button>
+            <button class="ftab" data-filter="active">Active <span class="cnt">0</span></button>
+            <button class="ftab" data-filter="inactive">Awaiting <span class="cnt">0</span></button>
+            <button class="ftab" data-filter="pending">Pending <span class="cnt">0</span></button>
+            <button class="ftab" data-filter="paused">Paused <span class="cnt">0</span></button>
+            <button class="ftab" data-filter="rejected">Rejected <span class="cnt">0</span></button>
+            <button class="ftab" data-filter="expired">Expired <span class="cnt">2</span></button>
+        </div>
+        <select class="ftab-select" id="ftabSelect">
+            <option value="all">All (2)</option>
+            <option value="active">Active (0)</option>
+            <option value="inactive">Awaiting (0)</option>
+            <option value="pending">Pending (0)</option>
+            <option value="paused">Paused (0)</option>
+            <option value="rejected">Rejected (0)</option>
+            <option value="expired">Expired (2)</option>
+        </select>
+        <select class="view-select" id="viewSelect">
+                <option value="grid">Grid View</option>
+                <option value="list">List View</option>
+            </select>
+    </div>
+</div>
+
+<div id="noResults">No campaigns match this filter.</div>
+
+
+
+<div class="c-grid" id="campaignGrid">
+                <div class="c-card"
+         data-filter="expired"
+         data-title="campaign title"
+         data-amount="20000.00"
+         data-date="2026-06-27 15:32:28"
+         style="animation-delay:0s">
+        <div class="c-thumb">
+                            <img src="http://localhost/storage/images/campaign-title-1782554548.webp" alt="Campaign title" loading="lazy">
+                <div class="c-thumb-overlay"></div>
+                        <div class="c-badge-wrap">
+                <span class="badge b-expired">Expired</span>
+                                    <span class="badge b-expired" style="margin-left:4px;">Ended</span>
+                            </div>
+        </div>
+        <div class="c-body">
+            <div class="c-title">
+                Campaign title
+                                    <span style="display:inline-block;font-size:10px;font-weight:500;color:var(--text3);font-family:var(--mono);margin-left:6px;">Medical</span>
+                            </div>
+
+                        <div class="reason reason-g">
+                <div class="reason-lbl">Expired</div>
+                <div class="reason-txt">This campaign has ended. Create a new one to continue.</div>
+            </div>
+            
+            <div class="prog-wrap">
+                <div class="prog-numbers">
+                    <span class="prog-raised">₹0</span>
+                    <span class="prog-goal">of ₹20,000</span>
+                </div>
+                <div class="prog-bar"><div class="prog-fill" style="width:0%"></div></div>
+                <div class="prog-meta">
+                    <span class="prog-pct">0% funded</span>
+                                    </div>
+            </div>
+
+            <div class="c-actions">
+                <a class="btn btn--secondary btn--md btn btn-secondary" href="http://localhost/campaign/92"
+                     >
+                <span class="btn__label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                    View</span>
+                    </a>
+                <a class="btn btn--secondary btn--md btn btn-secondary" href="http://localhost/campaign/92/edit"
+                     >
+                <span class="btn__label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                    Edit</span>
+                    </a>
+                            </div>
+        </div>
+    </div>
+                <div class="c-card"
+         data-filter="expired"
+         data-title="new campaign"
+         data-amount="20000.00"
+         data-date="2026-06-24 12:03:16"
+         style="animation-delay:0.04s">
+        <div class="c-thumb">
+                            <img src="http://localhost/storage/images/new-campaign-1782282796.webp" alt="New campaign" loading="lazy">
+                <div class="c-thumb-overlay"></div>
+                        <div class="c-badge-wrap">
+                <span class="badge b-expired">Expired</span>
+                                    <span class="badge b-expired" style="margin-left:4px;">Ended</span>
+                            </div>
+        </div>
+        <div class="c-body">
+            <div class="c-title">
+                New campaign
+                                    <span style="display:inline-block;font-size:10px;font-weight:500;color:var(--text3);font-family:var(--mono);margin-left:6px;">Elderly Support</span>
+                            </div>
+
+                        <div class="reason reason-g">
+                <div class="reason-lbl">Expired</div>
+                <div class="reason-txt">This campaign has ended. Create a new one to continue.</div>
+            </div>
+            
+            <div class="prog-wrap">
+                <div class="prog-numbers">
+                    <span class="prog-raised">₹28,100</span>
+                    <span class="prog-goal">of ₹20,000</span>
+                </div>
+                <div class="prog-bar"><div class="prog-fill" style="width:100%"></div></div>
+                <div class="prog-meta">
+                    <span class="prog-pct">100% funded</span>
+                                            <span style="margin-left:auto;font-size:10.5px;color:var(--text3);">30 donations</span>
+                                    </div>
+            </div>
+
+            <div class="c-actions">
+                <a class="btn btn--secondary btn--md btn btn-secondary" href="http://localhost/campaign/91"
+                     >
+                <span class="btn__label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                    View</span>
+                    </a>
+                <a class="btn btn--secondary btn--md btn btn-secondary" href="http://localhost/campaign/91/edit"
+                     >
+                <span class="btn__label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                    Edit</span>
+                    </a>
+                            </div>
+        </div>
+    </div>
+    </div>
+
+
+<div class="c-list" id="campaignList" style="display:none;">
+                <div class="c-list-item"
+         data-filter="expired"
+         data-title="campaign title"
+         data-amount="20000.00"
+         data-date="2026-06-27 15:32:28"
+         style="animation-delay:0s">
+        <div class="c-list-thumb">
+                            <img src="http://localhost/storage/images/campaign-title-1782554548.webp" alt="Campaign title" loading="lazy">
+                    </div>
+        <div class="c-list-info">
+            <div class="c-list-title">
+                Campaign title
+                                    <span style="font-size:10px;font-weight:500;color:var(--text3);font-family:var(--mono);margin-left:6px;">Medical</span>
+                            </div>
+            <div class="c-list-sub">
+                <span>₹0 raised</span>
+                <span class="c-list-dot"></span>
+                <span>of ₹20,000</span>
+                                            </div>
+        </div>
+        <div class="c-list-prog">
+            <div class="c-list-pct">0%</div>
+            <div class="c-list-bar"><div class="c-list-fill" style="width:0%"></div></div>
+        </div>
+        <div class="c-list-badge">
+            <span class="badge b-expired">Expired</span>
+                            <span class="badge b-expired" style="margin-left:3px;">Ended</span>
+                    </div>
+        <div class="c-list-actions">
+            <a class="btn btn--secondary btn--md btn btn-secondary" href="http://localhost/campaign/92"
+                     >
+                <span class="btn__label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>View</span>
+                    </a>
+            <a class="btn btn--secondary btn--md btn btn-secondary" href="http://localhost/campaign/92/edit"
+                     >
+                <span class="btn__label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>Edit</span>
+                    </a>
+                    </div>
+    </div>
+                <div class="c-list-item"
+         data-filter="expired"
+         data-title="new campaign"
+         data-amount="20000.00"
+         data-date="2026-06-24 12:03:16"
+         style="animation-delay:0.03s">
+        <div class="c-list-thumb">
+                            <img src="http://localhost/storage/images/new-campaign-1782282796.webp" alt="New campaign" loading="lazy">
+                    </div>
+        <div class="c-list-info">
+            <div class="c-list-title">
+                New campaign
+                                    <span style="font-size:10px;font-weight:500;color:var(--text3);font-family:var(--mono);margin-left:6px;">Elderly Support</span>
+                            </div>
+            <div class="c-list-sub">
+                <span>₹28,100 raised</span>
+                <span class="c-list-dot"></span>
+                <span>of ₹20,000</span>
+                                    <span class="c-list-dot"></span>
+                    <span>30 donations</span>
+                                            </div>
+        </div>
+        <div class="c-list-prog">
+            <div class="c-list-pct">100%</div>
+            <div class="c-list-bar"><div class="c-list-fill" style="width:100%"></div></div>
+        </div>
+        <div class="c-list-badge">
+            <span class="badge b-expired">Expired</span>
+                            <span class="badge b-expired" style="margin-left:3px;">Ended</span>
+                    </div>
+        <div class="c-list-actions">
+            <a class="btn btn--secondary btn--md btn btn-secondary" href="http://localhost/campaign/91"
+                     >
+                <span class="btn__label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>View</span>
+                    </a>
+            <a class="btn btn--secondary btn--md btn btn-secondary" href="http://localhost/campaign/91/edit"
+                     >
+                <span class="btn__label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>Edit</span>
+                    </a>
+                    </div>
+    </div>
+    </div>
+
+
+
+
+<div class="sec-hdr" style="margin-top:32px;">
+    <div class="sec-title">Recurring Donations</div>
+    <div class="sec-right">
+        <a href="http://localhost/my-recurring-donations" style="font-size:12.5px;color:var(--accent);font-weight:600;">View all →</a>
+    </div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="rec-card">
+        <div class="rec-icon" style="background:var(--accent-lt);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        </div>
+        <div class="rec-info">
+            <div class="rec-title">Tithi das campaign for testing</div>
+            <div class="rec-sub">Next: 15 Aug 2026 · Paused</div>
+        </div>
+        <div class="rec-amount">
+            <span class="rec-amt-val">₹500/weekly</span>
+        </div>
+        <div class="rec-actions">
+            <a class="btn btn--secondary btn--md btn btn-secondary" href="http://localhost/my-recurring-donations/5"
+                     >
+                <span class="btn__label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                View</span>
+                    </a>
+                        <form action="http://localhost/recurring/5/resume" method="POST">
+                <input type="hidden" name="_token" value="LZEumbJvf6KSjLK00axQDGWSNZQVAittrTZpt8Il" autocomplete="off"> <input type="hidden" name="_method" value="PATCH">                <button class="btn btn--primary btn--md" type="submit"
+                        >
+                <span class="btn__label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/></svg>Resume</span>
+                    </button>
+            </form>
+                    </div>
+    </div>
+    </div>
+    </div>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script type="module" src="http://127.0.0.1:5173/@vite/client"></script><script type="module" src="http://127.0.0.1:5173/resources/js/user/user.js"></script><script>
+document.addEventListener('DOMContentLoaded', function(){
+'use strict';
+
+var html = document.documentElement;
+
+/* ── Animated stat counters ── */
+function animateCounter(el, target, prefix, suffix) {
+    var duration = 900, start = 0, startTime = null;
+    prefix = prefix || '';
+    suffix = suffix || '';
+    function step(timestamp) {
+        if (!startTime) startTime = timestamp;
+        var progress = Math.min((timestamp - startTime) / duration, 1);
+        var eased = 1 - Math.pow(1 - progress, 3);
+        var current = Math.floor(eased * target);
+        el.textContent = prefix + current.toLocaleString('en-IN') + suffix;
+        if (progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+}
+document.querySelectorAll('.stat-val').forEach(function (el) {
+    var original = el.textContent;
+    var prefixMatch = original.match(/^(\D*)/);
+    var prefix = prefixMatch ? prefixMatch[1] : '';
+    var raw = original.replace(/[₹,]/g, '').trim();
+    var num = parseInt(raw, 10);
+    if (!isNaN(num) && num > 0) {
+        var suffix = original.includes('%') ? '%' : '';
+        el.textContent = prefix + '0' + suffix;
+        animateCounter(el, num, prefix, suffix);
+    }
+});
+
+/* ── Animate progress bars ── */
+setTimeout(function(){
+    var bar = document.getElementById('overallBar');
+    if (bar) bar.style.width = '70%';
+    var lvl = document.getElementById('levelFill');
+    if (lvl) lvl.style.width = '0%';
+}, 700);
+
+/* ── Animate impact ring ── */
+setTimeout(function(){
+    var ring = document.getElementById('impactRing');
+    if (!ring) return;
+    var pct = parseInt('70', 10) || 0;
+    var circ = 2 * Math.PI * 52;
+    ring.style.strokeDasharray = circ;
+    ring.style.strokeDashoffset = circ - (circ * pct / 100);
+}, 450);
+
+/* ── Filter + Search + Sort ── */
+var activeFilter = 'all', searchQ = '', sortVal = '';
+
+function getCards(){
+    var isGrid = document.getElementById('campaignGrid').style.display !== 'none';
+    return Array.from(document.querySelectorAll(isGrid ? '#campaignGrid .c-card' : '#campaignList .c-list-item'));
+}
+
+function applyFilters(){
+    var all = Array.from(document.querySelectorAll('#campaignGrid .c-card, #campaignList .c-list-item'));
+
+    if (sortVal) {
+        var grids = Array.from(document.querySelectorAll('#campaignGrid .c-card'));
+        var lists = Array.from(document.querySelectorAll('#campaignList .c-list-item'));
+        [grids, lists].forEach(function(arr){
+            if (!arr.length) return;
+            if (sortVal === 'amount-desc') arr.sort(function(a,b){ return +b.dataset.amount - +a.dataset.amount; });
+            if (sortVal === 'amount-asc')  arr.sort(function(a,b){ return +a.dataset.amount - +b.dataset.amount; });
+            if (sortVal === 'date-desc')   arr.sort(function(a,b){ return new Date(b.dataset.date) - new Date(a.dataset.date); });
+            if (sortVal === 'date-asc')    arr.sort(function(a,b){ return new Date(a.dataset.date) - new Date(b.dataset.date); });
+            var parent = arr[0].parentElement;
+            arr.forEach(function(c){ parent.appendChild(c); });
+        });
+    }
+
+    var visible = 0;
+    all.forEach(function(c){
+        var mF = activeFilter === 'all' || c.dataset.filter === activeFilter;
+        var mS = !searchQ || (c.dataset.title || '').includes(searchQ);
+        c.style.display = (mF && mS) ? '' : 'none';
+        if (mF && mS) visible++;
+    });
+    document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
+}
+
+document.querySelectorAll('.ftab').forEach(function(tab){
+    tab.addEventListener('click', function(){
+        document.querySelectorAll('.ftab').forEach(function(t){ t.classList.remove('on'); });
+        this.classList.add('on');
+        activeFilter = this.dataset.filter;
+        document.getElementById('ftabSelect').value = activeFilter;
+        applyFilters();
+    });
+});
+
+document.getElementById('ftabSelect').addEventListener('change', function(){
+    activeFilter = this.value;
+    document.querySelectorAll('.ftab').forEach(function(t){ t.classList.toggle('on', t.dataset.filter === activeFilter); });
+    applyFilters();
+});
+
+window.setFilter = function(f){
+    activeFilter = f;
+    document.querySelectorAll('.ftab').forEach(function(t){ t.classList.toggle('on', t.dataset.filter === f); });
+    document.getElementById('ftabSelect').value = f;
+    applyFilters();
+    var el = document.getElementById('cGrid');
+    if (el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+};
+
+var searchTimeout;
+document.getElementById('searchInput').addEventListener('input', function(){
+    clearTimeout(searchTimeout);
+    searchQ = this.value.toLowerCase().trim();
+    searchTimeout = setTimeout(applyFilters, 180);
+});
+
+document.getElementById('sortSelect').addEventListener('change', function(){
+    sortVal = this.value;
+    applyFilters();
+});
+
+var mobileSearch = document.getElementById('mobileSearchInput');
+var mobileSort = document.getElementById('mobileSortSelect');
+if (mobileSearch) mobileSearch.addEventListener('input', function(){
+    document.getElementById('searchInput').value = this.value;
+    document.getElementById('searchInput').dispatchEvent(new Event('input'));
+});
+if (mobileSort) mobileSort.addEventListener('change', function(){
+    document.getElementById('sortSelect').value = this.value;
+    document.getElementById('sortSelect').dispatchEvent(new Event('change'));
+});
+
+var grid    = document.getElementById('campaignGrid');
+var list    = document.getElementById('campaignList');
+var viewSelect = document.getElementById('viewSelect');
+
+if (viewSelect) {
+    viewSelect.addEventListener('change', function(){
+        if (this.value === 'grid') {
+            grid.style.display = ''; list.style.display = 'none';
+        } else {
+            grid.style.display = 'none'; list.style.display = '';
+        }
+        applyFilters();
+    });
+}
+
+window.handleSub = function(form, txt){
+    form.querySelectorAll('button[type=submit]').forEach(function(b){ b.disabled = true; b.textContent = txt; });
+    return true;
+};
+
+/* ── Chart ── */
+var fundChart;
+window.renderChart = function(){
+    var isDark    = html.getAttribute('data-theme') === 'dark';
+    var gridColor = isDark ? 'rgba(255,255,255,.05)' : 'rgba(0,0,0,.04)';
+    var lblColor  = isDark ? 'rgba(255,255,255,.35)' : 'rgba(0,0,0,.35)';
+    var tipBg     = isDark ? '#1e2033' : '#fff';
+    var tipTx     = isDark ? '#eef0ff' : '#111';
+
+    Chart.defaults.color       = lblColor;
+    Chart.defaults.font.family = "'DM Mono', monospace";
+    Chart.defaults.font.size   = 10.5;
+
+    var ctx = document.getElementById('fundChart');
+    if (!ctx) return;
+    if (fundChart) fundChart.destroy();
+
+    var monthlyData = {"6":"28100.00"};
+    var labels = Object.keys(monthlyData);
+    var values = Object.values(monthlyData);
+
+    var cctx = ctx.getContext('2d');
+    var grad = cctx.createLinearGradient(0, 0, 0, 180);
+    grad.addColorStop(0, 'rgba(37,99,235,.20)');
+    grad.addColorStop(1, 'rgba(37,99,235,0)');
+
+    fundChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Amount Raised (₹)',
+                data: values,
+                borderColor: '#2563eb', backgroundColor: grad,
+                borderWidth: 2.5, fill: true, tension: .45,
+                pointBackgroundColor: '#2563eb',
+                pointBorderColor: tipBg, pointBorderWidth: 2,
+                pointRadius: 4, pointHoverRadius: 6,
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            interaction: { intersect: false, mode: 'index' },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: tipBg, titleColor: tipTx, bodyColor: tipTx,
+                    borderColor: gridColor, borderWidth: 1, padding: 12, cornerRadius: 10,
+                    callbacks: { label: function(c){ return ' ₹' + Number(c.parsed.y).toLocaleString('en-IN'); } }
+                }
+            },
+            scales: {
+                x: { grid:{ color:gridColor }, border:{ dash:[3,3] } },
+                y: { grid:{ color:gridColor }, border:{ dash:[3,3] }, ticks:{ callback: function(v){ return '₹'+Number(v).toLocaleString('en-IN'); } } }
+            }
+        }
+    });
+}
+renderChart();
+
+/* ── Campaign comparison bar chart ── */
+var campChart;
+(function(){
+    var ctx = document.getElementById('campChart');
+    if (!ctx) return;
+    if (campChart) campChart.destroy();
+
+    var isDark    = html.getAttribute('data-theme') === 'dark';
+    var gridColor = isDark ? 'rgba(255,255,255,.05)' : 'rgba(0,0,0,.04)';
+    var lblColor  = isDark ? 'rgba(255,255,255,.35)' : 'rgba(0,0,0,.35)';
+    var tipBg     = isDark ? '#1e2033' : '#fff';
+    var tipTx     = isDark ? '#eef0ff' : '#111';
+
+    var campaigns = [{"title":"Campaign title","raised":0,"goal":20000},{"title":"New campaign","raised":28100,"goal":20000}];
+
+    campChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: campaigns.map(function(c){ return c.title; }),
+            datasets: [
+                {
+                    label: 'Raised (₹)',
+                    data: campaigns.map(function(c){ return c.raised; }),
+                    backgroundColor: '#2563eb',
+                    borderRadius: 4,
+                    barPercentage: .65,
+                },
+                {
+                    label: 'Goal (₹)',
+                    data: campaigns.map(function(c){ return c.goal; }),
+                    backgroundColor: isDark ? 'rgba(37,99,235,.2)' : 'rgba(37,99,235,.10)',
+                    borderRadius: 4,
+                    barPercentage: .65,
+                }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            interaction: { intersect: false, mode: 'index' },
+            plugins: {
+                legend: {
+                    position: 'top',
+                    align: 'end',
+                    labels: { boxWidth: 10, boxHeight: 10, borderRadius: 2, usePointStyle: true, padding: 16, color: lblColor, font: { family: "'DM Sans', sans-serif", size: 11 } }
+                },
+                tooltip: {
+                    backgroundColor: tipBg, titleColor: tipTx, bodyColor: tipTx,
+                    borderColor: gridColor, borderWidth: 1, padding: 12, cornerRadius: 10,
+                    callbacks: { label: function(c){ return c.dataset.label + ': ₹' + Number(c.parsed.y).toLocaleString('en-IN'); } }
+                }
+            },
+            scales: {
+                x: { grid:{ display:false }, ticks:{ color: lblColor, font:{ size:10 } } },
+                y: { grid:{ color:gridColor }, border:{ dash:[3,3] }, ticks:{ callback: function(v){ return '₹'+Number(v).toLocaleString('en-IN'); } } }
+            }
+        }
+    });
+})();
+/* ── 3D Tilt on campaign cards ── */
+var tiltCards = document.querySelectorAll('#campaignGrid .c-card');
+tiltCards.forEach(function(card){
+    card.addEventListener('mousemove', function(e){
+        var rect = this.getBoundingClientRect();
+        var x = (e.clientX - rect.left) / rect.width;
+        var y = (e.clientY - rect.top) / rect.height;
+        var tiltX = (y - .5) * -12;
+        var tiltY = (x - .5) * 12;
+        this.style.transform = 'translateY(-6px) perspective(1200px) rotateX(' + tiltX + 'deg) rotateY(' + tiltY + 'deg)';
+    });
+    card.addEventListener('mouseleave', function(){
+        this.style.transform = 'translateY(0) perspective(1200px) rotateX(0deg) rotateY(0deg)';
+    });
+});
+
+});
+
+</script>
+</body>
+</html>

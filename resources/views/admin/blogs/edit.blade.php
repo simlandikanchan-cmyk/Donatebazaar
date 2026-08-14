@@ -1,14 +1,130 @@
-﻿@extends('layouts.admin')
-
 @push('page_css')
 @vite('resources/css/admin/entries/blogs.css')
 @endpush
 
+@extends('layouts.admin')
 
 @section('sidebar_blogs', 'active')
 @section('page_title', 'Edit Blog Post')
 @section('page_subtitle', 'Update content, status, and settings')
 
+@push('page_styles')
+<style>
+/* ── edit page-specific ── */
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--text3);font-family:var(--mono);margin-bottom:20px;animation:fadeUp .3s both;}
+.breadcrumb a{color:var(--text3);transition:color var(--ease);}
+.breadcrumb a:hover{color:var(--a);}
+.breadcrumb svg{width:10px;height:10px;stroke:var(--text3);fill:none;stroke-width:2;flex-shrink:0;}
+.breadcrumb span{color:var(--text2);}
+.flash-success{background:rgba(5,196,138,.09);border:1px solid rgba(5,196,138,.25);color:#065f46;padding:11px 14px;border-radius:var(--r-sm);font-size:13px;font-weight:500;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.flash-error  {background:rgba(240,68,68,.09);border:1px solid rgba(240,68,68,.25);color:#991b1b;padding:11px 14px;border-radius:var(--r-sm);font-size:13px;font-weight:500;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+[data-theme="dark"] .flash-success{color:#34d399;}[data-theme="dark"] .flash-error{color:#f87171;}
+.flash-success svg,.flash-error svg{width:15px;height:15px;flex-shrink:0;}
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px;gap:14px;flex-wrap:wrap;animation:fadeUp .35s both;}
+.page-header-left h2{font-family:var(--mono);font-size:19px;font-weight:800;color:var(--text);letter-spacing:-.02em;margin-bottom:3px;}
+.page-header-left p{font-size:12px;color:var(--text3);}
+.page-header-right{display:flex;gap:8px;flex-wrap:wrap;}
+.btn{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 16px;border-radius:var(--r-sm);font-size:12.5px;font-weight:600;border:none;transition:opacity var(--ease),transform var(--ease),box-shadow var(--ease);cursor:pointer;font-family:var(--font);white-space:nowrap;text-decoration:none;}
+.btn:hover{opacity:.88;transform:translateY(-1px);}
+.btn svg{width:13px;height:13px;}
+.btn-primary{background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;box-shadow:0 4px 14px rgba(37,99,235,.35);}
+.btn-primary:hover{box-shadow:0 8px 22px rgba(37,99,235,.45);}
+.btn-ghost{background:var(--surface2);color:var(--text2);border:1px solid var(--border2);}
+.btn-ghost:hover{border-color:var(--a);color:var(--a);}
+.btn-danger{background:rgba(240,68,68,.10);color:var(--red);border:1px solid rgba(240,68,68,.22);}
+.btn-danger:hover{background:rgba(240,68,68,.18);}
+[data-theme="dark"] .btn-danger{color:#f87171;}
+.edit-layout{display:grid;grid-template-columns:1fr 290px;gap:20px;align-items:start;}
+@media(max-width:1100px){.edit-layout{grid-template-columns:1fr;}}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;animation:fadeUp .4s both;}
+.card:nth-child(1){animation-delay:.05s;}.card:nth-child(2){animation-delay:.10s;}.card:nth-child(3){animation-delay:.12s;}.card:nth-child(4){animation-delay:.14s;}.card:nth-child(5){animation-delay:.16s;}.card:nth-child(6){animation-delay:.18s;}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border);background:var(--surface2);}
+.card-title{display:flex;align-items:center;gap:8px;font-family:var(--font);font-size:11px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:.06em;}
+.card-title-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;background:var(--a-lt);}
+.card-title-icon svg{width:13px;height:13px;stroke:var(--a);fill:none;stroke-width:2;}
+.card-body{padding:20px 18px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:700px){.form-row{grid-template-columns:1fr;}}
+.form-group{display:flex;flex-direction:column;gap:5px;margin-bottom:16px;}
+.form-group:last-child{margin-bottom:0;}
+.form-label{font-size:10px;font-weight:700;color:var(--text2);font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase;display:flex;align-items:center;gap:5px;}
+.form-label .req{color:var(--red);font-size:13px;}
+.form-input,.form-select,.form-textarea{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:9px 12px;font-size:13px;color:var(--text);font-family:var(--font);outline:none;transition:border-color var(--ease),box-shadow var(--ease),background var(--ease);}
+.form-input::placeholder,.form-textarea::placeholder{color:var(--text3);}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--a);box-shadow:0 0 0 3px var(--a-glow);background:var(--surface);}
+.form-input.error,.form-textarea.error{border-color:var(--red);box-shadow:0 0 0 3px rgba(240,68,68,.12);}
+.form-textarea{resize:vertical;min-height:100px;line-height:1.65;}
+.form-select{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%239096b4' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:32px;}
+.form-hint{font-size:11px;color:var(--text3);margin-top:3px;line-height:1.5;}
+.form-error{font-size:11px;color:var(--red);margin-top:3px;display:flex;align-items:center;gap:4px;}
+.form-error svg{width:11px;height:11px;flex-shrink:0;stroke:var(--red);fill:none;stroke-width:2;}
+.char-counter{font-size:11px;color:var(--text3);font-family:var(--mono);margin-left:auto;}
+.slug-wrap{position:relative;}
+.slug-prefix{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--text3);font-family:var(--mono);pointer-events:none;}
+.slug-input{padding-left:70px !important;}
+.editor-toolbar{display:flex;flex-wrap:wrap;gap:3px;padding:8px 10px;border-bottom:1px solid var(--border);background:var(--surface2);}
+.editor-btn{width:30px;height:28px;border-radius:6px;border:none;background:transparent;color:var(--text2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;transition:background var(--ease),color var(--ease);cursor:pointer;font-family:var(--font);}
+.editor-btn:hover{background:var(--a-lt);color:var(--a);}
+.editor-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;}
+.editor-divider{width:1px;height:24px;background:var(--border2);margin:0 3px;align-self:center;}
+.editor-content{min-height:320px;padding:16px;font-size:14px;line-height:1.75;color:var(--text);font-family:var(--font);outline:none;border:none;background:var(--surface);}
+.editor-content:focus{outline:none;}
+.editor-footer{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-top:1px solid var(--border);background:var(--surface2);}
+.editor-footer span{font-size:11px;color:var(--text3);font-family:var(--mono);}
+.cover-drop{border:2px dashed var(--border2);border-radius:var(--r-sm);background:var(--surface2);padding:28px 20px;text-align:center;cursor:pointer;transition:border-color var(--ease),background var(--ease);position:relative;overflow:hidden;}
+.cover-drop:hover,.cover-drop.drag-over{border-color:var(--a);background:rgba(37,99,235,.04);}
+.cover-drop input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.cover-drop-icon{width:44px;height:44px;border-radius:12px;background:var(--a-lt);border:1px solid rgba(37,99,235,.2);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;}
+.cover-drop-icon svg{width:20px;height:20px;stroke:var(--a);fill:none;stroke-width:1.5;}
+.cover-drop p{font-size:13px;font-weight:500;color:var(--text2);margin-bottom:4px;}
+.cover-drop span{font-size:11.5px;color:var(--text3);}
+.cover-preview-wrap{position:relative;border-radius:var(--r-sm);overflow:hidden;}
+.cover-preview-wrap img{width:100%;height:180px;object-fit:cover;display:block;border-radius:var(--r-sm);}
+.cover-preview-actions{position:absolute;top:8px;right:8px;display:flex;gap:6px;}
+.cover-preview-btn{width:30px;height:30px;border-radius:7px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:opacity var(--ease);}
+.cover-preview-btn:hover{opacity:.85;}
+.cover-preview-btn svg{width:13px;height:13px;}
+.cpb-remove{background:rgba(240,68,68,.9);color:#fff;}
+.cpb-change{background:rgba(255,255,255,.92);color:var(--text);}
+.status-option{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:var(--r-sm);border:1px solid var(--border2);background:var(--surface2);cursor:pointer;transition:border-color var(--ease),background var(--ease);margin-bottom:8px;}
+.status-option:last-child{margin-bottom:0;}
+.status-option.selected{border-color:var(--a);background:var(--a-lt);}
+.status-option input[type="radio"]{display:none;}
+.status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.sd-approved{background:var(--green);}.sd-pending{background:var(--amber);}
+.sd-rejected{background:var(--red);}.sd-draft{background:var(--text3);}
+.status-option-label{font-size:12.5px;font-weight:600;color:var(--text);}
+.status-option-desc{font-size:11px;color:var(--text3);margin-top:1px;}
+.tags-input-wrap{display:flex;flex-wrap:wrap;gap:6px;padding:8px 10px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm);min-height:42px;cursor:text;transition:border-color var(--ease),box-shadow var(--ease);}
+.tags-input-wrap:focus-within{border-color:var(--a);box-shadow:0 0 0 3px var(--a-glow);}
+.tag-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:100px;background:var(--a-lt);border:1px solid rgba(37,99,235,.25);color:var(--a);font-size:11.5px;font-weight:500;font-family:var(--mono);}
+.tag-chip button{background:none;border:none;color:var(--a);font-size:13px;cursor:pointer;line-height:1;padding:0;display:flex;align-items:center;transition:opacity var(--ease);}
+.tag-chip button:hover{opacity:.7;}
+.tags-real-input{border:none;background:transparent;outline:none;font-size:12.5px;color:var(--text);font-family:var(--font);min-width:100px;flex:1;}
+.tags-real-input::placeholder{color:var(--text3);}
+.seo-score-bar{height:6px;background:var(--surface2);border-radius:100px;overflow:hidden;margin-bottom:6px;}
+.seo-score-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--a),var(--a2));transition:width .5s cubic-bezier(.4,0,.2,1);}
+.seo-checks{display:flex;flex-direction:column;gap:6px;}
+.seo-check{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text2);}
+.seo-check svg{width:13px;height:13px;flex-shrink:0;}
+.seo-check.pass svg{stroke:var(--green);fill:none;stroke-width:2.5;}
+.seo-check.fail svg{stroke:var(--text3);fill:none;stroke-width:2;}
+.meta-info{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:2px 14px;}
+.meta-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);}
+.meta-row:last-child{border-bottom:none;}
+.meta-key{font-size:10px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;}
+.meta-val{font-size:12px;font-weight:500;color:var(--text2);}
+.b-pending {background:var(--amber-lt);color:#b45309;border:1px solid rgba(245,158,11,.3);}
+.b-approved{background:var(--green-lt);color:#065f46;border:1px solid rgba(5,196,138,.3);}
+.b-rejected{background:var(--red-lt);color:#991b1b;border:1px solid rgba(240,68,68,.3);}
+.b-draft   {background:rgba(156,163,175,.15);color:#6b7280;border:1px solid rgba(156,163,175,.3);}
+[data-theme="dark"] .b-pending{color:var(--amber);}[data-theme="dark"] .b-approved{color:#34d399;}
+[data-theme="dark"] .b-rejected{color:#f87171;}[data-theme="dark"] .b-draft{color:#9ca3af;}
+@media(max-width:600px){.page-header{flex-direction:column;align-items:flex-start;}}
+@media(max-width:480px){.edit-layout{gap:14px}.card-body{padding:14px 12px}.form-row{gap:12px}.form-input,.form-select,.form-textarea{font-size:12px;padding:8px 11px}.card-header{padding:12px 14px}.page-header-left h2{font-size:16px}.page-header-right{width:100%}.page-header-right .btn{flex:1;justify-content:center}}
+@media(max-width:380px){.card-body{padding:12px 10px}.form-label{font-size:9px}.form-input,.form-select,.form-textarea{font-size:11px;padding:7px 10px}.form-row{grid-template-columns:1fr}.card-title{font-size:10px}.page-header-left h2{font-size:14px}.page-header-right{flex-direction:column;gap:6px}.page-header-right .btn{width:100%}.meta-row{padding:7px 0}.meta-val{font-size:11px}.editor-toolbar{gap:2px;padding:6px 8px}.editor-btn{width:26px;height:24px;font-size:11px}.slug-prefix{font-size:10px}.slug-input{padding-left:60px!important}}
+</style>
+@endpush
 @section('content')
 <div class="breadcrumb">
   <a href="{{ route('admin.dashboard') }}">Dashboard</a>
@@ -41,14 +157,14 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
       Preview
     </a>
-    <x-button variant="ghost" href="{{ route('admin.blogs.index') }}">
+    <a href="{{ route('admin.blogs.index') }}" class="btn btn-ghost">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
       Back
-    </x-button>
-    <x-button variant="primary" type="submit">
+    </a>
+    <button type="submit" form="editForm" class="btn btn-primary">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
       Save Changes
-    </x-button>
+    </button>
   </div>
 </div>
 
@@ -167,23 +283,23 @@
           </div>
         </div>
         <div class="editor-toolbar">
-          <x-button variant="ghost" type="button" class="editor-btn"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 4h8a4 4 0 014 4 4 4 0 01-4 4H6z"/><path stroke-linecap="round" stroke-linejoin="round" d="M6 12h9a4 4 0 014 4 4 4 0 01-4 4H6z"/></svg></x-button>
-          <x-button variant="ghost" type="button" class="editor-btn"><svg viewBox="0 0 24 24"><line x1="19" y1="4" x2="10" y2="4"/><line x1="14" y1="20" x2="5" y2="20"/><line x1="15" y1="4" x2="9" y2="20"/></svg></x-button>
-          <x-button variant="ghost" type="button" class="editor-btn"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 3v7a6 6 0 006 6 6 6 0 006-6V3"/><line x1="4" y1="21" x2="20" y2="21"/></svg></x-button>
-          <x-button variant="ghost" type="button" class="editor-btn"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.3 12H3m3.6-5s.9-2 3.4-2c2.3 0 3.4 1.4 3.4 1.4"/><path stroke-linecap="round" stroke-linejoin="round" d="M10 17s.8 2 3.3 2c2.5 0 3.7-1.5 3.7-2.6 0-.4 0-.8-.2-1.4"/></svg></x-button>
+          <button type="button" class="editor-btn" data-cmd="bold" title="Bold"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 4h8a4 4 0 014 4 4 4 0 01-4 4H6z"/><path stroke-linecap="round" stroke-linejoin="round" d="M6 12h9a4 4 0 014 4 4 4 0 01-4 4H6z"/></svg></button>
+          <button type="button" class="editor-btn" data-cmd="italic" title="Italic"><svg viewBox="0 0 24 24"><line x1="19" y1="4" x2="10" y2="4"/><line x1="14" y1="20" x2="5" y2="20"/><line x1="15" y1="4" x2="9" y2="20"/></svg></button>
+          <button type="button" class="editor-btn" data-cmd="underline" title="Underline"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 3v7a6 6 0 006 6 6 6 0 006-6V3"/><line x1="4" y1="21" x2="20" y2="21"/></svg></button>
+          <button type="button" class="editor-btn" data-cmd="strikeThrough" title="Strikethrough"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.3 12H3m3.6-5s.9-2 3.4-2c2.3 0 3.4 1.4 3.4 1.4"/><path stroke-linecap="round" stroke-linejoin="round" d="M10 17s.8 2 3.3 2c2.5 0 3.7-1.5 3.7-2.6 0-.4 0-.8-.2-1.4"/></svg></button>
           <div class="editor-divider"></div>
-          <x-button variant="ghost" type="button" class="editor-btn">H2</x-button>
-          <x-button variant="ghost" type="button" class="editor-btn">H3</x-button>
+          <button type="button" class="editor-btn" data-cmd="h2" title="Heading 2" style="font-size:11px;width:36px;">H2</button>
+          <button type="button" class="editor-btn" data-cmd="h3" title="Heading 3" style="font-size:11px;width:36px;">H3</button>
           <div class="editor-divider"></div>
-          <x-button variant="ghost" type="button" class="editor-btn"><svg viewBox="0 0 24 24"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><line x1="4" y1="6" x2="4.01" y2="6"/><line x1="4" y1="12" x2="4.01" y2="12"/><line x1="4" y1="18" x2="4.01" y2="18"/></svg></x-button>
-          <x-button variant="ghost" type="button" class="editor-btn"><svg viewBox="0 0 24 24"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h1v4"/><path stroke-linecap="round" stroke-linejoin="round" d="M4 10h2"/><path stroke-linecap="round" stroke-linejoin="round" d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></x-button>
-          <x-button variant="ghost" type="button" class="editor-btn"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1zm12 0c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></svg></x-button>
+          <button type="button" class="editor-btn" data-cmd="insertUnorderedList" title="Bullet list"><svg viewBox="0 0 24 24"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><line x1="4" y1="6" x2="4.01" y2="6"/><line x1="4" y1="12" x2="4.01" y2="12"/><line x1="4" y1="18" x2="4.01" y2="18"/></svg></button>
+          <button type="button" class="editor-btn" data-cmd="insertOrderedList" title="Numbered list"><svg viewBox="0 0 24 24"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h1v4"/><path stroke-linecap="round" stroke-linejoin="round" d="M4 10h2"/><path stroke-linecap="round" stroke-linejoin="round" d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></button>
+          <button type="button" class="editor-btn" data-cmd="blockquote" title="Blockquote"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1zm12 0c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></svg></button>
           <div class="editor-divider"></div>
-          <x-button variant="ghost" type="button" class="editor-btn"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path stroke-linecap="round" stroke-linejoin="round" d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg></x-button>
-          <x-button variant="ghost" type="button" class="editor-btn"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L17.94 6M10.5 10.5L8 18M17.5 6.5L13 19"/></svg></x-button>
+          <button type="button" class="editor-btn" data-cmd="createLink" title="Insert link"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path stroke-linecap="round" stroke-linejoin="round" d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg></button>
+          <button type="button" class="editor-btn" data-cmd="removeFormat" title="Clear formatting"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L17.94 6M10.5 10.5L8 18M17.5 6.5L13 19"/></svg></button>
           <div class="editor-divider"></div>
-          <x-button variant="ghost" type="button" class="editor-btn"><svg viewBox="0 0 24 24"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 00-4-4H4"/></svg></x-button>
-          <x-button variant="ghost" type="button" class="editor-btn"><svg viewBox="0 0 24 24"><polyline points="15 14 20 9 15 4"/><path d="M4 20v-7a4 4 0 014-4h12"/></svg></x-button>
+          <button type="button" class="editor-btn" data-cmd="undo" title="Undo"><svg viewBox="0 0 24 24"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 00-4-4H4"/></svg></button>
+          <button type="button" class="editor-btn" data-cmd="redo" title="Redo"><svg viewBox="0 0 24 24"><polyline points="15 14 20 9 15 4"/><path d="M4 20v-7a4 4 0 014-4h12"/></svg></button>
         </div>
         <div id="editor" class="editor-content" contenteditable="true" spellcheck="true">{!! old('content', $blog->content ?? '') !!}</div>
         <input type="hidden" name="content" id="contentInput">
@@ -279,11 +395,11 @@
           </label>
 
           <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);display:flex;gap:8px;">
-            <x-button variant="primary" type="submit">
+            <button type="submit" form="editForm" class="btn btn-primary">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
               Save
-            </x-button>
-            <x-button variant="secondary" href="{{ route('admin.blogs.index') }}">Cancel</x-button>
+            </button>
+            <a href="{{ route('admin.blogs.index') }}" class="btn btn-secondary btn-ghost">Cancel</a>
           </div>
         </div>
       </div>
@@ -354,12 +470,12 @@
                 src="{{ $blog->cover_image ? asset('storage/'.$blog->cover_image) : '' }}"
                 alt="Cover">
               <div class="cover-preview-actions">
-                <x-button variant="destructive" type="button" class="cover-preview-btn cpb-remove">
+                <button type="button" class="btn btn-red cover-preview-btn cpb-remove" onclick="removeCover()" title="Remove">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                </x-button>
-                <x-button variant="primary" type="button" class="cover-preview-btn cpb-change">
+                </button>
+                <button type="button" class="cover-preview-btn cpb-change" onclick="document.getElementById('coverInput').click()" title="Change">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-                </x-button>
+                </button>
               </div>
             </div>
           </div>
@@ -480,10 +596,10 @@
             onsubmit="return confirm('Delete \'{{ addslashes($blog->title ?? '') }}\'?\nThis will soft-delete the post.')">
         @csrf
         @method('DELETE')
-        <x-button variant="destructive" type="submit">
+        <button type="submit" class="btn btn-red">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
           Delete Post
-        </x-button>
+        </button>
       </form>
     </div>
   </div>
@@ -495,7 +611,7 @@
 (function () {
 'use strict';
 
-/* —€—€ RICH TEXT EDITOR —€—€ */
+/* ── RICH TEXT EDITOR ── */
 var editor       = document.getElementById('editor');
 var contentInput = document.getElementById('contentInput');
 
@@ -527,7 +643,7 @@ function updateCounts() {
 editor.addEventListener('input', updateCounts);
 updateCounts();
 
-/* —€—€ TITLE COUNTER + AUTO-SLUG —€—€ */
+/* ── TITLE COUNTER + AUTO-SLUG ── */
 var titleInput = document.getElementById('title');
 var slugInput  = document.getElementById('slug');
 if (slugInput.value.trim()) { slugInput.dataset.manual = '1'; }
@@ -546,7 +662,7 @@ titleInput.addEventListener('input', updateTitleCounter);
 slugInput.addEventListener('input', function () { this.dataset.manual = '1'; });
 updateTitleCounter();
 
-/* —€—€ EXCERPT COUNTER —€—€ */
+/* ── EXCERPT COUNTER ── */
 var excerptEl = document.getElementById('excerpt');
 function updateExcerptCounter() {
   document.getElementById('excerptCounter').textContent = excerptEl.value.length + ' / 200';
@@ -555,7 +671,7 @@ function updateExcerptCounter() {
 excerptEl.addEventListener('input', updateExcerptCounter);
 updateExcerptCounter();
 
-/* —€—€ META COUNTERS —€—€ */
+/* ── META COUNTERS ── */
 [['meta_title','metaTitleCounter',65],['meta_description','metaDescCounter',160]].forEach(function (cfg) {
   var el = document.getElementById(cfg[0]);
   var counter = document.getElementById(cfg[1]);
@@ -568,7 +684,7 @@ updateExcerptCounter();
   el.addEventListener('input', upd); upd();
 });
 
-/* —€—€ SEO CHECKER —€—€ */
+/* ── SEO CHECKER ── */
 function updateSEO() {
   var titleLen   = (document.getElementById('title').value || '').length;
   var excerptLen = (document.getElementById('excerpt').value || '').length;
@@ -609,7 +725,7 @@ function updateSEO() {
 }
 updateSEO();
 
-/* —€—€ COVER IMAGE PREVIEW —€—€ */
+/* ── COVER IMAGE PREVIEW ── */
 window.previewCover = function (input) {
   if (!input.files || !input.files[0]) return;
   var reader = new FileReader();
@@ -645,7 +761,7 @@ if (dz) {
   });
 }
 
-/* —€—€ TAGS CHIP INPUT —€—€ */
+/* ── TAGS CHIP INPUT ── */
 function syncTags() {
   var chips = document.querySelectorAll('#tagsWrap .tag-chip');
   var vals  = Array.from(chips).map(function (c) { return c.dataset.tag; });
@@ -677,7 +793,7 @@ tagInput.addEventListener('keydown', function (e) {
   }
 });
 
-/* —€—€ STATUS RADIO HIGHLIGHT —€—€ */
+/* ── STATUS RADIO HIGHLIGHT ── */
 document.querySelectorAll('.status-option input[type="radio"]').forEach(function (radio) {
   radio.addEventListener('change', function () {
     document.querySelectorAll('.status-option').forEach(function (o) { o.classList.remove('selected'); });
@@ -685,7 +801,7 @@ document.querySelectorAll('.status-option input[type="radio"]').forEach(function
   });
 });
 
-/* —€—€ TOGGLE SWITCHES —€—€ */
+/* ── TOGGLE SWITCHES ── */
 window.toggleSwitch = function (inputId, trackId, thumbId) {
   var cb     = document.getElementById(inputId);
   cb.checked = !cb.checked;
@@ -695,7 +811,7 @@ window.toggleSwitch = function (inputId, trackId, thumbId) {
   thumb.style.left        = cb.checked ? '20px' : '2px';
 };
 
-/* —€—€ SYNC CONTENT ON SUBMIT —€—€ */
+/* ── SYNC CONTENT ON SUBMIT ── */
 document.getElementById('editForm').addEventListener('submit', function () {
   contentInput.value = editor.innerHTML;
 });

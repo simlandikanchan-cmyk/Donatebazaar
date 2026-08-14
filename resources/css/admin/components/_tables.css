@@ -135,7 +135,7 @@
 .row-check{width:15px;height:15px;accent-color:var(--a);cursor:pointer;}
 .chk{width:15px;height:15px;accent-color:var(--a);cursor:pointer;}
 .action-cell{display:flex;align-items:center;justify-content:flex-end;gap:5px;white-space:nowrap;}
-.action-cell .c-btn{padding:6px 10px;font-size:11px;}
+.action-cell .c-btn{padding:6px 10px;font-size:11px;min-height:0;}
 .action-cell .c-btn svg{width:11px;height:11px;}
 .id-cell{font-family:var(--mono);font-size:11px;color:var(--text3);}
 .num-cell{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--text);}

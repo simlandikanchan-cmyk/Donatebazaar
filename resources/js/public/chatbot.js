@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function () {
+function initChat() {
     // ── DOM refs ──
     var chatToggle = document.getElementById('chatToggle');
     var chatWindow = document.getElementById('chatWindow');
@@ -21,6 +21,8 @@ document.addEventListener('DOMContentLoaded', function () {
     var unreadCount = 0;
     var lastUserMessage = '';
     var touchStartY = 0;
+    var recentUserMessages = [];
+    var RECENT_MSG_WINDOW = 2000;
 
     var questions = [
         'How do I create a campaign?',
@@ -43,7 +45,9 @@ document.addEventListener('DOMContentLoaded', function () {
             var chip = document.createElement('button');
             chip.className = 'chat-suggestion-chip';
             chip.textContent = q;
+            chip.type = 'button';
             chip.addEventListener('click', function () {
+                if (isSending) return;
                 chatInput.value = q;
                 autoResize();
                 sendMessage();
@@ -63,12 +67,12 @@ document.addEventListener('DOMContentLoaded', function () {
     function toggleChat() {
         isOpen = !isOpen;
         chatWindow.classList.toggle('open', isOpen);
-        chatWindow.setAttribute('aria-hidden', !isOpen);
+        chatWindow.setAttribute('aria-hidden', String(!isOpen));
         if (isOpen) {
             chatBadge.classList.remove('show');
             unreadCount = 0;
-            setTimeout(function () { chatInput.focus(); }, 300);
-            scrollToBottom();
+            setTimeout(function () { chatInput.focus(); }, 350);
+            scrollToBottom(false);
         }
     }
 
@@ -80,6 +84,7 @@ document.addEventListener('DOMContentLoaded', function () {
         isOpen = false;
         chatWindow.classList.remove('open');
         chatWindow.setAttribute('aria-hidden', 'true');
+        chatToggle.focus();
     }
 
     // ──────────────────────────────────────────
@@ -161,16 +166,23 @@ document.addEventListener('DOMContentLoaded', function () {
     sendBtn.addEventListener('click', function () { sendMessage(); });
 
     chatMessages.addEventListener('scroll', function () {
-        var threshold = 100;
+        var threshold = 120;
         var atBottom = chatMessages.scrollHeight - chatMessages.scrollTop - chatMessages.clientHeight < threshold;
         scrollBottom.classList.toggle('show', !atBottom);
     });
 
-    scrollBottom.addEventListener('click', scrollToBottom);
+    scrollBottom.addEventListener('click', function () { scrollToBottom(true); });
 
-    function scrollToBottom() {
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-        scrollBottom.classList.remove('show');
+    function scrollToBottom(force) {
+        if (force || isNearBottom()) {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            scrollBottom.classList.remove('show');
+        }
+    }
+
+    function isNearBottom() {
+        var threshold = 120;
+        return chatMessages.scrollHeight - chatMessages.scrollTop - chatMessages.clientHeight < threshold;
     }
 
     // ──────────────────────────────────────────
@@ -209,6 +221,17 @@ document.addEventListener('DOMContentLoaded', function () {
         return (clone.textContent || '').trim();
     }
 
+    function isDuplicateMessage(text) {
+        var now = Date.now();
+        var cutoff = now - RECENT_MSG_WINDOW;
+        recentUserMessages = recentUserMessages.filter(function (t) { return t > cutoff; });
+        var isDup = recentUserMessages.some(function (t) { return t.text === text; });
+        if (!isDup) {
+            recentUserMessages.push({ text: text, time: now });
+        }
+        return isDup;
+    }
+
     // ──────────────────────────────────────────
     //  PERSISTENCE
     // ──────────────────────────────────────────
@@ -239,7 +262,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             div.className = 'chat-msg-user';
                             div.innerHTML = '<div class="bubble">' +
                                 escapeHtml(msg.text) +
-                                (msg.time ? '<div class="timestamp">' + msg.time + '</div>' : '') +
+                                (msg.time ? '<div class="timestamp">' + escapeHtml(msg.time) + '</div>' : '') +
                                 '</div>';
                             chatMessages.appendChild(div);
                         } else {
@@ -249,7 +272,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 '<div class="avatar"><i class="fa-solid fa-robot"></i></div>' +
                                 '<div class="bubble">' +
                                 renderMarkdown(msg.text) +
-                                (msg.time ? '<div class="timestamp">' + msg.time + '</div>' : '') +
+                                (msg.time ? '<div class="timestamp">' + escapeHtml(msg.time) + '</div>' : '') +
                                 '</div>';
                             chatMessages.appendChild(div);
                             addCopyButton(div.querySelector('.bubble'));
@@ -270,10 +293,9 @@ document.addEventListener('DOMContentLoaded', function () {
         div.className = 'chat-msg-bot';
         div.innerHTML =
             '<div class="avatar"><i class="fa-solid fa-robot"></i></div>' +
-            '<div class="bubble">Hi! I\'m the DonateBazaar AI assistant. How can I help you today?' +
-            '<div class="timestamp">' + getTimestamp() + '</div></div>';
+            '<div class="bubble">Hi! I\'m the DonateBazaar AI assistant. How can I help you today?<div class="timestamp">' + getTimestamp() + '</div></div>';
         chatMessages.appendChild(div);
-        scrollToBottom();
+        scrollToBottom(false);
         addCopyButton(div.querySelector('.bubble'));
     }
 
@@ -284,19 +306,43 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!bubbleEl || bubbleEl.querySelector('.copy-btn')) return;
         var btn = document.createElement('button');
         btn.className = 'copy-btn';
+        btn.type = 'button';
         btn.innerHTML = '<i class="fa-solid fa-copy"></i>';
         btn.setAttribute('aria-label', 'Copy message');
         btn.addEventListener('click', function (e) {
             e.stopPropagation();
             var text = getBubbleText(bubbleEl);
-            navigator.clipboard.writeText(text).then(function () {
-                btn.innerHTML = '<i class="fa-solid fa-check" style="color:#22c55e"></i>';
-                setTimeout(function () {
-                    btn.innerHTML = '<i class="fa-solid fa-copy"></i>';
-                }, 1500);
-            });
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(function () {
+                    btn.innerHTML = '<i class="fa-solid fa-check" style="color:#22c55e"></i>';
+                    btn.setAttribute('aria-label', 'Copied');
+                    setTimeout(function () {
+                        btn.innerHTML = '<i class="fa-solid fa-copy"></i>';
+                        btn.setAttribute('aria-label', 'Copy message');
+                    }, 1500);
+                }).catch(function () {
+                    fallbackCopy(text, btn);
+                });
+            } else {
+                fallbackCopy(text, btn);
+            }
         });
         bubbleEl.appendChild(btn);
+    }
+
+    function fallbackCopy(text, btn) {
+        var tmp = document.createElement('textarea');
+        tmp.value = text;
+        tmp.style.position = 'fixed';
+        tmp.style.opacity = '0';
+        document.body.appendChild(tmp);
+        tmp.select();
+        try { document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(tmp);
+        btn.innerHTML = '<i class="fa-solid fa-check" style="color:#22c55e"></i>';
+        setTimeout(function () {
+            btn.innerHTML = '<i class="fa-solid fa-copy"></i>';
+        }, 1500);
     }
 
     // ──────────────────────────────────────────
@@ -306,11 +352,12 @@ document.addEventListener('DOMContentLoaded', function () {
         var el = document.createElement('div');
         el.className = 'chat-typing';
         el.id = 'chatTyping';
+        el.setAttribute('aria-label', 'Assistant is typing');
         el.innerHTML =
             '<div class="avatar"><i class="fa-solid fa-robot"></i></div>' +
             '<div class="dots"><span></span><span></span><span></span></div>';
         chatMessages.appendChild(el);
-        scrollToBottom();
+        scrollToBottom(false);
     }
 
     function hideTyping() {
@@ -322,13 +369,14 @@ document.addEventListener('DOMContentLoaded', function () {
     //  SEND MESSAGE
     // ──────────────────────────────────────────
     function addUserMessage(text) {
+        if (isDuplicateMessage(text)) return;
         var div = document.createElement('div');
         div.className = 'chat-msg-user';
         div.innerHTML = '<div class="bubble">' +
             escapeHtml(text) +
             '<div class="timestamp">' + getTimestamp() + '</div></div>';
         chatMessages.appendChild(div);
-        scrollToBottom();
+        scrollToBottom(true);
     }
 
     function addErrorMessage() {
@@ -336,13 +384,13 @@ document.addEventListener('DOMContentLoaded', function () {
         div.className = 'chat-msg-bot';
         div.innerHTML =
             '<div class="avatar"><i class="fa-solid fa-robot"></i></div>' +
-            '<div class="bubble bg-red-50 text-red-600">' +
-            'Something went wrong. Please try again.' +
-            '<button class="chat-retry-btn"><i class="fa-solid fa-rotate-right"></i> Retry</button>' +
+            '<div class="bubble">' +
+            '<div class="error-content">Something went wrong. Please try again.</div>' +
+            '<button class="chat-retry-btn" type="button"><i class="fa-solid fa-rotate-right"></i> Retry</button>' +
             '<div class="timestamp">' + getTimestamp() + '</div>' +
             '</div>';
         chatMessages.appendChild(div);
-        scrollToBottom();
+        scrollToBottom(true);
 
         div.querySelector('.chat-retry-btn').addEventListener('click', function () {
             div.remove();
@@ -350,12 +398,24 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    function setSendLoading(loading) {
+        if (loading) {
+            sendBtn.disabled = true;
+            sendBtn.setAttribute('aria-label', 'Sending...');
+            sendBtn.innerHTML = '<svg class="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>';
+        } else {
+            sendBtn.disabled = false;
+            sendBtn.setAttribute('aria-label', 'Send message');
+            sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i>';
+        }
+    }
+
     async function sendMessage(message) {
+        if (isSending) return;
+
         if (!message) {
             message = chatInput.value.trim();
-            if (!message || isSending) return;
-        } else {
-            if (isSending) return;
+            if (!message) return;
         }
 
         lastUserMessage = message;
@@ -363,8 +423,8 @@ document.addEventListener('DOMContentLoaded', function () {
         chatInput.style.height = 'auto';
 
         isSending = true;
-        sendBtn.disabled = true;
         chatInput.disabled = true;
+        setSendLoading(true);
 
         addUserMessage(message);
         showTyping();
@@ -391,7 +451,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 '<div class="bubble"></div>';
             chatMessages.appendChild(botDiv);
             var botBubble = botDiv.querySelector('.bubble');
-            scrollToBottom();
 
             var reader = response.body.getReader();
             var decoder = new TextDecoder();
@@ -416,7 +475,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         if (parsed.text) {
                             fullText += parsed.text;
                             botBubble.textContent = fullText;
-                            scrollToBottom();
+                            if (isNearBottom()) {
+                                chatMessages.scrollTop = chatMessages.scrollHeight;
+                            }
                         }
                     } catch (e) {}
                 }
@@ -426,12 +487,12 @@ document.addEventListener('DOMContentLoaded', function () {
             botBubble.innerHTML = renderMarkdown(fullText) +
                 '<div class="timestamp">' + ts + '</div>';
             addCopyButton(botBubble);
-            scrollToBottom();
+            scrollToBottom(true);
             saveMessages();
 
             if (!isOpen) {
                 unreadCount++;
-                chatBadge.textContent = unreadCount;
+                chatBadge.textContent = unreadCount > 99 ? '99+' : unreadCount;
                 chatBadge.classList.add('show');
             }
 
@@ -440,9 +501,15 @@ document.addEventListener('DOMContentLoaded', function () {
             addErrorMessage();
         } finally {
             isSending = false;
-            sendBtn.disabled = false;
             chatInput.disabled = false;
+            setSendLoading(false);
             chatInput.focus();
         }
     }
-});
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initChat);
+} else {
+    initChat();
+}

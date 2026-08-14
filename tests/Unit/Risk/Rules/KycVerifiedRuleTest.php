@@ -17,7 +17,8 @@ class KycVerifiedRuleTest extends TestCase
 
     private function context(?string $verificationStatus): RiskContext
     {
-        $org = new Organization(['verification_status' => $verificationStatus]);
+        $org = new Organization();
+        $org->verification_status = $verificationStatus;
 
         return new RiskContext(
             settlement: CampaignSettlement::factory()->make(),

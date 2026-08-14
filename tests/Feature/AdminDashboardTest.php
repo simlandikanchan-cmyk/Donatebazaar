@@ -27,10 +27,11 @@ class AdminDashboardTest extends TestCase
         $this->admin = User::factory()->create(['role' => 'admin', 'email' => 'admin_test@donatebazar.com']);
 
         $this->ngo = User::factory()->create(['role' => 'ngo', 'email' => 'ngo_test@donatebazar.com']);
-        KycVerification::create([
+        $kyc = KycVerification::create([
             'user_id' => $this->ngo->id,
-            'status' => KycVerification::STATUS_APPROVED,
         ]);
+        $kyc->status = KycVerification::STATUS_APPROVED;
+        $kyc->save();
 
         $this->category = Category::create([
             'name' => 'Test Category',

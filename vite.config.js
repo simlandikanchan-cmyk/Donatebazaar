@@ -8,6 +8,7 @@ export default defineConfig({
     plugins: [
         laravel({
             input: [
+                'resources/css/app.css',
                 'resources/css/public/app.css',
                 'resources/css/public/footer.css',
                 'resources/css/public/chatbot.css',

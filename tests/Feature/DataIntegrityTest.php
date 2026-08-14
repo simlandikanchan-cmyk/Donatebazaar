@@ -56,11 +56,21 @@ class DataIntegrityTest extends TestCase
             'total_amount' => 100.00,
             'platform_fee' => 5.00,
             'net_amount' => 95.00,
-            'payment_status' => 'completed',
             'currency' => 'INR',
         ];
 
-        return Donation::create(array_merge($defaults, $overrides));
+        $fillable = array_intersect_key($overrides, array_flip((new Donation())->getFillable()));
+        $nonFillable = array_diff_key($overrides, $fillable);
+
+        $donation = Donation::create(array_merge($defaults, $fillable));
+
+        foreach ($nonFillable as $key => $value) {
+            $donation->$key = $value;
+        }
+        $donation->payment_status = 'completed';
+        $donation->save();
+
+        return $donation;
     }
 
     // ─── 3.1 ENUM CONVERSION ─────────────────────────────────────────────
@@ -81,7 +91,8 @@ class DataIntegrityTest extends TestCase
         $d = $this->makeDonation();
 
         foreach (['completed', 'pending', 'failed', 'refunded', 'cancelled', 'processing'] as $status) {
-            $d->update(['payment_status' => $status]);
+            $d->payment_status = $status;
+            $d->save();
             $this->assertEquals($status, $d->fresh()->payment_status);
         }
     }
@@ -89,14 +100,18 @@ class DataIntegrityTest extends TestCase
     #[Test]
     public function donation_rejects_invalid_payment_status(): void
     {
+        $d = $this->makeDonation();
         $this->expectException(\InvalidArgumentException::class);
-        $this->makeDonation(['payment_status' => 'invalid_status']);
+        $d->payment_status = 'invalid_status';
+        $d->save();
     }
 
     #[Test]
     public function donation_accepts_enum_object(): void
     {
-        $d = $this->makeDonation(['payment_status' => PaymentStatus::Completed]);
+        $d = $this->makeDonation();
+        $d->payment_status = PaymentStatus::Completed;
+        $d->save();
         $this->assertEquals('completed', $d->fresh()->payment_status);
     }
 
@@ -146,10 +161,11 @@ class DataIntegrityTest extends TestCase
             'owner_type' => User::class,
             'owner_id' => $this->user->id,
             'user_id' => $this->user->id,
-            'balance' => 100.00,
-            'reserved_balance' => 50.00,
             'currency' => 'INR',
         ]);
+        $wallet->balance = 100.00;
+        $wallet->reserved_balance = 50.00;
+        $wallet->save();
 
         $service = app(WalletService::class);
         $tx = $service->record($wallet, 'credit', 25.00, 'adjustment', 1, Donation::class, 'test');

@@ -51,7 +51,7 @@ class CampaignShowComposer
         $recentDonors = $donorsList->take(3);
 
         $daysLeft = isset($campaign->end_date) && $campaign->end_date
-                    ? now()->diffInDays($campaign->end_date, false)
+                    ? (int) ceil(now()->diffInDays($campaign->end_date, false))
                     : null;
         $isEnded = $daysLeft !== null && $daysLeft < 0;
 

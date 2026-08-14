@@ -12,22 +12,22 @@ use App\Events\SettlementProcessingStarted;
 use App\Events\SettlementRejected;
 use App\Events\SettlementRequested;
 use App\Events\SettlementRetryScheduled;
-use App\Exceptions\GatewayException;
 use App\Exceptions\InsufficientWalletBalanceException;
 use App\Exceptions\PermanentFailureException;
 use App\Exceptions\TemporaryFailureException;
 use App\Exceptions\TimeoutException;
+use App\Gateways\RazorpayGateway;
+use App\Jobs\RetryPolicy;
 use App\Models\CampaignSettlement;
 use App\Models\Donation;
 use App\Models\Organization;
+use App\Models\PayoutAttempt;
 use App\Models\SettlementItem;
-use App\Models\SettlementStateLog;
 use App\Models\User;
+use App\Models\Wallet;
 use App\Models\WalletTransaction;
 use App\Services\Risk\RiskEngine;
-use App\Services\Risk\RiskEvaluationResult;
 use App\Services\Settlement\SettlementStateMachine;
-use App\Gateways\RazorpayGateway;
 use Illuminate\Support\Facades\DB;
 
 class SettlementService
@@ -53,36 +53,65 @@ class SettlementService
      */
     public function requestSettlement(Organization $org, array $donationIds): CampaignSettlement
     {
-        $donations = Donation::whereIn('id', $donationIds)
-            ->where('payment_status', 'completed')
-            ->where('is_refunded', false)
-            ->where('settlement_status', 'pending')
-            ->get();
-
-        if ($donations->isEmpty()) {
-            throw new \InvalidArgumentException('No eligible donations supplied for settlement.');
+        if (empty($donationIds)) {
+            throw new \InvalidArgumentException('No donation IDs supplied for settlement.');
         }
 
-        $lockedIds = SettlementItem::whereIn('donation_id', $donations->pluck('id'))
-            ->whereHas('settlement', function ($q) {
-                $q->whereIn('status', ['pending_approval', 'approved']);
-            })
-            ->pluck('donation_id')
-            ->all();
-
-        if (! empty($lockedIds)) {
-            throw new \InvalidArgumentException(
-                'Some donations are already locked in a pending or approved settlement.'
-            );
-        }
-
-        $total = (float) $donations->sum('net_amount');
+        $orgUserId = $org->user_id;
         $wallet = $this->walletService->getOrCreateWallet($this->walletOwnerForOrg($org));
 
-        DB::transaction(function () use ($wallet, $donations, $total) {
+        // Lock donation rows (in id order) + wallet, then create the settlement
+        // atomically so two concurrent requests can never lock the same
+        // donation twice or debit the wallet twice.
+        $settlement = DB::transaction(function () use ($org, $donationIds, $orgUserId, $wallet) {
+            $donations = Donation::whereIn('id', $donationIds)
+                ->orderBy('id')
+                ->lockForUpdate()
+                ->with('campaign:user_id,id')
+                ->get();
+
+            if ($donations->isEmpty()) {
+                throw new \InvalidArgumentException('No eligible donations supplied for settlement.');
+            }
+
+            $ineligible = $donations->filter(function ($donation) {
+                return $donation->payment_status !== 'completed'
+                    || $donation->is_refunded
+                    || $donation->settlement_status !== 'pending';
+            });
+
+            if ($ineligible->isNotEmpty()) {
+                throw new \InvalidArgumentException('One or more donations are not eligible for settlement.');
+            }
+
+            $unauthorized = $donations->filter(function ($donation) use ($orgUserId) {
+                return $donation->campaign?->user_id !== $orgUserId;
+            });
+
+            if ($unauthorized->isNotEmpty()) {
+                throw new \InvalidArgumentException(
+                    'One or more donation IDs do not belong to your organization.'
+                );
+            }
+
+            $lockedIds = SettlementItem::whereIn('donation_id', $donations->pluck('id'))
+                ->whereHas('settlement', function ($q) {
+                    $q->whereNotIn('status', ['paid', 'rejected', 'failed', 'cancelled']);
+                })
+                ->pluck('donation_id')
+                ->all();
+
+            if (! empty($lockedIds)) {
+                throw new \InvalidArgumentException(
+                    'Some donations are already locked in a pending or approved settlement.'
+                );
+            }
+
+            $total = (float) $donations->sum('net_amount');
+
             $this->walletService->releaseReservesForDonations($wallet, $donations->all());
 
-            $locked = $wallet->fresh();
+            $locked = Wallet::lockForUpdate()->findOrFail($wallet->id);
             if ((float) $locked->balance < $total) {
                 throw new InsufficientWalletBalanceException(
                     "Available balance insufficient for settlement: have {$locked->balance}, need {$total}."
@@ -92,24 +121,26 @@ class SettlementService
             $locked->balance = (float) $locked->balance - $total;
             $locked->pending_settlement_balance = (float) $locked->pending_settlement_balance + $total;
             $locked->save();
-        });
 
-        $settlement = CampaignSettlement::create([
-            'campaign_id' => $donations->first()->campaign_id,
-            'organization_id' => $org->id,
-            'gross_amount' => (float) $donations->sum('total_amount'),
-            'platform_fee' => (float) $donations->sum('platform_fee'),
-            'net_amount' => $total,
-            'status' => 'requested',
-        ]);
-
-        foreach ($donations as $donation) {
-            SettlementItem::create([
-                'campaign_settlement_id' => $settlement->id,
-                'donation_id' => $donation->id,
-                'amount' => $donation->net_amount,
+            $settlement = CampaignSettlement::create([
+                'campaign_id' => $donations->first()->campaign_id,
+                'organization_id' => $org->id,
+                'gross_amount' => (float) $donations->sum('total_amount'),
+                'platform_fee' => (float) $donations->sum('platform_fee'),
+                'net_amount' => $total,
+                'status' => 'requested',
             ]);
-        }
+
+            foreach ($donations as $donation) {
+                SettlementItem::create([
+                    'campaign_settlement_id' => $settlement->id,
+                    'donation_id' => $donation->id,
+                    'amount' => $donation->net_amount,
+                ]);
+            }
+
+            return $settlement;
+        });
 
         $this->stateMachine->transition($settlement, 'risk_evaluation', [
             'actor_type' => 'system',
@@ -122,6 +153,10 @@ class SettlementService
             'actor_type' => 'system',
             'reason' => 'Risk evaluation completed: '.$riskResult->verdict,
         ]);
+
+        if ($riskResult->isRejected()) {
+            $this->refundSettlementFunds($settlement, 'rejected by risk evaluation');
+        }
 
         event(new SettlementRequested($settlement));
         event(new RiskEvaluationCompleted($settlement, $riskResult));
@@ -162,7 +197,13 @@ class SettlementService
         $amount = (float) $settlement->net_amount;
 
         DB::transaction(function () use ($wallet, $settlement, $admin, $amount) {
-            $locked = $wallet->fresh();
+            $lockedSettlement = CampaignSettlement::lockForUpdate()->findOrFail($settlement->id);
+
+            if (! $lockedSettlement->isPendingApproval() && $lockedSettlement->status !== 'manual_review') {
+                throw new \InvalidArgumentException('Settlement is no longer pending approval.');
+            }
+
+            $locked = Wallet::lockForUpdate()->findOrFail($wallet->id);
 
             if ((float) $locked->pending_settlement_balance < $amount) {
                 throw new InsufficientWalletBalanceException('Pending settlement balance mismatch.');
@@ -181,16 +222,15 @@ class SettlementService
                 'Settlement approved #'.$settlement->id
             );
 
-            $this->stateMachine->transition($settlement, 'approved', [
+            $this->stateMachine->transition($lockedSettlement, 'approved', [
                 'actor_type' => 'admin',
                 'actor_id' => $admin->id,
                 'reason' => 'Approved by admin',
             ]);
 
-            $settlement->update([
-                'approved_by' => $admin->id,
-                'approved_at' => now(),
-            ]);
+            $lockedSettlement->approved_by = $admin->id;
+            $lockedSettlement->approved_at = now();
+            $lockedSettlement->save();
         });
     }
 
@@ -217,33 +257,51 @@ class SettlementService
         $amount = (float) $settlement->net_amount;
 
         DB::transaction(function () use ($wallet, $settlement, $admin, $reason, $amount) {
-            $locked = $wallet->fresh();
+            $lockedSettlement = CampaignSettlement::lockForUpdate()->findOrFail($settlement->id);
+
+            if (! $lockedSettlement->isPendingApproval() && $lockedSettlement->status !== 'manual_review') {
+                throw new \InvalidArgumentException('Settlement is no longer pending approval.');
+            }
+
+            $locked = Wallet::lockForUpdate()->findOrFail($wallet->id);
 
             $locked->pending_settlement_balance = (float) $locked->pending_settlement_balance - $amount;
             $locked->balance = (float) $locked->balance + $amount;
             $locked->save();
 
-            $this->stateMachine->transition($settlement, 'rejected', [
+            $this->stateMachine->transition($lockedSettlement, 'rejected', [
                 'actor_type' => 'admin',
                 'actor_id' => $admin->id,
                 'reason' => $reason,
             ]);
 
-            $settlement->update([
-                'rejected_by' => $admin->id,
-                'rejected_at' => now(),
-                'rejection_reason' => $reason,
-            ]);
+            $lockedSettlement->rejected_by = $admin->id;
+            $lockedSettlement->rejected_at = now();
+            $lockedSettlement->rejection_reason = $reason;
+            $lockedSettlement->save();
         });
     }
 
     /**
      * Process an approved settlement payout.
-     * Idempotent. On permanent failure restores wallet and marks failed.
-     * On retryable failure transitions to retry_pending without restoring wallet.
+     *
+     * Split into two transactions so the gateway HTTP call never holds
+     * DB locks: phase 1 claims the settlement (approved/auto_approved/
+     * retry_pending -> processing), the gateway is called, then phase 2
+     * atomically records the outcome (paid / failed / retry_pending).
+     *
+     * Idempotent: a settlement already `paid` or `failed` short-circuits,
+     * a settlement stuck in `processing` (crash between phases) resumes
+     * with the same idempotency key, and concurrent workers serialize on
+     * the settlement row lock.
      */
     public function processSettlementPayout(CampaignSettlement $settlement): array
     {
+        // The caller may hold a stale instance; fast-path checks must run
+        // against the persisted state (the authoritative, row-locked checks
+        // happen inside the transactions below).
+        $settlement->refresh();
+
         if ($settlement->isPaid()) {
             return ['success' => true, 'message' => 'Settlement already paid.'];
         }
@@ -252,8 +310,8 @@ class SettlementService
             return ['success' => false, 'message' => 'Settlement previously failed.'];
         }
 
-        if (! $settlement->isApproved() && ! $settlement->isRetryPending()) {
-            throw new \InvalidArgumentException('Only approved or retry_pending settlements can be processed.');
+        if (! in_array($settlement->status, ['approved', 'auto_approved', 'retry_pending', 'processing'], true)) {
+            throw new \InvalidArgumentException('Only approved, auto_approved, retry_pending or processing settlements can be processed.');
         }
 
         $org = $settlement->organization;
@@ -264,104 +322,269 @@ class SettlementService
         $wallet = $this->walletService->getOrCreateWallet($this->walletOwnerForOrg($org));
         $amount = (float) $settlement->net_amount;
 
-        return DB::transaction(function () use ($wallet, $settlement, $org, $amount) {
-            $this->stateMachine->transition($settlement, 'processing', [
+        // PHASE 1 — claim the settlement. Commits before the gateway call.
+        $alreadyPaid = DB::transaction(function () use ($settlement, $wallet, $amount) {
+            $locked = CampaignSettlement::lockForUpdate()->findOrFail($settlement->id);
+
+            if ($locked->isPaid()) {
+                return true;
+            }
+
+            if (! in_array($locked->status, ['approved', 'auto_approved', 'retry_pending', 'processing'], true)) {
+                throw new \InvalidArgumentException(
+                    'Settlement is no longer processable (status: '.$locked->status.').'
+                );
+            }
+
+            // Resume path: a previous worker crashed between phase 1 and phase 2.
+            if ($locked->status === 'processing') {
+                return false;
+            }
+
+            if ($locked->isAutoApproved()) {
+                $w = Wallet::lockForUpdate()->findOrFail($wallet->id);
+
+                if ((float) $w->pending_settlement_balance < $amount) {
+                    throw new InsufficientWalletBalanceException('Pending settlement balance mismatch.');
+                }
+
+                $w->pending_settlement_balance = (float) $w->pending_settlement_balance - $amount;
+                $w->save();
+
+                $this->walletService->record(
+                    $w,
+                    'debit',
+                    $amount,
+                    WalletTransaction::SOURCE_SETTLEMENT,
+                    $locked->id,
+                    CampaignSettlement::class,
+                    'Auto-approved settlement #'.$locked->id
+                );
+            }
+
+            $this->stateMachine->transition($locked, 'processing', [
                 'actor_type' => 'system',
                 'reason' => 'Payout processing started',
             ]);
 
-            $settlement->update(['processed_at' => now()]);
+            $locked->processed_at = now();
+            $locked->save();
 
-            event(new SettlementProcessingStarted($settlement));
+            event(new SettlementProcessingStarted($locked));
 
-            try {
-                $result = $this->gateway->initiatePayout($org, $amount, $settlement);
+            return false;
+        });
 
-                $this->stateMachine->transition($settlement, 'paid', [
+        if ($alreadyPaid) {
+            return ['success' => true, 'message' => 'Settlement already paid.'];
+        }
+
+        // GATEWAY — no DB transaction and no DB locks held.
+        $attemptNumber = ((int) ($settlement->retry_count ?? 0)) + 1;
+        $idempotencyKey = PayoutAttempt::generateIdempotencyKey($settlement, $attemptNumber);
+
+        try {
+            $gatewayResult = $this->gateway->initiatePayout($org, $amount, $settlement, $idempotencyKey);
+            $outcome = ['success' => true, 'result' => $gatewayResult];
+        } catch (PermanentFailureException|TimeoutException|TemporaryFailureException $e) {
+            $outcome = [
+                'success' => false,
+                'retryable' => $e instanceof TimeoutException || $e instanceof TemporaryFailureException,
+                'exception' => $e,
+            ];
+        }
+
+        // PHASE 2 — atomically record the outcome.
+        return DB::transaction(function () use ($settlement, $outcome) {
+            $locked = CampaignSettlement::lockForUpdate()->findOrFail($settlement->id);
+
+            if ($locked->isPaid()) {
+                return ['success' => true, 'message' => 'Settlement already paid.'];
+            }
+
+            if ($locked->status !== 'processing') {
+                // The settlement changed while the gateway call was in flight
+                // (e.g. admin cancelled it) — do not write an outcome.
+                return ['success' => false, 'message' => 'Settlement is no longer processing.', 'retryable' => false];
+            }
+
+            if ($outcome['success']) {
+                $result = $outcome['result'];
+
+                $this->stateMachine->transition($locked, 'paid', [
                     'actor_type' => 'system',
                     'reason' => 'Payout completed',
                 ]);
 
-                $settlement->update([
-                    'paid_at' => now(),
-                    'gateway_reference' => $result['gateway_reference'],
-                    'retry_count' => 0,
-                    'next_retry_at' => null,
-                ]);
+                $locked->paid_at = now();
+                $locked->gateway_reference = $result['gateway_reference'];
+                $locked->gateway_status = $result['provider_status'] ?? null;
+                $locked->retry_count = 0;
+                $locked->next_retry_at = null;
+                $locked->save();
 
-                $donationIds = $settlement->settlementItems()->pluck('donation_id');
+                $donationIds = $locked->settlementItems()->pluck('donation_id');
                 Donation::whereIn('id', $donationIds)->update([
                     'settlement_status' => 'settled',
-                    'campaign_settlement_id' => $settlement->id,
+                    'campaign_settlement_id' => $locked->id,
                 ]);
 
-                event(new SettlementPaid($settlement, $result['gateway_reference']));
+                event(new SettlementPaid($locked, $result['gateway_reference']));
 
                 return ['success' => true, 'message' => 'Payout completed successfully.'];
-            } catch (PermanentFailureException|TimeoutException|TemporaryFailureException $e) {
-                $retryable = $e instanceof TimeoutException || $e instanceof TemporaryFailureException;
-
-                if (! $retryable) {
-                    $locked = $wallet->fresh();
-                    $locked->balance = (float) $locked->balance + $amount;
-                    $locked->save();
-
-                    $this->walletService->record(
-                        $locked,
-                        'credit',
-                        $amount,
-                        WalletTransaction::SOURCE_SETTLEMENT_REVERSAL,
-                        $settlement->id,
-                        CampaignSettlement::class,
-                        'Settlement reversal #'.$settlement->id.' — '.$e->getMessage()
-                    );
-                }
-
-                $nextRetryAt = null;
-                if ($retryable) {
-                    $nextRetryAt = app(\App\Jobs\RetryPolicy::class)->nextRetryAt(($settlement->retry_count ?? 0) + 1);
-                }
-
-                $this->stateMachine->transition($settlement, $retryable ? 'retry_pending' : 'failed', [
-                    'actor_type' => 'system',
-                    'reason' => $e->getMessage(),
-                ]);
-
-                $settlement->update([
-                    'failed_at' => $retryable ? null : now(),
-                    'failed_reason' => $retryable ? null : $e->getMessage(),
-                    'retry_count' => ($settlement->retry_count ?? 0) + 1,
-                    'next_retry_at' => $nextRetryAt,
-                ]);
-
-                if ($retryable) {
-                    event(new SettlementRetryScheduled($settlement, $nextRetryAt, $settlement->retry_count));
-                } else {
-                    event(new SettlementFailed($settlement, $e->getMessage()));
-                }
-
-                return [
-                    'success' => false,
-                    'message' => $e->getMessage(),
-                    'retryable' => $retryable,
-                ];
             }
+
+            $e = $outcome['exception'];
+            $retryable = $outcome['retryable'];
+
+            if (! $retryable) {
+                $this->restoreSettlementFunds($locked, 'failed payout');
+            }
+
+            $nextRetryAt = null;
+            if ($retryable) {
+                $nextRetryAt = app(RetryPolicy::class)->nextRetryAt(((int) ($locked->retry_count ?? 0)) + 1);
+            }
+
+            $this->stateMachine->transition($locked, $retryable ? 'retry_pending' : 'failed', [
+                'actor_type' => 'system',
+                'reason' => $e->getMessage(),
+            ]);
+
+            $locked->failed_at = $retryable ? null : now();
+            $locked->failed_reason = $retryable ? null : $e->getMessage();
+            $locked->retry_count = ((int) ($locked->retry_count ?? 0)) + 1;
+            $locked->next_retry_at = $nextRetryAt;
+            $locked->save();
+
+            if ($retryable) {
+                event(new SettlementRetryScheduled($locked, $nextRetryAt, $locked->retry_count));
+            } else {
+                event(new SettlementFailed($locked, $e->getMessage()));
+            }
+
+            return [
+                'success' => false,
+                'message' => $e->getMessage(),
+                'retryable' => $retryable,
+            ];
         });
     }
 
     public function cancelSettlement(CampaignSettlement $settlement, ?User $actor = null, ?string $reason = null): void
     {
-        if (! $this->stateMachine->canTransition($settlement->status, 'cancelled')) {
-            throw new \InvalidArgumentException('Settlement cannot be cancelled from its current state.');
+        DB::transaction(function () use ($settlement, $actor, $reason) {
+            $locked = CampaignSettlement::lockForUpdate()->findOrFail($settlement->id);
+
+            if (! $this->stateMachine->canTransition($locked->status, 'cancelled')) {
+                throw new \InvalidArgumentException('Settlement cannot be cancelled from its current state.');
+            }
+
+            $from = $locked->status;
+
+            // Only funds still held in pending_settlement_balance are returned.
+            // Once funds have left the wallet (approved/processing/retry_pending),
+            // the money is recovered via the gateway (reconciliation) instead.
+            if (in_array($from, ['requested', 'risk_evaluation', 'auto_approved', 'manual_review'], true)) {
+                $this->refundSettlementFunds($locked, 'cancelled');
+            }
+
+            $this->stateMachine->transition($locked, 'cancelled', [
+                'actor_type' => $actor ? 'admin' : 'system',
+                'actor_id' => $actor?->id,
+                'reason' => $reason,
+            ]);
+        });
+
+        event(new SettlementCancelled($settlement->fresh(), $reason));
+    }
+
+    /**
+     * Move settlement funds from pending_settlement_balance back to balance.
+     * Idempotent-safe: throws when the pending balance can no longer cover the amount.
+     */
+    protected function refundSettlementFunds(CampaignSettlement $settlement, string $reason): void
+    {
+        $org = $settlement->organization;
+
+        if (! $org) {
+            return;
         }
 
-        $this->stateMachine->transition($settlement, 'cancelled', [
-            'actor_type' => $actor ? 'admin' : 'system',
-            'actor_id' => $actor?->id,
-            'reason' => $reason,
-        ]);
+        $wallet = $this->walletService->getOrCreateWallet($this->walletOwnerForOrg($org));
+        $amount = (float) $settlement->net_amount;
 
-        event(new SettlementCancelled($settlement, $reason));
+        DB::transaction(function () use ($wallet, $settlement, $amount, $reason) {
+            $locked = Wallet::lockForUpdate()->findOrFail($wallet->id);
+
+            if ((float) $locked->pending_settlement_balance < $amount) {
+                throw new InsufficientWalletBalanceException(
+                    'Pending settlement balance mismatch while refunding settlement #'.$settlement->id.'.'
+                );
+            }
+
+            $locked->pending_settlement_balance = (float) $locked->pending_settlement_balance - $amount;
+            $locked->balance = (float) $locked->balance + $amount;
+            $locked->save();
+
+            $this->walletService->record(
+                $locked,
+                'credit',
+                $amount,
+                WalletTransaction::SOURCE_SETTLEMENT_REVERSAL,
+                $settlement->id,
+                CampaignSettlement::class,
+                'Settlement refunded — '.$reason.' #'.$settlement->id
+            );
+        });
+    }
+
+    /**
+     * Restore settlement funds that have already left the wallet
+     * (approved / processing / retry_pending) back to the balance.
+     *
+     * Composes inside the caller's transaction — the caller must hold the
+     * settlement row lock so the restore is atomic with the state change.
+     */
+    public function restoreSettlementFunds(CampaignSettlement $settlement, string $reason): void
+    {
+        $org = $settlement->organization;
+
+        if (! $org) {
+            return;
+        }
+
+        if ($settlement->restored_at !== null) {
+            return;
+        }
+
+        $wallet = $this->walletService->getOrCreateWallet($this->walletOwnerForOrg($org));
+        $amount = (float) $settlement->net_amount;
+
+        DB::transaction(function () use ($wallet, $settlement, $amount, $reason) {
+            $locked = Wallet::lockForUpdate()->findOrFail($wallet->id);
+            $lockedSettlement = CampaignSettlement::lockForUpdate()->findOrFail($settlement->id);
+
+            if ($lockedSettlement->restored_at !== null) {
+                return;
+            }
+
+            $locked->balance = (float) $locked->balance + $amount;
+            $locked->save();
+
+            $this->walletService->record(
+                $locked,
+                'credit',
+                $amount,
+                WalletTransaction::SOURCE_SETTLEMENT_REVERSAL,
+                $settlement->id,
+                CampaignSettlement::class,
+                'Settlement funds restored — '.$reason.' #'.$settlement->id
+            );
+
+            $lockedSettlement->restored_at = now();
+            $lockedSettlement->save();
+        });
     }
 
     protected function walletOwnerForOrg(Organization $org): User

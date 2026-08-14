@@ -37,19 +37,21 @@
                 style="font-family:'DM Mono', monospace;">
                 {{ $blog->title }}
             </h1>
-            {{-- Meta row inside cover --}}
-            <div class="flex flex-wrap items-center gap-4 text-sm text-stone-300 animate-up-2">
-                <div class="flex items-center gap-2.5">
-                    @if($blog->author->avatar ?? false)
-                        <img src="{{ Storage::url($blog->author->avatar) }}"
-                             class="w-8 h-8 rounded-full object-cover ring-2 ring-white/30" alt="{{ $blog->author->name }}">
-                    @else
-                        <div class="w-8 h-8 rounded-full bg-amber-400 text-stone-900 flex items-center justify-center font-bold text-sm ring-2 ring-white/20">
-                            {{ strtoupper(substr($blog->author->name, 0, 1)) }}
-                        </div>
+{{-- Meta row inside cover --}}
+                <div class="flex flex-wrap items-center gap-4 text-sm text-stone-300 animate-up-2">
+                    @if($blog->author)
+                    <div class="flex items-center gap-2.5">
+                        @if($blog->author->avatar ?? false)
+                            <img src="{{ Storage::url($blog->author->avatar) }}"
+                                 class="w-8 h-8 rounded-full object-cover ring-2 ring-white/30" alt="{{ $blog->author->name }}">
+                        @else
+                            <div class="w-8 h-8 rounded-full bg-amber-400 text-stone-900 flex items-center justify-center font-bold text-sm ring-2 ring-white/20">
+                                {{ strtoupper(substr($blog->author->name, 0, 1)) }}
+                            </div>
+                        @endif
+                        <span class="font-medium text-white">{{ $blog->author->name }}</span>
+                    </div>
                     @endif
-                    <span class="font-medium text-white">{{ $blog->author->name }}</span>
-                </div>
                 <span class="text-stone-400">·</span>
                 <span>{{ ($blog->published_at ?? $blog->created_at)->format('M d, Y') }}</span>
                 <span class="text-stone-400">·</span>
@@ -172,6 +174,7 @@
             </div>
 
             {{-- ── AUTHOR CARD ── --}}
+            @if($blog->author)
             <div class="flex gap-5 bg-gradient-to-br from-stone-50 to-amber-50/40 rounded-2xl p-6 mb-12 border border-stone-100">
                 @if($blog->author->avatar ?? false)
                     <img src="{{ Storage::url($blog->author->avatar) }}"
@@ -193,6 +196,7 @@
                     </a>
                 </div>
             </div>
+            @endif
 
             {{-- ── COMMENTS ── --}}
             <section id="comments">
@@ -259,7 +263,7 @@
                 @forelse($blog->comments->whereNull('parent_id') as $comment)
                 <div class="flex gap-3">
                     {{-- Avatar --}}
-                    @if($comment->author->avatar ?? false)
+                    @if($comment->author?->avatar ?? false)
                         <img src="{{ Storage::url($comment->author->avatar) }}"
                              class="w-9 h-9 rounded-full object-cover flex-shrink-0 mt-0.5" alt="{{ $comment->author->name }}">
                     @else
@@ -271,7 +275,7 @@
                     <div class="flex-1 min-w-0">
                         <div class="bg-stone-50 rounded-2xl rounded-tl-sm px-4 py-3.5 border border-stone-100">
                             <div class="flex items-center gap-2 mb-1.5">
-                                <span class="font-semibold text-stone-800 text-sm">{{ $comment->author->name }}</span>
+                                <span class="font-semibold text-stone-800 text-sm">{{ $comment->author->name ?? 'Deleted user' }}</span>
                                 @if($comment->author_id === $blog->author_id)
                                 <span class="px-2 py-0.5 bg-amber-100 text-amber-700 text-xs font-medium rounded-full border border-amber-200">Author</span>
                                 @endif
@@ -315,7 +319,7 @@
                         <div class="mt-4 space-y-3 ml-3 pl-4 border-l-2 border-stone-100">
                             @foreach($comment->replies as $reply)
                             <div class="flex gap-2.5">
-                                @if($reply->author->avatar ?? false)
+                                @if($reply->author?->avatar ?? false)
                                     <img src="{{ Storage::url($reply->author->avatar) }}"
                                          class="w-7 h-7 rounded-full object-cover flex-shrink-0 mt-0.5" alt="{{ $reply->author->name }}">
                                 @else
@@ -325,7 +329,7 @@
                                 @endif
                                 <div class="bg-white rounded-xl rounded-tl-sm px-3.5 py-2.5 border border-stone-100 flex-1">
                                     <div class="flex items-center gap-2 mb-1">
-                                        <span class="font-semibold text-stone-700 text-xs">{{ $reply->author->name }}</span>
+                                        <span class="font-semibold text-stone-700 text-xs">{{ $reply->author->name ?? 'Deleted user' }}</span>
                                         @if($reply->author_id === $blog->author_id)
                                         <span class="px-1.5 py-0.5 bg-amber-100 text-amber-700 text-[10px] font-medium rounded-full">Author</span>
                                         @endif

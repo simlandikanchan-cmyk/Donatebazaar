@@ -9,19 +9,32 @@ use App\Exceptions\PermanentFailureException;
 use App\Exceptions\TemporaryFailureException;
 use App\Exceptions\TimeoutException;
 use App\Models\CampaignSettlement;
+use App\Models\Donation;
 use App\Models\Organization;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Razorpay\Api\Api;
+use Razorpay\Api\Errors\Error as RazorpayError;
 
 class RazorpayGateway
 {
     public function __construct(
         private readonly string $keyId,
         private readonly string $keySecret,
-        private readonly string $webhookSecret
+        private readonly string $webhookSecret,
+        private readonly ?Api $api = null
     ) {}
 
-    public function initiatePayout(Organization $org, float $amount, CampaignSettlement $settlement): array
+    private function getApi(): Api
+    {
+        if ($this->api !== null) {
+            return $this->api;
+        }
+
+        return new Api($this->keyId, $this->keySecret);
+    }
+
+    public function initiatePayout(Organization $org, float $amount, CampaignSettlement $settlement, ?string $idempotencyKey = null): array
     {
         $account = $org->payoutAccounts()->where('is_verified', true)->first();
 
@@ -65,6 +78,81 @@ class RazorpayGateway
         ];
     }
 
+    public function createOrder(\App\Models\Campaign $campaign, ?\App\Models\User $user, float $amount, array $fees = []): array
+    {
+        try {
+            $api = $this->getApi();
+
+            $order = $api->order->create([
+                'receipt' => 'rcpt_'.time().'_'.($user?->id ?? 0),
+                'amount' => (int) round($amount * 100),
+                'currency' => 'INR',
+                'notes' => [
+                    'campaign_id' => $campaign->id,
+                    'campaign_name' => $campaign->title,
+                    'user_id' => $user?->id,
+                    'platform_fee' => $fees['platform_fee'] ?? 0,
+                    'net_amount' => $fees['net_amount'] ?? $amount,
+                ],
+            ]);
+
+            return $order->toArray();
+        } catch (RazorpayError $e) {
+            Log::error('Razorpay order creation failed', [
+                'campaign_id' => $campaign->id,
+                'amount' => $amount,
+                'user_id' => $user?->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            throw new \RuntimeException('Unable to initialize payment. Please try again.');
+        }
+    }
+
+    public function createOrderWithNotes(float $amount, array $notes = [], ?string $receipt = null): array
+    {
+        try {
+            $api = $this->getApi();
+
+            $order = $api->order->create([
+                'receipt' => $receipt ?? 'rcpt_'.time().'_'.rand(100, 999),
+                'amount' => (int) round($amount * 100),
+                'currency' => 'INR',
+                'notes' => $notes,
+            ]);
+
+            return $order->toArray();
+        } catch (RazorpayError $e) {
+            Log::error('Razorpay generic order creation failed', [
+                'amount' => $amount,
+                'receipt' => $receipt,
+                'error' => $e->getMessage(),
+            ]);
+
+            throw new \RuntimeException('Unable to initialize payment. Please try again.');
+        }
+    }
+
+    public function verifyPaymentSignature(array $payload): void
+    {
+        $api = $this->getApi();
+
+        try {
+            $api->utility->verifyPaymentSignature($payload);
+        } catch (RazorpayError $e) {
+            throw new \Razorpay\Api\Errors\SignatureVerificationError($e->getMessage(), $e->getCode());
+        }
+    }
+
+    public function initiateRefund(Donation $donation, int $amountPaise): object
+    {
+        $api = $this->getApi();
+
+        return $api->payment
+            ->fetch($donation->payment_id)
+            ->refund(['amount' => $amountPaise]);
+    }
+
     public function validateWebhook(string $payload, string $signature, string $secret): bool
     {
         $expected = hash_hmac('sha256', $payload, $secret);
@@ -83,3 +171,4 @@ class RazorpayGateway
         return $data;
     }
 }
+

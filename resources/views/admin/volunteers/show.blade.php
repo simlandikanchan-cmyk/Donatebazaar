@@ -1,13 +1,48 @@
-﻿@extends('layouts.admin')
-
 @push('page_css')
-@vite('resources/css/admin/entries/jobs.css')
+@vite('resources/css/admin/entries/misc.css')
 @endpush
 
+@extends('layouts.admin')
 
 @section('sidebar_volunteers', 'active')
 @section('page_title', $volunteer->user?->name ?? 'Volunteer #'.$volunteer->id)
 @section('page_subtitle', 'Volunteer profile details')
+
+@push('page_styles')
+<style>
+.hero-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:28px 30px;box-shadow:var(--sh);margin-bottom:20px;display:flex;align-items:flex-start;justify-content:space-between;gap:20px;animation:fadeUp .35s ease both;position:relative;overflow:hidden}
+.hero-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--a),var(--a2));border-radius:var(--r) var(--r) 0 0}
+.hero-left{display:flex;align-items:center;gap:18px;min-width:0}
+.hero-av{width:58px;height:58px;border-radius:16px;flex-shrink:0;background:linear-gradient(135deg,var(--a),var(--a2));display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:22px;font-weight:800;color:#fff;box-shadow:0 4px 18px rgba(37,99,235,.35)}
+.hero-title{font-family:var(--mono);font-size:22px;font-weight:800;color:var(--text);letter-spacing:-.03em;line-height:1.2}
+.hero-sub{font-size:12px;color:var(--text3);margin-top:5px;font-family:var(--mono)}
+.hero-meta{display:flex;align-items:center;gap:14px;margin-top:10px;flex-wrap:wrap}
+.hero-meta-item{display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--text3);font-family:var(--mono)}
+.hero-meta-item svg{width:12px;height:12px;flex-shrink:0}
+
+.detail-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:24px;box-shadow:var(--sh);margin-bottom:20px;animation:fadeUp .4s ease both}
+.detail-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.info-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:16px 18px;transition:border-color var(--ease),box-shadow var(--ease)}
+.info-box:hover{border-color:rgba(37,99,235,.25);box-shadow:0 0 0 3px var(--a-lt)}
+.info-label{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.14em;margin-bottom:7px;font-family:var(--mono)}
+.info-value{font-size:14px;font-weight:600;color:var(--text);line-height:1.5;word-break:break-word;font-family:var(--mono)}
+.info-value.empty{color:var(--text3);font-weight:400}
+
+.table-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;animation:fadeUp .4s .18s ease both;margin-bottom:20px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead{background:var(--surface2);border-bottom:1px solid var(--border)}
+thead th{padding:12px 16px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--text3);font-family:var(--mono);white-space:nowrap}
+tbody td{padding:14px 16px;border-bottom:1px solid var(--border);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr{transition:background var(--ease)}
+tbody tr:hover{background:var(--surface2)}
+.cell-date{font-family:var(--mono);font-size:11.5px;color:var(--text3)}
+
+.skills-list{display:flex;flex-wrap:wrap;gap:6px}
+.skill-tag{padding:3px 10px;border-radius:100px;font-size:10.5px;font-weight:500;font-family:var(--mono);background:var(--a-lt);color:var(--a);border:1px solid rgba(37,99,235,.15)}
+</style>
+@endpush
 
 @section('content')
 
@@ -231,10 +266,10 @@
       </div>
     </div>
     <div style="margin-top:14px;display:flex;align-items:center;gap:12px">
-      <x-button variant="primary" type="submit">
+      <button type="submit" class="btn btn-primary assign-btn" id="assignBtn" disabled>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
         Assign to Event
-      </x-button>
+      </button>
       <span style="font-size:12px;color:var(--text3);font-family:var(--mono)" id="assignHint">Select an event above</span>
     </div>
   </form>
@@ -296,3 +331,28 @@
 
 @endsection
 
+@push('page_styles')
+<style>
+.b-shortlisted{background:rgba(5,196,138,.85);color:#fff;padding:4px 12px;border-radius:6px;font-size:11px;font-weight:600;font-family:var(--mono);display:inline-block}
+.b-rejected{background:rgba(240,68,68,.12);color:var(--red);border:1px solid rgba(240,68,68,.22);padding:4px 12px;border-radius:6px;font-size:11px;font-weight:600;font-family:var(--mono);display:inline-block}
+.b-pending{background:rgba(245,158,11,.12);color:#b45309;border:1px solid rgba(245,158,11,.22);padding:4px 12px;border-radius:6px;font-size:11px;font-weight:600;font-family:var(--mono);display:inline-block}
+.b-hired{background:rgba(37,99,235,.85);color:#fff;padding:4px 12px;border-radius:6px;font-size:11px;font-weight:600;font-family:var(--mono);display:inline-block}
+[data-theme="dark"] .b-pending{color:#fbbf24}
+[data-theme="dark"] .b-rejected{color:#f87171}
+.filter-clear:hover{border-color:var(--a);color:var(--a)}
+.filter-sel,.filter-inp{height:36px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:0 12px;font-size:12.5px;color:var(--text);font-family:var(--font);outline:none;transition:border-color var(--ease),box-shadow var(--ease)}
+.filter-sel:focus,.filter-inp:focus{border-color:var(--a);box-shadow:0 0 0 3px var(--a-glow)}
+.filter-sel{cursor:pointer;min-width:0}
+.filter-inp::placeholder{color:var(--text3)}
+.assign-btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 24px;border:none;border-radius:var(--r-sm);font-size:13px;font-weight:600;font-family:var(--font);cursor:pointer;transition:all var(--ease);background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;box-shadow:0 4px 14px rgba(37,99,235,.35)}
+.assign-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 20px rgba(37,99,235,.45)}
+.assign-btn:active:not(:disabled){transform:translateY(0)}
+.assign-btn:disabled{opacity:.4;cursor:not-allowed;box-shadow:none;transform:none}
+@media(max-width:900px){.hero-card{flex-direction:column;padding:22px 24px}.hero-right{align-items:flex-start!important;width:100%}#assignForm>div:first-child{grid-template-columns:1fr 1fr!important}}
+@media(max-width:768px){.detail-grid{grid-template-columns:1fr 1fr}.info-box[style*="span 2"],.info-box[style*="span 3"]{grid-column:span 1!important}.hero-title{font-size:18px}.hero-av{width:46px;height:46px;font-size:17px;border-radius:13px}}
+@media(max-width:600px){.detail-grid{grid-template-columns:1fr}#assignForm>div:first-child{grid-template-columns:1fr!important}.hero-card{padding:18px 16px}.hero-meta{gap:8px}.hero-meta-item{font-size:10.5px}}
+@media(max-width:540px){.table-wrap td:nth-child(4),.table-wrap th:nth-child(4){display:none}.detail-card{padding:18px 16px}.detail-grid{gap:10px}}
+@media(max-width:480px){.hero-av{width:38px;height:38px;font-size:14px;border-radius:11px}.hero-title{font-size:16px}}
+@media(max-width:380px){.hero-card{padding:14px 12px}.hero-av{width:34px;height:34px;font-size:13px;border-radius:10px}.hero-title{font-size:15px}.hero-sub{font-size:10px}.hero-meta{gap:6px}.hero-meta-item{font-size:9px}.hero-right{gap:6px}.hero-right .btn{width:100%;justify-content:center;font-size:11px;padding:8px 12px}.detail-card{padding:14px 12px}.detail-card h3{font-size:13px}.detail-grid{gap:8px}.info-box{padding:10px 8px}.info-box .v{font-size:12px}.info-box .k{font-size:9px}.assign-card{padding:14px 12px}.assign-card h3{font-size:13px}#assignForm>div:first-child{grid-template-columns:1fr!important;gap:10px}#assignForm label{font-size:9px}#assignForm select,#assignForm input{font-size:11px;height:34px;padding:0 10px}.assign-actions{flex-direction:column;gap:6px}.assign-actions .btn-primary,.assign-actions .btn{width:100%;justify-content:center}.table-wrap td:nth-child(3),.table-wrap th:nth-child(3){display:none}.table td,.table th{padding:7px 6px;font-size:10px}}
+</style>
+@endpush

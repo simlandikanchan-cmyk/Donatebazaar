@@ -150,10 +150,11 @@ class WalletServiceTest extends TestCase
             'total_amount' => 120.00,
             'platform_fee' => 6.00,
             'net_amount' => 120.00,
-            'payment_status' => 'completed',
-            'is_refunded' => false,
-            'paid_at' => now()->subDays(10),
         ]);
+        $donation->payment_status = 'completed';
+        $donation->is_refunded = false;
+        $donation->paid_at = now()->subDays(10);
+        $donation->save();
 
         $this->service->credit($wallet, 120.00, WalletTransaction::SOURCE_DONATION, $donation->id, Donation::class);
 

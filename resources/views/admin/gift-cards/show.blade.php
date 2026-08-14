@@ -1,13 +1,63 @@
-﻿@extends('layouts.admin')
-
 @push('page_css')
 @vite('resources/css/admin/entries/finance.css')
 @endpush
 
+@extends('layouts.admin')
 
 @section('sidebar_gift_cards', 'active')
 @section('page_title', 'Gift Card #'.$giftCard->code)
 @section('page_subtitle', 'View and manage gift card details')
+
+@push('page_styles')
+<style>
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3);font-family:var(--mono);margin-bottom:22px;}
+.breadcrumb a{color:var(--text3);transition:color var(--ease);}
+.breadcrumb a:hover{color:var(--a);}
+.breadcrumb svg{width:12px;height:12px;flex-shrink:0;}
+.breadcrumb span{color:var(--text2);font-weight:600;}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
+.detail-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:22px 24px;box-shadow:var(--sh);}
+.detail-card.full{grid-column:1/-1;}
+.detail-hdr{display:flex;align-items:center;gap:10px;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+.detail-hdr svg{width:16px;height:16px;color:var(--a);}
+.detail-hdr span{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:.06em;}
+.detail-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.detail-row:last-child{border-bottom:none;}
+.detail-lbl{color:var(--text3);font-weight:500;}
+.detail-val{color:var(--text);font-weight:600;text-align:right;font-family:var(--mono);max-width:60%;}
+.amount-val{color:#10b981;font-size:20px;font-weight:800;}
+.code-val{font-size:15px;letter-spacing:.06em;}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:4px 10px;border-radius:7px;text-transform:uppercase;letter-spacing:.07em;font-family:var(--mono);}
+.b-pending{background:rgba(245,158,11,.15);color:#b45309;}
+.b-sent{background:rgba(59,130,246,.15);color:#1d4ed8;}
+.b-redeemed{background:rgba(16,185,129,.15);color:#065f46;}
+.b-expired{background:rgba(156,163,175,.15);color:#6b7280;}
+.b-cancelled{background:rgba(239,68,68,.15);color:#991b1b;}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;}
+.act-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:var(--r-sm);font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid transparent;transition:all var(--ease);font-family:var(--font);text-decoration:none;}
+.act-btn svg{width:13px;height:13px;}
+.act-btn:active{transform:scale(.97);}
+.ab-back{background:var(--surface2);color:var(--text2);border-color:var(--border2);}
+.ab-back:hover{background:var(--surface3);color:var(--text);}
+.ab-resend{background:rgba(59,130,246,.12);color:#1d4ed8;border-color:rgba(59,130,246,.25);}
+.ab-resend:hover{background:#1d4ed8;color:#fff;border-color:#1d4ed8;}
+.ab-cancel{background:rgba(239,68,68,.12);color:#991b1b;border-color:rgba(239,68,68,.2);}
+.ab-cancel:hover{background:#dc2626;color:#fff;border-color:#dc2626;}
+.status-form{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
+.status-form select{height:36px;padding:0 10px;border:1px solid var(--border2);border-radius:var(--r-sm);font-size:12.5px;color:var(--text);font-family:var(--font);background:var(--surface2);outline:none;cursor:pointer;}
+.status-form button{height:36px;padding:0 16px;border-radius:var(--r-sm);font-size:12.5px;font-weight:600;background:var(--a);color:#fff;border:none;cursor:pointer;transition:background var(--ease);}
+.status-form button:hover{background:var(--a2);}
+.flash{display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:var(--r-sm);margin-bottom:20px;font-size:13px;animation:fadeUp .3s ease both;}
+.flash svg{width:16px;height:16px;flex-shrink:0;}
+.flash-ok{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);color:#065f46;}
+.flash-err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.22);color:#991b1b;}
+.message-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px 16px;font-size:13px;color:var(--text2);line-height:1.6;margin-top:8px;font-style:italic;}
+@media(max-width:860px){.detail-grid{grid-template-columns:1fr;}}
+@media(max-width:640px){.detail-card{padding:16px 18px}.detail-lbl{font-size:9px}.detail-val{font-size:12px}.amount-val{font-size:17px}}
+@media(max-width:480px){.detail-hdr{flex-direction:column;align-items:flex-start;gap:4px}.actions{flex-direction:column}.act-btn{width:100%;justify-content:center}}
+@media(max-width:380px){.detail-row{flex-direction:column;align-items:flex-start;gap:3px}.status-form{flex-direction:column;align-items:stretch}.status-form input{min-width:0!important;width:100%}}
+</style>
+@endpush
 
 @section('content')
 <div class="breadcrumb">
@@ -31,7 +81,7 @@
 </div>
 @endif
 
-<div class="detail-grid gc-grid">
+<div class="detail-grid">
 
   {{-- Gift Card Info --}}
   <div class="detail-card">
@@ -107,26 +157,26 @@
     </div>
 
     <div class="actions">
-      <x-button variant="secondary" href="{{ route('admin.gift-cards.index') }}" class="ab-back">
+      <a href="{{ route('admin.gift-cards.index') }}" class="btn btn-secondary act-btn ab-back">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
         Back to List
-      </x-button>
+      </a>
       @if($giftCard->isPaid() && !$giftCard->isRedeemed())
       <form method="POST" action="{{ route('admin.gift-cards.resend', $giftCard->id) }}" style="display:inline;">
         @csrf
-        <x-button variant="secondary" type="submit" class="ab-resend">
+        <button type="submit" class="btn btn-secondary act-btn ab-resend">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
           Resend Email
-        </x-button>
+        </button>
       </form>
       @endif
       @if(!$giftCard->isRedeemed())
       <form method="POST" action="{{ route('admin.gift-cards.destroy', $giftCard->id) }}" style="display:inline;" onsubmit="return confirm('Cancel this gift card?')">
         @csrf @method('DELETE')
-        <x-button variant="secondary" type="submit" class="ab-cancel">
+        <button type="submit" class="btn btn-secondary act-btn ab-cancel">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 18L18 6M6 6l12 12"/></svg>
           Cancel Card
-        </x-button>
+        </button>
       </form>
       @endif
     </div>

@@ -102,12 +102,13 @@ class KycVerificationIntegrationTest extends TestCase
 
     public function test_campaign_resume_succeeds_with_approved_kyc(): void
     {
-        KycVerification::create([
+        $kyc = KycVerification::create([
             'user_id' => $this->user->id,
-            'status' => KycVerification::STATUS_APPROVED,
-            'verified_by' => $this->admin->id,
-            'verified_at' => now(),
         ]);
+        $kyc->status = KycVerification::STATUS_APPROVED;
+        $kyc->verified_by = $this->admin->id;
+        $kyc->verified_at = now();
+        $kyc->save();
 
         $campaign = Campaign::create([
             'user_id' => $this->user->id,
@@ -133,22 +134,22 @@ class KycVerificationIntegrationTest extends TestCase
     {
         $kyc = KycVerification::create([
             'user_id' => $this->user->id,
-            'status' => KycVerification::STATUS_REJECTED,
-            'verified_by' => $this->admin->id,
-            'rejection_reason' => 'Invalid documents',
         ]);
+        $kyc->status = KycVerification::STATUS_REJECTED;
+        $kyc->verified_by = $this->admin->id;
+        $kyc->rejection_reason = 'Invalid documents';
+        $kyc->save();
 
         $this->assertDatabaseHas('kyc_verifications', [
             'id' => $kyc->id,
             'status' => KycVerification::STATUS_REJECTED,
         ]);
 
-        $kyc->update([
-            'status' => KycVerification::STATUS_APPROVED,
-            'verified_by' => $this->admin->id,
-            'verified_at' => now(),
-            'rejection_reason' => null,
-        ]);
+        $kyc->status = KycVerification::STATUS_APPROVED;
+        $kyc->verified_by = $this->admin->id;
+        $kyc->verified_at = now();
+        $kyc->rejection_reason = null;
+        $kyc->save();
 
         $this->assertDatabaseHas('kyc_verifications', [
             'id' => $kyc->id,

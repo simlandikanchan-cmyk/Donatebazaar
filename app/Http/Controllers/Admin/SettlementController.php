@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Jobs\ProcessSettlementPayout;
+use App\Jobs\ProcessSettlementJob;
 use App\Models\CampaignSettlement;
 use App\Models\Refund;
 use App\Repositories\SettlementRepository;
@@ -21,6 +21,8 @@ class SettlementController extends Controller
 
     public function index(Request $request): View
     {
+        $statuses = ['pending_approval', 'approved', 'processing', 'paid', 'rejected', 'failed'];
+
         $query = CampaignSettlement::with(['organization', 'settlementItems'])
             ->when($request->input('status'), function ($q) use ($request) {
                 $q->where('status', $request->input('status'));
@@ -36,7 +38,16 @@ class SettlementController extends Controller
 
         $settlements = $query->paginate(25);
 
-        return view('admin.settlements.index', compact('settlements'));
+        $rawCounts = CampaignSettlement::selectRaw('status, COUNT(*) as c')
+            ->groupBy('status')
+            ->pluck('c', 'status');
+
+        $counts = ['total' => (int) $rawCounts->sum()];
+        foreach ($statuses as $st) {
+            $counts[$st] = (int) ($rawCounts[$st] ?? 0);
+        }
+
+        return view('admin.settlements.index', compact('settlements', 'counts', 'statuses'));
     }
 
     public function show(CampaignSettlement $settlement): View
@@ -81,7 +92,7 @@ class SettlementController extends Controller
                 ->with('error', $e->getMessage());
         }
 
-        ProcessSettlementPayout::dispatch($settlement);
+        ProcessSettlementJob::dispatch($settlement);
 
         return redirect()
             ->route('admin.settlements.show', $settlement)

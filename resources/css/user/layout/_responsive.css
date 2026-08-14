@@ -1,0 +1,95 @@
+/* ═══════════════════════════════════════════════════════════════════
+   LAYOUT — Responsive (Breakpoint Strategy)
+   ═══════════════════════════════════════════════════════════════════
+
+   Breakpoint scale:
+   ─ 1280px  ─ 3-column stats grid
+   ─ 1100px  ─ analytics row stacks, editor sidebar becomes grid
+   ─  900px  ─ wallet stats 2 columns
+   ─  860px  ─ MAIN TABLET: sidebar hides, hamburger shows, search hides,
+                 welcome banner stacks, campaign grid single column
+   ─  768px  ─ reserved for future tablet refinements
+   ─  640px  ─ form grids stack, action bars stack
+   ─  600px  ─ compact mobile: stats 2-col, qnav 2-col, reduced padding
+   ─  480px  ─ small mobile: stats 1-col, compact cards
+   ─  400px  ─ extra small: tighter spacing
+   ─  380px  ─ tiny mobile: minimal chrome
+   ─  360px  ─ ultra compact: smallest supported width
+
+   This file owns GLOBAL shell/layout breakpoints.
+   Component-specific responsive behavior stays with the component.
+   Page-specific responsive behavior stays with the page module.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── 860px: Tablet & Mobile ───────────────────────────────────────── */
+@media (max-width: 860px) {
+  .sidebar { transform: translateX(-100%); box-shadow: none; }
+  .sidebar.open { transform: translateX(0); box-shadow: 4px 0 24px rgba(0,0,0,.15); }
+  .main { margin-left: 0; width: 100%; }
+  .hamburger { display: flex; }
+  .search-wrap, .sort-sel { display: none; }
+  .sidebar-mobile-search { display: flex; }
+  .topbar { padding: 0 12px; gap: 8px; height: 54px; }
+  .topbar-left-wrap { gap: 8px; }
+  .topbar-left h1 { font-size: 14px; }
+  .topbar-left p { display: none; }
+  .topbar-right { gap: 4px; }
+  .topbar-right .tb-btn { display: none; }
+  .topbar-right .notif-wrap { display: none; }
+  .topbar-right .theme-toggle { display: none; }
+  .topbar-right .create-btn { display: none; }
+  .body { padding: 16px 12px 48px; }
+}
+
+/* ── 600px: Small Mobile ──────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .topbar { padding: 0 10px; height: 52px; }
+  .topbar-left h1 { font-size: 14px; }
+  .topbar-left p { display: none; }
+  .hamburger { width: 32px; height: 32px; }
+  .hamburger svg { width: 14px; height: 14px; }
+  .body { padding: 12px 10px 40px; }
+}
+
+/* ── 480px: Extra Small ───────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .topbar { padding: 0 8px; }
+  .body { padding: 10px 8px 36px; }
+}
+
+/* ── 400px: Extra Small ───────────────────────────────────────────── */
+@media (max-width: 400px) {
+  .topbar { padding: 0 8px; }
+  .body { padding: 10px 8px 36px; }
+}
+
+/* ── 380px: Tiny Mobile ───────────────────────────────────────────── */
+@media (max-width: 380px) {
+  .topbar { padding: 0 6px; height: 52px; }
+  .topbar-left h1 { font-size: 14px; }
+  .topbar-left p { display: none; }
+  .tb-btn { width: 30px; height: 30px; }
+  .tb-btn svg { width: 13px; height: 13px; }
+  .hamburger { width: 30px; height: 30px; }
+  .body { padding: 10px 10px 30px; }
+  .create-btn { padding: 6px 10px; font-size: 11.5px; gap: 4px; }
+  .create-btn svg { width: 11px; height: 11px; }
+  .theme-toggle label { width: 42px; height: 22px; }
+  .theme-toggle label::after { width: 14px; height: 14px; }
+  .theme-toggle input:checked + label::after { transform: translateX(18px); }
+  .theme-icons svg { width: 9px; height: 9px; }
+  .t-avatar { width: 30px; height: 30px; font-size: 11px; }
+  .search-input { width: 120px; font-size: 11px; padding: 0 8px 0 28px; }
+  .search-input:focus { width: 140px; }
+  .sort-sel { font-size: 11px; padding: 0 6px; }
+}
+
+/* ── 360px: Ultra Compact ─────────────────────────────────────────── */
+@media (max-width: 360px) {
+  .topbar { padding: 0 6px; height: 48px; }
+  .topbar-left h1 { font-size: 13px; }
+  .topbar-left p { display: none; }
+  .hamburger { width: 28px; height: 28px; }
+  .hamburger svg { width: 12px; height: 12px; }
+  .body { padding: 8px 6px 32px; }
+}

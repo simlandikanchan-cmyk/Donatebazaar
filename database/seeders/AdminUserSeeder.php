@@ -12,15 +12,16 @@ class AdminUserSeeder extends Seeder
     {
         $email = 'admin@DonateBazaar.com';
 
-        User::updateOrCreate(
+        $admin = User::updateOrCreate(
             ['email' => $email],
             [
                 'name' => 'Admin',
-                'email' => $email,
                 'password' => Hash::make('admin@123'),
-                'role' => 'admin',
             ]
         );
+
+        $admin->role = 'admin';
+        $admin->save();
 
         $this->command->info(' Admin user created:');
         $this->command->info("   Email    → {$email}");

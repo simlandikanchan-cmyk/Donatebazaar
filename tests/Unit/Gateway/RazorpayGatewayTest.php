@@ -163,4 +163,60 @@ class RazorpayGatewayTest extends TestCase
 
         $this->gateway->parseWebhook('not valid json');
     }
+
+    #[Test]
+    public function create_order_with_notes_returns_order_array(): void
+    {
+        $mockApi = $this->createMock(\Razorpay\Api\Api::class);
+        $mockApi->order = new class {
+            public function create(array $data): object {
+                return new class($data) {
+                    private array $data;
+                    public function __construct(array $data) { $this->data = $data; }
+                    public function toArray(): array { return $this->data; }
+                };
+            }
+        };
+
+        $gateway = new RazorpayGateway(
+            keyId: 'test_key',
+            keySecret: 'test_secret',
+            webhookSecret: 'test_webhook_secret',
+            api: $mockApi
+        );
+
+        $result = $gateway->createOrderWithNotes(500.00, ['type' => 'gift_card'], 'gc_test_123');
+
+        $this->assertIsArray($result);
+        $this->assertSame('INR', $result['currency']);
+        $this->assertSame(50000, $result['amount']);
+        $this->assertSame('gc_test_123', $result['receipt']);
+    }
+
+    #[Test]
+    public function create_order_with_notes_generates_receipt_when_not_provided(): void
+    {
+        $mockApi = $this->createMock(\Razorpay\Api\Api::class);
+        $mockApi->order = new class {
+            public function create(array $data): object {
+                return new class($data) {
+                    private array $data;
+                    public function __construct(array $data) { $this->data = $data; }
+                    public function toArray(): array { return $this->data; }
+                };
+            }
+        };
+
+        $gateway = new RazorpayGateway(
+            keyId: 'test_key',
+            keySecret: 'test_secret',
+            webhookSecret: 'test_webhook_secret',
+            api: $mockApi
+        );
+
+        $result = $gateway->createOrderWithNotes(500.00, ['type' => 'gift_card']);
+
+        $this->assertIsArray($result);
+        $this->assertNotNull($result['receipt']);
+    }
 }

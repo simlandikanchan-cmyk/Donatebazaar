@@ -118,11 +118,120 @@ class AuthorizationTest extends TestCase
             'total_amount' => 100.00,
             'platform_fee' => 5.00,
             'net_amount' => 100.00,
-            'payment_status' => 'completed',
         ]);
+        $donation->payment_status = 'completed';
+        $donation->save();
 
         $this->actingAs($this->userA)
             ->get(route('donation.receipt', $donation))
+            ->assertForbidden();
+    }
+
+    public function test_user_a_can_edit_own_blog(): void
+    {
+        $blog = \App\Models\Blog::factory()->create([
+            'author_id' => $this->userA->id,
+            'author_role' => 'ngo',
+            'status' => \App\Models\Blog::STATUS_DRAFT,
+        ]);
+
+        $this->actingAs($this->userA)
+            ->get(route('user.blogs.edit', $blog))
+            ->assertOk();
+    }
+
+    public function test_user_a_cannot_edit_user_b_blog(): void
+    {
+        $blog = \App\Models\Blog::factory()->create([
+            'author_id' => $this->userB->id,
+            'author_role' => 'ngo',
+            'status' => \App\Models\Blog::STATUS_DRAFT,
+        ]);
+
+        $this->actingAs($this->userA)
+            ->get(route('user.blogs.edit', $blog))
+            ->assertForbidden();
+    }
+
+    public function test_user_a_can_delete_own_blog(): void
+    {
+        $blog = \App\Models\Blog::factory()->create([
+            'author_id' => $this->userA->id,
+            'author_role' => 'ngo',
+            'status' => \App\Models\Blog::STATUS_DRAFT,
+        ]);
+
+        $this->actingAs($this->userA)
+            ->delete(route('user.blogs.destroy', $blog))
+            ->assertSessionHas('success');
+    }
+
+    public function test_user_a_cannot_delete_user_b_blog(): void
+    {
+        $blog = \App\Models\Blog::factory()->create([
+            'author_id' => $this->userB->id,
+            'author_role' => 'ngo',
+            'status' => \App\Models\Blog::STATUS_DRAFT,
+        ]);
+
+        $this->actingAs($this->userA)
+            ->delete(route('user.blogs.destroy', $blog))
+            ->assertForbidden();
+    }
+
+    public function test_user_a_cannot_restore_user_b_deleted_blog(): void
+    {
+        $blog = \App\Models\Blog::factory()->create([
+            'author_id' => $this->userB->id,
+            'author_role' => 'ngo',
+            'status' => \App\Models\Blog::STATUS_DRAFT,
+        ]);
+        $blog->delete();
+
+        $this->actingAs($this->userA)
+            ->post(route('user.blogs.restore', $blog->id))
+            ->assertNotFound();
+    }
+
+    public function test_user_a_cannot_update_user_b_blog(): void
+    {
+        $blog = \App\Models\Blog::factory()->create([
+            'author_id' => $this->userB->id,
+            'author_role' => 'ngo',
+            'status' => \App\Models\Blog::STATUS_DRAFT,
+        ]);
+
+        $this->actingAs($this->userA)
+            ->put(route('user.blogs.update', $blog), [
+                'title' => 'Hacked Blog Title',
+                'content' => str_repeat('This is a detailed blog post about fundraising strategies and tips. ', 20),
+            ])
+            ->assertForbidden();
+    }
+
+    public function test_user_a_cannot_submit_user_b_blog(): void
+    {
+        $blog = \App\Models\Blog::factory()->create([
+            'author_id' => $this->userB->id,
+            'author_role' => 'ngo',
+            'status' => \App\Models\Blog::STATUS_DRAFT,
+        ]);
+
+        $this->actingAs($this->userA)
+            ->post(route('user.blogs.submit', $blog))
+            ->assertForbidden();
+    }
+
+    public function test_unauthorized_blog_requests_return_403(): void
+    {
+        $blog = \App\Models\Blog::factory()->create([
+            'author_id' => $this->userB->id,
+            'author_role' => 'ngo',
+            'status' => \App\Models\Blog::STATUS_DRAFT,
+        ]);
+
+        $this->actingAs($this->userA)
+            ->get(route('user.blogs.show', $blog))
             ->assertForbidden();
     }
 }

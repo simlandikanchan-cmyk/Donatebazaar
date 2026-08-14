@@ -8,6 +8,7 @@
         "lint:css": "stylelint \"resources/css/**/*.css\""
     },
     "devDependencies": {
+        "@playwright/test": "^1.62.1",
         "@tailwindcss/forms": "^0.5.2",
         "@tailwindcss/vite": "^4.2.0",
         "alpinejs": "^3.4.2",

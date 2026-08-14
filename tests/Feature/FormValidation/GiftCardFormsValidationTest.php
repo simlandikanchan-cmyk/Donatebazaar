@@ -8,6 +8,7 @@ use App\Models\FundraiserLevel;
 use App\Models\GiftCard;
 use App\Models\User;
 use App\Models\UserFundraiserLevel;
+use App\Services\GiftCardService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -46,6 +47,14 @@ class GiftCardFormsValidationTest extends TestCase
 
     public function test_gift_card_order_happy_path(): void
     {
+        $this->mock(GiftCardService::class, function ($mock) {
+            $mock->shouldReceive('createGiftCardOrder')->andReturn([
+                'order_id' => 'order_test_123',
+                'gift_card_id' => 1,
+                'amount' => 50000,
+            ]);
+        });
+
         $response = $this->post('/gift-cards/order', [
             'amount' => 500,
             'theme' => 'purple',
@@ -230,6 +239,89 @@ class GiftCardFormsValidationTest extends TestCase
         ]);
 
         $response->assertSessionHasErrors('gift_card_id');
+    }
+
+    public function test_gift_card_verify_happy_path(): void
+    {
+        $giftCard = GiftCard::factory()->create([
+            'order_id' => 'order_test_123',
+            'payment_status' => 'pending',
+            'status' => 'pending',
+        ]);
+
+        $this->mock(GiftCardService::class, function ($mock) use ($giftCard) {
+            $mock->shouldReceive('verifyGiftCardPayment')
+                ->with('order_test_123', 'pay_test_456', 'sig_test_789', $giftCard->id)
+                ->andReturn($giftCard->fresh());
+        });
+
+        $response = $this->post('/gift-cards/verify', [
+            'razorpay_order_id' => 'order_test_123',
+            'razorpay_payment_id' => 'pay_test_456',
+            'razorpay_signature' => 'sig_test_789',
+            'gift_card_id' => $giftCard->id,
+        ]);
+
+        $response->assertSessionHasNoErrors();
+        $response->assertJson([
+            'success' => true,
+            'code' => $giftCard->code,
+            'message' => 'Gift card sent successfully!',
+        ]);
+    }
+
+    public function test_gift_card_verify_handles_gateway_failure(): void
+    {
+        $giftCard = GiftCard::factory()->create([
+            'order_id' => 'order_test_123',
+            'payment_status' => 'pending',
+            'status' => 'pending',
+        ]);
+
+        $this->mock(GiftCardService::class, function ($mock) {
+            $mock->shouldReceive('verifyGiftCardPayment')
+                ->andThrow(new \Exception('Signature invalid'));
+        });
+
+        $response = $this->post('/gift-cards/verify', [
+            'razorpay_order_id' => 'order_test_123',
+            'razorpay_payment_id' => 'pay_test_456',
+            'razorpay_signature' => 'sig_bad',
+            'gift_card_id' => $giftCard->id,
+        ]);
+
+        $response->assertStatus(400);
+        $response->assertJson([
+            'success' => false,
+            'message' => 'Payment verification failed.',
+        ]);
+    }
+
+    public function test_gift_card_verify_is_idempotent_on_double_call(): void
+    {
+        $giftCard = GiftCard::factory()->paid()->create([
+            'order_id' => 'order_test_123',
+            'payment_status' => 'completed',
+            'status' => 'sent',
+        ]);
+
+        $this->mock(GiftCardService::class, function ($mock) use ($giftCard) {
+            $mock->shouldReceive('verifyGiftCardPayment')
+                ->andReturn($giftCard->fresh());
+        });
+
+        $response = $this->post('/gift-cards/verify', [
+            'razorpay_order_id' => 'order_test_123',
+            'razorpay_payment_id' => 'pay_test_456',
+            'razorpay_signature' => 'sig_test_789',
+            'gift_card_id' => $giftCard->id,
+        ]);
+
+        $response->assertSessionHasNoErrors();
+        $response->assertJson([
+            'success' => true,
+            'message' => 'Gift card sent successfully!',
+        ]);
     }
 
     // ─── Gift Card Validate Code ──────────────────────────────────────────

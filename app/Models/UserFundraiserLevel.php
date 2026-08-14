@@ -9,14 +9,6 @@ class UserFundraiserLevel extends Model
     protected $fillable = [
         'user_id',
         'current_level_id',
-        'total_campaigns_completed',
-        'total_amount_raised',
-        'upgrade_requested_at',
-        'upgrade_reviewed_by',
-        'upgrade_reviewed_at',
-        'level_upgraded_at',
-        'status',
-        'notes',
     ];
 
     protected $casts = [

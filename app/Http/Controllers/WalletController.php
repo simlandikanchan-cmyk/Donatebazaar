@@ -38,13 +38,12 @@ class WalletController extends Controller
         $orgId = $org?->id;
 
         $lockedIds = $orgId
-            ? $this->walletRepo->getDonationIdsFromSettlements(
-                [$orgId],
-                ['pending_approval', 'approved']
-            )->all()
+            ? $this->walletRepo->getDonationIdsFromSettlements($orgId)->all()
             : [];
 
-        $eligible = Donation::where('user_id', $user->id)
+        $eligible = Donation::whereHas('campaign', function ($q) use ($user) {
+                $q->where('user_id', $user->id);
+            })
             ->where('payment_status', 'completed')
             ->where('is_refunded', false)
             ->whereNotNull('paid_at')
@@ -56,7 +55,7 @@ class WalletController extends Controller
 
         $pendingSettlements = $orgId
             ? CampaignSettlement::where('organization_id', $orgId)
-                ->whereIn('status', ['pending_approval', 'approved', 'failed'])
+                ->whereIn('status', ['pending_approval', 'manual_review', 'auto_approved', 'approved', 'failed'])
                 ->with('settlementItems', 'payoutAttempt')
                 ->latest()
                 ->get()

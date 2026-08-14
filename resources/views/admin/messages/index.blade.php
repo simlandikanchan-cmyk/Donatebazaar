@@ -1,13 +1,162 @@
-﻿@extends('layouts.admin')
-
 @push('page_css')
 @vite('resources/css/admin/entries/messages.css')
 @endpush
 
+@extends('layouts.admin')
 
 @section('sidebar_messages', 'active')
 @section('page_title', 'Messages')
 @section('page_subtitle', 'Manage all messages')
+
+@push('page_styles')
+<style>
+.flash-ok{background:rgba(5,196,138,.09);border:1px solid rgba(5,196,138,.25);color:#065f46;padding:12px 16px;border-radius:var(--r-sm);font-size:13px;font-weight:500;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+[data-theme="dark"] .flash-ok{color:#34d399}
+.flash-ok svg{width:15px;height:15px;flex-shrink:0}
+.si-orange{background:rgba(249,115,22,.12);color:#ea580c}
+.sv-orange{color:#ea580c}
+.si-purple{background:var(--a-lt);color:var(--a)}
+.sv-purple{color:var(--a)}
+.sec-search{position:relative;display:flex;align-items:center}
+.sec-search svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--text3);pointer-events:none}
+.sec-search input{height:38px;width:230px;max-width:46vw;padding:0 12px 0 34px;border-radius:var(--r-sm);border:1px solid var(--border2);background:var(--surface2);color:var(--text);font-size:12.5px;font-family:var(--font);outline:none;transition:border-color var(--ease),box-shadow var(--ease)}
+.sec-search input:focus{border-color:var(--a);box-shadow:0 0 0 3px var(--a-glow);background:var(--surface)}
+.sec-search input::placeholder{color:var(--text3)}
+
+/* Filter bar */
+.filter-bar{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;box-shadow:var(--sh);animation:fadeUp .4s .18s ease both}
+.filter-group{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.filter-lbl{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.09em;font-family:var(--mono);white-space:nowrap}
+.filter-sel{height:32px;padding:0 26px 0 10px;border-radius:var(--r-xs);border:1px solid var(--border2);background:var(--surface2);color:var(--text);font-size:12px;font-family:var(--font);outline:none;cursor:pointer;transition:border-color var(--ease),box-shadow var(--ease);appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%239096b4' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center}
+.filter-sel:focus{border-color:var(--a);box-shadow:0 0 0 3px var(--a-glow)}
+.filter-date{height:32px;padding:0 10px;border-radius:var(--r-xs);border:1px solid var(--border2);background:var(--surface2);color:var(--text);font-size:12px;font-family:var(--mono);outline:none;cursor:pointer;transition:border-color var(--ease),box-shadow var(--ease)}
+.filter-date:focus{border-color:var(--a);box-shadow:0 0 0 3px var(--a-glow)}
+.filter-date::-webkit-calendar-picker-indicator{opacity:.4;cursor:pointer}
+[data-theme="dark"] .filter-date::-webkit-calendar-picker-indicator{filter:invert(1);opacity:.4}
+.filter-div{width:1px;height:22px;background:var(--border2);flex-shrink:0}
+.filter-reset{margin-left:auto;display:inline-flex;align-items:center;gap:5px;height:32px;padding:0 12px;border-radius:var(--r-xs);border:1px solid var(--border2);background:transparent;color:var(--text3);font-size:11.5px;font-weight:600;cursor:pointer;transition:all var(--ease);font-family:var(--font);white-space:nowrap}
+.filter-reset:hover{background:var(--red-lt);color:var(--red);border-color:rgba(240,68,68,.3)}
+.filter-reset svg{width:11px;height:11px}
+
+/* Bulk action bar */
+.bulk-bar{display:none;align-items:center;justify-content:space-between;gap:12px;background:linear-gradient(135deg,var(--a-lt),rgba(155,89,245,.12));border:1px solid rgba(37,99,235,.3);border-radius:var(--r);padding:10px 16px;margin-bottom:14px;animation:fadeUp .25s ease both;flex-wrap:wrap}
+.bulk-bar.show{display:flex}
+.bulk-left{font-size:12.5px;color:var(--text);font-weight:500}
+.bulk-left strong{font-family:var(--mono);font-size:13px;color:var(--a)}
+.bulk-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.bb-btn{display:inline-flex;align-items:center;gap:5px;height:32px;padding:0 14px;border-radius:var(--r-xs);font-size:12px;font-weight:600;cursor:pointer;border:1px solid transparent;transition:all var(--ease);font-family:var(--font)}
+.bb-btn svg{width:12px;height:12px}
+.bb-read{background:var(--surface);color:var(--a);border-color:rgba(37,99,235,.25)}
+.bb-read:hover{background:var(--a);color:#fff}
+.bb-delete{background:var(--surface);color:var(--red);border-color:rgba(240,68,68,.25)}
+.bb-delete:hover{background:var(--red);color:#fff}
+.bb-clear{background:transparent;color:var(--text3);border-color:transparent}
+.bb-clear:hover{color:var(--text)}
+
+/* Table */
+.table-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;animation:fadeUp .4s .25s ease both}
+.table-scroll{overflow-x:auto}
+.table-scroll::-webkit-scrollbar{height:5px}
+.table-scroll::-webkit-scrollbar-track{background:var(--surface2)}
+.table-scroll::-webkit-scrollbar-thumb{background:rgba(37,99,235,.35);border-radius:10px}
+.table-scroll::-webkit-scrollbar-thumb:hover{background:var(--a)}
+table{width:100%;min-width:760px;border-collapse:collapse}
+thead tr{border-bottom:1px solid var(--border)}
+thead th{padding:12px 16px;text-align:left;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.09em;font-family:var(--mono);background:var(--surface2);white-space:nowrap}
+thead th.sortable{cursor:pointer;user-select:none;transition:color var(--ease)}
+thead th.sortable:hover{color:var(--a)}
+.col-check{width:42px;text-align:center!important;padding-left:16px!important}
+.sort-arrows{display:inline-flex;flex-direction:column;gap:1px;margin-left:4px;vertical-align:middle;opacity:.4}
+thead th.sort-asc .sort-arrows,thead th.sort-desc .sort-arrows{opacity:1;color:var(--a)}
+.sort-arrows svg{width:7px;height:7px}
+tbody tr{border-bottom:1px solid var(--border);transition:background var(--ease);position:relative}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:var(--surface2)}
+tbody td{padding:14px 16px;font-size:13px;color:var(--text2);vertical-align:middle}
+.row-select{width:16px;height:16px;accent-color:var(--a);cursor:pointer}
+.sender-cell{display:flex;align-items:center;gap:11px}
+.row-av{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--mono);position:relative}
+.row-av .unread-dot{position:absolute;top:-3px;right:-3px;width:9px;height:9px;border-radius:50%;background:#f97316;border:2px solid var(--surface)}
+.sender-name{font-size:13px;font-weight:600;color:var(--text);line-height:1.3}
+.sender-email{font-size:10.5px;color:var(--text3);font-family:var(--mono);margin-top:1px}
+tbody tr.unread .sender-name{font-weight:800;color:var(--text)}
+tbody tr.unread{background:rgba(37,99,235,.04)}
+tbody tr.unread::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--a),var(--a2))}
+.msg-cell{white-space:normal;max-width:360px}
+.msg-subj{font-size:12.5px;font-weight:700;color:var(--text);line-height:1.35;margin-bottom:2px;display:flex;align-items:center;gap:6px}
+.msg-subj .subj-tag{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--a);background:var(--a-lt);padding:1px 6px;border-radius:5px;font-family:var(--mono)}
+.msg-prev{font-size:12px;line-height:1.5;color:var(--text3);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.date-cell{font-family:var(--mono);font-size:11.5px;color:var(--text3);white-space:nowrap}
+.date-ago{font-size:10px;color:var(--text3);margin-top:2px;font-family:var(--mono)}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:4px 9px;border-radius:7px;text-transform:uppercase;letter-spacing:.07em;font-family:var(--mono)}
+.badge-dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0}
+.b-new{background:rgba(59,130,246,.12);color:#1d4ed8;border:1px solid rgba(59,130,246,.2)}
+.b-read{background:rgba(5,196,138,.12);color:#065f46;border:1px solid rgba(5,196,138,.2)}
+[data-theme="dark"] .b-new{color:#93c5fd}
+[data-theme="dark"] .b-read{color:#34d399}
+.actions{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.act-btn{display:inline-flex;align-items:center;gap:4px;padding:6px 11px;border-radius:var(--r-xs);font-size:11px;font-weight:600;cursor:pointer;border:1px solid transparent;transition:all var(--ease);white-space:nowrap;font-family:var(--font);text-decoration:none;background:none}
+.act-btn:hover{transform:translateY(-1px)}
+.act-btn:active{transform:scale(.96)}
+.act-btn svg{width:11px;height:11px}
+.ab-view{background:var(--a-lt);color:var(--a);border-color:rgba(37,99,235,.2)}
+.ab-view:hover{background:var(--a);color:#fff;box-shadow:0 4px 14px rgba(37,99,235,.35)}
+.ab-toggle{background:var(--surface2);color:var(--text3);border-color:var(--border2)}
+.ab-toggle:hover{background:var(--surface3);color:var(--text)}
+.ab-delete{background:var(--red-lt);color:var(--red);border-color:rgba(240,68,68,.2)}
+.ab-delete:hover{background:var(--red);color:#fff;box-shadow:0 4px 14px rgba(240,68,68,.3)}
+.empty-row td{padding:60px 20px;text-align:center}
+.empty-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--text3)}
+.empty-wrap svg{width:44px;height:44px;opacity:.2}
+.empty-wrap strong{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--text2)}
+.empty-wrap p{font-size:13px}
+.table-footer{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-top:1px solid var(--border);background:var(--surface2);flex-wrap:wrap;gap:8px}
+.tfoot-info{font-size:11.5px;color:var(--text3);font-family:var(--mono)}
+.tfoot-info strong{color:var(--text);font-weight:600}
+.tfoot-total{font-size:11px;color:var(--text3);font-family:var(--mono)}
+.pagination-wrap{margin-top:20px;display:flex;align-items:center;justify-content:center;gap:10px}
+.pg-pages{display:flex;align-items:center;gap:6px}
+.pg-page,.pg-arrow{width:38px;height:38px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--surface);color:var(--text2);display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:14px;font-weight:700;transition:all var(--ease);box-shadow:var(--sh)}
+.pg-page:hover,.pg-arrow:hover{background:var(--a-lt);border-color:var(--a);color:var(--a);transform:translateY(-2px)}
+.pg-page.active{background:linear-gradient(135deg,var(--a),var(--a2));border-color:transparent;color:#fff;box-shadow:0 8px 20px rgba(37,99,235,.35)}
+.pg-arrow.disabled{opacity:.3;pointer-events:none}
+
+/* Mobile card layout */
+@media(max-width:760px){
+  .sec-search{order:3;width:100%}
+  .sec-search input{width:100%;max-width:none}
+  table{min-width:0}
+  thead{display:none}
+  tbody tr{display:block;border:1px solid var(--border);border-radius:var(--r-sm);margin-bottom:12px;padding:6px 4px;background:var(--surface)}
+  tbody tr.unread{background:rgba(37,99,235,.04)}
+  tbody tr::before{display:none}
+  tbody td{display:flex;align-items:flex-start;gap:10px;padding:9px 12px;border:none!important;text-align:left;white-space:normal}
+  tbody td.col-check{display:none}
+  tbody td::before{content:attr(data-label);font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-family:var(--mono);min-width:74px;padding-top:2px}
+  tbody td.msg-cell{max-width:none}
+  tbody td.msg-cell::before{display:none}
+  tbody td.date-cell{flex-direction:column;align-items:flex-start;gap:2px}
+  tbody td.actions::before{display:none}
+  tbody td.actions{justify-content:flex-start;flex-wrap:wrap}
+  .msg-prev{-webkit-line-clamp:3}
+}
+@media(max-width:640px){.filter-bar{padding:12px 14px;gap:8px}.filter-group{flex:1;min-width:0}.filter-sel{width:100%}}
+@media(max-width:480px){
+  .filter-bar{flex-direction:column;align-items:stretch}
+  .filter-group{flex-wrap:wrap;width:100%}
+  .filter-sel{width:100%}
+  .filter-div{display:none}
+  .filter-reset{width:100%;justify-content:center}
+}
+@media(max-width:380px){
+  .pagination-wrap{flex-direction:column;gap:8px}
+  .stats-grid{gap:8px;}
+  .stat{padding:10px 12px;}
+  .sec-search input{width:100%;max-width:none;}
+  .table-card .table-footer{flex-direction:column;gap:4px;text-align:center;}
+}
+</style>
+@endpush
 
 @section('content')
 @php
@@ -15,6 +164,20 @@
   $cntRead  = $read;
   $cntNew   = $unread;
 @endphp
+
+<div class="hero">
+  <div class="hero-left">
+    <div class="hero-tag"><span class="hero-tag-dot"></span>Messages</div>
+    <div class="hero-name">Contact Messages</div>
+    <div class="hero-sub">Read and manage messages sent by visitors through the contact forms.</div>
+    <div class="hero-badges">
+      <span class="hero-badge hb-purple">{{ $cntTotal }} total</span>
+      <span class="hero-badge hb-amber">{{ $cntNew }} unread</span>
+      <span class="hero-badge hb-green">{{ $cntRead }} read</span>
+      <span class="hero-badge hb-blue">{{ $today }} today</span>
+    </div>
+  </div>
+</div>
 
 <div class="stats-grid">
   <div class="stat">
@@ -60,7 +223,7 @@
 </div>
 
 @if(session('success'))
-<div class="alert-ok" id="flashAlert">
+<div class="flash-ok">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
   {{ session('success') }}
 </div>
@@ -135,18 +298,18 @@
   </button>
 </div>
 
-<div class="table-bulk-bar" id="bulkBar">
-  <div class="table-bulk-left"><strong id="bulkCount">0</strong> selected</div>
-  <div class="table-bulk-actions">
-    <x-button variant="secondary" type="button" class="bb-btn bb-read" id="bulkRead">
+<div class="bulk-bar" id="bulkBar">
+  <div class="bulk-left"><strong id="bulkCount">0</strong> selected</div>
+  <div class="bulk-actions">
+    <button class="btn btn-secondary bb-btn bb-read" id="bulkRead">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
       Mark as read
-    </x-button>
-    <x-button variant="destructive" type="button" class="bb-btn bb-delete" id="bulkDelete">
+    </button>
+    <button class="btn btn-red bb-btn bb-delete" id="bulkDelete">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
       Delete
-    </x-button>
-    <x-button variant="secondary" type="button" class="bb-btn bb-clear" id="bulkClear">Clear</x-button>
+    </button>
+    <button class="btn btn-secondary bb-btn bb-clear" id="bulkClear">Clear</button>
   </div>
 </div>
 
@@ -214,11 +377,11 @@
           </td>
           <td data-label="Actions">
             <div class="actions">
-              <a href="{{ route('admin.messages.show', $msg->id) }}" class="act-btn ab-view">
+              <a href="{{ route('admin.messages.show', $msg->id) }}" class="btn btn-secondary act-btn ab-view">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                 View
               </a>
-              <button type="button" class="act-btn ab-toggle" data-id="{{ $msg->id }}" data-read="{{ $isRead ? '1' : '0' }}">
+              <button type="button" class="btn btn-secondary act-btn ab-toggle" data-id="{{ $msg->id }}" data-read="{{ $isRead ? '1' : '0' }}">
                 @if($isRead)
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9l9 6 9-6"/></svg> Unread
                 @else
@@ -227,8 +390,8 @@
               </button>
               <form action="{{ route('admin.messages.delete', $msg->id) }}" method="POST" style="display:inline;">
                 @csrf @method('DELETE')
-                <button type="submit" class="act-btn ab-delete">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
+                <button type="submit" class="btn btn-red act-btn ab-delete" onclick="return confirm('Delete this message?')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
                   Delete
                 </button>
               </form>
@@ -267,9 +430,9 @@
 @if($messages->lastPage() > 1)
 <div class="pagination-wrap">
   @if($messages->onFirstPage())
-    <span class="pg-arrow disabled">¹</span>
+    <span class="pg-arrow disabled">‹</span>
   @else
-    <a href="{{ $messages->previousPageUrl() }}" class="pg-arrow">¹</a>
+    <a href="{{ $messages->previousPageUrl() }}" class="pg-arrow">‹</a>
   @endif
   <div class="pg-pages">
     @for($i = 1; $i <= $messages->lastPage(); $i++)

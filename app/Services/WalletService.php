@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Exceptions\InsufficientWalletBalanceException;
 use App\Models\Donation;
-use App\Models\Organization;
 use App\Models\User;
 use App\Models\Wallet;
 use App\Models\WalletTransaction;
@@ -22,7 +21,6 @@ class WalletService
             ['owner_type' => get_class($owner), 'owner_id' => $owner->getKey()],
             [
                 'user_id' => $owner instanceof User ? $owner->getKey() : null,
-                'balance' => 0,
                 'currency' => 'INR',
             ]
         );
@@ -40,13 +38,13 @@ class WalletService
             throw new \InvalidArgumentException('Credit amount must be positive.');
         }
 
-        $existing = $this->findExisting($wallet->id, $referenceId, $referenceType, $source);
-        if ($existing) {
-            return $existing;
-        }
-
         return DB::transaction(function () use ($wallet, $amount, $source, $referenceId, $referenceType, $notes) {
             $locked = Wallet::lockForUpdate()->findOrFail($wallet->id);
+
+            $existing = $this->findExisting($locked->id, $referenceId, $referenceType, $source);
+            if ($existing) {
+                return $existing;
+            }
 
             if ($source === WalletTransaction::SOURCE_DONATION) {
                 $locked->reserved_balance = (float) $locked->reserved_balance + $amount;
@@ -71,13 +69,13 @@ class WalletService
             throw new \InvalidArgumentException('Debit amount must be positive.');
         }
 
-        $existing = $this->findExisting($wallet->id, $referenceId, $referenceType, $source);
-        if ($existing) {
-            return $existing;
-        }
-
         return DB::transaction(function () use ($wallet, $amount, $source, $referenceId, $referenceType, $notes) {
             $locked = Wallet::lockForUpdate()->findOrFail($wallet->id);
+
+            $existing = $this->findExisting($locked->id, $referenceId, $referenceType, $source);
+            if ($existing) {
+                return $existing;
+            }
 
             $fromReserved = false;
             if ($source === WalletTransaction::SOURCE_REFUND) {
@@ -131,14 +129,14 @@ class WalletService
             $wallet = $this->getOrCreateWallet($owner);
             $lock = Cache::lock('wallet_release_'.$wallet->id, 30);
 
-            if (! $lock->get()) {
-                continue;
-            }
-
-            $releasedAmount = 0;
-            $releasedCount = 0;
-
             try {
+                if (! $lock->get()) {
+                    continue;
+                }
+
+                $releasedAmount = 0;
+                $releasedCount = 0;
+
                 DB::transaction(function () use ($wallet, $donations, &$releasedAmount, &$releasedCount) {
                     $locked = Wallet::lockForUpdate()->findOrFail($wallet->id);
 
@@ -252,17 +250,19 @@ class WalletService
         $referenceType,
         ?string $notes
     ): WalletTransaction {
-        return WalletTransaction::create([
+        $transaction = WalletTransaction::create([
             'wallet_id' => $wallet->id,
             'type' => $type,
             'amount' => $amount,
             'source' => $source,
             'reference_type' => $referenceType,
             'reference_id' => $referenceId,
+            'notes' => $notes,
             'balance_after' => (float) $wallet->balance + (float) $wallet->reserved_balance,
             'status' => WalletTransaction::STATUS_COMPLETED,
-            'notes' => $notes,
         ]);
+
+        return $transaction;
     }
 
     public function ownerForDonation(Donation $donation): ?User

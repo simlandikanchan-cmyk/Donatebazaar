@@ -1,13 +1,44 @@
-﻿@extends('layouts.admin')
-
 @push('page_css')
 @vite('resources/css/admin/entries/misc.css')
 @endpush
 
+@extends('layouts.admin')
 
 @section('page_title', 'Contact Messages')
 @section('page_subtitle', 'Manage visitor inquiries')
 @section('sidebar_contacts', 'active')
+
+@push('page_styles')
+<style>
+@media(max-width:480px){
+  .max-w-7xl{padding:0 14px!important}
+  .flex.flex-col.md\:flex-row{gap:12px!important}
+  h1.text-3xl{font-size:clamp(18px,5vw,22px)!important}
+  .md\:w-72{width:100%!important}
+  .gap-3{gap:8px!important}
+  .gap-4{gap:8px!important}
+  .py-2{padding:6px 12px!important}
+  .space-y-2{gap:6px!important}
+}
+@media(max-width:380px){
+  .max-w-7xl{padding:0 10px!important}
+  h1.text-3xl{font-size:clamp(16px,5vw,20px)!important}
+  .px-4{padding:0 10px!important}
+  .py-2{font-size:12px!important;height:34px!important}
+  .rounded-lg{border-radius:6px!important}
+  .overflow-x-auto{-webkit-overflow-scrolling:touch}
+  table{font-size:12px!important}
+  table th,table td{padding:6px 8px!important}
+  .w-full.md\:w-auto{width:100%!important}
+  .btn{width:100%!important;justify-content:center!important;font-size:12px!important;padding:8px 14px!important}
+  .flex.items-center.gap-3{flex-wrap:wrap!important}
+  .md\:flex-row{flex-direction:column!important;align-items:stretch!important}
+  .md\:items-center{align-items:stretch!important}
+  .md\:justify-between{gap:12px!important}
+  .mb-8{margin-bottom:16px!important}
+}
+</style>
+@endpush
 
 @section('content')
 <div class="max-w-7xl mx-auto">

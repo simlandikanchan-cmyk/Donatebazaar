@@ -45,12 +45,12 @@ class WalletRepository
             ->count();
     }
 
-    public function getDonationIdsFromSettlements(array $campaignIds, array $statuses): Collection
+    public function getDonationIdsFromSettlements(int $organizationId): Collection
     {
         return DB::table('settlement_items')
             ->join('campaign_settlements', 'settlement_items.campaign_settlement_id', '=', 'campaign_settlements.id')
-            ->whereIn('campaign_settlements.status', $statuses)
-            ->whereIn('campaign_settlements.campaign_id', $campaignIds)
+            ->where('campaign_settlements.organization_id', $organizationId)
+            ->whereNotIn('campaign_settlements.status', ['paid', 'rejected', 'failed', 'cancelled'])
             ->pluck('settlement_items.donation_id');
     }
 
@@ -63,90 +63,75 @@ class WalletRepository
 
     public function credit(int $walletId, float $amount, string $description, ?string $referenceType = null, ?string $referenceId = null): WalletTransaction
     {
-        return DB::transaction(function () use ($walletId, $amount, $description, $referenceType, $referenceId) {
+        return DB::transaction(function () use ($walletId, $amount, $referenceType, $referenceId) {
             $wallet = Wallet::where('id', $walletId)->lockForUpdate()->firstOrFail();
             $wallet->increment('balance', $amount);
 
-            return WalletTransaction::create([
+            $transaction = WalletTransaction::create([
                 'wallet_id' => $walletId,
                 'type' => 'credit',
                 'amount' => $amount,
-                'balance_before' => $wallet->balance - $amount,
-                'balance_after' => $wallet->balance,
-                'description' => $description,
                 'reference_type' => $referenceType,
                 'reference_id' => $referenceId,
             ]);
+            $transaction->balance_after = (float) $wallet->balance + $amount;
+            $transaction->save();
+
+            return $transaction;
         });
     }
 
     public function debit(int $walletId, float $amount, string $description, ?string $referenceType = null, ?string $referenceId = null): WalletTransaction
     {
-        return DB::transaction(function () use ($walletId, $amount, $description, $referenceType, $referenceId) {
+        return DB::transaction(function () use ($walletId, $amount, $referenceType, $referenceId) {
             $wallet = Wallet::where('id', $walletId)->lockForUpdate()->firstOrFail();
 
             if ($wallet->balance < $amount) {
-                throw new \RuntimeException("Insufficient wallet balance");
+                throw new \RuntimeException('Insufficient wallet balance');
             }
 
             $wallet->decrement('balance', $amount);
 
-            return WalletTransaction::create([
+            $transaction = WalletTransaction::create([
                 'wallet_id' => $walletId,
                 'type' => 'debit',
                 'amount' => $amount,
-                'balance_before' => $wallet->balance + $amount,
-                'balance_after' => $wallet->balance,
-                'description' => $description,
                 'reference_type' => $referenceType,
                 'reference_id' => $referenceId,
             ]);
+            $transaction->balance_after = (float) $wallet->balance - $amount;
+            $transaction->save();
+
+            return $transaction;
         });
-    }
-
-    public function getMaturedReserves(): Collection
-    {
-        return WalletTransaction::where('type', 'reserve')
-            ->whereNotNull('release_at')
-            ->where('released', false)
-            ->where('release_at', '<=', now())
-            ->get();
-    }
-
-    public function getReservesForDonations(array $donationIds): Collection
-    {
-        return WalletTransaction::where('type', 'reserve')
-            ->whereIn('reference_id', $donationIds)
-            ->where('released', false)
-            ->get();
-    }
-
-    public function markAsReleased(int $transactionId): void
-    {
-        WalletTransaction::where('id', $transactionId)->update(['released' => true]);
     }
 
     public function adminAdjust(int $userId, string $direction, float $amount, string $notes): WalletTransaction
     {
-        return DB::transaction(function () use ($userId, $direction, $amount, $notes) {
+        return DB::transaction(function () use ($userId, $direction, $amount) {
             $wallet = Wallet::where('user_id', $userId)->lockForUpdate()->firstOrFail();
 
             if ($direction === 'debit' && $wallet->balance < $amount) {
-                throw new \RuntimeException("Insufficient balance");
+                throw new \RuntimeException('Insufficient balance');
             }
 
             $direction === 'credit'
                 ? $wallet->increment('balance', $amount)
                 : $wallet->decrement('balance', $amount);
 
-            return WalletTransaction::create([
+            $transaction = WalletTransaction::create([
                 'wallet_id' => $wallet->id,
                 'type' => $direction,
                 'amount' => $amount,
-                'balance_before' => $direction === 'credit' ? $wallet->balance - $amount : $wallet->balance + $amount,
-                'balance_after' => $wallet->balance,
-                'description' => "Admin {$direction}: {$notes}",
+                'reference_type' => null,
+                'reference_id' => null,
             ]);
+            $transaction->balance_after = $direction === 'credit'
+                ? (float) $wallet->balance + $amount
+                : (float) $wallet->balance - $amount;
+            $transaction->save();
+
+            return $transaction;
         });
     }
 }

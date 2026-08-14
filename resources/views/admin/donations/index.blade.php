@@ -1,13 +1,56 @@
-﻿@extends('layouts.admin')
-
 @push('page_css')
 @vite('resources/css/admin/entries/finance.css')
 @endpush
 
+@extends('layouts.admin')
 
 @section('sidebar_donations', 'active')
 @section('page_title', 'Donations')
 @section('page_subtitle', 'All donations across campaigns')
+
+@push('page_styles')
+<style>
+/* ── donation-specific badges / buttons (view-scoped, matches admin.css tokens) ── */
+.dn-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:100px;font-size:10.5px;font-weight:600;font-family:var(--mono);white-space:nowrap;border:1px solid transparent}
+.dn-completed{background:rgba(5,196,138,.12);color:#059c7f;border-color:rgba(5,196,138,.25)}
+.dn-pending{background:rgba(245,158,11,.12);color:var(--amber);border-color:rgba(245,158,11,.25)}
+.dn-failed{background:rgba(240,68,68,.12);color:var(--red);border-color:rgba(240,68,68,.25)}
+.dn-refunded{background:rgba(107,114,128,.12);color:#6b7280;border-color:rgba(107,114,128,.25)}
+.dn-yes{background:rgba(5,196,138,.12);color:#059c7f;border-color:rgba(5,196,138,.25)}
+.dn-no{background:rgba(107,114,128,.1);color:#9ca3af;border-color:rgba(107,114,128,.2)}
+.ab-refund{background:var(--amber-lt);color:var(--amber);border-color:rgba(245,158,11,.18)}
+.ab-refund:hover{background:var(--amber);color:#fff;border-color:var(--amber)}
+.ab-view{background:var(--a-lt);color:var(--a);border-color:rgba(37,99,235,.2)}
+.ab-view:hover{background:var(--a);color:#fff;box-shadow:0 4px 14px rgba(37,99,235,.35)}
+.dn-anon{font-style:italic;color:var(--text3)}
+@media(max-width:960px){.don-stats-grid{grid-template-columns:repeat(2,1fr)!important}}
+@media(max-width:640px){
+  .don-stats-grid{grid-template-columns:repeat(2,1fr)!important;gap:12px}
+  .stats-grid{grid-template-columns:repeat(2,1fr) !important;}
+}
+@media(max-width:600px){
+  #donationTable thead{display:none}
+  #donationTable tbody tr:not(.empty-row){display:flex;flex-direction:column;padding:14px 16px;border-bottom:1px solid var(--border);gap:8px}
+  #donationTable tbody tr td{padding:0;border:none;display:flex;align-items:center;gap:8px}
+  #donationTable tbody tr td::before{content:attr(data-label);font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);min-width:75px;flex-shrink:0}
+  #donationTable tbody tr td.cell-id::before{content:"#"}
+  #donationTable .act-btns{justify-content:flex-start;width:100%}
+  #donationTable td[data-label="Actions"]{flex-wrap:wrap}
+  #donationTable td[data-label="Actions"]::before{content:"Actions";min-width:auto;margin-right:auto}
+  #donationTable tbody tr td.cell-id{font-size:10px;color:var(--text3);margin-bottom:0}
+  #donationTable .cell-date{white-space:normal}
+  #donationTable .cell-mono{font-size:12px}
+}
+@media(max-width:480px){.don-stats-grid{grid-template-columns:1fr!important}}
+@media(max-width:380px){
+  .don-stats-grid .stat{padding:12px 14px}
+  #donationTable tbody tr:not(.empty-row){padding:12px 14px}
+  #donationTable tbody tr td::before{min-width:65px;font-size:9px}
+  .filter-row{flex-direction:column;align-items:stretch;gap:8px;}
+  .sinp{width:100%;}
+}
+</style>
+@endpush
 
 @section('content')
 
@@ -48,13 +91,13 @@
 </div>
 
 @if(session('success'))
-<div class="alert-ok">
+<div style="background:rgba(5,196,138,.09);border:1px solid rgba(5,196,138,.25);color:#065f46;padding:12px 16px;border-radius:var(--r-sm);font-size:13px;font-weight:500;margin-bottom:18px;display:flex;align-items:center;gap:8px">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
   {{ session('success') }}
 </div>
 @endif
 @if(session('error'))
-<div class="alert-error">
+<div style="background:rgba(240,68,68,.09);border:1px solid rgba(240,68,68,.25);color:#7f1d1d;padding:12px 16px;border-radius:var(--r-sm);font-size:13px;font-weight:500;margin-bottom:18px;display:flex;align-items:center;gap:8px">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
   {{ session('error') }}
 </div>
@@ -165,7 +208,7 @@
 
           <td data-label="Actions">
             <div class="act-btns">
-              <a href="{{ route('admin.donations.show', $d->id) }}" class="act-btn ab-view">
+              <a href="{{ route('admin.donations.show', $d->id) }}" class="btn btn-secondary act-btn ab-view">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                 <span>View</span>
               </a>
@@ -222,10 +265,10 @@
       <textarea id="refundReason" name="reason" rows="2" placeholder="Reason (optional)…" style="width:100%;margin-top:12px;padding:8px 10px;border:1px solid var(--border2);border-radius:var(--r-sm);font-size:12.5px;font-family:var(--font);background:var(--surface2);color:var(--text);resize:vertical"></textarea>
     </div>
     <div class="modal-acts">
-      <x-button variant="secondary" type="button" class="modal-btn">Cancel</x-button>
+      <button type="button" onclick="closeRefund()" class="btn btn-secondary modal-btn modal-cancel">Cancel</button>
       <form id="refundForm" method="POST" style="flex:1;">
         @csrf
-        <x-button variant="destructive" type="submit" class="modal-btn">↺ Confirm Refund</x-button>
+        <button type="submit" class="btn btn-red modal-btn modal-red">↺ Confirm Refund</button>
       </form>
     </div>
   </div>

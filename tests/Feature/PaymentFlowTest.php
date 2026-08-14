@@ -68,8 +68,9 @@ class PaymentFlowTest extends TestCase
             'net_amount' => 970.00,
             'order_id' => 'order_test_1',
             'currency' => 'INR',
-            'payment_status' => 'pending',
         ]);
+        $donation->payment_status = 'pending';
+        $donation->save();
 
         DB::table('donations')->where('id', $donation->id)->update([
             'payment_status' => 'completed',
@@ -111,8 +112,9 @@ class PaymentFlowTest extends TestCase
             'net_amount' => 485.00,
             'order_id' => 'order_test_2',
             'currency' => 'INR',
-            'payment_status' => 'pending',
         ]);
+        $donation->payment_status = 'pending';
+        $donation->save();
 
         $walletBefore = $this->walletService->getOrCreateWallet($this->owner);
         $balanceBefore = (float) $walletBefore->reserved_balance;
@@ -147,8 +149,9 @@ class PaymentFlowTest extends TestCase
             'net_amount' => 485.00,
             'order_id' => 'order_test_3',
             'currency' => 'INR',
-            'payment_status' => 'pending',
         ]);
+        $donation->payment_status = 'pending';
+        $donation->save();
 
         ProductReservation::create([
             'product_id' => $product->id,
@@ -176,8 +179,9 @@ class PaymentFlowTest extends TestCase
             'net_amount' => 1940.00,
             'order_id' => 'order_test_4',
             'currency' => 'INR',
-            'payment_status' => 'pending',
         ]);
+        $donation->payment_status = 'pending';
+        $donation->save();
 
         DB::table('donations')->where('id', $donation->id)->update([
             'payment_status' => 'completed',

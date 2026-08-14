@@ -12,43 +12,35 @@ class Donation extends Model
     use HasFactory;
 
     protected $fillable = [
-
         'campaign_id',
         'user_id',
         'donor_name',
         'donor_email',
         'donor_phone',
-
         'donation_type',
-
         'total_amount',
-        'platform_fee',
-        'net_amount',
-
         'original_amount',
         'discount_amount',
-        'coupon_id',
-        'coupon_code',
-
+        'platform_fee',
+        'net_amount',
         'order_id',
         'payment_gateway',
-        'payment_id',
-        'signature',
+        'currency',
+        'receipt_number',
+        'coupon_id',
+        'coupon_code',
+        'is_anonymous',
+        'message',
+    ];
 
+    protected $guarded = [
         'payment_status',
+        'settlement_status',
+        'campaign_settlement_id',
+        'paid_at',
         'is_refunded',
         'refunded_at',
         'released_at',
-        'paid_at',
-        'settlement_status',
-        'campaign_settlement_id',
-
-        'currency',
-
-        'receipt_number',
-
-        'is_anonymous',
-        'message',
     ];
 
     protected $casts = [
@@ -75,6 +67,7 @@ class Donation extends Model
                 if ($enum === null) {
                     throw new \InvalidArgumentException("Invalid payment status: '$value'");
                 }
+
                 return $enum->value;
             },
         );
@@ -99,6 +92,7 @@ class Donation extends Model
     {
         return $this->hasMany(Refund::class);
     }
+
     public function items()
     {
         return $this->hasMany(DonationItem::class);

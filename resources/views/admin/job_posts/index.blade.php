@@ -1,13 +1,151 @@
-﻿@extends('layouts.admin')
-
 @push('page_css')
 @vite('resources/css/admin/entries/jobs.css')
 @endpush
 
+@extends('layouts.admin')
 
 @section('sidebar_job_posts', 'active')
 @section('page_title', 'Job Posts')
 @section('page_subtitle', 'Manage job listings')
+
+@push('page_styles')
+<style>
+/* ── extra stat colors (not in admin.css) ── */
+.si-gray{background:rgba(107,114,128,.12);color:#6b7280}
+.sv-gray{color:#6b7280}
+.si-pink{background:var(--pink-lt);color:var(--pink)}
+.sv-pink{color:var(--pink)}
+
+/* ── badge for closed (not in admin.css) ── */
+.b-closed{background:rgba(240,68,68,.85);color:#fff}
+
+/* ── dual stat card ── */
+.stat-dual{display:flex;gap:14px;align-items:center}
+.stat-dual-sep{width:1px;height:32px;background:var(--border2);flex-shrink:0}
+
+/* ── filter/search row ── */
+.filter-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap;animation:fadeUp .4s .15s ease both}
+.filter-right{display:flex;gap:8px;align-items:center}
+.swrap{position:relative}
+.swrap .sico{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:12px;height:12px;color:var(--text3);pointer-events:none;z-index:1}
+.sinp{height:36px;min-width:180px;padding:0 10px 0 30px;border:1px solid var(--border2);border-radius:var(--r-sm);font-size:12.5px;color:var(--text);font-family:var(--font);background:var(--surface2);outline:none;transition:border-color var(--ease),box-shadow var(--ease),width var(--ease)}
+.sinp::placeholder{color:var(--text3)}
+.sinp:focus{border-color:var(--a);box-shadow:0 0 0 3px var(--a-glow);width:220px}
+
+/* ── table card ── */
+.table-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;animation:fadeUp .4s .2s ease both}
+.table-scroll{overflow-x:auto}
+table{width:100%;min-width:900px;border-collapse:collapse}
+thead{background:var(--surface2);border-bottom:1px solid var(--border)}
+thead th{padding:12px 16px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--text3);font-family:var(--mono);white-space:nowrap}
+thead th:first-child{padding-left:20px}
+thead th:last-child{padding-right:20px;text-align:right}
+tbody td{padding:14px 16px;border-bottom:1px solid var(--border);vertical-align:middle}
+tbody td:first-child{padding-left:20px}
+tbody td:last-child{padding-right:20px}
+tbody tr:last-child td{border-bottom:none}
+tbody tr{transition:background var(--ease)}
+tbody tr:hover{background:var(--surface2)}
+
+/* ── job cells ── */
+.job-title{font-size:13.5px;font-weight:600;color:var(--text);line-height:1.2}
+.job-slug{font-size:10.5px;color:var(--text3);font-family:var(--mono);margin-top:2px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.job-dept{display:flex;align-items:center;gap:4px;margin-top:3px;font-size:10px;color:var(--text3);font-family:var(--mono)}
+.job-dept svg{width:9px;height:9px;color:var(--text3);flex-shrink:0}
+.cell-id{font-family:var(--mono);font-size:11px;color:var(--text3);font-weight:500}
+.cell-mono{font-family:var(--mono);font-size:11.5px;font-weight:600;color:var(--text2)}
+.cell-date{font-family:var(--mono);font-size:11px;color:var(--text3);white-space:nowrap}
+.cell-date-sub{font-size:9.5px;margin-top:1px;color:var(--text3)}
+
+/* ── deadline ── */
+.deadline-chip{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;color:var(--amber);font-family:var(--mono);white-space:nowrap}
+.deadline-chip.expired{color:var(--red)}
+.deadline-chip svg{width:10px;height:10px}
+.deadline-sub{font-size:9.5px;color:var(--text3);font-family:var(--mono);margin-top:1px}
+.deadline-sub.expired{color:var(--red)}
+
+/* ── feature / remote pills ── */
+.featured-star{display:inline-flex;align-items:center;gap:3px;font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:100px;background:var(--amber-lt);color:var(--amber);border:1px solid rgba(245,158,11,.25);font-family:var(--mono);white-space:nowrap;margin-top:3px}
+.remote-pill{display:inline-flex;align-items:center;gap:3px;font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:100px;background:var(--a-lt);color:var(--a);border:1px solid rgba(37,99,235,.2);font-family:var(--mono);white-space:nowrap}
+.remote-pill svg{width:9px;height:9px}
+
+/* ── compact detail cells ── */
+.details-wrap{display:flex;flex-direction:column;gap:3px}
+.details-row{display:flex;flex-wrap:wrap;gap:2px 10px;font-size:11.5px;color:var(--text2)}
+.details-row span{display:inline-flex;align-items:center;gap:3px;font-family:var(--mono)}
+.details-row svg{width:9px;height:9px;color:var(--text3);flex-shrink:0}
+
+/* ── metrics ── */
+.metric-dual{display:flex;gap:14px;align-items:center}
+.metric-dual-sep{width:1px;height:26px;background:var(--border2);flex-shrink:0}
+.metric-val{font-family:var(--mono);font-size:13px;font-weight:700;line-height:1}
+.metric-lbl{font-size:9px;color:var(--text3);font-family:var(--mono);margin-top:1px}
+.vac-val{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--a);line-height:1}
+.vac-lbl{font-size:9.5px;color:var(--text3);font-family:var(--mono);margin-top:1px}
+
+/* ── action buttons ── */
+.act-btns{display:flex;align-items:center;justify-content:flex-end;gap:4px}
+.act-btn{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:7px;font-size:11.5px;font-weight:500;cursor:pointer;border:1px solid transparent;transition:all var(--ease);text-decoration:none;font-family:var(--font);white-space:nowrap}
+.act-btn svg{width:11px;height:11px}
+.act-btn:active{transform:scale(.96)}
+.ab-view{background:var(--surface2);color:var(--text2);border-color:var(--border2)}
+.ab-view:hover{background:var(--a-lt);color:var(--a);border-color:rgba(37,99,235,.2)}
+.ab-edit{background:var(--a-lt);color:var(--a);border-color:rgba(37,99,235,.18)}
+.ab-edit:hover{background:var(--a);color:#fff;border-color:var(--a)}
+.ab-delete{background:var(--red-lt);color:var(--red);border-color:rgba(240,68,68,.18)}
+.ab-delete:hover{background:var(--red);color:#fff;border-color:var(--red)}
+
+/* ── empty state ── */
+.empty-row td{text-align:center;padding:56px 20px}
+.empty-inner{display:flex;flex-direction:column;align-items:center;gap:10px}
+.empty-inner svg{width:48px;height:48px;color:var(--text3);opacity:.25}
+.empty-inner strong{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--text2)}
+.empty-inner span{font-size:13px;color:var(--text3)}
+
+/* ── mobile card layout ── */
+@media(max-width:960px){
+  thead{display:none}
+  table{min-width:0}
+  tbody tr{display:block;margin-bottom:12px;padding:12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);box-shadow:var(--sh)}
+  tbody tr:hover{background:var(--surface)}
+  tbody td{display:flex;align-items:flex-start;gap:8px;padding:7px 6px;border:none!important;text-align:left}
+  tbody td:first-child{padding-left:6px}
+  tbody td:last-child{padding-right:6px}
+  tbody td::before{content:attr(data-label);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);font-family:var(--mono);min-width:70px;flex-shrink:0;padding-top:2px}
+  .sinp{min-width:0;width:100%}
+  .sinp:focus{width:100%}
+  .filter-row{flex-direction:column;align-items:stretch}
+  .filter-right{flex-wrap:wrap}
+  .act-btns{flex-wrap:wrap;gap:5px;width:100%}
+  .act-btn{flex:1;justify-content:center;min-width:0}
+  .sec-hdr{flex-direction:column;align-items:flex-start}
+}
+@media(max-width:600px){
+  .stats-grid{grid-template-columns:1fr 1fr!important}
+  .act-btn span{display:none}
+}
+@media(max-width:480px){
+  .stats-grid{grid-template-columns:1fr!important}
+}
+@media(max-width:380px){
+  .filter-row{flex-direction:column;align-items:stretch;gap:8px;}
+  .sinp{width:100%;font-size:11px;height:34px;padding:0 10px;}
+  .filter-right{width:100%;gap:4px;}
+  .filter-right .btn{font-size:11px;height:32px;padding:0 10px;justify-content:center;}
+  .stats-grid{gap:8px}
+  .stat-card{padding:14px 10px}
+  .stat-num{font-size:clamp(18px,5vw,20px)}
+  .stat-lbl{font-size:9px}
+  tbody tr{padding:10px}
+  .table{margin:0 -10px;width:calc(100% + 20px)}
+  tbody td{font-size:11px;padding:5px 4px}
+  tbody td::before{font-size:8px;min-width:55px}
+  .act-btns{gap:4px}.act-btn{font-size:10px;padding:5px 8px;height:28px}
+  .pagination-wrap{flex-direction:column;gap:8px;padding:12px 14px}
+  .empty-state{padding:30px 16px}
+}
+</style>
+@endpush
 
 @section('content')
 
@@ -49,20 +187,18 @@
     </div>
   </div>
   <div class="hero-right">
-    <div class="hero-actions">
-    <x-button variant="primary" href="{{ route('admin.job_posts.create') }}">
+    <a href="{{ route('admin.job_posts.create') }}" class="hero-btn hero-btn-primary">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
       Post a Job
-    </x-button>
-    <x-button variant="primary" href="{{ route('admin.job_post_applications.index') }}">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283-.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg>
+    </a>
+    <a href="{{ route('admin.job_post_applications.index') }}" class="hero-btn hero-btn-ghost">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg>
       Applicants
-    </x-button>
-    </div>
+    </a>
   </div>
 </div>
 
-<div class="stats-grid">
+<div class="stats-grid" style="grid-template-columns:repeat(4,1fr)">
   <div class="stat" onclick="setFilter('all')" style="cursor:pointer">
     <div class="stat-icon si-teal">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
@@ -105,7 +241,7 @@
   </div>
 </div>
 
-<div class="stats-grid">
+<div class="stats-grid" style="grid-template-columns:repeat(4,1fr)">
   <div class="stat" onclick="setFilter('remote')" style="cursor:pointer">
     <div class="stat-icon si-a">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064"/></svg>
@@ -158,7 +294,7 @@
 </div>
 
 @if(session('success'))
-<div class="alert-ok">
+<div style="background:rgba(5,196,138,.09);border:1px solid rgba(5,196,138,.25);color:#065f46;padding:12px 16px;border-radius:var(--r-sm);font-size:13px;font-weight:500;margin-bottom:18px;display:flex;align-items:center;gap:8px">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
   {{ session('success') }}
 </div>
@@ -378,8 +514,8 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                 <span>Edit</span>
               </a>
-              <button type="button" onclick="confirmDelete({{ $job->id }}, '{{ addslashes($job->title) }}')" class="btn btn-red act-btn">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+              <button type="button" onclick="confirmDelete({{ $job->id }}, '{{ addslashes($job->title) }}')" class="btn btn-red act-btn ab-delete">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
                 <span>Delete</span>
               </button>
             </div>
@@ -393,10 +529,10 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
               <strong>No job posts yet</strong>
               <span>Get started by posting your first job listing.</span>
-              <x-button variant="primary" href="{{ route('admin.job_posts.create') }}">
+              <a href="{{ route('admin.job_posts.create') }}" class="hero-btn hero-btn-primary" style="margin-top:8px;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
                 Post First Job
-              </x-button>
+              </a>
             </div>
           </td>
         </tr>
@@ -431,10 +567,10 @@
     </div>
     <div class="modal-body">Are you sure you want to delete <strong id="deleteJobTitle">"Job Title"</strong>? All applicants for this listing will also lose access.</div>
     <div class="modal-acts">
-      <x-button variant="secondary" type="button" class="modal-btn">Cancel</x-button>
+      <button type="button" onclick="closeDelete()" class="btn btn-secondary modal-btn modal-cancel">Cancel</button>
       <form id="deleteForm" method="POST" style="flex:1;">
         @csrf @method('DELETE')
-        <x-button variant="destructive" type="submit" class="modal-btn">🗑 Delete Permanently</x-button>
+        <button type="submit" class="btn btn-red modal-btn modal-red">🗑 Delete Permanently</button>
       </form>
     </div>
   </div>
@@ -449,7 +585,7 @@
 (function () {
   'use strict';
 
-  /* —€—€ toast notifications —€—€ */
+  /* ── toast notifications ── */
   function toast(msg, type) {
     var icons = {
       success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
@@ -468,7 +604,7 @@
   }
   @if(session('success')) setTimeout(function(){toast(@json(session('success')),'success');},200); @endif
 
-  /* —€—€ filter / sort / search —€—€ */
+  /* ── filter / sort / search ── */
   var rows         = Array.from(document.querySelectorAll('#tableBody tr[data-filter]'));
   var activeFilter = 'all';
   var searchQ      = '';
@@ -533,7 +669,7 @@
     applyFilters();
   });
 
-  /* —€—€ delete modal —€—€ */
+  /* ── delete modal ── */
   window.confirmDelete = function (id, title) {
     document.getElementById('deleteForm').action = '{{ route('admin.job_posts.destroy', ':id') }}'.replace(':id', id);
     document.getElementById('deleteJobTitle').textContent = '"' + title + '"';

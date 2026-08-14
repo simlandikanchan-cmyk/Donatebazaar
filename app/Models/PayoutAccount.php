@@ -24,6 +24,11 @@ class PayoutAccount extends Model
     protected $casts = [
         'is_verified' => 'boolean',
         'verified_at' => 'datetime',
+        'account_holder_name' => 'encrypted',
+        'bank_name' => 'encrypted',
+        'account_number' => 'encrypted',
+        'ifsc_code' => 'encrypted',
+        'upi_id' => 'encrypted',
     ];
 
     /**

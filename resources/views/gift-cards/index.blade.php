@@ -24,7 +24,7 @@
 .gc-right{width:320px;flex-shrink:0;position:sticky;top:90px;}
 
 /* ── Section card ── */
-.gc-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-bottom:16px;animation:fadeUp .4s both;transition:box-shadow var(--tr);}
+.gc-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-bottom:16px;animation:fadeUp .4s both;transition:box-shadow var(--transition);}
 .gc-card:hover{box-shadow:var(--shadow-lg);}
 .gc-card-hdr{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
 .gc-card-hdr svg{width:14px;height:14px;color:var(--accent);flex-shrink:0;}
@@ -32,7 +32,7 @@
 
 /* ── Theme picker (2×2) ── */
 .gc-theme-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.gc-theme-swatch{border-radius:var(--radius-sm);padding:16px 14px;cursor:pointer;border:2px solid transparent;transition:border-color var(--tr),transform var(--tr),box-shadow var(--tr);position:relative;}
+.gc-theme-swatch{border-radius:var(--radius-sm);padding:16px 14px;cursor:pointer;border:2px solid transparent;transition:border-color var(--transition),transform var(--transition),box-shadow var(--transition);position:relative;}
 .gc-theme-swatch:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.08);}
 .gc-theme-swatch.selected{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow);}
 .gc-theme-brand{font-family:var(--font-mono);font-size:9px;font-weight:600;letter-spacing:0.09em;margin-bottom:5px;text-transform:uppercase;}
@@ -43,7 +43,7 @@
 
 /* ── Amount pills ── */
 .gc-amt-pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
-.gc-amt-pill{padding:7px 15px;border-radius:100px;border:1.5px solid var(--border2);background:var(--surface2);font-family:var(--font);font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;transition:all var(--tr);}
+.gc-amt-pill{padding:7px 15px;border-radius:100px;border:1.5px solid var(--border2);background:var(--surface2);font-family:var(--font);font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;transition:all var(--transition);}
 .gc-amt-pill:hover{border-color:var(--accent);color:var(--accent);}
 .gc-amt-pill.active{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 3px 12px var(--accent-glow);}
 .gc-custom-row{display:flex;align-items:center;gap:10px;}
@@ -52,13 +52,13 @@
 /* ── Fields ── */
 .gc-field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
 .gc-field label{display:block;font-size:11.5px;font-weight:600;color:var(--text2);margin-bottom:5px;}
-.gc-field input,.gc-field textarea{width:100%;border-radius:var(--radius-sm);border:1.5px solid var(--border2);background:var(--surface2);padding:0 12px;height:38px;font-family:var(--font);font-size:13px;color:var(--text);outline:none;transition:border-color var(--tr),box-shadow var(--tr),background var(--tr);}
+.gc-field input,.gc-field textarea{width:100%;border-radius:var(--radius-sm);border:1.5px solid var(--border2);background:var(--surface2);padding:0 12px;height:38px;font-family:var(--font);font-size:13px;color:var(--text);outline:none;transition:border-color var(--transition),box-shadow var(--transition),background var(--transition);}
 .gc-field textarea{height:auto;padding:9px 12px;line-height:1.6;resize:vertical;}
 .gc-field input:focus,.gc-field textarea:focus{border-color:var(--accent);background:var(--surface);box-shadow:0 0 0 3px var(--accent-glow);}
 .gc-field input::placeholder,.gc-field textarea::placeholder{color:var(--text3);}
 
 /* ── Preview (right column) ── */
-.gc-preview-card{border-radius:var(--radius);padding:24px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:var(--shadow);transition:background var(--tr);}
+.gc-preview-card{border-radius:var(--radius);padding:24px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:var(--shadow);transition:background var(--transition);}
 .gc-preview-brand{font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:0.09em;margin-bottom:6px;text-transform:uppercase;}
 .gc-preview-amt{font-family:var(--font-mono);font-size:36px;font-weight:800;letter-spacing:-0.03em;}
 .gc-preview-to{font-size:13px;opacity:0.72;margin-top:5px;font-weight:500;}
@@ -74,6 +74,7 @@
 
 /* ── Buy button ── */
 .gc-buy-wrap{padding-top:12px;}
+.gc-buy-btn{width:100%;padding:14px;border:none;border-radius:12px;font-family:var(--font-mono);font-size:14px;font-weight:600;color:#fff;cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 4px 18px var(--accent-glow);transition:opacity var(--transition),transform var(--transition),box-shadow var(--transition);}
 .gc-buy-btn:hover:not(:disabled){opacity:0.92;transform:translateY(-1px);box-shadow:0 8px 26px var(--accent-glow);}
 .gc-buy-btn:disabled{cursor:not-allowed;opacity:0.75;}
 
@@ -251,7 +252,7 @@
 
     {{-- Buy button --}}
     <div class="gc-buy-wrap">
-        <x-button variant="secondary" type="button">
+        <x-button variant="primary" type="button" id="buyBtn" onclick="initiatePurchase()" class="gc-buy-btn">
             Purchase &amp; Send Gift Card — ₹<span id="btnAmt">500</span>
         </x-button>
     </div>

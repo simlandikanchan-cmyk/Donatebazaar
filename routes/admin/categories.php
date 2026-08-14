@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
 
-    Route::resource('categories', CategoryController::class);
+    Route::resource('categories', CategoryController::class)->except(['show']);
     Route::post('categories/{category}/toggle', [CategoryController::class, 'toggle'])->name('categories.toggle');
 
     Route::prefix('category-products')->controller(AdminCategoryProductController::class)->group(function () {
@@ -14,6 +14,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
         Route::post('bulk-toggle', 'bulkToggle')->name('category-products.bulk-toggle');
         Route::post('bulk-delete', 'bulkDelete')->name('category-products.bulk-delete');
     });
-    Route::resource('category-products', AdminCategoryProductController::class);
+    Route::resource('category-products', AdminCategoryProductController::class)->except(['show']);
 
 });
