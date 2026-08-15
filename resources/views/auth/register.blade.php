@@ -91,6 +91,16 @@
     </div>
 
     <div class="right-panel">
+        <div class="mobile-brand">
+            <a href="{{ route('home') }}" class="mobile-brand-link">
+                <span class="mobile-brand-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="rgba(37,99,235,0.9)">
+                        <path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402C1 3.335 4.18 1 7.5 1c1.862 0 3.706.902 4.5 2.338C12.794 1.902 14.638 1 16.5 1 19.82 1 23 3.335 23 7.191c0 4.105-5.37 8.863-11 14.402z"/>
+                    </svg>
+                </span>
+                <span class="mobile-brand-name">DonateBazaar</span>
+            </a>
+        </div>
         @include('auth.partials._register_form')
     </div>
 

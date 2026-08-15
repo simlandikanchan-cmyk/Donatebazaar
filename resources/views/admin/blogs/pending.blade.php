@@ -35,8 +35,8 @@
           <button class="btn btn-green">✓ Approve</button>
         </form>
  
-        <form method="POST" action="{{ route('admin.blogs.reject', $blog) }}"
-              onsubmit="return promptReason(this)">
+<form method="POST" action="{{ route('admin.blogs.reject', $blog) }}"
+              data-action="reject-reason">
           @csrf
           <input type="hidden" name="reason" id="reject_reason_{{ $blog->id }}">
           <button class="btn btn-red" data-id="{{ $blog->id }}">✗ Reject</button>
@@ -49,19 +49,23 @@
       <p class="text-xl">No blogs pending review!</p>
     </div>
   @endforelse
- 
+  
   {{ $blogs->links('vendor.pagination.admin') }}
 </div>
  
-@push('scripts')
+@push('page_scripts')
 <script>
-function promptReason(form) {
+document.addEventListener('submit', function (event) {
+  const form = event.target.closest('form[data-action="reject-reason"]');
+  if (!form) return;
   const id = form.querySelector('button[data-id]').dataset.id;
   const reason = prompt('Rejection reason (required):');
-  if (!reason || !reason.trim()) return false;
+  if (!reason || !reason.trim()) {
+    event.preventDefault();
+    return;
+  }
   document.getElementById('reject_reason_' + id).value = reason;
-  return true;
-}
+});
 </script>
 @endpush
 @endsection

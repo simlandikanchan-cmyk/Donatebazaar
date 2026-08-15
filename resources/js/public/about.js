@@ -304,8 +304,7 @@
 
     /* ── Initial ARIA + height state ────────────────────────── */
 
-    ctx.querySelectorAll('.faq-item').forEach(item => {
-      const btn   = item.querySelector('.faq-q');
+    ctx.querySelectorAll('.faq-item').forEach(item => {      const btn   = item.querySelector('.faq-q');
       const panel = item.querySelector('.faq-a');
       if (!btn || !panel) return;
 
@@ -314,14 +313,10 @@
 
       // Ensure closed panels start at height: 0
       // (catches cases where CSS hasn't loaded yet)
-      if (!isOpen) panel.style.height = '0';
-    });
+       if (!isOpen) panel.style.height = '0';
+       });
+   }
 
-    /* ── Legacy global shim ─────────────────────────────────── */
-    // Keeps existing inline onclick="toggleFaq(idx)" HTML working.
-    // Remove once HTML is updated to use data-driven handlers.
-    window.toggleFaq = toggleByIdx;
-  }
 
 
   /* ═══════════════════════════════════════════════════════════

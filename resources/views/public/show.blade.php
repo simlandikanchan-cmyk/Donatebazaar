@@ -168,11 +168,11 @@
             </div>
 
             <div class="hero-cta">
-                <x-button variant="primary" type="button" class="hero-donate-btn" onclick="scrollToDonate()">
+                <x-button variant="primary" type="button" class="hero-donate-btn" data-action="scroll-to-donate">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
                     Donate Now
                 </x-button>
-                <x-button variant="secondary" type="button" class="hero-share-btn" onclick="shareCampaign(event)">
+                <x-button variant="secondary" type="button" class="hero-share-btn" data-action="share-campaign">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
                     Share
                 </x-button>
@@ -183,7 +183,7 @@
 
 
 {{-- ═══ PAGE BODY ═══ --}}
-<div class="page-wrap">
+<div class="page-wrap" data-campaign-id="{ $campaign->id }" data-campaign-title="{ $campaign->title }" data-coupon-route="{ route('coupon.validate') }">
 
     {{-- ════ LEFT COLUMN ════ --}}
     <div class="left-col">
@@ -452,7 +452,7 @@
                 <div class="faq-list" style="margin-top:4px">
                     @foreach($faqs as $i => $faq)
                     <div class="faq-item" id="faq-{{ $i }}">
-                        <div class="faq-q" onclick="toggleFaq({{ $i }})">
+                        <div class="faq-q" data-action="toggle-faq" data-id="{{ $i }}">
                             <span class="faq-q-text">{{ $faq[0] }}</span>
                             <div class="faq-chevron">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
@@ -587,10 +587,10 @@
             <div class="main-donate-tabs">
                 <button type="button" id="tabProducts"
                         class="main-donate-tab {{ $products->count() > 0 ? 'active-products' : '' }}"
-                        onclick="switchMainTab('products')">Donate Products</button>
+                        data-action="switch-main-tab" data-tab="products">Donate Products</button>
                 <button type="button" id="tabMoney"
                         class="main-donate-tab {{ $products->count() === 0 ? 'active-money' : '' }}"
-                        onclick="switchMainTab('money')">Donate Money</button>
+                        data-action="switch-main-tab" data-tab="money">Donate Money</button>
             </div>
 
             {{-- ─── PRODUCTS PANEL ─── --}}
@@ -601,7 +601,7 @@
                         <span class="dp-cart-bar-items" id="dpCartItems">0 items selected</span>
                         <span>·</span>
                         <span style="font-family:var(--font-mono);font-weight:700;" id="dpCartTotal">₹0</span>
-                        <span class="dp-cart-clear" onclick="clearProductCart()">Clear all</span>
+                        <span class="dp-cart-clear" data-action="clear-product-cart">Clear all</span>
                     </div>
 
                     <div class="dp-grid" id="dpGrid">
@@ -650,19 +650,19 @@
 
                             <div id="dpAddWrap_{{ $product->id }}">
                                 <x-button variant="primary" type="button" class="dp-add-btn" id="dpAddBtn_{{ $product->id }}"
-                                        onclick="addProductToCart({{ $product->id }})">
+                                        data-action="add-to-cart" data-id="{{ $product->id }}">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                                     Add
                                 </x-button>
                             </div>
                             <div class="dp-counter" id="dpCounter_{{ $product->id }}">
-                                <button type="button" class="dp-minus" onclick="changeQty({{ $product->id }}, -1)">−</button>
+                                <button type="button" class="dp-minus" data-action="change-qty" data-id="{{ $product->id }}" data-delta="-1">−</button>
                                 <span class="dp-count" id="dpCount_{{ $product->id }}">1</span>
-                                <button type="button" class="dp-plus"  onclick="changeQty({{ $product->id }}, +1)">+</button>
+                                <button type="button" class="dp-plus"  data-action="change-qty" data-id="{{ $product->id }}" data-delta="1">+</button>
                             </div>
 
                             <div class="dp-info">
-                                <div class="dp-name" onclick="toggleDpExpand({{ $product->id }})">
+                                <div class="dp-name" data-action="toggle-dp-expand" data-id="{{ $product->id }}">
                                     <span class="dp-name-text">{{ $product->name }}</span>
                                     @if($product->description)
                                     <svg class="dp-expand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
@@ -684,7 +684,7 @@
                     </div>
 
                     @if($products->count() > 6)
-                    <button type="button" class="dp-load-more" id="dpLoadMore" onclick="loadMoreProducts()">
+                    <button type="button" class="dp-load-more" id="dpLoadMore" data-action="load-more-products">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
                         Show {{ $products->count() - 6 }} more products
                     </button>
@@ -708,7 +708,7 @@
 
                 @if($products->count() > 0)
                 <div style="padding:0 14px 14px;">
-                    <x-button variant="primary" type="button" id="dpDonateBtn" disabled onclick="submitProductDonation()">
+                    <x-button variant="primary" type="button" id="dpDonateBtn" disabled data-action="submit-product-donation">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
                         <span id="dpDonateBtnText">Select Products to Donate</span>
                     </x-button>
@@ -721,9 +721,9 @@
             <div id="panelMoney" style="{{ $products->count() > 0 ? 'display:none' : '' }}">
                 <div class="panel-money">
                     <div class="freq-tabs-new">
-                        <button type="button" class="freq-tab-new ft-once active" onclick="switchFreq('once',this)">One-time</button>
-                        <button type="button" class="freq-tab-new ft-weekly" onclick="switchFreq('weekly',this)">Weekly</button>
-                        <button type="button" class="freq-tab-new ft-monthly" onclick="switchFreq('monthly',this)">Monthly</button>
+                        <button type="button" class="freq-tab-new ft-once active" data-action="switch-freq" data-freq="once">One-time</button>
+                        <button type="button" class="freq-tab-new ft-weekly" data-action="switch-freq" data-freq="weekly">Weekly</button>
+                        <button type="button" class="freq-tab-new ft-monthly" data-action="switch-freq" data-freq="monthly">Monthly</button>
                     </div>
                     <div class="freq-banner-new freq-banner-weekly-new" id="mFreqWeekly">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
@@ -749,7 +749,7 @@
 
                     <div class="amt-grid-new">
                         @foreach([100,500,1000,2000,5000,10000,20000,50000,100000] as $amt)
-                        <x-button variant="primary" type="button" class="amt-btn-new" onclick="pickAmtNew({{ $amt }}, this)">
+                        <x-button variant="primary" type="button" class="amt-btn-new" data-action="pick-amt" data-amt="{{ $amt }}">
                             ₹{{ $amt >= 1000 ? number_format($amt/1000).'K' : $amt }}
                         </x-button>
                         @endforeach
@@ -768,19 +768,19 @@
                         </div>
                         @endif
                         <form action="{{ route('donate.redirect', $campaign->id) }}" method="POST"
-                              id="donateFormOnce" onsubmit="return validateDonateForm()">
+                              id="donateFormOnce">
                             @csrf
                             <input type="number" id="amtOnce" name="amount"
                                    placeholder="₹ Enter custom amount"
                                    required min="1" max="500000" step="1"
                                    inputmode="decimal" autocomplete="off"
-                                   class="custom-input-new" oninput="syncAmtNew('once')">
+                                   class="custom-input-new" data-input-action="sync-amt" data-type="once">
 
                             <div style="display:flex;gap:8px;margin-top:10px;">
                                 <input type="text" id="couponCode" name="coupon_code"
                                        placeholder="Coupon code (optional)" autocomplete="off"
                                        style="flex:1;height:48px;border-radius:12px;border:1.5px solid rgba(0,0,0,.12);background:#fff;padding:0 14px;font-size:14px;color:#0f1117;outline:none;text-transform:uppercase;">
-                                <button type="button" onclick="applyCoupon()"
+                                <button type="button" data-action="apply-coupon"
                                         style="height:48px;padding:0 18px;border:none;border-radius:12px;background:#0f1117;color:#fff;font-weight:600;font-size:13px;cursor:pointer;">
                                     Apply
                                 </button>
@@ -793,55 +793,6 @@
                             </x-button>
                         </form>
 
-                        <script>
-                        function applyCoupon() {
-                            var codeEl = document.getElementById('couponCode');
-                            var msg    = document.getElementById('couponMsg');
-                            var code   = codeEl.value.trim();
-                            var amount = parseFloat(document.getElementById('amtOnce').value);
-
-                            if (!code) { msg.textContent = ''; msg.style.color = ''; return; }
-                            if (!amount || amount < 1) {
-                                msg.textContent = 'Enter a donation amount first.';
-                                msg.style.color = '#dc2626';
-                                return;
-                            }
-
-                            msg.textContent = 'Checking…';
-                            msg.style.color = '#6b7280';
-
-                            fetch("{{ route('coupon.validate') }}", {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
-                                },
-                                body: JSON.stringify({
-                                    code: code,
-                                    amount: amount,
-                                    campaign_id: "{{ $campaign->id }}"
-                                })
-                            })
-                            .then(function (r) { return r.json(); })
-                            .then(function (d) {
-                                if (d.valid) {
-                                    msg.textContent = 'Coupon applied! You pay ₹'
-                                        + Number(d.discounted_total).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})
-                                        + ' (saved ₹'
-                                        + Number(d.discount_amount).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})
-                                        + ').';
-                                    msg.style.color = '#059669';
-                                } else {
-                                    msg.textContent = d.message || 'Invalid coupon code.';
-                                    msg.style.color = '#dc2626';
-                                }
-                            })
-                            .catch(function () {
-                                msg.textContent = 'Could not verify coupon. Try again.';
-                                msg.style.color = '#dc2626';
-                            });
-                        }
-                        </script>
                     </div>
 
                     <div id="mFormWeekly" style="display:none">
@@ -849,7 +800,7 @@
                         <form action="{{ route('recurring.store', $campaign->id) }}" method="POST">
                             @csrf
                             <input type="hidden" name="frequency" value="weekly">
-                            <input type="number" id="amtWeekly" name="amount" placeholder="₹ Amount per week" required min="10" inputmode="decimal" class="custom-input-new" oninput="syncAmtNew('weekly')">
+                            <input type="number" id="amtWeekly" name="amount" placeholder="₹ Amount per week" required min="10" inputmode="decimal" class="custom-input-new" data-input-action="sync-amt" data-type="weekly">
                             <x-button variant="primary" type="submit">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
                                 Start Weekly Donation
@@ -870,7 +821,7 @@
                         <form action="{{ route('recurring.store', $campaign->id) }}" method="POST">
                             @csrf
                             <input type="hidden" name="frequency" value="monthly">
-                            <input type="number" id="amtMonthly" name="amount" placeholder="₹ Amount per month" required min="10" inputmode="decimal" class="custom-input-new" oninput="syncAmtNew('monthly')">
+                            <input type="number" id="amtMonthly" name="amount" placeholder="₹ Amount per month" required min="10" inputmode="decimal" class="custom-input-new" data-input-action="sync-amt" data-type="monthly">
                             <x-button variant="primary" type="submit">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
                                 Start Monthly Donation
@@ -971,19 +922,19 @@
                 Spread the Word
             </div>
             <div class="share-social">
-                <x-button variant="primary" type="button" class="share-soc-btn s-wa" onclick="shareTo('whatsapp')" aria-label="Share on WhatsApp">
+                <x-button variant="primary" type="button" class="share-soc-btn s-wa" data-action="share-to" data-network="whatsapp" aria-label="Share on WhatsApp">
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.71.306 1.263.489 1.694.626.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.245-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.885-9.885 9.885M20.52 3.449C18.24 1.245 15.24 0 12.045 0 5.463 0 .104 5.358.101 11.942c0 2.096.547 4.142 1.588 5.945L0 24l6.237-1.633a11.9 11.9 0 005.808 1.48h.002c6.583 0 11.943-5.36 11.946-11.943 0-3.18-1.235-6.17-3.473-8.425"/></svg>
                     WhatsApp
                 </x-button>
-                <x-button variant="primary" type="button" class="share-soc-btn s-fb" onclick="shareTo('facebook')" aria-label="Share on Facebook">
+                <x-button variant="primary" type="button" class="share-soc-btn s-fb" data-action="share-to" data-network="facebook" aria-label="Share on Facebook">
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 10-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.78-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0022 12z"/></svg>
                     Facebook
                 </x-button>
-                <x-button variant="primary" type="button" class="share-soc-btn s-x" onclick="shareTo('x')" aria-label="Share on X">
+                <x-button variant="primary" type="button" class="share-soc-btn s-x" data-action="share-to" data-network="x" aria-label="Share on X">
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                     X
                 </x-button>
-                <x-button variant="primary" type="button" class="share-soc-btn s-copy" onclick="copyLink(this)" aria-label="Copy campaign link">
+                <x-button variant="primary" type="button" class="share-soc-btn s-copy" data-action="copy-link" aria-label="Copy campaign link">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
                     Copy
                 </x-button>
@@ -1026,364 +977,22 @@
         </div>
     </div>
     <div class="sdb-right">
-        <x-button variant="ghost" type="button" class="sdb-btn" onclick="scrollToDonate()">
+        <x-button variant="ghost" type="button" class="sdb-btn" data-action="scroll-to-donate">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
             <span id="sdbBtnLabel">Donate Now</span>
         </x-button>
-        <x-button variant="ghost" type="button" class="sdb-share-btn" onclick="shareCampaign(event)" aria-label="Share campaign">
+        <x-button variant="ghost" type="button" class="sdb-share-btn" data-action="share-campaign" aria-label="Share campaign">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
         </x-button>
     </div>
 </div>
 
-<button class="scroll-top" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Scroll to top">
+<button class="scroll-top" id="scrollTopBtn" data-action="scroll-top" aria-label="Scroll to top">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 15l-6-6-6 6"/></svg>
 </button>
 
 
-<script>
-(function(){
-    var els = document.querySelectorAll('.reveal,.reveal-left,.reveal-right');
-    if (!('IntersectionObserver' in window) || !els.length) {
-        els.forEach(function(el){ el.classList.add('visible'); });
-        return;
-    }
-    var obs = new IntersectionObserver(function(entries){
-        entries.forEach(function(e){
-            if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
-        });
-    },{ threshold:0.07, rootMargin:'0px 0px -28px 0px' });
-    els.forEach(function(el){ obs.observe(el); });
-
-    // Safety net: never leave content stuck invisible.
-    function revealAll(){
-        els.forEach(function(el){ el.classList.add('visible'); });
-    }
-    window.addEventListener('load', function(){ setTimeout(revealAll, 1500); });
-    setTimeout(revealAll, 4000);
-})();
-
-window.addEventListener('DOMContentLoaded', function(){
-    var fills = document.querySelectorAll('.hero-progress-fill,.donate-prog-fill-new');
-    fills.forEach(function(el){
-        var w = el.style.width; el.style.width='0%';
-        setTimeout(function(){ el.style.width = w; }, 500);
-    });
-});
-
-var scrollTopBtn = document.getElementById('scrollTopBtn');
-var scrollProgressFill = document.getElementById('scrollProgressFill');
-window.addEventListener('scroll', function(){
-    scrollTopBtn.classList.toggle('visible', window.scrollY > 600);
-    var docH = document.documentElement.scrollHeight - window.innerHeight;
-    var pct  = docH > 0 ? (window.scrollY / docH) * 100 : 0;
-    if(scrollProgressFill) scrollProgressFill.style.width = pct + '%';
-}, {passive:true});
-
-(function(){
-    var bar    = document.getElementById('stickyBar');
-    var btnLbl = document.getElementById('sdbBtnLabel');
-    var card   = document.getElementById('donateCardEl');
-    var shown  = false;
-    var cardInView = false;
-    window._sdbTotal = 0;
-
-    function update(){
-        var scrollY = window.scrollY;
-        if(!cardInView){
-            var heroH      = document.querySelector('.hero')?.offsetHeight || 500;
-            var shouldShow = scrollY > heroH * 0.6;
-            if(shouldShow !== shown){ bar.classList.toggle('visible', shouldShow); shown = shouldShow; }
-        } else if(shown){
-            bar.classList.remove('visible'); shown = false;
-        }
-        if(window._sdbTotal > 0){
-            btnLbl.textContent = 'Donate Now (₹' + window._sdbTotal.toLocaleString('en-IN') + ')';
-        } else {
-            var amtOnce = parseFloat(document.getElementById('amtOnce')?.value) || 0;
-            btnLbl.textContent = amtOnce > 0 ? 'Donate Now (₹' + amtOnce.toLocaleString('en-IN') + ')' : 'Donate Now';
-        }
-        updateChatFloat();
-    }
-    if(card && 'IntersectionObserver' in window){
-        var io = new IntersectionObserver(function(entries){
-            cardInView = entries[0].isIntersecting;
-            update();
-        });
-        io.observe(card);
-    }
-    var chatFloat = null;
-    function updateChatFloat(){
-        if(!chatFloat){ chatFloat = document.getElementById('chatToggle') ? document.getElementById('chatToggle').closest('.chat-float-wrap') : null; }
-        if(!chatFloat || !card) return;
-        var cr = card.getBoundingClientRect();
-        var vh = window.innerHeight, vw = window.innerWidth;
-        var collides = cr.bottom > vh - 84 && cr.right > vw - 84;
-        chatFloat.classList.toggle('chat-float-hidden', collides || shown);
-        if(scrollTopBtn){
-            var nearBottom = (document.documentElement.scrollHeight - window.scrollY - window.innerHeight) < 120;
-            scrollTopBtn.classList.toggle('scroll-top-hidden', collides || nearBottom);
-        }
-    }
-    window.addEventListener('resize', updateChatFloat, {passive:true});
-    document.addEventListener('DOMContentLoaded', updateChatFloat);
-    window.addEventListener('scroll', update, {passive:true});
-    update();
-})();
-
-function scrollToDonate(){
-    var card = document.getElementById('donateCardEl');
-    if(card){
-        card.scrollIntoView({ behavior:'smooth', block:'center' });
-        card.style.boxShadow = '0 0 0 4px rgba(37,99,235,.45), var(--shadow-lg)';
-        setTimeout(function(){ card.style.boxShadow = ''; }, 1800);
-    }
-}
-
-function switchMainTab(tab){
-    var tabProducts   = document.getElementById('tabProducts');
-    var tabMoney      = document.getElementById('tabMoney');
-    var panelProducts = document.getElementById('panelProducts');
-    var panelMoney    = document.getElementById('panelMoney');
-    if(tab === 'products'){
-        tabProducts.className = 'main-donate-tab active-products';
-        tabMoney.className    = 'main-donate-tab';
-        panelProducts.style.display = '';
-        panelMoney.style.display    = 'none';
-    } else {
-        tabMoney.className    = 'main-donate-tab active-money';
-        tabProducts.className = 'main-donate-tab';
-        panelMoney.style.display    = '';
-        panelProducts.style.display = 'none';
-    }
-}
-
-var productCart = {};
-
-function addProductToCart(id){
-    var card    = document.getElementById('dpCard_' + id);
-    var addWrap = document.getElementById('dpAddWrap_' + id);
-    var counter = document.getElementById('dpCounter_' + id);
-    var price   = parseFloat(card.dataset.price) || 0;
-    var name    = card.dataset.name;
-    if(!productCart[id]){ productCart[id] = { qty:1, price:price, name:name }; } else { productCart[id].qty++; }
-    addWrap.style.display = 'none';
-    counter.classList.add('show');
-    document.getElementById('dpCount_' + id).textContent = productCart[id].qty;
-    card.classList.add('in-cart');
-    updateProductCartUI();
-}
-
-function changeQty(id, delta){
-    if(!productCart[id]) return;
-    productCart[id].qty += delta;
-    if(productCart[id].qty <= 0){
-        delete productCart[id];
-        document.getElementById('dpAddWrap_' + id).style.display = '';
-        document.getElementById('dpCounter_' + id).classList.remove('show');
-        document.getElementById('dpCard_' + id).classList.remove('in-cart');
-    } else {
-        document.getElementById('dpCount_' + id).textContent = productCart[id].qty;
-    }
-    updateProductCartUI();
-}
-
-function updateProductCartUI(){
-    var totalItems = 0, totalAmt = 0;
-    Object.values(productCart).forEach(function(p){ totalItems += p.qty; totalAmt += p.qty * p.price; });
-    var bar    = document.getElementById('dpCartBar');
-    var itemEl = document.getElementById('dpCartItems');
-    var totEl  = document.getElementById('dpCartTotal');
-    var btn    = document.getElementById('dpDonateBtn');
-    var btnTxt = document.getElementById('dpDonateBtnText');
-    if(totalItems > 0){
-        bar.classList.add('show');
-        itemEl.textContent = totalItems + ' item' + (totalItems !== 1 ? 's' : '') + ' selected';
-        totEl.textContent  = '₹' + totalAmt.toLocaleString('en-IN');
-        btn.disabled = false; btn.style.opacity = '1'; btn.style.cursor = 'pointer';
-        btnTxt.textContent = 'Donate Now (₹' + totalAmt.toLocaleString('en-IN') + ')';
-    } else {
-        bar.classList.remove('show');
-        btn.disabled = true; btn.style.opacity = '.5'; btn.style.cursor = 'not-allowed';
-        btnTxt.textContent = 'Select Products to Donate';
-    }
-    window._sdbTotal = totalItems > 0 ? totalAmt : 0;
-}
-
-function clearProductCart(){
-    Object.keys(productCart).forEach(function(id){
-        delete productCart[id];
-        var aw = document.getElementById('dpAddWrap_' + id);
-        var ct = document.getElementById('dpCounter_' + id);
-        var cd = document.getElementById('dpCard_' + id);
-        if(aw) aw.style.display = '';
-        if(ct) ct.classList.remove('show');
-        if(cd) cd.classList.remove('in-cart');
-    });
-    updateProductCartUI();
-}
-
-function submitProductDonation(){
-    if(Object.keys(productCart).length === 0) return;
-    var total = Object.values(productCart).reduce(function(s,p){ return s + p.qty * p.price; }, 0);
-    var ids   = Object.keys(productCart).join(',');
-    var qtys  = Object.values(productCart).map(function(p){ return p.qty; }).join(',');
-    document.getElementById('productDonateAmount').value = total;
-    document.getElementById('productDonateIds').value    = ids;
-    document.getElementById('productDonateQtys').value   = qtys;
-    document.getElementById('productDonateForm').submit();
-}
-
-function toggleDpExpand(id){
-    document.getElementById('dpCard_' + id).classList.toggle('expanded');
-}
-
-function loadMoreProducts(){
-    document.querySelectorAll('.dp-card[data-hidden="1"]').forEach(function(el){ el.style.display=''; el.dataset.hidden='0'; });
-    var btn = document.getElementById('dpLoadMore');
-    if(btn) btn.style.display = 'none';
-}
-
-var currentFreq = 'once';
-
-function switchFreq(type, tabEl){
-    currentFreq = type;
-    document.querySelectorAll('.freq-tab-new').forEach(function(t){ t.classList.remove('active'); });
-    tabEl.classList.add('active');
-    ['Once','Weekly','Monthly'].forEach(function(t){
-        var el = document.getElementById('mForm' + t);
-        if(el) el.style.display = (t.toLowerCase() === type) ? 'block' : 'none';
-    });
-    document.getElementById('mFreqWeekly')?.classList.toggle('show', type === 'weekly');
-    document.getElementById('mFreqMonthly')?.classList.toggle('show', type === 'monthly');
-    document.querySelectorAll('.amt-btn-new').forEach(function(b){ b.classList.remove('active'); });
-    document.getElementById('impactPreviewNew')?.classList.remove('show');
-}
-
-var impactMap = [
-    {min:10,   max:99,       text:'buys a nutritious meal for a child in need.'},
-    {min:100,  max:499,      text:'provides school stationery for one student for a month.'},
-    {min:500,  max:999,      text:'covers basic medicines for a family for two weeks.'},
-    {min:1000, max:4999,     text:'sponsors a full medical checkup for one person.'},
-    {min:5000, max:9999,     text:'equips an entire classroom with learning materials.'},
-    {min:10000,max:49999,    text:'helps provide emergency shelter for a displaced family.'},
-    {min:50000,max:Infinity, text:'funds comprehensive relief for 10 families for a month.'},
-];
-
-function pickAmtNew(amt, btn){
-    var inputMap = {once:'amtOnce', weekly:'amtWeekly', monthly:'amtMonthly'};
-    var inputEl  = document.getElementById(inputMap[currentFreq]);
-    if(inputEl) inputEl.value = amt;
-    document.querySelectorAll('.amt-btn-new').forEach(function(b){ b.classList.remove('active'); });
-    btn.classList.add('active');
-    showImpactNew(amt);
-}
-
-function syncAmtNew(type){
-    var inputMap = {once:'amtOnce', weekly:'amtWeekly', monthly:'amtMonthly'};
-    var val = parseFloat(document.getElementById(inputMap[type])?.value) || 0;
-    document.querySelectorAll('.amt-btn-new').forEach(function(b){ b.classList.remove('active'); });
-    showImpactNew(val);
-}
-
-function showImpactNew(amount){
-    var preview = document.getElementById('impactPreviewNew');
-    var head    = document.getElementById('impactHeadNew');
-    var txt     = document.getElementById('impactTxtNew');
-    if(!preview) return;
-    if(!amount || amount < 10){ preview.classList.remove('show'); return; }
-    var match = impactMap.find(function(m){ return amount >= m.min && amount <= m.max; });
-    if(match){
-        var prefix = currentFreq === 'weekly' ? 'Every week, ₹' : currentFreq === 'monthly' ? 'Every month, ₹' : '₹';
-        head.textContent = 'Your impact';
-        txt.textContent  = prefix + Number(amount).toLocaleString('en-IN') + ' ' + match.text;
-        preview.classList.add('show');
-    } else {
-        preview.classList.remove('show');
-    }
-}
-
-function validateDonateForm(){
-    var input = document.getElementById('amtOnce');
-    if(!input) return true;
-    var val = parseFloat(input.value);
-    if(!val || val < 1){
-        input.focus();
-        input.style.borderColor = 'var(--red)';
-        input.style.boxShadow   = '0 0 0 3px rgba(239,68,68,.15)';
-        setTimeout(function(){ input.style.borderColor=''; input.style.boxShadow=''; }, 2000);
-        return false;
-    }
-    return true;
-}
-
-function toggleFaq(idx){
-    var item   = document.getElementById('faq-' + idx);
-    if(!item) return;
-    var isOpen = item.classList.contains('open');
-    document.querySelectorAll('.faq-item').forEach(function(i){ i.classList.remove('open'); });
-    if(!isOpen){ item.classList.add('open'); }
-}
-
-document.addEventListener('DOMContentLoaded', function(){
-    document.querySelectorAll('.faq-q').forEach(function(q){
-        q.addEventListener('keydown', function(e){
-            if(e.key==='Enter'||e.key===' '){ e.preventDefault(); q.click(); }
-        });
-        q.setAttribute('role','button');
-        q.setAttribute('tabindex','0');
-    });
-});
-
-function copyLink(btn){
-    var url = window.location.href;
-    var done = function(){ if(btn) flashCopied(btn); };
-    if(navigator.clipboard && navigator.clipboard.writeText){
-        navigator.clipboard.writeText(url).then(done).catch(function(){ fallbackCopy(url, done); });
-    } else { fallbackCopy(url, done); }
-}
-function fallbackCopy(text, cb){
-    var t = document.createElement('textarea');
-    t.value = text; document.body.appendChild(t); t.select();
-    try { document.execCommand('copy'); if(cb) cb(); } catch(e){ alert('Copy this link: ' + text); }
-    document.body.removeChild(t);
-}
-function flashCopied(btn){
-    var orig = btn.innerHTML;
-    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
-    btn.style.color = 'var(--green)'; btn.style.borderColor = 'var(--green)';
-    setTimeout(function(){ btn.innerHTML = orig; btn.style.color=''; btn.style.borderColor=''; }, 2000);
-}
-
-function shareTo(network){
-    var url   = encodeURIComponent(window.location.href);
-    var title = encodeURIComponent('{{ addslashes($campaign->title) }}');
-    var links = {
-        whatsapp: 'https://api.whatsapp.com/send?text=' + title + '%20' + url,
-        facebook: 'https://www.facebook.com/sharer/sharer.php?u=' + url,
-        x:        'https://twitter.com/intent/tweet?text=' + title + '&url=' + url
-    };
-    if(links[network]){ window.open(links[network], '_blank', 'noopener,width=600,height=540'); }
-}
-
-function shareCampaign(ev){
-    var title = '{{ addslashes($campaign->title) }}';
-    var url   = window.location.href;
-    var btn   = (ev && ev.currentTarget) || (window.event && window.event.currentTarget);
-    if(navigator.share){
-        navigator.share({ title:title, url:url }).catch(function(){});
-    } else if(navigator.clipboard && navigator.clipboard.writeText){
-        navigator.clipboard.writeText(url).then(function(){
-            if(!btn) return;
-            var orig = btn.innerHTML;
-            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
-            btn.style.color = 'var(--green)'; btn.style.borderColor = 'var(--green)';
-            setTimeout(function(){ btn.innerHTML=orig; btn.style.color=''; btn.style.borderColor=''; }, 2000);
-        }).catch(function(){ alert('Copy this link: ' + url); });
-    } else {
-        fallbackCopy(url, function(){ if(btn) flashCopied(btn); });
-    }
-}
-</script>
-
+@push('scripts')
+@vite(['resources/js/public/show.js'])
+@endpush
 @endsection

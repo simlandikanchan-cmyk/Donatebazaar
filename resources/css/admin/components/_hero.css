@@ -24,6 +24,9 @@
 .hero-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:var(--r-sm);font-size:13px;font-weight:600;text-decoration:none;font-family:var(--font);transition:all var(--ease);cursor:pointer;border:none;}
 .hero-btn-primary{background:linear-gradient(135deg,var(--a),var(--a2));color:var(--white);box-shadow:0 4px 20px rgba(37,99,235,.45);}
 .hero-btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(37,99,235,.55);}
+.hero-btn-teal{background:linear-gradient(135deg,var(--teal),var(--secondary-hover));color:var(--white);box-shadow:0 4px 20px rgba(13,148,136,.45);}
+.hero-btn-teal:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(13,148,136,.55);}
+[data-theme="dark"] .hero-btn-teal{background:linear-gradient(135deg,var(--secondary),var(--secondary-deep));box-shadow:0 4px 20px rgba(13,148,136,.3);}
 .hero-btn-ghost{background:var(--surface2);color:var(--text2);border:1px solid var(--border2);}
 .hero-btn-ghost:hover{background:var(--surface3);transform:translateY(-2px);}
 [data-theme="dark"] .hero-btn-ghost{background:rgba(255,255,255,.05);color:rgba(255,255,255,.7);border-color:rgba(255,255,255,.08);}

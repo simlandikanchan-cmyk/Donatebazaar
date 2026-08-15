@@ -21,12 +21,6 @@
     {{-- Google Fonts (Inter + DM Sans/Mono fallbacks) --}}
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    {{-- AOS --}}
-    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
-
-    {{-- Swiper --}}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
-
     {{-- Font Awesome --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 
@@ -138,21 +132,11 @@
          SCRIPTS
     ========================== -->
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
-    <script src="https://cdn.lordicon.com/lordicon.js"></script>
-    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script>
         document.documentElement.classList.add('js-enabled');
-        AOS.init({
-            once: true,
-            duration: 1000
-        });
     </script>
 
-    <script src="https://unpkg.com/lucide@latest"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             if (window.lucide) lucide.createIcons();

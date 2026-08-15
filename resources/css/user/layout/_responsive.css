@@ -55,6 +55,7 @@
 @media (max-width: 480px) {
   .topbar { padding: 0 8px; }
   .body { padding: 10px 8px 36px; }
+  .topbar-right .status-chip { display: none; }
 }
 
 /* ── 400px: Extra Small ───────────────────────────────────────────── */

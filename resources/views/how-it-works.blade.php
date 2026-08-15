@@ -77,11 +77,11 @@
 {{-- ═══ STICKY TABS ═══ --}}
 <div class="tabs-section">
     <div class="tabs-inner">
-        <x-button variant="primary" type="button" class="hiw-tab active" id="tab-donors" onclick="switchTab('donors')">
+        <x-button variant="primary" type="button" class="hiw-tab active" id="tab-donors" data-action="switch-tab" data-tab="donors">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
             For Donors
         </x-button>
-        <x-button variant="primary" type="button" class="hiw-tab" id="tab-fundraisers" onclick="switchTab('fundraisers')">
+        <x-button variant="primary" type="button" class="hiw-tab" id="tab-fundraisers" data-action="switch-tab" data-tab="fundraisers">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
             For Fundraisers
         </x-button>
@@ -411,7 +411,7 @@
             <div class="faq-grid">
                 @foreach($faqsDonors as $i => $faq)
                 <div class="faq-item reveal d{{ ($i%2)+1 }}" data-faq="d{{ $i }}">
-                    <div class="faq-q" onclick="toggleFaq('d{{ $i }}')">
+                    <div class="faq-q" data-action="toggle-faq" data-faq="d{{ $i }}">
                         <span class="faq-q-text">{{ $faq['q'] }}</span>
                         <div class="faq-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></div>
                     </div>
@@ -425,7 +425,7 @@
             <div class="faq-grid">
                 @foreach($faqsFundraisers as $i => $faq)
                 <div class="faq-item reveal d{{ ($i%2)+1 }}" data-faq="f{{ $i }}">
-                    <div class="faq-q" onclick="toggleFaq('f{{ $i }}')">
+                    <div class="faq-q" data-action="toggle-faq" data-faq="f{{ $i }}">
                         <span class="faq-q-text">{{ $faq['q'] }}</span>
                         <div class="faq-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></div>
                     </div>
@@ -457,68 +457,11 @@
     </div>
 </section>
 
-<button class="scroll-top" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Scroll to top">
+<button class="scroll-top" id="scrollTopBtn" data-action="scroll-top" aria-label="Scroll to top">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 15l-6-6-6 6"/></svg>
 </button>
 
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-
-    /* ── Mark JS as enabled ── */
-    document.documentElement.classList.add('js-enabled');
-
-    /* ── Scroll Reveal ── */
-    var revEls = document.querySelectorAll('.reveal,.reveal-left,.reveal-right');
-    var obs = new IntersectionObserver(function(entries){
-        entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); } });
-    },{ threshold:0.08, rootMargin:'0px 0px -28px 0px' });
-    revEls.forEach(function(el){ obs.observe(el); });
-
-    /* ── Scroll to top ── */
-    var sBtn = document.getElementById('scrollTopBtn');
-    window.addEventListener('scroll', function(){ sBtn.classList.toggle('visible', window.scrollY > 600); },{ passive:true });
-
-    /* ── Set tab from URL hash ── */
-    if (window.location.hash === '#fundraisers') switchTab('fundraisers');
-});
-
-/* ── Main tab switch (Donors / Fundraisers) ── */
-function switchTab(tab) {
-    ['donors','fundraisers'].forEach(function(t){
-        document.getElementById('tab-'   + t).classList.toggle('active', t === tab);
-        document.getElementById('pane-'  + t).classList.toggle('active', t === tab);
-    });
-    // Update URL hash without scroll
-    history.replaceState(null, '', tab === 'donors' ? '#donors' : '#fundraisers');
-
-    // Trigger reveal on newly visible elements
-    setTimeout(function(){
-        document.querySelectorAll('#pane-' + tab + ' .reveal, #pane-' + tab + ' .reveal-left, #pane-' + tab + ' .reveal-right').forEach(function(el){
-            el.classList.add('visible');
-        });
-    }, 50);
-}
-
-/* ── FAQ tab switch ── */
-function switchFaqTab(tab) {
-    ['donors','fundraisers'].forEach(function(t){
-        document.getElementById('faq-tab-'  + t).classList.toggle('active', t === tab);
-        var pane = document.getElementById('faq-pane-' + t);
-        pane.style.display = t === tab ? 'block' : 'none';
-    });
-    document.querySelectorAll('#faq-pane-' + tab + ' .faq-item.reveal').forEach(function(el){
-        el.classList.add('visible');
-    });
-}
-
-/* ── FAQ accordion ── */
-function toggleFaq(id) {
-    var item   = document.querySelector('[data-faq="' + id + '"]');
-    var isOpen = item.classList.contains('open');
-    document.querySelectorAll('.faq-item.open').forEach(function(el){ el.classList.remove('open'); });
-    if (!isOpen) item.classList.add('open');
-}
-</script>
+@push('scripts') @vite(['resources/js/public/how-it-works.js']) @endpush
 
 @endsection

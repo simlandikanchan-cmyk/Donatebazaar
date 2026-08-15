@@ -296,7 +296,7 @@ class CampaignController extends Controller
     {
         $campaigns = Campaign::where('user_id', Auth::id())
             ->with('donations')
-            ->withSum('donations', 'total_amount')
+            ->withSum(['donations' => fn ($q) => $q->where('payment_status', 'completed')], 'total_amount')
             ->latest()
             ->paginate(12);
 
@@ -306,8 +306,8 @@ class CampaignController extends Controller
     public function publicCampaigns(Request $request)
     {
         $query = Campaign::with(['category', 'user'])
-            ->withCount('donations')
-            ->withSum('donations', 'total_amount')
+            ->withCount(['donations' => fn ($q) => $q->where('payment_status', 'completed')])
+            ->withSum(['donations as donations_sum_total_amount' => fn ($q) => $q->where('payment_status', 'completed')], 'total_amount')
             ->whereIn('campaign_state', ['active', 'completed']);
 
         if ($request->filled('search')) {
@@ -400,8 +400,8 @@ class CampaignController extends Controller
         $category = Category::where('slug', $slug)->firstOrFail();
 
         $campaigns = Campaign::with(['category', 'user', 'products'])
-            ->withCount('donations')
-            ->withSum('donations', 'total_amount')
+            ->withCount(['donations' => fn ($q) => $q->where('payment_status', 'completed')])
+            ->withSum(['donations' => fn ($q) => $q->where('payment_status', 'completed')], 'total_amount')
             ->where('category_id', $category->id)
             ->whereIn('campaign_state', ['active', 'completed'])
             ->latest()

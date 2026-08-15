@@ -41,7 +41,7 @@
               @endif
             </label>
             <input type="file" id="docfile-{{ $field }}" name="{{ $field }}" accept=".pdf,.jpg,.jpeg,.png"
-              style="display:none" onchange="markUploaded('{{ $field }}',this)">
+              style="display:none" data-action="mark-uploaded" data-key="{{ $field }}">
           </div>
         @endforeach
       </div>

@@ -387,11 +387,15 @@ function switchTab(tabId, btn) {
   $(`#${tabId}`)?.classList.add('active');
 
   $$('.tab-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
+  btn?.classList.add('active');
 }
 
-// Make it available on window for inline HTML handlers
-window.switchTab = switchTab;
+/* ── Delegated tab switching for testimonial tabs ── */
+document.addEventListener('click', function (e) {
+  var el = e.target.closest('[data-action="switch-testi-tab"]');
+  if (!el) return;
+  switchTab(el.getAttribute('data-tab'), el);
+});
 
 
 /* ═══════════════════════════════════════════════════════════

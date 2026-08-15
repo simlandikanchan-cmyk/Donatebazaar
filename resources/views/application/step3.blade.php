@@ -11,7 +11,7 @@
       <div class="section-divider">Tax &amp; legal certifications</div>
 
       <div class="toggle-set">
-        <label class="toggle-card" onclick="toggleCert('section80g',this)">
+        <label class="toggle-card" data-action="toggle-cert" data-section="section80g">
           <input type="checkbox" name="has_80g" value="1" class="toggle-input" {{ old('has_80g', $application->has_80g ?? false) ? 'checked' : '' }}>
           <div class="toggle-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 14l2 2 4-4"/><rect x="3" y="3" width="18" height="18" rx="3"/></svg></div>
           <div class="toggle-text">
@@ -33,7 +33,7 @@
       </div>
 
       <div class="toggle-set">
-        <label class="toggle-card" onclick="toggleCert('sectionFcra',this)">
+        <label class="toggle-card" data-action="toggle-cert" data-section="sectionFcra">
           <input type="checkbox" name="has_fcra" value="1" class="toggle-input" {{ old('has_fcra', $application->has_fcra ?? false) ? 'checked' : '' }}>
           <div class="toggle-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div>
           <div class="toggle-text">
@@ -51,7 +51,7 @@
       </div>
 
       <div class="toggle-set">
-        <label class="toggle-card" onclick="toggleCert('section12a',this)">
+        <label class="toggle-card" data-action="toggle-cert" data-section="section12a">
           <input type="checkbox" name="has_12a" value="1" class="toggle-input" {{ old('has_12a', $application->has_12a ?? false) ? 'checked' : '' }}>
           <div class="toggle-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg></div>
           <div class="toggle-text">

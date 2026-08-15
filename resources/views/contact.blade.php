@@ -232,7 +232,7 @@
                     'How do I contact support urgently?' => 'For urgent matters, call us at +91 98765 43210 or email info@DonateBazaar.com. Our team responds within 2 hours on business days.',
                 ] as $question => $answer)
                 <div class="faq-item">
-                    <button class="faq-q" onclick="toggleFAQ(this)" type="button">
+                    <button class="faq-q" data-action="toggle-faq" type="button">
                         {{ $question }}
                         <span class="faq-icon">
                             <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">

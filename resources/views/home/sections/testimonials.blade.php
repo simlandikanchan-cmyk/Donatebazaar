@@ -5,9 +5,9 @@
             <h2 class="section-title">Testimonials</h2>
         </div>
         <div class="tab-btns">
-            <x-button variant="secondary" type="button" class="tab-btn active" onclick="switchTab('donors', this)">Donors</x-button>
-            <x-button variant="secondary" type="button" class="tab-btn" onclick="switchTab('ngos', this)">NGOs</x-button>
-            <x-button variant="secondary" type="button" class="tab-btn" onclick="switchTab('celebs', this)">Celebrities</x-button>
+            <x-button variant="secondary" type="button" class="tab-btn active" data-action="switch-testi-tab" data-tab="donors">Donors</x-button>
+            <x-button variant="secondary" type="button" class="tab-btn" data-action="switch-testi-tab" data-tab="ngos">NGOs</x-button>
+            <x-button variant="secondary" type="button" class="tab-btn" data-action="switch-testi-tab" data-tab="celebs">Celebrities</x-button>
         </div>
 
         <div id="donors" class="testi-tab active">

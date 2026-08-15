@@ -1,6 +1,10 @@
 import Chart from 'chart.js/auto';
 window.Chart = Chart;
 
+import { toast as showToast } from '../shared/toast.js';
+import { getCsrfToken } from '../shared/csrf.js';
+import { escapeHtml } from '../shared/helpers.js';
+
 (function () {
   'use strict';
 
@@ -46,7 +50,6 @@ window.Chart = Chart;
     var dd = avWrap.querySelector('.av-dd');
     var avBtn = avWrap.querySelector('.t-avatar');
     if (avBtn && dd) {
-      window.toggleDD = function () { dd.classList.toggle('open'); };
       avBtn.addEventListener('click', function (e) {
         e.stopPropagation();
         dd.classList.toggle('open');
@@ -58,30 +61,11 @@ window.Chart = Chart;
   }
 
   window.toast = function (msg, type) {
-    type = type || 'success';
-    var icons = {
-      success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
-      error: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
-    };
-    var el = document.createElement('div');
-    el.className = 'toast toast-' + type;
-    el.insertAdjacentHTML('afterbegin', icons[type] || icons.success);
-    var span = document.createElement('span');
-    span.textContent = msg;
-    el.appendChild(span);
-    var close = document.createElement('button');
-    close.className = 'toast-close';
-    close.textContent = '\u2715';
-    close.addEventListener('click', function () { el.remove(); });
-    el.appendChild(close);
-    if (toastContainer) {
-      toastContainer.appendChild(el);
-      setTimeout(function () { el.remove(); }, 4500);
-    }
+    showToast(msg, type || 'success', { container: toastContainer, duration: 4500 });
   };
 
   if (toastContainer) {
-    var data = toastContainer.dataset;
+    const data = toastContainer.dataset;
     if (data.success) setTimeout(function () { window.toast(data.success, 'success'); }, 200);
     if (data.error) setTimeout(function () { window.toast(data.error, 'error'); }, 200);
   }
@@ -93,16 +77,6 @@ window.Chart = Chart;
   const notifEmpty = document.getElementById('notifEmpty');
   const notifBadge = document.getElementById('notifBadge');
   const notifMarkAll = document.getElementById('notifMarkAll');
-
-  function getCsrf() {
-    return document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
-  }
-
-  function escapeHtml(str) {
-    const div = document.createElement('div');
-    div.textContent = str ?? '';
-    return div.innerHTML;
-  }
 
   function notifIcon(type) {
     switch (type) {
@@ -172,7 +146,7 @@ window.Chart = Chart;
     try {
       await fetch('/notifications/' + encodeURIComponent(id) + '/read', {
         method: 'POST',
-        headers: { 'X-CSRF-TOKEN': getCsrf(), 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        headers: { 'X-CSRF-TOKEN': getCsrfToken(), 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json', 'Content-Type': 'application/json' },
       });
     } catch (e) { /* no-op */ }
     if (url && url !== '#') window.location.href = url;
@@ -182,7 +156,7 @@ window.Chart = Chart;
     try {
       const res = await fetch('/notifications/read-all', {
         method: 'POST',
-        headers: { 'X-CSRF-TOKEN': getCsrf(), 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        headers: { 'X-CSRF-TOKEN': getCsrfToken(), 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json', 'Content-Type': 'application/json' },
       });
       if (!res.ok) return;
       const data = await res.json();

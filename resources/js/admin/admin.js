@@ -5,6 +5,9 @@
 import Chart from 'chart.js/auto';
 window.Chart = Chart;
 
+import { toast as showToast } from '../shared/toast.js';
+import { initModalDefaults } from '../shared/modal.js';
+
 (function () {
   'use strict';
 
@@ -71,9 +74,6 @@ window.Chart = Chart;
     const dd = avWrap.querySelector('.av-dd');
     const avBtn = avWrap.querySelector('.t-av');
     if (avBtn && dd) {
-      window.toggleDD = function () {
-        dd.classList.toggle('open');
-      };
       avBtn.addEventListener('click', function (e) {
         e.stopPropagation();
         dd.classList.toggle('open');
@@ -86,44 +86,11 @@ window.Chart = Chart;
 
   /* ── Toast System ── */
   window.toast = function (msg, type, undoCallback, undoLabel) {
-    type = type || 'success';
-    const icons = {
-      success:
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
-      error:
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
-      warn: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>',
-    };
-    const el = document.createElement('div');
-    el.className =
-      'toast toast-' + (type === 'success' ? 'ok' : type === 'error' ? 'err' : 'warn');
-    let undoHtml = '';
-    if (typeof undoCallback === 'function') {
-      undoHtml = '<button class="toast-undo">' + (undoLabel || 'Undo') + '</button>';
-    }
-    el.innerHTML =
-      (icons[type] || '') +
-      '<span>' +
-      msg +
-      '</span>' +
-      undoHtml +
-      '<button class="toast-x" onclick="this.parentElement.remove()">✕</button>';
-    if (toastWrap) {
-      toastWrap.appendChild(el);
-      const timeout = setTimeout(function () {
-        el.style.transition = 'opacity .3s,transform .3s';
-        el.style.opacity = '0';
-        el.style.transform = 'translateX(20px)';
-        setTimeout(function () { el.remove(); }, 300);
-      }, 5000);
-      if (typeof undoCallback === 'function') {
-        el.querySelector('.toast-undo').addEventListener('click', function () {
-          clearTimeout(timeout);
-          undoCallback();
-          el.remove();
-        });
-      }
-    }
+    showToast(msg, type || 'success', {
+      container: toastWrap,
+      undo: undoCallback,
+      undoLabel: undoLabel,
+    });
   };
 
   /* ── Lazy toast from session flash ── */
@@ -135,19 +102,7 @@ window.Chart = Chart;
   }
 
   /* ── Modal helpers ── */
-  function closeAllModals() {
-    document.querySelectorAll('.overlay.open').forEach(function (o) {
-      o.classList.remove('open');
-    });
-  }
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') closeAllModals();
-  });
-  document.querySelectorAll('.overlay').forEach(function (o) {
-    o.addEventListener('click', function (e) {
-      if (e.target === this) this.classList.remove('open');
-    });
-  });
+  initModalDefaults();
 
   /* ══════════════════════════════════════
      DASHBOARD INITIALIZATION

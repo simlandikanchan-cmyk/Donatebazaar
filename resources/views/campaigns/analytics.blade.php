@@ -19,7 +19,7 @@
 
 @extends('layouts.user')
 
-@section('page_title', 'Analytics — ' . Str::limit($campaign->title, 35))
+@section('page_title', 'Analytics — ' . Str::limit($campaign->title, 25))
 @section('page_subtitle', 'Donation trends, donor insights & performance')
 
 @section('topbar_left_prefix')
@@ -332,8 +332,9 @@
 .t-avatar{width:30px;height:30px;border-radius:8px;background:rgba(99,102,241,0.15);color:var(--anl-accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;font-family:var(--anl-mono);}
 
 @media(max-width:1060px){.anl-grid{grid-template-columns:repeat(3,1fr);}}
-@media(max-width:860px){.anl-charts{grid-template-columns:1fr;}}
+@media(max-width:860px){.anl-charts{grid-template-columns:1fr;}.topbar-right .status-chip{display:none;}}
 @media(max-width:660px){.anl-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:480px){.topbar-right .status-chip{display:none;}.t-avatar{width:28px;height:28px;font-size:10px;}}
 @media(max-width:420px){.anl-grid{grid-template-columns:1fr;}}
 </style>
 @endpush

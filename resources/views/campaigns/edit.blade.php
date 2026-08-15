@@ -32,160 +32,7 @@
 @endsection
 
 @push('page_styles')
-<style>
-:root {
-    --bg:           #f4f5fb;
-    --surface:      #ffffff;
-    --surface2:     #f8f9fe;
-    --border:       rgba(0,0,0,0.06);
-    --border2:      rgba(0,0,0,0.10);
-    --text:         #0f1117;
-    --text2:        #4b5563;
-    --text3:        #9ca3af;
-    --yellow:       #f59e0b;
-    --red:          #ef4444;
-    --font:         'DM Sans', sans-serif;
-    --font-mono:    'DM Mono', monospace;
-    --radius:       14px;
-    --radius-sm:    9px;
-    --shadow:       0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
-    --shadow-lg:    0 8px 40px rgba(0,0,0,0.12);
-    --transition:   0.2s ease;
-}
-[data-theme="dark"] {
-    --bg:           #0b0c14;
-    --surface:      #13141f;
-    --surface2:     #1a1b2e;
-    --border:       rgba(255,255,255,0.06);
-    --border2:      rgba(255,255,255,0.10);
-    --text:         #f0f1ff;
-    --text2:        #a5b4c8;
-    --text3:        #5a6579;
-    --accent-glow:  rgba(37,99,235,0.25);
-    --shadow:       0 1px 3px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.2);
-    --shadow-lg:    0 8px 40px rgba(0,0,0,0.5);
-}
-
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; }
-body {
-    font-family: var(--font);
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
-    transition: background var(--transition), color var(--transition);
-    overflow-x: hidden;
-}
-
-.topbar-back { display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--border2); background: var(--surface2); color: var(--text2); cursor: pointer; text-decoration: none; transition: all var(--transition); flex-shrink: 0; }
-.topbar-back:hover { background: var(--accent-glow); color: var(--accent); border-color: var(--accent); }
-.topbar-back svg { width: 13px; height: 13px; }
-
-.status-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 11px; border-radius: 100px; font-size: 10.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; font-family: var(--font-mono); }
-.status-chip .dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
-.chip-active   { background: rgba(16,185,129,0.12); color: #16a34a; border: 1px solid rgba(16,185,129,0.25); }
-.chip-paused   { background: rgba(37,99,235,0.12); color: #60a5fa; border: 1px solid rgba(37,99,235,0.25); }
-.chip-pending  { background: rgba(245,158,11,0.12); color: #f59e0b; border: 1px solid rgba(245,158,11,0.25); }
-.chip-rejected { background: rgba(239,68,68,0.12);  color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
-
-.flash { display: flex; align-items: flex-start; gap: 10px; padding: 12px 16px; border-radius: var(--radius); font-size: 13px; font-weight: 500; margin-bottom: 20px; border: 1px solid transparent; }
-.flash svg { width: 15px; height: 15px; flex-shrink: 0; margin-top: 1px; }
-.flash-error   { background: rgba(239,68,68,0.08);  color: var(--red);   border-color: rgba(239,68,68,0.2); }
-.flash-success { background: rgba(16,185,129,0.08); color: var(--green); border-color: rgba(16,185,129,0.2); }
-
-.validation-box { background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.2); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 20px; }
-.validation-box ul { list-style: none; display: flex; flex-direction: column; gap: 4px; }
-.validation-box li { font-size: 12.5px; color: var(--red); display: flex; align-items: flex-start; gap: 6px; }
-.validation-box li::before { content: '⚠'; flex-shrink: 0; }
-
-.form-layout { display: grid; grid-template-columns: 1fr 300px; gap: 18px; align-items: start; }
-
-.card { background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
-.card + .card { margin-top: 14px; }
-.card-header { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
-.card-icon { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.card-icon svg { width: 14px; height: 14px; }
-.ic-indigo { background: rgba(37,99,235,0.12); color: var(--accent); }
-.ic-green  { background: rgba(16,185,129,0.12); color: var(--green); }
-.ic-yellow { background: rgba(245,158,11,0.12); color: var(--yellow); }
-.ic-red    { background: rgba(239,68,68,0.12);  color: var(--red); }
-.card-title { font-size: 13px; font-weight: 700; color: var(--text); letter-spacing: -0.01em; }
-.card-sub   { font-size: 11px; color: var(--text3); margin-top: 1px; }
-.card-body  { padding: 18px; }
-
-.field { margin-bottom: 16px; }
-.field:last-child { margin-bottom: 0; }
-.field label { display: block; font-size: 11px; font-weight: 600; color: var(--text2); margin-bottom: 6px; letter-spacing: 0.01em; text-transform: uppercase; font-family: var(--font-mono); }
-.field input,
-.field textarea,
-.field select {
-    width: 100%; border: 1.5px solid var(--border2); border-radius: var(--radius-sm);
-    padding: 9px 12px; font-family: var(--font); font-size: 13.5px; color: var(--text);
-    background: var(--surface2); outline: none; resize: vertical;
-    transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
-}
-.field input:focus, .field textarea:focus, .field select:focus { border-color: var(--accent); background: var(--surface); box-shadow: 0 0 0 3px var(--accent-glow); }
-.field input::placeholder, .field textarea::placeholder { color: var(--text3); }
-.field input:disabled, .field textarea:disabled { opacity: 0.45; cursor: not-allowed; }
-.field-err { font-size: 11px; color: var(--red); margin-top: 5px; display: flex; align-items: flex-start; gap: 4px; font-family: var(--font-mono); }
-.field-err::before { content: '⚠'; flex-shrink: 0; }
-
-.cover-current { width: 100%; height: 170px; object-fit: cover; border-radius: var(--radius-sm); border: 1px solid var(--border); display: block; margin-bottom: 12px; }
-.cover-placeholder { width: 100%; height: 100px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
-.cover-placeholder svg { width: 30px; height: 30px; color: var(--text3); opacity: 0.4; }
-.file-drop { border: 1.5px dashed var(--border2); border-radius: var(--radius-sm); padding: 18px 14px; text-align: center; cursor: pointer; position: relative; transition: border-color var(--transition), background var(--transition); overflow: hidden; }
-.file-drop:hover { border-color: var(--accent); background: var(--accent-glow); }
-.file-drop input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
-.file-drop-icon { width: 34px; height: 34px; border-radius: 10px; background: rgba(37,99,235,0.1); color: var(--accent); display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; }
-.file-drop-icon svg { width: 15px; height: 15px; }
-.file-drop-label { font-size: 12px; font-weight: 600; color: var(--text); }
-.file-drop-hint  { font-size: 11px; color: var(--text3); margin-top: 3px; }
-#newPreview { display: none; width: 100%; height: 150px; object-fit: cover; border-radius: var(--radius-sm); margin-top: 10px; border: 1px solid var(--border); }
-
-.warn-banner { display: flex; align-items: flex-start; gap: 10px; padding: 11px 13px; border-radius: var(--radius-sm); margin-bottom: 14px; background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2); }
-.warn-banner svg { width: 14px; height: 14px; color: var(--yellow); flex-shrink: 0; margin-top: 1px; }
-.warn-banner-title { font-size: 11.5px; font-weight: 700; color: var(--yellow); margin-bottom: 2px; font-family: var(--font-mono); }
-.warn-banner-body  { font-size: 11.5px; color: var(--text2); }
-
-.btn:hover  { opacity: 0.87; transform: translateY(-1px); }
-.btn:active { transform: translateY(0); }
-.btn[disabled] { opacity: 0.38; cursor: not-allowed; transform: none; pointer-events: none; }
-
-.sidebar-stack { display: flex; flex-direction: column; gap: 14px; position: sticky; top: 74px; }
-
-.char-counter { font-size: 10.5px; color: var(--text3); margin-top: 5px; text-align: right; font-family: var(--font-mono); }
-
-.overlay { display: none; position: fixed; inset: 0; z-index: 9998; background: rgba(5,5,20,0.55); backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 20px; }
-.overlay.open { display: flex; }
-.modal { background: var(--surface); border: 1px solid var(--border2); border-radius: 18px; box-shadow: var(--shadow-lg); width: 100%; max-width: 400px; padding: 20px; position: relative; animation: modalIn 0.22s cubic-bezier(.4,0,.2,1); }
-@keyframes modalIn { from { opacity: 0; transform: scale(0.96) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-.modal-x { position: absolute; top: 13px; right: 13px; width: 26px; height: 26px; border-radius: 7px; border: 1px solid var(--border2); background: var(--surface2); cursor: pointer; color: var(--text2); display: flex; align-items: center; justify-content: center; transition: background var(--transition); }
-.modal-x:hover { background: var(--border); }
-.modal-x svg { width: 11px; height: 11px; }
-.modal-head { display: flex; align-items: center; gap: 11px; margin-bottom: 16px; }
-.modal-icon { width: 38px; height: 38px; border-radius: 11px; display: flex; align-items: center; justify-content: center; }
-.modal-icon svg { width: 18px; height: 18px; }
-.modal-ttl { font-size: 14px; font-weight: 700; color: var(--text); }
-.modal-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
-.modal-label { font-size: 11px; font-weight: 600; color: var(--text2); margin-bottom: 7px; font-family: var(--font-mono); display: block; text-transform: uppercase; }
-.modal-ta { width: 100%; border: 1.5px solid var(--border2); border-radius: 10px; padding: 10px 12px; font-size: 12.5px; color: var(--text); resize: none; font-family: var(--font); background: var(--surface2); outline: none; transition: border-color var(--transition), box-shadow var(--transition); }
-.modal-ta:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
-.modal-err { font-size: 11px; color: var(--red); margin-top: 5px; display: none; font-family: var(--font-mono); }
-.modal-acts { display: flex; gap: 8px; margin-top: 14px; }
-.modal-btn:hover { opacity: 0.88; }
-.modal-cancel { background: var(--surface2); color: var(--text2); border: 1px solid var(--border2); }
-
-.toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
-.toast { display: flex; align-items: center; gap: 10px; padding: 12px 15px; border-radius: 12px; font-size: 13px; font-weight: 500; color: #fff; min-width: 240px; box-shadow: var(--shadow-lg); pointer-events: all; animation: toastIn 0.35s cubic-bezier(.4,0,.2,1) both; }
-.toast svg { width: 15px; height: 15px; flex-shrink: 0; }
-.toast-success { background: linear-gradient(135deg, #15803d, #16a34a); }
-.toast-error   { background: linear-gradient(135deg, #dc2626, #ef4444); }
-@keyframes toastIn { from { opacity: 0; transform: translateX(20px) scale(0.96); } to { opacity: 1; transform: translateX(0) scale(1); } }
-@keyframes fadeUp  { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
-
-@media (max-width: 900px) { .form-layout { grid-template-columns: 1fr; } .sidebar-stack { position: static; } }
-</style>
+@vite('resources/css/public/campaigns-edit.css')
 @endpush
 
 @section('content')
@@ -281,8 +128,7 @@ body {
                             <label>Description</label>
                             <textarea name="description" rows="7" id="descField" maxlength="3000"
                                       placeholder="Tell your story — why this campaign matters..."
-                                      {{ $campaign->isPaused() ? 'disabled' : '' }}
-                                      oninput="countChars(this,'descCount',3000)">{{ old('description', $campaign->description) }}</textarea>
+                                      {{ $campaign->isPaused() ? 'disabled' : '' }}>{{ old('description', $campaign->description) }}</textarea>
                             <div class="char-counter"><span id="descCount">{{ strlen(old('description', $campaign->description ?? '')) }}</span>/3000</div>
                             @error('description')<div class="field-err">{{ $message }}</div>@enderror
                         </div>
@@ -314,8 +160,7 @@ body {
 
                         <div class="file-drop" style="{{ $campaign->isPaused() ? 'pointer-events:none;opacity:0.45;' : '' }}">
                             <input type="file" name="cover_image" accept="image/*"
-                                   {{ $campaign->isPaused() ? 'disabled' : '' }}
-                                   onchange="previewImage(event)">
+                                   {{ $campaign->isPaused() ? 'disabled' : '' }}>
                             <div class="file-drop-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
                             </div>
@@ -432,7 +277,7 @@ body {
     {{-- ══ PAUSE MODAL ══ --}}
     <div id="pauseModal" class="overlay" role="dialog" aria-modal="true">
         <div class="modal">
-            <button type="button" class="modal-x" onclick="closeModal('pauseModal')">
+            <button type="button" class="modal-x" data-action="close-modal" data-modal="pauseModal">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
             <div class="modal-head">
@@ -449,8 +294,7 @@ body {
                 <label class="modal-label">Reason for pausing <span style="color:var(--red);">*</span></label>
                 <textarea id="pauseReason" name="reason" rows="3"
                           placeholder="Tell us why you're pausing (min 10 chars)..."
-                          class="modal-ta" minlength="10" maxlength="500"
-                          oninput="countChars(this,'pauseCount',500)"></textarea>
+                          class="modal-ta" minlength="10" maxlength="500"></textarea>
                 <div class="char-counter"><span id="pauseCount">0</span>/500</div>
                 <p id="pauseErr" class="modal-err">Please provide a reason (min 10 characters).</p>
                 <div class="modal-acts">
@@ -464,7 +308,7 @@ body {
     {{-- ══ RESUME MODAL ══ --}}
     <div id="resumeModal" class="overlay" role="dialog" aria-modal="true">
         <div class="modal">
-            <button type="button" class="modal-x" onclick="closeModal('resumeModal')">
+            <button type="button" class="modal-x" data-action="close-modal" data-modal="resumeModal">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
             <div class="modal-head">
@@ -481,8 +325,7 @@ body {
                 <label class="modal-label">Reason for resuming <span style="color:var(--red);">*</span></label>
                 <textarea id="resumeReason" name="resume_reason" rows="3"
                           placeholder="Tell us why you're resuming (min 10 chars)..."
-                          class="modal-ta" minlength="10" maxlength="500"
-                          oninput="countChars(this,'resumeCount',500)"></textarea>
+                          class="modal-ta" minlength="10" maxlength="500"></textarea>
                 <div class="char-counter"><span id="resumeCount">0</span>/500</div>
                 <p id="resumeErr" class="modal-err">Please provide a reason (min 10 characters).</p>
                 <div class="modal-acts">
@@ -496,95 +339,5 @@ body {
 @endsection
 
 @push('page_scripts')
-<script>
-var sidebar = document.getElementById('sidebar');
-
-document.getElementById('hamburger').addEventListener('click', function(){
-    sidebar.classList.toggle('open');
-});
-document.addEventListener('click', function(e){
-    if (window.innerWidth <= 820 && !sidebar.contains(e.target) && !document.getElementById('hamburger').contains(e.target)){
-        sidebar.classList.remove('open');
-    }
-});
-
-function toast(msg, type) {
-    type = type || 'success';
-    var t = document.createElement('div');
-    t.className = 'toast toast-' + type;
-    var icon = type === 'success'
-        ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>'
-        : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
-    t.innerHTML = icon + '<span>' + msg + '</span><button class="toast-close" onclick="this.parentElement.remove()">✕</button>';
-    document.getElementById('toastContainer').appendChild(t);
-    setTimeout(function(){ if (t.parentElement) t.remove(); }, 4500);
-}
-@if(session('success'))
-    setTimeout(function(){ toast(@json(session('success')), 'success'); }, 200);
-@endif
-@if(session('error'))
-    setTimeout(function(){ toast(@json(session('error')), 'error'); }, 200);
-@endif
-
-window.previewImage = function(event) {
-    var file = event.target.files[0];
-    if (!file) return;
-    var preview = document.getElementById('newPreview');
-    preview.src = URL.createObjectURL(file);
-    preview.style.display = 'block';
-    var old = document.getElementById('currentCover');
-    if (old) old.style.opacity = '0.4';
-};
-
-window.countChars = function(el, spanId) {
-    document.getElementById(spanId).textContent = el.value.length;
-};
-
-window.openModal = function(id) {
-    document.getElementById(id).classList.add('open');
-    document.body.style.overflow = 'hidden';
-    setTimeout(function(){
-        var ta = document.querySelector('#' + id + ' .modal-ta');
-        if (ta) ta.focus();
-    }, 60);
-};
-window.closeModal = function(id) {
-    document.getElementById(id).classList.remove('open');
-    document.body.style.overflow = '';
-};
-['pauseModal','resumeModal'].forEach(function(id){
-    document.getElementById(id).addEventListener('click', function(e){
-        if (e.target === this) closeModal(id);
-    });
-});
-document.addEventListener('keydown', function(e){
-    if (e.key === 'Escape'){ closeModal('pauseModal'); closeModal('resumeModal'); }
-});
-
-document.getElementById('pauseForm').addEventListener('submit', function(e){
-    var v = document.getElementById('pauseReason').value.trim();
-    var err = document.getElementById('pauseErr');
-    if (v.length < 10){ e.preventDefault(); err.style.display = 'block'; return; }
-    err.style.display = 'none';
-    var btn = document.getElementById('pauseSubmitBtn');
-    btn.disabled = true; btn.textContent = 'Pausing…';
-});
-
-document.getElementById('resumeForm').addEventListener('submit', function(e){
-    var v = document.getElementById('resumeReason').value.trim();
-    var err = document.getElementById('resumeErr');
-    if (v.length < 10){ e.preventDefault(); err.style.display = 'block'; return; }
-    err.style.display = 'none';
-    var btn = document.getElementById('resumeSubmitBtn');
-    btn.disabled = true; btn.textContent = 'Resuming…';
-});
-
-document.getElementById('editForm').addEventListener('submit', function(){
-    var btn = document.getElementById('saveBtn');
-    if (!btn.disabled){ btn.disabled = true; btn.textContent = '⏳ Saving…'; }
-});
-
-var desc = document.getElementById('descField');
-if (desc) document.getElementById('descCount').textContent = desc.value.length;
-</script>
+@vite('resources/js/public/campaigns-edit.js')
 @endpush
