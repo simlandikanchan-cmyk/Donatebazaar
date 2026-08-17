@@ -1,3 +1,5 @@
+import { toast } from '../shared/toast.js';
+
 /* Campaign Edit page - extracted from campaigns/edit.blade.php inline <script>.
    Internal functions were promoted from window.* (previewImage/countChars/openModal/closeModal);
    inline onclick/onchange/oninput converted to data-action delegation / direct listeners. */
@@ -16,21 +18,9 @@
         }
     });
 
-    function toast(msg, type) {
-        type = type || 'success';
-        var t = document.createElement('div');
-        t.className = 'toast toast-' + type;
-        var icon = type === 'success'
-            ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>'
-            : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
-        t.innerHTML = icon + '<span>' + msg + '</span><button class="toast-close" onclick="this.parentElement.remove()">✕</button>';
-        document.getElementById('toastContainer').appendChild(t);
-        setTimeout(function(){ if (t.parentElement) t.remove(); }, 4500);
-    }
-
     var toastWrap = document.getElementById('toastContainer');
-    if (toastWrap.dataset.success) setTimeout(function(){ toast(toastWrap.dataset.success, 'success'); }, 200);
-    if (toastWrap.dataset.error)   setTimeout(function(){ toast(toastWrap.dataset.error, 'error'); }, 200);
+    if (toastWrap.dataset.success) setTimeout(function(){ toast(toastWrap.dataset.success, 'success', { duration: 4500 }); }, 200);
+    if (toastWrap.dataset.error)   setTimeout(function(){ toast(toastWrap.dataset.error, 'error', { duration: 4500 }); }, 200);
 
     function previewImage(event) {
         var file = event.target.files[0];

@@ -117,7 +117,7 @@
                 Edit
             </x-button>
             @if($fv === 'active')
-            <form action="{{ route('campaign.pause', $campaign->id) }}" method="POST" onsubmit="return handleSub(this,'Pausing…')">
+            <form action="{{ route('campaign.pause', $campaign->id) }}" method="POST" data-loading-text="Pausing…">
                 @csrf
                  <x-button variant="secondary" type="submit">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -125,7 +125,7 @@
                 </x-button>
             </form>
             @elseif($fv === 'paused')
-            <form action="{{ route('campaign.resume', $campaign->id) }}" method="POST" onsubmit="return handleSub(this,'Resuming…')">
+            <form action="{{ route('campaign.resume', $campaign->id) }}" method="POST" data-loading-text="Resuming…">
                 @csrf
                 <x-button variant="secondary" type="submit">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -133,7 +133,7 @@
                 </x-button>
             </form>
             @elseif($fv === 'rejected')
-            <form action="{{ route('campaign.resubmit', $campaign->id) }}" method="POST" onsubmit="return handleSub(this,'Resubmitting…')">
+            <form action="{{ route('campaign.resubmit', $campaign->id) }}" method="POST" data-loading-text="Resubmitting…">
                 @csrf
                 <x-button variant="secondary" type="submit">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
@@ -204,14 +204,14 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>Edit
         </x-button>
         @if($fv === 'active')
-        <form action="{{ route('campaign.pause', $campaign->id) }}" method="POST" onsubmit="return handleSub(this,'…')">
+        <form action="{{ route('campaign.pause', $campaign->id) }}" method="POST" data-loading-text="…">
             @csrf
             <x-button variant="secondary" type="submit">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Pause
             </x-button>
         </form>
         @elseif($fv === 'paused')
-        <form action="{{ route('campaign.resume', $campaign->id) }}" method="POST" onsubmit="return handleSub(this,'…')">
+        <form action="{{ route('campaign.resume', $campaign->id) }}" method="POST" data-loading-text="…">
             @csrf
             <x-button variant="secondary" type="submit">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Resume

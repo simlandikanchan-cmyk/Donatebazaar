@@ -79,7 +79,7 @@
   </div>
   <div class="hero-right">
     @if($donation->payment_status === 'completed' && !$donation->is_refunded)
-      <button type="button" onclick="openRefund({{ $donation->id }}, '{{ addslashes($donation->donor_name ?? 'this donation') }}', {{ $donation->total_amount }})" class="hero-btn hero-btn-primary" style="background:var(--amber);border-color:var(--amber);color:#fff">
+      <button type="button" data-action="open-refund" data-id="{{ $donation->id }}" data-donor="{{ addslashes($donation->donor_name ?? 'this donation') }}" data-amount="{{ $donation->total_amount }}" class="hero-btn hero-btn-primary" style="background:var(--amber);border-color:var(--amber);color:#fff">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m4 0h1M3 10l2-5h14l2 5v9a1 1 0 01-1 1H4a1 1 0 01-1-1v-9z"/></svg>
         Refund Donation
       </button>
@@ -235,7 +235,7 @@
 {{-- Refund confirmation modal --}}
 <div id="refundOverlay" class="overlay" role="dialog" aria-modal="true">
   <div class="modal">
-    <button type="button" class="modal-x" onclick="closeRefund()">
+    <button type="button" class="modal-x" data-action="close-modal" data-target="#refundOverlay">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
     </button>
     <div class="modal-head">
@@ -252,7 +252,7 @@
       <textarea id="refundReason" name="reason" rows="2" placeholder="Reason (optional)…" style="width:100%;margin-top:12px;padding:8px 10px;border:1px solid var(--border2);border-radius:var(--r-sm);font-size:12.5px;font-family:var(--font);background:var(--surface2);color:var(--text);resize:vertical"></textarea>
     </div>
     <div class="modal-acts">
-      <button type="button" onclick="closeRefund()" class="btn btn-secondary modal-btn modal-cancel">Cancel</button>
+      <button type="button" data-action="close-modal" data-target="#refundOverlay" class="btn btn-secondary modal-btn modal-cancel">Cancel</button>
       <form id="refundForm" method="POST" style="flex:1;">
         @csrf
         <button type="submit" class="btn btn-red modal-btn modal-red">↺ Confirm Refund</button>

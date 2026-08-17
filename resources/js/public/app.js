@@ -10,6 +10,8 @@ async function loadCharts() {
 
     const { default: Chart } = await import('chart.js/auto');
 
+    /* Browser lifecycle integration: Chart.js is dynamically loaded and
+       exposed globally so page scripts can check typeof Chart before use. */
     window.Chart = Chart;
 
     window.dispatchEvent(new Event('chartjs:loaded'));

@@ -95,7 +95,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
         Approve Settlement
       </button>
-      <button type="button" onclick="openReject()" class="hero-btn hero-btn-ghost" style="color:var(--red);">
+      <button type="button" data-action="open-modal" data-target="#rejectOverlay" class="hero-btn hero-btn-ghost" style="color:var(--red);">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
         Reject
       </button>
@@ -331,7 +331,7 @@
         Approving will lock and debit the funds, then start the payout to <strong>{{ optional($payout)->account_holder_name ?? optional($org)->name }}</strong>. This cannot be undone.
       </div>
       <div class="modal-acts">
-        <button type="button" onclick="closeApprove()" class="btn btn-secondary modal-btn modal-cancel">Cancel</button>
+        <button type="button" class="btn btn-secondary modal-btn modal-cancel" data-action="close-modal" data-target="#approveOverlay">Cancel</button>
         <form method="POST" action="{{ route('admin.settlements.approve', $settlement) }}" style="flex:1;">
           @csrf
           <button type="submit" class="btn modal-btn modal-green">
@@ -346,7 +346,7 @@
   {{-- Reject modal --}}
   <div id="rejectOverlay" class="overlay" role="dialog" aria-modal="true">
     <div class="modal">
-      <button type="button" class="modal-x" onclick="closeReject()">
+      <button type="button" class="modal-x" data-action="close-modal" data-target="#rejectOverlay">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
       <div class="modal-head">
@@ -362,15 +362,15 @@
         <form method="POST" action="{{ route('admin.settlements.reject', $settlement) }}">
           @csrf
           <div class="chips">
-            <button type="button" class="chip chip-red" onclick="setReason(this.textContent)">KYC not verified</button>
-            <button type="button" class="chip chip-red" onclick="setReason(this.textContent)">Bank details mismatch</button>
-            <button type="button" class="chip chip-red" onclick="setReason(this.textContent)">Suspicious activity</button>
-            <button type="button" class="chip chip-red" onclick="setReason(this.textContent)">Duplicate request</button>
+            <button type="button" class="chip chip-red" data-action="set-reason">KYC not verified</button>
+            <button type="button" class="chip chip-red" data-action="set-reason">Bank details mismatch</button>
+            <button type="button" class="chip chip-red" data-action="set-reason">Suspicious activity</button>
+            <button type="button" class="chip chip-red" data-action="set-reason">Duplicate request</button>
           </div>
           <div class="modal-lbl">Reason <span>*</span></div>
-          <textarea id="rejectReason" name="reason" class="modal-ta" rows="3" placeholder="Required — explain why this settlement is rejected…" oninput="document.getElementById('rejectBtn').disabled = this.value.trim() === '';"></textarea>
+          <textarea id="rejectReason" name="reason" class="modal-ta" rows="3" placeholder="Required — explain why this settlement is rejected…" data-action="enable-reject-btn"></textarea>
           <div class="modal-acts">
-            <button type="button" onclick="closeReject()" class="btn btn-secondary modal-btn modal-cancel">Cancel</button>
+            <button type="button" data-action="close-modal" data-target="#rejectOverlay" class="btn btn-secondary modal-btn modal-cancel">Cancel</button>
             <button type="submit" id="rejectBtn" class="btn btn-red modal-btn modal-red" disabled>↺ Confirm Reject</button>
           </div>
         </form>
@@ -382,25 +382,5 @@
 @endsection
 
 @push('page_scripts')
-<script>
-(function () {
-  'use strict';
-  var approveOverlay = document.getElementById('approveOverlay');
-  var rejectOverlay = document.getElementById('rejectOverlay');
-
-  window.openApprove = function () { if (approveOverlay) approveOverlay.classList.add('open'); };
-  window.closeApprove = function () { if (approveOverlay) approveOverlay.classList.remove('open'); };
-  window.openReject = function () { if (rejectOverlay) rejectOverlay.classList.add('open'); };
-  window.closeReject = function () { if (rejectOverlay) rejectOverlay.classList.remove('open'); };
-  window.setReason = function (text) {
-    var ta = document.getElementById('rejectReason');
-    if (!ta) return;
-    ta.value = text;
-    ta.dispatchEvent(new Event('input'));
-    ta.focus();
-  };
-  if (approveOverlay) approveOverlay.addEventListener('click', function (e) { if (e.target === this) closeApprove(); });
-  if (rejectOverlay) rejectOverlay.addEventListener('click', function (e) { if (e.target === this) closeReject(); });
-}());
-</script>
+@vite('resources/js/admin/settlements-show.js')
 @endpush

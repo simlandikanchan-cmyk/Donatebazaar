@@ -225,8 +225,7 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
         @endphp
         @foreach($qsRows as [$color, $label, $val, $filter])
         <div class="qs-row" role="button" tabindex="0"
-             onclick="setFilter('{{ $filter }}')"
-             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setFilter('{{ $filter }}');}">
+             data-action="set-filter" data-filter="{{ $filter }}"></
             <div class="qs-row-left">
                 <div class="qs-dot" style="background:{{ $color }}"></div>
                 <span class="qs-label">{{ $label }}</span>

@@ -3,10 +3,15 @@
     ══════════════════════════════════════ */
 
 import Chart from 'chart.js/auto';
+/* Browser lifecycle integration: Chart.js is exposed globally because
+   admin page scripts check `typeof Chart === 'undefined'` before
+   initialising charts. Kept as window.* for compatibility. */
 window.Chart = Chart;
 
 import { toast as showToast } from '../shared/toast.js';
 import { initModalDefaults } from '../shared/modal.js';
+import { getCsrfToken } from '../shared/csrf.js';
+import { initThemeToggle } from '../shared/theme.js';
 
 (function () {
   'use strict';
@@ -20,19 +25,7 @@ import { initModalDefaults } from '../shared/modal.js';
   const toastWrap = document.getElementById('toastWrap');
 
   /* ── Theme ── */
-  const saved = localStorage.getItem('adminTheme') || 'light';
-  if (saved === 'dark') {
-    html.setAttribute('data-theme', 'dark');
-    if (toggle) toggle.checked = true;
-  }
-  if (toggle) {
-    toggle.addEventListener('change', function () {
-      const t = this.checked ? 'dark' : 'light';
-      html.setAttribute('data-theme', t);
-      localStorage.setItem('adminTheme', t);
-      window.dispatchEvent(new Event('themechange'));
-    });
-  }
+  initThemeToggle({ storageKey: 'adminTheme', dispatchEvent: true });
 
   /* ── Sidebar ── */
   if (hamburger && sidebar) {
@@ -84,25 +77,46 @@ import { initModalDefaults } from '../shared/modal.js';
     }
   }
 
-  /* ── Toast System ── */
-  window.toast = function (msg, type, undoCallback, undoLabel) {
-    showToast(msg, type || 'success', {
-      container: toastWrap,
-      undo: undoCallback,
-      undoLabel: undoLabel,
-    });
-  };
-
-  /* ── Lazy toast from session flash ── */
+  /* ── Toast System (uses shared/toast.js, auto-detects #toastWrap) ── */
   if (toastWrap) {
     const data = toastWrap.dataset;
-    if (data.success) setTimeout(function () { window.toast(data.success, 'success'); }, 200);
-    if (data.error) setTimeout(function () { window.toast(data.error, 'error'); }, 200);
-    if (data.warning) setTimeout(function () { window.toast(data.warning, 'warn'); }, 200);
+    if (data.success) setTimeout(function () { showToast(data.success, 'success'); }, 200);
+    if (data.error) setTimeout(function () { showToast(data.error, 'error'); }, 200);
+    if (data.warning) setTimeout(function () { showToast(data.warning, 'warn'); }, 200);
   }
 
   /* ── Modal helpers ── */
   initModalDefaults();
+
+  /* ══════════════════════════════════════
+     FORM SUBMIT LOADING — data-loading-text
+     ══════════════════════════════════════ */
+  document.addEventListener('submit', function (e) {
+    var form = e.target.closest('[data-loading-text]');
+    if (!form) return;
+    var txt = form.getAttribute('data-loading-text');
+    form.querySelectorAll('button[type=submit]').forEach(function (b) {
+      b.disabled = true;
+      b.textContent = txt;
+    });
+  });
+
+  /* ── navigate (data-action="navigate" data-href="...") ── */
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest('[data-action="navigate"]');
+    if (!el) return;
+    e.preventDefault();
+    window.location.href = el.getAttribute('data-href');
+  });
+
+  /* ── close-modal (data-action="close-modal" data-target="#modalId") ── */
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest('[data-action="close-modal"]');
+    if (!el) return;
+    var target = el.getAttribute('data-target');
+    var modal = target ? document.querySelector(target) : el.closest('.overlay, .modal, [class*="Overlay"]');
+    if (modal) modal.classList.remove('open', 'show');
+  });
 
   /* ══════════════════════════════════════
      DASHBOARD INITIALIZATION
@@ -125,6 +139,9 @@ import { initModalDefaults } from '../shared/modal.js';
     var doughnutChart = null;
     var revenueChart = null;
     var topCampChart = null;
+
+    Chart.defaults.font.family = "'DM Mono',monospace";
+    Chart.defaults.font.size = 10.5;
 
     /* ── Entrance animations ── */
     (function () {
@@ -308,11 +325,6 @@ import { initModalDefaults } from '../shared/modal.js';
 
     var state = 'active', searchQ = '', sortVal = '', isFetching = false, currentPage = 1;
 
-    function csrfToken() {
-      var m = document.querySelector('meta[name="csrf-token"]');
-      return m ? m.getAttribute('content') : '';
-    }
-
     function setTab(f, v) {
       var el = document.querySelector('.ftab[data-filter="' + f + '"] .cnt');
       if (el) el.textContent = v;
@@ -343,7 +355,7 @@ import { initModalDefaults } from '../shared/modal.js';
           }
           bindCardInteractions();
         })
-        .catch(function () { window.toast('Failed to load campaigns.', 'error'); })
+        .catch(function () { showToast('Failed to load campaigns.', 'error'); })
         .finally(function () { isFetching = false; grid.classList.remove('loading'); });
     }
 
@@ -360,11 +372,11 @@ import { initModalDefaults } from '../shared/modal.js';
     var ftabSelect = document.getElementById('ftabSelect');
     if (ftabSelect) {
       ftabSelect.addEventListener('change', function () {
-        window.setFilter(this.value);
+        setFilter(this.value);
       });
     }
 
-    window.setFilter = function (f) {
+    function setFilter(f) {
       state = f;
       document.querySelectorAll('.ftab').forEach(function (t) { t.classList.toggle('on', t.dataset.filter === f); });
       var sel = document.getElementById('ftabSelect');
@@ -372,7 +384,36 @@ import { initModalDefaults } from '../shared/modal.js';
       fetchGrid(1);
       var el = document.getElementById('cGrid');
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    };
+    }
+    /* ── data-action delegation for inline onclick replacements ── */
+    document.addEventListener('click', function (e) {
+      var el = e.target.closest('[data-action]');
+      if (!el || !grid.contains(el)) return;
+      var action = el.getAttribute('data-action');
+      if (action === 'set-filter') {
+        setFilter(el.getAttribute('data-filter'));
+      } else if (action === 'close-bulk') {
+        closeBulk();
+      } else if (action === 'close-quick') {
+        closeQuick();
+      } else if (action === 'open-pause') {
+        openPause(el.getAttribute('data-id'));
+      } else if (action === 'close-pause') {
+        closePause();
+      } else if (action === 'open-reject') {
+        openReject(el.getAttribute('data-id'));
+      } else if (action === 'close-reject') {
+        closeReject();
+      }
+      var action2 = el.getAttribute('data-action-2');
+      if (action2 === 'open-reject') {
+        closeQuick();
+        openReject(el.getAttribute('data-id'));
+      } else if (action2 === 'open-pause') {
+        closeQuick();
+        openPause(el.getAttribute('data-id'));
+      }
+    });
 
     var st;
     var searchInput = document.getElementById('searchInput');
@@ -448,10 +489,10 @@ import { initModalDefaults } from '../shared/modal.js';
     if (bbClear) bbClear.addEventListener('click', clearSelection);
 
     function postBulk(url, body, done) {
-      fetch(url, { method: 'POST', headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': csrfToken(), 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(body) })
+      fetch(url, { method: 'POST', headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': getCsrfToken(), 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(body) })
         .then(function (r) { return r.json(); })
-        .then(function (d) { if (d.message) window.toast(d.message, d.type || 'success'); if (done) done(); })
-        .catch(function () { window.toast('Bulk action failed.', 'error'); });
+        .then(function (d) { if (d.message) showToast(d.message, d.type || 'success'); if (done) done(); })
+        .catch(function () { showToast('Bulk action failed.', 'error'); });
     }
     var bbApprove = document.getElementById('bbApprove');
     if (bbApprove) {
@@ -492,10 +533,10 @@ import { initModalDefaults } from '../shared/modal.js';
       if (overlay) overlay.classList.add('open');
       setTimeout(function () { var r = document.getElementById('bulkReason'); if (r) r.focus(); }, 80);
     }
-    window.closeBulk = function () {
+    function closeBulk() {
       var o = document.getElementById('bulkOverlay');
       if (o) o.classList.remove('open');
-    };
+    }
     var bulkForm = document.getElementById('bulkForm');
     if (bulkForm) {
       bulkForm.addEventListener('submit', function (e) {
@@ -510,10 +551,10 @@ import { initModalDefaults } from '../shared/modal.js';
         ids.forEach(function (id) { fd.append('ids[]', id); });
         var btn = document.getElementById('bulkBtn');
         if (btn) { btn.disabled = true; btn.textContent = 'Processing…'; }
-        fetch(this.action, { method: 'POST', headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': csrfToken(), 'Accept': 'application/json' }, body: fd })
+        fetch(this.action, { method: 'POST', headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': getCsrfToken(), 'Accept': 'application/json' }, body: fd })
           .then(function (r) { return r.json(); })
-          .then(function (d) { if (d.message) window.toast(d.message, d.type || 'success'); closeBulk(); clearSelection(); fetchGrid(currentPage); })
-          .catch(function () { window.toast('Bulk action failed.', 'error'); })
+           .then(function (d) { if (d.message) showToast(d.message, d.type || 'success'); closeBulk(); clearSelection(); fetchGrid(currentPage); })
+          .catch(function () { showToast('Bulk action failed.', 'error'); })
           .finally(function () { if (btn) { btn.disabled = false; btn.textContent = bulkMode === 'reject' ? '✕ Reject' : '⏸ Pause'; } });
       });
     }
@@ -537,13 +578,13 @@ import { initModalDefaults } from '../shared/modal.js';
         })
         .catch(function () {
           if (ql) ql.style.display = 'none';
-          window.toast('Failed to load details.', 'error');
+          showToast('Failed to load details.', 'error');
         });
     }
-    window.closeQuick = function () {
+    function closeQuick() {
       if (quickPanel) quickPanel.classList.remove('open');
       if (quickBackdrop) quickBackdrop.classList.remove('open');
-    };
+    }
 
     /* ── Pause modal ── */
     function openPause(id) {
@@ -560,11 +601,11 @@ import { initModalDefaults } from '../shared/modal.js';
       if (overlay) overlay.classList.add('open');
       setTimeout(function () { var r = document.getElementById('pauseReason'); if (r) r.focus(); }, 80);
     }
-    window.openPause = openPause;
-    window.closePause = function () {
+     
+    function closePause() {
       var o = document.getElementById('pauseOverlay');
       if (o) o.classList.remove('open');
-    };
+    }
     document.querySelectorAll('.chip-amber').forEach(function (btn) {
       btn.addEventListener('click', function () {
         document.querySelectorAll('.chip-amber').forEach(function (b) { b.classList.remove('on'); });
@@ -604,11 +645,10 @@ import { initModalDefaults } from '../shared/modal.js';
       if (overlay) overlay.classList.add('open');
       setTimeout(function () { var r = document.getElementById('rejectReason'); if (r) r.focus(); }, 80);
     }
-    window.openReject = openReject;
-    window.closeReject = function () {
+    function closeReject() {
       var o = document.getElementById('rejectOverlay');
       if (o) o.classList.remove('open');
-    };
+    }
     document.querySelectorAll('.chip-red').forEach(function (btn) {
       btn.addEventListener('click', function () {
         document.querySelectorAll('.chip-red').forEach(function (b) { b.classList.remove('on'); });

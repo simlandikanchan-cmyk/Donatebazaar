@@ -1,3 +1,6 @@
+import { toast as showToast } from '../shared/toast.js';
+import { getCsrfToken } from '../shared/csrf.js';
+
 /* ═══════════════════════════════════════════════════════════════════
    Admin Messages Index page — moved from admin/messages/index.blade.php
    inline <script>. Blade route directives moved to data-bulk-url /
@@ -10,7 +13,6 @@
 (function(){
 'use strict';
 
-var csrf   = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 var bulkBar = document.getElementById('bulkBar');
 var bulkUrl = bulkBar.getAttribute('data-bulk-url');
 var toggleUrl = bulkBar.getAttribute('data-toggle-url');
@@ -185,12 +187,12 @@ document.getElementById('bulkClear').addEventListener('click', function(){
 function postBulk(action, ids, onDone){
   fetch(bulkUrl, {
     method: 'POST',
-    headers: { 'Content-Type':'application/json', 'X-CSRF-TOKEN': csrf, 'Accept':'application/json' },
+    headers: { 'Content-Type':'application/json', 'X-CSRF-TOKEN': getCsrfToken(), 'Accept':'application/json' },
     body: JSON.stringify({ ids: ids, action: action })
   })
   .then(function(r){ return r.json(); })
-  .then(function(d){ if(d.ok && onDone) onDone(d); else toast('Something went wrong.', 'error'); })
-  .catch(function(){ toast('Network error.', 'error'); });
+  .then(function(d){ if(d.ok && onDone) onDone(d); else showToast('Something went wrong.', 'error', { duration: 4200 }); })
+  .catch(function(){ showToast('Network error.', 'error', { duration: 4200 }); });
 }
 
 document.getElementById('bulkRead').addEventListener('click', function(){
@@ -202,7 +204,7 @@ document.getElementById('bulkRead').addEventListener('click', function(){
       if(tr && tr.dataset.status === 'new'){ setRowRead(tr, true); }
     });
     syncBulkBar();
-    toast(ids.length + ' message' + (ids.length===1?'':'s') + ' marked as read.', 'success');
+    showToast(ids.length + ' message' + (ids.length===1?'':'s') + ' marked as read.', 'success', { duration: 4200 });
   });
 });
 document.getElementById('bulkDelete').addEventListener('click', function(){
@@ -225,7 +227,7 @@ document.getElementById('bulkDelete').addEventListener('click', function(){
     writeTotals();
     syncBulkBar();
     applyFilters();
-    toast(d.msg || 'Deleted.', 'success');
+    showToast(d.msg || 'Deleted.', 'success', { duration: 4200 });
   });
 });
 
@@ -274,7 +276,7 @@ document.querySelectorAll('.ab-toggle').forEach(function(btn){
     var url = toggleUrl.replace('__ID__', id);
     fetch(url, {
       method: 'POST',
-      headers: { 'X-CSRF-TOKEN': csrf, 'Accept':'application/json' }
+      headers: { 'X-CSRF-TOKEN': getCsrfToken(), 'Accept':'application/json' }
     })
     .then(function(r){ return r.json(); })
     .then(function(d){
@@ -284,35 +286,11 @@ document.querySelectorAll('.ab-toggle').forEach(function(btn){
       else { totals.read = Math.max(0, totals.read - 1); totals.unread++; }
       totals.total = totals.unread + totals.read;
       writeTotals();
-      toast(d.is_read ? 'Marked as read.' : 'Marked as unread.', 'success');
+      showToast(d.is_read ? 'Marked as read.' : 'Marked as unread.', 'success', { duration: 4200 });
     })
-    .catch(function(){ toast('Network error.', 'error'); });
+    .catch(function(){ showToast('Network error.', 'error', { duration: 4200 }); });
   });
 });
-
-/* toast */
-function toast(msg, type){
-  var icons = {
-    success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
-    error: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>'
-  };
-  var el = document.createElement('div');
-  el.className = 'toast ' + (type === 'error' ? 'toast-err' : 'toast-ok');
-  el.innerHTML = (icons[type]||icons.success) + '<span>' + msg + '</span><button class="toast-x" onclick="this.parentElement.remove()">✕</button>';
-  document.getElementById('toastWrap').appendChild(el);
-  setTimeout(function(){
-    el.style.transition = 'opacity .3s,transform .3s';
-    el.style.opacity = '0';
-    el.style.transform = 'translateX(20px)';
-    setTimeout(function(){ el.remove(); }, 300);
-  }, 4200);
-}
-
-(function(){
-  var w = document.getElementById('toastWrap');
-  var s = w ? w.getAttribute('data-success') : '';
-  if(s) setTimeout(function(){ toast(s, 'success'); }, 200);
-})();
 
 /* ── delegated actions ── */
 document.addEventListener('click', function(e){

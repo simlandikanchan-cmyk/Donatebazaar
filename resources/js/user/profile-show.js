@@ -3,6 +3,8 @@
    Behaviors converted to data-action delegation (no window.* bridges).
    ═══════════════════════════════════════════════════════════════════ */
 
+import { toast } from '../shared/toast.js';
+
 (function () {
     'use strict';
 

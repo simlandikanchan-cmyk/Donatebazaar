@@ -384,7 +384,7 @@
 {{-- Single Reject Modal --}}
 <div class="overlay" id="rejectModal">
   <div class="modal">
-    <button type="button" class="modal-x" onclick="closeRejectModal()">
+    <button type="button" class="modal-x" data-action="close-modal" data-target="#rejectModal">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
     </button>
     <div class="modal-head">
@@ -401,7 +401,7 @@
       <div class="modal-lbl">Reason <span>*</span></div>
       <textarea name="reason" class="modal-ta" rows="3" placeholder="Provide a reason for rejection..." required minlength="10" maxlength="500" style="width:100%;"></textarea>
       <div class="modal-acts">
-        <button type="button" class="btn btn-secondary modal-btn modal-cancel" onclick="closeRejectModal()">Cancel</button>
+        <button type="button" class="btn btn-secondary modal-btn modal-cancel" data-action="close-modal" data-target="#rejectModal">Cancel</button>
         <button type="submit" class="btn btn-red modal-btn modal-red">Reject Product</button>
       </div>
     </form>
@@ -411,7 +411,7 @@
 {{-- Bulk Reject Modal --}}
 <div class="overlay" id="bulkRejectModal">
   <div class="modal">
-    <button type="button" class="modal-x" onclick="closeBulkRejectModal()">
+    <button type="button" class="modal-x" data-action="close-modal" data-target="#bulkRejectModal">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
     </button>
     <div class="modal-head">
@@ -429,7 +429,7 @@
       <div class="modal-lbl">Reason <span>*</span></div>
       <textarea name="reason" class="modal-ta" rows="3" placeholder="Provide a reason for rejection..." required minlength="10" maxlength="500" style="width:100%;"></textarea>
       <div class="modal-acts">
-        <button type="button" class="btn btn-secondary modal-btn modal-cancel" onclick="closeBulkRejectModal()">Cancel</button>
+        <button type="button" class="btn btn-secondary modal-btn modal-cancel" data-action="close-modal" data-target="#bulkRejectModal">Cancel</button>
         <button type="submit" class="btn btn-red modal-btn modal-red">Reject Products</button>
       </div>
     </form>

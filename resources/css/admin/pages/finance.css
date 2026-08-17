@@ -107,3 +107,43 @@
 .gc-grid{grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
 .gc-grid .detail-card{margin-bottom:0;padding:22px 24px;}
 .detail-card.full{grid-column:1/-1;}
+
+/* ── DONATIONS INDEX: BADGES / BUTTONS ── */
+.dn-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:100px;font-size:10.5px;font-weight:600;font-family:var(--mono);white-space:nowrap;border:1px solid transparent}
+.dn-completed{background:rgba(5,196,138,.12);color:#059c7f;border-color:rgba(5,196,138,.25)}
+.dn-pending{background:rgba(245,158,11,.12);color:var(--amber);border-color:rgba(245,158,11,.25)}
+.dn-failed{background:rgba(240,68,68,.12);color:var(--red);border-color:rgba(240,68,68,.25)}
+.dn-refunded{background:rgba(107,114,128,.12);color:#6b7280;border-color:rgba(107,114,128,.25)}
+.dn-yes{background:rgba(5,196,138,.12);color:#059c7f;border-color:rgba(5,196,138,.25)}
+.dn-no{background:rgba(107,114,128,.1);color:#9ca3af;border-color:rgba(107,114,128,.2)}
+.ab-view{background:var(--a-lt);color:var(--a);border-color:rgba(37,99,235,.2)}
+.ab-view:hover{background:var(--a);color:#fff;box-shadow:0 4px 14px rgba(37,99,235,.35)}
+.dn-anon{font-style:italic;color:var(--text3)}
+
+/* ── DONATIONS INDEX: RESPONSIVE ── */
+@media(max-width:960px){.don-stats-grid{grid-template-columns:repeat(2,1fr)!important}}
+@media(max-width:640px){
+  .don-stats-grid{grid-template-columns:repeat(2,1fr)!important;gap:12px}
+  .stats-grid{grid-template-columns:repeat(2,1fr) !important;}
+}
+@media(max-width:600px){
+  #donationTable thead{display:none}
+  #donationTable tbody tr:not(.empty-row){display:flex;flex-direction:column;padding:14px 16px;border-bottom:1px solid var(--border);gap:8px}
+  #donationTable tbody tr td{padding:0;border:none;display:flex;align-items:center;gap:8px}
+  #donationTable tbody tr td::before{content:attr(data-label);font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);min-width:75px;flex-shrink:0}
+  #donationTable tbody tr td.cell-id::before{content:"#"}
+  #donationTable .act-btns{justify-content:flex-start;width:100%}
+  #donationTable td[data-label="Actions"]{flex-wrap:wrap}
+  #donationTable td[data-label="Actions"]::before{content:"Actions";min-width:auto;margin-right:auto}
+  #donationTable tbody tr td.cell-id{font-size:10px;color:var(--text3);margin-bottom:0}
+  #donationTable .cell-date{white-space:normal}
+  #donationTable .cell-mono{font-size:12px}
+}
+@media(max-width:480px){.don-stats-grid{grid-template-columns:1fr!important}}
+@media(max-width:380px){
+  .don-stats-grid .stat{padding:12px 14px}
+  #donationTable tbody tr:not(.empty-row){padding:12px 14px}
+  #donationTable tbody tr td::before{min-width:65px;font-size:9px}
+  .filter-row{flex-direction:column;align-items:stretch;gap:8px;}
+  .sinp{width:100%;}
+}

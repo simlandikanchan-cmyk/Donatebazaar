@@ -716,14 +716,14 @@ foreach ($docs as $field => $info) { if ($application->$field) { $hasDocs = true
       Back to List
     </a>
     @if($application->status === 'pending' || $application->status === 'under_review')
-      <form method="POST" action="{{ route('admin.applications.approve', $application->id) }}" onsubmit="return handleSub(this,'Approving…')">
+      <form method="POST" action="{{ route('admin.applications.approve', $application->id) }}" data-loading-text="Approving…">
         @csrf
         <button type="submit" class="btn btn-green c-btn c-btn-approve">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
           Approve Application
         </button>
       </form>
-      <button type="button" class="btn btn-red c-btn c-btn-reject" onclick="openReject({{ $application->id }})">
+      <button type="button" class="btn btn-red c-btn c-btn-reject" data-action="open-reject-modal" data-id="{{ $application->id }}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
         Reject Application
       </button>
@@ -734,7 +734,7 @@ foreach ($docs as $field => $info) { if ($application->$field) { $hasDocs = true
 {{-- REJECT MODAL --}}
 <div id="rejectOverlay" class="overlay" role="dialog" aria-modal="true">
   <div class="modal">
-    <button type="button" class="modal-x" onclick="closeReject()">
+    <button type="button" class="modal-x" data-action="close-modal" data-target="#rejectOverlay">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
     </button>
     <div class="modal-head">
@@ -759,7 +759,7 @@ foreach ($docs as $field => $info) { if ($application->$field) { $hasDocs = true
       <textarea id="rejectReason" name="rejection_reason" rows="3" placeholder="Or type a custom reason…" class="modal-ta"></textarea>
       <p id="rejectErr" class="modal-err">⚠ Please provide a reason before rejecting.</p>
       <div class="modal-acts">
-        <button type="button" onclick="closeReject()" class="btn btn-secondary modal-btn modal-cancel">Cancel</button>
+        <button type="button" data-action="close-modal" data-target="#rejectOverlay" class="btn btn-secondary modal-btn modal-cancel">Cancel</button>
         <button type="submit" id="rejectBtn" class="btn btn-red modal-btn modal-red">✕ Reject Application</button>
       </div>
     </form>
@@ -768,66 +768,5 @@ foreach ($docs as $field => $info) { if ($application->$field) { $hasDocs = true
 @endsection
 
 @push('page_scripts')
-<script>
-(function(){
-'use strict';
-
-function toast(msg,type){
-  var icons={
-    success:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
-    error:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
-  };
-  var t=document.createElement('div');
-  t.className='toast toast-'+(type==='success'?'ok':'err');
-  t.innerHTML=(icons[type]||'')+'<span>'+msg+'</span><button class="toast-x" onclick="this.parentElement.remove()">✕</button>';
-  document.getElementById('toastWrap').appendChild(t);
-  setTimeout(function(){t.style.transition='opacity .3s,transform .3s';t.style.opacity='0';t.style.transform='translateX(20px)';setTimeout(function(){t.remove();},300);},4200);
-}
-@if(session('success')) setTimeout(function(){toast(@json(session('success')),'success');},200); @endif
-@if(session('error'))   setTimeout(function(){toast(@json(session('error')),'error');},200);   @endif
-
-window.openReject=function(id){
-  document.getElementById('rejectForm').action='{{ route('admin.applications.reject', ':id') }}'.replace(':id', id);
-  document.getElementById('rejectReason').value='';
-  document.getElementById('rejectErr').style.display='none';
-  var btn=document.getElementById('rejectBtn');btn.disabled=false;btn.innerHTML='✕ Reject Application';
-  document.querySelectorAll('.chip-red').forEach(function(c){c.classList.remove('on');});
-  document.getElementById('rejectOverlay').classList.add('open');
-  setTimeout(function(){document.getElementById('rejectReason').focus();},80);
-};
-window.closeReject=function(){document.getElementById('rejectOverlay').classList.remove('open');};
-
-document.querySelectorAll('.chip-red').forEach(function(btn){
-  btn.addEventListener('click',function(){
-    document.querySelectorAll('.chip-red').forEach(function(b){b.classList.remove('on');});
-    this.classList.add('on');
-    document.getElementById('rejectReason').value=this.dataset.r;
-    document.getElementById('rejectErr').style.display='none';
-  });
-});
-
-document.getElementById('rejectForm').addEventListener('submit',function(e){
-  if(!document.getElementById('rejectReason').value.trim()){
-    e.preventDefault();document.getElementById('rejectErr').style.display='block';return;
-  }
-  var btn=document.getElementById('rejectBtn');btn.disabled=true;btn.innerHTML='Rejecting…';
-});
-
-document.getElementById('rejectOverlay').addEventListener('click',function(e){if(e.target===this)closeReject();});
-document.addEventListener('keydown',function(e){if(e.key==='Escape')closeReject();});
-
-window.handleSub=function(form,txt){
-  form.querySelectorAll('button[type=submit]').forEach(function(b){b.disabled=true;b.textContent=txt;});
-  return true;
-};
-
-/* ── Admin Notes Save ── */
-window.saveAdminNotes=function(){
-  var notes=document.getElementById('adminNotesTextarea').value.trim();
-  document.getElementById('adminNotesInput').value=notes;
-  document.getElementById('adminNotesForm').submit();
-};
-
-})();
-</script>
+@vite('resources/js/admin/applications-show.js')
 @endpush

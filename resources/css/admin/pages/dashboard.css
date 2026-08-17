@@ -11,6 +11,9 @@
 /* ── CHART ROW ── */
 .chart-row-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;}
 
+/* ── STATS GRID (responsive columns) ── */
+.stats-grid{grid-template-columns:repeat(3,1fr) !important;}
+
 /* ── ANALYTICS ROW ── */
 .analytics-row{display:grid;grid-template-columns:1fr 290px;gap:14px;margin-bottom:24px;}
 .chart-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:24px;box-shadow:var(--sh);animation:fadeUp .4s .22s ease both;}
@@ -67,39 +70,54 @@
 .pa-badge--teal{background:var(--teal-lt);color:var(--teal);}
 .pa-empty{font-size:11px;color:var(--text3);}
 
-/* ── COMMUNITY IMPACT ── */
-.impact-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;}
-.impact-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:22px 24px;box-shadow:var(--sh);display:flex;align-items:center;gap:16px;position:relative;overflow:hidden;animation:fadeUp .4s ease both;transition:transform var(--ease),box-shadow var(--ease);}
-.impact-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--primary);opacity:.85;}
-.impact-card:hover{transform:translateY(-3px);box-shadow:var(--sh-md);}
-.impact-icon{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:color-mix(in srgb,var(--primary) 12%,transparent);color:var(--primary);}
-.impact-icon svg{width:22px;height:22px;}
-.impact-body{flex:1;min-width:0;}
-.impact-label{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.07em;font-family:var(--mono);}
-.impact-arrow{width:13px;height:13px;color:var(--primary);}
-.impact-value{font-family:var(--mono);font-size:1.9rem;font-weight:800;color:var(--text);letter-spacing:-.03em;line-height:1.15;margin:5px 0 4px;}
-.impact-foot{font-size:11.5px;color:var(--text3);line-height:1.45;}
-.impact-foot strong{color:var(--text2);}
-.impact-revenue,.impact-donors,.impact-avg{--primary:var(--accent);}
-.hb-count{font-family:var(--mono);font-weight:700;}
+/* ── ACTIVITY FEED ── */
+.af-list{display:flex;flex-direction:column;gap:2px;}
+.af-item{display:flex;align-items:flex-start;gap:11px;padding:10px 0;border-bottom:1px solid var(--border);}
+.af-item:last-child{border-bottom:none;padding-bottom:0;}
+.af-ico{width:30px;height:30px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.af-ico svg{width:14px;height:14px;}
+.af-body{min-width:0;}
+.af-desc{font-size:12.5px;color:var(--text2);line-height:1.4;}
+.af-desc a{color:var(--text);font-weight:500;text-decoration:none;}
+.af-desc a:hover{color:var(--a);}
+.af-time{font-size:10.5px;color:var(--text3);margin-top:2px;}
+.af-empty{padding:20px;text-align:center;color:var(--text3);font-size:13px;}
 
-/* ── QUICK NAV ── */
-.qnav{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px;margin-bottom:24px;}
-.qnav-card{display:flex;flex-direction:column;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px 10px;text-align:center;transition:transform var(--ease),box-shadow var(--ease),border-color var(--ease);box-shadow:var(--sh);animation:fadeUp .4s ease both;cursor:pointer;text-decoration:none;position:relative;overflow:hidden;}
+/* ── DASHBOARD RESPONSIVE OVERRIDES ── */
 @media(max-width:640px){
+  .stats-grid{grid-template-columns:repeat(2,1fr) !important;}
   .chart-row-2{grid-template-columns:1fr;}
   .analytics-row{grid-template-columns:1fr;}
   .impact-row{grid-template-columns:1fr;}
   .qnav{grid-template-columns:repeat(2,1fr);}
 }
-.qnav-card{display:flex;flex-direction:column;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px 10px;text-align:center;transition:transform var(--ease),box-shadow var(--ease),border-color var(--ease);box-shadow:var(--sh);animation:fadeUp .4s ease both;cursor:pointer;text-decoration:none;position:relative;overflow:hidden;}
-[data-theme="dark"] .qnav-card{box-shadow:var(--glass-shadow);}
-.qnav-card::before{content:'';position:absolute;inset:0;opacity:0;background:radial-gradient(ellipse at 50% 0%,var(--qc,rgba(37,99,235,.08)) 0%,transparent 70%);transition:opacity var(--ease);}
-.qnav-card:hover{transform:translateY(-4px);box-shadow:var(--sh-md);border-color:rgba(37,99,235,.2);}
-[data-theme="dark"] .qnav-card:hover{box-shadow:var(--sh-xl);}
-.qnav-card:hover::before{opacity:1;}
-.qnav-ico{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;transition:transform var(--ease);}
-.qnav-card:hover .qnav-ico{transform:scale(1.12);}
-.qnav-ico svg{width:18px;height:18px;}
-.qnav-lbl{font-size:12px;font-weight:600;color:var(--text);}
-.qnav-sub{font-size:10px;color:var(--text3);}
+@media(max-width:480px){
+  .stats-grid{grid-template-columns:1fr !important;}
+}
+@media(max-width:400px){
+  .hero-greeting{gap:10px;}
+  .hero-avatar{width:40px;height:40px;border-radius:12px;font-size:14px;}
+  .hero-name{font-size:16px !important;}
+  .hero-tag{font-size:9px;}
+  .hero-sub{font-size:11px !important;}
+  .hero{padding:14px 12px !important;}
+  .hero-btn{padding:7px 12px !important;font-size:11px !important;gap:5px;}
+  .hero-badge{font-size:10px;padding:4px 10px;}
+  .chart-card,.chart-row-2 .chart-card{padding:14px !important;}
+  .doughnut-card{padding:14px !important;}
+  .stat{padding:10px 12px !important;gap:8px;}
+  .stat-icon{width:30px;height:30px;border-radius:8px;}
+  .stat-icon svg{width:12px;height:12px;}
+  .stat-val{font-size:1rem !important;}
+  .hm-val{font-size:14px;}
+  .hm-icon{width:34px;height:34px;}
+  .hm-icon svg{width:15px;height:15px;}
+  .hero-metric{padding:10px 12px;gap:10px;}
+}
+@media(max-width:360px){
+  .chart-hdr{margin-bottom:12px;gap:8px;flex-direction:column;}
+  .chart-card,.chart-row-2 .chart-card{padding:12px !important;}
+  .chart-wrap{height:120px;}
+  .chart-ttl{font-size:13px;}
+  .chart-sub{font-size:10px;}
+}

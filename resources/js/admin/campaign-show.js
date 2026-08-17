@@ -3,6 +3,8 @@
    inline <script>. Behaviors converted to data-action delegation.
    ═══════════════════════════════════════════════════════════════════ */
 
+import { toast } from '../shared/toast.js';
+
 (function () {
     'use strict';
 
@@ -50,7 +52,7 @@
                 var original = el.innerHTML;
                 el.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> Copied!';
                 setTimeout(function () { el.innerHTML = original; }, 1600);
-                if (typeof window.toast === 'function') window.toast('Campaign link copied', 'success');
+                toast('Campaign link copied', 'success');
             };
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(url).then(done).catch(function () { window.prompt('Copy link:', url); });

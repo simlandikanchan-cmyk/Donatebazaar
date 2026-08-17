@@ -1,4 +1,7 @@
 import Chart from 'chart.js/auto';
+/* Browser lifecycle integration: Chart.js is exposed globally because
+   user page scripts check `typeof Chart === 'undefined'` before
+   initialising charts. Kept as window.* for compatibility. */
 window.Chart = Chart;
 
 import { toast as showToast } from '../shared/toast.js';
@@ -60,14 +63,11 @@ import { escapeHtml } from '../shared/helpers.js';
     }
   }
 
-  window.toast = function (msg, type) {
-    showToast(msg, type || 'success', { container: toastContainer, duration: 4500 });
-  };
-
+  /* ── Toast System (uses shared/toast.js, auto-detects #toastContainer) ── */
   if (toastContainer) {
     const data = toastContainer.dataset;
-    if (data.success) setTimeout(function () { window.toast(data.success, 'success'); }, 200);
-    if (data.error) setTimeout(function () { window.toast(data.error, 'error'); }, 200);
+    if (data.success) setTimeout(function () { showToast(data.success, 'success'); }, 200);
+    if (data.error) setTimeout(function () { showToast(data.error, 'error'); }, 200);
   }
 
   /* ── Notifications dropdown ── */
@@ -211,5 +211,28 @@ import { escapeHtml } from '../shared/helpers.js';
     var y = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
     btn.style.setProperty('--mx', x + '%');
     btn.style.setProperty('--my', y + '%');
+  });
+
+  /* ── data-action delegation for set-filter ── */
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest('[data-action="set-filter"]');
+    if (!el) return;
+    var f = el.getAttribute('data-filter');
+    var sel = document.getElementById('ftabSelect');
+    if (sel) sel.value = f;
+    var cGrid = document.getElementById('cGrid');
+    if (cGrid) cGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.querySelectorAll('.ftab').forEach(function (t) { t.classList.toggle('on', t.dataset.filter === f); });
+  });
+
+  /* ── Form submit loading (data-loading-text) ── */
+  document.addEventListener('submit', function (e) {
+    var form = e.target.closest('[data-loading-text]');
+    if (!form) return;
+    var txt = form.getAttribute('data-loading-text');
+    form.querySelectorAll('button[type=submit]').forEach(function (b) {
+      b.disabled = true;
+      b.textContent = txt;
+    });
   });
 })();

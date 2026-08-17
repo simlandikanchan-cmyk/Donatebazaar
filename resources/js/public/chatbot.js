@@ -1,3 +1,6 @@
+import { getCsrfToken } from '../shared/csrf.js';
+import { escapeHtml } from '../shared/helpers.js';
+
 function initChat() {
     // ── DOM refs ──
     var chatToggle = document.getElementById('chatToggle');
@@ -10,8 +13,6 @@ function initChat() {
     var chatBadge = document.getElementById('chatBadge');
     var scrollBottom = document.getElementById('scrollBottom');
     var suggestionsContainer = document.getElementById('chatSuggestions');
-    var metaTag = document.querySelector('meta[name="csrf-token"]');
-    var csrfToken = metaTag ? metaTag.getAttribute('content') : '';
 
     if (!chatToggle || !chatWindow) return;
 
@@ -195,12 +196,6 @@ function initChat() {
 
     function getTimestamp() {
         return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    }
-
-    function escapeHtml(text) {
-        var div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
     }
 
     function renderMarkdown(text) {
@@ -434,7 +429,7 @@ function initChat() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken,
+                    'X-CSRF-TOKEN': getCsrfToken(),
                     'Accept': 'text/event-stream'
                 },
                 body: JSON.stringify({ message: message })

@@ -4,6 +4,8 @@
    delegation; all other logic preserved verbatim.
    ═══════════════════════════════════════════════════════════════════ */
 
+import { escapeHtml } from '../shared/helpers.js';
+
 (function(){
 'use strict';
 
@@ -125,7 +127,6 @@ function markDirty(){if(!formDirty){formDirty=true;unsavedBadge.classList.add('s
 function clearDirty(){formDirty=false;unsavedBadge.classList.remove('show');}
 
 /* Inline validation helpers */
-function escapeHtml(str){return String(str).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function setFieldError(input,msg){
   input.classList.add('err');
   var f=input.closest('.field');if(!f)return;

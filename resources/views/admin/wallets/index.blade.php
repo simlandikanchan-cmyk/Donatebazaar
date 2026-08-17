@@ -68,9 +68,9 @@
     </div>
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
       <div class="ftabs" id="walletFilterTabs" style="display:flex;gap:6px;">
-        <button class="ftab {{ $filter === 'all' ? 'on' : '' }}" data-filter="all" onclick="setWalletFilter('all')">All <span class="cnt">{{ $stats['total'] }}</span></button>
-        <button class="ftab {{ $filter === 'users' ? 'on' : '' }}" data-filter="users" onclick="setWalletFilter('users')">Users <span class="cnt">{{ $stats['users'] }}</span></button>
-        <button class="ftab {{ $filter === 'organizations' ? 'on' : '' }}" data-filter="organizations" onclick="setWalletFilter('organizations')">Orgs <span class="cnt">{{ $stats['organizations'] }}</span></button>
+        <button class="ftab {{ $filter === 'all' ? 'on' : '' }}" data-action="navigate" data-href="?filter=all">All <span class="cnt">{{ $stats['total'] }}</span></button>
+        <button class="ftab {{ $filter === 'users' ? 'on' : '' }}" data-action="navigate" data-href="?filter=users">Users <span class="cnt">{{ $stats['users'] }}</span></button>
+        <button class="ftab {{ $filter === 'organizations' ? 'on' : '' }}" data-action="navigate" data-href="?filter=organizations">Orgs <span class="cnt">{{ $stats['organizations'] }}</span></button>
       </div>
       <form method="GET" action="{{ route('admin.wallets.index') }}" style="display:flex;gap:8px;align-items:center;">
         <div class="swrap">
@@ -166,32 +166,7 @@
 </div>
 
 @push('page_scripts')
-<script>
-function setWalletFilter(filter) {
-  var url = new URL(window.location.href);
-  url.searchParams.set('filter', filter);
-  url.searchParams.delete('page');
-  window.location.href = url.toString();
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  var searchInput = document.querySelector('input[name="q"]');
-  if (searchInput) {
-    var st;
-    searchInput.addEventListener('input', function() {
-      clearTimeout(st);
-      st = setTimeout(function() {
-        var filterInput = document.querySelector('input[name="filter"]');
-        var form = searchInput.closest('form');
-        if (filterInput && !document.querySelector('input[name="filter"]:checked')) {
-          // keep existing filter in form
-        }
-        form.submit();
-      }, 400);
-    });
-  }
-});
-</script>
+@vite('resources/js/admin/wallets-index.js')
 @endpush
 
 <style>

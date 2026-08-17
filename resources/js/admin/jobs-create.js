@@ -1,3 +1,5 @@
+import { toast } from '../shared/toast.js';
+
 /* ═══════════════════════════════════════════════════════════════════
    Admin Job Post Create page — moved from admin/job_posts/create.blade.php
    inline <script>. Session toasts now read from the layout's #toastWrap
@@ -9,25 +11,12 @@
 (function () {
   'use strict';
 
-  /* ── Toast from layout ── */
-  function toast(msg, type) {
-    var t  = document.createElement('div');
-    t.className = 'toast toast-' + (type === 'success' ? 'ok' : 'err');
-    var ok  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
-    var err = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
-    t.innerHTML = (type === 'success' ? ok : err) + '<span>' + msg + '</span><button class="toast-x" onclick="this.parentElement.remove()">✕</button>';
-    document.getElementById('toastWrap').appendChild(t);
-    setTimeout(function () {
-      t.style.transition = 'opacity .3s,transform .3s'; t.style.opacity = '0'; t.style.transform = 'translateX(20px)';
-      setTimeout(function () { t.remove(); }, 300);
-    }, 4200);
-  }
   var toastWrapEl = document.getElementById('toastWrap');
   if (toastWrapEl) {
     var flashSuccess = toastWrapEl.getAttribute('data-success');
-    if (flashSuccess) setTimeout(function(){ toast(flashSuccess, 'success'); }, 200);
+    if (flashSuccess) setTimeout(function(){ toast(flashSuccess, 'success', { duration: 4200 }); }, 200);
     var flashError = toastWrapEl.getAttribute('data-error');
-    if (flashError) setTimeout(function(){ toast(flashError, 'error'); }, 200);
+    if (flashError) setTimeout(function(){ toast(flashError, 'error', { duration: 4200 }); }, 200);
   }
 
   /* ── SLUG AUTO-GENERATION ── */
@@ -243,7 +232,7 @@
       else el.classList.remove('err');
     });
 
-    if (!valid) { e.preventDefault(); toast('Please fill in all required fields.', 'error'); return; }
+    if (!valid) { e.preventDefault(); toast('Please fill in all required fields.', 'error', { duration: 4200 }); return; }
 
     publishBtn.disabled = draftBtn.disabled = true;
     publishBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin .7s linear infinite"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> Publishing…';

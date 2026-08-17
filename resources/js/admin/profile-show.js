@@ -8,15 +8,6 @@
 (function(){
 'use strict';
 
-/* ── Toast (fallback for avatar client errors) ── */
-function toast(msg,type){
-  var t=document.createElement('div');
-  t.style.cssText='position:fixed;top:20px;right:20px;z-index:9999;display:flex;align-items:center;gap:10px;padding:13px 16px;border-radius:14px;font-size:13px;font-weight:500;color:#fff;min-width:260px;box-shadow:0 10px 30px rgba(0,0,0,.25);animation:fadeUp .3s ease both;'+(type==='error'?'background:linear-gradient(135deg,#dc2626,#f04444);':'background:linear-gradient(135deg,#059669,#10b981);');
-  t.innerHTML='<span>'+msg+'</span>';
-  document.body.appendChild(t);
-  setTimeout(function(){t.style.transition='opacity .3s,transform .3s';t.style.opacity='0';t.style.transform='translateX(20px)';setTimeout(function(){t.remove();},300);},3800);
-}
-
 /* ── Avatar upload: preview + validate + loading ── */
 var avInput=document.getElementById('avatarInput');
 var avForm=document.getElementById('avatarForm');

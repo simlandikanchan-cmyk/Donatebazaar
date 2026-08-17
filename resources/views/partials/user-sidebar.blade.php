@@ -168,35 +168,35 @@
             Saved Campaigns
         </a>
         @if($sidebarActive > 0)
-        <a href="{{ url('/user/dashboard') }}#cGrid" class="s-link" onclick="setFilter('active')">
+        <a href="{{ url('/user/dashboard') }}#cGrid" class="s-link" data-action="set-filter" data-filter="active">
             <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             Active
             <span class="s-badge ok">{{ $sidebarActive }}</span>
         </a>
         @endif
         @if($sidebarPending > 0)
-        <a href="{{ url('/user/dashboard') }}#cGrid" class="s-link" onclick="setFilter('pending')">
+        <a href="{{ url('/user/dashboard') }}#cGrid" class="s-link" data-action="set-filter" data-filter="pending">
             <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             Pending
             <span class="s-badge warn">{{ $sidebarPending }}</span>
         </a>
         @endif
         @if($sidebarPaused > 0)
-        <a href="{{ url('/user/dashboard') }}#cGrid" class="s-link" onclick="setFilter('paused')">
+        <a href="{{ url('/user/dashboard') }}#cGrid" class="s-link" data-action="set-filter" data-filter="paused">
             <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             Paused
             <span class="s-badge">{{ $sidebarPaused }}</span>
         </a>
         @endif
         @if($sidebarRejected > 0)
-        <a href="{{ url('/user/dashboard') }}#cGrid" class="s-link" onclick="setFilter('rejected')">
+        <a href="{{ url('/user/dashboard') }}#cGrid" class="s-link" data-action="set-filter" data-filter="rejected">
             <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
             Rejected
             <span class="s-badge err">{{ $sidebarRejected }}</span>
         </a>
         @endif
         @if($sidebarExpired > 0)
-        <a href="{{ url('/user/dashboard') }}#cGrid" class="s-link" onclick="setFilter('expired')">
+        <a href="{{ url('/user/dashboard') }}#cGrid" class="s-link" data-action="set-filter" data-filter="expired">
             <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
             Expired
             <span class="s-badge">{{ $sidebarExpired }}</span>

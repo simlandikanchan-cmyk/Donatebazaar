@@ -248,14 +248,14 @@ tbody tr:hover{background:var(--surface2)}
               View
             </a>
             @if($app->status === 'pending' || $app->status === 'under_review')
-            <form method="POST" action="{{ route('admin.applications.approve', $app->id) }}" onsubmit="return handleSub(this,'Approving…')" style="display:inline">
+            <form method="POST" action="{{ route('admin.applications.approve', $app->id) }}" data-loading-text="Approving…" style="display:inline">
               @csrf
               <button type="submit" class="btn btn-green c-btn c-btn-approve" title="Approve">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                 Approve
               </button>
             </form>
-            <button type="button" class="btn btn-red c-btn c-btn-reject" onclick="openReject({{ $app->id }})" title="Reject">
+            <button type="button" class="btn btn-red c-btn c-btn-reject" data-action="open-reject-modal" data-id="{{ $app->id }}" title="Reject">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
               Reject
             </button>
@@ -289,7 +289,7 @@ tbody tr:hover{background:var(--surface2)}
 {{-- REJECT MODAL --}}
 <div id="rejectOverlay" class="overlay" role="dialog" aria-modal="true">
   <div class="modal">
-    <button type="button" class="modal-x" onclick="closeReject()">
+    <button type="button" class="modal-x" data-action="close-modal" data-target="#rejectOverlay">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
     </button>
     <div class="modal-head">
@@ -314,7 +314,7 @@ tbody tr:hover{background:var(--surface2)}
       <textarea id="rejectReason" name="rejection_reason" rows="3" placeholder="Or type a custom reason…" class="modal-ta"></textarea>
       <p id="rejectErr" class="modal-err">⚠ Please provide a reason before rejecting.</p>
       <div class="modal-acts">
-        <button type="button" onclick="closeReject()" class="btn btn-secondary modal-btn modal-cancel">Cancel</button>
+        <button type="button" data-action="close-modal" data-target="#rejectOverlay" class="btn btn-secondary modal-btn modal-cancel">Cancel</button>
         <button type="submit" id="rejectBtn" class="btn btn-red modal-btn modal-red">✕ Reject Application</button>
       </div>
     </form>
@@ -323,104 +323,5 @@ tbody tr:hover{background:var(--surface2)}
 @endsection
 
 @push('page_scripts')
-<script>
-(function(){
-'use strict';
-
-function toast(msg,type){
-  var icons={
-    success:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
-    error:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
-  };
-  var t=document.createElement('div');
-  t.className='toast toast-'+(type==='success'?'ok':'err');
-  t.innerHTML=(icons[type]||'')+'<span>'+msg+'</span><button class="toast-x" onclick="this.parentElement.remove()">✕</button>';
-  document.getElementById('toastWrap').appendChild(t);
-  setTimeout(function(){t.style.transition='opacity .3s,transform .3s';t.style.opacity='0';t.style.transform='translateX(20px)';setTimeout(function(){t.remove();},300);},4200);
-}
-@if(session('success')) setTimeout(function(){toast(@json(session('success')),'success');},200); @endif
-@if(session('error'))   setTimeout(function(){toast(@json(session('error')),'error');},200);   @endif
-
-window.openReject=function(id){
-  document.getElementById('rejectForm').action='{{ route('admin.applications.reject', ':id') }}'.replace(':id', id);
-  document.getElementById('rejectReason').value='';
-  document.getElementById('rejectErr').style.display='none';
-  var btn=document.getElementById('rejectBtn');btn.disabled=false;btn.innerHTML='✕ Reject Application';
-  document.querySelectorAll('.chip-red').forEach(function(c){c.classList.remove('on');});
-  document.getElementById('rejectOverlay').classList.add('open');
-  setTimeout(function(){document.getElementById('rejectReason').focus();},80);
-};
-window.closeReject=function(){document.getElementById('rejectOverlay').classList.remove('open');};
-
-document.querySelectorAll('.chip-red').forEach(function(btn){
-  btn.addEventListener('click',function(){
-    document.querySelectorAll('.chip-red').forEach(function(b){b.classList.remove('on');});
-    this.classList.add('on');
-    document.getElementById('rejectReason').value=this.dataset.r;
-    document.getElementById('rejectErr').style.display='none';
-  });
-});
-
-document.getElementById('rejectForm').addEventListener('submit',function(e){
-  if(!document.getElementById('rejectReason').value.trim()){
-    e.preventDefault();document.getElementById('rejectErr').style.display='block';return;
-  }
-  var btn=document.getElementById('rejectBtn');btn.disabled=true;btn.innerHTML='Rejecting…';
-});
-
-document.getElementById('rejectOverlay').addEventListener('click',function(e){if(e.target===this)closeReject();});
-document.addEventListener('keydown',function(e){if(e.key==='Escape')closeReject();});
-
-window.handleSub=function(form,txt){
-  form.querySelectorAll('button[type=submit]').forEach(function(b){b.disabled=true;b.textContent=txt;});
-  return true;
-};
-
-/* ── CLIENT-SIDE FILTER + SEARCH ── */
-var rows   = Array.from(document.querySelectorAll('#tbody tr[data-id]'));
-var noRow  = document.querySelector('#tbody .empty-state');
-var activeFilter = 'all';
-
-function applyFilter(){
-  var q = (document.getElementById('searchInput').value || '').toLowerCase().trim();
-  var vis = 0;
-  rows.forEach(function(r){
-    var mF = activeFilter === 'all' || r.dataset.status === activeFilter;
-    var mS = !q || (r.dataset.search || '').includes(q);
-    r.style.display = (mF && mS) ? '' : 'none';
-    if(mF && mS) vis++;
-  });
-  var empty = document.querySelector('#tbody tr.empty-filter');
-  if(vis === 0 && rows.length > 0){
-    if(!empty){
-      empty = document.createElement('tr'); empty.className = 'empty-filter';
-      empty.innerHTML = '<td colspan="8"><div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><strong>No results found</strong><p>Try adjusting your filters or search query.</p></div></td>';
-      document.getElementById('tbody').appendChild(empty);
-    }
-    empty.style.display = '';
-  } else if(empty){
-    empty.style.display = 'none';
-  }
-}
-
-/* Filter tabs */
-document.querySelectorAll('.ftab').forEach(function(tab){
-  tab.addEventListener('click', function(){
-    document.querySelectorAll('.ftab').forEach(function(t){ t.classList.remove('on'); });
-    this.classList.add('on');
-    activeFilter = this.dataset.filter;
-    applyFilter();
-  });
-});
-
-/* Search input */
-var st;
-document.getElementById('searchInput').addEventListener('input', function(){
-  clearTimeout(st);
-  st = setTimeout(applyFilter, 180);
-});
-
-applyFilter();
-})();
-</script>
+@vite('resources/js/admin/applications-index.js')
 @endpush

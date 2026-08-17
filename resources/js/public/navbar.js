@@ -4,6 +4,9 @@
  * Zero dependencies · Accessible (ARIA) · Keyboard-navigable
  */
 
+import { getCsrfToken } from '../shared/csrf.js';
+import { escapeHtml } from '../shared/helpers.js';
+
 (function () {
     'use strict';
 
@@ -236,9 +239,6 @@
     }
 
     /* ── Notification panel ────────────────────────────────── */
-    function getCsrf() {
-        return document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
-    }
 
     function notifIsOpen() {
         return notifBtn?.getAttribute('aria-expanded') === 'true';
@@ -310,12 +310,6 @@
         notifList.appendChild(fragment);
     }
 
-    function escapeHtml(str) {
-        const div = document.createElement('div');
-        div.textContent = str ?? '';
-        return div.innerHTML;
-    }
-
     async function loadNotifications() {
         try {
             const res = await fetch('/notifications', {
@@ -335,7 +329,7 @@
             await fetch('/notifications/' + encodeURIComponent(id) + '/read', {
                 method: 'POST',
                 headers: {
-                    'X-CSRF-TOKEN': getCsrf(),
+                    'X-CSRF-TOKEN': getCsrfToken(),
                     'X-Requested-With': 'XMLHttpRequest',
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
@@ -354,7 +348,7 @@
             const res = await fetch('/notifications/read-all', {
                 method: 'POST',
                 headers: {
-                    'X-CSRF-TOKEN': getCsrf(),
+                    'X-CSRF-TOKEN': getCsrfToken(),
                     'X-Requested-With': 'XMLHttpRequest',
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
