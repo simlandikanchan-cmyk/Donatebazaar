@@ -9,29 +9,7 @@
 @section('page_subtitle', 'Donation detail & refund history')
 
 @push('page_styles')
-<style>
-.dn-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:100px;font-size:10.5px;font-weight:600;font-family:var(--mono);white-space:nowrap;border:1px solid transparent}
-.dn-completed{background:rgba(5,196,138,.12);color:#059c7f;border-color:rgba(5,196,138,.25)}
-.dn-pending{background:rgba(245,158,11,.12);color:var(--amber);border-color:rgba(245,158,11,.25)}
-.dn-failed{background:rgba(240,68,68,.12);color:var(--red);border-color:rgba(240,68,68,.25)}
-.dn-refunded{background:rgba(107,114,128,.12);color:#6b7280;border-color:rgba(107,114,128,.25)}
-.dn-processed{background:rgba(5,196,138,.12);color:#059c7f;border-color:rgba(5,196,138,.25)}
-.dn-failedr{background:rgba(240,68,68,.12);color:var(--red);border-color:rgba(240,68,68,.25)}
-.dn-pendingr{background:rgba(245,158,11,.12);color:var(--amber);border-color:rgba(245,158,11,.25)}
-.ab-refund{background:var(--amber-lt);color:var(--amber);border-color:rgba(245,158,11,.18)}
-.ab-refund:hover{background:var(--amber);color:#fff;border-color:var(--amber)}
-.ab-view{background:var(--a-lt);color:var(--a);border-color:rgba(37,99,235,.2)}
-.ab-view:hover{background:var(--a);color:#fff;box-shadow:0 4px 14px rgba(37,99,235,.35)}
-.toast-info{background:linear-gradient(135deg,#2563eb,#60a5fa)}
-.dn-anon{font-style:italic;color:var(--text3)}
-.dn-kv{display:flex;flex-direction:column;gap:2px}
-.dn-kv .k{font-size:10px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em}
-.dn-kv .v{font-size:13px;color:var(--text);font-weight:600}
-.dn-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-@media(max-width:760px){.dn-grid{grid-template-columns:1fr 1fr}}
-@media(max-width:480px){.dn-grid{grid-template-columns:1fr}}
-@media(max-width:380px){.page-hdr{padding:14px 12px}.page-hdr-left h2{font-size:clamp(16px,4.5vw,18px)}.dn-card{padding:14px 12px}.dn-amount{font-size:clamp(20px,6vw,24px)}.dn-meta{font-size:11px}.dn-grid{gap:10px}.dn-kv .v{font-size:12px}.dn-kv .k{font-size:9px}.back-link{font-size:11px;height:32px;padding:0 10px}.flash{font-size:12px;padding:10px 12px}}
-</style>
+@vite('resources/css/admin/pages/donations-show.css')
 @endpush
 
 @section('content')
@@ -261,38 +239,19 @@
   </div>
 </div>
 
+{{-- Page data for donations-show.js --}}
+@php
+    $donationsShowData = [
+        'refundUrl' => route('admin.donations.refund', ':id'),
+        'success' => session('success'),
+        'error' => session('error'),
+        'info' => session('info'),
+    ];
+@endphp
+<script type="application/json" id="donationsShowData">@json($donationsShowData)</script>
+
 @endsection
 
 @push('page_scripts')
-<script>
-(function () {
-  'use strict';
-  function toast(msg, type) {
-    var icons = {
-      success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
-      error:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
-      info:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
-    };
-    var t = document.createElement('div');
-    t.className = 'toast toast-' + (type === 'success' ? 'ok' : type === 'info' ? 'info' : 'err');
-    t.innerHTML = (icons[type] || '') + '<span>' + msg + '</span><button class="toast-x" onclick="this.parentElement.remove()">✕</button>';
-    document.getElementById('toastWrap').appendChild(t);
-    setTimeout(function () { t.style.transition='opacity .3s,transform .3s'; t.style.opacity='0'; t.style.transform='translateX(20px)'; setTimeout(function(){ t.remove(); }, 300); }, 4200);
-  }
-  @if(session('success')) setTimeout(function(){toast(@json(session('success')),'success');},200); @endif
-  @if(session('error')) setTimeout(function(){toast(@json(session('error')),'error');},200); @endif
-  @if(session('info')) setTimeout(function(){toast(@json(session('info')),'info');},200); @endif
-
-  window.openRefund = function (id, donor, amount) {
-    document.getElementById('refundForm').action = '{{ route('admin.donations.refund', ':id') }}'.replace(':id', id);
-    document.getElementById('refundDonor').textContent = '"' + donor + '"';
-    document.getElementById('refundAmount').textContent = '₹' + Number(amount).toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2});
-    document.getElementById('refundReason').value = '';
-    document.getElementById('refundOverlay').classList.add('open');
-  };
-  window.closeRefund = function () { document.getElementById('refundOverlay').classList.remove('open'); };
-  document.getElementById('refundOverlay').addEventListener('click', function (e) { if (e.target === this) closeRefund(); });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeRefund(); });
-}());
-</script>
+@vite('resources/js/admin/donations-show.js')
 @endpush

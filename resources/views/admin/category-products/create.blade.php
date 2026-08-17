@@ -9,106 +9,7 @@
 @section('page_subtitle', 'Add a new product category')
 
 @push('page_styles')
-<style>
-/* ── BREADCRUMB ── */
-.breadcrumb{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--text3);font-family:var(--mono);margin-bottom:22px;animation:fadeUp .3s ease both;}
-.breadcrumb a{color:var(--text3);transition:color var(--ease);}
-.breadcrumb a:hover{color:var(--a);}
-.breadcrumb svg{width:10px;height:10px;flex-shrink:0;}
-.breadcrumb span{color:var(--text2);}
-
-/* ── ALERT ── */
-.alert-error{background:var(--red-lt);border:1px solid rgba(240,68,68,.22);color:#b91c1c;padding:12px 16px;border-radius:var(--r-sm);font-size:13px;margin-bottom:20px;display:flex;align-items:flex-start;gap:10px;animation:fadeUp .3s ease;}
-.alert-error svg{width:15px;height:15px;flex-shrink:0;margin-top:1px;}
-[data-theme="dark"] .alert-error{color:#f87171;}
-
-/* ── PAGE GRID ── */
-.page-grid{display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start;}
-
-/* ── CARDS ── */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:16px;animation:fadeUp .4s ease both;}
-.card-head{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--border);background:var(--surface2);}
-.card-head-icon{width:30px;height:30px;border-radius:8px;background:var(--a-lt);color:var(--a);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.card-head-icon svg{width:14px;height:14px;}
-.card-head-title{font-size:11.5px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.09em;font-family:var(--mono);}
-.card-body{padding:22px;}
-
-/* ── FIELDS ── */
-.field{margin-bottom:20px;}
-.field:last-child{margin-bottom:0;}
-.field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
-.field-row:last-child{margin-bottom:0;}
-.f-label{display:block;font-size:11.5px;font-weight:600;color:var(--text2);margin-bottom:7px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;}
-.f-label .req{color:var(--red);margin-left:2px;}
-.f-input,.f-select,.f-textarea{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:10px 13px;font-size:13px;color:var(--text);font-family:var(--font);outline:none;transition:border-color .2s,box-shadow .2s,background .2s;}
-.f-input::placeholder,.f-textarea::placeholder{color:var(--text3);}
-.f-input:focus,.f-select:focus,.f-textarea:focus{border-color:var(--a);box-shadow:0 0 0 3px var(--a-glow);background:var(--surface);}
-.f-input.err,.f-select.err,.f-textarea.err{border-color:var(--red);}
-.f-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239096b4' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:34px;cursor:pointer;}
-.f-textarea{resize:vertical;min-height:90px;line-height:1.6;}
-.f-hint{font-size:11px;color:var(--text3);margin-top:5px;line-height:1.5;}
-.f-error{font-size:11.5px;color:var(--red);margin-top:5px;font-family:var(--mono);}
-
-/* ── TOGGLE ── */
-.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:4px 0;}
-.toggle-lbl{font-size:13px;font-weight:600;color:var(--text);}
-.toggle-sub{font-size:11.5px;color:var(--text3);margin-top:2px;}
-.sw{position:relative;flex-shrink:0;}
-.sw input{position:absolute;opacity:0;width:0;height:0;}
-.sw label{display:block;width:46px;height:26px;border-radius:100px;background:var(--border2);cursor:pointer;position:relative;transition:background .2s;}
-.sw label::after{content:'';position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .25s cubic-bezier(.4,0,.2,1);box-shadow:0 1px 4px rgba(0,0,0,.2);}
-.sw input:checked+label{background:var(--a);}
-.sw input:checked+label::after{transform:translateX(20px);}
-
-/* ── UPLOAD ZONE ── */
-.upload-zone{border:2px dashed var(--border2);border-radius:var(--r-sm);padding:28px 20px;text-align:center;cursor:pointer;transition:all .2s;position:relative;background:var(--surface2);}
-.upload-zone:hover,.upload-zone.drag{border-color:var(--a);background:var(--a-lt);}
-.upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
-.upload-ico{width:44px;height:44px;border-radius:12px;background:var(--a-lt);color:var(--a);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;}
-.upload-ico svg{width:20px;height:20px;}
-.upload-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;}
-.upload-sub{font-size:11.5px;color:var(--text3);}
-.img-preview-wrap{display:none;flex-direction:column;align-items:center;gap:10px;}
-.img-preview{width:100px;height:100px;border-radius:var(--r-sm);object-fit:cover;border:1px solid var(--border2);box-shadow:var(--sh);}
-.img-remove{font-size:11.5px;color:var(--red);cursor:pointer;background:none;border:none;font-family:var(--font);font-weight:500;padding:4px 8px;border-radius:6px;transition:background var(--ease);}
-.img-remove:hover{background:var(--red-lt);}
-
-/* ── SUBMIT ── */
-.submit-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px 20px;background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;border:none;border-radius:var(--r-sm);font-size:14px;font-weight:700;cursor:pointer;font-family:var(--mono);letter-spacing:-.01em;transition:opacity .2s,transform .15s;box-shadow:0 4px 18px rgba(37,99,235,.35);animation:fadeUp .4s .25s ease both;}
-.submit-btn:hover{opacity:.88;transform:translateY(-1px);}
-.submit-btn:active{transform:scale(.98);}
-.submit-btn:disabled{opacity:.6;cursor:not-allowed;transform:none;}
-.submit-btn svg{width:15px;height:15px;}
-
-/* ── PREVIEW CARD ── */
-.preview-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;position:sticky;top:82px;animation:fadeUp .4s .15s ease both;}
-.preview-live{padding:28px 20px;display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--surface2);border-bottom:1px solid var(--border);min-height:180px;gap:10px;}
-.prev-img-box{width:80px;height:80px;border-radius:16px;background:var(--a-lt);display:flex;align-items:center;justify-content:center;color:var(--a);font-size:28px;box-shadow:var(--sh-md);overflow:hidden;flex-shrink:0;}
-.prev-img-box img{width:100%;height:100%;object-fit:cover;}
-.prev-prod-name{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--text);letter-spacing:-.01em;}
-.prev-prod-name.empty{color:var(--text3);font-weight:400;font-style:italic;}
-.prev-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:100px;font-size:10.5px;font-weight:700;font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;}
-.pb-active{background:rgba(5,196,138,.12);color:var(--green);border:1px solid rgba(5,196,138,.22);}
-.pb-inactive{background:rgba(100,116,139,.08);color:var(--text3);border:1px solid var(--border2);}
-.preview-meta{padding:14px 20px;}
-.prev-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;}
-.prev-row:last-child{border-bottom:none;}
-.prev-row-lbl{color:var(--text3);font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.07em;}
-.prev-row-val{color:var(--text2);font-weight:600;font-family:var(--mono);font-size:11.5px;}
-
-/* ── TOAST ── */
-.toast-wrap{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
-.toast{display:flex;align-items:center;gap:10px;padding:13px 16px;border-radius:14px;font-size:13px;font-weight:500;color:#fff;min-width:270px;box-shadow:var(--sh-lg);pointer-events:all;animation:toastIn .3s ease both;}
-.toast svg{width:15px;height:15px;flex-shrink:0;}
-.toast-ok{background:linear-gradient(135deg,#059669,#10b981);}
-
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-@keyframes toastIn{from{opacity:0;transform:translateX(18px) scale(.96)}to{opacity:1;transform:none}}
-
-@media(max-width:860px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.main{margin-left:0}.hamburger{display:flex}}
-@media(max-width:700px){.field-row{grid-template-columns:1fr;}.page-grid{grid-template-columns:1fr;}}
-@media(max-width:600px){.topbar{padding:0 16px}.body{padding:14px 14px 48px}}
-</style>
+@vite('resources/css/admin/pages/category-products-create.css')
 @endpush
 
 @section('content')
@@ -149,7 +50,7 @@
           <input id="name" name="name" type="text" value="{{ old('name') }}"
             class="f-input {{ $errors->has('name')?'err':'' }}"
             placeholder="e.g. Awareness T-Shirt, Donation Kit…"
-            oninput="updatePreview()" required>
+            data-action="update-preview" required>
           @error('name')<p class="f-error">{{ $message }}</p>@enderror
         </div>
         <div class="field">
@@ -165,7 +66,7 @@
               <div class="toggle-sub">Make this product visible on the public site</div>
             </div>
             <div class="sw">
-              <input type="checkbox" name="is_active" id="isActive" value="1" checked onchange="updatePreview()">
+              <input type="checkbox" name="is_active" id="isActive" value="1" checked data-action="update-preview">
               <label for="isActive"></label>
             </div>
           </div>
@@ -182,7 +83,7 @@
         <div class="field-row">
           <div>
             <label class="f-label" for="category_id">Category <span class="req">*</span></label>
-            <select id="category_id" name="category_id" class="f-select {{ $errors->has('category_id')?'err':'' }}" onchange="updatePreview()" required>
+            <select id="category_id" name="category_id" class="f-select {{ $errors->has('category_id')?'err':'' }}" data-action="update-preview" required>
               <option value="">Select category…</option>
               @foreach($categories as $cat)
               <option value="{{ $cat->id }}" {{ old('category_id')==$cat->id?'selected':'' }}>{{ $cat->name }}</option>
@@ -192,7 +93,7 @@
           </div>
           <div>
             <label class="f-label" for="product_type">Product Type <span class="req">*</span></label>
-            <select id="product_type" name="product_type" class="f-select {{ $errors->has('product_type')?'err':'' }}" onchange="updatePreview()" required>
+            <select id="product_type" name="product_type" class="f-select {{ $errors->has('product_type')?'err':'' }}" data-action="update-preview" required>
               <option value="">Select type…</option>
               <option value="physical" {{ old('product_type')=='physical'?'selected':'' }}>Physical</option>
               <option value="digital" {{ old('product_type')=='digital'?'selected':'' }}>Digital</option>
@@ -217,7 +118,7 @@
             <input id="price" name="price" type="number" step="0.01" min="0"
               value="{{ old('price') }}"
               class="f-input {{ $errors->has('price')?'err':'' }}"
-              placeholder="0.00" oninput="updatePreview()" required>
+              placeholder="0.00" data-action="update-preview" required>
             @error('price')<p class="f-error">{{ $message }}</p>@enderror
           </div>
           <div>
@@ -225,7 +126,7 @@
             <input id="stock" name="stock" type="number" min="0"
               value="{{ old('stock',0) }}"
               class="f-input {{ $errors->has('stock')?'err':'' }}"
-              placeholder="0" oninput="updatePreview()" required>
+              placeholder="0" data-action="update-preview" required>
             @error('stock')<p class="f-error">{{ $message }}</p>@enderror
             <p class="f-hint">Set to 0 for unlimited / digital products</p>
           </div>
@@ -240,7 +141,7 @@
       </div>
       <div class="card-body">
         <div class="upload-zone" id="uploadZone">
-          <input type="file" name="image" id="imageInput" accept="image/*" onchange="handleImageChange(this)">
+          <input type="file" name="image" id="imageInput" accept="image/*" data-action="image-change">
           <div id="uploadPrompt">
             <div class="upload-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg></div>
             <div class="upload-title">Drop image here or click to browse</div>
@@ -248,7 +149,7 @@
           </div>
           <div class="img-preview-wrap" id="imgPreviewWrap">
             <img src="" alt="Preview" class="img-preview" id="imgPreview">
-            <button type="button" class="img-remove" onclick="removeImage()">✕ Remove image</button>
+            <button type="button" class="img-remove" data-action="remove-image">✕ Remove image</button>
           </div>
         </div>
         @error('image')<p class="f-error" style="margin-top:8px;">{{ $message }}</p>@enderror
@@ -306,75 +207,5 @@
 @endsection
 
 @push('page_scripts')
-<script>
-(function(){
-'use strict';
-
-window.updatePreview=function(){
-  var name=document.getElementById('name').value.trim();
-  var active=document.getElementById('isActive').checked;
-  var catSel=document.getElementById('category_id');
-  var catText=catSel.options[catSel.selectedIndex]?catSel.options[catSel.selectedIndex].text:'—';
-  var typeSel=document.getElementById('product_type');
-  var typeText=typeSel.value?typeSel.value.charAt(0).toUpperCase()+typeSel.value.slice(1):'—';
-  var price=parseFloat(document.getElementById('price').value)||0;
-  var stock=parseInt(document.getElementById('stock').value)||0;
-
-  var nameEl=document.getElementById('prevName');
-  nameEl.textContent=name||'Product name…';
-  nameEl.classList.toggle('empty',!name);
-
-  var badge=document.getElementById('prevBadge');
-  var statusEl=document.getElementById('prevStatus');
-  if(active){
-    badge.className='prev-badge pb-active';
-    badge.innerHTML='<span style="width:5px;height:5px;border-radius:50%;background:currentColor;display:inline-block;"></span> Active';
-    statusEl.textContent='Active';statusEl.style.color='var(--green)';
-  } else {
-    badge.className='prev-badge pb-inactive';
-    badge.innerHTML='<span style="width:5px;height:5px;border-radius:50%;background:currentColor;display:inline-block;"></span> Inactive';
-    statusEl.textContent='Inactive';statusEl.style.color='var(--text3)';
-  }
-  document.getElementById('prevCat').textContent=catText==='Select category…'?'—':catText;
-  document.getElementById('prevType').textContent=typeText;
-  document.getElementById('prevPrice').textContent='₹'+price.toFixed(2);
-  document.getElementById('prevStock').textContent=stock;
-};
-
-window.handleImageChange=function(input){
-  if(!input.files||!input.files[0])return;
-  var reader=new FileReader();
-  reader.onload=function(e){
-    document.getElementById('prevImgIcon').style.display='none';
-    var el=document.getElementById('prevImgEl');
-    el.src=e.target.result;el.style.display='block';
-    document.getElementById('uploadPrompt').style.display='none';
-    document.getElementById('imgPreviewWrap').style.display='flex';
-    document.getElementById('imgPreview').src=e.target.result;
-  };
-  reader.readAsDataURL(input.files[0]);
-};
-
-window.removeImage=function(){
-  document.getElementById('imageInput').value='';
-  document.getElementById('prevImgIcon').style.display='';
-  document.getElementById('prevImgEl').style.display='none';
-  document.getElementById('uploadPrompt').style.display='';
-  document.getElementById('imgPreviewWrap').style.display='none';
-};
-
-var zone=document.getElementById('uploadZone');
-zone.addEventListener('dragover',function(e){e.preventDefault();zone.classList.add('drag');});
-zone.addEventListener('dragleave',function(){zone.classList.remove('drag');});
-zone.addEventListener('drop',function(){zone.classList.remove('drag');});
-
-document.getElementById('prodForm').addEventListener('submit',function(){
-  var btn=document.getElementById('submitBtn');
-  btn.disabled=true;
-  btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="15" height="15"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg> Creating…';
-});
-
-updatePreview();
-})();
-</script>
+@vite('resources/js/admin/category-products-create.js')
 @endpush

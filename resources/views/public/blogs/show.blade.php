@@ -287,7 +287,7 @@
                         {{-- Comment actions --}}
                         <div class="flex items-center gap-4 mt-1.5 ml-1.5">
                             @auth
-                            <button onclick="toggleReply({{ $comment->id }})"
+                            <button data-action="toggle-reply" data-id="{{ $comment->id }}"
                                 class="text-xs text-stone-400 hover:text-amber-600 transition-colors flex items-center gap-1">
                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
                                 Reply
@@ -445,8 +445,8 @@
 {{-- ── REPORT MODAL ── --}}
 @auth
 <div id="report-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm"
-     onclick="if(event.target===this) this.classList.add('hidden')">
-    <div class="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl" onclick="event.stopPropagation()">
+     data-action="report-modal-backdrop">
+    <div class="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl" data-action="report-modal-inner">
         <div class="flex items-center justify-between mb-5">
             <h3 class="font-display text-lg font-bold text-stone-800">Report This Post</h3>
             <x-button variant="secondary" type="button">
@@ -486,133 +486,12 @@
 </div>
 @endauth
 
-@push('scripts')
-<script>
-    /* ── Reading progress ── */
-    function updateProgress() {
-        const body = document.getElementById('article-body');
-        if (!body) return;
-        const winH = window.innerHeight;
-        const bodyRect = body.getBoundingClientRect();
-        const total = body.offsetHeight;
-        const scrolled = -bodyRect.top;
-
-        // Guard against division by zero / negative denominator when the
-        // article is shorter than the viewport.
-        const denom = total - winH;
-        const pct = denom > 0
-            ? Math.min(100, Math.max(0, Math.round((scrolled / denom) * 100)))
-            : 100;
-
-        document.getElementById('reading-progress-bar').style.width = pct + '%';
-
-        const sidebar = document.getElementById('progress-bar-sidebar');
-        const pctEl = document.getElementById('progress-pct');
-        const timeLeft = document.getElementById('time-left');
-        if (sidebar) sidebar.style.width = pct + '%';
-        if (pctEl) pctEl.textContent = pct + '%';
-        if (timeLeft) {
-            const totalMins = {{ $blog->read_time_minutes ?? 1 }};
-            const minsLeft = Math.ceil((1 - pct / 100) * totalMins);
-            timeLeft.textContent = pct >= 95 ? '✓ Finished' : minsLeft + ' min left';
-        }
-        updateTOC();
-    }
-    window.addEventListener('scroll', updateProgress, { passive: true });
-    updateProgress();
-
-    /* ── Table of Contents ── */
-    function buildTOC() {
-        const headings = document.querySelectorAll('#article-body h2, #article-body h3');
-        const nav = document.getElementById('toc-nav');
-        const card = document.getElementById('toc-card');
-        if (!nav || headings.length < 2) return;
-
-        headings.forEach((h, i) => {
-            if (!h.id) h.id = 'heading-' + i;
-            const a = document.createElement('a');
-            a.href = '#' + h.id;
-            a.textContent = h.textContent;
-            a.style.paddingLeft = h.tagName === 'H3' ? '20px' : '10px';
-            nav.appendChild(a);
-        });
-        if (card && headings.length > 1) card.style.display = 'block';
-    }
-
-    function updateTOC() {
-        const headings = document.querySelectorAll('#article-body h2, #article-body h3');
-        const links = document.querySelectorAll('#toc-nav a');
-        if (!links.length) return;
-        let active = 0;
-        headings.forEach((h, i) => {
-            if (h.getBoundingClientRect().top < 120) active = i;
-        });
-        links.forEach((l, i) => l.classList.toggle('toc-active', i === active));
-    }
-
-    buildTOC();
-
-    /* ── Copy link ── */
-    function copyLink() {
-        navigator.clipboard.writeText(window.location.href).then(() => {
-            const el = document.getElementById('copy-label');
-            el.textContent = '✓ Copied!';
-            setTimeout(() => el.textContent = 'Copy Link', 2000);
-        });
-    }
-
-    /* ── Toggle reply form ── */
-    function toggleReply(id) {
-        const el = document.getElementById('reply-' + id);
-        el.classList.toggle('hidden');
-        if (!el.classList.contains('hidden')) {
-            const input = el.querySelector('input');
-            if (input) { input.focus(); }
-        }
-    }
-
-    /* ── Like via AJAX ── */
-    const likeForm = document.getElementById('like-form');
-    if (likeForm) {
-        likeForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const btn = document.getElementById('like-btn');
-            const token = document.querySelector('[name=_token]').value;
-
-            try {
-                const res = await fetch(likeForm.action, {
-                    method: 'POST',
-                    headers: { 'X-CSRF-TOKEN': token, 'Accept': 'application/json', 'Content-Type': 'application/json' },
-                    body: JSON.stringify({})
-                });
-                if (!res.ok) return;
-                const data = await res.json();
-                const liked = data.liked;
-
-                document.getElementById('heart-icon').textContent = liked ? '♥' : '♡';
-                document.getElementById('like-count').textContent = data.likes_count.toLocaleString();
-                btn.lastElementChild.textContent = liked ? 'Liked' : 'Like';
-
-                const floatLike = document.getElementById('float-like');
-                const floatCount = document.getElementById('float-count');
-                if (floatLike) {
-                    floatLike.classList.toggle('liked', liked);
-                    floatLike.querySelector('span').textContent = liked ? '♥' : '♡';
-                }
-                if (floatCount) floatCount.textContent = data.likes_count.toLocaleString();
-
-                if (liked) {
-                    btn.classList.remove('border-stone-200', 'text-stone-600', 'hover:border-rose-300', 'hover:bg-rose-50', 'hover:text-rose-500');
-                    btn.classList.add('border-rose-300', 'bg-rose-50', 'text-rose-600');
-                } else {
-                    btn.classList.remove('border-rose-300', 'bg-rose-50', 'text-rose-600');
-                    btn.classList.add('border-stone-200', 'text-stone-600', 'hover:border-rose-300', 'hover:bg-rose-50', 'hover:text-rose-500');
-                }
-            } catch(err) { likeForm.submit(); }
-        });
-    }
-
+<script type="application/json" id="blogsShowData">
+@json(['readTimeMinutes' => $blog->read_time_minutes ?? 1])
 </script>
+
+@push('scripts')
+@vite('resources/js/public/blogs-show.js')
 @endpush
 
 @endsection

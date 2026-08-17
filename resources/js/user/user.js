@@ -26,7 +26,8 @@ import { escapeHtml } from '../shared/helpers.js';
       var t = this.checked ? 'dark' : 'light';
       html.setAttribute('data-theme', t);
       localStorage.setItem('theme', t);
-      if (typeof renderChart === 'function') setTimeout(renderChart, 50);
+      /* Page-level scripts (e.g. dashboard charts) re-render on this event. */
+      window.dispatchEvent(new Event('themechange'));
     });
   }
 
@@ -211,18 +212,6 @@ import { escapeHtml } from '../shared/helpers.js';
     var y = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
     btn.style.setProperty('--mx', x + '%');
     btn.style.setProperty('--my', y + '%');
-  });
-
-  /* ── data-action delegation for set-filter ── */
-  document.addEventListener('click', function (e) {
-    var el = e.target.closest('[data-action="set-filter"]');
-    if (!el) return;
-    var f = el.getAttribute('data-filter');
-    var sel = document.getElementById('ftabSelect');
-    if (sel) sel.value = f;
-    var cGrid = document.getElementById('cGrid');
-    if (cGrid) cGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    document.querySelectorAll('.ftab').forEach(function (t) { t.classList.toggle('on', t.dataset.filter === f); });
   });
 
   /* ── Form submit loading (data-loading-text) ── */

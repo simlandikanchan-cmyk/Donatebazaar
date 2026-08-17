@@ -176,7 +176,7 @@
                 $types  = ['full-time','part-time','contract','internship','freelance','remote','volunteer'];
                 $active = request('type', '');
             @endphp
-            <x-button variant="secondary" type="button" class="{{ ($active === '' || $active null) ? 'active' : }}">All</x-button>
+            <x-button variant="secondary" type="button" class="{{ ($active === '' || $active === null) ? 'active' : '' }}">All</x-button>
             @foreach($types as $t)
             <x-button variant="secondary" type="button" class="{{ $active === $t ? 'active' : '' }}">{{ ucfirst($t) }}</x-button>
             @endforeach

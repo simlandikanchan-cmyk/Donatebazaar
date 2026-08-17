@@ -1,0 +1,110 @@
+(function () {
+    'use strict';
+
+    const pageData = JSON.parse(document.getElementById('authVerifyData').textContent);
+    const phone = pageData.phone;
+    const verifyUrl = pageData.verifyUrl;
+    const resendUrl = pageData.resendUrl;
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    function showMessage(text, isError) {
+        const el = document.getElementById('message');
+        el.textContent = text;
+        el.className = isError ? 'error' : 'success';
+    }
+
+    // 🔹 Verify OTP — calls your Laravel /verify-otp route
+    function verifyOTP() {
+        const otp = document.getElementById('otp').value.trim();
+
+        if (!otp || otp.length !== 6) {
+            showMessage('Please enter the 6-digit OTP.', true);
+            return;
+        }
+
+        const btn = document.getElementById('verifyBtn');
+        btn.disabled = true;
+        btn.innerText = 'Verifying...';
+
+        fetch(verifyUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({ phone: phone, otp: otp })
+        })
+        .then(async (res) => {
+            if (res.redirected) {
+                // Controller issued redirect()->intended(...) on success
+                window.location.href = res.url;
+                return;
+            }
+            if (!res.ok) {
+                const data = await res.json();
+                const msg = data.errors?.otp?.[0] || 'Invalid OTP. Please try again.';
+                showMessage(msg, true);
+                btn.disabled = false;
+                btn.innerText = 'Verify OTP';
+                return;
+            }
+            window.location.href = '/user/dashboard';
+        })
+        .catch(() => {
+            showMessage('Something went wrong. Please try again.', true);
+            btn.disabled = false;
+            btn.innerText = 'Verify OTP';
+        });
+    }
+
+    // 🔹 Resend OTP — calls your Laravel /resend-otp route
+    function resendOTP() {
+        fetch(resendUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({ phone: phone })
+        })
+        .then(res => res.json().then(data => ({ status: res.status, data })))
+        .then(({ status, data }) => {
+            if (status === 429) {
+                showMessage('Too many requests. Please wait a moment.', true);
+                return;
+            }
+            showMessage(data.status || 'OTP sent again.', false);
+            startTimer();
+        })
+        .catch(() => showMessage('Could not resend OTP. Try again.', true));
+    }
+
+    // 🔹 Resend Timer (30 sec)
+    function startTimer() {
+        let time = 30;
+        const btn = document.getElementById('resendBtn');
+
+        btn.disabled = true;
+
+        const interval = setInterval(() => {
+            btn.innerText = `Resend OTP (${time}s)`;
+            time--;
+
+            if (time < 0) {
+                clearInterval(interval);
+                btn.disabled = false;
+                btn.innerText = "Resend OTP";
+            }
+        }, 1000);
+    }
+
+    document.addEventListener('click', function (e) {
+        if (e.target.closest('[data-action="verify-otp"]')) verifyOTP();
+        if (e.target.closest('[data-action="resend-otp"]')) resendOTP();
+    });
+
+    // Start timer on page load (OTP was already sent by sendOtp() before redirect here)
+    startTimer();
+})();
