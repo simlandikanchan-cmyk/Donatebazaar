@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Http\Middleware\VerifyCsrfToken;
 use App\Models\Campaign;
 use App\Models\CampaignSettlement;
 use App\Models\Category;
@@ -265,8 +264,6 @@ class FinancialIdorTest extends TestCase
     #[Test]
     public function user_a_cannot_view_user_b_kyc_document(): void
     {
-        $this->withoutMiddleware(VerifyCsrfToken::class);
-
         $campaignB = Campaign::create([
             'user_id' => $this->userB->id,
             'category_id' => $this->category->id,
@@ -297,8 +294,6 @@ class FinancialIdorTest extends TestCase
     #[Test]
     public function unauthenticated_user_cannot_access_kyc_document(): void
     {
-        $this->withoutMiddleware(VerifyCsrfToken::class);
-
         $campaignB = Campaign::create([
             'user_id' => $this->userB->id,
             'category_id' => $this->category->id,

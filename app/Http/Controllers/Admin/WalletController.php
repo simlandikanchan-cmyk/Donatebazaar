@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\InsufficientWalletBalanceException;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Models\Wallet;
 use App\Models\WalletTransaction;
 use App\Services\WalletService;
@@ -22,7 +23,7 @@ class WalletController extends Controller
 
         $wallets = Wallet::with('owner')
             ->when($filter === 'users', function ($q) {
-                $q->where('owner_type', App\Models\User::class);
+                $q->where('owner_type', User::class);
             })
             ->when($filter === 'organizations', function ($q) {
                 $q->where('owner_type', App\Models\Organization::class);
@@ -40,7 +41,7 @@ class WalletController extends Controller
         $stats = [
             'total' => Wallet::count(),
             'total_balance' => Wallet::sum('balance'),
-            'users' => Wallet::where('owner_type', App\Models\User::class)->count(),
+            'users' => Wallet::where('owner_type', User::class)->count(),
             'organizations' => Wallet::where('owner_type', App\Models\Organization::class)->count(),
         ];
 
@@ -92,12 +93,14 @@ class WalletController extends Controller
             if ($data['direction'] === 'credit') {
                 app(WalletService::class)->credit(
                     $wallet, $amount, WalletTransaction::SOURCE_ADJUSTMENT,
-                    $referenceId, Wallet::class, $data['notes']
+                    $referenceId, Wallet::class, $data['notes'],
+                    User::class, auth()->id()
                 );
             } else {
                 app(WalletService::class)->debit(
                     $wallet, $amount, WalletTransaction::SOURCE_ADJUSTMENT,
-                    $referenceId, Wallet::class, $data['notes']
+                    $referenceId, Wallet::class, $data['notes'],
+                    User::class, auth()->id()
                 );
             }
         } catch (InsufficientWalletBalanceException $e) {
@@ -109,5 +112,14 @@ class WalletController extends Controller
         return redirect()
             ->route('admin.wallets.show', $wallet)
             ->with('success', 'Wallet adjusted ('.$data['direction'].').');
+    }
+
+    public function destroy(Wallet $wallet): RedirectResponse
+    {
+        $wallet->delete();
+
+        return redirect()
+            ->route('admin.wallets.index')
+            ->with('success', 'Wallet deleted successfully.');
     }
 }

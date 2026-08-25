@@ -1,3 +1,5 @@
+import { csrfFetch } from '../shared/api.js';
+
 (function () {
     'use strict';
 
@@ -5,7 +7,6 @@
     const phone = pageData.phone;
     const verifyUrl = pageData.verifyUrl;
     const resendUrl = pageData.resendUrl;
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     function showMessage(text, isError) {
         const el = document.getElementById('message');
@@ -26,12 +27,11 @@
         btn.disabled = true;
         btn.innerText = 'Verifying...';
 
-        fetch(verifyUrl, {
+        csrfFetch(verifyUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': csrfToken
+                'Accept': 'application/json'
             },
             body: JSON.stringify({ phone: phone, otp: otp })
         })
@@ -60,12 +60,11 @@
 
     // 🔹 Resend OTP — calls your Laravel /resend-otp route
     function resendOTP() {
-        fetch(resendUrl, {
+        csrfFetch(resendUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': csrfToken
+                'Accept': 'application/json'
             },
             body: JSON.stringify({ phone: phone })
         })

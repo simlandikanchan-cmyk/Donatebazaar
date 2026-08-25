@@ -18,6 +18,7 @@
 @include('home.sections.how')
 @include('home.sections.testimonials')
 @include('home.sections.why')
+@include('home.sections.transparency')
 @include('home.sections.cta')
 @include('home.sections.blogs')
 @include('home.sections.impact')

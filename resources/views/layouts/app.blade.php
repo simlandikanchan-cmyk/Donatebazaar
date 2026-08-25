@@ -31,13 +31,15 @@
 
 <body class="flex flex-col min-h-screen" style="background:#f4f5fb">
 
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
     @if(!request()->routeIs('events.edit') && !request()->routeIs('events.show'))
     {{-- Navigation --}}
     @include('layouts.navigation')
     @endif
 
     {{-- Main Content --}}
-    <main class="flex-grow">
+    <main class="flex-grow" id="main-content">
         @yield('content')
     </main>
 

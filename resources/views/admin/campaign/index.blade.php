@@ -252,15 +252,21 @@ $sortUrl = function($column) use ($sort, $dir) {
           <td>
             <span class="cmp-sub">{{ $campaign->created_at->format('d M Y') }}</span>
           </td>
-          <td>
-            <div class="cmp-actions">
-              <a href="{{ route('admin.campaign.show', $campaign->id) }}" class="btn btn-secondary act-btn ab-view">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                View
-              </a>
-              <a href="{{ route('admin.campaign.edit', $campaign->id) }}" class="btn btn-secondary act-btn act-edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</a>
-            </div>
-          </td>
+            <td>
+             <div class="cmp-actions">
+               <a href="{{ route('admin.campaign.show', $campaign->id) }}" class="btn btn-secondary act-btn ab-view">
+                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                 View
+               </a>
+               <a href="{{ route('admin.campaign.edit', $campaign->id) }}" class="btn btn-secondary act-btn act-edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</a>
+               <form action="{{ route('admin.campaign.destroy', $campaign->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Delete this campaign? This cannot be undone.');">
+                 @csrf @method('DELETE')
+                 <button type="submit" class="btn btn-red act-btn ab-delete" title="Delete">
+                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Delete
+                 </button>
+               </form>
+             </div>
+           </td>
         </tr>
         @endforeach
       </tbody>
@@ -290,9 +296,28 @@ $sortUrl = function($column) use ($sort, $dir) {
 @endsection
 
 @push('page_scripts')
-@vite('resources/js/admin/campaign-index.js')
+@vite('resources/js/admin/entries/campaign-index.js')
 @endpush
 
 @push('page_styles')
 @vite('resources/css/admin/pages/campaign-index.css')
+<style>
+@media(max-width:960px){
+  .stats-grid{grid-template-columns:repeat(2,1fr)!important}
+}
+@media(max-width:640px){
+  .stats-grid{grid-template-columns:1fr!important}
+  .table-wrap{overflow-x:auto}
+  .p-table{min-width:720px}
+  .toolbar{flex-wrap:wrap}
+  .toolbar-left{flex-wrap:wrap;width:100%}
+  .search-wrap{width:100%}
+  .search-input{width:100%}
+  .cmp-actions{flex-wrap:wrap;gap:4px}
+  .cmp-actions .btn{width:100%;justify-content:center}
+}
+@media(max-width:480px){
+  .stats-grid{grid-template-columns:1fr!important}
+}
+</style>
 @endpush

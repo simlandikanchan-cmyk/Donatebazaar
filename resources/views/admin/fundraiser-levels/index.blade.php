@@ -66,16 +66,10 @@
 </div>
 
 <div class="table-card">
-  <div class="table-card-head">
-    <div class="table-card-head-left">
-      <div class="table-card-icon" style="background:var(--a-lt);color:var(--a);">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>
-      </div>
-      <div>
-        <div class="table-card-title">Progression Levels</div>
-        <div class="table-card-sub">{{ $levels->count() }} configured levels</div>
-      </div>
-    </div>
+  <div class="card-head">
+    <div class="card-head-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg></div>
+    <span class="card-head-title">Progression Levels</span>
+    <span class="card-head-count">{{ $levels->count() }} configured levels</span>
   </div>
 
   @if($levels->isEmpty())
@@ -146,6 +140,9 @@
 .empty-state{padding:64px 24px;text-align:center;}
 .empty-icon-wrap{width:64px;height:64px;border-radius:18px;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 16px;}
 .empty-state h3{font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;}
+@media(max-width:860px){.stats-grid{grid-template-columns:repeat(2,1fr)!important}}
+@media(max-width:640px){.stats-grid{grid-template-columns:repeat(2,1fr)!important}.level-card{flex-direction:column;gap:10px;padding:14px}.level-badge{width:38px;height:38px;font-size:15px;border-radius:10px}.level-attrs{gap:6px}.actions{width:100%;justify-content:flex-end}}
+@media(max-width:480px){.stats-grid{grid-template-columns:1fr!important}.level-card{padding:12px}.level-badge{width:36px;height:36px;font-size:14px}}
 </style>
 @endpush
 

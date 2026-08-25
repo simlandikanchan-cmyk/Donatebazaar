@@ -354,7 +354,7 @@
         <div class="founder-inner">
             <div class="founder-photo-wrap reveal-left">
                 <div class="founder-photo">
-                    <img src="{{ asset('images/founder.jpg') }}" alt="Founder of DonateBazaar" loading="lazy">
+                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800&q=80" alt="Founder of DonateBazaar" loading="lazy">
                 </div>
                 <div class="founder-card-badge">
                     <div class="fcb-icon">

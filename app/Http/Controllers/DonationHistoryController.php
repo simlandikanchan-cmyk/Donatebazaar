@@ -39,7 +39,7 @@ class DonationHistoryController extends Controller
 
     public function receipt(Donation $donation)
     {
-        if ($donation->user_id !== Auth::id()) {
+        if (! app(\App\Services\DonationReceiptService::class)->isAuthorized($donation)) {
             abort(403);
         }
 

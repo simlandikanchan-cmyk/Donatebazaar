@@ -1,4 +1,4 @@
-import { getCsrfToken } from '../shared/csrf.js';
+import { csrfFetch } from '../shared/api.js';
 import { escapeHtml } from '../shared/helpers.js';
 
 function initChat() {
@@ -425,11 +425,10 @@ function initChat() {
         showTyping();
 
         try {
-            var response = await fetch('/chatbot', {
+            var response = await csrfFetch('/chatbot', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': getCsrfToken(),
                     'Accept': 'text/event-stream'
                 },
                 body: JSON.stringify({ message: message })

@@ -139,28 +139,11 @@ class JobPostApplicationController extends Controller
         );
     }
 
-    /**
-     * Delete a job application.
-     */
     public function destroy(JobPostApplication $jobPostApplication)
     {
-        // Delete CV file if it exists
-        if (
-            $jobPostApplication->cv_path &&
-            Storage::disk('public')->exists($jobPostApplication->cv_path)
-        ) {
-            Storage::disk('public')->delete($jobPostApplication->cv_path);
-        }
-
-        // Decrement applications_count safely
-        if ($jobPostApplication->jobPost) {
-            $jobPostApplication->jobPost->decrement('applications_count');
-        }
-
         $jobPostApplication->delete();
 
-        return redirect()
-            ->route('admin.job_post_applications.index')
+        return redirect()->route('admin.job_post_applications.index')
             ->with('success', 'Application deleted successfully.');
     }
 }

@@ -4,7 +4,8 @@
    validate-code route URL and CSRF token come from data attributes.
    ═══════════════════════════════════════════════════════════════════ */
 
-import { getCsrfToken } from '../shared/csrf.js';
+import { csrfFetch } from '../shared/api.js';
+import { escapeHtml } from '../shared/helpers.js';
 
 (function () {
 'use strict';
@@ -117,11 +118,10 @@ function checkCode() {
     setStatus('info', '<span class="gr-spin"></span><span>Checking your code…</span>');
 
     var url = btn.getAttribute('data-validate-url') || '';
-    fetch(url, {
+    csrfFetch(url, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': getCsrfToken() || btn.getAttribute('data-csrf')
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify({ code: code })
     })
@@ -140,12 +140,12 @@ function checkCode() {
             emailInput.readOnly = false;
             emailInput.style.background = '';
             emailInput.style.cursor = '';
-            document.getElementById('emailHint').innerHTML = 'This gift card was sent to <strong>' + data.recipient_email_masked + '</strong> — enter your full email above.';
+            document.getElementById('emailHint').innerHTML = 'This gift card was sent to <strong>' + escapeHtml(data.recipient_email_masked) + '</strong> — enter your full email above.';
 
             setTimeout(function () { gotoStep(2); }, 350);
         } else {
             validatedCode = null;
-            setStatus('err', ICON_ERROR + '<span>' + (data.message || 'Invalid code.') + '</span>');
+            setStatus('err', ICON_ERROR + '<span>' + escapeHtml(data.message || 'Invalid code.') + '</span>');
 
             var emailInput = document.getElementById('donorEmail');
             emailInput.value = '';

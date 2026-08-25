@@ -9,6 +9,19 @@ class Refund extends Model
 {
     use HasFactory;
 
+    public const STATUS_PROCESSED = 'processed';
+
+    public const STATUS_PENDING = 'pending';
+
+    public const STATUS_FAILED = 'failed';
+
+    /**
+     * Gateway refund succeeded but the owner wallet reversal has not completed
+     * (e.g. insufficient balance). Retry re-attempts the reversal without
+     * calling the gateway again.
+     */
+    public const STATUS_REVERSAL_PENDING = 'reversal_pending';
+
     protected $fillable = [
         'donation_id',
         'donation_payment_id',
@@ -17,6 +30,7 @@ class Refund extends Model
         'reason',
         'status',
         'processed_at',
+        'notes',
     ];
 
     protected $casts = [
@@ -33,22 +47,11 @@ class Refund extends Model
     }
 
     /**
-     * Donation payment relation
-     */
-    public function payment()
-    {
-        return $this->belongsTo(
-            DonationPayment::class,
-            'donation_payment_id'
-        );
-    }
-
-    /**
      * Check if refund processed
      */
     public function isProcessed()
     {
-        return $this->status === 'processed';
+        return $this->status === self::STATUS_PROCESSED;
     }
 
     /**
@@ -56,7 +59,7 @@ class Refund extends Model
      */
     public function isFailed()
     {
-        return $this->status === 'failed';
+        return $this->status === self::STATUS_FAILED;
     }
 
     /**
@@ -64,7 +67,15 @@ class Refund extends Model
      */
     public function isPending()
     {
-        return $this->status === 'pending';
+        return $this->status === self::STATUS_PENDING;
+    }
+
+    /**
+     * Check if refund is waiting on a wallet reversal retry
+     */
+    public function isReversalPending()
+    {
+        return $this->status === self::STATUS_REVERSAL_PENDING;
     }
 
     /**

@@ -3,16 +3,24 @@
 namespace App\Mail;
 
 use App\Models\Donation;
+use App\Services\DonationReceiptService;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class DonationReceiptMail extends Mailable
+class DonationReceiptMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
+
+    public int $tries = 3;
+
+    public int $timeout = 60;
+
+    public array $backoff = [60, 300, 900];
 
     public Donation $donation;
 
@@ -36,18 +44,11 @@ class DonationReceiptMail extends Mailable
 
     public function content(): Content
     {
+        $data = app(DonationReceiptService::class)->data($this->donation);
+
         return new Content(
             view: 'emails.donation-receipt',
-            with: [
-                'donation' => $this->donation,
-                'campaign' => $this->donation->campaign,
-                'donorName' => $this->donation->donor_name ?? 'Donor',
-                'amount' => $this->donation->total_amount,
-                'platformFee' => $this->donation->platform_fee,
-                'netAmount' => $this->donation->net_amount,
-                'receiptNo' => $this->donation->receipt_number,
-                'paidAt' => $this->donation->paid_at,
-            ],
+            with: $data,
         );
     }
 }

@@ -10,6 +10,17 @@
 
 @push('page_styles')
 @vite('resources/css/admin/entries/blogs-edit.css')
+<style>
+@media(max-width:860px){
+  .edit-layout{grid-template-columns:1fr!important}
+  .edit-layout > div:last-child{order:-1}
+}
+@media(max-width:640px){
+  .form-row{grid-template-columns:1fr!important}
+  .page-header{flex-wrap:wrap}
+  .page-header-right{width:100%;margin-top:10px}
+}
+</style>
 @endpush
 @section('content')
 <div class="breadcrumb">
@@ -487,11 +498,19 @@
           Delete Post
         </button>
       </form>
-    </div>
-  </div>
+   </div>
+ </div>
 </div>
 @endsection
 
+@push('page_styles')
+<style>
+@media(max-width:960px){
+  .edit-layout{grid-template-columns:1fr!important}
+}
+</style>
+@endpush
+
 @push('page_scripts')
-@vite('resources/js/admin/blogs-edit.js')
+@vite('resources/js/admin/entries/blogs-edit.js')
 @endpush

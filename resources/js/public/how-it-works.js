@@ -6,7 +6,12 @@ document.addEventListener('DOMContentLoaded', function () {
     if (revEls.length) {
         var obs = new IntersectionObserver(function(entries) {
             entries.forEach(function(e) {
-                if (e.isIntersecting) {
+                /* Reveal when entering the viewport OR when already scrolled
+                   past (top above viewport — happens with scroll restoration,
+                   deep links like #fundraisers, or fast jumps), otherwise such
+                   elements would stay invisible forever. Zero-rect elements
+                   (hidden tab panes) keep waiting for switchTab(). */
+                if (e.isIntersecting || e.boundingClientRect.top < 0) {
                     e.target.classList.add('visible');
                     obs.unobserve(e.target);
                 }

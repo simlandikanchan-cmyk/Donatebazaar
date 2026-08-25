@@ -10,6 +10,17 @@
 
 @push('page_styles')
 @vite('resources/css/admin/pages/donations-show.css')
+<style>
+@media(max-width:860px){
+  .dn-grid{grid-template-columns:1fr!important}
+  .dn-grid .table-card{padding:14px 16px!important}
+  .hero-right{width:100%;margin-top:14px}
+  .hero-right .hero-btn{width:100%;justify-content:center}
+}
+@media(max-width:640px){
+  .table-card .dn-grid .dn-kv{font-size:12px}
+}
+</style>
 @endpush
 
 @section('content')
@@ -117,7 +128,7 @@
 
 <div class="table-card">
   <div class="table-scroll">
-    <table>
+    <table style="min-width:640px">
       <thead>
         <tr>
           <th>Product</th>
@@ -167,7 +178,7 @@
 
 <div class="table-card">
   <div class="table-scroll">
-    <table>
+    <table style="min-width:640px">
       <thead>
         <tr>
           <th>Refund ID</th>
@@ -253,5 +264,5 @@
 @endsection
 
 @push('page_scripts')
-@vite('resources/js/admin/donations-show.js')
+@vite('resources/js/admin/entries/donations-show.js')
 @endpush

@@ -1,15 +1,74 @@
 /* ══════════════════════════════════════
    ADMIN — Components: Dropdowns (avatar menu)
    ══════════════════════════════════════ */
-
-.av-dd{position:absolute;top:calc(100% + 10px);right:0;background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);box-shadow:var(--sh-lg);min-width:215px;z-index:9999;display:none;animation:ddIn .18s ease;}
-.av-dd.open{display:block;}
-.dd-hdr{padding:14px 16px;border-bottom:1px solid var(--border);}
-.dd-name{font-size:13.5px;font-weight:700;color:var(--text);font-family:var(--font);}
-.dd-email{font-size:11px;color:var(--text3);margin-top:2px;font-family:var(--mono);}
-.dd-item{display:flex;align-items:center;gap:10px;padding:9px 16px;font-size:12.5px;font-weight:500;color:var(--text2);cursor:pointer;transition:background var(--ease);text-decoration:none;}
-.dd-item:hover{background:var(--surface2);color:var(--text);}
-.dd-item svg{width:13px;height:13px;color:var(--text3);flex-shrink:0;}
-.dd-item.accent{color:var(--a);}.dd-item.accent svg{color:var(--a);}
-.dd-item.danger{color:var(--red);}.dd-item.danger svg{color:var(--red);}
-.dd-sep{height:1px;background:var(--border);margin:3px 0;}
+.av-dd {
+  position: absolute;
+  z-index: 9999;
+  top: calc(100% + 10px);
+  right: 0;
+  display: none;
+  min-width: 215px;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--r);
+  box-shadow: var(--sh-lg);
+  animation: ddIn .18s ease;
+}
+.av-dd.open {
+  display: block;
+}
+.dd-hdr {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.dd-name {
+  font-family: var(--font);
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text);
+}
+.dd-email {
+  margin-top: 2px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text3);
+}
+.dd-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 16px;
+  font-size: 12.5px;
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--text2);
+  cursor: pointer;
+  transition: background var(--ease);
+}
+.dd-item:hover {
+  color: var(--text);
+  background: var(--surface2);
+}
+.dd-item svg {
+  flex-shrink: 0;
+  width: 13px;
+  height: 13px;
+  color: var(--text3);
+}
+.dd-item.accent {
+  color: var(--a);
+}
+.dd-item.accent svg {
+  color: var(--a);
+}
+.dd-item.danger {
+  color: var(--red);
+}
+.dd-item.danger svg {
+  color: var(--red);
+}
+.dd-sep {
+  height: 1px;
+  margin: 3px 0;
+  background: var(--border);
+}

@@ -1,0 +1,459 @@
+/* ══════════════════════════════════════
+   ADMIN — Components: Campaign Cards (shared)
+   Used by: admin dashboard (activity, campaign grid, quick view body)
+           and campaigns index (card grid, bulk select).
+   Imported separately by pages/dashboard.css and pages/campaigns.css
+   ══════════════════════════════════════ */
+
+/* ── CAMPAIGN CARDS ── */
+.c-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+.c-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  box-shadow: var(--sh);
+  transition:
+    transform var(--ease),
+    box-shadow var(--ease),
+    border-color var(--ease);
+  animation: fadeUp .4s ease both;
+  animation-delay: var(--delay, 0s);
+}
+[data-theme="dark"] .c-card {
+  box-shadow: var(--glass-shadow);
+}
+.c-card:hover {
+  border-color: rgba(37, 99, 235, .2);
+  box-shadow: var(--sh-md);
+  transform: translateY(-5px);
+}
+[data-theme="dark"] .c-card:hover {
+  box-shadow: var(--sh-xl);
+}
+.c-thumb {
+  position: relative;
+  flex-shrink: 0;
+}
+.c-thumb img {
+  display: block;
+  width: 100%;
+  height: 168px;
+  object-fit: cover;
+}
+.c-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 168px;
+  background: var(--surface2);
+}
+.c-placeholder svg {
+  width: 30px;
+  height: 30px;
+  color: var(--text3);
+  opacity: .3;
+}
+.c-overlay {
+  position: absolute;
+  background: linear-gradient(to top, rgba(0, 0, 0, .48) 0%, transparent 52%);
+  inset: 0;
+}
+.c-badge-pos {
+  position: absolute;
+  top: 11px;
+  left: 11px;
+}
+.c-user {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 14px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+}
+.c-uav {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--white);
+  background: linear-gradient(135deg, var(--a), var(--a2));
+  border-radius: 8px;
+}
+.c-uname {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--text);
+}
+.c-uemail {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text3);
+}
+.c-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 15px 16px 16px;
+}
+.c-title {
+  display: -webkit-box;
+  overflow: hidden;
+  margin-bottom: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--text);
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.reason {
+  margin-bottom: 12px;
+  padding: 9px 11px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+}
+.reason-amber {
+  background: var(--amber-lt);
+  border-color: rgba(245, 158, 11, .22);
+}
+.reason-red {
+  background: var(--red-lt);
+  border-color: rgba(240, 68, 68, .22);
+}
+.reason-lbl {
+  margin-bottom: 3px;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+}
+.reason-amber .reason-lbl {
+  color: var(--warning-dark);
+}
+.reason-red .reason-lbl {
+  color: var(--danger-dark);
+}
+.reason-txt {
+  font-size: 11.5px;
+  line-height: 1.45;
+}
+.reason-amber .reason-txt {
+  color: var(--warning-deep);
+}
+.reason-red .reason-txt {
+  color: var(--danger-deep);
+}
+[data-theme="dark"] .reason-amber .reason-lbl {
+  color: var(--warning);
+}
+[data-theme="dark"] .reason-amber .reason-txt {
+  color: var(--warning-light);
+}
+[data-theme="dark"] .reason-red .reason-lbl {
+  color: var(--danger-3);
+}
+[data-theme="dark"] .reason-red .reason-txt {
+  color: var(--danger-soft);
+}
+.prog {
+  margin-bottom: 14px;
+}
+.prog-nums {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 7px;
+}
+.prog-raised {
+  font-family: var(--mono);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -.02em;
+  color: var(--text);
+}
+.prog-goal {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text3);
+}
+.prog-bar {
+  overflow: hidden;
+  width: 100%;
+  height: 5px;
+  margin-bottom: 5px;
+  background: var(--surface3);
+  border-radius: 100px;
+}
+.prog-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--a), var(--a2));
+  border-radius: 100px;
+  transition: width .9s ease;
+}
+.prog-fill-red {
+  background: linear-gradient(90deg, var(--danger-light), var(--red));
+}
+.prog-fill-gray {
+  background: linear-gradient(90deg, var(--slate-400), var(--slate-500));
+}
+.prog-pct {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--a);
+}
+.prog-pct--rejected {
+  color: var(--red);
+}
+.prog-pct--expired, .prog-pct--inactive, .prog-pct--completed {
+  color: #64748b;
+}
+.c-form {
+  flex: 1;
+}
+.c-form .c-btn {
+  width: 100%;
+}
+.c-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: auto;
+}
+/* ── CAMPAIGN CARD ACTIONS ── */
+.c-btn {
+  display: inline-flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 0;
+  padding: 8px 10px;
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  transition: all var(--ease);
+}
+.c-btn svg {
+  width: 12px;
+  height: 12px;
+}
+.c-card .c-actions .c-btn {
+  gap: 5px;
+  min-width: 0;
+  min-height: 0;
+  padding: 8px 10px;
+  font-size: 12px;
+}
+.c-card .c-actions .c-btn svg {
+  width: 12px;
+  height: 12px;
+}
+.c-card .c-actions .c-btn.c-btn-view {
+  color: var(--text2);
+  background: var(--surface2);
+  border-color: var(--border2);
+}
+.c-card .c-actions .c-btn.c-btn-view:hover {
+  color: var(--text);
+  background: var(--surface3);
+}
+.c-btn:active {
+  transform: scale(.96);
+}
+.c-btn-approve {
+  color: var(--a);
+  background: var(--a-lt);
+  border-color: rgba(37, 99, 235, .2);
+}
+.c-btn-approve:hover {
+  color: var(--white);
+  background: var(--a);
+  border-color: var(--a);
+  box-shadow: 0 6px 18px rgba(37, 99, 235, .35);
+  transform: translateY(-1px);
+}
+.c-btn-reject {
+  color: var(--red);
+  background: var(--red-lt);
+  border-color: rgba(240, 68, 68, .2);
+}
+.c-btn-reject:hover {
+  color: var(--white);
+  background: var(--red);
+  border-color: var(--red);
+  box-shadow: 0 6px 18px rgba(240, 68, 68, .3);
+  transform: translateY(-1px);
+}
+.c-btn-pause {
+  color: var(--amber);
+  background: var(--amber-lt);
+  border-color: rgba(245, 158, 11, .2);
+}
+.c-btn-pause:hover {
+  color: var(--white);
+  background: var(--amber);
+  border-color: var(--amber);
+  box-shadow: 0 6px 18px rgba(245, 158, 11, .3);
+  transform: translateY(-1px);
+}
+.c-btn-resume {
+  color: var(--green);
+  background: var(--green-lt);
+  border-color: rgba(5, 196, 138, .2);
+}
+.c-btn-resume:hover {
+  color: var(--white);
+  background: var(--green);
+  border-color: var(--green);
+  box-shadow: 0 6px 18px rgba(5, 196, 138, .3);
+  transform: translateY(-1px);
+}
+.c-btn-view {
+  color: var(--text2);
+  background: var(--surface2);
+  border-color: var(--border2);
+}
+.c-btn-view:hover {
+  color: var(--text);
+  background: var(--surface3);
+  transform: translateY(-1px);
+}
+/* ── CAMPAIGN SELECTION ── */
+.c-check {
+  position: absolute;
+  z-index: 4;
+  top: 11px;
+  right: 11px;
+  line-height: 0;
+  cursor: pointer;
+}
+.c-checkbox {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+}
+.c-check-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 23px;
+  height: 23px;
+  color: var(--white);
+  background: rgba(255, 255, 255, .92);
+  border: 2px solid rgba(0, 0, 0, .18);
+  border-radius: 7px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .22);
+  transition: all .15s;
+}
+.c-check-box svg {
+  width: 13px;
+  height: 13px;
+  opacity: 0;
+  transition: all .15s;
+  transform: scale(.4);
+}
+.c-checkbox:checked + .c-check-box {
+  background: var(--a);
+  border-color: var(--a);
+}
+.c-checkbox:checked + .c-check-box svg {
+  opacity: 1;
+  transform: scale(1);
+}
+.c-checkbox:focus-visible + .c-check-box {
+  box-shadow: 0 0 0 3px var(--a-glow);
+}
+.c-card.selected {
+  outline: 2px solid var(--a);
+  outline-offset: -2px;
+}
+.c-grid.loading {
+  opacity: .55;
+  transition: opacity .2s;
+  pointer-events: none;
+}
+/* ── ACTIVITY FEED ── */
+.af-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.af-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.af-item:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+.af-ico {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--r-sm);
+}
+.af-ico svg {
+  width: 14px;
+  height: 14px;
+}
+.af-body {
+  min-width: 0;
+}
+.af-desc {
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--text2);
+}
+.af-desc a {
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--text);
+}
+.af-desc a:hover {
+  color: var(--a);
+}
+.af-time {
+  margin-top: 2px;
+  font-size: 10.5px;
+  color: var(--text3);
+}
+.af-empty {
+  padding: 20px;
+  font-size: 13px;
+  text-align: center;
+  color: var(--text3);
+}
+
+/* ── CAMPAIGN QUICK (dashboard widget) ── */
+.qk-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}

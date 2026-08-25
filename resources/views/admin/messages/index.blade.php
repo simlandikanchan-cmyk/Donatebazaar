@@ -10,6 +10,11 @@
 
 @push('page_styles')
 @vite('resources/css/admin/entries/messages-index.css')
+<style>
+@media(max-width:960px){.stats-grid{grid-template-columns:repeat(2,1fr)!important}}
+@media(max-width:640px){.stats-grid{grid-template-columns:repeat(2,1fr)!important}.filter-bar{flex-wrap:wrap}.filter-bar .filter-group{width:100%;min-width:0}.filter-bar .filter-btn{width:100%;margin-top:8px}.table-scroll{min-width:520px}}
+@media(max-width:480px){.stats-grid{grid-template-columns:1fr!important}}
+</style>
 @endpush
 
 @section('content')
@@ -244,11 +249,10 @@
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Read
                 @endif
               </button>
-              <form action="{{ route('admin.messages.delete', $msg->id) }}" method="POST" style="display:inline;">
+              <form action="{{ route('admin.messages.delete', $msg->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Delete this message? This cannot be undone.');">
                 @csrf @method('DELETE')
-                <button type="submit" class="btn btn-red act-btn ab-delete" data-action="delete-message">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
-                  Delete
+                <button type="submit" class="btn btn-red act-btn ab-delete" title="Delete">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Delete
                 </button>
               </form>
             </div>
@@ -308,6 +312,24 @@
 @endif
 @endsection
 
+@push('page_styles')
+<style>
+@media(max-width:860px){
+  .stats-grid{grid-template-columns:repeat(2,1fr)!important}
+  .sec-hdr{flex-wrap:wrap}
+  .sec-hdr .sec-right{width:100%;margin-top:8px}
+}
+@media(max-width:480px){
+  .stats-grid{grid-template-columns:1fr!important}
+}
+@media(max-width:640px){
+  .table-wrap{min-width:480px}
+  .ftabs{width:100%;order:1;margin-top:8px}
+  .ftab-select{width:100%;order:2;margin-top:8px}
+}
+</style>
+@endpush
+
 @push('page_scripts')
-@vite('resources/js/admin/messages-index.js')
+@vite('resources/js/admin/entries/messages-index.js')
 @endpush

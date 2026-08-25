@@ -183,7 +183,7 @@
     @else
 
         <x-button variant="outline" href="{{ route('login') }}">Log in</x-button>
-        <x-button variant="primary" href="{{ route('register') }}">Get Started</x-button>
+        <x-button variant="primary" href="{{ route('all.campaigns') }}">Donate Now</x-button>
 
     @endauth
 

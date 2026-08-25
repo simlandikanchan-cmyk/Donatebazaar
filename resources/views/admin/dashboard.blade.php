@@ -7,8 +7,6 @@
 @push('page_css')
 @vite('resources/css/admin/entries/dashboard.css')
 @endpush
-@push('page_styles')
-@endpush
 
 @section('topbar_left')
   <div class="search-wrap">
@@ -33,8 +31,6 @@
   $hour = now()->hour;
   $greeting = $hour < 12 ? 'Good morning' : ($hour < 17 ? 'Good afternoon' : 'Good evening');
   $approvalRate = $totalCampaigns > 0 ? round(($cntActive / $totalCampaigns) * 100) : 0;
-  $activeJobs = \App\Models\JobPost::where('status','active')->count();
-  $totalApplicants = \App\Models\JobPostApplication::count();
 @endphp
 
 <div class="hero">
@@ -134,38 +130,6 @@
     <div class="stat-icon si-purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
     <div class="stat-body"><div class="stat-lbl">Donations Today</div><div class="stat-val sv-purple">{{ $donationsToday }}</div><div class="stat-foot">Received in last 24h</div></div>
   </div>
-      <div class="stat">
-        <div class="stat-icon si-teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></div>
-        <div class="stat-body"><div class="stat-lbl">Active Jobs</div><div class="stat-val sv-teal">{{ $activeJobs }}</div><div class="stat-foot"><a href="{{ route('admin.job_posts.create') }}">+ Post new job →</a></div></div>
-      </div>
-      <div class="stat">
-        <div class="stat-icon si-purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg></div>
-        <div class="stat-body"><div class="stat-lbl">Volunteers</div><div class="stat-val sv-purple">{{ $volunteerCount }}</div><div class="stat-foot"><a href="{{ route('admin.volunteers.index') }}">{{ $pendingVolunteerApps }} pending →</a></div></div>
-      </div>
-      <div class="stat">
-        <div class="stat-icon si-gray"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg></div>
-        <div class="stat-body"><div class="stat-lbl">Total Users</div><div class="stat-val sv-gray">{{ $totalUsers }}</div><div class="stat-foot">{{ $newUsersToday }} joined today</div></div>
-      </div>
-      <div class="stat">
-        <div class="stat-icon si-red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg></div>
-        <div class="stat-body"><div class="stat-lbl">Donations</div><div class="stat-val sv-red">{{ $totalDonations }}</div><div class="stat-foot">{{ $donationsToday }} received today</div></div>
-      </div>
-      <div class="stat">
-        <div class="stat-icon si-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
-        <div class="stat-body"><div class="stat-lbl">Revenue</div><div class="stat-val sv-amber">₹ {{ number_format($totalRevenue) }}</div><div class="stat-foot">All time on platform</div></div>
-      </div>
-      <div class="stat">
-        <div class="stat-icon si-a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
-        <div class="stat-body"><div class="stat-lbl">Avg Donation</div><div class="stat-val sv-a">₹ {{ number_format($avgDonation) }}</div><div class="stat-foot">Per donation transaction</div></div>
-      </div>
-      <div class="stat">
-        <div class="stat-icon si-purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg></div>
-        <div class="stat-body"><div class="stat-lbl">Unique Donors</div><div class="stat-val sv-purple">{{ $uniqueDonors }}</div><div class="stat-foot">People who donated</div></div>
-      </div>
-      <div class="stat">
-        <div class="stat-icon si-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
-        <div class="stat-body"><div class="stat-lbl">Success Rate</div><div class="stat-val sv-green">{{ $successRate }}%</div><div class="stat-foot">Campaigns completed</div></div>
-      </div>
 </div>
 
 <div class="analytics-row">
@@ -533,7 +497,8 @@
 @endphp
 
 @push('page_scripts')
-<script>
-window.__DASHBOARD_DATA__ = @json($dashboardData);
+@vite('resources/js/admin/entries/dashboard.js')
+<script type="application/json" id="dashboard-config">
+@json($dashboardData)
 </script>
-@en
+@endpush

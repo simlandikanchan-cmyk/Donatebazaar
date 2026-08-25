@@ -22,6 +22,24 @@
 
 @push('page_styles')
 @vite('resources/css/admin/entries/events-index.css')
+<style>
+@media(max-width:960px){
+  .stats-grid{grid-template-columns:repeat(3,1fr)!important}
+}
+@media(max-width:640px){
+  .stats-grid{grid-template-columns:repeat(2,1fr)!important}
+  .filter-bar{flex-wrap:wrap}
+  .filter-bar .filter-inp,.filter-bar .filter-sel,.filter-bar .filter-date{width:100%;min-width:0}
+  .filter-bar .filter-btn{width:100%;margin-top:8px}
+  .filter-bar .filter-div{display:none}
+  .filter-bar .filter-spacer{display:none}
+  .table-wrap{min-width:640px}
+}
+@media(max-width:480px){
+  .stats-grid{grid-template-columns:1fr!important}
+  .ev-cards .ev-card-actions{flex-wrap:wrap}
+}
+</style>
 @endpush
 
 @section('content')
@@ -300,8 +318,14 @@
             </td>
             <td>
               <div class="act-wrap">
-                <a href="{{ route('admin.events.show', $event->id) }}" class="btn btn-secondary act-btn ab-view"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>View</a>
+                <a href="{{ route('admin.events.show', $event->id) }}" class="btn btn-secondary act-btn ab-view"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>View</a>
                 <a href="{{ route('admin.events.edit', $event->id) }}" class="btn btn-secondary act-btn act-edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</a>
+                <form action="{{ route('admin.events.destroy', $event->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Delete this event? This cannot be undone.');">
+                  @csrf @method('DELETE')
+                  <button type="submit" class="btn btn-red act-btn ab-delete" title="Delete">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Delete
+                  </button>
+                </form>
               </div>
             </td>
           </tr>
@@ -410,6 +434,10 @@
         @elseif($event->status === 'active')
           <form class="act-form" method="POST" action="{{ route('admin.events.draft', $event->id) }}">@csrf<button type="submit" class="btn btn-red act-link act-reject">Unpublish</button></form>
         @endif
+        <form class="act-form" method="POST" action="{{ route('admin.events.destroy', $event->id) }}" onsubmit="return confirm('Delete this event? This cannot be undone.');">
+          @csrf @method('DELETE')
+          <button type="submit" class="btn btn-red act-btn ab-delete">Delete</button>
+        </form>
       </div>
     </div>
   @empty
@@ -440,5 +468,5 @@
 @endsection
 
 @push('page_scripts')
-@vite('resources/js/admin/events-index.js')
+@vite('resources/js/admin/entries/events-index.js')
 @endpush

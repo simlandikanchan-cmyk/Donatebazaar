@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\AdminUpdateCampaignRequest;
 use App\Models\Campaign;
 use App\Services\Campaign\CampaignQueryService;
 use App\Services\Campaign\CampaignWorkflowService;
@@ -39,17 +40,9 @@ class CampaignController extends Controller
         return view('admin.campaign.edit', $data);
     }
 
-    public function update(Request $request, Campaign $campaign): RedirectResponse
+    public function update(AdminUpdateCampaignRequest $request, Campaign $campaign): RedirectResponse
     {
-        $data = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'slug' => ['nullable', 'string', 'max:255'],
-            'short_description' => ['nullable', 'string', 'max:500'],
-            'description' => ['required', 'string'],
-            'goal_amount' => ['required', 'numeric', 'min:1'],
-            'status' => ['nullable', 'string'],
-            'end_date' => ['nullable', 'date'],
-        ]);
+        $data = $request->validated();
 
         DB::transaction(function () use ($campaign, $data) {
             $campaign->update($data);
@@ -64,6 +57,21 @@ class CampaignController extends Controller
         return redirect()
             ->route('admin.campaign.show', $campaign)
             ->with('success', 'Campaign updated successfully.');
+    }
+
+    public function destroy(Campaign $campaign): RedirectResponse
+    {
+        $campaignId = $campaign->id;
+        $campaign->delete();
+
+        \Log::warning('Admin deleted campaign', [
+            'campaign_id' => $campaignId,
+            'admin_id' => auth()->id(),
+        ]);
+
+        return redirect()
+            ->route('admin.campaign.index')
+            ->with('success', 'Campaign deleted successfully.');
     }
 
     public function approve(Campaign $campaign): RedirectResponse
@@ -195,41 +203,4 @@ class CampaignController extends Controller
         return view('admin._campaign_quick', $data);
     }
 
-    public function requestKyc(Request $request, Campaign $campaign): RedirectResponse
-    {
-        $data = $request->validate([
-            'admin_message' => ['nullable', 'string', 'max:500'],
-        ]);
-
-        $hasApprovedKyc = \App\Models\KycVerification::where('user_id', $campaign->user_id)
-            ->where('status', \App\Models\KycVerification::STATUS_APPROVED)
-            ->exists();
-
-        if ($hasApprovedKyc) {
-            return back()->with('error', 'KYC already approved.');
-        }
-
-        $hasPendingKyc = \App\Models\KycVerification::where('user_id', $campaign->user_id)
-            ->where('status', \App\Models\KycVerification::STATUS_PENDING)
-            ->exists();
-
-        if ($hasPendingKyc) {
-            return back()->with('warning', 'KYC already pending.');
-        }
-
-        $campaign->user->notify(
-            new \App\Notifications\KycRequestedNotification(
-                campaign: $campaign,
-                adminMessage: $data['admin_message'] ?? ''
-            )
-        );
-
-        $campaign->logs()->create([
-            'action' => 'kyc_requested',
-            'message' => 'KYC requested.',
-            'user_id' => auth()->id(),
-        ]);
-
-        return back()->with('success', 'KYC request sent.');
-    }
 }

@@ -25,11 +25,15 @@ class SecureHeadersMiddleware
             }
         }
 
+        $nonce = base64_encode(random_bytes(16));
+        $request->attributes->set('csp_nonce', $nonce);
+
         $csp = "default-src 'self'; "
-            ."script-src 'self' 'unsafe-inline' "
+            ."script-src 'self' 'nonce-{$nonce}' 'unsafe-inline' "
             .$vite
             .'https://checkout.razorpay.com '
             .'https://cdn.jsdelivr.net '
+            .'https://unpkg.com '
             .'https://www.googletagmanager.com; '
             ."style-src 'self' 'unsafe-inline' "
             .$vite
@@ -55,7 +59,7 @@ class SecureHeadersMiddleware
 
         $response->headers->set('Content-Security-Policy', $csp);
 
-        if (app()->environment('production') || env('FORCE_HTTPS', false)) {
+        if (app()->environment('production') || config('app.force_https')) {
             $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
         }
 

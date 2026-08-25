@@ -9,96 +9,6 @@
 @section('page_title', Str::limit($application->name, 28))
 @section('page_subtitle', 'Reviewing NGO application details')
 
-@push('page_styles')
-<style>
-/* ── Hero Card ── */
-.hero-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:28px 30px;box-shadow:var(--sh);margin-bottom:20px;display:flex;align-items:flex-start;justify-content:space-between;gap:20px;animation:fadeUp .35s ease both;position:relative;overflow:hidden}
-.hero-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--a),var(--a2));border-radius:var(--r) var(--r) 0 0}
-.hero-left{display:flex;align-items:center;gap:18px;min-width:0}
-.hero-av{width:58px;height:58px;border-radius:16px;flex-shrink:0;background:linear-gradient(135deg,var(--a),var(--a2));display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:22px;font-weight:800;color:#fff;box-shadow:0 4px 18px rgba(37,99,235,.35)}
-.hero-title{font-family:var(--mono);font-size:22px;font-weight:800;color:var(--text);letter-spacing:-.03em;line-height:1.2}
-.hero-sub{font-size:12px;color:var(--text3);margin-top:5px;font-family:var(--mono)}
-.hero-meta{display:flex;align-items:center;gap:14px;margin-top:10px;flex-wrap:wrap}
-.hero-meta-item{display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--text3);font-family:var(--mono)}
-.hero-meta-item svg{width:12px;height:12px;flex-shrink:0}
-.hero-right{display:flex;flex-direction:column;align-items:flex-end;gap:12px;flex-shrink:0}
-
-/* ── Section Card ── */
-.detail-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:24px;box-shadow:var(--sh);margin-bottom:20px;animation:fadeUp .4s ease both}
-.detail-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.info-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:16px 18px;transition:border-color var(--ease),box-shadow var(--ease)}
-.info-box:hover{border-color:rgba(37,99,235,.25);box-shadow:0 0 0 3px var(--a-lt)}
-.info-label{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.14em;margin-bottom:7px;font-family:var(--mono)}
-.info-value{font-size:14px;font-weight:600;color:var(--text);line-height:1.5;word-break:break-word;font-family:var(--mono)}
-.info-value.empty{color:var(--text3);font-weight:400}
-.info-value a{color:var(--a);text-decoration:none;display:inline-flex;align-items:center;gap:5px}
-.info-value a:hover{text-decoration:underline}
-.info-value a svg{width:11px;height:11px;flex-shrink:0}
-
-/* ── Tag chips ── */
-.tag{display:inline-flex;padding:4px 11px;border-radius:100px;font-size:10.5px;font-weight:600;font-family:var(--mono);background:var(--a-lt);color:var(--a);border:1px solid rgba(37,99,235,.15);margin:2px 3px}
-.tag-green{background:rgba(5,196,138,.12);color:#047857;border-color:rgba(5,196,138,.22)}
-[data-theme="dark"] .tag-green{color:#34d399}
-.tag-amber{background:rgba(245,158,11,.12);color:#b45309;border-color:rgba(245,158,11,.22)}
-[data-theme="dark"] .tag-amber{color:#fbbf24}
-.tag-red{background:rgba(240,68,68,.12);color:#b91c1c;border-color:rgba(240,68,68,.22)}
-[data-theme="dark"] .tag-red{color:#f87171}
-.tag-blue{background:rgba(59,130,246,.12);color:#1d4ed8;border-color:rgba(59,130,246,.22)}
-[data-theme="dark"] .tag-blue{color:#93c5fd}
-
-/* ── Document link ── */
-.doc-link{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border-radius:var(--r-sm);border:1px solid var(--border2);background:var(--surface2);color:var(--text2);font-size:12px;font-weight:500;text-decoration:none;transition:all var(--ease);font-family:var(--mono)}
-.doc-link:hover{background:var(--a-lt);color:var(--a);border-color:rgba(37,99,235,.25);transform:translateY(-1px)}
-.doc-link svg{width:14px;height:14px;flex-shrink:0}
-.doc-link .doc-size{font-size:10px;color:var(--text3);font-weight:400}
-.doc-empty{font-size:12px;color:var(--text3);font-family:var(--mono);font-style:italic}
-
-/* ── Badge override ── */
-.b-review{background:rgba(59,130,246,.15);color:#1d4ed8;border:1px solid rgba(59,130,246,.25)}
-[data-theme="dark"] .b-review{color:#93c5fd}
-
-/* ── Flash ── */
-.flash-ok{background:rgba(5,196,138,.09);border:1px solid rgba(5,196,138,.25);color:#065f46;padding:12px 16px;border-radius:var(--r-sm);font-size:13px;font-weight:500;margin-bottom:18px;display:flex;align-items:center;gap:8px}
-[data-theme="dark"] .flash-ok{color:#34d399}
-.flash-ok svg{width:15px;height:15px;flex-shrink:0}
-
-/* ── Rejection banner ── */
-.rejection-banner{background:rgba(240,68,68,.08);border:1px solid rgba(240,68,68,.25);border-radius:var(--r-sm);padding:16px 20px;margin-bottom:20px;display:flex;align-items:flex-start;gap:14px;animation:fadeUp .4s .1s ease both}
-.rejection-banner svg{width:20px;height:20px;color:var(--red);flex-shrink:0;margin-top:2px}
-.rejection-banner .rej-ttl{font-weight:700;font-size:13px;color:var(--red);font-family:var(--mono)}
-.rejection-banner .rej-msg{font-size:13px;color:var(--text2);margin-top:4px;line-height:1.5;padding:8px 12px;background:var(--surface);border-radius:var(--r-xs);font-family:var(--mono)}
-
-/* ── Admin notes ── */
-.admin-notes-text{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:14px 16px;font-size:13px;color:var(--text2);line-height:1.6;min-height:50px;font-family:var(--mono)}
-.admin-notes-text:empty::before{content:'No admin notes yet.';color:var(--text3);font-style:italic}
-
-/* ── Timeline ── */
-.timeline{display:flex;flex-direction:column;gap:0}
-.tl-item{display:flex;align-items:flex-start;gap:14px;padding:14px 0;position:relative}
-.tl-item:not(:last-child)::after{content:'';position:absolute;left:11px;top:40px;bottom:-2px;width:2px;background:var(--border2);border-radius:2px}
-.tl-dot{width:24px;height:24px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff}
-.tl-dot-done{background:var(--green)}
-.tl-dot-pending{background:var(--amber)}
-.tl-dot-muted{background:var(--surface3);color:var(--text3)}
-.tl-body{flex:1;min-width:0}
-.tl-title{font-size:13px;font-weight:600;color:var(--text);font-family:var(--mono)}
-.tl-sub{font-size:11.5px;color:var(--text3);margin-top:2px;font-family:var(--mono)}
-
-/* ── Actions card ── */
-.actions-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:22px 24px;box-shadow:var(--sh);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;animation:fadeUp .4s .16s ease both}
-.actions-left{font-size:12.5px;color:var(--text3);font-family:var(--mono)}
-.actions-left strong{display:block;font-size:13px;font-weight:700;color:var(--text2);margin-bottom:2px}
-.actions-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-
-/* ── Responsive ── */
-@media(max-width:1100px){.detail-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:680px){.detail-grid{grid-template-columns:1fr}.hero-card{flex-direction:column}.hero-right{flex-direction:row;align-items:center}.actions-card{flex-direction:column;align-items:flex-start}}
-@media(max-width:600px){.hero-left{flex-direction:column;align-items:flex-start}.hero-av{width:48px;height:48px;font-size:18px}.hero-title{font-size:18px}.c-btn{width:100%}.actions-right{width:100%;flex-direction:column}}
-@media(max-width:480px){.hero-card{padding:18px 16px}.detail-card{padding:16px}.hero-title{font-size:16px}.hero-meta{flex-direction:column;align-items:flex-start;gap:8px}.info-box{padding:12px 14px}.info-value{font-size:13px}.actions-card{padding:16px 18px}.modal{padding:20px}.rejection-banner{padding:12px 14px;flex-direction:column;gap:8px}}
-@media(max-width:380px){.hero-card{padding:14px 12px}.hero-av{width:42px;height:42px;font-size:16px}.hero-title{font-size:15px}.hero-sub{font-size:11px}.detail-card{padding:12px}.sec-ttl{font-size:11px}.info-box{padding:10px 12px}.info-value{font-size:12px}.info-label{font-size:8px}.detail-grid{gap:8px}.c-btn{font-size:12px;padding:8px 14px;height:36px}.tl-item{padding:10px 0}.tl-title{font-size:12px}.tl-sub{font-size:10px}.actions-left strong{font-size:12px}}
-</style>
-@endpush
-
 @section('content')
 @php
 $statusLabel = [
@@ -685,12 +595,7 @@ foreach ($docs as $field => $info) { if ($application->$field) { $hasDocs = true
     @csrf
     <input type="hidden" name="admin_notes" id="adminNotesInput">
     <textarea id="adminNotesTextarea" rows="3" class="modal-ta" placeholder="Add internal notes about this application…" style="margin-bottom:12px;">{{ $application->admin_notes }}</textarea>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;">
-      <button type="button" class="btn btn-secondary c-btn c-btn-view" onclick="saveAdminNotes()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
-        Save Notes
-      </button>
-    </div>
+    <button type="button" onclick="saveAdminNotes()">Save Notes</button>
   </form>
   @else
   <div class="admin-notes-text">{{ $application->admin_notes }}</div>
@@ -728,6 +633,13 @@ foreach ($docs as $field => $info) { if ($application->$field) { $hasDocs = true
         Reject Application
       </button>
     @endif
+    <form method="POST" action="{{ route('admin.applications.destroy', $application->id) }}" onsubmit="return confirm('Delete this application permanently? This cannot be undone.');">
+      @csrf @method('DELETE')
+      <button type="submit" class="btn btn-red act-btn ab-delete">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+        Delete Application
+      </button>
+    </form>
   </div>
 </div>
 
@@ -768,5 +680,5 @@ foreach ($docs as $field => $info) { if ($application->$field) { $hasDocs = true
 @endsection
 
 @push('page_scripts')
-@vite('resources/js/admin/applications-show.js')
+@vite('resources/js/admin/entries/applications-show.js')
 @endpush

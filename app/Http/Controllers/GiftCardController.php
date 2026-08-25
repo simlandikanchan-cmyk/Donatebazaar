@@ -157,7 +157,12 @@ class GiftCardController extends Controller
             $donation->payment_id = $giftCard->code;
             $donation->order_id = $giftCard->order_id;
             $donation->currency = 'INR';
-            $donation->receipt_number = strtoupper(Str::random(12));
+
+            do {
+                $receiptNumber = strtoupper(Str::random(12));
+            } while (Donation::where('receipt_number', $receiptNumber)->exists());
+
+            $donation->receipt_number = $receiptNumber;
             $donation->paid_at = now();
             $donation->save();
 

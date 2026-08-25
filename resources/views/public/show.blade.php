@@ -19,23 +19,11 @@
                 ? max(0, now()->diffInDays($campaign->end_date, false))
                 : null;
 
-    // ── Raised breakdown — computed in controller to avoid N+1 ──
-
     // Products
-    $products = collect();
-    try {
-        if (method_exists($campaign, 'products')) {
-            $products = $campaign->products;
-        }
-    } catch (\Throwable $e) {}
+    $products = $campaign->products ?? collect();
 
     // Updates
-    $updates = collect();
-    try {
-        if (method_exists($campaign, 'updates')) {
-            $updates = $campaign->updates->sortBy('created_at');
-        }
-    } catch (\Throwable $e) {}
+    $updates = $campaign->updates->sortBy('created_at') ?? collect();
 
     // Video
     $videoUrl   = $campaign->video_url ?? null;
@@ -48,7 +36,6 @@
         }
     }
 
-    // Recent donations for sticky bar ticker
     $latestDonation = $campaign->donations->sortByDesc('created_at')->first();
     $topAmount = $campaign->donations->max('total_amount') ?? 0;
 @endphp
@@ -183,7 +170,7 @@
 
 
 {{-- ═══ PAGE BODY ═══ --}}
-<div class="page-wrap" data-campaign-id="{ $campaign->id }" data-campaign-title="{ $campaign->title }" data-coupon-route="{ route('coupon.validate') }">
+<div class="page-wrap" data-campaign-id="{{ $campaign->id }}" data-campaign-title="{{ $campaign->title }}" data-coupon-route="{{ route('coupon.validate') }}">
 
     {{-- ════ LEFT COLUMN ════ --}}
     <div class="left-col">
@@ -735,10 +722,6 @@
                     </div>
 
                     @auth
-                    @php
-                        $activeSub = \App\Models\RecurringDonation::where('user_id', auth()->id())
-                            ->where('campaign_id', $campaign->id)->where('status','active')->first();
-                    @endphp
                     @if($activeSub)
                     <div class="existing-sub-new">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -806,7 +789,7 @@
                                 Start Weekly Donation
                             </x-button>
                         </form>
-                        <span class="cancel-lnk">No commitment — <a onclick="alert('Cancel anytime from My Dashboard → Recurring Donations.')">cancel anytime</a></span>
+                        <span class="cancel-lnk">No commitment — <a data-action="show-info-toast" data-toast-msg="Cancel anytime from My Dashboard → Recurring Donations.">cancel anytime</a></span>
                         @else
                         <input type="number" placeholder="₹ Amount per week" class="custom-input-new" disabled>
                         <div class="login-note-new">
@@ -827,7 +810,7 @@
                                 Start Monthly Donation
                             </x-button>
                         </form>
-                        <span class="cancel-lnk">No commitment — <a onclick="alert('Cancel anytime from My Dashboard → Recurring Donations.')">cancel anytime</a></span>
+                        <span class="cancel-lnk">No commitment — <a data-action="show-info-toast" data-toast-msg="Cancel anytime from My Dashboard → Recurring Donations.">cancel anytime</a></span>
                         @else
                         <input type="number" placeholder="₹ Amount per month" class="custom-input-new" disabled>
                         <div class="login-note-new">
@@ -891,11 +874,6 @@
                 </div>
                 @endif
             </div>
-
-            @php
-                $followerCount = $campaign->followers_count;
-                $isFollowing = auth()->check() ? $campaign->followers->contains('id', auth()->id()) : false;
-            @endphp
 
             @auth
             <form method="POST" action="{{ route('campaign.follow', $campaign) }}">
@@ -991,6 +969,8 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 15l-6-6-6 6"/></svg>
 </button>
 
+
+<div id="toastWrap" class="toast-wrap"></div>
 
 @push('scripts')
 @vite(['resources/js/public/show.js'])

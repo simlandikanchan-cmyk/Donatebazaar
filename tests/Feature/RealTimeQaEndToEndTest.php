@@ -635,7 +635,7 @@ class RealTimeQaEndToEndTest extends TestCase
         $donation->refresh();
         $this->assertSame('completed', $donation->payment_status);
 
-        Mail::assertSent(DonationReceiptMail::class, function ($mail) use ($donation) {
+        Mail::assertQueued(DonationReceiptMail::class, function ($mail) use ($donation) {
             return $mail->donation->id === $donation->id
                 && $mail->hasTo(self::DONOR_EMAIL);
         });
@@ -783,9 +783,7 @@ class RealTimeQaEndToEndTest extends TestCase
             PaymentVerificationService::class,
             new PaymentVerificationService(
                 $mock,
-                $this->app->make(CouponService::class),
-                $this->app->make(ProductReservationService::class),
-                $this->app->make(WalletService::class)
+                $this->app->make(\App\Services\Payment\DonationCompletionService::class)
             )
         );
 

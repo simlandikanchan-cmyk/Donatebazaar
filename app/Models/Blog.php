@@ -7,36 +7,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
+use HTMLPurifier;
+use HTMLPurifier_Config;
 
-/**
- * Blog Model
- *
- * @property int $id
- * @property int $author_id
- * @property string $author_role
- * @property string $title
- * @property string $slug
- * @property string|null $excerpt
- * @property string $content
- * @property string|null $cover_image
- * @property int|null $read_time_minutes
- * @property int|null $category_id
- * @property string $status
- * @property int|null $reviewed_by
- * @property string|null $reviewed_at
- * @property string|null $rejection_reason
- * @property bool $is_featured
- * @property int $carousel_order
- * @property string|null $featured_at
- * @property int $views_count
- * @property int $likes_count
- * @property int $comments_count
- * @property int $shares_count
- * @property int $reports_count
- * @property string|null $meta_title
- * @property string|null $meta_description
- * @property string|null $published_at
- */
 class Blog extends Model
 {
     use HasFactory, SoftDeletes;
@@ -101,9 +74,48 @@ class Blog extends Model
                 $blog->slug = static::generateUniqueSlug($blog->title, $blog->id);
             }
             if ($blog->isDirty('content')) {
+                $blog->content = static::sanitizeHtml($blog->content);
                 $blog->read_time_minutes = static::estimateReadTime($blog->content);
             }
         });
+    }
+
+    public function setContentAttribute($value)
+    {
+        $this->attributes['content'] = static::sanitizeHtml($value);
+    }
+
+    public static function sanitizeHtml(string $html): string
+    {
+        $config = HTMLPurifier_Config::createDefault();
+        $config->set('HTML.AllowedElements', [
+            'a','abbr','acronym','b','blockquote','br','caption','code','del','dd','dl','dt','div','em',
+            'h2','h3','h4','h5','h6','i','img','ins','li','ol','p','pre','q','s','span','strong',
+            'sub','sup','table','tbody','td','tfoot','th','thead','tr','u','ul',
+        ]);
+        $config->set('HTML.AllowedAttributes', [
+            'a.href','a.title','a.target','abbr.title','acronym.title','blockquote.cite',
+            'img.alt','img.src','img.width','img.height','img.style','span.style','p.style',
+            'div.style','table.style','td.style','th.style',
+        ]);
+        $config->set('Attr.AllowedFrameTargets', ['_blank']);
+        $config->set('URI.SafeIframeRegexp', '%^(https?:)?//%');
+        $config->set('HTML.SafeIframe', true);
+        $config->set('HTML.SafeEmbed', true);
+        $config->set('CSS.AllowedProperties', [
+            'color','background-color','font-weight','font-style','text-decoration',
+            'text-align','margin','margin-top','margin-right','margin-bottom','margin-left',
+            'padding','padding-top','padding-right','padding-bottom','padding-left',
+            'width','height','border','border-radius','display','flex','grid',
+            'gap','list-style-type','text-transform','letter-spacing','line-height',
+            'font-size','font-family',
+        ]);
+        $config->set('HTML.Nofollow', true);
+        $config->set('HTML.TargetBlank', true);
+
+        $purifier = new HTMLPurifier($config);
+
+        return $purifier->purify($html);
     }
 
     public static function generateUniqueSlug(string $title, ?int $exceptId = null): string

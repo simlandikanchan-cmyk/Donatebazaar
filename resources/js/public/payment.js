@@ -1,3 +1,5 @@
+import { csrfFetch } from '../shared/api.js';
+
 (function () {
   'use strict';
 
@@ -88,13 +90,12 @@
           // registers what's happening instead of seeing a flash.
           const minDelay = new Promise(resolve => setTimeout(resolve, 1000));
 
-          const verifyRequest = fetch(data.verifyUrl, {
+          const verifyRequest = csrfFetch(data.verifyUrl, {
 
               method: "POST",
 
               headers: {
-                  "Content-Type": "application/json",
-                  "X-CSRF-TOKEN": data.csrfToken
+                  "Content-Type": "application/json"
               },
 
               body: JSON.stringify({

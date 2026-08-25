@@ -2,44 +2,92 @@
    ADMIN — Layout: page shell & body
    Reset/scrollbar/selection/focus live in base/_reset.css
    ══════════════════════════════════════ */
-
-.shell{display:flex;min-height:100vh;}
-.main{margin-left:var(--sb-w);flex:1;min-width:0;display:flex;flex-direction:column;min-height:100vh;}
-
+.shell {
+  display: flex;
+  min-height: 100vh;
+}
+.main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  min-height: 100vh;
+  margin-left: var(--sb-w);
+}
 /* ── PAGE BODY ── */
-.body{padding:20px 24px 40px;flex:1;min-width:0;position:relative;z-index:0;}
-.body > *{position:relative;z-index:1;}
-.body::before{
-    content:'';position:absolute;z-index:0;pointer-events:none;
-    width:600px;height:600px;border-radius:50%;
-    background:radial-gradient(circle,rgba(37,99,235,.07) 0%,transparent 70%);
-    top:-200px;right:-100px;animation:floatOrb 30s ease-in-out infinite;
+.body {
+  position: relative;
+  z-index: 0;
+  flex: 1;
+  min-width: 0;
+  padding: 20px 24px 40px;
 }
-.body::after{
-    content:'';position:absolute;z-index:0;pointer-events:none;
-    width:500px;height:500px;border-radius:50%;
-    background:radial-gradient(circle,rgba(13,148,136,.06) 0%,transparent 70%);
-    bottom:-150px;left:-100px;animation:floatOrb 35s ease-in-out infinite reverse;
+.body > * {
+  position: relative;
+  z-index: 1;
 }
-[data-theme="dark"] .body::before{background:radial-gradient(circle,rgba(37,99,235,.10) 0%,transparent 70%);}
-[data-theme="dark"] .body::after{background:radial-gradient(circle,rgba(13,148,136,.08) 0%,transparent 70%);}
-body::before{
-    content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
-    background:
-        radial-gradient(ellipse at 20% 0%,rgba(37,99,235,.05) 0%,transparent 55%),
-        radial-gradient(ellipse at 80% 100%,rgba(13,148,136,.04) 0%,transparent 55%),
-        radial-gradient(ellipse at 50% 50%,rgba(124,58,237,.03) 0%,transparent 55%);
+.body::before {
+  position: absolute;
+  z-index: 0;
+  top: -200px;
+  right: -100px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(37, 99, 235, .07) 0%, transparent 70%);
+  border-radius: 50%;
+  content: '';
+  animation: floatOrb 30s ease-in-out infinite;
+  pointer-events: none;
 }
-[data-theme="dark"] body::before{
-    background:
-        radial-gradient(ellipse at 20% 0%,rgba(37,99,235,.10) 0%,transparent 55%),
-        radial-gradient(ellipse at 80% 100%,rgba(13,148,136,.08) 0%,transparent 55%),
-        radial-gradient(ellipse at 50% 50%,rgba(124,58,237,.06) 0%,transparent 55%);
+.body::after {
+  position: absolute;
+  z-index: 0;
+  bottom: -150px;
+  left: -100px;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(13, 148, 136, .06) 0%, transparent 70%);
+  border-radius: 50%;
+  content: '';
+  animation: floatOrb 35s ease-in-out infinite reverse;
+  pointer-events: none;
 }
-
+[data-theme="dark"] .body::before {
+  background: radial-gradient(circle, rgba(37, 99, 235, .10) 0%, transparent 70%);
+}
+[data-theme="dark"] .body::after {
+  background: radial-gradient(circle, rgba(13, 148, 136, .08) 0%, transparent 70%);
+}
+body::before {
+  position: fixed;
+  z-index: -1;
+  background: radial-gradient(ellipse at 20% 0%, rgba(37, 99, 235, .05) 0%, transparent 55%), radial-gradient(ellipse at 80% 100%, rgba(13, 148, 136, .04) 0%, transparent 55%), radial-gradient(ellipse at 50% 50%, rgba(124, 58, 237, .03) 0%, transparent 55%);
+  content: '';
+  inset: 0;
+  pointer-events: none;
+}
+[data-theme="dark"] body::before {
+  background: radial-gradient(ellipse at 20% 0%, rgba(37, 99, 235, .10) 0%, transparent 55%), radial-gradient(ellipse at 80% 100%, rgba(13, 148, 136, .08) 0%, transparent 55%), radial-gradient(ellipse at 50% 50%, rgba(124, 58, 237, .06) 0%, transparent 55%);
+}
 /* ── width guards so wide tables/cards cannot expand the page ── */
-.table-wrap,.main-card,.table-card{max-width:100%;}
-
+.table-wrap, .main-card, .table-card {
+  max-width: 100%;
+}
 /* ── HAMBURGER ── */
-.hamburger{display:none;width:36px;height:36px;border-radius:var(--r-sm);border:1px solid var(--border2);background:var(--surface2);cursor:pointer;color:var(--text2);align-items:center;justify-content:center;flex-shrink:0;}
-.hamburger svg{width:15px;height:15px;}
+.hamburger {
+  display: none;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  color: var(--text2);
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: var(--r-sm);
+  cursor: pointer;
+}
+.hamburger svg {
+  width: 15px;
+  height: 15px;
+}

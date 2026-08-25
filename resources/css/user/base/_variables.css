@@ -265,9 +265,9 @@
   --violet-tint-bg-6: #f6f5ff;
 
   /* ── User portal legacy tokens (migrated from _core.css) ──────────── */
-  --accent:       #2563eb;
-  --accent2:      #7c3aed;
-  --accent-lt:    rgba(37,99,235,.10);
+  --accent:       #0d9488;
+  --accent2:      #4f46e5;
+  --accent-lt:    rgba(13,148,136,.10);
   --sb-bg:        #ffffff;
   --sb-txt:       #64748b;
   --sb-act:       #eef2ff;

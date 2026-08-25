@@ -3,11 +3,59 @@
 namespace App\Services\Blog;
 
 use App\Mail\BlogStatusMail;
+use App\Http\Requests\Admin\StoreBlogRequest;
 use App\Models\Blog;
 use Illuminate\Support\Facades\Mail;
 
 class AdminBlogService
 {
+    public function create(StoreBlogRequest $request, int $adminId): Blog
+    {
+        $data = $request->validated();
+
+        if ($request->hasFile('cover_image')) {
+            $data['cover_image'] = $request->file('cover_image')
+                ->store('blogs/covers', 'public');
+        }
+
+        $data['author_id'] = $adminId;
+        $data['author_role'] = 'admin';
+        $action = $request->input('action', 'publish');
+
+        if ($action === 'draft') {
+            $data['status'] = Blog::STATUS_DRAFT;
+            $data['published_at'] = null;
+            $data['reviewed_by'] = null;
+            $data['reviewed_at'] = null;
+        } elseif ($action === 'schedule') {
+            $data['status'] = Blog::STATUS_PENDING;
+            $data['reviewed_by'] = $adminId;
+            $data['reviewed_at'] = now();
+            $scheduledDate = $request->input('scheduled_at_date');
+            $scheduledTime = $request->input('scheduled_at_time', '00:00');
+            if ($scheduledDate) {
+                $data['published_at'] = $scheduledDate.' '.$scheduledTime;
+            } else {
+                $data['published_at'] = now();
+            }
+        } else {
+            $data['status'] = Blog::STATUS_PUBLISHED;
+            $data['published_at'] = now();
+            $data['reviewed_by'] = $adminId;
+            $data['reviewed_at'] = now();
+        }
+
+        unset($data['tag_ids']);
+
+        $blog = Blog::create($data);
+
+        if ($request->filled('tag_ids')) {
+            $blog->tags()->sync($request->input('tag_ids'));
+        }
+
+        return $blog;
+    }
+
     public function approve(Blog $blog, int $adminId, ?string $note = null): Blog
     {
         $blog->transitionTo(Blog::STATUS_PUBLISHED, $adminId, $note);

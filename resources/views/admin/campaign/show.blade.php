@@ -11,6 +11,26 @@
 
 @push('page_styles')
 @vite('resources/css/admin/entries/campaign-show.css')
+<style>
+@media(max-width:860px){
+  .content-grid,.detail-grid{grid-template-columns:1fr!important}
+  .side-panel,.side-stack{width:100%}
+  .kyc-docs-grid{grid-template-columns:1fr!important}
+  .kyc-selfie-wrap{flex-direction:column!important}
+  .fund-stats-3{grid-template-columns:1fr!important}
+}
+@media(max-width:640px){
+  .table-scroll{min-width:480px}
+  .hero-right{width:100%;margin-top:14px}
+  .hero-right .hero-btn{width:100%;justify-content:center}
+  .cover-wrap img{max-height:220px;object-fit:cover;width:100%}
+  .kyc-selfie-img{max-width:100%;max-height:260px;object-fit:cover}
+  .card-body{padding:14px!important}
+  .card>.card-body:first-child{padding-top:14px!important}
+  .info-row{flex-direction:column;gap:4px}
+  .bank-grid{grid-template-columns:1fr!important}
+}
+</style>
 @endpush
 
 @section('content')
@@ -148,6 +168,13 @@
             Edit
         </a>
         @endif
+        <form action="{{ route('admin.campaign.destroy', $campaign->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Delete this campaign permanently? This cannot be undone.');">
+          @csrf @method('DELETE')
+          <button type="submit" class="btn btn-red act-btn ab-delete" title="Delete">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+            Delete
+          </button>
+        </form>
     </div>
 </div>
 
@@ -804,5 +831,5 @@
 @endsection
 
 @push('page_scripts')
-@vite('resources/js/admin/campaign-show.js')
+@vite('resources/js/admin/entries/campaign-show.js')
 @endpush

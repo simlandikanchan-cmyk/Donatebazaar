@@ -19,7 +19,6 @@
     $countPaused   = $campaigns->where('campaign_state','paused')->count();
     $countRejected = $campaigns->where('campaign_state','rejected')->count();
     $countExpired  = $campaigns->where('campaign_state','expired')->count();
-    $blogTotal     = \App\Models\Blog::where('author_id', auth()->id())->count();
 @endphp
 
 {{-- ══ WELCOME BANNER ══ --}}
@@ -642,14 +641,6 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 
 {{-- Server data for user/dashboard.js --}}
 <script type="application/json" id="dashboardData">
-@php
-    $userDashboardData = [
-        'overallPct'    => (int) $overallPct,
-        'levelProgress' => (int) $levelProgress,
-        'monthlyData'   => $monthlyData ?? [],
-        'campChartData' => $campaigns->count() > 1 ? $campaigns->map(fn($c) => ['title' => Str::limit($c->title, 22), 'raised' => (float) $c->raised_amount, 'goal' => (float) $c->goal_amount])->values() : [],
-    ];
-@endphp
 @json($userDashboardData)
 </script>
 

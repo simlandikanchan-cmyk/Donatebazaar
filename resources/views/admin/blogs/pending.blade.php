@@ -50,8 +50,19 @@
     </div>
   @endforelse
   
-  {{ $blogs->links('vendor.pagination.admin') }}
+   {{ $blogs->links('vendor.pagination.admin') }}
 </div>
+  
+@push('page_styles')
+<style>
+@media(max-width:640px){
+  .bg-white.rounded-2xl.shadow{flex-direction:column}
+  .bg-white.rounded-2xl.shadow img{width:100%!important;height:auto!important;margin-left:0!important;margin-top:12px}
+  .flex.gap-3.mt-5{flex-wrap:wrap}
+  .flex.gap-3.mt-5 .btn{flex:1;min-width:120px;justify-content:center}
+}
+</style>
+@endpush
  
 @push('page_scripts')
 <script>

@@ -106,7 +106,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
             <h3>No completed campaigns yet</h3>
             <p>Impact stories will appear here as campaigns reach their goals.</p>
-            <x-button variant="primary" href="{{ route('all.campaigns') }}">Support Active Campaigns</x-button>
+            <x-button variant="primary" href="{{ route('all.campaigns') }}">Donate Now</x-button>
         </div>
         @else
         <div class="impact-grid">
@@ -158,10 +158,10 @@
         <div class="impact-cta-glow"></div>
         <div class="impact-cta-inner">
             <h2>Want to Create Your Own Impact?</h2>
-            <p>Start a campaign and join the community of changemakers.</p>
+            <p>Support a cause today or start a campaign and join the community of changemakers.</p>
             <div class="impact-cta-actions">
-                <x-button variant="primary" href="{{ route('campaign.create') }}">Start a Campaign</x-button>
-                <x-button variant="outline" href="{{ route('all.campaigns') }}">Support a Campaign</x-button>
+                <x-button variant="primary" href="{{ route('all.campaigns') }}">Donate Now</x-button>
+                <x-button variant="outline" href="{{ route('campaign.create') }}">Start a Campaign</x-button>
             </div>
         </div>
     </div>

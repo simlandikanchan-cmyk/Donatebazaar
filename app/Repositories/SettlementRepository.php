@@ -12,7 +12,7 @@ class SettlementRepository
 {
     public function getPendingCount(): int
     {
-        return CampaignSettlement::where('status', 'pending_approval')->count();
+        return CampaignSettlement::whereIn('status', ['pending_approval', 'manual_review'])->count();
     }
 
     public function getAdminPaginated(array $filters, int $perPage = 20): LengthAwarePaginator
@@ -23,7 +23,7 @@ class SettlementRepository
             $query->where('status', $filters['status']);
         }
 
-        return $query->orderByRaw("FIELD(status, 'pending_approval') DESC")
+        return $query->orderByRaw("FIELD(status, 'manual_review', 'pending_approval') DESC")
             ->latest()
             ->paginate($perPage);
     }

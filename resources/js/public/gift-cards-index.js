@@ -1,3 +1,5 @@
+import { csrfFetch } from '../shared/api.js';
+
 (function () {
   'use strict';
 
@@ -75,9 +77,9 @@
     var btn=document.getElementById('buyBtn');
     btn.disabled=true; btn.textContent='Processing…';
 
-    fetch(data.orderUrl, {
+    csrfFetch(data.orderUrl, {
       method:'POST',
-      headers:{'Content-Type':'application/json','X-CSRF-TOKEN':data.csrfToken},
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
       body:JSON.stringify({
         amount:currentAmt, theme:currentTheme,
         sender_name:sName, sender_email:sEmail,
@@ -100,9 +102,9 @@
         modal:         {ondismiss:function(){ btn.disabled=false; btn.innerHTML='Purchase &amp; Send Gift Card — ₹'+currentAmt.toLocaleString('en-IN'); }},
         handler:function(response){
           btn.textContent='Verifying…';
-          fetch(data.verifyUrl, {
+          csrfFetch(data.verifyUrl, {
             method:'POST',
-            headers:{'Content-Type':'application/json','X-CSRF-TOKEN':data.csrfToken},
+            headers:{'Content-Type':'application/json','Accept':'application/json'},
             body:JSON.stringify({
               razorpay_order_id:  response.razorpay_order_id,
               razorpay_payment_id:response.razorpay_payment_id,

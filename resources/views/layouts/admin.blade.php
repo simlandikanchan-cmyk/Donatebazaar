@@ -10,7 +10,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 
 
-@vite('resources/css/app.css')
 @vite('resources/css/admin/entries/core.css')
 @stack('page_css')
 @stack('page_styles')
@@ -273,7 +272,7 @@
 </div>
 </div>
 
-@vite(['resources/js/admin/admin.js'])
+@vite(['resources/js/admin/core/admin.js'])
 @stack('page_scripts')
 </body>
 </html>

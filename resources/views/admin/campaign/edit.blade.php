@@ -444,8 +444,21 @@
 </script>
 @endsection
 
+@push('page_styles')
+<style>
+@media(max-width:960px){
+  .page-grid{grid-template-columns:1fr!important}
+  .right-col{width:100%}
+}
+@media(max-width:640px){
+  .card-body{padding:14px!important}
+  .input-row{grid-template-columns:1fr!important}
+}
+</style>
+@endpush
+
 @push('page_scripts')
-@vite('resources/js/admin/campaign-edit.js')
+@vite('resources/js/admin/entries/campaign-edit.js')
 @endpush
 
 @push('page_styles')

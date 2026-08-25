@@ -31,13 +31,11 @@ $icoLocked     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
                         <div class="activity-body-top">
                             <div class="activity-lbl">
                                 Request #{{ $ps->id }}
-                                @if($ps->isPendingApproval())
+                                @if($ps->status === 'manual_review')
+                                    <span class="badge b-pending" style="font-size:10px;padding:2px 8px;margin-left:8px;">Manual review</span>
+                                @elseif($ps->isPendingApproval())
                                     <span class="badge b-pending" style="font-size:10px;padding:2px 8px;margin-left:8px;">Pending approval</span>
                                 @elseif($ps->isAutoApproved())
-                                    <span class="badge b-active" style="font-size:10px;padding:2px 8px;margin-left:8px;">Auto-approved — payout in progress</span>
-                                @elseif($ps->status === 'manual_review')
-                                    <span class="badge b-pending" style="font-size:10px;padding:2px 8px;margin-left:8px;">Manual review</span>
-                                @elseif($ps->isApproved())
                                     <span class="badge b-active" style="font-size:10px;padding:2px 8px;margin-left:8px;">Approved — payout in progress</span>
                                 @elseif($ps->status === 'failed')
                                     <span class="badge" style="font-size:10px;padding:2px 8px;margin-left:8px;background:var(--red-lt);color:var(--red);">Payout failed</span>

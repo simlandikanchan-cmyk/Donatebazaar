@@ -102,4 +102,13 @@ class DonationController extends Controller
             ->route('admin.donations.show', $donation)
             ->with('success', 'Refund of ₹'.number_format($donation->total_amount, 2).' initiated successfully.');
     }
+
+    public function destroy(Donation $donation): RedirectResponse
+    {
+        $donation->delete();
+
+        return redirect()
+            ->route('admin.donations.index')
+            ->with('success', 'Donation deleted successfully.');
+    }
 }

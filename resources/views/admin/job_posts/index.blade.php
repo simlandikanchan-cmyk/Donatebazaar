@@ -149,24 +149,6 @@ tbody tr:hover{background:var(--surface2)}
 
 @section('content')
 
-@php
-  $totalJobs   = $jobPosts->total();
-  $cntActive   = \App\Models\JobPost::where('status', 'active')
-                   ->where(fn($q) => $q->whereNull('application_deadline')
-                                        ->orWhereDate('application_deadline', '>=', now()))
-                   ->count();
-  $cntDraft    = \App\Models\JobPost::where('status', 'draft')->count();
-  $cntClosed   = \App\Models\JobPost::where(fn($q) =>
-                   $q->where('status', 'closed')
-                     ->orWhere(fn($q2) => $q2->whereNotNull('application_deadline')
-                                             ->whereDate('application_deadline', '<', now()))
-                 )->count();
-  $cntRemote   = \App\Models\JobPost::where('is_remote', 1)->count();
-  $cntFeatured = \App\Models\JobPost::where('featured', 1)->count();
-  $totalVac    = \App\Models\JobPost::sum('vacancies');
-  $totalViews  = \App\Models\JobPost::sum('views_count');
-  $totalApps   = \App\Models\JobPost::sum('applications_count');
-@endphp
 
 <div class="hero">
   <div class="hero-left">
@@ -514,10 +496,13 @@ tbody tr:hover{background:var(--surface2)}
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                 <span>Edit</span>
               </a>
-              <button type="button" data-action="open-delete-modal" data-id="{{ $job->id }}" data-title="{{ addslashes($job->title) }}" class="btn btn-red act-btn ab-delete">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
-                <span>Delete</span>
-              </button>
+              <form method="POST" action="{{ route('admin.job_posts.destroy', $job->id) }}" style="display:inline;" onsubmit="return confirm('Delete this job post? This cannot be undone.');">
+                @csrf @method('DELETE')
+                <button type="submit" class="btn btn-red act-btn ab-delete" title="Delete">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+                  <span>Delete</span>
+                </button>
+              </form>
             </div>
           </td>
         </tr>
@@ -580,5 +565,5 @@ tbody tr:hover{background:var(--surface2)}
 
 @endsection
 @push('page_scripts')
-@vite('resources/js/admin/job-posts-index.js')
+@vite('resources/js/admin/entries/job-posts-index.js')
 @endpush

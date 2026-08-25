@@ -3,14 +3,12 @@
 namespace App\Services\Payment;
 
 use App\Gateways\RazorpayGateway;
-use App\Mail\DonationReceiptMail;
 use App\Mail\DonationRefundMail;
-use App\Models\Campaign;
 use App\Models\Donation;
 use App\Models\Refund;
+use App\Services\Payment\DonationCompletionService;
 use App\Services\Payment\RefundService;
 use App\Services\WalletService;
-use App\Models\WalletTransaction;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -25,7 +23,8 @@ class PaymentWebhookService
     public function __construct(
         private RazorpayGateway $gateway,
         private RefundService $refundService,
-        private WalletService $walletService
+        private WalletService $walletService,
+        private DonationCompletionService $completionService
     ) {}
 
     public function handleWebhook(Request $request): JsonResponse
@@ -35,13 +34,13 @@ class PaymentWebhookService
         $payload = $request->getContent();
 
         if (! $secret) {
-            Log::critical('RAZORPAY_WEBHOOK_SECRET is not set — all webhooks are being dropped');
+            Log::channel('payments')->critical('RAZORPAY_WEBHOOK_SECRET is not set — all webhooks are being dropped');
 
             return response()->json(['status' => 'misconfigured'], 500);
         }
 
         if (! $signature) {
-            Log::warning('Webhook received without X-Razorpay-Signature header', [
+            Log::channel('payments')->warning('Webhook received without X-Razorpay-Signature header', [
                 'ip' => $request->ip(),
             ]);
 
@@ -51,7 +50,7 @@ class PaymentWebhookService
         $expected = hash_hmac('sha256', $payload, $secret);
 
         if (! hash_equals($expected, $signature)) {
-            Log::warning('Webhook signature mismatch', ['ip' => $request->ip()]);
+            Log::channel('payments')->warning('Webhook signature mismatch', ['ip' => $request->ip()]);
 
             return response()->json(['status' => 'invalid'], 400);
         }
@@ -59,7 +58,7 @@ class PaymentWebhookService
         $data = json_decode($payload, true);
         $event = $data['event'] ?? null;
 
-        Log::info('Webhook received', ['event' => $event]);
+        Log::channel('payments')->info('Webhook received', ['event' => $event]);
 
         match ($event) {
             'payment.captured' => $this->handlePaymentCaptured($data),
@@ -76,8 +75,10 @@ class PaymentWebhookService
     {
         $paymentId = $payload['payload']['payment']['entity']['id'] ?? null;
         $orderId = $payload['payload']['payment']['entity']['order_id'] ?? null;
+        $amountPaise = $payload['payload']['payment']['entity']['amount'] ?? null;
+        $currency = $payload['payload']['payment']['entity']['currency'] ?? null;
 
-        if (! $paymentId || ! $orderId) {
+        if (! $paymentId || ! $orderId || ! $amountPaise || ! $currency) {
             return;
         }
 
@@ -91,7 +92,7 @@ class PaymentWebhookService
         $ownerForNotif = null;
 
         try {
-            DB::transaction(function () use ($paymentId, $orderId, &$donationToMail, &$ownerForNotif) {
+            DB::transaction(function () use ($paymentId, $orderId, $amountPaise, $currency, &$donationToMail, &$ownerForNotif) {
                 $donation = Donation::lockForUpdate()
                     ->where('order_id', $orderId)
                     ->first();
@@ -100,58 +101,64 @@ class PaymentWebhookService
                     return;
                 }
 
-                $donation->payment_id = $paymentId;
-                $donation->payment_status = 'completed';
-                $donation->paid_at = now();
-                $donation->save();
+                $expectedPaise = (int) round((float) $donation->total_amount * 100);
+                if ((int) $amountPaise !== $expectedPaise) {
+                    Log::channel('payments')->warning('Webhook amount mismatch', [
+                        'donation_id' => $donation->id,
+                        'expected' => $expectedPaise,
+                        'actual' => (int) $amountPaise,
+                        'payment_id' => $paymentId,
+                    ]);
 
-                Campaign::lockForUpdate()
-                    ->findOrFail($donation->campaign_id)
-                    ->increment('platform_earnings', $donation->platform_fee);
-
-                $this->decrementProductStock($donation);
-                $this->consumeReservations($donation);
-                $this->redeemCoupon($donation);
-
-                $owner = $this->walletService->ownerForDonation($donation);
-                if ($owner) {
-                    $wallet = $this->walletService->getOrCreateWallet($owner);
-                    $this->walletService->credit(
-                        $wallet,
-                        (float) $donation->net_amount,
-                        WalletTransaction::SOURCE_DONATION,
-                        $donation->id,
-                        Donation::class,
-                        'Donation #'.$donation->id
-                    );
+                    return;
                 }
 
-                Log::info('Webhook: payment captured', [
-                    'donation_id' => $donation->id,
-                    'donation_type' => $donation->donation_type,
-                    'payment_id' => $paymentId,
-                    'platform_fee' => $donation->platform_fee,
-                    'net_amount' => $donation->net_amount,
-                ]);
+                if (strtoupper($currency) !== strtoupper((string) $donation->currency)) {
+                    Log::channel('payments')->warning('Webhook currency mismatch', [
+                        'donation_id' => $donation->id,
+                        'expected' => $donation->currency,
+                        'actual' => $currency,
+                        'payment_id' => $paymentId,
+                    ]);
 
-                $donationToMail = $donation->fresh();
-                $ownerForNotif = $donation->campaign->user;
+                    return;
+                }
+
+                $donation->payment_id = $paymentId;
+
+                $result = $this->completionService->complete($donation, $paymentId);
+
+                $donationToMail = $result['donation'];
+                $ownerForNotif = $result['owner'];
             });
 
             if ($donationToMail) {
-                $this->sendReceiptEmail($donationToMail);
-            }
-
-            if ($ownerForNotif && $donationToMail) {
-                $ownerForNotif->notify(new \App\Notifications\DonationReceived(
-                    amount: (float) $donationToMail->net_amount,
-                    donorName: $donationToMail->donor_name ?? $donationToMail->donor_email ?? 'Anonymous',
-                    campaignTitle: $donationToMail->campaign->title,
-                    campaignId: $donationToMail->campaign_id,
-                ));
+                $this->sendOwnerNotification($ownerForNotif, $donationToMail);
             }
         } finally {
             $lock->release();
+        }
+    }
+
+    private function sendOwnerNotification($owner, Donation $donation): void
+    {
+        if (! $owner) {
+            return;
+        }
+
+        try {
+            $owner->notify(new \App\Notifications\DonationReceived(
+                amount: (float) $donation->net_amount,
+                donorName: $donation->donor_name ?? $donation->donor_email ?? 'Anonymous',
+                campaignTitle: $donation->campaign->title,
+                campaignId: $donation->campaign_id,
+            ));
+        } catch (\Throwable $e) {
+        Log::channel('payments')->error('Owner notification failed', [
+            'donation_id' => $donation->id,
+            'owner_id' => $owner->id,
+            'error' => $e->getMessage(),
+        ]);
         }
     }
 
@@ -168,7 +175,7 @@ class PaymentWebhookService
             ->where('payment_status', 'pending')
             ->update(['payment_status' => 'failed']);
 
-        Log::info('Webhook: payment failed', ['order_id' => $orderId]);
+        Log::channel('payments')->info('Webhook: payment failed', ['order_id' => $orderId]);
     }
 
     private function handleRefundProcessed(array $payload): void
@@ -223,110 +230,6 @@ class PaymentWebhookService
             });
         } finally {
             $lock->release();
-        }
-    }
-
-    private function decrementProductStock(Donation $donation): void
-    {
-        if ($donation->donation_type !== 'product') {
-            return;
-        }
-
-        $items = DonationItem::where('donation_id', $donation->id)->get();
-
-        foreach ($items as $item) {
-            \App\Models\CampaignProduct::where('id', $item->product_id)
-                ->where('remaining_quantity', '>=', $item->quantity)
-                ->decrement('remaining_quantity', $item->quantity);
-        }
-
-        Log::info('Product stock decremented after payment', [
-            'donation_id' => $donation->id,
-            'items' => $items->count(),
-        ]);
-    }
-
-    private function consumeReservations(Donation $donation): void
-    {
-        if ($donation->donation_type !== 'product') {
-            return;
-        }
-
-        $this->productReservationService->consume($donation);
-
-        Log::info('Product reservations consumed after payment', [
-            'donation_id' => $donation->id,
-        ]);
-    }
-
-    private function redeemCoupon(Donation $donation): void
-    {
-        if (! $donation->coupon_id) {
-            return;
-        }
-
-        $coupon = \App\Models\Coupon::lockForUpdate()->find($donation->coupon_id);
-
-        if (! $coupon) {
-            return;
-        }
-
-        if (\App\Models\CouponRedemption::where('donation_id', $donation->id)->exists()) {
-            return;
-        }
-
-        [$valid] = $coupon->isValidFor(
-            $donation->user,
-            $donation->campaign,
-            (float) $donation->original_amount
-        );
-
-        if (! $valid) {
-            return;
-        }
-
-        $coupon->increment('used_count');
-
-        if ($coupon->user_id) {
-            $coupon->redeemed_at = now();
-            $coupon->save();
-        }
-
-        \App\Models\CouponRedemption::create([
-            'coupon_id' => $coupon->id,
-            'user_id' => $donation->user_id,
-            'donation_id' => $donation->id,
-            'discount_amount' => $donation->discount_amount,
-            'created_at' => now(),
-        ]);
-
-        Log::info('Coupon redeemed', [
-            'coupon_id' => $coupon->id,
-            'donation_id' => $donation->id,
-            'discount' => $donation->discount_amount,
-        ]);
-    }
-
-    private function sendReceiptEmail(Donation $donation): void
-    {
-        if (empty($donation->donor_email)) {
-            return;
-        }
-
-        try {
-            Mail::to($donation->donor_email)
-                ->send(new DonationReceiptMail($donation));
-
-            Log::info('Donation receipt email sent', [
-                'donation_id' => $donation->id,
-                'email' => $donation->donor_email,
-            ]);
-        } catch (\Throwable $e) {
-            Log::error('Donation receipt email failed', [
-                'donation_id' => $donation->id,
-                'email' => $donation->donor_email,
-                'error' => $e->getMessage(),
-            ]);
         }
     }
 }

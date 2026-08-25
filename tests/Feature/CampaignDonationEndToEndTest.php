@@ -240,13 +240,6 @@ class CampaignDonationEndToEndTest extends TestCase
         $response = $this->actingAs($this->admin)
             ->post('/admin/campaign/'.$this->campaign->id.'/approve');
 
-        if ($response->getSession()->has('error')) {
-            dump('Approval error:', $response->getSession()->get('error'));
-        }
-        if ($response->getSession()->has('success')) {
-            dump('Approval success:', $response->getSession()->get('success'));
-        }
-
         $response->assertSessionHas('success');
 
         $this->campaign->refresh();
@@ -471,7 +464,7 @@ class CampaignDonationEndToEndTest extends TestCase
             'donation_id' => $donation->id,
         ]);
 
-        Mail::assertSent(DonationReceiptMail::class, function ($mail) use ($donation) {
+        Mail::assertQueued(DonationReceiptMail::class, function ($mail) use ($donation) {
             return $mail->donation->id === $donation->id;
         });
     }
@@ -553,9 +546,7 @@ class CampaignDonationEndToEndTest extends TestCase
             \App\Services\Payment\PaymentVerificationService::class,
             new \App\Services\Payment\PaymentVerificationService(
                 $mockGateway,
-                $this->app->make(\App\Services\CouponService::class),
-                $this->app->make(\App\Services\ProductReservationService::class),
-                $this->app->make(\App\Services\WalletService::class)
+                $this->app->make(\App\Services\Payment\DonationCompletionService::class)
             )
         );
 

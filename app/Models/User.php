@@ -30,18 +30,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'last_login_at',
     ];
 
-    protected $guarded = [
-        'role',
-        'otp_hash',
-        'otp_expires_at',
-        'otp_attempts',
-        'phone_verified_at',
-        'is_active',
-        'status',
-        'fundraiser_level_id',
-        'fundraiser_level_status',
-    ];
-
     protected $hidden = [
         'password',
         'remember_token',

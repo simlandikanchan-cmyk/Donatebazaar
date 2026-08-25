@@ -4,7 +4,7 @@
  * Zero dependencies · Accessible (ARIA) · Keyboard-navigable
  */
 
-import { getCsrfToken } from '../shared/csrf.js';
+import { csrfFetch } from '../shared/api.js';
 import { escapeHtml } from '../shared/helpers.js';
 
 (function () {
@@ -312,8 +312,8 @@ import { escapeHtml } from '../shared/helpers.js';
 
     async function loadNotifications() {
         try {
-            const res = await fetch('/notifications', {
-                headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
+            const res = await csrfFetch('/notifications', {
+                headers: { 'Accept': 'application/json' },
             });
             if (!res.ok) return;
             const data = await res.json();
@@ -326,11 +326,9 @@ import { escapeHtml } from '../shared/helpers.js';
 
     async function markNotificationRead(id, redirectUrl) {
         try {
-            await fetch('/notifications/' + encodeURIComponent(id) + '/read', {
+            await csrfFetch('/notifications/' + encodeURIComponent(id) + '/read', {
                 method: 'POST',
                 headers: {
-                    'X-CSRF-TOKEN': getCsrfToken(),
-                    'X-Requested-With': 'XMLHttpRequest',
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
                 },
@@ -345,11 +343,9 @@ import { escapeHtml } from '../shared/helpers.js';
 
     async function markAllRead() {
         try {
-            const res = await fetch('/notifications/read-all', {
+            const res = await csrfFetch('/notifications/read-all', {
                 method: 'POST',
                 headers: {
-                    'X-CSRF-TOKEN': getCsrfToken(),
-                    'X-Requested-With': 'XMLHttpRequest',
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
                 },

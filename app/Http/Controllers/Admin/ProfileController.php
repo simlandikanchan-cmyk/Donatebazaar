@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -129,6 +130,15 @@ class ProfileController extends Controller
         ]);
 
         $user = $request->user();
+
+        // Never allow the final active administrator to be removed — doing so
+        // would leave the platform with no way to administer it.
+        if ($user->role === 'admin'
+            && User::where('role', 'admin')->where('status', 'active')->count() <= 1) {
+            return back()->withErrors([
+                'password' => 'You cannot delete the last administrator account.',
+            ]);
+        }
 
         Auth::logout();
 

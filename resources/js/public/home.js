@@ -23,8 +23,7 @@
  * Lightweight wrapper — returns null instead of throwing
  * when the selector matches nothing.
  */
-const $ = (sel, ctx = document) => ctx.querySelector(sel);
-const $$ = (sel, ctx = document) => ctx.querySelectorAll(sel);
+import { $, $$ } from '../shared/dom.js';
 
 /**
  * requestAnimationFrame-based easing counter.

@@ -8,10 +8,6 @@
 @section('page_subtitle', 'Review and manage fundraiser products')
 @section('sidebar_campaign-products', 'active')
 
-@push('page_styles')
-@vite('resources/css/admin/pages/campaign-products-index.css')
-@endpush
-
 @section('content')
 
 {{-- STATS --}}
@@ -399,5 +395,6 @@
 @endsection
 
 @push('page_scripts')
-@vite('resources/js/admin/campaign-products-index.js')
+@vite('resources/js/admin/entries/campaign-products-index.js')
 @endpush
+

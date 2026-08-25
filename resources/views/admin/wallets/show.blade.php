@@ -187,7 +187,7 @@
     </div>
   </div>
   <div class="table-scroll">
-    <table id="txTable">
+    <table id="txTable" style="min-width:640px">
       <thead>
         <tr>
           <th>Date</th>
@@ -197,6 +197,7 @@
           <th style="text-align:right">Balance After</th>
           <th>Reference</th>
           <th>Notes</th>
+          <th>Actor</th>
         </tr>
       </thead>
       <tbody>
@@ -228,6 +229,13 @@
               @endif
             </td>
             <td data-label="Notes" style="color:var(--text3);font-size:12px;">{{ $tx->notes ?? '—' }}</td>
+            <td data-label="Actor" style="font-size:12px;">
+              @if($tx->actor_type && $tx->actor_id)
+                {{ class_basename($tx->actor_type) }} #{{ $tx->actor_id }}
+              @else
+                <span style="color:var(--text3);">System</span>
+              @endif
+            </td>
           </tr>
         @empty
           <tr class="empty-row">
@@ -270,6 +278,8 @@
 @media(max-width:640px){
   .hero-actions{width:100%}
   .hero-btn{flex:1;justify-content:center}
+  .chart-card,.table-card{padding-left:12px!important;padding-right:12px!important}
+  .wa-form{padding:12px!important}
 }
 </style>
 @endpush

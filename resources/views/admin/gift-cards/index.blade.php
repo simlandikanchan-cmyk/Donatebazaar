@@ -31,6 +31,16 @@
 @media(max-width:960px){.gc-stats-grid{grid-template-columns:repeat(3,1fr)!important}}
 @media(max-width:640px){.gc-stats-grid{grid-template-columns:repeat(2,1fr)!important;gap:12px}}
 @media(max-width:440px){.gc-stats-grid{grid-template-columns:1fr!important}}
+
+/* ── table scroll ── */
+@media(max-width:960px){
+  .gc-table{min-width:720px}
+}
+@media(max-width:640px){
+  .gc-scroll{overflow-x:auto}
+  .gc-actions{flex-direction:column;gap:4px}
+  .gc-actions .btn{width:100%;justify-content:center}
+}
 </style>
 @endpush
 

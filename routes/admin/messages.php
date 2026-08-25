@@ -14,6 +14,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::post('/messages/bulk', [ContactMessageController::class, 'bulk'])->name('messages.bulk');
 
     Route::get('/contacts', [ContactController::class, 'adminIndex'])->name('contacts');
-    Route::get('/contacts/delete/{id}', [ContactController::class, 'adminDelete'])->name('contacts.delete');
+    Route::delete('/contacts/{id}', [ContactController::class, 'destroy'])->name('contacts.destroy');
 
 });

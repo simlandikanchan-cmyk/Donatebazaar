@@ -1,7 +1,14 @@
-﻿@extends('layouts.admin')
+@extends('layouts.admin')
 
 @push('page_styles')
 @vite('resources/css/admin/pages/blogs-carousel.css')
+<style>
+@media(max-width:640px){
+  .feature-row{padding:12px;gap:10px}
+  .f-btn{min-width:40px;min-height:40px;padding:8px}
+  .f-handle{font-size:18px;padding:8px}
+}
+</style>
 @endpush
 
 
@@ -85,6 +92,18 @@
 
 @endsection
 
+@push('page_styles')
+<style>
+@media(max-width:640px){
+  .feature-row{min-height:48px}
+  .f-btn{min-width:40px;min-height:40px}
+  .f-handle{font-size:18px;padding:8px}
+  .f-info{min-width:0}
+  .f-name{font-size:13px}
+}
+</style>
+@endpush
+
 @push('page_scripts')
-@vite('resources/js/admin/blogs-carousel.js')
+@vite('resources/js/admin/entries/blogs-carousel.js')
 @endpush

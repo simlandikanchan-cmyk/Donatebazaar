@@ -119,7 +119,7 @@
 
     <div class="table-card">
       <div class="table-wrap">
-        <table>
+        <table id="volTable">
           <thead>
             <tr>
               <th>#</th>
@@ -168,6 +168,12 @@
                   View
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
                 </a>
+                <form method="POST" action="{{ route('admin.volunteers.destroy', $v) }}" style="display:inline;" onsubmit="return confirm('Delete this volunteer? This cannot be undone.');">
+                  @csrf @method('DELETE')
+                  <button type="submit" class="btn btn-red act-btn ab-delete" title="Delete" style="margin-left:8px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Delete
+                  </button>
+                </form>
               </td>
             </tr>
             @empty
@@ -200,9 +206,22 @@
 @endsection
 
 @push('page_scripts')
-@vite('resources/js/admin/volunteers-index.js')
+@vite('resources/js/admin/entries/volunteers-index.js')
 @endpush
 
 @push('page_styles')
 @vite('resources/css/admin/pages/volunteers-index.css')
+<style>
+@media(max-width:860px){
+  .stats-grid{grid-template-columns:repeat(2,1fr)!important}
+}
+@media(max-width:480px){
+  .stats-grid{grid-template-columns:1fr!important}
+}
+@media(max-width:640px){
+  .table-wrap{min-width:640px;overflow-x:auto}
+  .hero-right{width:100%;margin-top:14px}
+  .hero-right .hero-btn{width:100%;justify-content:center}
+}
+</style>
 @endpush

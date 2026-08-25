@@ -7,8 +7,8 @@ use App\Http\Controllers\PublicCampaignController;
 use App\Models\Campaign;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/all-campaigns', [CampaignController::class, 'publicCampaigns'])->name('all.campaigns');
-Route::get('/category/{slug}', [CampaignController::class, 'byCategory'])->name('campaigns.byCategory');
+Route::get('/all-campaigns', [PublicCampaignController::class, 'publicCampaigns'])->name('all.campaigns');
+Route::get('/category/{slug}', [PublicCampaignController::class, 'byCategory'])->name('campaigns.byCategory');
 Route::get('/campaigns/{category}/{slug}', [PublicCampaignController::class, 'show'])->name('campaign.public');
 
 Route::middleware('auth')->group(function () {
@@ -20,7 +20,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/campaign/{campaign}', [CampaignController::class, 'update'])->name('campaign.update');
     Route::post('/campaign/{campaign}/pause', [CampaignController::class, 'pause'])->name('campaign.pause');
     Route::post('/campaign/{campaign}/resume', [CampaignController::class, 'resume'])->name('campaign.resume');
-    Route::post('/campaign/{campaign}/follow', [CampaignController::class, 'toggleFollow'])->name('campaign.follow');
+    Route::post('/campaign/{campaign}/follow', [PublicCampaignController::class, 'toggleFollow'])->name('campaign.follow');
     Route::post('/campaigns/{campaign}/resubmit', [CampaignController::class, 'resubmit'])->name('campaign.resubmit');
 
     Route::get('/campaign/{campaign}/analytics', [CampaignAnalyticsController::class, 'index'])->name('campaign.analytics');

@@ -185,9 +185,13 @@
 @endsection
 
 @push('page_scripts')
-@vite('resources/js/admin/categories-create.js')
+@vite('resources/js/admin/entries/categories-create.js')
 @endpush
 
 @push('page_styles')
 @vite('resources/css/admin/pages/categories-create.css')
+<style>
+@media(max-width:860px){.page-grid{grid-template-columns:1fr!important}.page-grid>div:last-child{display:none}}
+@media(max-width:640px){.main-card>div{padding:16px!important}.card-head{padding:12px 16px!important}.submit-btn{width:100%;justify-content:center}.form-actions{flex-direction:column;align-items:stretch}.form-actions .btn-primary,.form-actions .btn-ghost{width:100%;justify-content:center}}
+</style>
 @endpush

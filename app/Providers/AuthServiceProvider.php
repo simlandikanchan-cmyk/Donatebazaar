@@ -2,14 +2,14 @@
 
 namespace App\Providers;
 
-use App\Models\Blog;
-use App\Policies\BlogPolicy;
+use App\Models\Donation;
+use App\Policies\DonationReceiptPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
 {
     protected $policies = [
-        Blog::class => BlogPolicy::class,
+        Donation::class => DonationReceiptPolicy::class,
     ];
 
     public function boot(): void

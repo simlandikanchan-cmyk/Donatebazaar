@@ -8,38 +8,6 @@
 @section('page_title', 'Settlements')
 @section('page_subtitle', 'Payout requests from organizations')
 
-@push('page_styles')
-<style>
-/* ── settlement-specific status badges / cells (view-scoped, matches admin.css tokens) ── */
-.st-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:100px;font-size:10.5px;font-weight:700;font-family:var(--mono);white-space:nowrap;border:1px solid transparent}
-.st-badge::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0}
-.st-pending{background:var(--amber-lt);color:var(--amber);border-color:rgba(245,158,11,.25)}
-.st-approved{background:var(--a-lt);color:var(--a);border-color:rgba(37,99,235,.22)}
-.st-processing{background:rgba(59,130,246,.12);color:var(--blue);border-color:rgba(59,130,246,.25)}
-.st-paid{background:rgba(5,196,138,.12);color:#059c7f;border-color:rgba(5,196,138,.25)}
-.st-rejected{background:rgba(240,68,68,.12);color:var(--red);border-color:rgba(240,68,68,.25)}
-.st-failed{background:rgba(240,68,68,.12);color:var(--red);border-color:rgba(240,68,68,.25)}
-.st-org{font-size:13px;font-weight:600;color:var(--text);line-height:1.3}
-.st-org-sub{font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:1px}
-.st-amount{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--text)}
-.st-date{font-size:12px;font-weight:500;color:var(--text);white-space:nowrap}
-.st-date-sub{font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:1px}
-@media(max-width:960px){.st-stats-grid{grid-template-columns:repeat(3,1fr)!important}}
-@media(max-width:640px){.st-stats-grid{grid-template-columns:repeat(2,1fr)!important;gap:12px}}
-@media(max-width:480px){.st-stats-grid{grid-template-columns:1fr!important}}
-@media(max-width:600px){
-  #settlementTable thead{display:none}
-  #settlementTable tbody tr:not(.empty-row){display:flex;flex-direction:column;padding:14px 16px;border-bottom:1px solid var(--border);gap:8px}
-  #settlementTable tbody tr td{padding:0;border:none;display:flex;align-items:center;gap:8px}
-  #settlementTable tbody tr td::before{content:attr(data-label);font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);min-width:80px;flex-shrink:0}
-  #settlementTable tbody tr td.cell-id::before{content:"#"}
-  #settlementTable td[data-label="Actions"]{justify-content:flex-start}
-  #settlementTable td[data-label="Actions"]::before{content:"Actions";min-width:auto;margin-right:auto}
-  #settlementTable tbody tr td.cell-id{font-size:10px;color:var(--text3);margin-bottom:0}
-}
-</style>
-@endpush
-
 @section('content')
 
 <div class="hero">
@@ -125,20 +93,32 @@
         @forelse($settlements as $s)
           @php
             $statusLabels = [
+              'requested' => 'Requested',
+              'risk_evaluation' => 'Risk Evaluation',
               'pending_approval' => 'Pending Approval',
+              'manual_review' => 'Manual Review',
+              'auto_approved' => 'Auto Approved',
               'approved' => 'Approved',
               'processing' => 'Processing',
               'paid' => 'Paid',
               'rejected' => 'Rejected',
               'failed' => 'Failed',
+              'retry_pending' => 'Retry Pending',
+              'cancelled' => 'Cancelled',
             ];
             $badgeClass = [
+              'requested' => 'st-pending',
+              'risk_evaluation' => 'st-pending',
               'pending_approval' => 'st-pending',
+              'manual_review' => 'st-pending',
+              'auto_approved' => 'st-approved',
               'approved' => 'st-approved',
               'processing' => 'st-processing',
               'paid' => 'st-paid',
               'rejected' => 'st-rejected',
               'failed' => 'st-failed',
+              'retry_pending' => 'st-processing',
+              'cancelled' => 'st-cancelled',
             ];
           @endphp
           <tr>
@@ -160,9 +140,15 @@
             <td data-label="Actions">
               <div class="act-btns">
                 <a href="{{ route('admin.settlements.show', $s) }}" class="btn btn-secondary act-btn ab-view">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                   <span>View</span>
                 </a>
+                <form method="POST" action="{{ route('admin.settlements.destroy', $s) }}" style="display:inline;" onsubmit="return confirm('Delete this settlement? This cannot be undone.');">
+                  @csrf @method('DELETE')
+                  <button type="submit" class="btn btn-red act-btn ab-delete" title="Delete">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Delete
+                  </button>
+                </form>
               </div>
             </td>
           </tr>

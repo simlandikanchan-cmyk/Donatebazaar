@@ -17,6 +17,7 @@ class CampaignSettlement extends Model
         'net_amount',
         'status',
         'restored_at',
+        'payout_idempotency_key',
     ];
 
     protected $casts = [
@@ -102,19 +103,14 @@ class CampaignSettlement extends Model
     }
 
     /**
-     * Check if settlement is pending
-     */
-    public function isPending()
-    {
-        return $this->status === 'pending';
-    }
-
-    /**
-     * Check if settlement is awaiting admin approval
+     * Check if settlement is awaiting admin approval.
+     * `manual_review` is the current state machine's pending-approval state;
+     * `pending_approval` is kept for legacy rows created before the state
+     * machine was introduced.
      */
     public function isPendingApproval()
     {
-        return $this->status === 'pending_approval';
+        return in_array($this->status, ['pending_approval', 'manual_review'], true);
     }
 
     /**

@@ -1,6 +1,6 @@
 # CAMPAIGN + DONATION END-TO-END TEST REPORT
 
-**Date:** 2026-08-14 | **App:** DonateBaazar (Laravel 12.61.0 / PHP 8.2.12 / MariaDB, XAMPP Windows)
+**Date:** 2026-08-14 | **App:** DONATEBAZAAR (Laravel 12.61.0 / PHP 8.2.12 / MariaDB, XAMPP Windows)
 **Scope:** Full campaign lifecycle (register → create → approve → public page → donate → pay → verify/webhook → wallet → admin) via real-HTTP Laravel feature tests.
 
 ---

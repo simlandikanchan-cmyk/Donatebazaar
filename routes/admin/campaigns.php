@@ -12,6 +12,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/campaign/{campaign}', [AdminCampaignController::class, 'show'])->name('campaign.show');
     Route::get('/campaign/{campaign}/edit', [AdminCampaignController::class, 'edit'])->name('campaign.edit');
     Route::put('/campaign/{campaign}/update', [AdminCampaignController::class, 'update'])->name('campaign.update');
+    Route::delete('/campaign/{campaign}', [AdminCampaignController::class, 'destroy'])->name('campaign.destroy');
     Route::post('/campaign/{campaign}/approve', [AdminCampaignController::class, 'approve'])->name('campaign.approve');
     Route::post('/campaign/{campaign}/reject', [AdminCampaignController::class, 'reject'])->name('campaign.reject');
     Route::post('/campaign/{campaign}/pause', [AdminCampaignController::class, 'pause'])->name('campaign.pause');

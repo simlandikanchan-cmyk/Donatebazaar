@@ -4,24 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Mail\CampaignCreatedMail;
 use App\Models\Campaign;
-use App\Models\CampaignProduct;
-use App\Models\CampaignUpdate;
-use App\Models\Category;
 use App\Models\CategoryProduct;
 use App\Models\KycVerification;
-use App\Models\User;
 use App\Repositories\CampaignRepository;
 use App\Repositories\CategoryRepository;
 use App\Http\Requests\StoreCampaignRequest;
 use App\Http\Requests\UpdateCampaignRequest;
+use App\Services\Campaign\CampaignCoverImageService;
+use App\Services\Campaign\CampaignCreationService;
 use App\Services\FundraiserLevelService;
+use App\Services\SlugGenerator;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
-use Intervention\Image\Laravel\Facades\Image;
 
 class CampaignController extends Controller
 {
@@ -29,6 +25,9 @@ class CampaignController extends Controller
         protected FundraiserLevelService $levelService,
         protected CampaignRepository $campaignRepo,
         protected CategoryRepository $categoryRepo,
+        protected SlugGenerator $slugGenerator,
+        protected CampaignCreationService $creationService,
+        protected CampaignCoverImageService $coverImageService,
     ) {}
 
     public function create()
@@ -80,27 +79,11 @@ class CampaignController extends Controller
             return back()->withErrors(['updates' => 'Please add at least one update with a title and description.'])->withInput();
         }
 
-        $campaign = Campaign::create([
-            'user_id' => Auth::id(),
-            'category_id' => $request->category_id,
-            'title' => $request->title,
-            'slug' => $this->generateSlug($request->title),
-            'description' => $request->description,
-            'goal_amount' => $request->goal_amount,
-            'raised_amount' => 0,
-            'location' => $request->location,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
-            'video_url' => $request->video_url,
-            'cover_image' => $this->uploadCoverImage($request),
-            'is_featured' => $request->boolean('is_featured'),
-            'is_urgent' => $request->boolean('is_urgent'),
-            'campaign_state' => Campaign::STATE_PENDING,
-            'required_level_id' => $check['level']->id,
-        ]);
-
-        $this->storeCampaignUpdates($request, $campaign);
-        $this->storeCampaignProducts($request, $campaign);
+        $campaign = $this->creationService->create(
+            $request,
+            Auth::id(),
+            $check['level']->id
+        );
 
         Cache::forget('active_campaign_categories');
 
@@ -165,41 +148,28 @@ class CampaignController extends Controller
         ));
     }
 
-    public function update(Request $request, Campaign $campaign)
+    public function update(UpdateCampaignRequest $request, Campaign $campaign)
     {
         if ($campaign->user_id !== Auth::id()) {
             abort(403);
         }
 
-        $request->merge([
-            'goal_amount' => str_replace(',', '', $request->goal_amount),
-            'title' => strip_tags($request->title),
-        ]);
-
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string|max:20000',
-            'goal_amount' => 'required|numeric|min:1|max:500000',
-            'category_id' => 'required|exists:categories,id',
-            'cover_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'location' => 'nullable|string|max:255',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
-            'video_url' => 'nullable|url',
-        ]);
+        $validated = $request->validated();
 
         $campaign->update([
-            'category_id' => $request->category_id,
-            'title' => $request->title,
-            'description' => $request->description,
-            'goal_amount' => $request->goal_amount,
-            'location' => $request->location,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
-            'video_url' => $request->video_url,
+            'category_id' => $validated['category_id'],
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'goal_amount' => $validated['goal_amount'],
+            'location' => $validated['location'] ?? null,
+            'start_date' => $validated['start_date'],
+            'end_date' => $validated['end_date'],
+            'video_url' => $validated['video_url'] ?? null,
             'is_featured' => $request->boolean('is_featured'),
             'is_urgent' => $request->boolean('is_urgent'),
-            'cover_image' => $this->uploadCoverImage($request) ?? $campaign->cover_image,
+            'cover_image' => $request->hasFile('cover_image')
+                ? $this->coverImageService->store($request->file('cover_image'), $request->title)
+                : $campaign->cover_image,
         ]);
 
         if (
@@ -301,236 +271,5 @@ class CampaignController extends Controller
             ->paginate(12);
 
         return view('campaigns.index', compact('campaigns'));
-    }
-
-    public function publicCampaigns(Request $request)
-    {
-        $query = Campaign::with(['category', 'user'])
-            ->withCount(['donations' => fn ($q) => $q->where('payment_status', 'completed')])
-            ->withSum(['donations as donations_sum_total_amount' => fn ($q) => $q->where('payment_status', 'completed')], 'total_amount')
-            ->whereIn('campaign_state', ['active', 'completed']);
-
-        if ($request->filled('search')) {
-            $query->where(function ($q) use ($request) {
-                $q->where('title', 'like', '%'.$request->search.'%')
-                    ->orWhere('description', 'like', '%'.$request->search.'%');
-            });
-        }
-
-        if ($request->filled('category')) {
-            $category = Category::where('slug', $request->category)
-                ->select('id')
-                ->first();
-            if ($category) {
-                $query->where('category_id', $category->id);
-            }
-        }
-
-        if ($request->filled('location') && $request->location !== 'all') {
-            $locationLabel = ucwords(str_replace('_', ' ', $request->location));
-            $query->where(function ($q) use ($locationLabel) {
-                $q->where('location', 'like', "%{$locationLabel}%")
-                    ->orWhere('location_text', 'like', "%{$locationLabel}%");
-            });
-        }
-
-        if ($request->filled('campaign_type') && $request->campaign_type !== 'all') {
-            switch ($request->campaign_type) {
-                case 'active':
-                    $query->where('campaign_state', 'active');
-                    break;
-                case 'closed':
-                    $query->where('campaign_state', 'completed');
-                    break;
-                case 'urgent':
-                    $query->where('is_urgent', true);
-                    break;
-                case 'newly_launched':
-                    $query->where('created_at', '>=', now()->subDays(7));
-                    break;
-                case 'most_raised':
-                    $query->orderByDesc('raised_amount');
-                    break;
-            }
-        }
-
-        if ($request->filled('funding') && $request->funding !== 'any') {
-            switch ($request->funding) {
-                case 'lt25':
-                    $query->whereRaw('(raised_amount / NULLIF(goal_amount, 0)) * 100 < 25');
-                    break;
-                case '25to75':
-                    $query->whereRaw('(raised_amount / NULLIF(goal_amount, 0)) * 100 BETWEEN 25 AND 75');
-                    break;
-                case 'gt75':
-                    $query->whereRaw('(raised_amount / NULLIF(goal_amount, 0)) * 100 > 75');
-                    break;
-                case '100':
-                    $query->where('goal_amount', '>', 0)->whereColumn('raised_amount', '>=', 'goal_amount');
-                    break;
-            }
-        }
-
-        switch ($request->sort) {
-            case 'most_funded': $query->orderByDesc('raised_amount');
-                break;
-            case 'most_donors': $query->orderByDesc('donations_count');
-                break;
-            case 'ending_soon': $query->orderBy('end_date');
-                break;
-            default:            $query->latest();
-                break;
-        }
-
-        $categories = Cache::remember('active_campaign_categories', 3600, function () {
-            return Category::where('is_active', 1)
-                ->withCount(['campaigns' => function ($q) {
-                    $q->whereIn('campaign_state', ['active', 'completed']);
-                }])
-                ->get();
-        });
-
-        $campaigns = $query->paginate(12)->withQueryString();
-
-        return view('campaigns.all-campaigns', compact('campaigns', 'categories'));
-    }
-
-    public function byCategory($slug)
-    {
-        $category = Category::where('slug', $slug)->firstOrFail();
-
-        $campaigns = Campaign::with(['category', 'user', 'products'])
-            ->withCount(['donations' => fn ($q) => $q->where('payment_status', 'completed')])
-            ->withSum(['donations' => fn ($q) => $q->where('payment_status', 'completed')], 'total_amount')
-            ->where('category_id', $category->id)
-            ->whereIn('campaign_state', ['active', 'completed'])
-            ->latest()
-            ->paginate(12);
-
-        return view('campaigns.all-campaigns', compact('category', 'campaigns'));
-    }
-
-    private function storeCampaignProducts(Request $request, Campaign $campaign): void
-    {
-        $products = $request->input('products', []);
-
-        if (empty($products)) {
-            return;
-        }
-
-        foreach ($products as $index => $data) {
-            $name = trim($data['name'] ?? '');
-            if ($name === '') {
-                continue;
-            }
-
-            $categoryProductId = $data['category_product_id'] ?? null;
-            $source = $categoryProductId ? 'admin' : 'user';
-            $quantity = (int) ($data['quantity'] ?? $data['stock'] ?? 1);
-            $image = null;
-
-            if ($request->hasFile("products.{$index}.image")) {
-                $image = $request->file("products.{$index}.image")
-                    ->store('campaign-products', 'public');
-            }
-
-            if (empty($image) && $categoryProductId) {
-                $catProduct = CategoryProduct::find((int) $categoryProductId);
-                $image = $catProduct?->image;
-            }
-
-            if (empty($image)) {
-                $catProduct = CategoryProduct::where('name', $name)
-                    ->where('category_id', $campaign->category_id)
-                    ->where('is_active', 1)
-                    ->first();
-
-                if ($catProduct) {
-                    $image = $catProduct->image;
-                    $categoryProductId = $categoryProductId ?? $catProduct->id;
-                    $source = 'admin';
-                }
-            }
-
-            CampaignProduct::create([
-                'campaign_id' => $campaign->id,
-                'category_product_id' => $categoryProductId,
-                'user_id' => auth()->id(),
-                'name' => $name,
-                'description' => trim($data['description'] ?? ''),
-                'price' => (float) ($data['price'] ?? 0),
-                'quantity' => $quantity,
-                'remaining_quantity' => $quantity,
-                'image' => $image,
-                'source' => $source,
-                'approval_status' => $source === 'admin' ? 'approved' : 'pending',
-                'approved_by' => null,
-                'approved_at' => null,
-                'is_active' => true,
-            ]);
-        }
-    }
-
-    private function storeCampaignUpdates(Request $request, Campaign $campaign): void
-    {
-        $updates = $request->input('updates', []);
-
-        if (empty($updates)) {
-            return;
-        }
-
-        foreach ($updates as $index => $data) {
-            $title = trim($data['title'] ?? '');
-            if ($title === '') {
-                continue;
-            }
-
-            $documentPath = null;
-            $fileKey = "updates.{$index}.document";
-
-            if ($request->hasFile($fileKey)) {
-                $documentPath = $request->file($fileKey)->store('campaign-updates', 'public');
-            }
-
-            CampaignUpdate::create([
-                'campaign_id' => $campaign->id,
-                'title' => $title,
-                'body' => trim($data['body'] ?? ''),
-                'description' => trim($data['description'] ?? ''),
-                'media_url' => $documentPath,
-                'created_by' => auth()->id(),
-            ]);
-        }
-    }
-
-    private function uploadCoverImage(Request $request): ?string
-    {
-        if (! $request->hasFile('cover_image')) {
-            return null;
-        }
-
-        $file = $request->file('cover_image');
-        $filename = Str::slug($request->title).'-'.time().'.webp';
-        $savePath = storage_path('app/public/images/'.$filename);
-
-        Image::read($file)
-            ->scale(width: 1200)
-            ->toWebp(85)
-            ->save($savePath);
-
-        return 'images/'.$filename;
-    }
-
-    private function generateSlug(string $title): string
-    {
-        $base = Str::slug($title);
-        $slug = $base;
-        $i = 1;
-
-        while (Campaign::where('slug', $slug)->exists()) {
-            $slug = $base.'-'.$i++;
-        }
-
-        return $slug;
     }
 }

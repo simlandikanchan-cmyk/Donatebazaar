@@ -18,7 +18,9 @@ use App\Services\FundraiserLevelService;
 use App\Services\LaravelNotificationService;
 use App\Services\NotificationService;
 use App\View\Composers\CampaignShowComposer;
+use App\View\Composers\UserSidebarComposer;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\App;
@@ -42,14 +44,28 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(NotificationService::class, LaravelNotificationService::class);
 
         $this->app->singleton(RazorpayGateway::class, function ($app) {
-            $keyId = config('services.razorpay.key') ?: env('RAZORPAY_KEY', 'test_key');
-            $keySecret = config('services.razorpay.secret') ?: env('RAZORPAY_SECRET', 'test_secret');
-            $webhookSecret = env('RAZORPAY_WEBHOOK_SECRET', 'test_webhook_secret');
+            $keyId = config('services.razorpay.key');
+            $keySecret = config('services.razorpay.secret');
+
+            if (! $keyId || ! $keySecret) {
+                if (App::environment('production')) {
+                    throw new \RuntimeException('Razorpay credentials are not configured. Set RAZORPAY_KEY and RAZORPAY_SECRET in the production environment.');
+                }
+
+                Log::warning('Razorpay credentials are not configured — falling back to sandbox placeholders.');
+
+                return new RazorpayGateway(
+                    keyId: 'rzp_test_key_placeholder',
+                    keySecret: 'rzp_test_secret_placeholder',
+                    webhookSecret: '',
+                    api: new \Razorpay\Api\Api('rzp_test_key_placeholder', 'rzp_test_secret_placeholder')
+                );
+            }
 
             return new RazorpayGateway(
                 keyId: $keyId,
                 keySecret: $keySecret,
-                webhookSecret: $webhookSecret,
+                webhookSecret: (string) config('services.razorpay.webhook_secret', ''),
                 api: new \Razorpay\Api\Api($keyId, $keySecret)
             );
         });
@@ -67,6 +83,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(\App\Services\Payment\PaymentOrderService::class);
         $this->app->singleton(\App\Services\Payment\PaymentVerificationService::class);
         $this->app->singleton(\App\Services\Payment\PaymentWebhookService::class);
+        $this->app->singleton(\App\Services\Payment\DonationCompletionService::class);
         $this->app->singleton(\App\Services\Payment\RefundService::class);
 
         $this->app->singleton(\App\Services\Campaign\CampaignWorkflowService::class);
@@ -94,6 +111,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         View::composer('campaigns.show', CampaignShowComposer::class);
+        View::composer('partials.user-sidebar', UserSidebarComposer::class);
 
         // Admin dashboard stats cache invalidation
         $forget = fn () => Cache::forget('admin_dashboard_stats');
@@ -131,7 +149,7 @@ class AppServiceProvider extends ServiceProvider
             });
         }
 
-        if (App::environment('production') || env('FORCE_HTTPS', false)) {
+        if (App::environment('production') || config('app.force_https')) {
             URL::forceScheme('https');
         }
     }

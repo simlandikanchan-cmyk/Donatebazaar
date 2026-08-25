@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('content')
 
@@ -13,7 +13,7 @@
       <p class="page-subtitle">Share your story, set a goal, and start making an impact today.</p>
     </div>
 
-    {{-- STEPPER: 6 steps (KYC removed â€” it's on its own page) --}}
+    {{-- STEPPER: 6 steps (KYC removed — it's on its own page) --}}
     <div class="stepper-wrap">
       @foreach([['1','Basics'],['2','Details'],['3','Updates'],['4','Media'],['5','Products'],['6','Review']] as $i => [$num,$label])
       <div class="stepper-item {{ $i===0?'active':'' }}" id="sitem-{{ $num }}">
@@ -56,7 +56,7 @@
               <div class="field-wrap">
                 <label class="field-label">Goal amount <span>*</span></label>
                 <div class="input-prefix-wrap">
-                  <span class="input-prefix">â‚¹</span>
+                  <span class="input-prefix">₹</span>
                   <input type="text" id="goalAmount" name="goal_amount" class="field-input" value="{{ old('goal_amount') }}" placeholder="5,00,000">
                 </div>
                 <p class="field-hint">Enter the total amount you need to raise in Indian Rupees</p>
@@ -89,7 +89,7 @@
               <div class="field-wrap">
                 <label class="field-label">Video URL</label>
                 <input type="url" name="video_url" class="field-input" value="{{ old('video_url') }}" placeholder="https://youtube.com/...">
-                <p class="field-hint">A video can increase donations by up to 4Ã—</p>
+                <p class="field-hint">A video can increase donations by up to 4×</p>
               </div>
               <div class="section-title">Campaign duration</div>
               <div class="field-grid">
@@ -113,7 +113,7 @@
                 <label class="toggle-card">
                   <input type="checkbox" class="toggle-input" name="is_urgent" {{ old('is_urgent')?'checked':'' }}>
                   <div class="toggle-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
-                  <div class="toggle-text"><div class="toggle-title">Urgent campaign</div><div class="toggle-desc">Adds a red urgent badge â€” use only when time-sensitive</div></div>
+                  <div class="toggle-text"><div class="toggle-title">Urgent campaign</div><div class="toggle-desc">Adds a red urgent badge — use only when time-sensitive</div></div>
                   <div class="toggle-track"><div class="toggle-thumb"></div></div>
                 </label>
               </div>
@@ -127,7 +127,7 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" style="width:17px;height:17px;"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
               </div>
               <div class="updates-info-text">
-                <div class="title">Campaign updates &amp; documents <span style="color:var(--danger);font-size:11px;font-weight:700;margin-left:6px;">â— Required</span></div>
+                <div class="title">Campaign updates &amp; documents <span style="color:var(--danger);font-size:11px;font-weight:700;margin-left:6px;">● Required</span></div>
                 <div class="sub">Add at least one update or supporting document. Donors trust campaigns with transparent records.</div>
               </div>
             </div>
@@ -144,14 +144,14 @@
 
           {{-- STEP 4: Media --}}
           <div class="step-panel" id="step-4">
-            <div class="upload-zone" id="uploadZone" data-action="pick-cover">
+            <div class="upload-zone" id="uploadZone">
               <input type="file" id="coverInput" name="cover_image" accept="image/*">
               <div id="uploadPrompt">
                 <div class="upload-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg></div>
                 <div class="upload-title">Drop your cover image here <span style="color:var(--danger);">*</span></div>
                 <div class="upload-hint">or click to browse from your device</div>
                 <div class="upload-btn">Choose file</div>
-                <div style="font-size:11px;color:var(--ink-muted);margin-top:12px;">JPG or PNG Â· Max 2MB Â· Min 1200Ã—630px recommended</div>
+                <div style="font-size:11px;color:var(--ink-muted);margin-top:12px;">JPG or PNG · Max 2MB · Min 1200×630px recommended</div>
               </div>
               <div id="imagePreview">
                 <img id="previewImg" src="" alt="Cover preview">
@@ -160,7 +160,7 @@
               </div>
             </div>
             <p style="font-size:12px;color:var(--ink-muted);margin-top:14px;line-height:1.6;text-align:center;">
-              <strong style="color:var(--danger);">Required.</strong> Campaigns with a compelling cover image raise <strong style="color:var(--purple-main);">3Ã— more</strong> on average.
+              <strong style="color:var(--danger);">Required.</strong> Campaigns with a compelling cover image raise <strong style="color:var(--purple-main);">3× more</strong> on average.
             </p>
           </div>
 
@@ -191,7 +191,7 @@
                 <div class="grand-total-left">Total product value</div>
                 <div class="grand-total-sub" id="grandTotalSub"></div>
               </div>
-              <div class="grand-total-amount" id="grandTotalAmount">â‚¹0</div>
+              <div class="grand-total-amount" id="grandTotalAmount">₹0</div>
             </div>
             <div class="skip-note">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
@@ -203,11 +203,11 @@
           <div class="step-panel" id="step-6">
             <div class="review-card">
               <div class="review-card-header"><div class="review-card-title">Campaign summary</div></div>
-              <div class="review-row"><span class="review-label">Title</span><span class="review-value" id="rv-title">â€”</span></div>
-              <div class="review-row"><span class="review-label">Goal amount</span><span class="review-value" id="rv-goal">â€”</span></div>
-              <div class="review-row"><span class="review-label">Category</span><span class="review-value" id="rv-category">â€”</span></div>
-              <div class="review-row"><span class="review-label">Location</span><span class="review-value" id="rv-location">â€”</span></div>
-              <div class="review-row"><span class="review-label">Duration</span><span class="review-value" id="rv-dates">â€”</span></div>
+              <div class="review-row"><span class="review-label">Title</span><span class="review-value" id="rv-title">—</span></div>
+              <div class="review-row"><span class="review-label">Goal amount</span><span class="review-value" id="rv-goal">—</span></div>
+              <div class="review-row"><span class="review-label">Category</span><span class="review-value" id="rv-category">—</span></div>
+              <div class="review-row"><span class="review-label">Location</span><span class="review-value" id="rv-location">—</span></div>
+              <div class="review-row"><span class="review-label">Duration</span><span class="review-value" id="rv-dates">—</span></div>
               <div class="review-row"><span class="review-label">Cover image</span><span class="review-value" id="rv-image">Not uploaded</span></div>
             </div>
             <div class="review-card" id="rvUpdatesCard" style="display:none;">
@@ -219,7 +219,7 @@
               <div class="review-products-body" id="rvProductsBody"></div>
               <div class="review-row" style="background:var(--purple-mist);">
                 <span class="review-label" style="font-weight:600;color:var(--ink-mid);">Total product value</span>
-                <span class="review-value" style="color:var(--purple-deep);font-size:15px;" id="rv-products-total">â‚¹0</span>
+                <span class="review-value" style="color:var(--purple-deep);font-size:15px;" id="rv-products-total">₹0</span>
               </div>
             </div>
             <div class="grand-summary-card" id="grandSummaryCard">
@@ -227,9 +227,9 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 7H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-3M9 7V5a2 2 0 012-2h2a2 2 0 012 2v2M9 7h6"/></svg>
                 Campaign financial summary
               </div>
-              <div class="grand-summary-row"><span class="lbl">Fundraising goal</span><span class="val" id="gs-goal">â€”</span></div>
-              <div class="grand-summary-row" id="gs-products-row" style="display:none;"><span class="lbl">Total product value</span><span class="val" id="gs-products">â‚¹0</span></div>
-              <div class="grand-summary-total-row"><span class="lbl">Combined total</span><span class="val" id="gs-combined">â€”</span></div>
+              <div class="grand-summary-row"><span class="lbl">Fundraising goal</span><span class="val" id="gs-goal">—</span></div>
+              <div class="grand-summary-row" id="gs-products-row" style="display:none;"><span class="lbl">Total product value</span><span class="val" id="gs-products">₹0</span></div>
+              <div class="grand-summary-total-row"><span class="lbl">Combined total</span><span class="val" id="gs-combined">—</span></div>
             </div>
 
             {{-- KYC next-step notice (replaces old KYC form) --}}
@@ -238,7 +238,7 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
               </div>
               <div class="review-notice-text">
-                After submitting you'll be taken to <strong>KYC verification</strong> â€” upload your Aadhaar/PAN/Passport to activate your campaign. It only takes 2 minutes.
+                After submitting you'll be taken to <strong>KYC verification</strong> — upload your Aadhaar/PAN/Passport to activate your campaign. It only takes 2 minutes.
               </div>
             </div>
           </div>

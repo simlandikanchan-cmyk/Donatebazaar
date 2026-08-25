@@ -125,6 +125,12 @@
                             <a href="{{ $campUrl }}">{{ $campaign->title }}</a>
                         </h3>
 
+                        @if($campaign->description)
+                        <p class="camp-excerpt">
+                            {{ \Illuminate\Support\Str::limit(strip_tags($campaign->description), 110) }}
+                        </p>
+                        @endif
+
                         {{-- PROGRESS BAR --}}
                         <div class="camp-progress-track">
                             <div

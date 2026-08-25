@@ -69,4 +69,14 @@ class LegalPageController extends Controller
         return redirect()->route('admin.legal.index')
             ->with('success', 'Legal page updated successfully. View it at /'.$slug.'.');
     }
+
+    public function destroy(string $slug): RedirectResponse
+    {
+        abort_unless(array_key_exists($slug, LegalPage::slugs()), 404);
+
+        LegalPage::where('slug', $slug)->delete();
+
+        return redirect()->route('admin.legal.index')
+            ->with('success', 'Legal page reset to default template.');
+    }
 }

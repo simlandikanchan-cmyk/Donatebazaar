@@ -5,7 +5,7 @@ import Chart from 'chart.js/auto';
 window.Chart = Chart;
 
 import { toast as showToast } from '../shared/toast.js';
-import { getCsrfToken } from '../shared/csrf.js';
+import { csrfFetch } from '../shared/api.js';
 import { escapeHtml } from '../shared/helpers.js';
 
 (function () {
@@ -133,8 +133,8 @@ import { escapeHtml } from '../shared/helpers.js';
 
   async function loadNotifs() {
     try {
-      const res = await fetch('/notifications', {
-        headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
+      const res = await csrfFetch('/notifications', {
+        headers: { 'Accept': 'application/json' },
       });
       if (!res.ok) return;
       const data = await res.json();
@@ -145,9 +145,9 @@ import { escapeHtml } from '../shared/helpers.js';
 
   async function markNotifRead(id, url) {
     try {
-      await fetch('/notifications/' + encodeURIComponent(id) + '/read', {
+      await csrfFetch('/notifications/' + encodeURIComponent(id) + '/read', {
         method: 'POST',
-        headers: { 'X-CSRF-TOKEN': getCsrfToken(), 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
       });
     } catch (e) { /* no-op */ }
     if (url && url !== '#') window.location.href = url;
@@ -155,9 +155,9 @@ import { escapeHtml } from '../shared/helpers.js';
 
   async function markAllNotifsRead() {
     try {
-      const res = await fetch('/notifications/read-all', {
+      const res = await csrfFetch('/notifications/read-all', {
         method: 'POST',
-        headers: { 'X-CSRF-TOKEN': getCsrfToken(), 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
       });
       if (!res.ok) return;
       const data = await res.json();

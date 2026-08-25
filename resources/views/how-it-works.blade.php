@@ -37,10 +37,10 @@
             </p>
             <div class="hiw-hero-btns">
                 <x-button variant="primary" size="lg" href="{{ route('all.campaigns') }}">
-                    Browse Campaigns
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    Donate Now
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
                 </x-button>
-                <x-button variant="primary" size="lg" href="{{ route('campaign.create') }}">
+                <x-button variant="outline" size="lg" href="{{ route('campaign.create') }}">
                     Start Fundraiser
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 4v16m8-8H4"/></svg>
                 </x-button>
@@ -403,8 +403,8 @@
         </div>
 
         <div class="faq-tab-wrap reveal">
-            <x-button variant="primary" type="button" class="faq-tab-btn active">For Donors</x-button>
-            <x-button variant="primary" type="button" class="faq-tab-btn">For Fundraisers</x-button>
+            <x-button variant="primary" type="button" class="faq-tab-btn active" id="faq-tab-donors" data-action="switch-faq-tab" data-faq-tab="donors">For Donors</x-button>
+            <x-button variant="primary" type="button" class="faq-tab-btn" id="faq-tab-fundraisers" data-action="switch-faq-tab" data-faq-tab="fundraisers">For Fundraisers</x-button>
         </div>
 
         <div id="faq-pane-donors">
@@ -445,13 +445,13 @@
         <h2 class="cta-title reveal d1">Start Your Own <em>Campaign</em></h2>
         <p class="cta-sub reveal d2">Medical emergency, education, disaster relief — whatever the cause, we verify and support your fundraiser from day one. Free to start, 24×7 support.</p>
         <div class="cta-btns reveal d3">
-            <x-button variant="primary" size="lg" href="{{ route('campaign.create') }}">
+            <x-button variant="primary" size="lg" href="{{ route('all.campaigns') }}">
+                Donate Now
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            </x-button>
+            <x-button variant="outline" size="lg" href="{{ route('campaign.create') }}">
                 Start Fundraiser
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 4v16m8-8H4"/></svg>
-            </x-button>
-            <x-button variant="primary" size="lg" href="{{ route('all.campaigns') }}">
-                Browse Campaigns
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </x-button>
         </div>
     </div>

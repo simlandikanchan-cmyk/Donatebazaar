@@ -1,5 +1,16 @@
-@push('page_css')
+@push('page_styles')
 @vite('resources/css/admin/entries/messages.css')
+<style>
+@media(max-width:860px){
+  .detail-grid{grid-template-columns:1fr!important}
+  .side-panel{width:100%}
+}
+@media(max-width:640px){
+  .info-grid{grid-template-columns:1fr!important}
+  .dc-foot{flex-wrap:wrap}
+  .dc-foot .btn{flex:1;min-width:140px;justify-content:center}
+}
+</style>
 @endpush
 
 @extends('layouts.admin')
@@ -76,11 +87,10 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
         Reply via Email
       </button>
-      <form action="{{ route('admin.messages.delete', $message->id) }}" method="POST" style="display:inline;">
+      <form action="{{ route('admin.messages.delete', $message->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Delete this message? This cannot be undone.');">
         @csrf @method('DELETE')
-        <button type="submit" class="btn btn-red act-btn ab-delete" data-action="confirm-delete" data-confirm="Delete this message permanently?">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
-          Delete Message
+        <button type="submit" class="btn btn-red act-btn ab-delete" title="Delete">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Delete
         </button>
       </form>
     </div>
@@ -141,10 +151,8 @@
         </a>
         <form action="{{ route('admin.messages.delete', $message->id) }}" method="POST">
           @csrf @method('DELETE')
-          <button type="submit" class="btn btn-red qa-btn danger" data-action="confirm-delete" data-confirm="Delete this message permanently?">
-            <span class="qa-icon qi-red">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
-            </span>
+          <button type="submit" class="btn btn-red act-btn ab-delete" data-action="confirm-delete" data-confirm="Delete this message permanently?">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
             Delete Message
           </button>
         </form>
@@ -205,9 +213,13 @@
 @endsection
 
 @push('page_scripts')
-@vite('resources/js/admin/messages-show.js')
+@vite('resources/js/admin/entries/messages-show.js')
 @endpush
 
 @push('page_styles')
 @vite('resources/css/admin/pages/messages-show.css')
+<style>
+@media(max-width:860px){.detail-grid{grid-template-columns:1fr}}
+.reply-modal{max-width:calc(100% - 32px)}
+</style>
 @endpush

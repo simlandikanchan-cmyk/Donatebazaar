@@ -159,7 +159,7 @@
             <p>Start supporting campaigns with recurring contributions and see them tracked here.</p>
             <x-button variant="primary" href="/all-campaigns">
                 
-                Explore Campaigns
+                Donate Now
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
             </x-button>
         </div>

@@ -2,14 +2,30 @@
    ADMIN — Utilities: Helpers
    .hb-count/.hc-count live in base/_typography.css
    ══════════════════════════════════════ */
-
 /* hide table row regardless of state (JS bulk actions) */
-.row-hidden{display:none !important;}
+.row-hidden {
+  display: none !important;
+}
 /* clickable image preview */
-.zoomable{cursor:zoom-in;}
+.zoomable {
+  cursor: zoom-in;
+}
 /* generic helpers */
-.hide{display:none !important;}
-.full{width:100%;}
-.muted{color:var(--text3);}
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-.scroll-x{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.hide {
+  display: none !important;
+}
+.full {
+  width: 100%;
+}
+.muted {
+  color: var(--text3);
+}
+.grid-2 {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr 1fr;
+}
+.scroll-x {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}

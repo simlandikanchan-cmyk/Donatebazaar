@@ -202,7 +202,6 @@ body{font-family:var(--font);color:var(--ink);-webkit-font-smoothing:antialiased
 /* ══════════════════════════════════════════
    FIELD COMPONENTS
 ══════════════════════════════════════════ */
-.field-stack{display:flex;flex-direction:column;gap:24px}
 .field-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 .field-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
 

@@ -10,6 +10,18 @@
 
 @push('page_styles')
 @vite('resources/css/admin/entries/jobs-show.css')
+<style>
+@media(max-width:860px){
+  .content-grid{grid-template-columns:1fr!important}
+  .hero-right{width:100%;margin-top:16px}
+  .hero-right .hero-stat-card{width:100%}
+}
+@media(max-width:640px){
+  .table-scroll{min-width:520px}
+  .act-btns{flex-direction:column;gap:4px}
+  .act-btns .btn{width:100%;justify-content:center}
+}
+</style>
 @endpush
 
 @section('content')
@@ -251,8 +263,8 @@
       </div>
 
       @if($appCount > 0)
-      <div class="table-wrap">
-        <table>
+      <div class="table-scroll">
+        <table style="min-width:520px">
           <thead>
             <tr>
               <th>#</th>

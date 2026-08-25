@@ -131,8 +131,14 @@
                 Active Product
             </label>
 
-        </div>
+</div>
 
     </div>
 
 </div>
+
+<style>
+@media(max-width:640px){
+  .col-md-6{width:100%;flex:none;max-width:100%;display:block}
+}
+</style>

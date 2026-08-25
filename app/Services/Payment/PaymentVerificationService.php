@@ -3,25 +3,15 @@
 namespace App\Services\Payment;
 
 use App\Gateways\RazorpayGateway;
-use App\Mail\DonationReceiptMail;
 use App\Models\Campaign;
-use App\Models\CampaignProduct;
-use App\Models\Coupon;
-use App\Models\CouponRedemption;
 use App\Models\Donation;
-use App\Models\DonationItem;
-use App\Models\ProductReservation;
-use App\Services\CouponService;
-use App\Services\ProductReservationService;
-use App\Services\WalletService;
-use App\Models\WalletTransaction;
+use App\Services\Payment\DonationCompletionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Razorpay\Api\Errors\SignatureVerificationError;
 
 class PaymentVerificationService
@@ -34,9 +24,7 @@ class PaymentVerificationService
 
     public function __construct(
         private RazorpayGateway $gateway,
-        private CouponService $couponService,
-        private ProductReservationService $productReservationService,
-        private WalletService $walletService
+        private DonationCompletionService $completionService
     ) {}
 
     public function verifyPayment(Request $request): JsonResponse
@@ -89,46 +77,26 @@ class PaymentVerificationService
                 ]);
             }
 
-            DB::transaction(function () use ($donation, $request) {
-                $lockedDonation = Donation::lockForUpdate()
-                    ->findOrFail($donation->id);
+            $this->gateway->verifyPaymentDetails(
+                $request->razorpay_payment_id,
+                $request->razorpay_order_id,
+                (float) $donation->total_amount,
+                (string) $donation->currency
+            );
 
-                if ($lockedDonation->payment_status === 'completed') {
-                    return;
-                }
+            $donation->payment_id = $request->razorpay_payment_id;
+            $donation->signature = $request->razorpay_signature;
 
-                $lockedDonation->payment_id = $request->razorpay_payment_id;
-                $lockedDonation->signature = $request->razorpay_signature;
-                $lockedDonation->payment_status = 'completed';
-                $lockedDonation->paid_at = now();
-                $lockedDonation->save();
-
-                Campaign::lockForUpdate()
-                    ->findOrFail($lockedDonation->campaign_id)
-                    ->increment('platform_earnings', $lockedDonation->platform_fee);
-
-                $this->decrementProductStock($lockedDonation);
-                $this->consumeReservations($lockedDonation);
-                $this->redeemCoupon($lockedDonation);
-
-                $owner = $this->walletService->ownerForDonation($lockedDonation);
-                if ($owner) {
-                    $wallet = $this->walletService->getOrCreateWallet($owner);
-                    $this->walletService->credit(
-                        $wallet,
-                        (float) $lockedDonation->net_amount,
-                        WalletTransaction::SOURCE_DONATION,
-                        $lockedDonation->id,
-                        Donation::class,
-                        'Donation #'.$lockedDonation->id
-                    );
-                }
-            });
+            $result = $this->completionService->complete(
+                $donation,
+                $request->razorpay_payment_id,
+                $request->razorpay_signature
+            );
 
             $donation->refresh();
             $donation->load('campaign.category');
 
-            Log::info('Payment completed', [
+            Log::channel('payments')->info('Payment completed', [
                 'donation_id' => $donation->id,
                 'campaign_id' => $donation->campaign_id,
                 'donation_type' => $donation->donation_type,
@@ -139,8 +107,6 @@ class PaymentVerificationService
                 'user_id' => Auth::id(),
             ]);
 
-            $this->sendReceiptEmail($donation);
-
             return response()->json([
                 'success' => true,
                 'message' => 'Payment successful. Thank you for your donation!',
@@ -149,7 +115,7 @@ class PaymentVerificationService
             ]);
 
         } catch (SignatureVerificationError $e) {
-            Log::warning('Razorpay signature verification failed', [
+            Log::channel('payments')->warning('Razorpay signature verification failed', [
                 'order_id' => $request->razorpay_order_id,
                 'payment_id' => $request->razorpay_payment_id,
                 'user_id' => Auth::id(),
@@ -167,7 +133,7 @@ class PaymentVerificationService
             ], 400);
 
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            Log::error('Donation not found during verification', [
+            Log::channel('payments')->error('Donation not found during verification', [
                 'donation_id' => $request->donation_id,
                 'order_id' => $request->razorpay_order_id,
             ]);
@@ -178,7 +144,7 @@ class PaymentVerificationService
             ], 404);
 
         } catch (\Throwable $e) {
-            Log::error('Payment verification exception', [
+            Log::channel('payments')->error('Payment verification exception', [
                 'message' => $e->getMessage(),
                 'order_id' => $request->razorpay_order_id ?? null,
                 'payment_id' => $request->razorpay_payment_id ?? null,
@@ -193,110 +159,6 @@ class PaymentVerificationService
 
         } finally {
             $lock->release();
-        }
-    }
-
-    private function decrementProductStock(Donation $donation): void
-    {
-        if ($donation->donation_type !== 'product') {
-            return;
-        }
-
-        $items = DonationItem::where('donation_id', $donation->id)->get();
-
-        foreach ($items as $item) {
-            CampaignProduct::where('id', $item->product_id)
-                ->where('remaining_quantity', '>=', $item->quantity)
-                ->decrement('remaining_quantity', $item->quantity);
-        }
-
-        Log::info('Product stock decremented after payment', [
-            'donation_id' => $donation->id,
-            'items' => $items->count(),
-        ]);
-    }
-
-    private function consumeReservations(Donation $donation): void
-    {
-        if ($donation->donation_type !== 'product') {
-            return;
-        }
-
-        $this->productReservationService->consume($donation);
-
-        Log::info('Product reservations consumed after payment', [
-            'donation_id' => $donation->id,
-        ]);
-    }
-
-    private function redeemCoupon(Donation $donation): void
-    {
-        if (! $donation->coupon_id) {
-            return;
-        }
-
-        $coupon = Coupon::lockForUpdate()->find($donation->coupon_id);
-
-        if (! $coupon) {
-            return;
-        }
-
-        if (CouponRedemption::where('donation_id', $donation->id)->exists()) {
-            return;
-        }
-
-        [$valid] = $coupon->isValidFor(
-            $donation->user,
-            $donation->campaign,
-            (float) $donation->original_amount
-        );
-
-        if (! $valid) {
-            return;
-        }
-
-        $coupon->increment('used_count');
-
-        if ($coupon->user_id) {
-            $coupon->redeemed_at = now();
-            $coupon->save();
-        }
-
-        CouponRedemption::create([
-            'coupon_id' => $coupon->id,
-            'user_id' => $donation->user_id,
-            'donation_id' => $donation->id,
-            'discount_amount' => $donation->discount_amount,
-            'created_at' => now(),
-        ]);
-
-        Log::info('Coupon redeemed', [
-            'coupon_id' => $coupon->id,
-            'donation_id' => $donation->id,
-            'discount' => $donation->discount_amount,
-        ]);
-    }
-
-    private function sendReceiptEmail(Donation $donation): void
-    {
-        if (empty($donation->donor_email)) {
-            return;
-        }
-
-        try {
-            Mail::to($donation->donor_email)
-                ->send(new DonationReceiptMail($donation));
-
-            Log::info('Donation receipt email sent', [
-                'donation_id' => $donation->id,
-                'email' => $donation->donor_email,
-            ]);
-        } catch (\Throwable $e) {
-            Log::error('Donation receipt email failed', [
-                'donation_id' => $donation->id,
-                'email' => $donation->donor_email,
-                'error' => $e->getMessage(),
-            ]);
         }
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Blog;
 use App\Models\Campaign;
 use App\Models\CampaignSettlement;
 use App\Models\FundraiserLevel;
@@ -13,6 +14,7 @@ use App\Repositories\WalletRepository;
 use App\Services\WalletService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
@@ -84,6 +86,7 @@ class DashboardController extends Controller
         $registeredEvents = $this->userRepo->getUserRegisteredEvents($user);
         $recentTransactions = $this->walletRepo->getRecentTransactions($wallet->id);
         $totalCampaigns = $this->campaignRepo->countByUser($user->id);
+        $blogTotal = Blog::where('author_id', $user->id)->count();
 
         $pendingTasks = Cache::remember("dashboard.pending_tasks.{$user->id}", 300, function () use ($user, $kyc, $campaignIds, $totalCampaigns) {
             $tasks = collect();
@@ -109,12 +112,27 @@ class DashboardController extends Controller
             return $tasks;
         });
 
+        $campaignChartData = $campaigns->count() > 1
+            ? $campaigns->map(fn($c) => ['title' => Str::limit($c->title, 22), 'raised' => (float) $c->raised_amount, 'goal' => (float) $c->goal_amount])->values()
+            : collect();
+
+        $totalGoal = $campaigns->sum('goal_amount');
+        $totalRaised = $campaigns->sum('raised_amount');
+        $overallPct = $totalGoal > 0 ? min(100, round(($totalRaised / $totalGoal) * 100)) : 0;
+
+        $userDashboardData = [
+            'overallPct'    => (int) $overallPct,
+            'levelProgress' => (int) $levelProgress,
+            'monthlyData'   => $monthlyData ?? [],
+            'campChartData' => $campaignChartData,
+        ];
+
         return view('dashboard', compact(
             'campaigns', 'monthlyData', 'recurringDonations', 'recurringCount',
             'kyc', 'recentDonations', 'totalDonationsCount', 'level', 'levelName',
             'memberSince', 'daysActive', 'user', 'wallet',
             'topCampaign', 'nextLevel', 'levelProgress', 'campaignsCompleted', 'totalRaisedAll', 'recentBlogs',
-            'myEvents', 'registeredEvents', 'recentTransactions', 'pendingTasks'
+            'myEvents', 'registeredEvents', 'recentTransactions', 'pendingTasks', 'blogTotal', 'userDashboardData'
         ));
     }
 

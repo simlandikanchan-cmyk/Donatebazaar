@@ -29,7 +29,28 @@ return Application::configure(basePath: dirname(__DIR__))
             TrackPageLoad::class,
         ]);
 
-        $middleware->trustProxies(at: '*');
+        // Public endpoints that cannot send a CSRF token:
+        // Razorpay webhook and the chatbot AJAX endpoint.
+        $middleware->validateCsrfTokens(except: [
+            'chatbot',
+            'payment/webhook',
+        ]);
+
+        // Trusted reverse proxies allowed to set forwarded headers
+        // (X-Forwarded-For / X-Forwarded-Proto). Configure per deployment
+        // via the TRUSTED_PROXIES environment variable (set it as a real
+        // server env var when using `php artisan config:cache`):
+        //   - unset / empty : trust NO proxies (secure default — direct HTTPS)
+        //   - "*"           : ONLY when exclusively behind a trusted proxy
+        //                     (e.g. Cloudflare, an AWS/load balancer)
+        //   - IPs/CIDRs     : e.g. "203.0.113.10,198.51.100.0/24"
+        $trustedProxies = env('TRUSTED_PROXIES');
+
+        if ($trustedProxies !== null && $trustedProxies !== '*') {
+            $trustedProxies = array_map('trim', explode(',', (string) $trustedProxies));
+        }
+
+        $middleware->trustProxies(at: $trustedProxies);
     })
     ->withProviders([
         RiskServiceProvider::class,

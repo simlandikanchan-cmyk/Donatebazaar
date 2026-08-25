@@ -6,6 +6,10 @@
 (function () {
   'use strict';
 
+  function escapeHtml(str) {
+    return String(str ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
   /* ── SERVER DATA ── */
   var categoryProductsMap = {};
   (function () {
@@ -29,6 +33,14 @@
     document.body.appendChild(el);
     setTimeout(function () { el.style.opacity = '0'; el.style.transition = 'opacity .4s'; }, duration);
     setTimeout(function () { if (el.parentNode) el.remove(); }, duration + 450);
+  }
+
+  /* ── HELPERS ── */
+  function esc(str) {
+    if (str == null) return '';
+    return String(str).replace(/[&<>"']/g, function (m) {
+      return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m];
+    });
   }
 
   /* ── WIZARD ── */
@@ -301,7 +313,7 @@
     var nameEl = document.getElementById('docName-' + id);
     if (input.files && input.files[0]) {
       var f = input.files[0];
-      nameEl.innerHTML = '<span class="doc-preview-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:11px;height:11px;"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>' + f.name + '</span>';
+      nameEl.innerHTML = '<span class="doc-preview-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:11px;height:11px;"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>' + esc(f.name) + '</span>';
     } else {
       nameEl.textContent = 'No file chosen';
     }
@@ -336,9 +348,9 @@
       pill.type = 'button';
       pill.className = 'suggestion-pill';
       var imgHtml = s.image
-        ? '<img src="' + s.image + '" class="suggestion-pill-img" onerror="this.style.display=\'none\'">'
+        ? '<img src="' + s.image.replace(/"/g, '&quot;') + '" class="suggestion-pill-img" onerror="this.style.display=\'none\'">'
         : '<span class="suggestion-pill-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2zM16 3H8l-2 4h12l-2-4z"/></svg></span>';
-      pill.innerHTML = imgHtml + s.name + ' &middot; ₹' + s.price.toLocaleString('en-IN');
+      pill.innerHTML = imgHtml + escapeHtml(s.name) + ' &middot; ₹' + s.price.toLocaleString('en-IN');
       pill.onclick = function () { addProduct(s.id, s.name, s.price, s.desc, s.stock, s.image); };
       wrap.appendChild(pill);
     });
@@ -365,8 +377,8 @@
         '<div class="product-img-preview-wrap" id="prodImgPreview-' + id + '">' + imgPreviewHtml + '</div>' +
       '</div>' +
       '<div class="field-stack">' +
-        '<div class="field-wrap"><label class="field-label">Product name <span>*</span></label><input type="text" name="products[' + id + '][name]" data-field="name" class="field-input" placeholder="e.g. Handmade bracelet" value="' + (name || '') + '"></div>' +
-        '<div class="field-wrap"><label class="field-label">Description</label><textarea name="products[' + id + '][description]" data-field="description" class="field-input" rows="2" placeholder="Brief description...">' + (desc || '') + '</textarea></div>' +
+        '<div class="field-wrap"><label class="field-label">Product name <span>*</span></label><input type="text" name="products[' + id + '][name]" data-field="name" class="field-input" placeholder="e.g. Handmade bracelet" value="' + escapeHtml(name || '') + '"></div>' +
+        '<div class="field-wrap"><label class="field-label">Description</label><textarea name="products[' + id + '][description]" data-field="description" class="field-input" rows="2" placeholder="Brief description...">' + escapeHtml(desc || '') + '</textarea></div>' +
         '<div class="field-grid-3">' +
           '<div class="field-wrap"><label class="field-label">Price (₹) <span>*</span></label><div class="input-prefix-wrap"><span class="input-prefix">₹</span><input type="number" name="products[' + id + '][price]" data-field="price" class="field-input" placeholder="199" min="0" step="1" value="' + (price || '') + '" data-product-id="' + id + '"></div></div>' +
           '<div class="field-wrap"><label class="field-label">Quantity <span>*</span></label><input type="number" name="products[' + id + '][stock]" data-field="stock" class="field-input" placeholder="10" min="1" step="1" value="' + (stock || '') + '" data-product-id="' + id + '"></div>' +
@@ -443,13 +455,23 @@
     if (updateEntries.length > 0) {
       rvUpdatesCard.style.display = '';
       document.getElementById('rvUpdateCount').textContent = '(' + updateEntries.length + ')';
-      document.getElementById('rvUpdatesBody').innerHTML = Array.from(updateEntries).map(function (entry) {
+      var updatesBody = document.getElementById('rvUpdatesBody');
+      updatesBody.innerHTML = '';
+      Array.from(updateEntries).forEach(function (entry) {
         var title = entry.querySelector('[data-ufield="title"]').value.trim();
         var fi = entry.querySelector('input[type="file"]');
         var docName = (fi && fi.files && fi.files[0]) ? fi.files[0].name : '';
-        if (!title) return '';
-        return '<span class="review-update-pill">' + title + (docName ? ' · 📎' + docName : '') + '</span>';
-      }).join('');
+        if (!title) return;
+        var span = document.createElement('span');
+        span.className = 'review-update-pill';
+        span.textContent = title;
+        if (docName) {
+          var docSpan = document.createElement('span');
+          docSpan.textContent = ' \u00b7 \ud83d\udcce' + docName;
+          span.appendChild(docSpan);
+        }
+        updatesBody.appendChild(span);
+      });
     } else { rvUpdatesCard.style.display = 'none'; }
 
     var items = document.querySelectorAll('.product-item');
@@ -464,10 +486,20 @@
     if (products.length > 0) {
       rvCard.style.display = '';
       document.getElementById('rvProductCount').textContent = '(' + products.length + ')';
-      document.getElementById('rv-products-total').textContent = '₹' + Math.round(productTotal).toLocaleString('en-IN');
-      document.getElementById('rvProductsBody').innerHTML = products.map(function (p) {
-        return '<span class="review-product-pill">' + p.name + (p.price ? ' · ₹' + p.price.toLocaleString('en-IN') : '') + (p.qty ? ' · qty ' + p.qty : '') + (p.price && p.qty ? ' · <strong>₹' + Math.round(p.price * p.qty).toLocaleString('en-IN') + '</strong>' : '') + '</span>';
-      }).join('');
+      document.getElementById('rv-products-total').textContent = '\u20b9' + Math.round(productTotal).toLocaleString('en-IN');
+      var productsBody = document.getElementById('rvProductsBody');
+      productsBody.innerHTML = '';
+      products.forEach(function (p) {
+        var span = document.createElement('span');
+        span.className = 'review-product-pill';
+        span.textContent = p.name + ' \u00b7 \u20b9' + p.price.toLocaleString('en-IN') + ' \u00b7 qty ' + p.qty;
+        if (p.price && p.qty) {
+          var strong = document.createElement('strong');
+          strong.textContent = ' \u00b7 \u20b9' + Math.round(p.price * p.qty).toLocaleString('en-IN');
+          span.appendChild(strong);
+        }
+        productsBody.appendChild(span);
+      });
     } else { rvCard.style.display = 'none'; }
 
     var combined = goalRaw + productTotal;

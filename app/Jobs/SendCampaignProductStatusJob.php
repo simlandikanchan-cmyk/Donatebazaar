@@ -48,10 +48,11 @@ class SendCampaignProductStatusJob implements ShouldQueue
                     new CampaignProductStatusMail($product, $this->status, $this->reason, $admin)
                 );
             } catch (Throwable $e) {
-             
                 Log::error('Failed to send campaign product status mail', [
                     'product_id' => $product->id,
                     'status'     => $this->status,
+                    'reason'     => $this->reason,
+                    'admin_id'   => $this->adminId,
                     'error'      => $e->getMessage(),
                 ]);
             }

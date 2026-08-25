@@ -5,11 +5,15 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Campaign;
 use App\Models\Category;
+use App\Services\SlugGenerator;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
+    public function __construct(
+        private SlugGenerator $slugGenerator
+    ) {}
+
     /*
     |------------------------------------------------------------------
     | INDEX (List All Categories)
@@ -47,18 +51,9 @@ class CategoryController extends Controller
             'color' => 'nullable|string|max:50',
         ]);
 
-        // Generate unique slug
-        $slug = Str::slug($request->name);
-        $originalSlug = $slug;
-        $count = 1;
-
-        while (Category::where('slug', $slug)->exists()) {
-            $slug = $originalSlug.'-'.$count++;
-        }
-
         Category::create([
             'name' => $request->name,
-            'slug' => $slug,
+            'slug' => $this->slugGenerator->unique(new Category(), $request->name),
             'icon' => $request->icon,
             'color' => $request->color,
             'is_active' => $request->has('is_active'),
@@ -91,22 +86,9 @@ class CategoryController extends Controller
             'color' => 'nullable|string|max:50',
         ]);
 
-        // Generate unique slug (ignore current category)
-        $slug = Str::slug($request->name);
-        $originalSlug = $slug;
-        $count = 1;
-
-        while (
-            Category::where('slug', $slug)
-                ->where('id', '!=', $category->id)
-                ->exists()
-        ) {
-            $slug = $originalSlug.'-'.$count++;
-        }
-
         $category->update([
             'name' => $request->name,
-            'slug' => $slug,
+            'slug' => $this->slugGenerator->unique(new Category(), $request->name, 'slug', $category->id),
             'icon' => $request->icon,
             'color' => $request->color,
             'is_active' => $request->has('is_active'),

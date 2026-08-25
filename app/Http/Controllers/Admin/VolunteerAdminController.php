@@ -64,6 +64,14 @@ class VolunteerAdminController extends Controller
         return view('admin.volunteers.show', compact('volunteer', 'events'));
     }
 
+    public function destroy(Volunteer $volunteer): \Illuminate\Http\RedirectResponse
+    {
+        $volunteer->delete();
+
+        return redirect()->route('admin.volunteers.index')
+            ->with('success', 'Volunteer deleted successfully.');
+    }
+
     public function applications(Request $request)
     {
         $applications = VolunteerApplication::with(['volunteer.user', 'campaign'])

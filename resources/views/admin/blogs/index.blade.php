@@ -1,5 +1,18 @@
-@push('page_css')
+@push('page_styles')
 @vite('resources/css/admin/entries/blogs.css')
+<style>
+@media(max-width:860px){
+  .stats-grid{grid-template-columns:repeat(2,1fr)!important}
+  .sec-header{flex-wrap:wrap}
+  .sec-header .sec-right{width:100%;margin-top:8px}
+}
+@media(max-width:480px){
+  .stats-grid{grid-template-columns:1fr!important}
+}
+@media(max-width:640px){
+  .table-wrap{min-width:480px}
+}
+</style>
 @endpush
 
 @extends('layouts.admin')
@@ -273,9 +286,14 @@
 @endsection
 
 @push('page_scripts')
-@vite('resources/js/admin/blogs-index.js')
+@vite('resources/js/admin/entries/blogs-index.js')
 @endpush
 
 @push('page_styles')
 @vite('resources/css/admin/pages/blogs-index.css')
+<style>
+@media(max-width:640px){
+  .table-scroll{min-width:640px}
+}
+</style>
 @endpush

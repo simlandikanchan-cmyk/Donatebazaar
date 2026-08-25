@@ -24,7 +24,9 @@
 .search-input:focus{border-color:var(--a);box-shadow:0 0 0 3px var(--a-glow);}
 .filter-btn{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 13px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--r-sm);font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;font-family:var(--font);transition:all var(--ease);text-decoration:none;}
 .filter-btn:hover,.filter-btn.on{border-color:var(--a);color:var(--a);background:var(--a-lt);}
-.table-wrap{overflow-x:auto;}
+.table-scroll{overflow-x:auto;}
+@media(max-width:640px){.table-scroll{min-width:640px}.actions{flex-wrap:wrap}.actions .btn{width:100%;justify-content:center}}
+@media(max-width:480px){.table-scroll{min-width:480px}table{min-width:480px}}
 table{width:100%;border-collapse:collapse;}
 thead th{padding:10px 18px;text-align:left;font-size:10px;font-family:var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--text3);background:var(--surface2);border-bottom:1px solid var(--border);font-weight:500;white-space:nowrap;}
 thead th:last-child{text-align:right;}
@@ -94,7 +96,7 @@ td{padding:13px 18px;font-size:13px;vertical-align:middle;}
       <p>Completed campaigns can be featured on the public Impact / Success Stories page.</p>
     </div>
   @else
-    <div class="table-wrap">
+    <div class="table-scroll">
       <table>
         <thead>
           <tr>
@@ -144,6 +146,12 @@ td{padding:13px 18px;font-size:13px;vertical-align:middle;}
                   </button>
                 </form>
                 <a href="{{ route('campaign.public', ['category' => $c->category?->slug ?? 'campaign', 'slug' => $c->slug]) }}" target="_blank" class="btn btn-secondary act-btn ab-view" title="View">View</a>
+                <form method="POST" action="{{ route('admin.success-stories.destroy', $c->id) }}" style="display:inline;" onsubmit="return confirm('Remove this success story? This cannot be undone.');">
+                  @csrf @method('DELETE')
+                  <button type="submit" class="btn btn-red act-btn ab-delete" title="Remove">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Remove
+                  </button>
+                </form>
               </div>
             </td>
           </tr>

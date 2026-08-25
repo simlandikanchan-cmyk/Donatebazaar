@@ -11,7 +11,7 @@ class SensitiveDataRedactor implements ProcessorInterface
         '/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/' => '[REDACTED_EMAIL]',
         '/\b\d{4}[\-\s]?\d{4}[\-\s]?\d{4}[\-\s]?\d{4}\b/' => '[REDACTED_CARD]',
         '/\b(?:\+?[\d\-\s()]{10,})\b/' => '[REDACTED_PHONE]',
-        '/\b(?:password|passwd|pwd|secret|token|api_key|apikey)\s*[=:]\s*["\']?([^"\'&\s]+)["\']?/i' => '$1=[REDACTED]',
+        '/\b(?:password|passwd|pwd|secret|token|api_key|apikey)\s*[=:]\s*["\']?([^"\'&\s]+)["\']?/i' => '[REDACTED]',
         '/\b[A-Za-z0-9]{32,}\b/' => '[REDACTED_KEY]',
     ];
 
@@ -19,9 +19,12 @@ class SensitiveDataRedactor implements ProcessorInterface
     {
         $message = $record->message;
 
-        if (isset($record->context)) {
-            $message .= ' ' . json_encode($this->redactArray($record->context->toArray()));
-        }
+        $context = $record->context ?? [];
+        $contextArray = is_object($context) && method_exists($context, 'toArray')
+            ? $context->toArray()
+            : (array) $context;
+
+        $message .= ' ' . json_encode($this->redactArray($contextArray));
 
         foreach ($this->patterns as $pattern => $replacement) {
             $message = preg_replace($pattern, $replacement, $message);

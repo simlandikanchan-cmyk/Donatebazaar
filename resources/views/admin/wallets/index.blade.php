@@ -56,17 +56,11 @@
 </div>
 
 <div class="table-card">
-  <div class="table-card-head">
-    <div class="table-card-head-left">
-      <div class="table-card-icon" style="background:var(--a-lt);color:var(--a);">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-      </div>
-      <div>
-        <div class="table-card-title">All Wallets</div>
-        <div class="table-card-sub">Manage wallet balances and settings</div>
-      </div>
-    </div>
-    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+  <div class="card-head">
+    <div class="card-head-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg></div>
+    <span class="card-head-title">All Wallets</span>
+    <span class="card-head-count">Manage wallet balances and settings</span>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-left:auto;">
       <div class="ftabs" id="walletFilterTabs" style="display:flex;gap:6px;">
         <button class="ftab {{ $filter === 'all' ? 'on' : '' }}" data-action="navigate" data-href="?filter=all">All <span class="cnt">{{ $stats['total'] }}</span></button>
         <button class="ftab {{ $filter === 'users' ? 'on' : '' }}" data-action="navigate" data-href="?filter=users">Users <span class="cnt">{{ $stats['users'] }}</span></button>
@@ -85,7 +79,7 @@
     </div>
   </div>
   <div class="table-scroll">
-    <table id="walletsTable">
+    <table id="walletsTable" style="min-width:640px">
       <thead>
         <tr>
           <th style="width:60px">ID</th>
@@ -133,6 +127,12 @@
                 <a href="{{ route('admin.wallets.show', $w) }}" class="btn btn-secondary act-btn ab-view" title="View ledger">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                 </a>
+                <form method="POST" action="{{ route('admin.wallets.destroy', $w) }}" style="display:inline;" onsubmit="return confirm('Delete this wallet? This cannot be undone.');">
+                  @csrf @method('DELETE')
+                  <button type="submit" class="btn btn-red act-btn ab-delete" title="Delete">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Delete
+                  </button>
+                </form>
               </div>
             </td>
           </tr>
@@ -166,7 +166,7 @@
 </div>
 
 @push('page_scripts')
-@vite('resources/js/admin/wallets-index.js')
+@vite('resources/js/admin/entries/wallets-index.js')
 @endpush
 
 <style>

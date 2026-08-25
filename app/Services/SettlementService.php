@@ -28,6 +28,7 @@ use App\Models\Wallet;
 use App\Models\WalletTransaction;
 use App\Services\Risk\RiskEngine;
 use App\Services\Settlement\SettlementStateMachine;
+use App\Support\Money;
 use Illuminate\Support\Facades\DB;
 
 class SettlementService
@@ -107,27 +108,27 @@ class SettlementService
                 );
             }
 
-            $total = (float) $donations->sum('net_amount');
+            $total = Money::sum($donations->pluck('net_amount'));
 
             $this->walletService->releaseReservesForDonations($wallet, $donations->all());
 
             $locked = Wallet::lockForUpdate()->findOrFail($wallet->id);
-            if ((float) $locked->balance < $total) {
+            if (Money::of($locked->balance)->isLessThan($total)) {
                 throw new InsufficientWalletBalanceException(
                     "Available balance insufficient for settlement: have {$locked->balance}, need {$total}."
                 );
             }
 
-            $locked->balance = (float) $locked->balance - $total;
-            $locked->pending_settlement_balance = (float) $locked->pending_settlement_balance + $total;
+            $locked->balance = Money::of($locked->balance)->sub($total)->toString();
+            $locked->pending_settlement_balance = Money::of($locked->pending_settlement_balance)->add($total)->toString();
             $locked->save();
 
             $settlement = CampaignSettlement::create([
                 'campaign_id' => $donations->first()->campaign_id,
                 'organization_id' => $org->id,
-                'gross_amount' => (float) $donations->sum('total_amount'),
-                'platform_fee' => (float) $donations->sum('platform_fee'),
-                'net_amount' => $total,
+                'gross_amount' => Money::sum($donations->pluck('total_amount'))->toString(),
+                'platform_fee' => Money::sum($donations->pluck('platform_fee'))->toString(),
+                'net_amount' => $total->toString(),
                 'status' => 'requested',
             ]);
 
@@ -194,7 +195,7 @@ class SettlementService
         }
 
         $wallet = $this->walletService->getOrCreateWallet($this->walletOwnerForOrg($org));
-        $amount = (float) $settlement->net_amount;
+        $amount = Money::of($settlement->net_amount);
 
         DB::transaction(function () use ($wallet, $settlement, $admin, $amount) {
             $lockedSettlement = CampaignSettlement::lockForUpdate()->findOrFail($settlement->id);
@@ -205,11 +206,11 @@ class SettlementService
 
             $locked = Wallet::lockForUpdate()->findOrFail($wallet->id);
 
-            if ((float) $locked->pending_settlement_balance < $amount) {
+            if (Money::of($locked->pending_settlement_balance)->isLessThan($amount)) {
                 throw new InsufficientWalletBalanceException('Pending settlement balance mismatch.');
             }
 
-            $locked->pending_settlement_balance = (float) $locked->pending_settlement_balance - $amount;
+            $locked->pending_settlement_balance = Money::of($locked->pending_settlement_balance)->sub($amount)->toString();
             $locked->save();
 
             $this->walletService->record(
@@ -253,21 +254,20 @@ class SettlementService
             throw new \InvalidArgumentException('Settlement has no organization.');
         }
 
-        $wallet = $this->walletService->getOrCreateWallet($this->walletOwnerForOrg($org));
-        $amount = (float) $settlement->net_amount;
-
-        DB::transaction(function () use ($wallet, $settlement, $admin, $reason, $amount) {
+        DB::transaction(function () use ($settlement, $admin, $reason) {
             $lockedSettlement = CampaignSettlement::lockForUpdate()->findOrFail($settlement->id);
 
             if (! $lockedSettlement->isPendingApproval() && $lockedSettlement->status !== 'manual_review') {
                 throw new \InvalidArgumentException('Settlement is no longer pending approval.');
             }
 
-            $locked = Wallet::lockForUpdate()->findOrFail($wallet->id);
-
-            $locked->pending_settlement_balance = (float) $locked->pending_settlement_balance - $amount;
-            $locked->balance = (float) $locked->balance + $amount;
-            $locked->save();
+            // Return funds from pending_settlement_balance back to balance,
+            // and record the reversal ledger entry. Uses the same
+            // idempotency guard as refundSettlementFunds(): if the pending
+            // balance can no longer cover the amount, it throws
+            // InsufficientWalletBalanceException, preventing duplicate
+            // reversals on retry or concurrent calls.
+            $this->refundSettlementFunds($lockedSettlement, 'rejected by admin: '.$reason);
 
             $this->stateMachine->transition($lockedSettlement, 'rejected', [
                 'actor_type' => 'admin',
@@ -320,7 +320,7 @@ class SettlementService
         }
 
         $wallet = $this->walletService->getOrCreateWallet($this->walletOwnerForOrg($org));
-        $amount = (float) $settlement->net_amount;
+        $amount = Money::of($settlement->net_amount);
 
         // PHASE 1 — claim the settlement. Commits before the gateway call.
         $alreadyPaid = DB::transaction(function () use ($settlement, $wallet, $amount) {
@@ -344,11 +344,11 @@ class SettlementService
             if ($locked->isAutoApproved()) {
                 $w = Wallet::lockForUpdate()->findOrFail($wallet->id);
 
-                if ((float) $w->pending_settlement_balance < $amount) {
+                if (Money::of($w->pending_settlement_balance)->isLessThan($amount)) {
                     throw new InsufficientWalletBalanceException('Pending settlement balance mismatch.');
                 }
 
-                $w->pending_settlement_balance = (float) $w->pending_settlement_balance - $amount;
+                $w->pending_settlement_balance = Money::of($w->pending_settlement_balance)->sub($amount)->toString();
                 $w->save();
 
                 $this->walletService->record(
@@ -384,7 +384,7 @@ class SettlementService
         $idempotencyKey = PayoutAttempt::generateIdempotencyKey($settlement, $attemptNumber);
 
         try {
-            $gatewayResult = $this->gateway->initiatePayout($org, $amount, $settlement, $idempotencyKey);
+            $gatewayResult = $this->gateway->initiatePayout($org, $amount->toFloat(), $settlement, $idempotencyKey);
             $outcome = ['success' => true, 'result' => $gatewayResult];
         } catch (PermanentFailureException|TimeoutException|TemporaryFailureException $e) {
             $outcome = [
@@ -512,19 +512,19 @@ class SettlementService
         }
 
         $wallet = $this->walletService->getOrCreateWallet($this->walletOwnerForOrg($org));
-        $amount = (float) $settlement->net_amount;
+        $amount = Money::of($settlement->net_amount);
 
         DB::transaction(function () use ($wallet, $settlement, $amount, $reason) {
             $locked = Wallet::lockForUpdate()->findOrFail($wallet->id);
 
-            if ((float) $locked->pending_settlement_balance < $amount) {
+            if (Money::of($locked->pending_settlement_balance)->isLessThan($amount)) {
                 throw new InsufficientWalletBalanceException(
                     'Pending settlement balance mismatch while refunding settlement #'.$settlement->id.'.'
                 );
             }
 
-            $locked->pending_settlement_balance = (float) $locked->pending_settlement_balance - $amount;
-            $locked->balance = (float) $locked->balance + $amount;
+            $locked->pending_settlement_balance = Money::of($locked->pending_settlement_balance)->sub($amount)->toString();
+            $locked->balance = Money::of($locked->balance)->add($amount)->toString();
             $locked->save();
 
             $this->walletService->record(
@@ -559,7 +559,7 @@ class SettlementService
         }
 
         $wallet = $this->walletService->getOrCreateWallet($this->walletOwnerForOrg($org));
-        $amount = (float) $settlement->net_amount;
+        $amount = Money::of($settlement->net_amount);
 
         DB::transaction(function () use ($wallet, $settlement, $amount, $reason) {
             $locked = Wallet::lockForUpdate()->findOrFail($wallet->id);
@@ -569,7 +569,7 @@ class SettlementService
                 return;
             }
 
-            $locked->balance = (float) $locked->balance + $amount;
+            $locked->balance = Money::of($locked->balance)->add($amount)->toString();
             $locked->save();
 
             $this->walletService->record(

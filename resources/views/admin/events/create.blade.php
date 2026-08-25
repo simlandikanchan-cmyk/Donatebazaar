@@ -3,6 +3,19 @@
 
 @push('page_styles')
 @vite('resources/css/admin/entries/events-create.css')
+<style>
+@media(max-width:860px){
+  .form-grid{grid-template-columns:1fr!important}
+  .form-grid > div:last-child{order:-1}
+}
+@media(max-width:640px){
+  .row-2{grid-template-columns:1fr!important}
+  .row-3{grid-template-columns:1fr!important}
+  #reviewGrid{grid-template-columns:1fr!important}
+  .step-nav{flex-wrap:wrap}
+  .step-nav .action-bar{width:100%;margin-top:8px}
+}
+</style>
 @endpush
 
 
@@ -415,5 +428,5 @@
 @endsection
 
 @push('page_scripts')
-@vite('resources/js/admin/events-create.js')
+@vite('resources/js/admin/entries/events-create.js')
 @endpush

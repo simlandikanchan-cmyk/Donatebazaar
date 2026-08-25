@@ -128,6 +128,14 @@ class ApplicationController extends Controller
         return back()->with('success', 'Application rejected.');
     }
 
+    public function destroy($id)
+    {
+        $application = OrganizationApplication::findOrFail($id);
+        $application->delete();
+
+        return back()->with('success', 'Application deleted successfully.');
+    }
+
     // ── Step 1: Organization Info ──────────────────────────────────────────
 
     public function step1()

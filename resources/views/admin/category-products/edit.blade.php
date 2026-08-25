@@ -8,10 +8,6 @@
 @section('page_title', 'Edit Category Product')
 @section('page_subtitle', 'Modify product category')
 
-@push('page_styles')
-@vite('resources/css/admin/entries/category-products-edit.css')
-@endpush
-
 @section('content')
 <div class="overlay" id="deleteOverlay" role="dialog" aria-modal="true">
   <div class="modal">
@@ -364,5 +360,6 @@
 @endsection
 
 @push('page_scripts')
-@vite('resources/js/admin/category-products-edit.js')
+@vite('resources/js/admin/entries/category-products-edit.js')
 @endpush
+

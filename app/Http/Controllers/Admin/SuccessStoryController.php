@@ -47,4 +47,13 @@ class SuccessStoryController extends Controller
             $campaign->is_featured ? 'Marked as a featured success story.' : 'Removed from featured success stories.'
         );
     }
+
+    public function destroy(Campaign $campaign): RedirectResponse
+    {
+        $campaign->update(['is_featured' => false]);
+
+        return redirect()
+            ->route('admin.success-stories.index')
+            ->with('success', 'Success story removed.');
+    }
 }

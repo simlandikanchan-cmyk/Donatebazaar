@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Wallet;
 use App\Models\WalletTransaction;
 use App\Notifications\FundsAvailableNotification;
+use App\Support\Money;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
@@ -32,13 +33,17 @@ class WalletService
         string $source,
         $referenceId,
         $referenceType,
-        ?string $notes = null
+        ?string $notes = null,
+        ?string $actorType = null,
+        ?int $actorId = null
     ): WalletTransaction {
-        if ($amount <= 0) {
+        $amount = Money::of($amount);
+
+        if (! $amount->isPositive()) {
             throw new \InvalidArgumentException('Credit amount must be positive.');
         }
 
-        return DB::transaction(function () use ($wallet, $amount, $source, $referenceId, $referenceType, $notes) {
+        return DB::transaction(function () use ($wallet, $amount, $source, $referenceId, $referenceType, $notes, $actorType, $actorId) {
             $locked = Wallet::lockForUpdate()->findOrFail($wallet->id);
 
             $existing = $this->findExisting($locked->id, $referenceId, $referenceType, $source);
@@ -47,13 +52,13 @@ class WalletService
             }
 
             if ($source === WalletTransaction::SOURCE_DONATION) {
-                $locked->reserved_balance = (float) $locked->reserved_balance + $amount;
+                $locked->reserved_balance = Money::of($locked->reserved_balance)->add($amount)->toString();
             } else {
-                $locked->balance = (float) $locked->balance + $amount;
+                $locked->balance = Money::of($locked->balance)->add($amount)->toString();
             }
             $locked->save();
 
-            return $this->record($locked, 'credit', $amount, $source, $referenceId, $referenceType, $notes);
+            return $this->record($locked, 'credit', $amount, $source, $referenceId, $referenceType, $notes, $actorType, $actorId);
         });
     }
 
@@ -63,13 +68,17 @@ class WalletService
         string $source,
         $referenceId,
         $referenceType,
-        ?string $notes = null
+        ?string $notes = null,
+        ?string $actorType = null,
+        ?int $actorId = null
     ): WalletTransaction {
-        if ($amount <= 0) {
+        $amount = Money::of($amount);
+
+        if (! $amount->isPositive()) {
             throw new \InvalidArgumentException('Debit amount must be positive.');
         }
 
-        return DB::transaction(function () use ($wallet, $amount, $source, $referenceId, $referenceType, $notes) {
+        return DB::transaction(function () use ($wallet, $amount, $source, $referenceId, $referenceType, $notes, $actorType, $actorId) {
             $locked = Wallet::lockForUpdate()->findOrFail($wallet->id);
 
             $existing = $this->findExisting($locked->id, $referenceId, $referenceType, $source);
@@ -79,25 +88,25 @@ class WalletService
 
             $fromReserved = false;
             if ($source === WalletTransaction::SOURCE_REFUND) {
-                $fromReserved = (float) $locked->reserved_balance >= $amount;
+                $fromReserved = Money::of($locked->reserved_balance)->isGreaterThanOrEqualTo($amount);
             }
 
             if ($fromReserved) {
-                if ((float) $locked->reserved_balance < $amount) {
+                if (Money::of($locked->reserved_balance)->isLessThan($amount)) {
                     throw new InsufficientWalletBalanceException('Reserved balance insufficient for refund.');
                 }
-                $locked->reserved_balance = (float) $locked->reserved_balance - $amount;
+                $locked->reserved_balance = Money::of($locked->reserved_balance)->sub($amount)->toString();
             } else {
-                if ((float) $locked->balance < $amount) {
+                if (Money::of($locked->balance)->isLessThan($amount)) {
                     throw new InsufficientWalletBalanceException(
                         "Wallet balance insufficient: have {$locked->balance}, need {$amount}."
                     );
                 }
-                $locked->balance = (float) $locked->balance - $amount;
+                $locked->balance = Money::of($locked->balance)->sub($amount)->toString();
             }
             $locked->save();
 
-            return $this->record($locked, 'debit', $amount, $source, $referenceId, $referenceType, $notes);
+            return $this->record($locked, 'debit', $amount, $source, $referenceId, $referenceType, $notes, $actorType, $actorId);
         });
     }
 
@@ -152,20 +161,20 @@ class WalletService
                             continue;
                         }
 
-                        $amount = (float) $tx->amount;
-                        if ((float) $locked->reserved_balance < $amount) {
+                        $amount = Money::of($tx->amount);
+                        if (Money::of($locked->reserved_balance)->isLessThan($amount)) {
                             continue;
                         }
 
-                        $locked->reserved_balance = (float) $locked->reserved_balance - $amount;
-                        $locked->balance = (float) $locked->balance + $amount;
+                        $locked->reserved_balance = Money::of($locked->reserved_balance)->sub($amount)->toString();
+                        $locked->balance = Money::of($locked->balance)->add($amount)->toString();
 
                         $this->record($locked, 'credit', $amount, WalletTransaction::SOURCE_ADJUSTMENT, $donation->id, Donation::class, 'Reserve matured');
 
                         $donation->released_at = now();
                         $donation->save();
 
-                        $releasedAmount += $amount;
+                        $releasedAmount += $amount->toFloat();
                         $releasedCount++;
                     }
 
@@ -206,13 +215,13 @@ class WalletService
                         ->first();
 
                     if ($tx) {
-                        $amount = (float) $tx->amount;
+                        $amount = Money::of($tx->amount);
                         DB::transaction(function () use ($wallet, $donation, $amount) {
                             $locked = Wallet::lockForUpdate()->findOrFail($wallet->id);
 
-                            if ((float) $locked->reserved_balance >= $amount) {
-                                $locked->reserved_balance = (float) $locked->reserved_balance - $amount;
-                                $locked->balance = (float) $locked->balance + $amount;
+                            if (Money::of($locked->reserved_balance)->isGreaterThanOrEqualTo($amount)) {
+                                $locked->reserved_balance = Money::of($locked->reserved_balance)->sub($amount)->toString();
+                                $locked->balance = Money::of($locked->balance)->add($amount)->toString();
                                 $locked->save();
 
                                 $this->record($locked, 'credit', $amount, WalletTransaction::SOURCE_ADJUSTMENT, $donation->id, Donation::class, 'Reserve matured');
@@ -244,22 +253,28 @@ class WalletService
     public function record(
         Wallet $wallet,
         string $type,
-        float $amount,
+        Money|float|string $amount,
         string $source,
         $referenceId,
         $referenceType,
-        ?string $notes
+        ?string $notes = null,
+        ?string $actorType = null,
+        ?int $actorId = null
     ): WalletTransaction {
+        $amount = Money::of($amount);
+
         $transaction = WalletTransaction::create([
             'wallet_id' => $wallet->id,
             'type' => $type,
-            'amount' => $amount,
+            'amount' => $amount->toString(),
             'source' => $source,
             'reference_type' => $referenceType,
             'reference_id' => $referenceId,
             'notes' => $notes,
-            'balance_after' => (float) $wallet->balance + (float) $wallet->reserved_balance,
+            'balance_after' => Money::of($wallet->balance)->add(Money::of($wallet->reserved_balance))->toString(),
             'status' => WalletTransaction::STATUS_COMPLETED,
+            'actor_type' => $actorType,
+            'actor_id' => $actorId,
         ]);
 
         return $transaction;

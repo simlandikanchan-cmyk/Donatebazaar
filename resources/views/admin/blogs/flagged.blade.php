@@ -1,4 +1,4 @@
-﻿@extends('layouts.admin')
+@extends('layouts.admin')
 
 @push('page_styles')
 <style>
@@ -19,6 +19,11 @@
 .empty-state svg{width:48px;height:48px;opacity:.25;}
 .flash-success{background:var(--green-lt);border:1px solid rgba(5,196,138,.25);color:#059669;padding:10px 14px;border-radius:var(--r-sm);margin-bottom:14px;font-size:12.5px;font-weight:600;}
 .flash-error{background:var(--red-lt);border:1px solid rgba(240,68,68,.25);color:var(--red);padding:10px 14px;border-radius:var(--r-sm);margin-bottom:14px;font-size:12.5px;font-weight:600;}
+@media(max-width:640px){
+  .flag-hdr{flex-wrap:wrap}
+  .flag-hdr img{width:100%!important;height:auto!important;margin-top:10px}
+}
+@media(max-width:640px){.flag-hdr{flex-wrap:wrap}.flag-hdr img{width:100%;height:auto;margin-top:8px}}
 </style>
 @endpush
 

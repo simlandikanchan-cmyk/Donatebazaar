@@ -98,12 +98,11 @@
     likeForm.addEventListener('submit', async function(e) {
       e.preventDefault();
       const btn = document.getElementById('like-btn');
-      const token = document.querySelector('[name=_token]').value;
 
       try {
-        const res = await fetch(likeForm.action, {
+        const res = await csrfFetch(likeForm.action, {
           method: 'POST',
-          headers: { 'X-CSRF-TOKEN': token, 'Accept': 'application/json', 'Content-Type': 'application/json' },
+          headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
           body: JSON.stringify({})
         });
         if (!res.ok) return;

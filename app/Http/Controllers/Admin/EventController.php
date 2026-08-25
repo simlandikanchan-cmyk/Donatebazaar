@@ -3,22 +3,32 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\AssignVolunteerRequest;
+use App\Http\Requests\Admin\StoreEventRequest;
+use App\Http\Requests\Admin\ToggleEventSettingRequest;
+use App\Http\Requests\Admin\UpdateEventRequest;
 use App\Mail\EventPublishedMail;
 use App\Models\Campaign;
 use App\Models\Category;
 use App\Models\Event;
 use App\Models\Volunteer;
 use App\Models\VolunteerAssignment;
+use App\Services\SlugGenerator;
+use App\Services\VolunteerAssignmentService;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class EventController extends Controller
 {
+    public function __construct(
+        private SlugGenerator $slugGenerator,
+        private VolunteerAssignmentService $assignmentService
+    ) {}
+
     /* ─────────────────────────────────────────
      | INDEX
      ───────────────────────────────────────── */
@@ -87,31 +97,12 @@ class EventController extends Controller
     /* ─────────────────────────────────────────
      | STORE
      ───────────────────────────────────────── */
-    public function store(Request $request): RedirectResponse
+    public function store(StoreEventRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'campaign_id' => ['required', 'exists:campaigns,id'],
-            'title' => ['required', 'string', 'max:255'],
-            'description' => ['required', 'string'],
-            'event_date' => ['required', 'date'],
-            'start_time' => ['nullable'],
-            'end_time' => ['nullable', 'after:start_time'],
-            'goal_amount' => ['nullable', 'numeric', 'min:0'],
-            'max_participants' => ['nullable', 'integer', 'min:1'],
-            'cover_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
-            // draft = saved but not live, active = published/live
-            'status' => ['nullable', 'in:draft,active'],
-            'location' => ['nullable', 'string', 'max:255'],
-            'send_notification' => ['nullable', 'boolean'],
-        ]);
+        $validated = $request->validated();
 
         // Build unique slug
-        $baseSlug = Str::slug($validated['title']);
-        $slug = $baseSlug;
-        $counter = 1;
-        while (Event::where('slug', $slug)->exists()) {
-            $slug = $baseSlug.'-'.$counter++;
-        }
+        $validated['slug'] = $this->slugGenerator->unique(new Event(), $validated['title']);
 
         // Respect the button the admin clicked (draft or active)
         // Default to draft if nothing sent
@@ -119,7 +110,6 @@ class EventController extends Controller
         $validated['send_notification'] = $request->boolean('send_notification');
         $validated['allow_registrations'] = $request->boolean('allow_registrations');
         $validated['show_on_campaign'] = $request->boolean('show_on_campaign');
-        $validated['slug'] = $slug;
         $validated['raised_amount'] = 0;
         $validated['registered_count'] = 0;
         $validated['user_id'] = auth()->id();
@@ -195,41 +185,18 @@ class EventController extends Controller
     /* ─────────────────────────────────────────
      | UPDATE
      ───────────────────────────────────────── */
-    public function update(Request $request, Event $event): RedirectResponse
+    public function update(UpdateEventRequest $request, Event $event): RedirectResponse
     {
-        $validated = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'description' => ['required', 'string'],
-            'campaign_id' => ['required', 'exists:campaigns,id'],
-            'category_id' => ['nullable', 'exists:categories,id'],
-            'event_date' => ['required', 'date'],
-            'start_time' => ['nullable'],
-            'end_time' => ['nullable', 'after:start_time'],
-            'goal_amount' => ['nullable', 'numeric', 'min:0'],
-            'max_participants' => ['nullable', 'integer', 'min:1'],
-            'location' => ['nullable', 'string', 'max:255'],
-            'cover_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
-            // All valid statuses an admin can manually set from edit page
-            'status' => [
-                'required',
-                'in:draft,active,'.implode(',', [
-                    Event::STATUS_PENDING,
-                    Event::STATUS_COMPLETED,
-                    Event::STATUS_CANCELLED,
-                    Event::STATUS_EXPIRED,
-                ]),
-            ],
-        ]);
+        $validated = $request->validated();
 
         // Re-slug only if title changed
         if ($event->title !== $validated['title']) {
-            $baseSlug = Str::slug($validated['title']);
-            $slug = $baseSlug;
-            $counter = 1;
-            while (Event::where('slug', $slug)->where('id', '!=', $event->id)->exists()) {
-                $slug = $baseSlug.'-'.$counter++;
-            }
-            $validated['slug'] = $slug;
+            $validated['slug'] = $this->slugGenerator->unique(
+                $event,
+                $validated['title'],
+                'slug',
+                $event->id
+            );
         }
 
         if ($request->hasFile('cover_image')) {
@@ -302,11 +269,9 @@ class EventController extends Controller
         return back()->with('success', 'Event reverted to draft.');
     }
 
-    public function toggleSetting(Request $request, Event $event): RedirectResponse
+    public function toggleSetting(ToggleEventSettingRequest $request, Event $event): RedirectResponse
     {
-        $field = $request->validate([
-            'field' => ['required', 'in:allow_registrations,show_on_campaign,send_notification'],
-        ])['field'];
+        $field = $request->validated()['field'];
 
         $event->update([$field => ! $event->$field]);
 
@@ -382,14 +347,9 @@ class EventController extends Controller
      *        two assignments fall on the same single date, allowing
      *        same-day back-to-back events (e.g. 9-11am and 2-4pm).
      */
-    public function assignVolunteer(Request $request, Event $event): RedirectResponse
+    public function assignVolunteer(AssignVolunteerRequest $request, Event $event): RedirectResponse
     {
-        $data = $request->validate([
-            'volunteer_id' => ['required', 'integer', 'exists:volunteers,id'],
-            'role' => ['nullable', 'string', 'max:255'],
-            'start_date' => ['nullable', 'date'],
-            'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
-        ]);
+        $data = $request->validated();
 
         $volunteer = Volunteer::findOrFail($data['volunteer_id']);
 
@@ -426,44 +386,8 @@ class EventController extends Controller
         $start = $data['start_date'] ?? $event->event_date->format('Y-m-d');
         $end = $data['end_date'] ?? $event->event_date->format('Y-m-d');
 
-        // ── Fetch potentially overlapping active assignments ──
-        $overlapping = VolunteerAssignment::with('event')
-            ->where('volunteer_id', $volunteer->id)
-            ->where('status', 'active')
-            ->where(function ($q) use ($start, $end) {
-                $q->where(function ($q) {
-                    $q->whereNull('start_date')->whereNull('end_date');
-                })->orWhere(function ($q) use ($start, $end) {
-                    $q->where('start_date', '<=', $end)
-                        ->where('end_date', '>=', $start);
-                });
-            })
-            ->get();
-
-        // ── Fix 6: Time-aware overlap check (fixed Carbon vs string bug) ──
-        $conflict = $overlapping->contains(function ($assignment) use ($start, $end, $event) {
-            $aStart = optional($assignment->start_date)?->format('Y-m-d');
-            $aEnd = optional($assignment->end_date)?->format('Y-m-d');
-
-            // Multi-day range or different dates → date overlap is conclusive
-            if ($aStart !== $aEnd || $start !== $end || $aStart !== $start) {
-                return true;
-            }
-
-            // Same single date — check time overlap if both events have times
-            if (! $assignment->event || ! $assignment->event->start_time || ! $assignment->event->end_time) {
-                return true; // assume full-day
-            }
-            if (! $event->start_time || ! $event->end_time) {
-                return true; // assume full-day
-            }
-
-            // No overlap if one ends before the other starts (strict <)
-            return ! ($assignment->event->end_time <= $event->start_time
-                   || $event->end_time <= $assignment->event->start_time);
-        });
-
-        if ($conflict) {
+        // ── Time-aware overlap detection (Fix 6) ──
+        if ($this->assignmentService->hasTimeConflict($volunteer->id, $start, $end, $event)) {
             return back()->with(
                 'error',
                 'This volunteer is already assigned to another event during this period.'

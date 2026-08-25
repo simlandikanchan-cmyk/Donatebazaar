@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\DonationHistoryController;
+use App\Http\Controllers\DonationReceiptController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\RecurringDonationController;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +22,12 @@ Route::post('/payment/verify', [PaymentController::class, 'verify'])
 Route::post('/payment/webhook', [PaymentController::class, 'webhook'])
     ->name('payment.webhook')
     ->middleware('throttle:120,1');
+
+// Secure receipt PDF download. Access is granted via a Laravel signed
+// temporary URL embedded in the receipt email — never via a raw donation id.
+Route::get('/donation-receipt/{donation}/download', [DonationReceiptController::class, 'download'])
+    ->name('donations.receipt.download')
+    ->middleware('signed');
 
 Route::post('/coupon/validate', [CouponController::class, 'check'])
     ->name('coupon.validate')

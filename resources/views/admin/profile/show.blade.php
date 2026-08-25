@@ -10,6 +10,11 @@
 
 @push('page_styles')
 @vite('resources/css/admin/entries/profile-show.css')
+<style>
+@media(max-width:860px){.hero{flex-direction:column;align-items:stretch;gap:16px}.hero-right{width:100%;margin-top:14px}.hero-right .hero-btn{width:100%;justify-content:center}.profile-grid{grid-template-columns:1fr!important}.profile-grid>div:last-child{display:none}}
+@media(max-width:640px){.hero-left{flex-direction:column;align-items:flex-start;gap:12px}.hero-badges{flex-wrap:wrap}.av-card{padding:20px!important}.card-body{padding:16px!important}.form-row{grid-template-columns:1fr!important}.form-row .form-group{width:100%!important}.email-line{flex-direction:column;align-items:flex-start!important}}
+@media(max-width:480px){.hero-name{font-size:18px!important}.hero-sub{font-size:12px}.card-header{font-size:11px!important;padding:12px 14px!important}}
+</style>
 @endpush
 
 @section('content')
@@ -342,5 +347,5 @@
 @endsection
 
 @push('page_scripts')
-@vite('resources/js/admin/profile-show.js')
+@vite('resources/js/admin/entries/profile-show.js')
 @endpush

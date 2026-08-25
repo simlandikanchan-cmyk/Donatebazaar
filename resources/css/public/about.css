@@ -90,13 +90,13 @@ svg:not([width]):not([height]) {
 .float-card-icon svg { width: 14px; height: 14px; }
 
 /* Stats strip tile icons — 20×20 */
-.stat-tile-icon svg { width: 20px; height: 20px; }
+.stat-tile-icon svg { width: 20px; height: 20px; color: var(--primary-tint); }
 
 /* How it works icons — 24×24 (already default, explicit for clarity) */
-.how-icon svg { width: 24px; height: 24px; }
+.how-icon svg { width: 24px; height: 24px; color: var(--primary-tint); }
 
 /* Journey mini card icon — 18×18 */
-.journey-mini-card-icon svg { width: 18px; height: 18px; }
+.journey-mini-card-icon svg { width: 18px; height: 18px; color: var(--green); }
 
 /* Timeline dot icons — 12×12 */
 .tl-dot svg { width: 12px; height: 12px; }
@@ -108,7 +108,7 @@ svg:not([width]):not([height]) {
 .t-quote-icon svg { width: 28px; height: 28px; }
 
 /* FAQ chevron — 13×13 */
-.faq-chevron svg { width: 13px; height: 13px; }
+.faq-chevron svg { width: 13px; height: 13px; color: var(--text3); transition: transform .35s ease; }
 
 /* Scroll to top — 18×18 */
 .scroll-top svg { width: 18px; height: 18px; }
@@ -202,15 +202,12 @@ svg:not([width]):not([height]) {
 .reveal       { transform: translateY(32px); }
 .reveal-left  { transform: translateX(-32px); }
 .reveal-right { transform: translateX(32px); }
-.reveal-scale { transform: scale(0.92); }
+.reveal-scale { transform: scale(0.92); transition: opacity .65s ease, transform .65s ease; }
 
 .reveal,
 .reveal-left,
 .reveal-right {
   transition: opacity .7s ease, transform .7s ease;
-}
-.reveal-scale {
-  transition: opacity .65s ease, transform .65s ease;
 }
 
 .reveal.visible,
@@ -385,7 +382,6 @@ svg:not([width]):not([height]) {
   color:       rgba(255, 255, 255, .55);
   font-family: var(--font);
 }
-.hero-trust-item svg { width: 14px; height: 14px; color: var(--green); }
 .hero-trust-sep      { width: 1px; height: 16px; background: rgba(255, 255, 255, .15); }
 
 /* Floating stat cards */
@@ -433,7 +429,6 @@ svg:not([width]):not([height]) {
   justify-content: center;
   flex-shrink:     0;
 }
-.float-card-icon svg { width: 14px; height: 14px; }
 .float-card-label {
   font-size:   10.5px;
   color:       rgba(255, 255, 255, .5);
@@ -741,8 +736,6 @@ svg:not([width]):not([height]) {
   justify-content: center;
   margin:          0 auto 16px;
 }
-.stat-tile-icon svg { width: 20px; height: 20px; color: var(--primary-tint); }
-
 .stat-tile-num {
   font-family:   var(--font-mono);
   font-size:     clamp(36px, 4vw, 52px);
@@ -850,7 +843,6 @@ svg:not([width]):not([height]) {
   justify-content: center;
   flex-shrink:     0;
 }
-.journey-mini-card-icon svg { width: 18px; height: 18px; color: var(--green); }
 .journey-mini-card-num {
   font-size:   18px;
   font-weight: 700;
@@ -919,7 +911,6 @@ svg:not([width]):not([height]) {
   background: linear-gradient(135deg, var(--primary), var(--secondary));
   box-shadow: 0 0 0 6px rgba(99, 102, 241, .15);
 }
-.tl-dot svg { width: 12px; height: 12px; }
 .tl-item:hover .tl-dot { transform: scale(1.15); }
 
 .tl-year  { font-size: 10.5px; font-weight: 700; color: var(--primary); font-family: var(--font-mono); margin-bottom: 2px; }
@@ -1067,8 +1058,6 @@ svg:not([width]):not([height]) {
   border-color: rgba(99, 102, 241, .35);
   transform:    scale(1.08) rotate(-5deg);
 }
-.how-icon svg { width: 26px; height: 26px; color: var(--primary-tint); }
-
 .how-title {
   font-size:     18px;
   font-weight:   600;
@@ -1160,17 +1149,18 @@ svg:not([width]):not([height]) {
 @media (max-width: 560px) { .trust-grid { grid-template-columns: 1fr; } }
 
 .trust-card {
-  background:     var(--surface2);
-  border-radius:  var(--radius);
-  border:         1px solid var(--border2);
-  padding:        28px;
-  display:        flex;
-  flex-direction: column;
-  gap:            14px;
-  transition:     all var(--transition);
-  box-shadow:     var(--shadow);
-  position:       relative;
-  overflow:       hidden;
+    background:     var(--surface2);
+    border-radius:  var(--radius);
+    border:         1px solid var(--border2);
+    padding:        28px;
+    display:        flex;
+    flex-direction: column;
+    gap:            14px;
+    transition:     all var(--transition);
+    box-shadow:     var(--shadow);
+    position:       relative;
+    overflow:       hidden;
+    align-items:    start!important;
 }
 .trust-card::before {
   content:    '';
@@ -1203,18 +1193,6 @@ svg:not([width]):not([height]) {
 
 
 
-.trust-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 22px 20px 20px;
-    display: flex;
-    align-items: start!important;
-    gap: 16px;
-    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-    position: relative;
-    overflow: hidden;
-}
 
 
 
@@ -1224,7 +1202,7 @@ svg:not([width]):not([height]) {
 
 
 
-.trust-icon-wrap svg  { width: 24px; height: 24px; }
+
 .trust-card-title     { font-size: 15px; font-weight: 600; color: var(--text); font-family: var(--font); margin-bottom: 5px; }
 .trust-card-desc      { font-size: 13px; color: var(--text2); line-height: 1.7; font-family: var(--font); font-weight: 300; }
 .trust-card-badge {
@@ -1277,7 +1255,6 @@ svg:not([width]):not([height]) {
 }
 
 .t-quote-icon     { color: var(--primary); opacity: .3; flex-shrink: 0; }
-.t-quote-icon svg { width: 28px; height: 28px; }
 .t-stars          { display: flex; gap: 3px; }
 .t-star           { color: var(--warning); font-size: 13px; }
 
@@ -1462,12 +1439,6 @@ svg:not([width]):not([height]) {
   flex-shrink:     0;
   transition:      all var(--transition);
 }
-.faq-chevron svg {
-  width:      13px;
-  height:     13px;
-  color:      var(--text3);
-  transition: transform .35s ease;
-}
 .faq-item.open .faq-chevron     { background: var(--primary); border-color: var(--primary); }
 .faq-item.open .faq-chevron svg { transform: rotate(180deg); color: var(--white); }
 
@@ -1627,8 +1598,6 @@ svg:not([width]):not([height]) {
   color:       rgba(255, 255, 255, .4);
   font-family: var(--font-mono);
 }
-.cta-trust-item svg { width: 13px; height: 13px; color: var(--green); }
-
 /* ═══════════════════════════════════════════════════════════
    SCROLL-TO-TOP
 ═══════════════════════════════════════════════════════════ */
@@ -1658,8 +1627,6 @@ svg:not([width]):not([height]) {
   transform:  translateY(-2px);
   box-shadow: 0 10px 28px rgba(99, 102, 241, .55);
 }
-.scroll-top svg { width: 18px; height: 18px; }
-
 /* ═══════════════════════════════════════════════════════════
    RESPONSIVE
 ═══════════════════════════════════════════════════════════ */

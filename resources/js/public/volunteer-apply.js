@@ -1,3 +1,5 @@
+import { csrfFetch } from '../shared/api.js';
+
 (function(){
   'use strict';
 
@@ -20,7 +22,7 @@
 
   function loadStates(country) {
     if (country === 'India') {
-      fetch('/api/v1/states/india')
+      csrfFetch('/api/v1/states/india')
         .then(function(r) { return r.json(); })
         .then(function(states) {
           stateEl.innerHTML = '<option value="">Select state</option>';

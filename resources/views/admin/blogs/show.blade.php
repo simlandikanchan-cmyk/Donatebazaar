@@ -142,7 +142,7 @@
       @endif
 
       <div class="blog-prose">
-        {!! nl2br(e($blog->content)) !!}
+        {!! nl2br($blog->content) !!}
       </div>
     </div>
   </div>
@@ -329,6 +329,13 @@
             Archive Post
           </button>
         </form>
+        <form method="POST" action="{{ route('admin.blogs.destroy', $blog) }}" onsubmit="return confirm('Delete \'{{ addslashes($blog->title) }}\' permanently? This cannot be undone.');">
+          @csrf @method('DELETE')
+          <button type="submit" class="btn btn-red act-btn ab-delete">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+            Delete Post
+          </button>
+        </form>
       </div>
     </div>
   </div>
@@ -357,6 +364,21 @@
 </div>
 @endsection
 
+@push('page_styles')
+<style>
+@media(max-width:960px){
+  .review-layout{grid-template-columns:1fr!important}
+  .review-panel{order:-1}
+}
+@media(max-width:640px){
+  .cover-wrap img{max-height:220px;object-fit:cover;width:100%}
+  .blog-prose{font-size:14px;line-height:1.7}
+  .engage-strip{flex-wrap:wrap}
+  .es-divider{display:none}
+}
+</style>
+@endpush
+
 @push('page_scripts')
-@vite('resources/js/admin/blogs-show.js')
+@vite('resources/js/admin/entries/blogs-show.js')
 @endpush

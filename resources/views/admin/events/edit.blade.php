@@ -3,6 +3,17 @@
 
 @push('page_styles')
 @vite('resources/css/admin/entries/events-edit.css')
+<style>
+@media(max-width:860px){
+  .form-grid{grid-template-columns:1fr!important}
+  .form-grid > div:last-child{order:-1}
+}
+@media(max-width:640px){
+  .row-2{grid-template-columns:1fr!important}
+  .row-3{grid-template-columns:1fr!important}
+  .summary-card .summary-item{flex-wrap:wrap}
+}
+</style>
 @endpush
 
 
@@ -308,5 +319,5 @@
 @endsection
 
 @push('page_scripts')
-@vite('resources/js/admin/events-edit.js')
+@vite('resources/js/admin/entries/events-edit.js')
 @endpush

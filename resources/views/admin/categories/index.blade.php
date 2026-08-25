@@ -8,10 +8,6 @@
 @section('page_title', 'Categories')
 @section('page_subtitle', 'Manage Categories')
 
-@push('page_styles')
-@vite('resources/css/admin/entries/categories-index.css')
-@endpush
-
 @section('content')
 <div class="overlay" id="deleteOverlay" role="dialog" aria-modal="true">
   <div class="modal">
@@ -129,10 +125,8 @@
 
 <div class="main-card">
   <div class="card-head">
-    <div class="card-head-left">
-      <div class="card-head-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a2 2 0 012-2z"/></svg></div>
-      <span class="card-head-title">All Categories</span>
-    </div>
+    <div class="card-head-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a2 2 0 012-2z"/></svg></div>
+    <span class="card-head-title">All Categories</span>
     <span class="card-head-count" id="visibleCount">{{ $total }} total</span>
   </div>
 
@@ -149,7 +143,7 @@
     </div>
     @else
     <div class="table-wrap">
-      <table>
+       <table id="catTable">
         <thead>
           <tr>
             <th class="th-check"><input type="checkbox" class="chk" id="selectAll" data-action="toggle-select-all" aria-label="Select all"></th>
@@ -165,8 +159,8 @@
           @forelse($categories as $category)
            <tr class="cat-row" data-id="{{ $category->id }}" data-name="{{ strtolower($category->name) }}" data-status="{{ $category->is_active?'active':'inactive' }}" data-campaigns="{{ $category->campaigns_count??0 }}" data-delete-url="{{ route('admin.categories.destroy',$category->id) }}" data-toggle-url="{{ route('admin.categories.toggle',$category->id) }}" style="animation:fadeUp 0.35s {{ $loop->index*0.04 }}s ease both;opacity:0;animation-fill-mode:both;">
             <td class="td-check"><input type="checkbox" class="chk row-check" data-action="toggle-row-select" aria-label="Select {{ $category->name }}"></td>
-            <td><span class="serial">{{ str_pad($loop->iteration,2,'0',STR_PAD_LEFT) }}</span></td>
-            <td>
+            <td data-label="#">{{ str_pad($loop->iteration,2,'0',STR_PAD_LEFT) }}</span></td>
+            <td data-label="Name">
               <div class="cat-cell">
                 <div class="cat-icon-box" style="background:{{ $category->color??'#2563eb ' }};"><i class="fa {{ $category->icon??'fa-tag' }}"></i></div>
                 <div>
@@ -175,22 +169,27 @@
                 </div>
               </div>
             </td>
-            <td><span class="slug-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101"/><path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 015.656 0l4-4a4 4 0 01-5.656-5.656l-1.1 1.1"/></svg>{{ $category->slug }}</span></td>
-            <td>
-              <label class="cat-toggle" title="Toggle active status">
+            <td data-label="Slug"><span class="slug-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101"/><path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 015.656 0l4-4a4 4 0 01-5.656-5.656l-1.1 1.1"/></svg>{{ $category->slug }}</span></td>
+            <td data-label="Status">
+               <label class="cat-toggle" title="Toggle active status">
                 <span class="sw">
                   <input type="checkbox" {{ $category->is_active?'checked':'' }} data-action="toggle-status" data-id="{{ $category->id }}" aria-label="Toggle status for {{ $category->name }}">
                 </span>
                 <span class="cat-toggle-txt {{ $category->is_active?'active':'inactive' }}" id="statusTxt-{{ $category->id }}">{{ $category->is_active?'Active':'Inactive' }}</span>
               </label>
             </td>
-            <td><span class="campaign-count {{ ($category->campaigns_count??0)==0?'zero':'' }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>{{ $category->campaigns_count??0 }}</span></td>
-            <td>
-              <div class="actions">
-                <a href="{{ route('admin.categories.edit',$category->id) }}" class="btn btn-secondary act-btn act-edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</a>
-                <button type="button" class="btn btn-red act-btn act-del" data-action="open-modal" data-id="{{ $category->id }}" data-name="{{ addslashes($category->name) }}" data-url="{{ route('admin.categories.destroy',$category->id) }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg></button>
-              </div>
-            </td>
+            <td data-label="Campaigns"><span class="campaign-count {{ ($category->campaigns_count??0)==0?'zero':'' }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>{{ $category->campaigns_count??0 }}</span></td>
+             <td data-label="Actions">
+                <div class="actions">
+                 <a href="{{ route('admin.categories.edit',$category->id) }}" class="btn btn-secondary act-btn act-edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</a>
+                 <form method="POST" action="{{ route('admin.categories.destroy',$category->id) }}" style="display:inline;" onsubmit="return confirm('Delete this category? This cannot be undone.');">
+                   @csrf @method('DELETE')
+                   <button type="submit" class="btn btn-red act-btn act-del" title="Delete">
+                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Delete
+                   </button>
+                 </form>
+               </div>
+             </td>
           </tr>
           @empty
           <tr><td colspan="7">
@@ -252,7 +251,12 @@
         <div class="grid-count-badge">{{ $category->campaigns_count??0 }} campaigns</div>
         <div class="grid-actions">
           <a href="{{ route('admin.categories.edit',$category->id) }}" class="btn btn-secondary act-btn act-edit" style="font-size:11px;padding:4px 10px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</a>
-          <button type="button" class="btn btn-red act-btn act-del" data-action="open-modal" data-id="{{ $category->id }}" data-name="{{ addslashes($category->name) }}" data-url="{{ route('admin.categories.destroy',$category->id) }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg></button>
+          <form method="POST" action="{{ route('admin.categories.destroy',$category->id) }}" style="display:inline;" onsubmit="return confirm('Delete this category? This cannot be undone.');">
+            @csrf @method('DELETE')
+            <button type="submit" class="btn btn-red act-btn act-del" style="font-size:11px;padding:4px 10px;" title="Delete">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Delete
+            </button>
+          </form>
         </div>
       </div>
       @endforeach
@@ -284,5 +288,5 @@
 @endsection
 
 @push('page_scripts')
-@vite('resources/js/admin/categories-index.js')
+@vite('resources/js/admin/entries/categories-index.js')
 @endpush

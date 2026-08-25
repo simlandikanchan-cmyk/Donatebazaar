@@ -11,6 +11,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class ProcessSettlementJob implements ShouldQueue
@@ -45,6 +46,23 @@ class ProcessSettlementJob implements ShouldQueue
     private function process(SettlementService $settlementService): void
     {
         $settlement = $this->settlement->fresh();
+
+        // Persist a single stable idempotency key for this logical payout the
+        // first time we attempt it, so every retry (same job or a freshly
+        // dispatched one) reuses the same gateway idempotency key and can
+        // never initiate a duplicate payout.
+        if (empty($settlement->payout_idempotency_key)) {
+            DB::transaction(function () use ($settlement) {
+                $locked = CampaignSettlement::lockForUpdate()->findOrFail($settlement->id);
+
+                if (empty($locked->payout_idempotency_key)) {
+                    $locked->payout_idempotency_key = 'payout_'.$locked->id.'_'.\Illuminate\Support\Str::random(24);
+                    $locked->save();
+                }
+            });
+
+            $settlement = $settlement->fresh();
+        }
 
         if ($settlement->isPaid() || $settlement->isFailed()) {
             return;

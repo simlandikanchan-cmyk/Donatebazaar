@@ -56,7 +56,7 @@
                         </div>
 
                         {{-- Button --}}
-                        <x-button variant="primary" href="#">
+                        <x-button variant="primary" href="{{ route('campaign.public', ['category' => $campaign->category?->slug ?? 'general', 'slug' => $campaign->slug]) }}">
                             Donate Now
                         </x-button>
 

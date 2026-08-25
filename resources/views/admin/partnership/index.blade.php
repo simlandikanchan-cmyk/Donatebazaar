@@ -10,6 +10,21 @@
 
 @push('page_styles')
 @vite('resources/css/admin/entries/partnership-index.css')
+<style>
+@media(max-width:860px){
+  .stats-grid{grid-template-columns:repeat(2,1fr)!important}
+  .toolbar{flex-wrap:wrap}
+  .toolbar-left{flex-wrap:wrap;width:100%}
+}
+@media(max-width:480px){
+  .stats-grid{grid-template-columns:1fr!important}
+}
+@media(max-width:640px){
+  .table-wrap{min-width:640px;overflow-x:auto}
+  .actions{flex-wrap:wrap;gap:4px}
+  .actions .btn{width:100%;justify-content:center}
+}
+</style>
 @endpush
 
 @section('content')
@@ -151,10 +166,8 @@
 
 <div class="main-card">
   <div class="card-head">
-    <div class="card-head-left">
-      <div class="card-head-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg></div>
-      <span class="card-head-title">All Partnership Requests</span>
-    </div>
+    <div class="card-head-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg></div>
+    <span class="card-head-title">All Partnership Requests</span>
     <span class="card-head-count" id="visibleCount">{{ $partnerships->total() }} total</span>
   </div>
 
@@ -192,7 +205,7 @@
   </div>
   @else
   <div class="table-wrap">
-    <table>
+       <table id="partTable">
       <thead>
         <tr>
           <th class="td-check"><input type="checkbox" id="selectAll" data-action="toggle-all"></th>
@@ -285,13 +298,15 @@
           <td>
             <div class="actions">
               <a href="{{ route('admin.partnership.show', $p->id) }}" class="btn btn-secondary act-btn ab-view">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                 View
               </a>
-              <button type="button" class="btn btn-red act-btn act-del"
-                data-action="open-modal" data-id="{{ $p->id }}" data-name="{{ addslashes($p->name) }}" data-url="{{ route('admin.partnership.delete', $p->id) }}">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Delete
-              </button>
+              <form method="POST" action="{{ route('admin.partnership.destroy', $p->id) }}" style="display:inline;" onsubmit="return confirm('Delete this partnership? This cannot be undone.');">
+                @csrf @method('DELETE')
+                <button type="submit" class="btn btn-red act-btn act-del" title="Delete">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Delete
+                </button>
+              </form>
             </div>
           </td>
         </tr>
@@ -329,5 +344,5 @@
 @endsection
 
 @push('page_scripts')
-@vite('resources/js/admin/partnership-index.js')
+@vite('resources/js/admin/entries/partnership-index.js')
 @endpush

@@ -8,10 +8,6 @@
 @section('page_title', 'Create Category Product')
 @section('page_subtitle', 'Add a new product category')
 
-@push('page_styles')
-@vite('resources/css/admin/pages/category-products-create.css')
-@endpush
-
 @section('content')
 <div class="breadcrumb">
   <a href="{{ route('admin.dashboard') }}">Dashboard</a>
@@ -207,5 +203,6 @@
 @endsection
 
 @push('page_scripts')
-@vite('resources/js/admin/category-products-create.js')
+@vite('resources/js/admin/entries/category-products-create.js')
 @endpush
+

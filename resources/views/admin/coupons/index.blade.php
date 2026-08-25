@@ -12,7 +12,9 @@
 
 <style>
     .cp-stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-bottom:24px; }
-    .cp-stat-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px; }
+    .cp-stat-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px; display:flex; align-items:center; gap:14px; }
+    .cp-stat-icon { width:42px; height:42px; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .cp-stat-icon svg { width:20px; height:20px; }
     .cp-stat-label { font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:.08em; font-family:var(--font-mono); }
     .cp-stat-value { font-size:22px; font-weight:700; font-family:var(--font-mono); margin-top:4px; }
 
@@ -64,13 +66,16 @@
 {{-- Stats --}}
 <div class="cp-stats-grid">
     @foreach([
-        ['label'=>'Total',   'val'=>$stats['total'],   'color'=>'#6366f1'],
-        ['label'=>'Active',  'val'=>$stats['active'],  'color'=>'#10b981'],
-        ['label'=>'Expired', 'val'=>$stats['expired'], 'color'=>'#9ca3af'],
+        ['label'=>'Total',   'val'=>$stats['total'],   'color'=>'#6366f1', 'icon'=>'<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"/></svg>'],
+        ['label'=>'Active',  'val'=>$stats['active'],  'color'=>'#10b981', 'icon'=>'<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z\"/></svg>'],
+        ['label'=>'Expired', 'val'=>$stats['expired'], 'color'=>'#9ca3af', 'icon'=>'<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><polyline points=\"12 6 12 12 16 14\"/></svg>'],
     ] as $s)
     <div class="cp-stat-card">
-        <div class="cp-stat-label">{{ $s['label'] }}</div>
-        <div class="cp-stat-value" style="color:{{ $s['color'] }};">{{ $s['val'] }}</div>
+        <div class="cp-stat-icon" style="background:{{ $s['color'] }}15;color:{{ $s['color'] }};">{!! $s['icon'] !!}</div>
+        <div>
+            <div class="cp-stat-label">{{ $s['label'] }}</div>
+            <div class="cp-stat-value" style="color:{{ $s['color'] }};">{{ $s['val'] }}</div>
+        </div>
     </div>
     @endforeach
 </div>

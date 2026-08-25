@@ -265,8 +265,8 @@
             </a>
           </div>
         @else
-          <div style="text-align:center;padding:28px;color:var(--text3);font-size:13px;">
-            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 8px;display:block;opacity:.2;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
             No campaign linked
           </div>
         @endif
@@ -326,12 +326,15 @@
           <form method="POST" action="{{ route('admin.events.toggleSetting', $event) }}" id="form_allow_reg">
             @csrf
             <input type="hidden" name="field" value="allow_registrations">
-            <div class="toggle-wrap" data-action="toggle-check" data-target="chk_allow_reg">
-              <input type="checkbox" id="chk_allow_reg"
-                     data-action="submit-form" data-target="form_allow_reg"
-                     {{ $event->allow_registrations ? 'checked' : '' }}>
-              <div class="toggle-track"></div>
-            </div>
+             <div class="toggle-wrap" data-action="toggle-check" data-target="chk_allow_reg">
+               <input type="checkbox" id="chk_allow_reg"
+                      role="switch"
+                      aria-checked="{{ $event->allow_registrations ? 'true' : 'false' }}"
+                      aria-label="Allow Registrations"
+                      data-action="submit-form" data-target="form_allow_reg"
+                      {{ $event->allow_registrations ? 'checked' : '' }}>
+               <div class="toggle-track"></div>
+             </div>
           </form>
         </div>
 
@@ -347,12 +350,15 @@
           <form method="POST" action="{{ route('admin.events.toggleSetting', $event) }}" id="form_show_campaign">
             @csrf
             <input type="hidden" name="field" value="show_on_campaign">
-            <div class="toggle-wrap" data-action="toggle-check" data-target="chk_show_campaign">
-              <input type="checkbox" id="chk_show_campaign"
-                     data-action="submit-form" data-target="form_show_campaign"
-                     {{ $event->show_on_campaign ? 'checked' : '' }}>
-              <div class="toggle-track"></div>
-            </div>
+             <div class="toggle-wrap" data-action="toggle-check" data-target="chk_show_campaign">
+               <input type="checkbox" id="chk_show_campaign"
+                      role="switch"
+                      aria-checked="{{ $event->show_on_campaign ? 'true' : 'false' }}"
+                      aria-label="Show on Campaign Page"
+                      data-action="submit-form" data-target="form_show_campaign"
+                      {{ $event->show_on_campaign ? 'checked' : '' }}>
+               <div class="toggle-track"></div>
+             </div>
           </form>
         </div>
 
@@ -368,12 +374,15 @@
           <form method="POST" action="{{ route('admin.events.toggleSetting', $event) }}" id="form_send_notif">
             @csrf
             <input type="hidden" name="field" value="send_notification">
-            <div class="toggle-wrap" data-action="toggle-check" data-target="chk_send_notif">
-              <input type="checkbox" id="chk_send_notif"
-                     data-action="submit-form" data-target="form_send_notif"
-                     {{ ($event->send_notification ?? false) ? 'checked' : '' }}>
-              <div class="toggle-track"></div>
-            </div>
+             <div class="toggle-wrap" data-action="toggle-check" data-target="chk_send_notif">
+               <input type="checkbox" id="chk_send_notif"
+                      role="switch"
+                      aria-checked="{{ ($event->send_notification ?? false) ? 'true' : 'false' }}"
+                      aria-label="Send Notification Email"
+                      data-action="submit-form" data-target="form_send_notif"
+                      {{ ($event->send_notification ?? false) ? 'checked' : '' }}>
+               <div class="toggle-track"></div>
+             </div>
           </form>
         </div>
 
@@ -394,88 +403,79 @@
           $regActive  = $event->registrations->where('status', 'registered')->count();
           $regCancelled = $event->registrations->where('status', 'cancelled')->count();
         @endphp
-        <div style="margin-left:auto;display:flex;gap:10px;flex-shrink:0;">
+        <div class="reg-counts">
           @if($regActive > 0)
-          <span style="display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:100px;font-size:10px;font-weight:700;font-family:var(--mono);background:var(--green-lt);color:#059669;">
-            <span style="width:5px;height:5px;border-radius:50%;background:#10b981;"></span> {{ $regActive }} active
-          </span>
+          <span class="pill-count pc-green"><span class="dot"></span> {{ $regActive }} active</span>
           @endif
           @if($regCancelled > 0)
-          <span style="display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:100px;font-size:10px;font-weight:700;font-family:var(--mono);background:var(--red-lt);color:#dc2626;">
-            <span style="width:5px;height:5px;border-radius:50%;background:#ef4444;"></span> {{ $regCancelled }} cancelled
-          </span>
+          <span class="pill-count pc-red"><span class="dot"></span> {{ $regCancelled }} cancelled</span>
           @endif
         </div>
       </div>
       @if($event->registrations->isNotEmpty())
-      <div style="padding:0 22px 12px;border-bottom:1px solid var(--border);">
-        <input type="text" id="regSearch" placeholder="Search by name, email, or phone…" style="width:100%;padding:8px 12px;border:1px solid var(--border2);border-radius:var(--r-sm);font-size:12.5px;font-family:var(--font);background:var(--surface2);color:var(--text);outline:none;box-sizing:border-box;" data-action="filter-registrations">
+      <div class="reg-search-bar">
+        <div class="reg-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m1.35-5.15a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0z"/></svg>
+          <input type="text" id="regSearch" placeholder="Search by name, email, or phone…" data-action="filter-registrations">
+        </div>
       </div>
       <div class="card-body" style="padding:0;">
-        <div style="overflow-x:auto;">
-          <table style="width:100%;border-collapse:collapse;font-size:12.5px;" id="regTable">
-            <thead>
-              <tr style="background:var(--surface2);">
-                <th style="text-align:left;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);width:36px;">#</th>
-                <th style="text-align:left;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);">Name</th>
-                <th style="text-align:left;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);">Email</th>
-                <th style="text-align:left;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);">Phone</th>
-                <th style="text-align:left;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);">Date</th>
-                <th style="text-align:center;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);">Status</th>
-              </tr>
-            </thead>
-            <tbody id="regBody">
-              @foreach($event->registrations as $idx => $reg)
-              <tr class="reg-row" style="border-bottom:1px solid var(--border);{{ $loop->last ? 'border-bottom:none;' : '' }}"
-                  data-search="{{ strtolower($reg->name.' '.$reg->email.' '.($reg->phone ?? '')) }}">
-                <td style="padding:11px 18px;color:var(--text3);font-family:var(--mono);font-size:11px;">{{ $idx + 1 }}</td>
-                <td style="padding:11px 18px;font-weight:600;color:var(--text);">
-                  @if($reg->user)
-                    <a href="{{ route('admin.users.show', $reg->user) }}" style="color:var(--a);text-decoration:none;">{{ $reg->name }}</a>
-                  @else
-                    {{ $reg->name }}
-                    <span style="font-size:10px;color:var(--text3);font-family:var(--mono);">(guest)</span>
-                  @endif
-                </td>
-                <td style="padding:11px 18px;color:var(--text2);font-family:var(--mono);font-size:11.5px;">
-                  <a href="mailto:{{ $reg->email }}" style="color:var(--a);text-decoration:none;">{{ $reg->email }}</a>
-                </td>
-                <td style="padding:11px 18px;color:var(--text2);font-family:var(--mono);font-size:11.5px;">{{ $reg->phone ?? '—' }}</td>
-                <td style="padding:11px 18px;color:var(--text2);font-family:var(--mono);font-size:11px;">{{ $reg->created_at->format('d M Y, h:i A') }}</td>
-                <td style="padding:11px 18px;text-align:center;">
-                  @if($reg->status === 'registered')
-                    <span style="display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:100px;font-size:10px;font-weight:700;font-family:var(--mono);background:var(--green-lt);color:#059669;white-space:nowrap;">
-                      <span style="width:5px;height:5px;border-radius:50%;background:#10b981;"></span> Registered
-                    </span>
-                  @else
-                    <span style="display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:100px;font-size:10px;font-weight:700;font-family:var(--mono);background:var(--red-lt);color:#dc2626;white-space:nowrap;">
-                      <span style="width:5px;height:5px;border-radius:50%;background:#ef4444;"></span> Cancelled
-                    </span>
-                  @endif
-                </td>
-              </tr>
-              @if($reg->message)
-              <tr class="reg-row" style="border-bottom:1px solid var(--border);{{ $loop->last ? 'border-bottom:none;' : '' }}"
-                  data-search="{{ strtolower($reg->name.' '.$reg->email.' '.($reg->phone ?? '')) }}">
-                <td colspan="6" style="padding:0 18px 11px 54px;color:var(--text3);font-size:12px;font-style:italic;line-height:1.5;">
-                  <span style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);font-style:normal;">Message: </span>
-                  {{ $reg->message }}
-                </td>
-              </tr>
-              @endif
-              @endforeach
-            </tbody>
-          </table>
-          <div id="regEmpty" style="display:none;text-align:center;padding:32px 20px;color:var(--text3);font-size:13px;">
+        <div class="table-scroll">
+            <table class="data-table" id="regTable">
+              <thead>
+                <tr>
+                  <th style="width:36px;">#</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Date</th>
+                  <th class="ta-c">Status</th>
+                </tr>
+              </thead>
+              <tbody id="regBody">
+                @foreach($event->registrations as $idx => $reg)
+                <tr class="reg-row" data-search="{{ strtolower($reg->name.' '.$reg->email.' '.($reg->phone ?? '')) }}">
+                  <td class="tbl-num" data-label="#">{{ $idx + 1 }}</td>
+                  <td class="tbl-name" data-label="Name">
+                    @if($reg->user)
+                      <a href="{{ route('admin.users.show', $reg->user) }}">{{ $reg->name }}</a>
+                    @else
+                      {{ $reg->name }}
+                      <span class="guest-tag">(guest)</span>
+                    @endif
+                  </td>
+                  <td data-label="Email"><a href="mailto:{{ $reg->email }}" class="tbl-mail">{{ $reg->email }}</a></td>
+                  <td class="tbl-phone" data-label="Phone">{{ $reg->phone ?? '—' }}</td>
+                  <td class="tbl-date" data-label="Date">{{ $reg->created_at->format('d M Y, h:i A') }}</td>
+                  <td class="ta-c tbl-status" data-label="Status">
+                    @if($reg->status === 'registered')
+                      <span class="status-pill pill-registered"><span class="sp-dot"></span> Registered</span>
+                    @else
+                      <span class="status-pill pill-cancelled"><span class="sp-dot"></span> Cancelled</span>
+                    @endif
+                  </td>
+                </tr>
+                @if($reg->message)
+                <tr class="reg-row" data-search="{{ strtolower($reg->name.' '.$reg->email.' '.($reg->phone ?? '')) }}">
+                  <td colspan="6" class="reg-msg">
+                    <span class="reg-msg-label">Message:</span>
+                    {{ $reg->message }}
+                  </td>
+                </tr>
+                @endif
+                @endforeach
+              </tbody>
+            </table>
+          <div id="regEmpty" class="empty-state" style="display:none;">
             No registrations match your search.
           </div>
         </div>
       </div>
       @else
       <div class="card-body">
-        <div style="text-align:center;padding:32px 20px;color:var(--text3);font-size:13px;">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 10px;display:block;opacity:.25;"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg>
-          <div style="font-weight:600;margin-bottom:4px;">No registrations yet</div>
+        <div class="empty-state">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg>
+          <div class="es-title">No registrations yet</div>
           <div>Share the event link to get people signed up.</div>
         </div>
       </div>
@@ -495,35 +495,33 @@
         </div>
       </div>
       <div class="card-body" style="padding:0;">
-        <div style="overflow-x:auto;">
-          <table style="width:100%;border-collapse:collapse;font-size:12.5px;">
+        <div class="table-scroll">
+          <table class="data-table">
             <thead>
-              <tr style="background:var(--surface2);">
-                <th style="text-align:left;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);">Name</th>
-                <th style="text-align:left;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);">Role</th>
-                <th style="text-align:left;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);">Dates</th>
-                <th style="text-align:center;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);">Status</th>
+              <tr>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Dates</th>
+                <th class="ta-c">Status</th>
               </tr>
             </thead>
             <tbody>
               @foreach($event->volunteerAssignments as $va)
-              <tr style="border-bottom:1px solid var(--border);{{ $loop->last ? 'border-bottom:none;' : '' }}">
-                <td style="padding:11px 18px;font-weight:600;color:var(--text);">
+              <tr>
+                <td class="tbl-name">
                   @if($va->volunteer?->user)
                     {{ $va->volunteer->user->name }}
                   @else
                     {{ $va->volunteer->name ?? 'Volunteer #'.$va->volunteer_id }}
                   @endif
                 </td>
-                <td style="padding:11px 18px;color:var(--text2);font-size:12px;">{{ $va->role ?? '—' }}</td>
-                <td style="padding:11px 18px;color:var(--text2);font-family:var(--mono);font-size:11px;">
+                <td class="tbl-role">{{ $va->role ?? '—' }}</td>
+                <td class="tbl-mono">
                   {{ $va->start_date ? $va->start_date->format('d M Y') : '—' }}
                   @if($va->end_date && $va->end_date != $va->start_date) – {{ $va->end_date->format('d M Y') }} @endif
                 </td>
-                <td style="padding:11px 18px;text-align:center;">
-                  <span style="display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:100px;font-size:10px;font-weight:700;font-family:var(--mono);background:var(--green-lt);color:#059669;white-space:nowrap;">
-                    <span style="width:5px;height:5px;border-radius:50%;background:#10b981;"></span> {{ ucfirst($va->status) }}
-                  </span>
+                <td class="ta-c">
+                  <span class="status-pill pill-active"><span class="sp-dot"></span> {{ ucfirst($va->status) }}</span>
                 </td>
               </tr>
               @endforeach
@@ -535,7 +533,7 @@
     @endif
 
     {{-- Bottom action row --}}
-    <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;animation:fadeUp .4s .18s ease both;align-items:center;">
+    <div class="show-actions">
       <a href="{{ route('admin.events.edit', $event) }}" class="btn btn-green btn-publish">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
         Edit Event
@@ -545,7 +543,7 @@
         All Events
       </a>
       @if($event->status === 'active')
-      <button class="btn btn-edit" data-action="copy-event-link" data-url="{{ url('events/'.$event->id) }}" style="cursor:pointer;">
+      <button class="btn btn-edit" aria-label="Copy event link to clipboard" data-action="copy-event-link" data-url="{{ url('events/'.$event->id) }}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
         <span>Copy Link</span>
       </button>
@@ -588,7 +586,7 @@
               Reject Event
             </button>
           </form>
-          <a href="{{ route('admin.events.edit', $event) }}" class="btn btn-edit" style="width:100%;justify-content:center;">
+          <a href="{{ route('admin.events.edit', $event) }}" class="btn btn-edit">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
             Edit Event
           </a>
@@ -600,7 +598,7 @@
               Publish Event
             </button>
           </form>
-          <a href="{{ route('admin.events.edit', $event) }}" class="btn btn-edit" style="width:100%;justify-content:center;">
+          <a href="{{ route('admin.events.edit', $event) }}" class="btn btn-edit">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
             Continue Editing
           </a>
@@ -612,7 +610,7 @@
               Revert to Draft
             </button>
           </form>
-          <a href="{{ route('admin.events.edit', $event) }}" class="btn btn-edit" style="width:100%;justify-content:center;">
+          <a href="{{ route('admin.events.edit', $event) }}" class="btn btn-edit">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
             Edit Event
           </a>
@@ -623,11 +621,11 @@
           </a>
         @endif
 
-        <div style="height:1px;background:var(--border);margin:2px 0;"></div>
+        <div class="az-sep"></div>
         <form method="POST" action="{{ route('admin.events.destroy', $event) }}"
               data-confirm="Permanently delete this event?">
           @csrf @method('DELETE')
-          <button type="submit" class="btn btn-red btn-sm">
+          <button type="submit" class="btn btn-red">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
             Delete Event
           </button>
@@ -655,7 +653,7 @@
         </div>
         <div class="summary-row">
           <div class="summary-key">Campaign</div>
-          <div class="summary-val" style="font-size:11.5px;line-height:1.3;">{{ $event->campaign->title ?? '—' }}</div>
+          <div class="summary-val summary-val-sm">{{ $event->campaign->title ?? '—' }}</div>
         </div>
         <div class="summary-row">
           <div class="summary-key">Date</div>
@@ -677,11 +675,11 @@
         </div>
         <div class="summary-row">
           <div class="summary-key">Created</div>
-          <div class="summary-val" style="font-size:11px;">{{ $event->created_at->format('d M Y, H:i') }}</div>
+          <div class="summary-val summary-val-sm">{{ $event->created_at->format('d M Y, H:i') }}</div>
         </div>
         <div class="summary-row">
           <div class="summary-key">Last Updated</div>
-          <div class="summary-val" style="font-size:11px;">{{ $event->updated_at->format('d M Y, H:i') }}</div>
+          <div class="summary-val summary-val-sm">{{ $event->updated_at->format('d M Y, H:i') }}</div>
         </div>
       </div>
     </div>
@@ -690,21 +688,21 @@
     <div class="card" style="animation-delay:.14s;">
       <div class="summary-hdr"><div class="summary-hdr-title">Fundraising</div></div>
       <div class="summary-body">
-        <div class="summary-row">
+        <div class="summary-row" style="padding-bottom:6px;">
           <div class="summary-key">Raised</div>
-          <div class="summary-val" style="color:var(--green);font-size:15px;">₹{{ number_format($raised, 0) }}</div>
+          <div class="summary-val summary-val-lg" style="color:var(--green);">₹{{ number_format($raised, 0) }}</div>
         </div>
-        <div class="summary-row">
-          <div class="summary-key">Progress</div>
-          <div style="margin-top:4px;">
-            <div class="progress-label"><span style="color:var(--text);">{{ $pct }}%</span><span>₹{{ number_format($goal, 0) }} goal</span></div>
-            <div class="progress-bar"><div class="progress-fill" style="width:{{ $pct }}%;"></div></div>
-          </div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:10px;text-align:right;">
+          of ₹{{ number_format($goal, 0) }} goal
         </div>
-        <div class="summary-row">
-          <div class="summary-key">Registrations</div>
-          <div class="summary-val">{{ $regCount }}
-            @if($event->max_participants)<span style="font-size:11px;color:var(--text3);"> / {{ $event->max_participants }}</span>@endif
+        <div class="summary-progress">
+          <div class="progress-label"><span style="color:var(--text);">{{ $pct }}%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:{{ $pct }}%;"></div></div>
+        </div>
+        <div class="summary-regs">
+          <div class="summary-regs-label">Registrations</div>
+          <div class="summary-regs-val">{{ $regCount }}
+            @if($event->max_participants)<span class="sum-muted"> / {{ $event->max_participants }}</span>@endif
           </div>
         </div>
       </div>
@@ -715,7 +713,7 @@
 @endsection
 
 @push('page_scripts')
-@vite('resources/js/admin/events-show.js')
+@vite('resources/js/admin/entries/events-show.js')
 @endpush
 
 @push('page_styles')

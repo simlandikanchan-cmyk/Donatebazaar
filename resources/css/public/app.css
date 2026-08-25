@@ -33,6 +33,28 @@ svg:not([width]):not([height]) {
     BUTTON SYSTEM — single source of truth (resources/css/components/_button.css)
     ═══════════════════════════════════════════════════════════════ */
 
+/* Skip link (accessible, hidden until keyboard focus) */
+.skip-link {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: #2563eb;
+  color: #ffffff;
+  padding: 8px 16px;
+  z-index: 10000;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 0 0 8px 0;
+  transform: translateY(-120%);
+  transition: transform 0.2s ease;
+  pointer-events: none;
+}
+.skip-link:focus {
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
 /* Navbar Links */
 .nav-link {
   @apply text-gray-700 hover:text-blue-600 transition relative;

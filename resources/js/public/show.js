@@ -1,4 +1,4 @@
-import { getCsrfToken } from '../shared/csrf.js';
+import { csrfFetch } from '../shared/api.js';
 
 (function () {
     'use strict';
@@ -272,11 +272,11 @@ import { getCsrfToken } from '../shared/csrf.js';
         }
         if (msg) { msg.textContent = 'Checking\u2026'; msg.style.color = '#6b7280'; }
 
-        fetch(cfg.couponRoute, {
+        csrfFetch(cfg.couponRoute, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': getCsrfToken()
+                'Accept': 'application/json'
             },
             body: JSON.stringify({
                 code: code,
@@ -410,6 +410,17 @@ import { getCsrfToken } from '../shared/csrf.js';
         }, 2000);
     }
 
+    function showInfoToast(msg) {
+        var wrap = document.getElementById('toastWrap');
+        if (!wrap) return;
+        var el = document.createElement('div');
+        el.className = 'toast-info';
+        el.textContent = msg;
+        wrap.appendChild(el);
+        setTimeout(function () { el.style.opacity = '0'; el.style.transition = 'opacity .4s'; }, 3000);
+        setTimeout(function () { if (el.parentNode) el.remove(); }, 3450);
+    }
+
     function shareTo(network) {
         var url = encodeURIComponent(window.location.href);
         var title = encodeURIComponent(cfg.campaignTitle);
@@ -503,6 +514,8 @@ import { getCsrfToken } from '../shared/csrf.js';
             copyLink(el);
         } else if (action === 'toggle-faq') {
             toggleFaq(el.getAttribute('data-id'));
+        } else if (action === 'show-info-toast') {
+            showInfoToast(el.getAttribute('data-toast-msg') || '');
         }
     });
 

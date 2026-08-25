@@ -10,6 +10,16 @@
 
 @push('page_styles')
 @vite('resources/css/admin/entries/blogs-create.css')
+<style>
+@media(max-width:860px){
+  .editor-layout{grid-template-columns:1fr!important}
+  .editor-layout > div:last-child{order:-1}
+}
+@media(max-width:640px){
+  .field-grid{grid-template-columns:1fr!important}
+  .page-hdr{flex-wrap:wrap}
+}
+</style>
 @endpush
 @section('content')
 <div class="admin-badge">Admin Publishing Mode — Direct Publish Available</div>
@@ -442,6 +452,14 @@
 </form>
 @endsection
 
+@push('page_styles')
+<style>
+@media(max-width:960px){
+  .editor-layout{grid-template-columns:1fr!important}
+}
+</style>
+@endpush
+
 @push('page_scripts')
-@vite('resources/js/admin/blogs-create.js')
+@vite('resources/js/admin/entries/blogs-create.js')
 @endpush

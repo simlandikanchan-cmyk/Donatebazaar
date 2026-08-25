@@ -100,6 +100,22 @@ html:not(.js-enabled) .reveal, html:not(.js-enabled) .reveal-left, html:not(.js-
 }
 .hiw-hero-btns { display:flex; gap:12px; flex-wrap:wrap; }
 
+/* Outline button on dark hero → inverse white-on-dark (same as home .hero-btns) */
+.hiw-hero-btns .btn--outline {
+    --btn-fg: var(--white);
+    --btn-bd: rgba(255,255,255,.35);
+    --btn-bg-h: rgba(255,255,255,.12);
+    --btn-fg-h: var(--white);
+    --btn-bd-h: rgba(255,255,255,.6);
+}
+.cta-btns .btn--outline {
+    --btn-fg: var(--white);
+    --btn-bd: rgba(255,255,255,.35);
+    --btn-bg-h: rgba(255,255,255,.12);
+    --btn-fg-h: var(--white);
+    --btn-bd-h: rgba(255,255,255,.6);
+}
+
 /* Stat bar */
 .hiw-stat-bar {
     background:rgba(5,5,18,.94); backdrop-filter:blur(20px);
@@ -270,7 +286,7 @@ html:not(.js-enabled) .reveal, html:not(.js-enabled) .reveal-left, html:not(.js-
 }
 @media(max-width:768px){
     .journey-step { flex-direction:row; align-items:flex-start; text-align:left; padding:0 0 36px 0; gap:18px; width:100%; }
-    .journey-step:not(:last-child)::after { top:auto; left:19px; right:auto; top:56px; width:2px; height:calc(100% - 56px); background:linear-gradient(180deg,rgba(37,99,235,.5),rgba(13,148,136,.3)); }
+    .journey-step:not(:last-child)::after { top:auto; left:19px; right:auto; width:2px; height:calc(100% - 56px); background:linear-gradient(180deg,rgba(37,99,235,.5),rgba(13,148,136,.3)); }
 }
 
 .journey-dot {
@@ -287,7 +303,7 @@ html:not(.js-enabled) .reveal, html:not(.js-enabled) .reveal-left, html:not(.js-
 .journey-dot svg { width:22px; height:22px; color:var(--white); }
 @media(max-width:768px){ .journey-dot { margin-bottom:0; } }
 
-.journey-step-content {}
+
 .journey-step-num { font-family:var(--font-mono); font-size:10px; font-weight:700; color:rgba(165,180,252,.6); letter-spacing:.12em; margin-bottom:8px; }
 @media(max-width:768px){ .journey-step-num { margin-top:4px; } }
 .journey-step-title { font-size:14px; font-weight:700; color:var(--white); margin-bottom:6px; }

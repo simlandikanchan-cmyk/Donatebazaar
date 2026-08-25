@@ -19,6 +19,7 @@
 .st-paid{background:rgba(5,196,138,.12);color:#059c7f;border-color:rgba(5,196,138,.25)}
 .st-rejected{background:rgba(240,68,68,.12);color:var(--red);border-color:rgba(240,68,68,.25)}
 .st-failed{background:rgba(240,68,68,.12);color:var(--red);border-color:rgba(240,68,68,.25)}
+.st-cancelled{background:rgba(100,116,139,.12);color:#64748b;border-color:rgba(100,116,139,.25)}
 .st-alert{display:flex;align-items:flex-start;gap:10px;padding:14px 16px;border-radius:var(--r-sm);margin-bottom:18px;border:1px solid}
 .st-alert svg{width:17px;height:17px;flex-shrink:0;margin-top:2px}
 .st-alert-title{font-weight:600;font-size:13px;margin-bottom:3px}
@@ -45,6 +46,18 @@
 .st-pa-name{font-size:14px;font-weight:700;color:var(--text)}
 .st-pa-acc{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px 14px;display:flex;flex-direction:column;gap:2px;margin-top:10px}
 @media(max-width:640px){.st-tl-lbl{width:110px}}
+@media(max-width:860px){
+  .stats-grid{grid-template-columns:repeat(2,1fr)!important}
+  .content-grid{grid-template-columns:1fr!important}
+}
+@media(max-width:480px){
+  .stats-grid{grid-template-columns:1fr!important}
+}
+@media(max-width:640px){
+  .table-scroll{min-width:480px}
+  .hero-right{width:100%;margin-top:14px}
+  .hero-right .hero-btn{width:100%;justify-content:center}
+}
 </style>
 @endpush
 
@@ -52,20 +65,32 @@
 
 @php
   $statusLabels = [
+    'requested' => 'Requested',
+    'risk_evaluation' => 'Risk Evaluation',
     'pending_approval' => 'Pending Approval',
+    'manual_review' => 'Manual Review',
+    'auto_approved' => 'Auto Approved',
     'approved' => 'Approved',
     'processing' => 'Processing',
     'paid' => 'Paid',
     'rejected' => 'Rejected',
     'failed' => 'Failed',
+    'retry_pending' => 'Retry Pending',
+    'cancelled' => 'Cancelled',
   ];
   $badgeClass = [
+    'requested' => 'st-pending',
+    'risk_evaluation' => 'st-pending',
     'pending_approval' => 'st-pending',
+    'manual_review' => 'st-pending',
+    'auto_approved' => 'st-approved',
     'approved' => 'st-approved',
     'processing' => 'st-processing',
     'paid' => 'st-paid',
     'rejected' => 'st-rejected',
     'failed' => 'st-failed',
+    'retry_pending' => 'st-processing',
+    'cancelled' => 'st-cancelled',
   ];
   $bc = $badgeClass[$settlement->status] ?? 'st-approved';
 @endphp
@@ -91,7 +116,7 @@
   </div>
   @if($settlement->isPendingApproval())
     <div class="hero-right">
-      <button type="button" onclick="openApprove()" class="hero-btn hero-btn-primary" style="background:linear-gradient(135deg,var(--green),var(--success-mid-3));box-shadow:0 4px 20px rgba(5,196,138,.4);">
+      <button type="button" data-action="open-modal" data-target="#approveOverlay" class="hero-btn hero-btn-primary" style="background:linear-gradient(135deg,var(--green),var(--success-mid-3));box-shadow:0 4px 20px rgba(5,196,138,.4);">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
         Approve Settlement
       </button>
@@ -167,7 +192,7 @@
 
 <div class="table-card" style="margin-bottom:20px;">
   <div class="table-scroll">
-    <table>
+    <table style="min-width:480px">
       <thead>
         <tr>
           <th>Donation</th>
@@ -301,7 +326,7 @@
   {{-- Approve confirmation modal --}}
   <div id="approveOverlay" class="overlay" role="dialog" aria-modal="true">
     <div class="modal">
-      <button type="button" class="modal-x" onclick="closeApprove()">
+      <button type="button" class="modal-x" data-action="close-modal" data-target="#approveOverlay">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
       <div class="modal-head">
@@ -382,5 +407,5 @@
 @endsection
 
 @push('page_scripts')
-@vite('resources/js/admin/settlements-show.js')
+@vite('resources/js/admin/entries/settlements-show.js')
 @endpush

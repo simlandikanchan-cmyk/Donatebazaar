@@ -10,8 +10,8 @@
 
 @push('page_styles')
 <style>
-@media(max-width:640px){.delete-card{margin-top:30px!important}}
-@media(max-width:480px){.delete-card .btn-row{flex-direction:column!important}.delete-card .btn-row>form,.delete-card .btn-row>a{width:100%!important}}
+@media(max-width:640px){.delete-card{margin-top:30px!important;max-width:calc(100% - 32px)!important;margin-left:16px!important;margin-right:16px!important}}
+@media(max-width:480px){.delete-card .btn-row{flex-direction:column!important}.delete-card .btn-row>form,.delete-card .btn-row>a{width:100%!important}.delete-card>div:last-child{padding:18px 14px!important}}
 </style>
 @endpush
 

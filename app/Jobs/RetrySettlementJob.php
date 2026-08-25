@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\CampaignSettlement;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Str;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -45,6 +46,13 @@ class RetrySettlementJob implements ShouldQueue
             return;
         }
 
-        $job::dispatch($settlement);
+        // Preserve a stable correlation id (keyed on the settlement) so the
+        // full retry lifecycle is traceable, and mint a fresh trace id for
+        // this specific attempt.
+        $job::dispatch(
+            $settlement,
+            'settlement:'.$settlement->id,
+            (string) Str::uuid()
+        );
     }
 }

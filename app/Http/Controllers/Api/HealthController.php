@@ -21,6 +21,10 @@ class HealthController extends Controller
 
         $healthy = collect($checks)->every(fn ($v) => $v === 'ok' || $v === 'available');
 
+        if (app()->environment('production')) {
+            return response()->json(['status' => $healthy ? 'ok' : 'error'], $healthy ? 200 : 503);
+        }
+
         return response()->json($checks, $healthy ? 200 : 503);
     }
 

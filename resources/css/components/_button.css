@@ -124,7 +124,7 @@
 
 /* ── 3. VARIANTS ─────────────────────────────────────────────────────── */
 .btn--primary {
-  --btn-bg: linear-gradient(135deg, var(--primary), var(--secondary));
+  --btn-bg: linear-gradient(135deg, #5182ef, var(--secondary));
   --btn-fg: var(--white);
   --btn-bg-h: linear-gradient(135deg, var(--primary-hover), var(--secondary-hover));
   --btn-fg-h: var(--white);
@@ -274,10 +274,10 @@
 .gc-action-resend, .gc-action-view, .cp-action-btn, .cp-action-cancel,
 .cp-action-view, .db-btn, .db-btn--primary, .db-btn--ghost,
 .db-icon-btn, .icon-btn, .editor-btn, .sdb-btn, .sdb-share-btn,
-.tab-btn, .page-btn, .create-btn, .doc-btn, .alert-close, .btn-back-step,
+.tab-btn, .page-btn, .create-btn, .alert-close, .btn-back-step,
 .btn-modal-cancel, .btn-modal-delete, .cover-preview-actions,
-.main-donate-tab, .amt-btn-new, .bulk-btn-del, .pwd-toggle, .pw-toggle,
-.btn-g, .btn-i, .btn-y, .hero-search-btn, .ev-search-clear, .toast-close,
+.main-donate-tab, .amt-btn-new, .pwd-toggle, .pw-toggle,
+.btn-g, .btn-i, .btn-y, .ev-search-clear, .toast-close,
 .scroll-top, .lightbox-close, .filter-trigger-btn, .fm-close, .sidebar-close,
 .chat-scroll-bottom, .impact-scroll-top {
   display: inline-flex;
@@ -351,7 +351,7 @@
 .db-btn:hover, .db-btn--primary:hover, .db-btn--ghost:hover,
 .db-icon-btn:hover, .icon-btn:hover, .editor-btn:hover, .sdb-btn:hover,
 .sdb-share-btn:hover, .tab-btn:hover, .page-btn:hover, .create-btn:hover,
-.doc-btn:hover, .alert-close:hover, .btn-back-step:hover,
+.alert-close:hover, .btn-back-step:hover,
 .btn-modal-cancel:hover, .btn-modal-delete:hover, .main-donate-tab:hover,
 .amt-btn-new:hover, .pwd-toggle:hover, .pw-toggle:hover, .btn-g:hover,
 .btn-i:hover, .btn-y:hover, .ev-search-clear:hover, .toast-close:hover,

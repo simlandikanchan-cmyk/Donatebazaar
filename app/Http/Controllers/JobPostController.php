@@ -32,22 +32,61 @@ class JobPostController extends Controller
             }
         }
 
+        // ── Department filter ─────────────────────────────────────────────
+        if ($request->filled('department')) {
+            $query->where('department', $request->department);
+        }
+
         // ── Search filter ─────────────────────────────────────────────────
         if ($request->filled('search')) {
             $search = '%'.$request->search.'%';
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', $search)
                     ->orWhere('description', 'like', $search)
-                    ->orWhere('location', 'like', $search);
+                    ->orWhere('location', 'like', $search)
+                    ->orWhere('department', 'like', $search)
+                    ->orWhere('skills', 'like', $search);
             });
         }
 
+        // ── Hero stats (same open-jobs filter as the grid) ────────────────
+        $openCount   = (clone $query)->count();
+        $remoteCount = (clone $query)
+            ->where(function ($q) {
+                $q->where('type', 'remote')->orWhere('is_remote', true);
+            })
+            ->count();
+        $departments = (clone $query)
+            ->whereNotNull('department')
+            ->distinct()
+            ->pluck('department')
+            ->sort()
+            ->values();
+
+        $deptCounts = (clone $query)
+            ->whereNotNull('department')
+            ->selectRaw('department, COUNT(*) as total')
+            ->groupBy('department')
+            ->pluck('total', 'department');
+
+        // ── Sort ──────────────────────────────────────────────────────────
+        $sort = $request->input('sort', 'newest');
+        if (! in_array($sort, ['newest', 'deadline', 'featured'], true)) {
+            $sort = 'newest';
+        }
+
+        $query->when($sort === 'deadline', function ($q) {
+            $q->orderByRaw('application_deadline IS NULL, application_deadline ASC');
+        })->when($sort === 'featured', function ($q) {
+            $q->orderByDesc('featured');
+        });
+
         $jobPosts = $query
-            ->orderBy('created_at', 'desc')
+            ->orderByDesc('created_at')
             ->paginate(12)
             ->withQueryString();
 
-        return view('job_posts.index', compact('jobPosts'));
+        return view('job_posts.index', compact('jobPosts', 'openCount', 'remoteCount', 'departments', 'deptCounts', 'sort'));
     }
 
     public function show(JobPost $jobPost)
@@ -62,7 +101,22 @@ class JobPostController extends Controller
             404
         );
 
-        return view('job_posts.show', compact('jobPost'));
+        $similarJobs = JobPost::query()
+            ->where('status', 'active')
+            ->where('id', '!=', $jobPost->id)
+            ->where(function ($q) {
+                $q->whereNull('application_deadline')
+                    ->orWhereDate('application_deadline', '>=', now()->toDateString());
+            })
+            ->where(function ($q) use ($jobPost) {
+                $q->where('department', $jobPost->department)
+                    ->orWhere('type', $jobPost->type);
+            })
+            ->orderByDesc('created_at')
+            ->limit(3)
+            ->get();
+
+        return view('job_posts.show', compact('jobPost', 'similarJobs'));
     }
 
     public function apply(Request $request, JobPost $jobPost)

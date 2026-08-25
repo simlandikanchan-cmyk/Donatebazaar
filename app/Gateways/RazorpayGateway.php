@@ -86,7 +86,7 @@ class RazorpayGateway
             $order = $api->order->create([
                 'receipt' => 'rcpt_'.time().'_'.($user?->id ?? 0),
                 'amount' => (int) round($amount * 100),
-                'currency' => 'INR',
+                'currency' => config('services.donation.currency', 'INR'),
                 'notes' => [
                     'campaign_id' => $campaign->id,
                     'campaign_name' => $campaign->title,
@@ -98,7 +98,7 @@ class RazorpayGateway
 
             return $order->toArray();
         } catch (RazorpayError $e) {
-            Log::error('Razorpay order creation failed', [
+            Log::channel('payments')->error('Razorpay order creation failed', [
                 'campaign_id' => $campaign->id,
                 'amount' => $amount,
                 'user_id' => $user?->id,
@@ -117,13 +117,13 @@ class RazorpayGateway
             $order = $api->order->create([
                 'receipt' => $receipt ?? 'rcpt_'.time().'_'.rand(100, 999),
                 'amount' => (int) round($amount * 100),
-                'currency' => 'INR',
+                'currency' => config('services.donation.currency', 'INR'),
                 'notes' => $notes,
             ]);
 
             return $order->toArray();
         } catch (RazorpayError $e) {
-            Log::error('Razorpay generic order creation failed', [
+            Log::channel('payments')->error('Razorpay generic order creation failed', [
                 'amount' => $amount,
                 'receipt' => $receipt,
                 'error' => $e->getMessage(),
@@ -144,13 +144,17 @@ class RazorpayGateway
         }
     }
 
-    public function initiateRefund(Donation $donation, int $amountPaise): object
+    public function initiateRefund(Donation $donation, int $amountPaise, ?string $idempotencyKey = null): object
     {
         $api = $this->getApi();
 
+        $header = $idempotencyKey !== null
+            ? ['X-Razorpay-Idempotency' => $idempotencyKey]
+            : [];
+
         return $api->payment
             ->fetch($donation->payment_id)
-            ->refund(['amount' => $amountPaise]);
+            ->refund(['amount' => $amountPaise], $header);
     }
 
     public function validateWebhook(string $payload, string $signature, string $secret): bool
@@ -169,6 +173,35 @@ class RazorpayGateway
         }
 
         return $data;
+    }
+
+    public function fetchPayment(string $paymentId): object
+    {
+        return $this->getApi()->payment->fetch($paymentId);
+    }
+
+    public function verifyPaymentDetails(string $paymentId, string $orderId, float $expectedAmount, string $currency): void
+    {
+        $payment = $this->fetchPayment($paymentId);
+
+        $actualAmount = (int) $payment->amount;
+        $expectedPaise = (int) round($expectedAmount * 100);
+
+        if ($actualAmount !== $expectedPaise) {
+            throw new \RuntimeException("Payment amount mismatch: expected {$expectedPaise} paise, got {$actualAmount} paise.");
+        }
+
+        if ($payment->order_id !== $orderId) {
+            throw new \RuntimeException("Payment order mismatch: expected {$orderId}, got {$payment->order_id}.");
+        }
+
+        if (strtoupper($payment->currency) !== strtoupper($currency)) {
+            throw new \RuntimeException("Payment currency mismatch: expected {$currency}, got {$payment->currency}.");
+        }
+
+        if (! in_array($payment->status, ['captured', 'authorized'], true)) {
+            throw new \RuntimeException("Payment status '{$payment->status}' is not captured or authorized.");
+        }
     }
 }
 

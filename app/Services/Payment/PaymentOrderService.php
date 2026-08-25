@@ -14,6 +14,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Session;
@@ -21,21 +22,35 @@ use Illuminate\View\View;
 
 class PaymentOrderService
 {
-    private const MIN_AMOUNT = 1;
-
-    private const MAX_AMOUNT = 500000;
-
     private const RATE_LIMIT_HITS = 30;
 
     private const RATE_LIMIT_WINDOW = 60;
-
-    private const PLATFORM_FEE_PERCENT = 5.0;
 
     public function __construct(
         private CouponService $couponService,
         private ProductReservationService $productReservationService,
         private WalletService $walletService
     ) {}
+
+    private function getMinAmount(): int
+    {
+        return (int) config('services.donation.min_amount', 1);
+    }
+
+    private function getMaxAmount(): int
+    {
+        return (int) config('services.donation.max_amount', 500000);
+    }
+
+    private function getPlatformFeePercent(): float
+    {
+        return (float) config('services.donation.platform_fee_percent', 5.0);
+    }
+
+    private function getCurrency(): string
+    {
+        return (string) config('services.donation.currency', 'INR');
+    }
 
     public function initiateDonation(Request $request, Campaign $campaign): RedirectResponse
     {
@@ -54,18 +69,21 @@ class PaymentOrderService
 
         RateLimiter::hit($rateLimitKey, self::RATE_LIMIT_WINDOW);
 
+        $minAmount = $this->getMinAmount();
+        $maxAmount = $this->getMaxAmount();
+
         $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
             'amount' => [
                 'required',
                 'numeric',
-                'min:'.self::MIN_AMOUNT,
-                'max:'.self::MAX_AMOUNT,
+                'min:'.$minAmount,
+                'max:'.$maxAmount,
             ],
         ], [
             'amount.required' => 'Please enter a donation amount.',
             'amount.numeric' => 'Amount must be a valid number.',
-            'amount.min' => 'Minimum donation is ₹'.self::MIN_AMOUNT.'.',
-            'amount.max' => 'Maximum donation is ₹'.number_format(self::MAX_AMOUNT).'.',
+            'amount.min' => 'Minimum donation is ₹'.$minAmount.'.',
+            'amount.max' => 'Maximum donation is ₹'.number_format($maxAmount).'.',
         ]);
 
         if ($validator->fails()) {
@@ -97,7 +115,7 @@ class PaymentOrderService
             }
         }
 
-        if ($amount < self::MIN_AMOUNT || $amount > self::MAX_AMOUNT) {
+        if ($amount < $minAmount || $amount > $maxAmount) {
             return redirect()
                 ->route('campaign.public', [
                     'category' => $campaign->category->slug ?? '',
@@ -149,7 +167,7 @@ class PaymentOrderService
                     Session::getId()
                 );
             } catch (InsufficientStockException $e) {
-                Log::info('Product reservation failed', [
+                Log::channel('payments')->info('Product reservation failed', [
                     'campaign_id' => $campaign->id,
                     'error' => $e->getMessage(),
                 ]);
@@ -179,7 +197,7 @@ class PaymentOrderService
             ],
         ]);
 
-        Log::info('Donation session created', [
+        Log::channel('payments')->info('Donation session created', [
             'campaign_id' => $campaign->id,
             'user_id' => Auth::id(),
             'amount' => $amount,
@@ -196,7 +214,7 @@ class PaymentOrderService
         $campaignId = Session::get('donation_campaign');
         $sessionAt = Session::get('donation_session_at');
 
-        Log::debug('Payment page session check', [
+        Log::channel('payments')->debug('Payment page session check', [
             'amount' => $amount,
             'session_campaign' => $campaignId,
             'route_campaign' => $campaign->id,
@@ -239,8 +257,10 @@ class PaymentOrderService
         }
 
         $amount = (float) $amount;
+        $minAmount = $this->getMinAmount();
+        $maxAmount = $this->getMaxAmount();
 
-        if ($amount < self::MIN_AMOUNT || $amount > self::MAX_AMOUNT) {
+        if ($amount < $minAmount || $amount > $maxAmount) {
             $this->clearDonationSession();
 
             return redirect()
@@ -283,7 +303,7 @@ class PaymentOrderService
                 $fees
             );
         } catch (\Throwable $e) {
-            Log::error('Razorpay order creation failed', [
+            Log::channel('payments')->error('Razorpay order creation failed', [
                 'campaign_id' => $campaign->id,
                 'amount' => $amount,
                 'user_id' => Auth::id(),
@@ -319,10 +339,10 @@ class PaymentOrderService
         $donation->net_amount = $fees['net_amount'];
         $donation->order_id = $order['id'];
         $donation->payment_gateway = 'razorpay';
-        $donation->currency = 'INR';
-        $donation->receipt_number = strtoupper(\Illuminate\Support\Str::random(12));
+        $donation->currency = $this->getCurrency();
         $donation->payment_status = 'pending';
-        $donation->save();
+
+        $this->saveDonationWithUniqueReceipt($donation);
 
         if ($isProduct) {
             $ids = array_values(array_filter(explode(',', $cart['ids'])));
@@ -335,7 +355,7 @@ class PaymentOrderService
                 $product = \App\Models\CampaignProduct::find($productId);
 
                 if (! $product) {
-                    Log::warning('Product not found during donation_items creation', [
+                    Log::channel('payments')->warning('Product not found during donation_items creation', [
                         'product_id' => $productId,
                         'donation_id' => $donation->id,
                     ]);
@@ -351,7 +371,7 @@ class PaymentOrderService
                 ]);
             }
 
-            Log::info('Product donation items saved', [
+            Log::channel('payments')->info('Product donation items saved', [
                 'donation_id' => $donation->id,
                 'product_ids' => $cart['ids'],
                 'qtys' => $cart['qtys'],
@@ -366,7 +386,7 @@ class PaymentOrderService
 
         $this->clearDonationSession();
 
-        Log::info('Payment order created', [
+        Log::channel('payments')->info('Payment order created', [
             'donation_id' => $donation->id,
             'order_id' => $order['id'],
             'campaign_id' => $campaign->id,
@@ -401,13 +421,39 @@ class PaymentOrderService
 
     private function calculateFees(float $amount): array
     {
-        $platformFee = round($amount * self::PLATFORM_FEE_PERCENT / 100, 2);
+        $platformFee = round($amount * $this->getPlatformFeePercent() / 100, 2);
         $netAmount = round($amount - $platformFee, 2);
 
         return [
             'platform_fee' => $platformFee,
             'net_amount' => $netAmount,
         ];
+    }
+
+    private function generateUniqueReceiptNumber(): string
+    {
+        return strtoupper(\Illuminate\Support\Str::random(12));
+    }
+
+    private function saveDonationWithUniqueReceipt(Donation $donation): Donation
+    {
+        $maxAttempts = 3;
+
+        for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
+            $donation->receipt_number = $this->generateUniqueReceiptNumber();
+
+            try {
+                $donation->save();
+
+                return $donation->fresh();
+            } catch (\Illuminate\Database\QueryException $e) {
+                if ($attempt === $maxAttempts) {
+                    throw $e;
+                }
+            }
+        }
+
+        throw $donation;
     }
 
     private function resolveState(Campaign $campaign): string

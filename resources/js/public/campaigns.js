@@ -1,4 +1,5 @@
 import { delegate } from '../shared/dom.js';
+import { escapeHtml } from '../shared/helpers.js';
 
 document.documentElement.classList.add('js-enabled');
 
@@ -153,9 +154,18 @@ document.documentElement.classList.add('js-enabled');
             var displayKey = labels[key] ? labels[key].label : key;
             var chip = document.createElement('span');
             chip.className = 'active-filter-chip';
-            chip.innerHTML = displayKey + ': <strong>' + displayVal + '</strong>' +
-                '<button data-action="remove-filter" data-key="' + key + '" aria-label="Remove ' + displayKey + ' filter">' +
-                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 18L18 6M6 6l12 12"/></svg></button>';
+            var keySpan = document.createElement('span');
+            keySpan.textContent = displayKey + ': ';
+            var strong = document.createElement('strong');
+            strong.textContent = displayVal;
+            keySpan.appendChild(strong);
+            chip.appendChild(keySpan);
+            var btn = document.createElement('button');
+            btn.setAttribute('data-action', 'remove-filter');
+            btn.setAttribute('data-key', key);
+            btn.setAttribute('aria-label', 'Remove ' + displayKey + ' filter');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 18L18 6M6 6l12 12"/></svg>';
+            chip.appendChild(btn);
             wrap.appendChild(chip);
         });
 
@@ -163,9 +173,18 @@ document.documentElement.classList.add('js-enabled');
         if (s) {
             var chip = document.createElement('span');
             chip.className = 'active-filter-chip';
-            chip.innerHTML = 'Search: <strong>' + s + '</strong>' +
-                '<button data-action="remove-filter" data-key="search" aria-label="Remove search filter">' +
-                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 18L18 6M6 6l12 12"/></svg></button>';
+            var keySpan = document.createElement('span');
+            keySpan.textContent = 'Search: ';
+            var strong = document.createElement('strong');
+            strong.textContent = s;
+            keySpan.appendChild(strong);
+            chip.appendChild(keySpan);
+            var btn = document.createElement('button');
+            btn.setAttribute('data-action', 'remove-filter');
+            btn.setAttribute('data-key', 'search');
+            btn.setAttribute('aria-label', 'Remove search filter');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 18L18 6M6 6l12 12"/></svg>';
+            chip.appendChild(btn);
             wrap.appendChild(chip);
         }
     }

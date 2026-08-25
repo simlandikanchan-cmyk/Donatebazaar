@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\BlogRequest;
+use App\Http\Requests\Admin\StoreBlogRequest;
+use App\Http\Requests\Admin\UpdateBlogRequest;
+use App\Http\Requests\Blog\BulkBlogActionRequest;
+use App\Http\Requests\Blog\RejectBlogRequest;
+use App\Http\Requests\Blog\ReorderBlogRequest;
 use App\Models\Blog;
 use App\Models\BlogReport;
 use App\Models\Category;
@@ -108,49 +112,9 @@ class BlogController extends Controller
         return view('admin.blogs.create', compact('categories', 'tags'));
     }
 
-    public function store(BlogRequest $request)
+    public function store(StoreBlogRequest $request)
     {
-        $data = $request->validated();
-
-        if ($request->hasFile('cover_image')) {
-            $data['cover_image'] = $request->file('cover_image')
-                ->store('blogs/covers', 'public');
-        }
-
-        $data['author_id'] = Auth::id();
-        $data['author_role'] = 'admin';
-        $action = $request->input('action', 'publish');
-
-        if ($action === 'draft') {
-            $data['status'] = Blog::STATUS_DRAFT;
-            $data['published_at'] = null;
-            $data['reviewed_by'] = null;
-            $data['reviewed_at'] = null;
-        } elseif ($action === 'schedule') {
-            $data['status'] = Blog::STATUS_PENDING;
-            $data['reviewed_by'] = Auth::id();
-            $data['reviewed_at'] = now();
-            $scheduledDate = $request->input('scheduled_at_date');
-            $scheduledTime = $request->input('scheduled_at_time', '00:00');
-            if ($scheduledDate) {
-                $data['published_at'] = $scheduledDate.' '.$scheduledTime;
-            } else {
-                $data['published_at'] = now();
-            }
-        } else {
-            $data['status'] = Blog::STATUS_PUBLISHED;
-            $data['published_at'] = now();
-            $data['reviewed_by'] = Auth::id();
-            $data['reviewed_at'] = now();
-        }
-
-        unset($data['tag_ids']);
-
-        $blog = Blog::create($data);
-
-        if ($request->filled('tag_ids')) {
-            $blog->tags()->sync($request->input('tag_ids'));
-        }
+        $blog = $this->blogService->create($request, Auth::id());
 
         return redirect()->route('admin.blogs.show', $blog)
             ->with('success', 'Blog published successfully.');
@@ -181,7 +145,7 @@ class BlogController extends Controller
         return view('admin.blogs.edit', compact('blog', 'categories', 'tags', 'selectedTags'));
     }
 
-    public function update(BlogRequest $request, Blog $blog)
+    public function update(UpdateBlogRequest $request, Blog $blog)
     {
         abort_if($blog->trashed(), 404);
 
@@ -262,14 +226,8 @@ class BlogController extends Controller
             ->with('success', 'Blog soft-deleted.');
     }
 
-    public function bulk(Request $request)
+    public function bulk(BulkBlogActionRequest $request)
     {
-        $request->validate([
-            'ids' => 'required|array',
-            'ids.*' => 'integer',
-            'action' => 'required|in:publish,delete',
-        ]);
-
         $ids = $request->input('ids');
         $action = $request->input('action');
 
@@ -329,10 +287,8 @@ class BlogController extends Controller
         return back()->with('success', "Blog \"{$blog->title}\" approved and published.");
     }
 
-    public function reject(Request $request, Blog $blog)
+    public function reject(RejectBlogRequest $request, Blog $blog)
     {
-        $request->validate(['reason' => 'required|string|max:1000']);
-
         abort_unless(
             in_array($blog->status, [Blog::STATUS_PENDING, Blog::STATUS_FLAGGED]),
             422,
@@ -390,15 +346,10 @@ class BlogController extends Controller
         return back()->with('success', 'Blog flagged for review.');
     }
 
-    public function reorder(Request $request)
+    public function reorder(ReorderBlogRequest $request)
     {
-        $request->validate([
-            'order' => 'required|array',
-            'order.*' => 'integer|exists:blogs,id',
-        ]);
-
         DB::transaction(function () use ($request) {
-            foreach ($request->order as $position => $blogId) {
+            foreach ($request->validated()['order'] as $position => $blogId) {
                 Blog::where('id', $blogId)->update(['carousel_order' => $position + 1]);
             }
         });

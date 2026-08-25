@@ -240,9 +240,13 @@
 @endsection
 
 @push('page_scripts')
-@vite('resources/js/admin/categories-edit.js')
+@vite('resources/js/admin/entries/categories-edit.js')
 @endpush
 
 @push('page_styles')
 @vite('resources/css/admin/pages/categories-edit.css')
+<style>
+@media(max-width:860px){.page-grid{grid-template-columns:1fr!important}.page-grid>div:last-child{display:none}}
+@media(max-width:640px){.card-body{padding:16px!important}.card-head{padding:12px 16px!important}.submit-btn{width:100%;justify-content:center}}
+</style>
 @endpush

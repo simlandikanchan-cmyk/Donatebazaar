@@ -1,1 +1,8 @@
 @import '../pages/misc.css';
+@import '../pages/contacts-index.css';
+@import '../pages/legal-index.css';
+@import '../pages/legal-edit.css';
+@import '../pages/campaign-products-index.css';
+@import '../pages/category-products-index.css';
+@import '../pages/category-products-create.css';
+@import '../pages/category-products-edit.css';

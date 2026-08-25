@@ -15,7 +15,26 @@ class JobPostController extends Controller
      */
     public function index(Request $request)
     {
-        $jobPosts = JobPost::withCount('applications')
+        $query = JobPost::query();
+        $totalJobs = (clone $query)->count();
+
+        $cntActive   = (clone $query)->where('status', 'active')
+                       ->where(fn($q) => $q->whereNull('application_deadline')
+                                            ->orWhereDate('application_deadline', '>=', now()))
+                       ->count();
+        $cntDraft    = (clone $query)->where('status', 'draft')->count();
+        $cntClosed   = (clone $query)->where(fn($q) =>
+                       $q->where('status', 'closed')
+                         ->orWhere(fn($q2) => $q2->whereNotNull('application_deadline')
+                                                 ->whereDate('application_deadline', '<', now()))
+                     )->count();
+        $cntRemote   = (clone $query)->where('is_remote', 1)->count();
+        $cntFeatured = (clone $query)->where('featured', 1)->count();
+        $totalVac    = (clone $query)->sum('vacancies');
+        $totalViews  = (clone $query)->sum('views_count');
+        $totalApps   = (clone $query)->sum('applications_count');
+
+        $jobPosts = $query->withCount('applications')
             ->when($request->search, function ($query) use ($request) {
                 $query->where('title', 'like', '%'.$request->search.'%');
             })
@@ -26,7 +45,7 @@ class JobPostController extends Controller
             ->paginate(20)
             ->withQueryString();
 
-        return view('admin.job_posts.index', compact('jobPosts'));
+        return view('admin.job_posts.index', compact('jobPosts', 'totalJobs', 'cntActive', 'cntDraft', 'cntClosed', 'cntRemote', 'cntFeatured', 'totalVac', 'totalViews', 'totalApps'));
     }
 
     /**

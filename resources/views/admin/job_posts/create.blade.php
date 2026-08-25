@@ -10,6 +10,19 @@
 
 @push('page_styles')
 @vite('resources/css/admin/entries/jobs-create.css')
+<style>
+@media(max-width:860px){
+  .form-layout{grid-template-columns:1fr!important}
+  .form-layout > div:last-child{order:-1}
+}
+@media(max-width:640px){
+  .field-row field{grid-template-columns:1fr!important}
+  .field-row field > div{width:100%!important}
+  .submit-row{flex-wrap:wrap}
+  .submit-btns{width:100%;margin-top:8px;justify-content:stretch}
+  .submit-btns .btn{flex:1;justify-content:center}
+}
+</style>
 @endpush
 
 @section('content')
@@ -432,5 +445,5 @@
 @endsection
 
 @push('page_scripts')
-@vite('resources/js/admin/jobs-create.js')
+@vite('resources/js/admin/entries/jobs-create.js')
 @endpush
