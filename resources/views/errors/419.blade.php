@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@push('styles') @vite(['resources/css/errors.css']) @endpush
+@push('styles') @vite(['resources/css/public/errors.css']) @endpush
 
 @section('content')
 <div id="error-root">
@@ -23,10 +23,10 @@
                     <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
                     Refresh &amp; Try Again
                 </a>
-                <a href="/" class="btn-back">
+                <x-button variant="secondary" href="/">
                     <svg viewBox="0 0 24 24"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 001 1h3a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1h3a1 1 0 001-1V10"/></svg>
                     Home
-                </a>
+                </x-button>
             </div>
         </div>
     </div>

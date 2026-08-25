@@ -1,0 +1,164 @@
+/* ══════════════════════════════════════
+   ADMIN — Components: Tabs & Breadcrumbs
+   ══════════════════════════════════════ */
+/* ── FILTER TABS ── */
+.ftabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 4px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+.ftab {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 13px;
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--text3);
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all var(--ease);
+}
+.ftab:hover {
+  color: var(--a);
+}
+.ftab.on {
+  font-weight: 700;
+  color: var(--a);
+  background: var(--surface);
+  box-shadow: 0 1px 8px rgba(37, 99, 235, .14);
+}
+.ftab .cnt {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--a);
+  background: var(--a-lt);
+  border-radius: 100px;
+}
+.ftab.on .cnt {
+  color: var(--white);
+  background: var(--a);
+}
+.ftab-active {
+  font-weight: 700;
+  color: var(--a);
+  background: var(--surface);
+  border-radius: 10px;
+  box-shadow: 0 1px 8px rgba(37, 99, 235, .14);
+}
+/* ── FILTER DROPDOWN (mobile) ── */
+.ftab-select {
+  display: none;
+  width: 100%;
+  padding: 9px 32px 9px 12px;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  background: var(--surface2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M1 3l4 4 4-4' fill='none' stroke='%23939AB1' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 12px center;
+  border: 1px solid var(--border2);
+  border-radius: var(--r-sm);
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.ftab-select:focus {
+  border-color: var(--a);
+}
+[data-theme="dark"] .ftab-select {
+  color: rgba(255, 255, 255, .8);
+  background-color: rgba(255, 255, 255, .06);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M1 3l4 4 4-4' fill='none' stroke='%237B82A6' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  border-color: rgba(255, 255, 255, .1);
+}
+/* ── BREADCRUMB ── */
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+  font-size: 12px;
+  color: var(--text3);
+}
+.breadcrumb svg {
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  color: var(--text3);
+}
+.breadcrumb a {
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--a);
+  transition: color var(--ease);
+}
+.breadcrumb a:hover {
+  color: var(--a2);
+}
+.bc-sep {
+  font-size: 10px;
+  color: var(--text3);
+  opacity: .5;
+}
+.bc-cur {
+  font-weight: 600;
+  color: var(--text);
+}
+/* ── CRUMBS (campaign detail) ── */
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text3);
+}
+.crumbs a {
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--a);
+}
+.crumbs a:hover {
+  text-decoration: underline;
+}
+.crumb-icon {
+  flex-shrink: 0;
+  width: 13px;
+  height: 13px;
+  margin-right: 3px;
+  vertical-align: middle;
+}
+.crumb-sep {
+  color: var(--text3);
+  opacity: .5;
+}
+.crumb-current {
+  overflow: hidden;
+  max-width: 180px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text);
+}
+.crumb-id {
+  font-size: 11px;
+  color: var(--text3);
+}

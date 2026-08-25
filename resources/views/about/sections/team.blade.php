@@ -9,18 +9,16 @@
         <div class="team-grid">
             @php
             $team = [
-                ['initial'=>'A','name'=>'Soumik Banerjee','role'=>'Co-Founder & CEO','bio'=>'Former TATA Trust impact director with 12 years in social finance and nonprofit technology.','grad'=>'135deg,#6366f1,#8b5cf6'],
-                ['initial'=>'S','name'=>'Vikash Das','role'=>'Co-Founder & CTO','bio'=>'Ex-Razorpay payments engineer passionate about making secure fintech accessible to NGOs.','grad'=>'135deg,#10b981,#059669'],
-                ['initial'=>'V','name'=>'Vikram Thakur','role'=>'Head of Trust & Safety','bio'=>'Former RBI compliance officer ensuring every rupee on DonateBazaar is protected.','grad'=>'135deg,#f59e0b,#d97706'],
+                ['img'=>'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=600&q=80','name'=>'Soumik Banerjee','role'=>'Co-Founder & CEO','bio'=>'Former TATA Trust impact director with 12 years in social finance and nonprofit technology.'],
+                ['img'=>'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=600&q=80','name'=>'Vikash Das','role'=>'Co-Founder & CTO','bio'=>'Ex-Razorpay payments engineer passionate about making secure fintech accessible to NGOs.'],
+                ['img'=>'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&q=80','name'=>'Vikram Thakur','role'=>'Head of Trust & Safety','bio'=>'Former RBI compliance officer ensuring every rupee on DonateBazaar is protected.'],
             ];
             @endphp
 
             @foreach($team as $member)
             <div class="team-card reveal d{{ $loop->iteration }}">
                 <div class="team-img-wrap">
-                    <div class="team-avatar-placeholder" style="background:linear-gradient({{ $member['grad'] }})">
-                        {{ $member['initial'] }}
-                    </div>
+                    <img src="{{ $member['img'] }}" alt="{{ $member['name'] }}" loading="lazy">
                     <div class="team-img-overlay"></div>
                 </div>
                 <div class="team-info">

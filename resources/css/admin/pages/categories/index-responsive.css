@@ -1,0 +1,56 @@
+/* ══════════════════════════════════════
+   CATEGORIES INDEX — Responsive & motion preferences
+   Toolbar/stats/table responsiveness is handled by the shared
+   system (layout/_responsive.css, components). Only the grid view
+   and motion preferences need page-level rules.
+   ══════════════════════════════════════ */
+@media (max-width: 640px) {
+  /* stats: 2 compact columns, third card spans the full row */
+  .cat-page .stats-grid {
+    gap: 10px;
+    grid-template-columns: repeat(2, 1fr);
+    margin-bottom: 14px;
+  }
+  .cat-page .stat-card {
+    gap: 12px;
+    padding: 14px 16px;
+  }
+  .cat-page .stat-card:last-child {
+    grid-column: 1/-1;
+  }
+  .cat-page .stat-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+  }
+  .cat-page .stat-icon svg {
+    width: 15px;
+    height: 15px;
+  }
+  .cat-page .stat-value {
+    font-size: 1.4rem;
+  }
+  .cat-page .stat-sub {
+    font-size: 10.5px;
+  }
+  .cat-grid {
+    gap: 10px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 12px;
+  }
+  .cat-grid-item {
+    min-height: 164px;
+    padding: 11px;
+  }
+}
+@media (max-width: 480px) {
+  .cat-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cat-page * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

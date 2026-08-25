@@ -8,14 +8,14 @@
                 <h1 class="hero-title">Be Someone's<br><em>Hope Today</em></h1>
                 <p class="hero-desc">Stand with people in crisis — from medical emergencies to education and disasters — every rupee can change a life.</p>
                 <div class="hero-btns">
-                    <a href="{{ route('all.campaigns') }}" class="btn btn-white">
+                    <x-button variant="primary" size="lg" href="{{ route('all.campaigns') }}">
                         Donate Now
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                    </a>
-                    <a href="/campaign/create" class="btn btn-outline">
+                    </x-button>
+                    <x-button variant="outline" size="lg" href="/campaign/create">
                         Start Fundraiser
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 4v16m8-8H4"/></svg>
-                    </a>
+                    </x-button>
                 </div>
             </div>
         </div>
@@ -30,8 +30,8 @@
                 <h1 class="hero-title">Together Save<br><em>Precious Lives</em></h1>
                 <p class="hero-desc">Help children access education, nutrition, and the care they deserve — creating brighter futures across every corner of India.</p>
                 <div class="hero-btns">
-                    <a href="{{ route('all.campaigns') }}" class="btn btn-white">Donate Now <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
-                    <a href="/campaign/create" class="btn btn-outline">Start Fundraiser <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 4v16m8-8H4"/></svg></a>
+                    <x-button variant="primary" size="lg" href="{{ route('all.campaigns') }}" iconRight="<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5'><path d='M5 12h14M12 5l7 7-7 7'/></svg>">Donate Now</x-button>
+                    <x-button variant="outline" size="lg" href="/campaign/create" iconRight="<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5'><path d='M12 4v16m8-8H4'/></svg>">Start Fundraiser</x-button>
                 </div>
             </div>
         </div>
@@ -46,8 +46,8 @@
                 <h1 class="hero-title">Be the Reason<br><em>Someone Smiles</em></h1>
                 <p class="hero-desc">Begin your journey of giving today — make a lasting difference in someone's life with complete transparency and trust.</p>
                 <div class="hero-btns">
-                    <a href="{{ route('all.campaigns') }}" class="btn btn-white">Donate Now <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
-                    <a href="/campaign/create" class="btn btn-outline">Start Fundraiser <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 4v16m8-8H4"/></svg></a>
+                    <x-button variant="primary" size="lg" href="{{ route('all.campaigns') }}" iconRight="<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5'><path d='M5 12h14M12 5l7 7-7 7'/></svg>">Donate Now</x-button>
+                    <x-button variant="outline" size="lg" href="/campaign/create" iconRight="<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5'><path d='M12 4v16m8-8H4'/></svg>">Start Fundraiser</x-button>
                 </div>
             </div>
         </div>

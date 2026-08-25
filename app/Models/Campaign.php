@@ -49,8 +49,6 @@ class Campaign extends Model
 
         'goal_amount',
 
-        'raised_amount',
-
         'location',
 
         'start_date',
@@ -305,6 +303,8 @@ class Campaign extends Model
         $this->update([
 
             'campaign_state' => self::STATE_ACTIVE,
+
+            'approved_at' => now(),
 
         ]);
 

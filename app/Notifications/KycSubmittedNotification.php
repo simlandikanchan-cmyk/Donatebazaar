@@ -20,7 +20,14 @@ class KycSubmittedNotification extends Notification implements ShouldQueue
 
     public function via(object $notifiable): array
     {
-        return ['mail', 'database'];
+        $channels = [];
+        if ($notifiable->preferNotification('kyc_submitted', 'email')) {
+            $channels[] = 'mail';
+        }
+        if ($notifiable->preferNotification('kyc_submitted', 'database')) {
+            $channels[] = 'database';
+        }
+        return $channels;
     }
 
     public function toMail(object $notifiable): MailMessage
@@ -50,3 +57,4 @@ class KycSubmittedNotification extends Notification implements ShouldQueue
         ];
     }
 }
+

@@ -1,3 +1,7 @@
+@push('page_css')
+@vite('resources/css/admin/entries/finance.css')
+@endpush
+
 @extends('layouts.admin')
 
 @section('sidebar_coupons', 'active')
@@ -8,7 +12,9 @@
 
 <style>
     .cp-stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-bottom:24px; }
-    .cp-stat-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px; }
+    .cp-stat-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px; display:flex; align-items:center; gap:14px; }
+    .cp-stat-icon { width:42px; height:42px; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .cp-stat-icon svg { width:20px; height:20px; }
     .cp-stat-label { font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:.08em; font-family:var(--font-mono); }
     .cp-stat-value { font-size:22px; font-weight:700; font-family:var(--font-mono); margin-top:4px; }
 
@@ -35,8 +41,22 @@
     .cp-secondary { font-size:10.5px; color:var(--text3); }
     .cp-mono { font-size:11.5px; color:var(--text3); font-family:monospace; white-space:nowrap; }
     .cp-badge { font-size:10px; font-weight:700; padding:3px 8px; border-radius:100px; text-transform:uppercase; font-family:monospace; }
-    .cp-actions { display:flex; gap:5px; }
-    .cp-action-btn { padding:5px 10px; border-radius:7px; font-size:11px; font-weight:600; text-decoration:none; cursor:pointer; border:1px solid transparent; }
+    .cp-actions { display:inline-flex; gap:5px; align-items:center; }
+    .cp-actions form { display:inline-flex !important; margin:0 !important; padding:0 !important; border:none; }
+    .cp-action-btn {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        padding: 15px 40px;
+        border-radius: 7px;
+        font-size: 11px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        border: 1px solid transparent;
+        appearance: none;
+        background: none;
+    }
     .cp-action-view { background:rgba(99,102,241,0.10); color:#6366f1; border-color:rgba(99,102,241,0.2); }
     .cp-action-cancel { background:rgba(239,68,68,0.10); color:#991b1b; border-color:rgba(239,68,68,0.2); }
     .cp-empty { padding:48px; text-align:center; color:var(--text3); font-size:13px; }
@@ -46,13 +66,16 @@
 {{-- Stats --}}
 <div class="cp-stats-grid">
     @foreach([
-        ['label'=>'Total',   'val'=>$stats['total'],   'color'=>'#6366f1'],
-        ['label'=>'Active',  'val'=>$stats['active'],  'color'=>'#10b981'],
-        ['label'=>'Expired', 'val'=>$stats['expired'], 'color'=>'#9ca3af'],
+        ['label'=>'Total',   'val'=>$stats['total'],   'color'=>'#6366f1', 'icon'=>'<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 6v6m0 0v6m0-6h6m-6 0H6\"/></svg>'],
+        ['label'=>'Active',  'val'=>$stats['active'],  'color'=>'#10b981', 'icon'=>'<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z\"/></svg>'],
+        ['label'=>'Expired', 'val'=>$stats['expired'], 'color'=>'#9ca3af', 'icon'=>'<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><polyline points=\"12 6 12 12 16 14\"/></svg>'],
     ] as $s)
     <div class="cp-stat-card">
-        <div class="cp-stat-label">{{ $s['label'] }}</div>
-        <div class="cp-stat-value" style="color:{{ $s['color'] }};">{{ $s['val'] }}</div>
+        <div class="cp-stat-icon" style="background:{{ $s['color'] }}15;color:{{ $s['color'] }};">{!! $s['icon'] !!}</div>
+        <div>
+            <div class="cp-stat-label">{{ $s['label'] }}</div>
+            <div class="cp-stat-value" style="color:{{ $s['color'] }};">{{ $s['val'] }}</div>
+        </div>
     </div>
     @endforeach
 </div>
@@ -124,9 +147,9 @@
                         <div class="cp-actions">
                             <a href="{{ route('admin.coupons.edit', $cp) }}" class="cp-action-btn cp-action-view">Edit</a>
                             @if($cp->is_active)
-                            <form method="POST" action="{{ route('admin.coupons.destroy', $cp) }}" onsubmit="return confirm('Deactivate this coupon?');">
+                            <form method="POST" action="{{ route('admin.coupons.destroy', $cp) }}" onsubmit="return confirm('Deactivate this coupon?');" style="display:inline;">
                                 @csrf @method('DELETE')
-                                <button type="submit" class="btn btn-secondary cp-action-btn cp-action-cancel">Deactivate</button>
+                                <button type="submit" class="cp-action-btn cp-action-cancel">Deactivate</button>
                             </form>
                             @endif
                         </div>

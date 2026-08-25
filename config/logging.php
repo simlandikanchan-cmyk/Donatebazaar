@@ -56,6 +56,7 @@ return [
             'driver' => 'stack',
             'channels' => explode(',', (string) env('LOG_STACK', 'single')),
             'ignore_exceptions' => false,
+            'processors' => [\App\Exceptions\SensitiveDataRedactor::class],
         ],
 
         'single' => [
@@ -63,6 +64,7 @@ return [
             'path' => storage_path('logs/laravel.log'),
             'level' => env('LOG_LEVEL', 'debug'),
             'replace_placeholders' => true,
+            'processors' => [\App\Exceptions\SensitiveDataRedactor::class],
         ],
 
         'daily' => [
@@ -71,6 +73,79 @@ return [
             'level' => env('LOG_LEVEL', 'debug'),
             'days' => env('LOG_DAILY_DAYS', 14),
             'replace_placeholders' => true,
+            'processors' => [\App\Exceptions\SensitiveDataRedactor::class],
+        ],
+
+        'payments' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/payments.log'),
+            'level' => env('LOG_LEVEL', 'info'),
+            'days' => 7,
+            'replace_placeholders' => true,
+            'processors' => [\App\Exceptions\SensitiveDataRedactor::class],
+        ],
+
+        'donations' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/donations.log'),
+            'level' => env('LOG_LEVEL', 'info'),
+            'days' => 7,
+            'replace_placeholders' => true,
+            'processors' => [\App\Exceptions\SensitiveDataRedactor::class],
+        ],
+
+        'wallet' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/wallet.log'),
+            'level' => env('LOG_LEVEL', 'info'),
+            'days' => 7,
+            'replace_placeholders' => true,
+            'processors' => [\App\Exceptions\SensitiveDataRedactor::class],
+        ],
+
+        'settlement' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/settlements.log'),
+            'level' => env('LOG_LEVEL', 'info'),
+            'days' => 7,
+            'replace_placeholders' => true,
+            'processors' => [\App\Exceptions\SensitiveDataRedactor::class],
+        ],
+
+        'auth' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/auth.log'),
+            'level' => 'info',
+            'days' => 7,
+            'replace_placeholders' => true,
+            'processors' => [\App\Exceptions\SensitiveDataRedactor::class],
+        ],
+
+        'security' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/security.log'),
+            'level' => 'warning',
+            'days' => 7,
+            'replace_placeholders' => true,
+            'processors' => [\App\Exceptions\SensitiveDataRedactor::class],
+        ],
+
+        'queue' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/queue.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => 7,
+            'replace_placeholders' => true,
+            'processors' => [\App\Exceptions\SensitiveDataRedactor::class],
+        ],
+
+        'slow_queries' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/slow-queries.log'),
+            'level' => 'debug',
+            'days' => 7,
+            'replace_placeholders' => true,
+            'processors' => [\App\Exceptions\SensitiveDataRedactor::class],
         ],
 
         'slack' => [

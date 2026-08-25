@@ -17,6 +17,11 @@ use Throwable;
 class SendCampaignProductStatusJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    public int $tries = 3;
+
+    public int $timeout = 120;
+
+    public array $backoff = [60, 300, 900];
 
     public function __construct(
         public array $productIds,
@@ -43,10 +48,11 @@ class SendCampaignProductStatusJob implements ShouldQueue
                     new CampaignProductStatusMail($product, $this->status, $this->reason, $admin)
                 );
             } catch (Throwable $e) {
-             
                 Log::error('Failed to send campaign product status mail', [
                     'product_id' => $product->id,
                     'status'     => $this->status,
+                    'reason'     => $this->reason,
+                    'admin_id'   => $this->adminId,
                     'error'      => $e->getMessage(),
                 ]);
             }

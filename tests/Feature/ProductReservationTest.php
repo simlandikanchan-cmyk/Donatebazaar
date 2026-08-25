@@ -85,8 +85,9 @@ class ProductReservationTest extends TestCase
             'campaign_id'    => $product->campaign_id,
             'donation_type'  => 'product',
             'total_amount'   => 200,
-            'payment_status' => 'completed',
         ]);
+        $donation->payment_status = 'completed';
+        $donation->save();
 
         ProductReservation::whereIn('id', $resIds)->update(['donation_id' => $donation->id]);
 
@@ -127,8 +128,9 @@ class ProductReservationTest extends TestCase
             'campaign_id'    => $product->campaign_id,
             'donation_type'  => 'product',
             'total_amount'   => 400,
-            'payment_status' => 'completed',
         ]);
+        $donation->payment_status = 'completed';
+        $donation->save();
 
         ProductReservation::whereIn('id', $resIds)->update(['donation_id' => $donation->id]);
 

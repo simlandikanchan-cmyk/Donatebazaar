@@ -1,0 +1,67 @@
+/* ══════════════════════════════════════
+   CATEGORIES INDEX — Table card scoped overrides
+   .table-card/.table-wrap/.table-card-head/.sort-link/.campaign-count/
+   .status-badge/.action-btns/.table-footer come from components
+   (_cards/_tables/_toolbar/_pagination) + pages/products.css.
+   ══════════════════════════════════════ */
+/* ── SELECTED ROW (bulk selection) ── */
+.cat-page .table-card tbody tr.row-selected td {
+  background: var(--a-lt);
+}
+.cat-page .table-card tbody tr.row-selected:hover td {
+  background: var(--a-lt);
+}
+/* ── ICON THUMB centered in the image cell ── */
+.cat-page .td-img .cat-icon-box {
+  margin: 0 auto;
+}
+/* ── STATUS BADGE as clickable toggle (same badge visuals) ── */
+.cat-page .status-badge {
+  line-height: 1.5;
+  text-align: center;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  transition:
+    filter .15s ease,
+    transform .15s ease;
+}
+.cat-page .status-badge:hover {
+  filter: brightness(.97);
+}
+.cat-page .status-badge:active {
+  transform: scale(.96);
+}
+.cat-page .status-badge:focus-visible {
+  outline: 2px solid var(--a);
+  outline-offset: 2px;
+}
+/* ── CLIENT-SIDE SORT (chevron states on .sort-link) ── */
+.cat-page .sort-link {
+  pointer-events: auto;
+}
+.cat-page .sort-link.sort-active {
+  color: var(--a);
+}
+.cat-page .sort-link .sort-ico {
+  transition:
+    transform .15s ease,
+    color .15s ease;
+}
+.cat-page .sort-link.sort-active .sort-ico {
+  color: var(--a);
+  opacity: 1;
+}
+.cat-page .sort-link .sort-ico.asc {
+  transform: rotate(180deg);
+}
+/* ── EMPTY STATE inside the card (no nested card chrome) ── */
+.cat-page .table-card .empty-state {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+/* ── GRID VIEW inside the table card ── */
+.cat-page .table-card .cat-grid {
+  padding: 16px;
+}

@@ -1,15 +1,12 @@
+@push('page_css')
+@vite('resources/css/admin/entries/misc.css')
+@endpush
+
 @extends('layouts.admin')
 
 @section('sidebar_volunteer_assignments', 'active')
 @section('page_title', 'Volunteer Assignments')
 @section('page_subtitle', 'Manage volunteer assignments to events & campaigns')
-
-@section('topbar_left')
-  <a href="{{ route('admin.volunteer_assignments.create') }}" class="add-btn">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-    New Assignment
-  </a>
-@endsection
 
 @push('page_styles')
 <style>
@@ -59,10 +56,43 @@ td{padding:13px 18px;font-size:13px;vertical-align:middle;}
 .page-btn{height:30px;min-width:30px;padding:0 9px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:600;border:1px solid var(--border2);background:var(--surface);color:var(--text2);cursor:pointer;transition:all .15s;font-family:var(--mono);text-decoration:none;}
 .page-btn:hover{border-color:var(--a);color:var(--a);background:var(--a-lt);}
 .page-btn.cur{background:var(--a);border-color:var(--a);color:#fff;}
+@media(max-width:640px){.table-wrap{min-width:560px}.toolbar{flex-direction:column;align-items:stretch}.search-input{width:100%}}
+@media(max-width:480px){
+  #asnTable thead{display:none}
+  #asnTable tbody tr{display:flex;flex-direction:column;padding:14px 16px;border-bottom:1px solid var(--border);gap:8px}
+  #asnTable tbody tr td{padding:0;border:none;display:flex;align-items:center;gap:8px}
+  #asnTable tbody tr td::before{content:attr(data-label);font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);min-width:75px;flex-shrink:0}
+  #asnTable .actions{justify-content:flex-start;width:100%}
+  #asnTable td[data-label="Actions"]{flex-wrap:wrap}
+  #asnTable td[data-label="Actions"]::before{content:"Actions";min-width:auto;margin-right:auto}
+}
 </style>
 @endpush
 
 @section('content')
+<div class="hero">
+  <div class="hero-left">
+    <div class="hero-tag"><span class="hero-tag-dot"></span>Volunteers</div>
+    <div class="hero-name">Volunteer Assignments</div>
+    <div class="hero-sub">Assign volunteers to events & campaigns and track their work.</div>
+    <div class="hero-badges">
+      <span class="hero-badge hb-teal">{{ $stats['total'] }} total</span>
+      @if($stats['active'] > 0)
+        <span class="hero-badge hb-amber">● {{ $stats['active'] }} active</span>
+      @endif
+      @if($stats['completed'] > 0)
+        <span class="hero-badge hb-blue">✓ {{ $stats['completed'] }} completed</span>
+      @endif
+    </div>
+  </div>
+  <div class="hero-right">
+    <a href="{{ route('admin.volunteer_assignments.create') }}" class="hero-btn hero-btn-primary">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+      New Assignment
+    </a>
+  </div>
+</div>
+
 <div class="toolbar">
   <form method="GET" action="{{ route('admin.volunteer_assignments.index') }}" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
     <div class="search-wrap">
@@ -100,7 +130,7 @@ td{padding:13px 18px;font-size:13px;vertical-align:middle;}
     </div>
   @else
     <div class="table-wrap">
-      <table>
+       <table id="asnTable">
         <thead>
           <tr>
             <th style="width:50px;">#</th>
@@ -115,36 +145,36 @@ td{padding:13px 18px;font-size:13px;vertical-align:middle;}
         <tbody>
           @foreach($assignments as $a)
           <tr>
-            <td><span style="font-size:11.5px;color:var(--text3);font-family:var(--mono);">{{ str_pad($loop->iteration,2,'0',STR_PAD_LEFT) }}</span></td>
-            <td>
+            <td data-label="#"><span style="font-size:11.5px;color:var(--text3);font-family:var(--mono);">{{ str_pad($loop->iteration,2,'0',STR_PAD_LEFT) }}</span></td>
+            <td data-label="Volunteer">
               <div class="vol-name">{{ $a->volunteer->user->name ?? 'Volunteer #'.$a->volunteer_id }}</div>
               <div class="vol-sub">{{ $a->volunteer->user->email ?? '' }}</div>
             </td>
-            <td>
-              <div class="target-cell">
+            <td data-label="Assigned To">
+               <div class="target-cell">
                 @if($a->event)📅 {{ $a->event->title }}@endif
                 @if($a->campaign)🎯 {{ $a->campaign->title }}@endif
                 @if(!$a->event && !$a->campaign)<span style="color:var(--text3);">—</span>@endif
               </div>
             </td>
-            <td><span class="role-pill">{{ $a->role }}</span></td>
-            <td>
+            <td data-label="Role"><span class="role-pill">{{ $a->role }}</span></td>
+            <td data-label="Period">
               <span style="font-size:12px;color:var(--text3);">
                 {{ $a->start_date?->format('M d, Y') ?? '—' }}
                 @if($a->end_date) → {{ $a->end_date->format('M d, Y') }}@endif
               </span>
             </td>
-            <td>
-              <span class="status-pill s-{{ $a->status }}">
+            <td data-label="Status">
+               <span class="status-pill s-{{ $a->status }}">
                 <span style="width:5px;height:5px;border-radius:50%;background:currentColor;display:inline-block;"></span>
                 {{ ucfirst($a->status) }}
               </span>
             </td>
-            <td>
-              <div class="actions">
+            <td data-label="Actions">
+               <div class="actions">
                 <a href="{{ route('admin.volunteer_assignments.edit', $a->id) }}" class="btn btn-secondary act-btn act-edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</a>
                 <form method="POST" action="{{ route('admin.volunteer_assignments.destroy', $a->id) }}" onsubmit="return confirm('Remove this assignment?');">@csrf @method('DELETE')
-                  <button type="submit" class="btn btn-red act-btn act-del"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg></button>
+                  <button type="submit" class="btn btn-red act-btn act-del"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Delete</button>
                 </form>
               </div>
             </td>

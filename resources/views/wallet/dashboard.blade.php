@@ -1,49 +1,20 @@
 @extends('layouts.user')
 
 @section('page_title', 'My Wallet')
-@section('page_subtitle', 'Balances, transaction history & payout requests')
+@section('page_subtitle', ' history & payout requests')
 
 @section('content')
+@php
+$icoWalletBal  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>';
+$icoReserved   = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+$icoLocked     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>';
+@endphp
 
-<div class="stats-grid" style="grid-template-columns:repeat(3,1fr);">
-    <div class="stat-card">
-        <div class="stat-icon-wrap si-green">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-        </div>
-        <div class="stat-info">
-            <div class="stat-label">Available Balance</div>
-            <div class="stat-val sv-green">₹{{ number_format($wallet->balance, 2) }}</div>
-            <div class="stat-foot">{{ $wallet->currency }}</div>
-        </div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-icon-wrap si-yellow">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        </div>
-        <div class="stat-info">
-            <div class="stat-label">Reserved (hold window)</div>
-            <div class="stat-val sv-yellow">₹{{ number_format($wallet->reserved_balance, 2) }}</div>
-            <div class="stat-foot">Released after the reserve period</div>
-        </div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-icon-wrap si-pink">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-        </div>
-        <div class="stat-info">
-            <div class="stat-label">Locked in Settlement</div>
-            <div class="stat-val sv-pink">₹{{ number_format($wallet->pending_settlement_balance, 2) }}</div>
-            <div class="stat-foot">Pending admin approval</div>
-        </div>
-    </div>
+<div class="wallet-stats-grid">
+    <x-stat-card color="green" label="Available Balance" value="₹{{ number_format($wallet->balance, 2) }}" footer="{{ $wallet->currency }}" :icon="$icoWalletBal" />
+    <x-stat-card color="yellow" label="Reserved (hold window)" value="₹{{ number_format($wallet->reserved_balance, 2) }}" footer="Released after the reserve period" :icon="$icoReserved" />
+    <x-stat-card color="pink" label="Locked in Settlement" value="₹{{ number_format($wallet->pending_settlement_balance, 2) }}" footer="Locked until payout or refund" :icon="$icoLocked" />
 </div>
-
-@if(session('success'))
-    <div class="alert alert-success" style="margin-bottom:16px;padding:12px 16px;border-radius:12px;background:var(--green-lt);color:var(--green);font-size:13px;font-weight:500;">{{ session('success') }}</div>
-@endif
-@if(session('error'))
-    <div class="alert alert-error" style="margin-bottom:16px;padding:12px 16px;border-radius:12px;background:var(--red-lt);color:var(--red);font-size:13px;font-weight:500;">{{ session('error') }}</div>
-@endif
 
 @if($pendingSettlements->isNotEmpty())
     <div class="activity-card" style="margin-bottom:24px;">
@@ -60,16 +31,23 @@
                         <div class="activity-body-top">
                             <div class="activity-lbl">
                                 Request #{{ $ps->id }}
-                                @if($ps->isPendingApproval())
+                                @if($ps->status === 'manual_review')
+                                    <span class="badge b-pending" style="font-size:10px;padding:2px 8px;margin-left:8px;">Manual review</span>
+                                @elseif($ps->isPendingApproval())
                                     <span class="badge b-pending" style="font-size:10px;padding:2px 8px;margin-left:8px;">Pending approval</span>
-                                @elseif($ps->isApproved())
+                                @elseif($ps->isAutoApproved())
                                     <span class="badge b-active" style="font-size:10px;padding:2px 8px;margin-left:8px;">Approved — payout in progress</span>
+                                @elseif($ps->status === 'failed')
+                                    <span class="badge" style="font-size:10px;padding:2px 8px;margin-left:8px;background:var(--red-lt);color:var(--red);">Payout failed</span>
                                 @endif
                             </div>
                             <div class="activity-amt">₹{{ number_format($ps->net_amount, 2) }}</div>
                         </div>
                         @if($ps->rejection_reason)
                             <div class="activity-sub" style="color:var(--red);">Rejected: {{ $ps->rejection_reason }}</div>
+                        @endif
+                        @if($ps->status === 'failed' && $ps->payoutAttempt->first()?->error_message)
+                            <div class="activity-sub" style="color:var(--red);">Failed: {{ $ps->payoutAttempt->first()->error_message }}</div>
                         @endif
                     </div>
                 </div>
@@ -87,40 +65,35 @@
     </div>
     <div style="padding:0 16px 16px;">
         @if($payoutAccounts->isNotEmpty())
-            <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:14px;">
+            <div class="wallet-pa-grid">
                 @foreach($payoutAccounts as $pa)
-                    <div style="flex:1;min-width:200px;padding:12px 16px;background:var(--surface2);border-radius:10px;border:1px solid var(--border);">
-                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-                            <span style="font-size:12px;font-weight:600;">{{ $pa->account_holder_name }}</span>
+                    <div class="wallet-pa-item">
+                        <div class="wallet-pa-top">
+                            <span class="wallet-pa-name">{{ $pa->account_holder_name }}</span>
                             @if($pa->is_verified)
-                                <span style="font-size:10px;padding:2px 6px;border-radius:4px;background:var(--green-lt);color:var(--green);font-weight:600;">Verified</span>
+                                <span class="wallet-pa-badge verified">Verified</span>
                             @else
-                                <span style="font-size:10px;padding:2px 6px;border-radius:4px;background:var(--yellow-lt);color:var(--yellow);font-weight:600;">Pending</span>
+                                <span class="wallet-pa-badge">Pending</span>
                             @endif
                         </div>
                         @if($pa->bank_name)
-                            <div style="font-size:12px;color:var(--text3);">{{ $pa->bank_name }} — {{ $pa->masked_account_number }}</div>
+                            <div class="wallet-pa-detail">{{ $pa->bank_name }} — {{ $pa->masked_account_number }}</div>
                         @endif
                         @if($pa->upi_id)
-                            <div style="font-size:12px;color:var(--text3);">UPI: {{ $pa->upi_id }}</div>
+                            <div class="wallet-pa-detail">UPI: {{ $pa->upi_id }}</div>
                         @endif
                     </div>
                 @endforeach
             </div>
         @endif
-        <form method="POST" action="{{ route('dashboard.wallet.payout-account') }}" style="display:flex;flex-wrap:wrap;gap:10px;">
+        <form method="POST" action="{{ route('dashboard.wallet.payout-account') }}" class="wallet-pa-form">
             @csrf
-            <input type="text" name="account_holder_name" placeholder="Account Holder Name" required
-                   style="flex:1;min-width:160px;padding:9px 14px;border-radius:10px;border:1px solid var(--border2);background:var(--surface2);color:var(--text);font-size:13px;font-family:var(--font);outline:none;">
-            <input type="text" name="bank_name" placeholder="Bank Name"
-                   style="flex:1;min-width:140px;padding:9px 14px;border-radius:10px;border:1px solid var(--border2);background:var(--surface2);color:var(--text);font-size:13px;font-family:var(--font);outline:none;">
-            <input type="text" name="account_number" placeholder="Account Number"
-                   style="flex:1;min-width:140px;padding:9px 14px;border-radius:10px;border:1px solid var(--border2);background:var(--surface2);color:var(--text);font-size:13px;font-family:var(--font);outline:none;">
-            <input type="text" name="ifsc_code" placeholder="IFSC Code"
-                   style="flex:1;min-width:100px;padding:9px 14px;border-radius:10px;border:1px solid var(--border2);background:var(--surface2);color:var(--text);font-size:13px;font-family:var(--font);outline:none;">
-            <input type="text" name="upi_id" placeholder="UPI ID (or leave blank)"
-                   style="flex:1;min-width:140px;padding:9px 14px;border-radius:10px;border:1px solid var(--border2);background:var(--surface2);color:var(--text);font-size:13px;font-family:var(--font);outline:none;">
-            <button type="submit" class="btn btn-primary" style="align-self:flex-end;">Save</button>
+            <input type="text" name="account_holder_name" placeholder="Account Holder Name" required class="wallet-input">
+            <input type="text" name="bank_name" placeholder="Bank Name" class="wallet-input">
+            <input type="text" name="account_number" placeholder="Account Number" class="wallet-input">
+            <input type="text" name="ifsc_code" placeholder="IFSC Code" class="wallet-input">
+            <input type="text" name="upi_id" placeholder="UPI ID (or leave blank)" class="wallet-input">
+            <x-button variant="primary" type="submit">Save</x-button>
         </form>
     </div>
 </div>
@@ -137,29 +110,29 @@
     @else
         <form method="POST" action="{{ route('dashboard.wallet.request') }}" style="padding:16px;">
             @csrf
-            <div style="overflow-x:auto;">
-                <table style="width:100%;border-collapse:collapse;font-size:13px;">
+            <div class="wallet-table-wrap">
+                <table class="wallet-table">
                     <thead>
-                        <tr style="border-bottom:1px solid var(--border);">
-                            <th style="padding:10px 12px;text-align:left;color:var(--text3);font-weight:500;"></th>
-                            <th style="padding:10px 12px;text-align:left;color:var(--text3);font-weight:500;">Campaign</th>
-                            <th style="padding:10px 12px;text-align:left;color:var(--text3);font-weight:500;">Paid At</th>
-                            <th style="padding:10px 12px;text-align:right;color:var(--text3);font-weight:500;">Net Amount</th>
+                        <tr>
+                            <th></th>
+                            <th>Campaign</th>
+                            <th class="hide-mobile">Paid At</th>
+                            <th class="text-right">Net Amount</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($eligible as $d)
-                            <tr style="border-bottom:1px solid var(--border);">
-                                <td style="padding:10px 12px;"><input type="checkbox" name="donation_ids[]" value="{{ $d->id }}"></td>
-                                <td style="padding:10px 12px;">{{ $d->campaign->title ?? '—' }}</td>
-                                <td style="padding:10px 12px;">{{ $d->paid_at?->format('Y-m-d') }}</td>
-                                <td style="padding:10px 12px;text-align:right;font-family:var(--mono);font-weight:600;">₹{{ number_format($d->net_amount, 2) }}</td>
+                            <tr>
+                                <td><input type="checkbox" name="donation_ids[]" value="{{ $d->id }}"></td>
+                                <td data-label="Campaign">{{ $d->campaign->title ?? '—' }}</td>
+                                <td class="hide-mobile" data-label="Paid At">{{ $d->paid_at?->format('Y-m-d') }}</td>
+                                <td class="text-right mono" data-label="Amount">₹{{ number_format($d->net_amount, 2) }}</td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
             </div>
-            <button type="submit" class="btn btn-primary" style="margin-top:16px;">Request Payout</button>
+            <x-button variant="primary" type="submit">Request Payout</x-button>
         </form>
     @endif
 </div>
@@ -171,33 +144,31 @@
             <div class="chart-sub">All wallet transactions</div>
         </div>
     </div>
-    <div style="overflow-x:auto;padding:16px;">
-        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+    <div class="wallet-table-wrap" style="padding:16px;">
+        <table class="wallet-table tx-table">
             <thead>
-                <tr style="border-bottom:1px solid var(--border);">
-                    <th style="padding:10px 12px;text-align:left;color:var(--text3);font-weight:500;">Date</th>
-                    <th style="padding:10px 12px;text-align:left;color:var(--text3);font-weight:500;">Type</th>
-                    <th style="padding:10px 12px;text-align:left;color:var(--text3);font-weight:500;">Source</th>
-                    <th style="padding:10px 12px;text-align:right;color:var(--text3);font-weight:500;">Amount</th>
-                    <th style="padding:10px 12px;text-align:right;color:var(--text3);font-weight:500;">Balance After</th>
-                    <th style="padding:10px 12px;text-align:left;color:var(--text3);font-weight:500;">Notes</th>
+                <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th class="hide-mobile">Source</th>
+                    <th class="text-right">Amount</th>
+                    <th class="hide-tablet">Balance</th>
+                    <th class="hide-mobile">Notes</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($transactions as $tx)
-                    <tr style="border-bottom:1px solid var(--border);">
-                        <td style="padding:10px 12px;font-family:var(--mono);font-size:12px;">{{ $tx->created_at->format('Y-m-d H:i') }}</td>
-                        <td style="padding:10px 12px;">
-                            @php
-                                $txColors = ['credit' => 'var(--green)', 'debit' => 'var(--red)', 'adjustment' => 'var(--a)'];
-                                $txColor = $txColors[$tx->type] ?? 'var(--text)';
-                            @endphp
-                            <span style="color:{{ $txColor }};font-weight:600;">{{ ucfirst($tx->type) }}</span>
-                        </td>
-                        <td style="padding:10px 12px;">{{ $tx->source ?? '—' }}</td>
-                        <td style="padding:10px 12px;text-align:right;font-family:var(--mono);font-weight:600;">₹{{ number_format($tx->amount, 2) }}</td>
-                        <td style="padding:10px 12px;text-align:right;font-family:var(--mono);">₹{{ number_format($tx->balance_after, 2) }}</td>
-                        <td style="padding:10px 12px;color:var(--text3);">{{ $tx->notes ?? '—' }}</td>
+                    @php
+                        $txColors = ['credit' => 'var(--green)', 'debit' => 'var(--red)', 'adjustment' => 'var(--accent)'];
+                        $txColor = $txColors[$tx->type] ?? 'var(--text)';
+                    @endphp
+                    <tr>
+                        <td data-label="Date" class="mono-sm">{{ $tx->created_at->format('Y-m-d H:i') }}</td>
+                        <td data-label="Type"><span style="color:{{ $txColor }};font-weight:600;">{{ ucfirst($tx->type) }}</span></td>
+                        <td class="hide-mobile" data-label="Source">{{ $tx->source ?? '—' }}</td>
+                        <td class="text-right mono" data-label="Amount">₹{{ number_format($tx->amount, 2) }}</td>
+                        <td class="hide-tablet text-right mono" data-label="Balance">₹{{ number_format($tx->balance_after, 2) }}</td>
+                        <td class="hide-mobile" data-label="Notes" style="color:var(--text3);">{{ $tx->notes ?? '—' }}</td>
                     </tr>
                 @empty
                     <tr>

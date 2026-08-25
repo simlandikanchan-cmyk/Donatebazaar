@@ -7,6 +7,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 
     Route::get('/applications', [ApplicationController::class, 'index'])->name('applications');
     Route::get('/applications/{id}', [ApplicationController::class, 'show'])->name('applications.show');
+    Route::delete('/applications/{id}', [ApplicationController::class, 'destroy'])->name('applications.destroy');
     Route::post('/applications/{id}/approve', [ApplicationController::class, 'approve'])->name('applications.approve');
     Route::post('/applications/{id}/reject', [ApplicationController::class, 'reject'])->name('applications.reject');
 

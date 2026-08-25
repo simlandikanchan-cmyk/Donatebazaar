@@ -19,10 +19,10 @@ $rejectedApps = $applications->where('status', 'rejected')->count();
     </div>
     <h2>Become a Volunteer</h2>
     <p>Join our volunteer community and make a difference. Apply to support campaigns and events that need your help.</p>
-    <a href="{{ route('volunteer.apply') }}" class="btn btn-primary">
+    <x-button variant="primary" href="{{ route('volunteer.apply') }}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
         Apply Now
-    </a>
+    </x-button>
 </div>
 @elseif(!$isVerified)
 <div class="vd-banner vd-banner-warn">

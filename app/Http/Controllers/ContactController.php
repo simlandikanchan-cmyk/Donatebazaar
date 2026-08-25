@@ -16,9 +16,6 @@ class ContactController extends Controller
     // Save Message
     public function store(Request $request)
     {
-
-        // dd($request->all());
-
         $request->validate([
 
             'name' => 'required',
@@ -52,10 +49,10 @@ class ContactController extends Controller
     }
 
     // Delete Contact
-    public function adminDelete($id)
+    public function destroy($id)
     {
 
-        Contact::find($id)->delete();
+        Contact::findOrFail($id)->delete();
 
         return back()->with('success', 'Message Deleted');
 

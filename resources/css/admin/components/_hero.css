@@ -1,0 +1,376 @@
+/* ══════════════════════════════════════
+   ADMIN — Components: Hero Card
+   Shared by dashboard + job_posts/show + event/job index headers.
+   hero-badge/.hb-* tints live in components/_badges.css.
+   ══════════════════════════════════════ */
+.hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  overflow: hidden;
+  margin-bottom: 18px;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, var(--primary-tint-bg-2), var(--violet-tint-bg-5), var(--violet-tint-bg-4));
+  border: 1px solid rgba(37, 99, 235, .10);
+  border-radius: 18px;
+  box-shadow: 0 1px 4px rgba(37, 99, 235, .06), 0 4px 24px rgba(37, 99, 235, .05);
+  animation: fadeUp .4s ease both;
+}
+.hero::before {
+  position: absolute;
+  background: radial-gradient(ellipse 60% 80% at 80% -10%, rgba(37, 99, 235, .08) 0%, transparent 60%), radial-gradient(ellipse 50% 60% at 15% 110%, rgba(13, 148, 136, .06) 0%, transparent 55%);
+  content: '';
+  inset: 0;
+}
+.hero::after {
+  position: absolute;
+  background-image: linear-gradient(rgba(37, 99, 235, .04) 1px, transparent 1px), linear-gradient(90deg, rgba(37, 99, 235, .04) 1px, transparent 1px);
+  background-size: 32px 32px;
+  content: '';
+  inset: 0;
+}
+[data-theme="dark"] .hero {
+  background: linear-gradient(135deg, var(--dark-deep-9), var(--dark-surface-13), var(--dark-deep-10));
+  border-color: rgba(37, 99, 235, .10);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 4px 20px rgba(0, 0, 0, .18);
+}
+[data-theme="dark"] .hero::before {
+  background: radial-gradient(ellipse 60% 80% at 80% -10%, rgba(37, 99, 235, .15) 0%, transparent 60%), radial-gradient(ellipse 50% 60% at 15% 110%, rgba(13, 148, 136, .10) 0%, transparent 55%);
+}
+[data-theme="dark"] .hero::after {
+  background-image: linear-gradient(rgba(255, 255, 255, .02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, .02) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+.hero-left {
+  position: relative;
+  z-index: 2;
+}
+.hero-greeting {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+.hero-avatar {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  width: 48px;
+  height: 48px;
+  font-family: var(--mono);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--white);
+  background: linear-gradient(135deg, var(--a), var(--a2));
+  border-radius: 14px;
+  box-shadow: 0 4px 16px rgba(37, 99, 235, .35);
+}
+.hero-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--a);
+}
+.hero-tag-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--green);
+  border-radius: 50%;
+  animation: pulse 2s ease infinite;
+}
+.hero-name {
+  font-family: var(--font);
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -.03em;
+  color: var(--text);
+  background: linear-gradient(135deg, var(--a), var(--a2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.hero-sub {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  max-width: 420px;
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--text3);
+}
+.hero-sub-ico {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  opacity: .5;
+}
+.hero-right {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  min-width: 200px;
+}
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.hero-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  border: none;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  transition: all var(--ease);
+}
+.hero-btn-primary {
+  color: var(--white);
+  background: linear-gradient(135deg, var(--a), var(--a2));
+  box-shadow: 0 4px 20px rgba(37, 99, 235, .45);
+}
+.hero-btn-primary:hover {
+  box-shadow: 0 8px 28px rgba(37, 99, 235, .55);
+  transform: translateY(-2px);
+}
+.hero-btn-teal {
+  color: var(--white);
+  background: linear-gradient(135deg, var(--teal), var(--secondary-hover));
+  box-shadow: 0 4px 20px rgba(13, 148, 136, .45);
+}
+.hero-btn-teal:hover {
+  box-shadow: 0 8px 28px rgba(13, 148, 136, .55);
+  transform: translateY(-2px);
+}
+[data-theme="dark"] .hero-btn-teal {
+  background: linear-gradient(135deg, var(--secondary), var(--secondary-deep));
+  box-shadow: 0 4px 20px rgba(13, 148, 136, .3);
+}
+.hero-btn-ghost {
+  color: var(--text2);
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+}
+.hero-btn-ghost:hover {
+  background: var(--surface3);
+  transform: translateY(-2px);
+}
+[data-theme="dark"] .hero-btn-ghost {
+  color: rgba(255, 255, 255, .7);
+  background: rgba(255, 255, 255, .05);
+  border-color: rgba(255, 255, 255, .08);
+}
+[data-theme="dark"] .hero-btn-ghost:hover {
+  background: rgba(255, 255, 255, .09);
+}
+.hero-btn svg {
+  width: 14px;
+  height: 14px;
+}
+/* ── HERO STAT CARD (job_posts/show) ── */
+.hero-stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 120px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, .5);
+  border: 1px solid rgba(37, 99, 235, .08);
+  border-radius: var(--r-sm);
+  backdrop-filter: blur(8px);
+}
+[data-theme="dark"] .hero-stat-card {
+  background: rgba(255, 255, 255, .03);
+  border-color: rgba(255, 255, 255, .06);
+}
+.hsc-val {
+  font-family: var(--mono);
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -.02em;
+}
+.hsc-lbl {
+  margin-top: 2px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+/* ── HERO METRIC (dashboard) ── */
+.hero-metric {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, .5);
+  border: 1px solid rgba(37, 99, 235, .08);
+  border-radius: var(--r-sm);
+  backdrop-filter: blur(8px);
+}
+[data-theme="dark"] .hero-metric {
+  background: rgba(255, 255, 255, .03);
+  border-color: rgba(255, 255, 255, .06);
+}
+.hm-icon {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  color: var(--amber);
+  background: rgba(245, 158, 11, .12);
+  border-radius: 10px;
+}
+.hm-icon svg {
+  width: 17px;
+  height: 17px;
+}
+.hm-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.hm-lbl {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+.hm-val {
+  font-family: var(--mono);
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  color: var(--text);
+}
+/* ── HERO DECOR (glow + particles) ── */
+.hero-glow {
+  position: absolute;
+  z-index: 1;
+  border-radius: 50%;
+  filter: blur(60px);
+  pointer-events: none;
+}
+.hero-glow.g1 {
+  top: -90px;
+  right: -40px;
+  width: 240px;
+  height: 240px;
+  background: radial-gradient(circle, rgba(37, 99, 235, .28) 0%, transparent 70%);
+}
+.hero-glow.g2 {
+  bottom: -100px;
+  left: -30px;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(13, 148, 136, .22) 0%, transparent 70%);
+}
+.hero-particle {
+  position: absolute;
+  z-index: 1;
+  top: var(--y);
+  left: var(--x);
+  width: var(--s);
+  height: var(--s);
+  background: rgba(37, 99, 235, .55);
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(37, 99, 235, .6);
+  animation: heroFloat 6s ease-in-out infinite;
+  animation-delay: var(--d);
+  pointer-events: none;
+}
+[data-theme="dark"] .hero-particle {
+  background: rgba(125, 211, 252, .6);
+  box-shadow: 0 0 8px rgba(125, 211, 252, .7);
+}
+/* ── HERO LIVE TICKER ── */
+.hero-ticker {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  overflow: hidden;
+  max-width: 420px;
+  margin-top: 15px;
+  padding: 7px 14px;
+  background: rgba(255, 255, 255, .55);
+  border: 1px solid rgba(37, 99, 235, .14);
+  border-radius: 100px;
+}
+[data-theme="dark"] .hero-ticker {
+  background: rgba(255, 255, 255, .05);
+  border-color: rgba(255, 255, 255, .1);
+}
+.hero-ticker-dot {
+  flex-shrink: 0;
+  width: 7px;
+  height: 7px;
+  background: var(--green);
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(5, 196, 138, .18);
+  animation: pulse 2s ease infinite;
+}
+.hero-ticker-track {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  height: 16px;
+}
+.hero-ticker-item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  white-space: nowrap;
+  color: var(--text2);
+  opacity: 0;
+  transition:
+    opacity .4s ease,
+    transform .4s ease;
+  transform: translateY(8px);
+}
+.hero-ticker-item b {
+  font-weight: 700;
+  color: var(--a);
+}
+.hero-ticker-item.show {
+  opacity: 1;
+  transform: none;
+}
+[data-theme="dark"] .hero-ticker-item {
+  color: rgba(255, 255, 255, .7);
+}
+[data-theme="dark"] .hero-ticker-item b {
+  color: var(--primary-tint);
+}

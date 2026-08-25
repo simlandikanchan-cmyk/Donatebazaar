@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@push('styles') @vite(['resources/css/errors-4.css']) @endpush
+@push('styles') @vite(['resources/css/public/errors-4.css']) @endpush
 
 @section('content')
 <div id="error-root">
@@ -20,10 +20,10 @@
             <p class="e-desc">We're making things better. The site is temporarily down for scheduled maintenance.</p>
             <p class="e-desc">Please check back in a little while.</p>
             <div class="e-actions">
-                <a href="/" class="btn-home">
+                <x-button variant="primary" href="/">
                     <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 001 1h3a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1h3a1 1 0 001-1V10"/></svg>
                     Try Again
-                </a>
+                </x-button>
             </div>
         </div>
     </div>

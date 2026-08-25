@@ -10,11 +10,8 @@ Artisan::command('inspire', function () {
 
 Schedule::command('campaigns:expire')->dailyAt('00:01');
 
-// Send KYC reminders to campaign owners who haven't uploaded KYC
 Schedule::command('campaigns:send-kyc-reminders')->dailyAt('09:00');
 
-// to delete telescopies entries after 48 hours
 Schedule::command('telescope:prune --hours=48')->daily();
 
-// Release matured reserved wallet funds into available balance
 Schedule::command('wallet:release-reserves')->daily();

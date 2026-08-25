@@ -34,10 +34,10 @@
                     <div class="story-quote-by">— Meera, Aarav's mother</div>
                 </div>
 
-                <a href="{{ route('campaigns.index') }}" class="story-link">
+                <x-button variant="secondary" href="{{ route('campaigns.index') }}">
                     Read more stories
                     <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-                </a>
+                </x-button>
             </div>
 
         </div>

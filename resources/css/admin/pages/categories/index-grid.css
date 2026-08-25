@@ -1,0 +1,262 @@
+/* ══════════════════════════════════════
+   CATEGORIES INDEX — Grid cards view
+   Scoped to .cat-page (admin/categories)
+   ══════════════════════════════════════ */
+/* ── GRID: auto-fill, min 280px per card, tracks fill available width ── */
+.cat-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  padding: 16px;
+}
+/* ── CARD (equal heights via flex + auto-stretch + pinned footer) ── */
+.cat-grid-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 176px;
+  padding: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--sh);
+  transition:
+    transform .2s cubic-bezier(.2, .7, .3, 1),
+    box-shadow .2s ease,
+    border-color .2s ease;
+  animation: fadeUp .3s ease both;
+}
+.cat-grid-item:hover {
+  border-color: var(--border2);
+  box-shadow: var(--sh-md);
+  transform: translateY(-3px);
+}
+@supports (color:color-mix(in srgb,red,blue)) {
+  .cat-grid-item:hover {
+    border-color: color-mix(in srgb, var(--a) 26%, var(--border2));
+    box-shadow: var(--sh-md), 0 12px 28px -10px color-mix(in srgb, var(--a) 28%, transparent);
+  }
+}
+.cat-grid-item:active {
+  transform: translateY(-1px);
+}
+.cat-grid-item.row-selected {
+  border-color: var(--a);
+  box-shadow: 0 0 0 3px var(--a-glow);
+}
+.cat-grid-item:focus-within {
+  outline: 3px solid var(--a-glow);
+  outline-offset: 2px;
+}
+.grid-check {
+  position: absolute;
+  z-index: 1;
+  top: 12px;
+  right: 12px;
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+  accent-color: var(--a);
+}
+/* ── HEAD: icon + title block ── */
+.cg-head {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+  padding-right: 22px;
+}
+.grid-icon-box {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  width: 40px;
+  height: 40px;
+  font-size: 16px;
+  color: var(--white);
+  border-radius: 11px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .18);
+  transition:
+    transform .2s cubic-bezier(.2, .7, .3, 1),
+    box-shadow .2s ease;
+}
+.grid-icon-box i {
+  color: var(--white);
+}
+.grid-icon-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.grid-icon-box svg {
+  width: 17px;
+  height: 17px;
+  color: var(--text3);
+}
+.cat-grid-item:hover .grid-icon-box {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .18), 0 6px 14px -6px color-mix(in srgb, var(--item-color) 65%, transparent);
+  transform: scale(1.06);
+}
+.cg-title {
+  flex: 1;
+  min-width: 0;
+}
+.cg-name {
+  display: block;
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -.01em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text);
+}
+.cg-slug {
+  display: block;
+  overflow: hidden;
+  margin-top: 3px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .04em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text3);
+}
+/* ── MID: campaign count + status toggle on the same baseline ── */
+.cg-mid {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.cg-mid .cat-count-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 9px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text2);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.cg-mid .cat-count-chip svg {
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  color: var(--text3);
+}
+.cg-mid .cat-count-chip.zero {
+  color: var(--text3);
+}
+/* ── STATUS TOGGLE (green-tinted pill when active) ── */
+.cat-grid-item .cat-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--text2);
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 100px;
+  cursor: pointer;
+  transition:
+    background .15s ease,
+    border-color .15s ease;
+}
+.cat-grid-item .cat-toggle:hover {
+  background: var(--surface3);
+}
+.cat-grid-item .cat-toggle:has(.sw input:checked) {
+  background: var(--green-lt);
+  border-color: rgba(5, 196, 138, .35);
+}
+.cat-grid-item .cat-toggle-txt {
+  display: inline-block;
+  min-width: 40px;
+  text-align: left;
+  white-space: nowrap;
+}
+.cat-grid-item .cat-toggle-txt.active {
+  font-weight: 700;
+  color: var(--green);
+}
+.cat-grid-item .cat-toggle-txt.inactive {
+  color: var(--text3);
+}
+/* ── FOOT: date + actions pinned to the card bottom ── */
+.cg-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+.cg-date {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .02em;
+  white-space: nowrap;
+  color: var(--text3);
+}
+.cg-foot .action-btns {
+  display: flex;
+  gap: 6px;
+}
+.cg-foot .action-btns .act-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  transition:
+    transform .18s cubic-bezier(.2, .7, .3, 1),
+    background .15s ease,
+    color .15s ease,
+    border-color .15s ease,
+    box-shadow .15s ease;
+}
+.cg-foot .action-btns .act-btn svg {
+  width: 14px;
+  height: 14px;
+}
+.cg-foot .action-btns .act-btn:focus-visible {
+  outline: 2px solid var(--a);
+  outline-offset: 1px;
+}
+.cg-foot .action-btns .act-edit {
+  color: var(--a);
+  background: var(--a-lt);
+}
+.cg-foot .action-btns .act-edit:hover {
+  color: var(--white);
+  background: var(--a);
+  border-color: var(--a);
+  box-shadow: var(--btn-sh-primary);
+  transform: translateY(-1px);
+}
+.cg-foot .action-btns .act-del {
+  color: var(--red);
+  background: var(--red-lt);
+  border-color: rgba(239, 68, 68, .22);
+}
+.cg-foot .action-btns .act-del:hover {
+  color: var(--white);
+  background: var(--red);
+  border-color: var(--red);
+  box-shadow: var(--btn-sh-danger);
+  transform: translateY(-1px);
+}

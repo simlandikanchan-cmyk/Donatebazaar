@@ -1,0 +1,151 @@
+/* ══════════════════════════════════════
+   ADMIN — Components: Page Header
+   Two legacy header patterns (.page-hdr / .page-header) are unified
+   here; aliases share the same rules — one implementation.
+   ══════════════════════════════════════ */
+.page-hdr, .page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+.page-header {
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.page-hdr-left, .page-header-left {
+  flex: 1;
+  min-width: 0;
+}
+.page-hdr-left h2, .page-title {
+  margin: 0 0 4px;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -.02em;
+  color: var(--text);
+}
+.page-title {
+  font-size: 22px;
+}
+.page-hdr-left p, .page-desc {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text3);
+}
+.page-desc {
+  margin-top: 3px;
+  font-size: 13px;
+}
+.page-hdr-right, .page-header-right {
+  display: flex;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 10px;
+}
+.page-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 10px;
+}
+.page-hdr-icon {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  color: var(--a);
+  background: var(--a-lt);
+  border-radius: 12px;
+}
+.page-hdr-icon svg {
+  width: 18px;
+  height: 18px;
+}
+/* ── DETAIL TOOLBAR (campaign/job detail headers) ── */
+.detail-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.top-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.tb-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  color: var(--text2);
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  transition: all var(--ease);
+}
+.tb-action:hover {
+  color: var(--text);
+  background: var(--surface3);
+  border-color: var(--border2);
+}
+.tb-action svg {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+}
+.tb-action.primary {
+  color: var(--white);
+  background: var(--a);
+  border-color: var(--a);
+}
+.tb-action.primary:hover {
+  background: var(--a-hover);
+  border-color: var(--a-hover);
+}
+.tb-action.destructive {
+  color: var(--red);
+  border-color: rgba(240, 68, 68, .2);
+}
+.tb-action.destructive:hover {
+  background: var(--red-lt);
+  border-color: var(--red);
+}
+/* ── MSG BACK (detail header back link) ── */
+.msg-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 14px;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--a);
+  transition: color var(--ease);
+}
+.msg-back:hover {
+  color: var(--a2);
+}
+.msg-back svg {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+}

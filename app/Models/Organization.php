@@ -20,17 +20,7 @@ class Organization extends Model
         'contact_email',
         'contact_phone',
         'registration_number',
-        'pan_number',
-        'gst_number',
-        'bank_name',
-        'account_holder_name',
-        'bank_account_number',
-        'ifsc_code',
-        'commission_rate',
-        'verification_status',
-        'verified_at',
         'is_active',
-        'wallet_hold_days',
     ];
 
     protected $casts = [

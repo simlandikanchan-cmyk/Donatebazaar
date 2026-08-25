@@ -3,28 +3,19 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Mail\DonationRefundMail;
-use App\Models\Campaign;
 use App\Models\Donation;
 use App\Models\Refund;
-use App\Models\User;
-use App\Models\WalletTransaction;
-use App\Services\WalletService;
+use App\Services\Payment\RefundService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
-use Razorpay\Api\Api;
-use Razorpay\Api\Errors\Error as RazorpayError;
 
 class DonationController extends Controller
 {
-    /**
-     * List donations — paginated, filterable by status / campaign, donor search.
-     */
+    public function __construct(
+        private RefundService $refundService
+    ) {}
+
     public function index(Request $request): View
     {
         $query = Donation::query()
@@ -55,7 +46,7 @@ class DonationController extends Controller
 
         $donations = $query->paginate(20)->withQueryString();
 
-        $campaigns = Campaign::query()->orderBy('title')->pluck('title', 'id');
+        $campaigns = \App\Models\Campaign::query()->orderBy('title')->pluck('title', 'id');
 
         $counts = [
             'total' => Donation::count(),
@@ -68,9 +59,6 @@ class DonationController extends Controller
         return view('admin.donations.index', compact('donations', 'campaigns', 'counts'));
     }
 
-    /**
-     * Donation detail + refund history.
-     */
     public function show(Donation $donation): View
     {
         $donation->load(['campaign', 'user', 'coupon', 'refunds', 'items.product']);
@@ -78,183 +66,49 @@ class DonationController extends Controller
         return view('admin.donations.show', compact('donation'));
     }
 
-    /**
-     * Admin-triggered full refund.
-     *
-     * Wrapped in a Cache::lock keyed per-donation so that a double-click,
-     * duplicate tab submit, or client-side retry cannot fire two Razorpay
-     * refund API calls for the same donation. The DB::transaction's
-     * lockForUpdate() below only protects the database row — it does NOT
-     * stop two concurrent requests from both reaching the gateway before
-     * either has saved anything, so the lock has to wrap the guard check
-     * and the gateway call as well, not just the DB write.
-     */
     public function refund(Request $request, Donation $donation): RedirectResponse
     {
-        $lock = Cache::lock('donation_refund_'.$donation->id, 30);
+        $request->validate([
+            'reason' => ['nullable', 'string', 'max:500'],
+        ]);
 
-        if (! $lock->get()) {
+        $donation->refresh();
+
+        if ($donation->is_refunded) {
             return redirect()
                 ->route('admin.donations.show', $donation)
-                ->with('error', 'A refund is already being processed for this donation.');
+                ->with('info', 'This donation has already been refunded.');
+        }
+
+        if ($donation->payment_status !== 'completed') {
+            return redirect()
+                ->route('admin.donations.show', $donation)
+                ->with('error', 'Only completed donations can be refunded.');
         }
 
         try {
-            // Re-fetch fresh state now that we hold the lock — the $donation
-            // passed in via route-model-binding may be stale if another
-            // request (or the webhook) changed it moments ago.
-            $donation->refresh();
-
-            // (a) Guard: already-refunded → info (not an error).
-            if ($donation->is_refunded) {
-                return redirect()
-                    ->route('admin.donations.show', $donation)
-                    ->with('info', 'This donation has already been refunded.');
-            }
-
-            // (b) Guard: only completed donations are eligible.
-            if ($donation->payment_status !== 'completed') {
-                return redirect()
-                    ->route('admin.donations.show', $donation)
-                    ->with('error', 'Only completed donations can be refunded.');
-            }
-
-            $paymentId = $donation->payment_id;
-
-            if (empty($paymentId) || ! preg_match('/^pay_[A-Za-z0-9]{14,}$/', $paymentId)) {
-                Log::warning('Refund attempt blocked: invalid payment_id format', [
-                    'donation_id' => $donation->id,
-                    'payment_id' => $paymentId,
-                ]);
-
-                return redirect()
-                    ->route('admin.donations.show', $donation)
-                    ->with('error', 'This donation has no valid Razorpay payment id and cannot be refunded.');
-            }
-
-            $api = $this->getRazorpayApi();
-
-            try {
-                // (b) Full refund (total_amount → paise). Payment must be fetched so id is set.
-                $razorpayRefund = $api->payment
-                    ->fetch($paymentId)
-                    ->refund(['amount' => (int) round($donation->total_amount * 100)]);
-            } catch (RazorpayError $e) {
-                // (d) API failure: do NOT modify donation fields; log a failed Refund row.
-                Log::error('Admin refund failed at gateway', [
-                    'donation_id' => $donation->id,
-                    'payment_id' => $donation->payment_id,
-                    'message' => $e->getMessage(),
-                ]);
-
-                Refund::create([
-                    'donation_id' => $donation->id,
-                    'donation_payment_id' => null,
-                    'gateway_refund_id' => null,
-                    'amount' => $donation->total_amount,
-                    'reason' => 'Admin refund failed at gateway: '.$e->getMessage(),
-                    'status' => 'failed',
-                    'processed_at' => null,
-                ]);
-
-                return redirect()
-                    ->route('admin.donations.show', $donation)
-                    ->with('error', 'Refund failed at the payment gateway: '.$e->getMessage());
-            }
-
-            // (c) Success: persist inside a transaction with a row lock + re-checked guard.
-            $refundRecord = null;
-            $alreadyRefunded = false;
-
-            DB::transaction(function () use ($donation, $razorpayRefund, $request, &$refundRecord, &$alreadyRefunded) {
-                $locked = Donation::lockForUpdate()->where('id', $donation->id)->first();
-
-                // Idempotency guard: a webhook may have already refunded this.
-                if ($locked->payment_status !== 'completed' || $locked->is_refunded) {
-                    $alreadyRefunded = true;
-
-                    return;
-                }
-
-                $locked->payment_status = 'refunded';
-                $locked->is_refunded = true;
-                $locked->refunded_at = now();
-                $locked->save();
-
-                $refundRecord = Refund::create([
-                    'donation_id' => $locked->id,
-                    'donation_payment_id' => null,
-                    'gateway_refund_id' => $razorpayRefund->id,
-                    'amount' => $donation->total_amount,
-                    'reason' => $request->input('reason'),
-                    'status' => 'processed',
-                    'processed_at' => now(),
-                ]);
-
-                // Debit the owner's wallet (reserved first while hold active).
-                // Inside the same lock/transaction as the refund — no second lock.
-                try {
-                    $owner = $locked->user_id
-                        ? User::find($locked->user_id)
-                        : ($locked->campaign?->user_id ? User::find($locked->campaign->user_id) : null);
-                    if ($owner) {
-                        $wallet = app(WalletService::class)->getOrCreateWallet($owner);
-                        app(WalletService::class)->debit(
-                            $wallet,
-                            (float) $locked->net_amount,
-                            WalletTransaction::SOURCE_REFUND,
-                            $refundRecord->id,
-                            Refund::class,
-                            'Refund #'.$refundRecord->id
-                        );
-                    }
-                } catch (\Throwable $e) {
-                    Log::error('Wallet debit failed for admin refund', [
-                        'donation_id' => $locked->id,
-                        'message' => $e->getMessage(),
-                    ]);
-                }
-            });
-
-            if ($refundRecord && $donation->donor_email) {
-                try {
-                    Mail::to($donation->donor_email)->send(new DonationRefundMail($donation, $refundRecord));
-                } catch (\Throwable $e) {
-                    Log::error('Failed to send refund notification email', [
-                        'donation_id' => $donation->id,
-                        'message' => $e->getMessage(),
-                    ]);
-                }
-            }
-
-            if ($alreadyRefunded) {
-                return redirect()
-                    ->route('admin.donations.show', $donation)
-                    ->with('info', 'This donation was already refunded (likely processed via webhook moments ago).');
-            }
-
+            $refundRecord = $this->refundService->processAdminRefund(
+                $donation,
+                auth()->user(),
+                $request->input('reason', 'Admin refund')
+            );
+        } catch (\RuntimeException $e) {
             return redirect()
                 ->route('admin.donations.show', $donation)
-                ->with('success', 'Refund of ₹'.number_format($donation->total_amount, 2).' initiated successfully.');
-
-        } finally {
-            $lock->release();
+                ->with('error', $e->getMessage());
         }
+
+        return redirect()
+            ->route('admin.donations.show', $donation)
+            ->with('success', 'Refund of ₹'.number_format($donation->total_amount, 2).' initiated successfully.');
     }
 
-    /**
-     * Build a configured Razorpay API client (mirrors PaymentController).
-     */
-    private function getRazorpayApi(): Api
+    public function destroy(Donation $donation): RedirectResponse
     {
-        $key = config('services.razorpay.key');
-        $secret = config('services.razorpay.secret');
+        $donation->delete();
 
-        if (empty($key) || empty($secret)) {
-            Log::critical('Razorpay credentials missing.');
-            throw new \RuntimeException('Payment gateway configuration missing.');
-        }
-
-        return new Api($key, $secret);
+        return redirect()
+            ->route('admin.donations.index')
+            ->with('success', 'Donation deleted successfully.');
     }
 }

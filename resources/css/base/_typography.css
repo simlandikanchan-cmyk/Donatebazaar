@@ -1,0 +1,17 @@
+/* ══════════════════════════════════════
+   BASE — Typography & Body Decorations
+   ══════════════════════════════════════ */
+
+/* ── Section Header ── */
+.sec-hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:16px;flex-wrap:wrap;gap:12px;
+}
+.sec-ttl{
+  font-family:var(--font);
+  font-size:18px;font-weight:700;color:var(--text);
+  letter-spacing:-.02em;
+}
+
+/* ── Animated Count Helpers ── */
+.hb-count,.hc-count{font-variant-numeric:tabular-nums;}

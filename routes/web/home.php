@@ -13,4 +13,5 @@ Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])
 
 Route::get('/health', HealthCheckResultsController::class)->name('health');
 
-Route::post('/chatbot', [ChatbotController::class, 'chat']);
+Route::post('/chatbot', [ChatbotController::class, 'chat'])
+    ->middleware('throttle:10,1');

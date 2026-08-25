@@ -24,6 +24,19 @@
             font-size: 14px;
         }
         .error { color: #c0392b; }
+        .btn--primary {
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn--primary:hover { background: #1d4ed8; }
+        .btn--primary:disabled { opacity: 0.6; cursor: not-allowed; }
     </style>
 </head>
 <body>
@@ -41,7 +54,7 @@
 <input type="text" id="phone" placeholder="Enter phone number (9876543210)" maxlength="10" inputmode="numeric">
 <br>
 
-<button id="sendBtn" type="button" class="btn btn-primary" onclick="sendOTP()">Send OTP</button>
+<x-button variant="primary" type="button" id="sendBtn" onclick="sendOTP()">Send OTP</x-button>
 
 <div id="message"></div>
 

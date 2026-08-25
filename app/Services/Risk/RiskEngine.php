@@ -116,12 +116,11 @@ final class RiskEngine
             }
 
             // Mirror summary onto the settlement (read-hot denormalization).
-            $settlement->update([
-                'risk_score' => $calc['score'],
-                'risk_verdict' => $verdict,
-                'risk_version' => $config->risk_version,
-                'evaluated_at' => now(),
-            ]);
+            $settlement->risk_score = $calc['score'];
+            $settlement->risk_verdict = $verdict;
+            $settlement->risk_version = $config->risk_version;
+            $settlement->evaluated_at = now();
+            $settlement->save();
 
             return new RiskEvaluationResult(
                 score: $calc['score'],

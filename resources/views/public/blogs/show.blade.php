@@ -3,7 +3,7 @@
 
 @section('title', $blog->title)
 
-@push('styles') @vite(['resources/css/blog-show.css']) @endpush
+@push('styles') @vite(['resources/css/public/blog-show.css']) @endpush
 
 @section('content')
 
@@ -37,19 +37,21 @@
                 style="font-family:'DM Mono', monospace;">
                 {{ $blog->title }}
             </h1>
-            {{-- Meta row inside cover --}}
-            <div class="flex flex-wrap items-center gap-4 text-sm text-stone-300 animate-up-2">
-                <div class="flex items-center gap-2.5">
-                    @if($blog->author->avatar ?? false)
-                        <img src="{{ Storage::url($blog->author->avatar) }}"
-                             class="w-8 h-8 rounded-full object-cover ring-2 ring-white/30" alt="{{ $blog->author->name }}">
-                    @else
-                        <div class="w-8 h-8 rounded-full bg-amber-400 text-stone-900 flex items-center justify-center font-bold text-sm ring-2 ring-white/20">
-                            {{ strtoupper(substr($blog->author->name, 0, 1)) }}
-                        </div>
+{{-- Meta row inside cover --}}
+                <div class="flex flex-wrap items-center gap-4 text-sm text-stone-300 animate-up-2">
+                    @if($blog->author)
+                    <div class="flex items-center gap-2.5">
+                        @if($blog->author->avatar ?? false)
+                            <img src="{{ Storage::url($blog->author->avatar) }}"
+                                 class="w-8 h-8 rounded-full object-cover ring-2 ring-white/30" alt="{{ $blog->author->name }}">
+                        @else
+                            <div class="w-8 h-8 rounded-full bg-amber-400 text-stone-900 flex items-center justify-center font-bold text-sm ring-2 ring-white/20">
+                                {{ strtoupper(substr($blog->author->name, 0, 1)) }}
+                            </div>
+                        @endif
+                        <span class="font-medium text-white">{{ $blog->author->name }}</span>
+                    </div>
                     @endif
-                    <span class="font-medium text-white">{{ $blog->author->name }}</span>
-                </div>
                 <span class="text-stone-400">·</span>
                 <span>{{ ($blog->published_at ?? $blog->created_at)->format('M d, Y') }}</span>
                 <span class="text-stone-400">·</span>
@@ -109,7 +111,7 @@
 
             {{-- ── CONTENT ── --}}
             <div class="prose-custom max-w-none mb-10" id="article-body">
-                {!! nl2br(e($blog->content)) !!}
+                {!! nl2br($blog->content) !!}
             </div>
 
             {{-- Tags --}}
@@ -146,12 +148,12 @@
                 @endauth
 
                 {{-- Copy link --}}
-                <button type="button" class="btn btn-secondary" onclick="copyLink()">
+                <x-button variant="secondary" type="button">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
                     </svg>
                     <span id="copy-label">Copy Link</span>
-                </button>
+                </x-button>
 
                 {{-- Tweet --}}
                 <a href="https://twitter.com/intent/tweet?url={{ urlencode(request()->url()) }}&text={{ urlencode($blog->title) }}"
@@ -165,13 +167,14 @@
 
                 {{-- Report --}}
                 @auth
-                <button type="button" class="btn btn-yellow" onclick="document.getElementById('report-modal').classList.remove('hidden')">
+                <x-button variant="secondary" type="button">
                     Report post
-                </button>
+                </x-button>
                 @endauth
             </div>
 
             {{-- ── AUTHOR CARD ── --}}
+            @if($blog->author)
             <div class="flex gap-5 bg-gradient-to-br from-stone-50 to-amber-50/40 rounded-2xl p-6 mb-12 border border-stone-100">
                 @if($blog->author->avatar ?? false)
                     <img src="{{ Storage::url($blog->author->avatar) }}"
@@ -193,6 +196,7 @@
                     </a>
                 </div>
             </div>
+            @endif
 
             {{-- ── COMMENTS ── --}}
             <section id="comments">
@@ -229,9 +233,9 @@
                                 @enderror
                                 <div class="flex items-center justify-between mt-3">
                                     <p class="text-xs text-stone-400">Be kind and constructive</p>
-                                <button type="submit" class="btn btn-primary">
+                                <x-button variant="primary" type="submit">
                                         Post Comment
-                                    </button>
+                                    </x-button>
                                 </div>
                             </form>
                         </div>
@@ -259,7 +263,7 @@
                 @forelse($blog->comments->whereNull('parent_id') as $comment)
                 <div class="flex gap-3">
                     {{-- Avatar --}}
-                    @if($comment->author->avatar ?? false)
+                    @if($comment->author?->avatar ?? false)
                         <img src="{{ Storage::url($comment->author->avatar) }}"
                              class="w-9 h-9 rounded-full object-cover flex-shrink-0 mt-0.5" alt="{{ $comment->author->name }}">
                     @else
@@ -271,7 +275,7 @@
                     <div class="flex-1 min-w-0">
                         <div class="bg-stone-50 rounded-2xl rounded-tl-sm px-4 py-3.5 border border-stone-100">
                             <div class="flex items-center gap-2 mb-1.5">
-                                <span class="font-semibold text-stone-800 text-sm">{{ $comment->author->name }}</span>
+                                <span class="font-semibold text-stone-800 text-sm">{{ $comment->author->name ?? 'Deleted user' }}</span>
                                 @if($comment->author_id === $blog->author_id)
                                 <span class="px-2 py-0.5 bg-amber-100 text-amber-700 text-xs font-medium rounded-full border border-amber-200">Author</span>
                                 @endif
@@ -283,7 +287,7 @@
                         {{-- Comment actions --}}
                         <div class="flex items-center gap-4 mt-1.5 ml-1.5">
                             @auth
-                            <button onclick="toggleReply({{ $comment->id }})"
+                            <button data-action="toggle-reply" data-id="{{ $comment->id }}"
                                 class="text-xs text-stone-400 hover:text-amber-600 transition-colors flex items-center gap-1">
                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
                                 Reply
@@ -303,9 +307,9 @@
                                 <input id="reply-input" type="text" name="content" placeholder="Write a reply…"
                                     class="flex-1 border border-stone-200 rounded-xl px-3.5 py-2.5 text-sm bg-white focus:outline-none transition-all"
                                     required>
-                                <button type="submit" class="btn btn-primary">
+                                <x-button variant="primary" type="submit">
                                     Reply
-                                </button>
+                                </x-button>
                             </form>
                         </div>
                         @endauth
@@ -315,7 +319,7 @@
                         <div class="mt-4 space-y-3 ml-3 pl-4 border-l-2 border-stone-100">
                             @foreach($comment->replies as $reply)
                             <div class="flex gap-2.5">
-                                @if($reply->author->avatar ?? false)
+                                @if($reply->author?->avatar ?? false)
                                     <img src="{{ Storage::url($reply->author->avatar) }}"
                                          class="w-7 h-7 rounded-full object-cover flex-shrink-0 mt-0.5" alt="{{ $reply->author->name }}">
                                 @else
@@ -325,7 +329,7 @@
                                 @endif
                                 <div class="bg-white rounded-xl rounded-tl-sm px-3.5 py-2.5 border border-stone-100 flex-1">
                                     <div class="flex items-center gap-2 mb-1">
-                                        <span class="font-semibold text-stone-700 text-xs">{{ $reply->author->name }}</span>
+                                        <span class="font-semibold text-stone-700 text-xs">{{ $reply->author->name ?? 'Deleted user' }}</span>
                                         @if($reply->author_id === $blog->author_id)
                                         <span class="px-1.5 py-0.5 bg-amber-100 text-amber-700 text-[10px] font-medium rounded-full">Author</span>
                                         @endif
@@ -431,28 +435,25 @@
 {{-- ── FLOATING LIKE BUTTON (mobile) ── --}}
 @auth
 <div class="fixed bottom-6 right-6 z-40 lg:hidden">
-    <button id="float-like"
-        type="button" class="btn btn-accent"
-        onclick="document.getElementById('like-btn').click()">
+    <x-button variant="primary" type="button">
         <span>{{ $isLiked ? '♥' : '♡' }}</span>
         <span id="float-count">{{ number_format($blog->likes_count ?? 0) }}</span>
-    </button>
+    </x-button>
 </div>
 @endauth
 
 {{-- ── REPORT MODAL ── --}}
 @auth
 <div id="report-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm"
-     onclick="if(event.target===this) this.classList.add('hidden')">
-    <div class="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl" onclick="event.stopPropagation()">
+     data-action="report-modal-backdrop">
+    <div class="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl" data-action="report-modal-inner">
         <div class="flex items-center justify-between mb-5">
             <h3 class="font-display text-lg font-bold text-stone-800">Report This Post</h3>
-            <button onclick="document.getElementById('report-modal').classList.add('hidden')"
-                class="btn btn-secondary" aria-label="Close report">
+            <x-button variant="secondary" type="button">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
-            </button>
+            </x-button>
         </div>
         <form method="POST" action="{{ route('blogs.report', $blog) }}">
             @csrf
@@ -473,147 +474,24 @@
                     class="w-full border border-stone-200 rounded-xl px-3 py-2.5 text-sm bg-stone-50 focus:outline-none focus:ring-2 focus:ring-amber-400 resize-none"></textarea>
             </div>
             <div class="flex gap-3">
-                <button type="submit" class="btn btn-primary">
+                <x-button variant="primary" type="submit">
                     Submit Report
-                </button>
-                <button type="button"
-                    onclick="document.getElementById('report-modal').classList.add('hidden')"
-                    class="btn btn-secondary">
+                </x-button>
+                <x-button variant="secondary" type="button">
                     Cancel
-                </button>
+                </x-button>
             </div>
         </form>
     </div>
 </div>
 @endauth
 
-@push('scripts')
-<script>
-    /* ── Reading progress ── */
-    function updateProgress() {
-        const body = document.getElementById('article-body');
-        if (!body) return;
-        const winH = window.innerHeight;
-        const bodyRect = body.getBoundingClientRect();
-        const total = body.offsetHeight;
-        const scrolled = -bodyRect.top;
-
-        // Guard against division by zero / negative denominator when the
-        // article is shorter than the viewport.
-        const denom = total - winH;
-        const pct = denom > 0
-            ? Math.min(100, Math.max(0, Math.round((scrolled / denom) * 100)))
-            : 100;
-
-        document.getElementById('reading-progress-bar').style.width = pct + '%';
-
-        const sidebar = document.getElementById('progress-bar-sidebar');
-        const pctEl = document.getElementById('progress-pct');
-        const timeLeft = document.getElementById('time-left');
-        if (sidebar) sidebar.style.width = pct + '%';
-        if (pctEl) pctEl.textContent = pct + '%';
-        if (timeLeft) {
-            const totalMins = {{ $blog->read_time_minutes ?? 1 }};
-            const minsLeft = Math.ceil((1 - pct / 100) * totalMins);
-            timeLeft.textContent = pct >= 95 ? '✓ Finished' : minsLeft + ' min left';
-        }
-        updateTOC();
-    }
-    window.addEventListener('scroll', updateProgress, { passive: true });
-    updateProgress();
-
-    /* ── Table of Contents ── */
-    function buildTOC() {
-        const headings = document.querySelectorAll('#article-body h2, #article-body h3');
-        const nav = document.getElementById('toc-nav');
-        const card = document.getElementById('toc-card');
-        if (!nav || headings.length < 2) return;
-
-        headings.forEach((h, i) => {
-            if (!h.id) h.id = 'heading-' + i;
-            const a = document.createElement('a');
-            a.href = '#' + h.id;
-            a.textContent = h.textContent;
-            a.style.paddingLeft = h.tagName === 'H3' ? '20px' : '10px';
-            nav.appendChild(a);
-        });
-        if (card && headings.length > 1) card.style.display = 'block';
-    }
-
-    function updateTOC() {
-        const headings = document.querySelectorAll('#article-body h2, #article-body h3');
-        const links = document.querySelectorAll('#toc-nav a');
-        if (!links.length) return;
-        let active = 0;
-        headings.forEach((h, i) => {
-            if (h.getBoundingClientRect().top < 120) active = i;
-        });
-        links.forEach((l, i) => l.classList.toggle('toc-active', i === active));
-    }
-
-    buildTOC();
-
-    /* ── Copy link ── */
-    function copyLink() {
-        navigator.clipboard.writeText(window.location.href).then(() => {
-            const el = document.getElementById('copy-label');
-            el.textContent = '✓ Copied!';
-            setTimeout(() => el.textContent = 'Copy Link', 2000);
-        });
-    }
-
-    /* ── Toggle reply form ── */
-    function toggleReply(id) {
-        const el = document.getElementById('reply-' + id);
-        el.classList.toggle('hidden');
-        if (!el.classList.contains('hidden')) {
-            const input = el.querySelector('input');
-            if (input) { input.focus(); }
-        }
-    }
-
-    /* ── Like via AJAX ── */
-    const likeForm = document.getElementById('like-form');
-    if (likeForm) {
-        likeForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const btn = document.getElementById('like-btn');
-            const token = document.querySelector('[name=_token]').value;
-
-            try {
-                const res = await fetch(likeForm.action, {
-                    method: 'POST',
-                    headers: { 'X-CSRF-TOKEN': token, 'Accept': 'application/json', 'Content-Type': 'application/json' },
-                    body: JSON.stringify({})
-                });
-                if (!res.ok) return;
-                const data = await res.json();
-                const liked = data.liked;
-
-                document.getElementById('heart-icon').textContent = liked ? '♥' : '♡';
-                document.getElementById('like-count').textContent = data.likes_count.toLocaleString();
-                btn.lastElementChild.textContent = liked ? 'Liked' : 'Like';
-
-                const floatLike = document.getElementById('float-like');
-                const floatCount = document.getElementById('float-count');
-                if (floatLike) {
-                    floatLike.classList.toggle('liked', liked);
-                    floatLike.querySelector('span').textContent = liked ? '♥' : '♡';
-                }
-                if (floatCount) floatCount.textContent = data.likes_count.toLocaleString();
-
-                if (liked) {
-                    btn.classList.remove('border-stone-200', 'text-stone-600', 'hover:border-rose-300', 'hover:bg-rose-50', 'hover:text-rose-500');
-                    btn.classList.add('border-rose-300', 'bg-rose-50', 'text-rose-600');
-                } else {
-                    btn.classList.remove('border-rose-300', 'bg-rose-50', 'text-rose-600');
-                    btn.classList.add('border-stone-200', 'text-stone-600', 'hover:border-rose-300', 'hover:bg-rose-50', 'hover:text-rose-500');
-                }
-            } catch(err) { likeForm.submit(); }
-        });
-    }
-
+<script type="application/json" id="blogsShowData">
+@json(['readTimeMinutes' => $blog->read_time_minutes ?? 1])
 </script>
+
+@push('scripts')
+@vite('resources/js/public/blogs-show.js')
 @endpush
 
 @endsection

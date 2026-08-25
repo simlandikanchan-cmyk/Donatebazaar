@@ -1,0 +1,790 @@
+﻿/* ══════════════════════════════════════
+   ADMIN — Page: Campaigns (list, quick-view cards & show)
+   Bulk bars → components/_toolbar.css
+   Tabs → components/_tabs.css
+   ══════════════════════════════════════ */
+@import '../components/_campaign-cards.css';
+
+/* ══════════════════════════════════════
+   CAMPAIGN SHOW PAGE
+   ══════════════════════════════════════ */
+/* ── PAGE GRID ── */
+.page-grid {
+  display: grid;
+  align-items: start;
+  gap: 20px;
+  grid-template-columns: 1fr 380px;
+}
+.right-col {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+/* ── COVER ── */
+.cover-wrap {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  border-radius: var(--r) var(--r) 0 0;
+}
+.cover-wrap img {
+  display: block;
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+.cover-overlay {
+  position: absolute;
+  background: linear-gradient(to top, rgba(0, 0, 0, .5) 0%, transparent 60%);
+  inset: 0;
+}
+.cover-meta {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 18px;
+}
+.cover-title {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -.02em;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, .4);
+  color: #fff;
+}
+.cover-created {
+  margin-top: 4px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: rgba(255, 255, 255, .7);
+}
+.cover-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  height: 200px;
+  font-size: 13px;
+  color: var(--text3);
+  background: var(--surface2);
+}
+.cover-placeholder svg {
+  width: 32px;
+  height: 32px;
+  opacity: .3;
+}
+/* ── STATUS CHIPS ── */
+.status-section {
+  padding: 16px 18px;
+}
+.status-section-label {
+  margin-bottom: 10px;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+.status-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.status-chip-lg {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  border-radius: 100px;
+}
+.chip-dot {
+  flex-shrink: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+.chip-active {
+  color: var(--green);
+  background: var(--green-lt);
+}
+.chip-active .chip-dot {
+  background: var(--green);
+}
+.chip-paused {
+  color: var(--a);
+  background: var(--a-lt);
+}
+.chip-paused .chip-dot {
+  background: var(--a);
+}
+.chip-pending {
+  color: var(--amber);
+  background: var(--amber-lt);
+}
+.chip-pending .chip-dot {
+  background: var(--amber);
+}
+.chip-rejected {
+  color: var(--red);
+  background: var(--red-lt);
+}
+.chip-rejected .chip-dot {
+  background: var(--red);
+}
+.chip-expired {
+  color: #6b7280;
+  background: rgba(107, 114, 128, .1);
+}
+.chip-expired .chip-dot {
+  background: #6b7280;
+}
+.chip-completed {
+  color: var(--blue);
+  background: var(--blue-lt);
+}
+.chip-completed .chip-dot {
+  background: var(--blue);
+}
+/* ── KYC PILL / NOTICE ── */
+.kyc-pill {
+  padding: 6px 12px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  border-radius: var(--r-sm);
+}
+.kyc-pill-none {
+  color: var(--text3);
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+}
+.kyc-pill-pending {
+  color: var(--amber);
+  background: var(--amber-lt);
+  border: 1px solid rgba(245, 158, 11, .2);
+}
+.kyc-pill-approved {
+  color: var(--green);
+  background: var(--green-lt);
+  border: 1px solid rgba(5, 196, 138, .2);
+}
+.kyc-pill-rejected {
+  color: var(--red);
+  background: var(--red-lt);
+  border: 1px solid rgba(240, 68, 68, .2);
+}
+.kyc-notice {
+  margin-bottom: 12px;
+  padding: 12px 14px;
+  border-radius: var(--r-sm);
+}
+.kyc-notice-title {
+  margin-bottom: 4px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.kyc-notice-body {
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+.kyc-notice-red {
+  color: var(--red);
+  background: var(--red-lt);
+  border: 1px solid rgba(240, 68, 68, .15);
+}
+.kyc-notice-yellow {
+  color: var(--amber);
+  background: var(--amber-lt);
+  border: 1px solid rgba(245, 158, 11, .15);
+}
+.kyc-notice-green {
+  color: var(--green);
+  background: var(--green-lt);
+  border: 1px solid rgba(5, 196, 138, .15);
+}
+/* ── FUNDRAISING RING ── */
+.fund-ring-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 14px;
+}
+.fund-ring-wrap {
+  position: relative;
+  flex-shrink: 0;
+  width: 90px;
+  height: 90px;
+}
+.fund-ring {
+  width: 90px;
+  height: 90px;
+}
+.fund-ring-bg {
+  fill: none;
+  stroke: var(--surface3);
+  stroke-width: 6;
+}
+.fund-ring-fill {
+  transition: stroke-dashoffset .9s ease;
+  fill: none;
+  stroke: url(#ringGrad);
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+.fund-ring-center {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  inset: 0;
+}
+.fund-ring-pct {
+  font-family: var(--mono);
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  color: var(--text);
+}
+.fund-ring-lbl {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+.fund-ring-side {
+  flex: 1;
+}
+.fund-raised {
+  font-family: var(--mono);
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  color: var(--text);
+}
+.fund-goal {
+  margin-top: 2px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text3);
+}
+.fund-stats-3 {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(3, 1fr);
+}
+.mini-stat {
+  padding: 8px 4px;
+  text-align: center;
+  background: var(--surface2);
+  border-radius: var(--r-sm);
+}
+.mini-stat-val {
+  font-family: var(--mono);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+.mini-stat-lbl {
+  margin-top: 2px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+/* ── BANK DETAILS ── */
+.bank-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr 1fr;
+}
+.bank-field {
+  padding: 8px 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+}
+.bank-field-lbl {
+  margin-bottom: 4px;
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+.bank-field-val {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  color: var(--text);
+}
+.bank-field-val.empty {
+  font-style: italic;
+  letter-spacing: 0;
+  color: var(--text3);
+}
+/* ── KYC DOC TILES ── */
+.kyc-docs-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr 1fr;
+}
+.kyc-doc-tile {
+  overflow: hidden;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+}
+.kyc-doc-tile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.kyc-doc-tile-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text);
+}
+.kyc-doc-tile-label svg {
+  width: 14px;
+  height: 14px;
+  color: var(--text3);
+}
+.kyc-doc-tile-img {
+  display: block;
+  width: 100%;
+  max-height: 200px;
+  background: var(--surface);
+  object-fit: contain;
+}
+.kyc-doc-tile-pdf {
+  width: 100%;
+  height: 200px;
+  background: var(--surface);
+  border: none;
+}
+.kyc-doc-tile-missing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px 12px;
+  font-size: 12px;
+  color: var(--text3);
+}
+.kyc-doc-tile-missing svg {
+  width: 24px;
+  height: 24px;
+  opacity: .3;
+}
+/* ── SELFIE VERIFICATION ── */
+.kyc-selfie-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.kyc-selfie-img {
+  max-width: 200px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+}
+.kyc-selfie-missing {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px;
+  font-size: 12px;
+  color: var(--text3);
+  background: var(--surface2);
+  border-radius: var(--r-sm);
+}
+.kyc-selfie-missing svg {
+  width: 24px;
+  height: 24px;
+  opacity: .3;
+}
+.kyc-selfie-info {
+  flex: 1;
+}
+.kyc-selfie-title {
+  margin-bottom: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+}
+.kyc-selfie-sub {
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text3);
+}
+/* ── UPDATES ── */
+.updates-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.update-item {
+  padding: 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+}
+.update-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.update-item-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+.update-item-date {
+  font-family: var(--mono);
+  font-size: 10px;
+  white-space: nowrap;
+  color: var(--text3);
+}
+.update-item-body {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text2);
+}
+.update-doc-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--a);
+  background: var(--a-lt);
+  border-radius: var(--r-xs);
+  transition: all var(--ease);
+}
+.update-doc-pill:hover {
+  color: var(--white);
+  background: var(--a);
+}
+.update-doc-pill svg {
+  width: 12px;
+  height: 12px;
+}
+/* ── FUNDRAISER ── */
+.fundraiser-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.fundraiser-av {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  width: 42px;
+  height: 42px;
+  font-family: var(--mono);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--white);
+  background: linear-gradient(135deg, var(--a), var(--a2));
+  border-radius: 10px;
+}
+.fundraiser-av img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.fundraiser-meta {
+  flex: 1;
+  min-width: 0;
+}
+.fundraiser-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+}
+.fundraiser-email {
+  overflow: hidden;
+  margin-top: 1px;
+  font-family: var(--mono);
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text3);
+}
+.fundraiser-kyc {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 2px 8px;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 100px;
+}
+/* ── INFO ROW ── */
+.info-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+.info-row:last-child {
+  border-bottom: none;
+}
+.info-row-lbl {
+  flex-shrink: 0;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+/* ── LEGACY KYC DOC PREVIEW ── */
+.kyc-doc-preview {
+  overflow: hidden;
+  margin-top: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+}
+.kyc-doc-preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+}
+.kyc-doc-preview-header-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text2);
+}
+.kyc-doc-preview-header-left svg {
+  flex-shrink: 0;
+  width: 13px;
+  height: 13px;
+}
+.kyc-doc-preview-actions {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 6px;
+}
+.kyc-doc-preview-img {
+  display: block;
+  width: 100%;
+  max-height: 260px;
+  background: var(--surface);
+  object-fit: contain;
+}
+.kyc-doc-preview-iframe {
+  width: 100%;
+  height: 260px;
+  background: var(--surface);
+  border: none;
+}
+.kyc-doc-preview-fallback {
+  padding: 20px;
+  font-size: 12px;
+  text-align: center;
+  color: var(--text3);
+}
+.kyc-doc-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+}
+.kyc-doc-icon {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  font-size: 16px;
+  color: var(--a);
+  background: var(--a-lt);
+  border-radius: 8px;
+}
+.kyc-doc-type {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+}
+.kyc-doc-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text3);
+}
+/* ── COVER UPLOAD (campaign create) ── */
+.cover-upload-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 30px 18px;
+  text-align: center;
+  background: var(--surface2);
+  border: 2px dashed var(--border2);
+  border-radius: var(--r);
+  cursor: pointer;
+  transition:
+    border-color var(--ease),
+    background var(--ease);
+}
+.cover-upload-zone:hover {
+  background: var(--a-lt);
+  border-color: var(--a);
+}
+.cover-upload-icon {
+  font-size: 24px;
+  opacity: .45;
+}
+.cover-upload-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text2);
+}
+.cover-upload-hint {
+  font-size: 11px;
+  color: var(--text3);
+}
+.cover-upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--text3);
+}
+.cover-preview-img {
+  display: block;
+  width: 100%;
+  max-height: 220px;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  object-fit: cover;
+}
+.cover-preview-overlay {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+/* ── UNSAVED BAR (campaign edit) ── */
+.unsaved-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--amber);
+  background: var(--amber-lt);
+  border: 1px solid rgba(245, 158, 11, .25);
+  border-radius: var(--r-sm);
+}
+.unsaved-dot {
+  flex-shrink: 0;
+  width: 7px;
+  height: 7px;
+  background: var(--amber);
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, .18);
+  animation: pulse 2s ease infinite;
+}
+/* ── CAMPAIGN CHECKBOX ── */
+.cmp-checkbox {
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+  accent-color: var(--a);
+}
+/* ── CAMPAIGN QUICK (dashboard widget) ── */
+.qk-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+/* ── CAMPAIGN INDEX FILTERS ── */
+.date-input {
+  height: 36px;
+  padding: 0 10px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--r-sm);
+  outline: none;
+  color-scheme: light;
+}
+[data-theme="dark"] .date-input {
+  color-scheme: dark;
+}
+.filter-sep {
+  flex-shrink: 0;
+  width: 1px;
+  height: 22px;
+  background: var(--border2);
+}
+/* ── CAMPAIGN CATEGORY TAG ── */
+.cat-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 9px;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+  color: var(--a);
+  background: var(--a-lt);
+  border: 1px solid rgba(37, 99, 235, .2);
+  border-radius: 100px;
+}

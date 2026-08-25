@@ -2,7 +2,7 @@
 
 @section('content')
 
-@push('styles') @vite(['resources/css/campaigns-create.css']) @endpush
+@push('styles') @vite(['resources/css/public/campaigns-create.css']) @endpush
 
 <div class="page-shell">
   <div class="shell-inner">
@@ -72,8 +72,8 @@
               </div>
               <div class="field-wrap">
                 <label class="field-label">Campaign description <span>*</span></label>
-                <textarea name="description" class="field-input" rows="5" placeholder="Tell people why this campaign matters..." maxlength="1000" id="descInput">{{ old('description') }}</textarea>
-                <div class="char-counter"><span id="descCount">0</span> / 1000</div>
+                <textarea name="description" class="field-input" rows="5" placeholder="Tell people why this campaign matters..." maxlength="20000" id="descInput">{{ old('description') }}</textarea>
+                <div class="char-counter"><span id="descCount">0</span> / 20000</div>
               </div>
             </div>
           </div>
@@ -144,7 +144,7 @@
 
           {{-- STEP 4: Media --}}
           <div class="step-panel" id="step-4">
-            <div class="upload-zone" id="uploadZone" onclick="document.getElementById('coverInput').click()">
+            <div class="upload-zone" id="uploadZone">
               <input type="file" id="coverInput" name="cover_image" accept="image/*">
               <div id="uploadPrompt">
                 <div class="upload-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg></div>
@@ -243,21 +243,21 @@
             </div>
           </div>
 
-          <div class="form-nav">
-            <button type="button" class="btn-back" id="btnBack" style="display:none;" onclick="changeStep(-1)">
+          <nav class="wizard-nav" id="wizardNav" aria-label="Campaign wizard navigation">
+            <button type="button" class="wizard-nav__btn wizard-nav__btn--back" id="btnBack" data-nav="back" aria-label="Go back to previous step">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
               Back
             </button>
-            <div style="flex:1;"></div>
-            <button type="button" class="btn-next" id="btnNext" onclick="changeStep(1)">
+            <div class="wizard-nav__spacer"></div>
+            <button type="button" class="wizard-nav__btn wizard-nav__btn--primary" id="btnNext" data-nav="next" aria-label="Continue to next step">
               Continue
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </button>
-            <button type="submit" class="btn-next" id="btnSubmit" style="display:none;">
+            <button type="submit" class="wizard-nav__btn wizard-nav__btn--primary" id="btnSubmit" data-nav="submit" aria-label="Submit campaign and complete KYC">
               Submit &amp; complete KYC
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             </button>
-          </div>
+          </nav>
 
         </div>
       </form>
@@ -268,374 +268,25 @@
   </div>
 </div>
 
-{{-- Pass admin category products to JS --}}
-<script>
-var categoryProductsMap = {};
-@foreach($categoryProducts as $product)
-  @if($product->is_active)
-  (function(){
-    var cid = '{{ $product->category_id }}';
-    if (!categoryProductsMap[cid]) categoryProductsMap[cid] = [];
-    categoryProductsMap[cid].push({
-      id:    {{ $product->id }},
-      name:  @json($product->name),
-      price: {{ (float) $product->price }},
-      desc:  @json($product->description ?? ''),
-      stock: {{ (int) ($product->stock ?? 10) }},
-      image: @json($product->image_url ?? ''),
-    });
-  })();
-  @endif
-@endforeach
-
+{{-- Admin category products for the wizard (read by campaigns-create.js) --}}
+<script type="application/json" id="categoryProductsData">
+@php
+    $categoryProductsData = $categoryProducts->filter(fn($p) => $p->is_active)->map(fn($p) => [
+        'id'          => (int) $p->id,
+        'category_id' => (int) $p->category_id,
+        'name'        => $p->name,
+        'price'       => (float) $p->price,
+        'desc'        => $p->description ?? '',
+        'stock'       => (int) ($p->stock ?? 10),
+        'image'       => $p->image_url ?? '',
+    ])->values();
+@endphp
+@json($categoryProductsData)
 </script>
 
-<script>
-var currentStep  = 1;
-var totalSteps   = 6;   /* KYC is now its own page — only 6 steps here */
-var productCount = 0;
-var updateCount  = 0;
+@push('scripts')
+@vite('resources/js/public/campaigns-create.js')
+@endpush
 
-var stepMeta = {
-  1:{badge:'Step 1 of 6',heading:'Campaign basics',         sub:'Start with the essential information about your campaign.'},
-  2:{badge:'Step 2 of 6',heading:'Additional details',      sub:"Help donors understand where, when, and how you'll fundraise."},
-  3:{badge:'Step 3 of 6',heading:'Updates & documents',     sub:'At least one update with title & description is required.'},
-  4:{badge:'Step 4 of 6',heading:'Cover image',             sub:'A great image makes your campaign stand out and builds trust.'},
-  5:{badge:'Step 5 of 6',heading:'Fundraiser products',     sub:'Optional — add products donors can purchase to support your cause.'},
-  6:{badge:'Step 6 of 6',heading:'Review & submit',         sub:'Almost there — check everything, then submit to begin KYC.'},
-};
-var progressMap = {1:'16.6%',2:'33.2%',3:'49.8%',4:'66.4%',5:'83%',6:'100%'};
-
-function changeStep(dir){
-  if(dir===1 && !validateStep(currentStep)) return;
-  var prev = currentStep;
-  currentStep = Math.max(1, Math.min(totalSteps, currentStep+dir));
-  if(currentStep===6) populateReview();
-  if(currentStep===5) renderSuggestions();
-
-  document.getElementById('step-'+prev).classList.remove('active');
-  document.getElementById('step-'+currentStep).classList.add('active');
-  updateDots(prev, currentStep);
-  updateNav();
-  updateHeader();
-  document.getElementById('progressBar').style.width = progressMap[currentStep];
-  document.getElementById('stepCounter').textContent = currentStep;
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-function updateHeader(){
-  var m = stepMeta[currentStep];
-  document.getElementById('stepBadge').textContent   = m.badge;
-  document.getElementById('stepHeading').textContent = m.heading;
-  document.getElementById('stepSub').textContent     = m.sub;
-}
-
-function updateDots(prev, current){
-  var pd=document.getElementById('dot-'+prev), pl=document.getElementById('label-'+prev), pi=document.getElementById('sitem-'+prev);
-  if(current>prev){
-    pd.classList.remove('active'); pd.classList.add('done');
-    pd.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;"><path d="M20 6L9 17l-5-5"/></svg>';
-    pl.classList.remove('active'); pl.classList.add('done'); pi.classList.remove('active');
-  } else {
-    pd.classList.remove('done','active'); pd.classList.add('active'); pd.textContent=prev;
-    pl.classList.remove('active','done'); pl.classList.add('active');
-  }
-  var cd=document.getElementById('dot-'+current), cl=document.getElementById('label-'+current);
-  cd.classList.remove('done'); cd.classList.add('active'); cd.textContent=current;
-  cl.classList.remove('done'); cl.classList.add('active');
-  document.getElementById('sitem-'+current).classList.add('active');
-}
-
-function updateNav(){
-  document.getElementById('btnBack').style.display   = currentStep>1?'inline-flex':'none';
-  document.getElementById('btnNext').style.display   = currentStep<totalSteps?'inline-flex':'none';
-  document.getElementById('btnSubmit').style.display = currentStep===totalSteps?'inline-flex':'none';
-}
-
-/* ── VALIDATION ── */
-function validateStep(step){
-  if(step===1){
-    if(!document.querySelector('[name=title]').value.trim())       {showToast('Please enter a campaign title.'); return false;}
-    if(!document.getElementById('goalAmount').value.trim())        {showToast('Please enter a goal amount.'); return false;}
-    if(!document.querySelector('[name=category_id]').value)        {showToast('Please select a category.'); return false;}
-    if(!document.querySelector('[name=description]').value.trim()) {showToast('Please enter a campaign description.'); return false;}
-  }
-  if(step===3){
-    var entries=document.querySelectorAll('.update-entry');
-    if(entries.length===0){ showToast('Please add at least one update or document before continuing.'); return false; }
-    var hasValid=false;
-    for(var i=0;i<entries.length;i++){
-      var title=entries[i].querySelector('[data-ufield="title"]').value.trim();
-      var body=entries[i].querySelector('[data-ufield="body"]').value.trim();
-      if(title && body){ hasValid=true; }
-      if(body && !title){ showToast('Please enter a title for update #'+(i+1)+'.'); return false; }
-      if(title && !body){ showToast('Please enter a description for update #'+(i+1)+'.'); return false; }
-    }
-    if(!hasValid){ showToast('Each update needs both a title and a description.'); return false; }
-  }
-  if(step===4){
-    var coverInput=document.getElementById('coverInput');
-    if(!coverInput.files || coverInput.files.length===0){
-      document.getElementById('uploadZone').classList.add('required-error');
-      showToast('Please upload a cover image before continuing.');
-      return false;
-    }
-  }
-  if(step===5){
-    var items=document.querySelectorAll('.product-item');
-    for(var i=0;i<items.length;i++){
-      var item=items[i];
-      var name=item.querySelector('[data-field="name"]').value.trim();
-      var price=item.querySelector('[data-field="price"]').value.trim();
-      var qty=item.querySelector('[data-field="stock"]').value.trim();
-      if(name && !price){showToast('Enter a price for "'+name+'".'); return false;}
-      if(name && !qty)  {showToast('Enter a quantity for "'+name+'".'); return false;}
-      if(price && !name){showToast('Enter a name for the product with price ₹'+price+'.'); return false;}
-    }
-  }
-  return true;
-}
-
-/* ── TOAST ── */
-function showToast(html, type, duration){
-  type = type||'purple'; duration = duration||3000;
-  var el=document.createElement('div');
-  el.className='toast-alert '+type;
-  el.innerHTML=html;
-  document.body.appendChild(el);
-  setTimeout(function(){el.style.opacity='0';el.style.transition='opacity .4s';},duration);
-  setTimeout(function(){if(el.parentNode)el.remove();},duration+450);
-}
-
-/* ── SUBMIT ── */
-document.getElementById('campaignForm').addEventListener('submit', function(){
-  var goal = document.getElementById('goalAmount');
-  goal.value = goal.value.replace(/,/g,'');
-});
-
-/* ── UPDATES ── */
-document.getElementById('addUpdateBtn').addEventListener('click',function(){addUpdate();});
-function addUpdate(){
-  updateCount++;
-  var id=updateCount, fid='docFile-'+id, fnid='docName-'+id;
-  var html='<div class="update-entry" id="update-'+id+'">'+
-    '<div class="update-entry-header">'+
-      '<span class="update-entry-num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Update '+id+'</span>'+
-      '<button type="button" class="remove-update-btn" onclick="removeUpdate('+id+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>'+
-    '</div>'+
-    '<div class="field-stack">'+
-      '<div class="field-wrap"><label class="field-label">Update title <span>*</span></label><input type="text" name="updates['+id+'][title]" data-ufield="title" class="field-input" placeholder="e.g. Week 2 progress report"></div>'+
-      '<div class="field-wrap"><label class="field-label">Update body <span>*</span></label><textarea name="updates['+id+'][body]" data-ufield="body" class="field-input" rows="3" placeholder="Share your progress, milestones, or any relevant information..."></textarea></div>'+
-      '<div class="field-wrap"><label class="field-label">Attach document <span style="color:var(--ink-muted);font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></label>'+
-        '<div class="doc-attach-row">'+
-          '<label class="doc-attach-label" for="'+fid+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>Attach file</label>'+
-          '<input type="file" id="'+fid+'" name="updates['+id+'][document]" accept=".pdf,.jpg,.jpeg,.png,.docx,.xlsx" style="display:none" onchange="showDocName('+id+',this)">'+
-          '<span class="doc-filename" id="'+fnid+'">No file chosen</span>'+
-        '</div>'+
-      '</div>'+
-    '</div></div>';
-  document.getElementById('updateEntries').insertAdjacentHTML('beforeend',html);
-}
-function removeUpdate(id){
-  var el=document.getElementById('update-'+id); if(!el)return;
-  el.style.opacity='0'; el.style.transform='scale(.97)'; el.style.transition='all .25s';
-  setTimeout(function(){el.remove();},260);
-}
-function showDocName(id,input){
-  var nameEl=document.getElementById('docName-'+id);
-  if(input.files&&input.files[0]){
-    var f=input.files[0];
-    nameEl.innerHTML='<span class="doc-preview-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:11px;height:11px;"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>'+f.name+'</span>';
-  } else {
-    nameEl.textContent='No file chosen';
-  }
-}
-
-/* ── PRODUCTS ── */
-function renderSuggestions(){
-  var wrap=document.getElementById('suggestionsWrap');
-  wrap.innerHTML='';
-  var catEl=document.getElementById('categorySelect');
-  var catId=catEl.value;
-  var list=categoryProductsMap[catId];
-  if(!list||list.length===0){
-    wrap.innerHTML='<span style="font-size:12px;color:var(--ink-muted);">No admin products found for this category. Add your own below.</span>';
-    return;
-  }
-  list.forEach(function(s){
-    var pill=document.createElement('button');
-    pill.type='button';
-    pill.className='suggestion-pill';
-    var imgHtml = s.image
-      ? '<img src="'+s.image+'" class="suggestion-pill-img" onerror="this.style.display=\'none\'">'
-      : '<span class="suggestion-pill-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2zM16 3H8l-2 4h12l-2-4z"/></svg></span>';
-    pill.innerHTML = imgHtml + s.name + ' &middot; ₹' + s.price.toLocaleString('en-IN');
-    pill.onclick = function(){ addProduct(s.id, s.name, s.price, s.desc, s.stock, s.image); };
-    wrap.appendChild(pill);
-  });
-}
-
-function addProduct(categoryProductId, name, price, desc, stock, image){
-  categoryProductId = categoryProductId || '';
-  productCount++;
-  var id = productCount;
-  var imgPreviewHtml = image
-    ? '<div class="product-img-preview-wrap"><img src="'+image+'" class="product-img-preview" onerror="this.style.display=\'none\'"></div>'
-    : '';
-  var html='<div class="product-item" id="product-'+id+'">'+
-    '<div class="product-item-header">'+
-      '<span class="product-item-num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2zM16 3H8l-2 4h12l-2-4z"/></svg>Product '+id+'</span>'+
-      '<button type="button" class="remove-product-btn" onclick="removeProduct('+id+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>'+
-    '</div>'+
-    '<div class="product-img-upload-wrap">'+
-      '<label class="product-img-label" for="prodImg-'+id+'">'+
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>'+
-        '<span>Add Image</span>'+
-      '</label>'+
-      '<input type="file" id="prodImg-'+id+'" name="products['+id+'][image]" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="previewProdImg('+id+',this)">'+
-      '<div class="product-img-preview-wrap" id="prodImgPreview-'+id+'">'+imgPreviewHtml+'</div>'+
-    '</div>'+
-    '<div class="field-stack">'+
-      '<div class="field-wrap"><label class="field-label">Product name <span>*</span></label><input type="text" name="products['+id+'][name]" data-field="name" class="field-input" placeholder="e.g. Handmade bracelet" value="'+(name||'')+'"></div>'+
-      '<div class="field-wrap"><label class="field-label">Description</label><textarea name="products['+id+'][description]" data-field="description" class="field-input" rows="2" placeholder="Brief description...">'+(desc||'')+'</textarea></div>'+
-      '<div class="field-grid-3">'+
-        '<div class="field-wrap"><label class="field-label">Price (₹) <span>*</span></label><div class="input-prefix-wrap"><span class="input-prefix">₹</span><input type="number" name="products['+id+'][price]" data-field="price" class="field-input" placeholder="199" min="0" step="1" value="'+(price||'')+'" oninput="recalcProduct('+id+')"></div></div>'+
-        '<div class="field-wrap"><label class="field-label">Quantity <span>*</span></label><input type="number" name="products['+id+'][stock]" data-field="stock" class="field-input" placeholder="10" min="1" step="1" value="'+(stock||'')+'" oninput="recalcProduct('+id+')"></div>'+
-        '<div class="field-wrap"><label class="field-label">Status</label><select name="products['+id+'][is_active]" class="field-input"><option value="1">Active</option><option value="0">Hidden</option></select></div>'+
-      '</div>'+
-      '<div class="product-subtotal-row"><span class="product-subtotal-label">Subtotal (price × qty)</span><span class="product-subtotal-value" id="subtotal-'+id+'">₹0</span></div>'+
-    '</div></div>';
-  document.getElementById('productList').insertAdjacentHTML('beforeend',html);
-  if(price) recalcProduct(id);
-  updateGrandTotal();
-}
-
-function removeProduct(id){
-  var el=document.getElementById('product-'+id); if(!el)return;
-  el.style.opacity='0'; el.style.transform='scale(.97)'; el.style.transition='all .25s';
-  setTimeout(function(){el.remove();updateGrandTotal();},260);
-}
-function recalcProduct(id){
-  var item=document.getElementById('product-'+id); if(!item)return;
-  var price=parseFloat(item.querySelector('[data-field="price"]').value)||0;
-  var qty=parseFloat(item.querySelector('[data-field="stock"]').value)||0;
-  document.getElementById('subtotal-'+id).textContent='₹'+Math.round(price*qty).toLocaleString('en-IN');
-  updateGrandTotal();
-}
-function updateGrandTotal(){
-  var items=document.querySelectorAll('.product-item');
-  var grand=0,count=0;
-  items.forEach(function(item){
-    var price=parseFloat(item.querySelector('[data-field="price"]').value)||0;
-    var qty=parseFloat(item.querySelector('[data-field="stock"]').value)||0;
-    if(price>0&&qty>0){grand+=price*qty;count++;}
-  });
-  var card=document.getElementById('grandTotalCard');
-  if(items.length===0){card.style.display='none';return;}
-  card.style.display='flex';
-  document.getElementById('grandTotalAmount').textContent='₹'+Math.round(grand).toLocaleString('en-IN');
-  document.getElementById('grandTotalSub').textContent=count+' product'+(count!==1?'s':'')+' with price & qty filled';
-}
-
-/* ── REVIEW ── */
-function getGoalRaw(){return parseFloat(document.getElementById('goalAmount').value.replace(/,/g,''))||0;}
-function populateReview(){
-  var catEl=document.querySelector('[name=category_id]');
-  var start=document.querySelector('[name=start_date]').value;
-  var end=document.querySelector('[name=end_date]').value;
-  var fileEl=document.getElementById('coverInput');
-  var goalRaw=getGoalRaw();
-  document.getElementById('rv-title').textContent    = document.querySelector('[name=title]').value||'—';
-  document.getElementById('rv-goal').textContent     = goalRaw?'₹'+Math.round(goalRaw).toLocaleString('en-IN'):'—';
-  document.getElementById('rv-category').textContent = catEl.options[catEl.selectedIndex]?catEl.options[catEl.selectedIndex].text:'—';
-  document.getElementById('rv-location').textContent = document.querySelector('[name=location]').value||'—';
-  document.getElementById('rv-dates').textContent    = (start&&end)?start+' → '+end:(start||end||'—');
-  document.getElementById('rv-image').textContent    = (fileEl.files&&fileEl.files.length)?fileEl.files[0].name:'Not uploaded';
-
-  var updateEntries=document.querySelectorAll('.update-entry');
-  var rvUpdatesCard=document.getElementById('rvUpdatesCard');
-  if(updateEntries.length>0){
-    rvUpdatesCard.style.display='';
-    document.getElementById('rvUpdateCount').textContent='('+updateEntries.length+')';
-    document.getElementById('rvUpdatesBody').innerHTML=Array.from(updateEntries).map(function(entry){
-      var title=entry.querySelector('[data-ufield="title"]').value.trim();
-      var fi=entry.querySelector('input[type="file"]');
-      var docName=(fi&&fi.files&&fi.files[0])?fi.files[0].name:'';
-      if(!title) return '';
-      return '<span class="review-update-pill">'+title+(docName?' · 📎'+docName:'')+'</span>';
-    }).join('');
-  } else { rvUpdatesCard.style.display='none'; }
-
-  var items=document.querySelectorAll('.product-item');
-  var products=[],productTotal=0;
-  items.forEach(function(item){
-    var name=item.querySelector('[data-field="name"]').value.trim();
-    var price=parseFloat(item.querySelector('[data-field="price"]').value)||0;
-    var qty=parseFloat(item.querySelector('[data-field="stock"]').value)||0;
-    if(name){products.push({name:name,price:price,qty:qty});productTotal+=price*qty;}
-  });
-  var rvCard=document.getElementById('rvProductsCard');
-  if(products.length>0){
-    rvCard.style.display='';
-    document.getElementById('rvProductCount').textContent='('+products.length+')';
-    document.getElementById('rv-products-total').textContent='₹'+Math.round(productTotal).toLocaleString('en-IN');
-    document.getElementById('rvProductsBody').innerHTML=products.map(function(p){
-      return '<span class="review-product-pill">'+p.name+(p.price?' · ₹'+p.price.toLocaleString('en-IN'):'')+(p.qty?' · qty '+p.qty:'')+(p.price&&p.qty?' · <strong>₹'+Math.round(p.price*p.qty).toLocaleString('en-IN')+'</strong>':'')+'</span>';
-    }).join('');
-  } else { rvCard.style.display='none'; }
-
-  var combined=goalRaw+productTotal;
-  document.getElementById('gs-goal').textContent='₹'+Math.round(goalRaw).toLocaleString('en-IN');
-  document.getElementById('gs-combined').textContent='₹'+Math.round(combined).toLocaleString('en-IN');
-  var gsRow=document.getElementById('gs-products-row');
-  if(productTotal>0){gsRow.style.display='flex';document.getElementById('gs-products').textContent='₹'+Math.round(productTotal).toLocaleString('en-IN');}
-  else{gsRow.style.display='none';}
-}
-
-/* ── PRODUCT IMAGE PREVIEW ── */
-function previewProdImg(id,input){
-  var wrap=document.getElementById('prodImgPreview-'+id);
-  wrap.innerHTML='';
-  if(input.files&&input.files[0]){
-    var reader=new FileReader();
-    reader.onload=function(e){
-      wrap.innerHTML='<img src="'+e.target.result+'" class="product-img-preview">';
-    };
-    reader.readAsDataURL(input.files[0]);
-  }
-}
-
-/* ── UTILITIES ── */
-var goalInput=document.getElementById('goalAmount');
-goalInput.addEventListener('input',function(e){
-  var v=e.target.value.replace(/,/g,'');
-  if(!v) return;
-  var n=parseInt(v);
-  if(!isNaN(n)) e.target.value=n.toLocaleString('en-IN');
-});
-goalInput.addEventListener('keypress',function(e){if(!/[0-9]/.test(e.key))e.preventDefault();});
-
-var titleInput=document.getElementById('titleInput');
-var descInput=document.getElementById('descInput');
-if(titleInput) titleInput.addEventListener('input',function(){document.getElementById('titleCount').textContent=titleInput.value.length;});
-if(descInput)  descInput.addEventListener('input', function(){document.getElementById('descCount').textContent=descInput.value.length;});
-
-document.getElementById('coverInput').addEventListener('change',function(e){
-  var file=e.target.files[0]; if(!file) return;
-  document.getElementById('uploadZone').classList.remove('required-error');
-  var reader=new FileReader();
-  reader.onload=function(ev){
-    document.getElementById('previewImg').src=ev.target.result;
-    document.getElementById('fileName').textContent=file.name+' · '+(file.size/1024).toFixed(0)+' KB';
-    document.getElementById('uploadPrompt').style.display='none';
-    document.getElementById('imagePreview').classList.add('show');
-  };
-  reader.readAsDataURL(file);
-});
-
-document.getElementById('addProductBtn').addEventListener('click',function(){
-  addProduct('','','','','','');
-});
-</script>
 
 @endsection

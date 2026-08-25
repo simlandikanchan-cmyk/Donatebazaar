@@ -17,7 +17,7 @@ class VolunteerController extends Controller
      */
     public function create()
     {
-        $campaigns = Campaign::active()->latest()->limit(50)->get();
+        $campaigns = Campaign::active()->with('category:id,name')->latest()->limit(50)->get();
         $cities = config('india.cities', []);
 
         return view('volunteer.apply', compact('campaigns', 'cities'));

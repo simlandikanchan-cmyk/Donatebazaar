@@ -6,4 +6,4 @@
     </div>
 </footer>
 
-@vite('resources/js/footer.js')
+@vite('resources/js/public/footer.js')

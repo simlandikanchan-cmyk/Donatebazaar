@@ -20,7 +20,7 @@
             <label class="block mb-1 font-medium">Upload CV (PDF/DOC)</label>
             <input name="cv" type="file" accept=".pdf,.doc,.docx" required>
         </div>
-        <button type="submit" class="btn btn-primary">Submit Application</button>
+        <x-button variant="primary" type="submit">Submit Application</x-button>
     </form>
 </div>
 @endsection

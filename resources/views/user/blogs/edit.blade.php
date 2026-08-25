@@ -8,10 +8,10 @@
         <h2>Edit Blog</h2>
         <p>Update "{{ Str::limit($blog->title, 50) }}"</p>
     </div>
-    <a href="{{ route('user.blogs.index') }}" class="btn btn-secondary">
+    <x-button variant="secondary" href="{{ route('user.blogs.index') }}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
         Back to Blogs
-    </a>
+    </x-button>
 </div>
 
 <form action="{{ route('user.blogs.update', $blog) }}" method="POST" enctype="multipart/form-data">
@@ -55,7 +55,7 @@
 
             <div class="field">
                 <label class="field-label">Tags</label>
-                <select name="tag_ids[]" multiple class="field-select" style="height: auto; min-height: 42px;">
+                <select name="tag_ids[]" multiple class="field-select field-select-multi">
                     @foreach($tags as $tag)
                         <option value="{{ $tag->id }}"
                             @selected(in_array($tag->id, old('tag_ids', $blog->tags->pluck('id')->toArray() ?? [])))>
@@ -93,15 +93,15 @@
         <div class="file-wrap">
             <input type="file" name="cover_image" accept="image/*">
         </div>
-        <p class="field-hint" style="margin-top:8px;">Upload a new image to replace the existing one. Recommended: 1200×630px.</p>
+        <p class="field-hint field-hint-lg">Upload a new image to replace the existing one. Recommended: 1200×630px.</p>
     </div>
 
     <div class="form-card">
         <div class="textarea-header">
-            <label class="field-label" style="margin-bottom:0;">
-                <span style="display:flex;align-items:center;gap:6px;">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" style="opacity:.8;"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7"/></svg>
-                    Content <span style="color:var(--red);margin-left:2px;">*</span>
+            <label class="field-label field-label-no-mb">
+                <span class="field-label-flex">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7"/></svg>
+                    Content <span class="field-required">*</span>
                 </span>
             </label>
             <span id="charCount" class="char-count">0 characters</span>
@@ -140,78 +140,32 @@
     <div class="action-bar">
         <p class="action-bar-info">All changes will be saved and submitted for review.</p>
         <div class="action-btns">
-            <a href="{{ route('user.blogs.index') }}" class="btn btn-secondary">
+            <x-button variant="secondary" href="{{ route('user.blogs.index') }}">
                 Cancel
-            </a>
-            <button type="submit"
-                    name="action"
-                    value="draft"
-                    class="btn btn-secondary">
+            </x-button>
+            <x-button variant="secondary" type="submit">
                 Save Draft
-            </button>
+            </x-button>
             @if($blog->status == 'draft')
-                <button type="submit"
-                        name="action"
-                        value="publish"
-                        class="btn btn-primary">
+                <x-button variant="primary" type="submit">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                     </svg>
                     Publish Blog
-                </button>
+                </x-button>
             @else
-                <button type="submit"
-                        class="btn btn-primary">
+                <x-button variant="primary" type="submit">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                     </svg>
                     Update Blog
-                </button>
+                </x-button>
             @endif
         </div>
     </div>
 
 </form>
 @endsection
-
-@push('page_styles')
-<style>
-.page-hdr { margin-bottom: 24px; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-.page-hdr-left h2 { font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: -0.02em; }
-.page-hdr-left p  { font-size: 12.5px; color: var(--text3); margin-top: 3px; }
-.form-card { background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px 26px; margin-bottom: 16px; }
-.form-card-title { font-size: 13px; font-weight: 700; color: var(--text); letter-spacing: -0.01em; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
-.form-card-title svg { width: 15px; height: 15px; color: var(--accent); opacity: 0.8; }
-.field { margin-bottom: 18px; }
-.field:last-child { margin-bottom: 0; }
-.field-label { display: block; font-size: 12px; font-weight: 600; color: var(--text2); margin-bottom: 7px; letter-spacing: 0.01em; }
-.field-label span { color: var(--red); margin-left: 2px; }
-.field-input, .field-select, .field-textarea { width: 100%; padding: 10px 14px; background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius-sm); font-size: 13px; font-family: var(--font); color: var(--text); outline: none; transition: border-color var(--transition), box-shadow var(--transition); appearance: none; -webkit-appearance: none; }
-.field-input:focus, .field-select:focus, .field-textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(99,102,241,0.12); }
-.field-input.has-error, .field-textarea.has-error { border-color: var(--red); }
-.field-error { font-size: 11px; color: var(--red); margin-top: 5px; }
-.field-hint  { font-size: 11px; color: var(--text3); margin-top: 5px; }
-.field-textarea { resize: vertical; line-height: 1.6; }
-.select-wrap { position: relative; }
-.select-wrap::after { content: ''; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 5px solid var(--text3); pointer-events: none; }
-.field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.file-wrap { border: 1.5px dashed var(--border2); border-radius: var(--radius-sm); padding: 14px 16px; background: var(--surface2); transition: border-color var(--transition); cursor: pointer; }
-.file-wrap:hover { border-color: var(--accent); }
-.file-wrap input[type="file"] { width: 100%; font-size: 12.5px; font-family: var(--font); color: var(--text2); background: transparent; border: none; outline: none; cursor: pointer; }
-.cover-preview { position: relative; border-radius: var(--radius-sm); overflow: hidden; margin-bottom: 12px; border: 1px solid var(--border2); background: var(--surface2); }
-.cover-preview img { width: 100%; height: 160px; object-fit: cover; display: block; }
-.cover-preview-label { position: absolute; top: 10px; left: 10px; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 100px; font-family: var(--font-mono); letter-spacing: 0.05em; text-transform: uppercase; background: rgba(0,0,0,0.55); color: #d1d5db; backdrop-filter: blur(6px); }
-.textarea-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 7px; }
-.char-count { font-size: 11px; font-family: var(--font-mono); color: var(--text3); transition: color var(--transition); }
-.char-count.warn { color: var(--red); }
-.action-bar { position: sticky; bottom: 16px; background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius); padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-lg); gap: 12px; flex-wrap: wrap; backdrop-filter: blur(12px); margin-top: 8px; }
-.action-bar-info { font-size: 12.5px; color: var(--text3); }
-.action-btns { display: flex; align-items: center; gap: 8px; }
-@media (max-width: 860px) { .body { padding: 16px 16px 60px; } }
-@media (max-width: 640px) { .field-grid { grid-template-columns: 1fr; } .action-bar { flex-direction: column; align-items: stretch; } .action-btns { justify-content: flex-end; } }
-@media (max-width: 480px) { .form-card { padding: 16px; } .page-hdr-left h2 { font-size: 18px; } .action-bar { padding: 12px 14px; } .action-btns { flex-direction: column; } .action-btns .btn { width: 100%; justify-content: center; } }
-</style>
-@endpush
 
 @push('page_scripts')
 <script>

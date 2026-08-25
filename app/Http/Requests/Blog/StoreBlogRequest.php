@@ -47,7 +47,6 @@ class StoreBlogRequest extends FormRequest
                 'image',
                 'mimes:jpg,jpeg,png,webp',
                 'max:3072',
-                'dimensions:min_width=800,min_height=400',
             ],
 
             'category_id' => [

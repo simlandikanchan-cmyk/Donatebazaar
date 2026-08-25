@@ -18,7 +18,7 @@
 <title>@yield('page_title', 'Dashboard') — DonateBazaar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-@vite('resources/css/user.css')
+@vite('resources/css/user/user.css')
 @stack('page_styles')
 </head>
 <body>
@@ -43,7 +43,7 @@
 <div class="main">
 
     <header class="topbar">
-        <div style="display:flex;align-items:center;gap:10px;">
+        <div class="topbar-left-wrap">
             <button class="hamburger" id="hamburger" aria-label="Menu">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
             </button>
@@ -68,10 +68,21 @@
                 <option value="date-desc">Newest first</option>
                 <option value="date-asc">Oldest first</option>
             </select>
-            <button class="tb-btn" title="Notifications">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-                @if(isset($sidebarPending) && ($sidebarPending > 0 || $sidebarRejected > 0))<span class="notif-dot"></span>@endif
-            </button>
+            <div class="notif-wrap" id="notifWrap">
+                <x-button variant="primary" type="button" class="tb-btn" id="notifBell" aria-label="Notifications" aria-haspopup="true" aria-expanded="false">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                    @if(isset($sidebarPending) && ($sidebarPending > 0 || $sidebarRejected > 0))<span class="notif-dot"></span>@endif
+                    <span class="notif-badge" id="notifBadge" hidden>0</span>
+                </x-button>
+                <div class="notif-panel" id="notifPanel" hidden>
+                    <div class="notif-hdr">
+                        <span class="notif-hdr-title">Notifications</span>
+                        <button type="button" class="notif-markall" id="notifMarkAll">Mark all read</button>
+                    </div>
+                    <div class="notif-list" id="notifList"></div>
+                    <p class="notif-empty" id="notifEmpty" hidden>No notifications yet.</p>
+                </div>
+            </div>
             <div class="theme-toggle">
                 <input type="checkbox" id="themeToggle">
                 <label for="themeToggle">
@@ -81,10 +92,10 @@
                     </div>
                 </label>
             </div>
-            <a href="{{ route('campaign.create') }}" class="create-btn">
+            <x-button variant="primary" href="{{ route('campaign.create') }}" class="create-btn">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
                 New Campaign
-            </a>
+            </x-button>
             @auth
             <div class="av-wrap" id="avWrap">
                 <div class="t-avatar" title="Account">
@@ -130,7 +141,7 @@
 </div>{{-- /.main --}}
 </div>{{-- /.shell --}}
 
-@vite('resources/js/user.js')
+@vite('resources/js/user/user.js')
 @stack('page_scripts')
 </body>
 </html>

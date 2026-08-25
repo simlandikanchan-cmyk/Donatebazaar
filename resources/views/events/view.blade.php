@@ -7,7 +7,7 @@
 <title>{{ $event->title }} — DonateBazaar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-@vite(['resources/css/user.css', 'resources/css/events-view.css'])
+@vite(['resources/css/user/user.css', 'resources/css/public/events-view.css'])
 
 @php
     if ($event->status === 'active') {
@@ -42,9 +42,9 @@
     {{-- TOPBAR --}}
     <header class="topbar">
         <div class="topbar-left">
-            <button class="hamburger" id="hamburger" aria-label="Menu">
+            <x-button variant="ghost" iconOnly aria-label="Menu" class="hamburger" id="hamburger">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
-            </button>
+            </x-button>
             <a href="{{ route('campaign.show', $event->campaign->id) }}" class="topbar-back" title="Back to Campaign">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M12 5l-7 7 7 7"/></svg>
             </a>
@@ -86,10 +86,10 @@
                     </div>
                 </div>
                 @elseif($daysUntil === 0)
-                <div class="countdown-banner" style="background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.25);">
+                <div class="countdown-banner countdown-banner--success">
                     <svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     <div>
-                        <div class="countdown-text" style="color:var(--green);">This event is happening today!</div>
+                        <div class="countdown-text countdown-text--success">This event is happening today!</div>
                         <div class="countdown-sub">{{ \Carbon\Carbon::parse($event->event_date)->format('l, d F Y') }}</div>
                     </div>
                 </div>
@@ -121,7 +121,7 @@
                                 {{ $event->location }}
                             </span>
                             @endif
-                            <span class="status-chip {{ $chipClass }}" style="font-size:10px;padding:3px 9px;">
+                            <span class="status-chip status-chip--sm {{ $chipClass }}"><span class="dot"></span>{{ $chipLabel }}</span>
                                 <span class="dot"></span>{{ $chipLabel }}
                             </span>
                         </div>
@@ -229,7 +229,7 @@
 
                 {{-- Fundraising --}}
                 @if($goalAmount > 0)
-                <div class="card" style="animation-delay:.08s">
+                <div class="card" style="--delay:.08s">
                     <div class="card-header">
                         <div class="card-header-left">
                             <div class="card-icon ic-indigo">
@@ -265,7 +265,7 @@
                 @endif
 
                 {{-- Actions --}}
-                <div class="card" style="animation-delay:.14s">
+                <div class="card" style="--delay:.14s">
                     <div class="card-header">
                         <div class="card-header-left">
                             <div class="card-icon ic-green">
@@ -286,15 +286,15 @@
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                             Back to Campaign
                         </a>
-                        <a href="{{ route('dashboard') }}" class="action-btn">
+                        <x-button variant="primary" href="{{ route('dashboard') }}">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M12 5l-7 7 7 7"/></svg>
                             Dashboard
-                        </a>
+                        </x-button>
                     </div>
                 </div>
 
                 {{-- Event Info --}}
-                <div class="card" style="animation-delay:.20s">
+                <div class="card" style="--delay:.20s">
                     <div class="card-header">
                         <div class="card-header-left">
                             <div class="card-icon ic-pink">
@@ -303,10 +303,10 @@
                             <div><div class="card-title">Event Info</div></div>
                         </div>
                     </div>
-                    <div class="card-body" style="display:flex;flex-direction:column;">
+                    <div class="card-body card-body--col">
                         <div class="info-row">
                             <span class="info-row-label">Status</span>
-                            <span class="status-chip {{ $chipClass }}" style="font-size:10px;padding:3px 9px;"><span class="dot"></span>{{ $chipLabel }}</span>
+                            <span class="status-chip status-chip--sm {{ $chipClass }}"><span class="dot"></span>{{ $chipLabel }}</span><span class="dot"></span>{{ $chipLabel }}</span>
                         </div>
                         <div class="info-row">
                             <span class="info-row-label">Date</span>
@@ -327,7 +327,7 @@
                         @if($event->location ?? null)
                         <div class="info-row">
                             <span class="info-row-label">Location</span>
-                            <span class="info-row-val" style="font-size:11px;max-width:150px;text-align:right;">{{ $event->location }}</span>
+                            <span class="info-row-val info-row-val--sm info-row-val--right">{{ $event->location }}</span>
                         </div>
                         @endif
                         @if($maxPart > 0)
@@ -338,7 +338,7 @@
                         @endif
                         <div class="info-row">
                             <span class="info-row-label">Campaign</span>
-                            <span class="info-row-val" style="font-size:11px;max-width:140px;text-align:right;color:var(--accent);">{{ Str::limit($event->campaign->title, 25) }}</span>
+                            <span class="info-row-val info-row-val--accent info-row-val--right">{{ Str::limit($event->campaign->title, 25) }}</span>
                         </div>
                         <div class="info-row">
                             <span class="info-row-label">Created</span>

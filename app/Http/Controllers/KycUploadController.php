@@ -128,12 +128,13 @@ class KycUploadController extends Controller
                 'document_type' => $validated['document_type'],
                 'document_number' => $validated['document_number'],
                 'document_url' => $path,
-                'status' => 'pending',
-                'verified_by' => null,
-                'verified_at' => null,
-                'rejection_reason' => null,
             ]
         );
+        $kyc->status = 'pending';
+        $kyc->verified_by = null;
+        $kyc->verified_at = null;
+        $kyc->rejection_reason = null;
+        $kyc->save();
 
         $admins = User::where('role', 'admin')->get();
 

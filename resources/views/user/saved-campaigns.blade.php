@@ -43,7 +43,7 @@
             <div class="c-badge-wrap">
                 <span class="badge {{ $bc }}">{{ $bl }}</span>
                 @if($fv === 'active' && $daysLeft !== null && $daysLeft >= 0)
-                    <span class="badge b-active" style="margin-left:4px;">
+                    <span class="badge b-active badge-days">
                         @if($daysLeft === 0) Ends today
                         @elseif($daysLeft <= 3) {{ $daysLeft }} day{{ $daysLeft !== 1 ? 's' : '' }} left
                         @else {{ $daysLeft }}d left
@@ -56,7 +56,7 @@
             <div class="c-title">
                 {{ $campaign->title }}
                 @if($campCats)
-                    <span style="display:inline-block;font-size:10px;font-weight:500;color:var(--text3);font-family:var(--mono);margin-left:6px;">{{ $campCats->name }}</span>
+                    <span class="camp-cat-tag">{{ $campCats->name }}</span>
                 @endif
             </div>
 
@@ -69,22 +69,22 @@
                 <div class="prog-meta">
                     <span class="prog-pct">{{ $pct }}% funded</span>
                     @if($campaign->donations_count > 0)
-                        <span style="margin-left:auto;font-size:10.5px;color:var(--text3);">{{ $campaign->donations_count }} donation{{ $campaign->donations_count !== 1 ? 's' : '' }}</span>
+                        <span class="camp-donations-count">{{ $campaign->donations_count }} donation{{ $campaign->donations_count !== 1 ? 's' : '' }}</span>
                     @endif
                 </div>
             </div>
 
             <div class="c-actions">
-                <a href="{{ $campaign->slug ? url('/campaigns/'.($campaign->category?->slug ?? 'general').'/'.$campaign->slug) : route('campaign.show', $campaign->id) }}" class="btn btn-accent" style="flex:1;" target="_blank">
+                <a href="{{ $campaign->slug ? url('/campaigns/'.($campaign->category?->slug ?? 'general').'/'.$campaign->slug) : route('campaign.show', $campaign->id) }}" class="btn btn-accent camp-btn-full" target="_blank">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                     View
                 </a>
-                <form action="{{ route('campaign.follow', $campaign->id) }}" method="POST" style="flex:1;">
+                <form action="{{ route('campaign.follow', $campaign->id) }}" method="POST" class="camp-btn-full">
                     @csrf
-                    <button class="btn btn-accent">
+                    <x-button variant="primary" type="submit">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
                         Unfollow
-                    </button>
+                    </x-button>
                 </form>
             </div>
         </div>
@@ -93,7 +93,7 @@
 </div>
 
 @if($campaigns->hasPages())
-<div class="rd-pagination" style="margin-top:18px;">
+<div class="rd-pagination">
     {{ $campaigns->links() }}
 </div>
 @endif
@@ -105,10 +105,10 @@
     </div>
     <div class="empty-title">No saved campaigns yet</div>
     <div class="empty-sub">When you follow a campaign, it will appear here so you can track its progress.</div>
-    <a href="{{ route('all.campaigns') }}" class="btn btn-primary">
+    <x-button variant="primary" href="{{ route('all.campaigns') }}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
         Browse Campaigns
-    </a>
+    </x-button>
 </div>
 @endif
 

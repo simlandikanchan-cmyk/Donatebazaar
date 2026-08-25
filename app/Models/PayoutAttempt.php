@@ -52,6 +52,14 @@ class PayoutAttempt extends Model
 
     public static function generateIdempotencyKey(CampaignSettlement $settlement, int $attemptNumber): string
     {
+        // One logical payout attempt = one stable key. If the settlement already
+        // carries a persisted key (set when first entering processing), every
+        // retry — whether the same job instance or a freshly dispatched one —
+        // reuses it so the gateway de-duplicates and never pays twice.
+        if (! empty($settlement->payout_idempotency_key)) {
+            return $settlement->payout_idempotency_key;
+        }
+
         return 'payout_'.$settlement->id.'_attempt_'.$attemptNumber.'_'.md5($settlement->net_amount);
     }
 }

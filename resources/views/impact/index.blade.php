@@ -14,14 +14,14 @@
             <h1>Real Impact,<br><em>Real Stories</em></h1>
             <p>Every completed campaign represents lives changed, communities strengthened, and hope restored.</p>
             <div class="impact-hero-btns">
-                <a href="{{ route('all.campaigns') }}" class="btn btn-white">
+                <x-button variant="primary" href="{{ route('all.campaigns') }}">
                     Donate Now
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                </a>
-                <a href="{{ route('campaign.create') }}" class="btn btn-outline">
+                </x-button>
+                <x-button variant="outline" href="{{ route('campaign.create') }}">
                     Start Fundraiser
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 4v16m8-8H4"/></svg>
-                </a>
+                </x-button>
             </div>
         </div>
     </div>
@@ -106,7 +106,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
             <h3>No completed campaigns yet</h3>
             <p>Impact stories will appear here as campaigns reach their goals.</p>
-            <a href="{{ route('all.campaigns') }}" class="btn btn-accent">Support Active Campaigns</a>
+            <x-button variant="primary" href="{{ route('all.campaigns') }}">Donate Now</x-button>
         </div>
         @else
         <div class="impact-grid">
@@ -158,10 +158,10 @@
         <div class="impact-cta-glow"></div>
         <div class="impact-cta-inner">
             <h2>Want to Create Your Own Impact?</h2>
-            <p>Start a campaign and join the community of changemakers.</p>
+            <p>Support a cause today or start a campaign and join the community of changemakers.</p>
             <div class="impact-cta-actions">
-                <a href="{{ route('campaign.create') }}" class="btn btn-white">Start a Campaign</a>
-                <a href="{{ route('all.campaigns') }}" class="btn btn-outline">Support a Campaign</a>
+                <x-button variant="primary" href="{{ route('all.campaigns') }}">Donate Now</x-button>
+                <x-button variant="outline" href="{{ route('campaign.create') }}">Start a Campaign</x-button>
             </div>
         </div>
     </div>
@@ -173,98 +173,6 @@
 </button>
 @endsection
 
-@push('styles') @vite(['resources/css/impact.css']) @endpush
+@push('styles') @vite(['resources/css/public/impact.css']) @endpush
 
-@push('scripts')
-<script>
-'use strict';
-(function(){
-  const $ = (sel, ctx) => (ctx||document).querySelector(sel);
-  const $$ = (sel, ctx) => (ctx||document).querySelectorAll(sel);
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  /* ── Scroll Reveal ── */
-  function initReveal() {
-    const els = $$('.reveal');
-    if (!els.length) return;
-    if (reduced) { els.forEach(function(el){ el.classList.add('visible'); }); return; }
-    var obs = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add('visible');
-        obs.unobserve(entry.target);
-      });
-    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-    els.forEach(function(el) { obs.observe(el); });
-  }
-
-  /* ── Counter Animation ── */
-  function animateCounter(el, target, dur) {
-    dur = dur || 1400;
-    var start = performance.now();
-    function step(now) {
-      var p = Math.min((now - start) / dur, 1);
-      var eased = 1 - Math.pow(1 - p, 3);
-      var prefix = el.dataset.prefix || '';
-      var suffix = el.dataset.suffix || '';
-      el.textContent = prefix + Math.round(eased * target).toLocaleString('en-IN') + suffix;
-      if (p < 1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
-  }
-
-  /* ── Init Stats Counters ── */
-  function initCounters() {
-    var stats = $('.impact-stats-inner');
-    if (!stats) return;
-    var els = $$('.counter', stats);
-    if (!els.length) return;
-    if (reduced) {
-      els.forEach(function(el) {
-        var t = parseInt(el.dataset.target, 10);
-        if (!Number.isFinite(t)) return;
-        var prefix = el.dataset.prefix || '';
-        var suffix = el.dataset.suffix || '';
-        el.textContent = prefix + t.toLocaleString('en-IN') + suffix;
-      });
-      return;
-    }
-    var obs = new IntersectionObserver(function(entries) {
-      if (entries[0].isIntersecting) {
-        obs.disconnect();
-        els.forEach(function(el) {
-          var t = parseInt(el.dataset.target, 10);
-          if (Number.isFinite(t)) animateCounter(el, t);
-        });
-      }
-    }, { threshold: 0.3 });
-    obs.observe(stats);
-  }
-
-  /* ── Scroll-to-top ── */
-  function initScrollTop() {
-    var btn = $('#scrollTopBtn');
-    if (!btn) return;
-    var ticking = false;
-    function toggle() {
-      btn.classList.toggle('visible', window.scrollY > 500);
-      ticking = false;
-    }
-    window.addEventListener('scroll', function() {
-      if (!ticking) { ticking = true; requestAnimationFrame(toggle); }
-    }, { passive: true });
-    btn.addEventListener('click', function() {
-      window.scrollTo({ top: 0, behavior: reduced ? 'instant' : 'smooth' });
-    });
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
-      initReveal(); initCounters(); initScrollTop();
-    });
-  } else {
-    initReveal(); initCounters(); initScrollTop();
-  }
-})();
-</script>
-@endpush
+@push('scripts') @vite(['resources/js/public/impact.js']) @endpush

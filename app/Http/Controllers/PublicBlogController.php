@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\Blog\RecordBlogViewAction;
-use App\Actions\Blog\ToggleBlogLikeAction;
 use App\Http\Requests\Blog\ReportBlogRequest;
 use App\Http\Requests\Blog\StoreBlogCommentRequest;
 use App\Models\Blog;
@@ -84,6 +82,7 @@ class PublicBlogController extends Controller
             ]);
 
         $featured = Blog::public()
+            ->with(['author:id,name,avatar', 'category:id,name,slug'])
             ->featured()
             ->take(6)
             ->get();
@@ -106,8 +105,7 @@ class PublicBlogController extends Controller
     */
 
     public function show(
-        string $slug,
-        RecordBlogViewAction $recordView
+        string $slug
     ): View {
 
         $blog = Blog::public()
@@ -123,14 +121,11 @@ class PublicBlogController extends Controller
             ->firstOrFail();
 
         // Record view
-        $recordView->execute(
-            $blog,
-            Auth::id(),
-            request()->ip()
-        );
+        $blog->increment('views_count');
 
         // Related
         $related = Blog::public()
+            ->with(['author:id,name,avatar', 'category:id,name,slug'])
             ->where('id', '!=', $blog->id)
 
             ->where(function ($q) use ($blog) {
@@ -155,6 +150,17 @@ class PublicBlogController extends Controller
             ->take(3)
             ->get();
 
+        // Same category (sidebar carousel)
+        $categoryBlogs = $blog->category_id
+            ? Blog::public()
+                ->with(['author:id,name,avatar', 'category:id,name,slug'])
+                ->where('category_id', $blog->category_id)
+                ->where('id', '!=', $blog->id)
+                ->latest('published_at')
+                ->take(8)
+                ->get()
+            : collect();
+
         $isLiked = Auth::check()
             && $blog->isLikedBy(Auth::id());
 
@@ -163,6 +169,7 @@ class PublicBlogController extends Controller
             compact(
                 'blog',
                 'related',
+                'categoryBlogs',
                 'isLiked'
             )
         );
@@ -240,8 +247,7 @@ class PublicBlogController extends Controller
     */
 
     public function toggleLike(
-        Blog $blog,
-        ToggleBlogLikeAction $action
+        Blog $blog
     ): JsonResponse|RedirectResponse {
 
         abort_unless(
@@ -249,10 +255,8 @@ class PublicBlogController extends Controller
             404
         );
 
-        $liked = $action->execute(
-            $blog,
-            Auth::id()
-        );
+        $user = Auth::user();
+        $liked = $user ? $blog->likes()->toggle($user->id)->attached() : false;
 
         if (request()->wantsJson()) {
 

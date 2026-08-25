@@ -1,3 +1,7 @@
+@push('page_css')
+@vite('resources/css/admin/entries/finance.css')
+@endpush
+
 @extends('layouts.admin')
 
 @section('sidebar_fundraiser_levels', 'active')

@@ -1,3 +1,7 @@
+@push('page_css')
+@vite('resources/css/admin/entries/organizations.css')
+@endpush
+
 @extends('layouts.admin')
 
 @section('page_title', 'Onboard NGO')

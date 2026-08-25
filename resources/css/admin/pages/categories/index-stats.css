@@ -1,0 +1,22 @@
+/* ══════════════════════════════════════
+   CATEGORIES INDEX — Stats cards (filter buttons)
+   .stats-grid/.stat-card/.stat-icon/.stat-body come from
+   components/_stats.css — these are scoped button overrides only
+   ══════════════════════════════════════ */
+.cat-page button.stat-card {
+  width: 100%;
+  font-family: var(--font);
+  text-align: left;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.cat-page .stat-card.on {
+  border-color: var(--a);
+  outline: 2px solid var(--a);
+  outline-offset: -2px;
+  box-shadow: var(--sh-md);
+}
+.cat-page .stat-card.on::before {
+  opacity: 1;
+}

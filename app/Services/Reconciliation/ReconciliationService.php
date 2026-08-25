@@ -2,7 +2,7 @@
 
 namespace App\Services\Reconciliation;
 
-use App\Contracts\Gateway\GatewayInterface;
+use App\Gateways\RazorpayGateway;
 use App\Events\SettlementCancelled;
 use App\Events\SettlementFailed;
 use App\Events\SettlementPaid;
@@ -16,16 +16,18 @@ use App\Models\CampaignSettlement;
 use App\Models\PayoutAttempt;
 use App\Models\User;
 use App\Services\Settlement\SettlementStateMachine;
+use App\Services\SettlementService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class ReconciliationService
 {
     public function __construct(
-        private readonly GatewayInterface $gateway,
+        private readonly RazorpayGateway $gateway,
         private readonly SettlementStateMachine $stateMachine,
         private readonly int $batchSize = 100,
-        private readonly int $processingStuckMinutes = 30
+        private readonly int $processingStuckMinutes = 30,
+        private readonly ?SettlementService $settlementService = null
     ) {}
 
     public function reconcile(): array
@@ -158,25 +160,35 @@ class ReconciliationService
 
     private function transitionToPaid(CampaignSettlement $settlement, array $gatewayData): ReconciliationResult
     {
-        DB::transaction(function () use ($settlement) {
-            $this->stateMachine->transition($settlement, 'paid', [
+        $proceed = DB::transaction(function () use ($settlement) {
+            $locked = CampaignSettlement::lockForUpdate()->findOrFail($settlement->id);
+            if ($locked->status !== 'processing') {
+                return false;
+            }
+
+            $this->stateMachine->transition($locked, 'paid', [
                 'actor_type' => 'system',
                 'reason' => 'Reconciliation: gateway confirmed paid',
             ]);
 
-            $settlement->update([
-                'paid_at' => now(),
-                'gateway_reference' => $settlement->gateway_reference,
-                'retry_count' => 0,
-                'next_retry_at' => null,
-            ]);
+            $locked->paid_at = now();
+            $locked->gateway_status = $gatewayData['status'] ?? null;
+            $locked->retry_count = 0;
+            $locked->next_retry_at = null;
+            $locked->save();
 
-            $donationIds = $settlement->settlementItems()->pluck('donation_id');
+            $donationIds = $locked->settlementItems()->pluck('donation_id');
             \App\Models\Donation::whereIn('id', $donationIds)->update([
                 'settlement_status' => 'settled',
-                'campaign_settlement_id' => $settlement->id,
+                'campaign_settlement_id' => $locked->id,
             ]);
+
+            return true;
         });
+
+        if (! $proceed) {
+            return $this->skippedStatusChanged($settlement);
+        }
 
         event(new SettlementPaid($settlement, $settlement->gateway_reference));
 
@@ -191,17 +203,32 @@ class ReconciliationService
 
     private function transitionToFailed(CampaignSettlement $settlement, array $gatewayData): ReconciliationResult
     {
-        DB::transaction(function () use ($settlement) {
-            $this->stateMachine->transition($settlement, 'failed', [
+        $proceed = DB::transaction(function () use ($settlement) {
+            $locked = CampaignSettlement::lockForUpdate()->findOrFail($settlement->id);
+            if ($locked->status !== 'processing') {
+                return false;
+            }
+
+            // Gateway confirmed the payout never went through: return the
+            // funds that left the wallet at approval time to the balance.
+            $this->settlementService()->restoreSettlementFunds($locked, 'reconciliation failed');
+
+            $this->stateMachine->transition($locked, 'failed', [
                 'actor_type' => 'system',
                 'reason' => 'Reconciliation: gateway reported failed',
             ]);
 
-            $settlement->update([
-                'failed_at' => now(),
-                'failed_reason' => 'Reconciliation: gateway reported failed',
-            ]);
+            $locked->failed_at = now();
+            $locked->failed_reason = 'Reconciliation: gateway reported failed';
+            $locked->gateway_status = $gatewayData['status'] ?? null;
+            $locked->save();
+
+            return true;
         });
+
+        if (! $proceed) {
+            return $this->skippedStatusChanged($settlement);
+        }
 
         event(new SettlementFailed($settlement, 'Reconciliation: gateway reported failed'));
 
@@ -215,12 +242,26 @@ class ReconciliationService
 
     private function transitionToCancelled(CampaignSettlement $settlement, array $gatewayData): ReconciliationResult
     {
-        DB::transaction(function () use ($settlement) {
-            $this->stateMachine->transition($settlement, 'cancelled', [
+        $proceed = DB::transaction(function () use ($settlement) {
+            $locked = CampaignSettlement::lockForUpdate()->findOrFail($settlement->id);
+            if ($locked->status !== 'processing') {
+                return false;
+            }
+
+            // Gateway confirmed the payout was cancelled: return the funds.
+            $this->settlementService()->restoreSettlementFunds($locked, 'reconciliation cancelled');
+
+            $this->stateMachine->transition($locked, 'cancelled', [
                 'actor_type' => 'system',
                 'reason' => 'Reconciliation: gateway reported cancelled',
             ]);
+
+            return true;
         });
+
+        if (! $proceed) {
+            return $this->skippedStatusChanged($settlement);
+        }
 
         event(new SettlementCancelled($settlement, 'Reconciliation: gateway reported cancelled'));
 
@@ -230,6 +271,20 @@ class ReconciliationService
             localStatus: 'cancelled',
             actionTaken: 'transitioned_to_cancelled'
         );
+    }
+
+    private function skippedStatusChanged(CampaignSettlement $settlement): ReconciliationResult
+    {
+        return ReconciliationResult::skipped(
+            settlementId: $settlement->id,
+            localStatus: CampaignSettlement::find($settlement->id)?->status ?? $settlement->status,
+            actionTaken: 'skipped_status_changed'
+        );
+    }
+
+    private function settlementService(): SettlementService
+    {
+        return $this->settlementService ?? app(SettlementService::class);
     }
 
     private function getStuckSettlements(): \Illuminate\Database\Eloquent\Collection

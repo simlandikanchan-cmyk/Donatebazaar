@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
 @push('styles')
-    @vite(['resources/css/contact.css'])
+    @vite(['resources/css/public/contact.css'])
 @endpush
 
 @push('scripts')
-    @vite(['resources/js/contact.js'])
+    @vite(['resources/js/public/contact.js'])
 @endpush
 
 @section('content')
@@ -199,10 +199,10 @@
                                       required>{{ old('message') }}</textarea>
                         </div>
 
-                        <button type="submit" class="btn btn-accent btn-block">
-                            <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                        <x-button variant="primary" type="submit">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                             Send Message
-                        </button>
+                        </x-button>
 
                         <p class="form-footer-note">
                             <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
@@ -232,15 +232,12 @@
                     'How do I contact support urgently?' => 'For urgent matters, call us at +91 98765 43210 or email info@DonateBazaar.com. Our team responds within 2 hours on business days.',
                 ] as $question => $answer)
                 <div class="faq-item">
-                    <button class="faq-q" onclick="toggleFAQ(this)" type="button">
-                        {{ $question }}
-                        <span class="faq-icon">
-                            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="12" y1="5" x2="12" y2="19"/>
-                                <line x1="5" y1="12" x2="19" y2="12"/>
-                            </svg>
-                        </span>
-                    </button>
+                    <div class="faq-q" data-action="toggle-faq">
+                        <span class="faq-q-text">{{ $question }}</span>
+                        <div class="faq-chevron">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                        </div>
+                    </div>
                     <div class="faq-answer">
                         <div class="faq-answer-inner">{{ $answer }}</div>
                     </div>

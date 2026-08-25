@@ -1,3 +1,7 @@
+@push('page_css')
+@vite('resources/css/admin/entries/misc.css')
+@endpush
+
 @extends('layouts.admin')
 
 @section('sidebar_subscribers', 'active')
@@ -28,6 +32,16 @@
 .filter-btn{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 13px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--r-sm);font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;font-family:var(--font);transition:all var(--ease);text-decoration:none;}
 .filter-btn:hover,.filter-btn.on{border-color:var(--a);color:var(--a);background:var(--a-lt);}
 .table-wrap{overflow-x:auto;}
+@media(max-width:640px){.table-wrap{min-width:400px}.actions{flex-wrap:wrap}.actions .btn{width:100%;justify-content:center}}
+@media(max-width:480px){
+  #subTable thead{display:none}
+  #subTable tbody tr{display:flex;flex-direction:column;padding:14px 16px;border-bottom:1px solid var(--border);gap:8px}
+  #subTable tbody tr td{padding:0;border:none;display:flex;align-items:center;gap:8px}
+  #subTable tbody tr td::before{content:attr(data-label);font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);min-width:75px;flex-shrink:0}
+  #subTable .actions{justify-content:flex-start;width:100%}
+  #subTable td[data-label="Actions"]{flex-wrap:wrap}
+  #subTable td[data-label="Actions"]::before{content:"Actions";min-width:auto;margin-right:auto}
+}
 table{width:100%;border-collapse:collapse;}
 thead th{padding:10px 18px;text-align:left;font-size:10px;font-family:var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--text3);background:var(--surface2);border-bottom:1px solid var(--border);font-weight:500;white-space:nowrap;}
 thead th:last-child{text-align:right;}
@@ -94,7 +108,7 @@ td{padding:13px 18px;font-size:13px;vertical-align:middle;}
     </div>
   @else
     <div class="table-wrap">
-      <table>
+       <table id="subTable">
         <thead>
           <tr>
             <th style="width:50px;">#</th>
@@ -108,17 +122,17 @@ td{padding:13px 18px;font-size:13px;vertical-align:middle;}
         <tbody>
           @foreach($subscribers as $sub)
           <tr>
-            <td><span style="font-size:11.5px;color:var(--text3);font-family:var(--mono);">{{ str_pad($loop->iteration,2,'0',STR_PAD_LEFT) }}</span></td>
-            <td><span class="email-cell">{{ $sub->email }}</span></td>
-            <td>
-              <span class="status-pill {{ $sub->unsubscribed_at?'s-inactive':'s-active' }}">
+            <td data-label="#"><span style="font-size:11.5px;color:var(--text3);font-family:var(--mono);">{{ str_pad($loop->iteration,2,'0',STR_PAD_LEFT) }}</span></td>
+            <td data-label="Email"><span class="email-cell">{{ $sub->email }}</span></td>
+            <td data-label="Status">
+               <span class="status-pill {{ $sub->unsubscribed_at?'s-inactive':'s-active' }}">
                 <span style="width:5px;height:5px;border-radius:50%;background:currentColor;display:inline-block;"></span>
                 {{ $sub->unsubscribed_at?'Unsubscribed':'Active' }}
               </span>
             </td>
-            <td><span class="meta-cell">{{ $sub->subscribed_at?->format('M d, Y') ?? '—' }}</span></td>
-            <td><span class="meta-cell">{{ $sub->unsubscribed_at?->format('M d, Y') ?? '—' }}</span></td>
-            <td>
+            <td data-label="Subscribed"><span class="meta-cell">{{ $sub->subscribed_at?->format('M d, Y') ?? '—' }}</span></td>
+            <td data-label="Unsubscribed"><span class="meta-cell">{{ $sub->unsubscribed_at?->format('M d, Y') ?? '—' }}</span></td>
+            <td data-label="Actions">
               <div class="actions">
                 @if($sub->unsubscribed_at)
                   <form method="POST" action="{{ route('admin.subscribers.resubscribe', $sub->id) }}">@csrf
@@ -130,7 +144,7 @@ td{padding:13px 18px;font-size:13px;vertical-align:middle;}
                   </form>
                 @endif
                 <form method="POST" action="{{ route('admin.subscribers.destroy', $sub->id) }}" onsubmit="return confirm('Remove this subscriber permanently?');">@csrf @method('DELETE')
-                  <button type="submit" class="btn btn-red act-btn act-del" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg></button>
+                  <button type="submit" class="btn btn-red act-btn act-del" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Delete</button>
                 </form>
               </div>
             </td>

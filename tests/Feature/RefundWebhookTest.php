@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Http\Middleware\VerifyCsrfToken;
 use App\Models\Refund;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -25,9 +24,8 @@ class RefundWebhookTest extends TestCase
         // Must run after parent::setUp() so the app container (and the 'config' binding) exists.
         Config::set('services.razorpay.webhook_secret', self::SECRET);
 
-        // The webhook route lives in the web group (CSRF-enforced). Razorpay cannot
-        // send a CSRF token, so disable CSRF for the duration of these tests only.
-        $this->withoutMiddleware(VerifyCsrfToken::class);
+        // CSRF is bypassed automatically while running unit tests, so the webhook
+        // requests are exercised without a token.
     }
 
     /**

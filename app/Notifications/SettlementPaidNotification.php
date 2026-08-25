@@ -20,7 +20,14 @@ class SettlementPaidNotification extends Notification implements ShouldQueue
 
     public function via(object $notifiable): array
     {
-        return ['mail', 'database'];
+        $channels = [];
+        if ($notifiable->preferNotification('settlement_paid', 'email')) {
+            $channels[] = 'mail';
+        }
+        if ($notifiable->preferNotification('settlement_paid', 'database')) {
+            $channels[] = 'database';
+        }
+        return $channels;
     }
 
     public function toMail(object $notifiable): MailMessage
@@ -49,3 +56,4 @@ class SettlementPaidNotification extends Notification implements ShouldQueue
         ];
     }
 }
+

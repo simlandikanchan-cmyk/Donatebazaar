@@ -30,7 +30,7 @@
 
         @if($errors->any())
         <div class="alert alert-error">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="margin-top:2px;"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             <ul>@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>
         </div>
         @endif
@@ -236,10 +236,10 @@
             </div>
 
             {{-- Submit --}}
-            <button type="submit" class="submit-btn" id="submitBtn">
+            <x-button variant="primary" type="submit">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                 Create Event
-            </button>
+            </x-button>
 
         </form>
     </div>
@@ -248,7 +248,7 @@
     <div class="right-col">
 
         {{-- Campaign Preview --}}
-        <div class="card" style="animation-delay:.08s">
+        <div class="card" style="--delay:.08s">
             <div class="card-header">
                 <div class="card-icon ic-indigo">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
@@ -270,7 +270,7 @@
         </div>
 
         {{-- Quick Links --}}
-        <div class="card" style="animation-delay:.14s">
+        <div class="card" style="--delay:.14s">
             <div class="card-header">
                 <div class="card-icon ic-green">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
@@ -286,15 +286,15 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                     Edit Campaign
                 </a>
-                <a href="{{ route('dashboard') }}" class="action-btn">
+                <x-button variant="primary" href="{{ route('dashboard') }}">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M12 5l-7 7 7 7"/></svg>
                     Back to Dashboard
-                </a>
+                </x-button>
             </div>
         </div>
 
         {{-- Tips --}}
-        <div class="card" style="animation-delay:.20s">
+        <div class="card" style="--delay:.20s">
             <div class="card-header">
                 <div class="card-icon ic-pink">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
@@ -452,7 +452,8 @@
 .upload-overlay{position:absolute;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;border-radius:calc(var(--radius-sm) - 2px);}
 .upload-zone.has-preview:hover .upload-overlay{display:flex;}
 .upload-overlay span{color:#fff;font-size:12px;font-weight:600;font-family:var(--font-mono);}
-.d1{animation-delay:.05s}.d2{animation-delay:.10s}.d3{animation-delay:.15s}.d4{animation-delay:.20s}.d5{animation-delay:.25s}
+.alert-icon{width:18px;height:18px;flex-shrink:0;margin-top:2px;}
+.d1{animation-delay:var(--delay,.05s)}.d2{animation-delay:var(--delay,.10s)}.d3{animation-delay:var(--delay,.15s)}.d4{animation-delay:var(--delay,.20s)}.d5{animation-delay:var(--delay,.25s)}
 
 @media(max-width:960px){
     .page-grid{grid-template-columns:1fr;}

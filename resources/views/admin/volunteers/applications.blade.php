@@ -1,3 +1,7 @@
+@push('page_css')
+@vite('resources/css/admin/entries/misc.css')
+@endpush
+
 @extends('layouts.admin')
 
 @section('sidebar_volunteer_applications', 'active')
@@ -264,5 +268,17 @@ tbody tr:hover{background:var(--surface2);}
 @media(max-width:860px){.search-wrap{display:none}}
 @media(max-width:600px){.filter-bar{flex-direction:column;align-items:stretch}.filter-inp,.filter-sel{width:100%}}
 @media(max-width:380px){.stats-grid{grid-template-columns:1fr;gap:8px;}.stat{padding:10px 12px;}.stat-icon{width:30px;height:30px;}.stat-icon svg{width:13px;height:13px;}}
+@media(max-width:860px){.stats-grid{grid-template-columns:repeat(2,1fr)!important}}
+@media(max-width:640px){
+  .table-wrap{min-width:480px}
+  #appTable thead{display:none}
+  #appTable tbody tr{display:flex;flex-direction:column;padding:14px 16px;border-bottom:1px solid var(--border);gap:8px}
+  #appTable tbody tr td{padding:0;border:none;display:flex;align-items:center;gap:8px}
+  #appTable tbody tr td::before{content:attr(data-label);font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);min-width:75px;flex-shrink:0}
+  #appTable .action-cell{flex-wrap:wrap}
+  #appTable td[data-label="Actions"]{flex-wrap:wrap}
+  #appTable td[data-label="Actions"]::before{content:"Actions";min-width:auto;margin-right:auto}
+  #appTable tbody tr td.cell-id{font-size:10px;color:var(--text3);margin-bottom:0}
+}
 </style>
 @endpush

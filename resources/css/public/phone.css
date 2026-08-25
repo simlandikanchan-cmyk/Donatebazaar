@@ -1,0 +1,32 @@
+body {
+    font-family: Arial;
+    text-align: center;
+    margin-top: 100px;
+}
+input {
+    padding: 10px;
+    width: 250px;
+    margin-bottom: 10px;
+}
+button {
+    padding: 10px 20px;
+    cursor: pointer;
+}
+#message {
+    margin-top: 12px;
+    font-size: 14px;
+}
+.error { color: #c0392b; }
+.btn--primary {
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.btn--primary:hover { background: #1d4ed8; }
+.btn--primary:disabled { opacity: 0.6; cursor: not-allowed; }

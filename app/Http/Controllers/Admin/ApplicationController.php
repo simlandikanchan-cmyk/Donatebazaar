@@ -19,10 +19,10 @@ class ApplicationController extends Controller
      */
     private function getOrCreateApplication(array $requiredFields): OrganizationApplication
     {
-        return OrganizationApplication::firstOrCreate(
+        return OrganizationApplication::with('user')->firstOrCreate(
             ['user_id' => Auth::id(), 'status' => 'draft'],
             array_merge($requiredFields, ['current_step' => 1])
-        );
+        )->load('user');
     }
 
     /**
@@ -30,7 +30,8 @@ class ApplicationController extends Controller
      */
     private function getDraftApplication(): OrganizationApplication
     {
-        $application = OrganizationApplication::where('user_id', Auth::id())
+        $application = OrganizationApplication::with('user')
+            ->where('user_id', Auth::id())
             ->where('status', 'draft')
             ->first();
 
@@ -86,15 +87,17 @@ class ApplicationController extends Controller
 
     public function show($id)
     {
-        $application = OrganizationApplication::with('user', 'reviewer')
-            ->findOrFail($id);
+        $application = OrganizationApplication::with([
+            'user',
+            'reviewer',
+        ])->findOrFail($id);
 
         return view('admin.applications.show', compact('application'));
     }
 
     public function approve(Request $request, $id)
     {
-        $application = OrganizationApplication::findOrFail($id);
+        $application = OrganizationApplication::with('user')->findOrFail($id);
         $application->update([
             'status' => 'approved',
             'reviewed_by' => Auth::id(),
@@ -111,7 +114,7 @@ class ApplicationController extends Controller
     {
         $request->validate(['rejection_reason' => 'required|string']);
 
-        $application = OrganizationApplication::findOrFail($id);
+        $application = OrganizationApplication::with('user')->findOrFail($id);
         $application->update([
             'status' => 'rejected',
             'reviewed_by' => Auth::id(),
@@ -125,11 +128,20 @@ class ApplicationController extends Controller
         return back()->with('success', 'Application rejected.');
     }
 
+    public function destroy($id)
+    {
+        $application = OrganizationApplication::findOrFail($id);
+        $application->delete();
+
+        return back()->with('success', 'Application deleted successfully.');
+    }
+
     // ── Step 1: Organization Info ──────────────────────────────────────────
 
     public function step1()
     {
-        $application = OrganizationApplication::where('user_id', Auth::id())
+        $application = OrganizationApplication::with('user')
+            ->where('user_id', Auth::id())
             ->where('status', 'draft')
             ->first();
 

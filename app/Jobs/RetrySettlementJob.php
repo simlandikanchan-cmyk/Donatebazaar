@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\CampaignSettlement;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Str;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -13,6 +14,11 @@ use Illuminate\Support\Facades\Log;
 class RetrySettlementJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    public int $tries = 3;
+
+    public int $timeout = 120;
+
+    public array $backoff = [60, 300, 900];
 
     public function __construct(
         public readonly CampaignSettlement $settlement
@@ -40,6 +46,13 @@ class RetrySettlementJob implements ShouldQueue
             return;
         }
 
-        $job::dispatch($settlement);
+        // Preserve a stable correlation id (keyed on the settlement) so the
+        // full retry lifecycle is traceable, and mint a fresh trace id for
+        // this specific attempt.
+        $job::dispatch(
+            $settlement,
+            'settlement:'.$settlement->id,
+            (string) Str::uuid()
+        );
     }
 }

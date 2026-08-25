@@ -3,35 +3,30 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\BlogRequest;
-use App\Mail\BlogStatusMail;
+use App\Http\Requests\Admin\StoreBlogRequest;
+use App\Http\Requests\Admin\UpdateBlogRequest;
+use App\Http\Requests\Blog\BulkBlogActionRequest;
+use App\Http\Requests\Blog\RejectBlogRequest;
+use App\Http\Requests\Blog\ReorderBlogRequest;
 use App\Models\Blog;
 use App\Models\BlogReport;
 use App\Models\Category;
 use App\Models\Tag;
+use App\Services\Blog\AdminBlogService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-/**
- * Admin\BlogController
- *
- * Full blog management: list, CRUD, approve, reject, feature, archive, carousel reorder.
- */
 class BlogController extends Controller
 {
-    public function __construct()
-    {
+    public function __construct(
+        private AdminBlogService $blogService
+    ) {
         $this->middleware(['auth', 'admin']);
     }
-
-    // ── Index ─────────────────────────────────────────────────────────────────
-
-    // Replace your index() method with this:
 
     public function index(Request $request)
     {
@@ -39,7 +34,7 @@ class BlogController extends Controller
         $sort = $request->input('sort', 'latest');
         $search = $request->input('search', '');
 
-        $query = Blog::with('author');
+        $query = Blog::with(['author', 'category:id,name']);
 
         if ($status !== 'all') {
             $query->where('status', $status);
@@ -48,8 +43,8 @@ class BlogController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
-                    ->orWhereHas('author', fn ($q2) => $q2->where('name', 'like', "%{$search}%")
-                    );
+                    ->orWhere('content', 'like', "%{$search}%")
+                    ->orWhereHas('author', fn ($q2) => $q2->where('name', 'like', "%{$search}%"));
             });
         }
 
@@ -59,15 +54,20 @@ class BlogController extends Controller
             default => $query->latest(),
         };
 
+        $categories = Category::where('is_active', true)->orderBy('name')->get(['id', 'name']);
+
         return view('admin.blogs.index', [
             'blogs' => $query->paginate(15)->withQueryString(),
-            'pendingCount' => Blog::where('status', Blog::STATUS_PENDING)->count(),
-            'publishedCount' => Blog::where('status', Blog::STATUS_PUBLISHED)->count(), // was approvedCount
-            'rejectedCount' => Blog::where('status', Blog::STATUS_REJECTED)->count(),
+            'pendingCount'      => Blog::where('status', Blog::STATUS_PENDING)->count(),
+            'publishedCount'    => Blog::where('status', Blog::STATUS_PUBLISHED)->count(),
+            'rejectedCount'     => Blog::where('status', Blog::STATUS_REJECTED)->count(),
+            'archivedCount'     => Blog::where('status', Blog::STATUS_ARCHIVED)->count(),
+            'flaggedCount'      => Blog::where('status', Blog::STATUS_FLAGGED)->count(),
+            'draftCount'        => Blog::where('status', Blog::STATUS_DRAFT)->count(),
+            'categories'        => $categories,
+            'activeSearch'      => $search,
         ]);
     }
-
-    // ── Pending Queue ─────────────────────────────────────────────────────────
 
     public function pending(Request $request)
     {
@@ -79,8 +79,6 @@ class BlogController extends Controller
         return view('admin.blogs.pending', compact('blogs'));
     }
 
-    // ── Flagged Blogs ─────────────────────────────────────────────────────────
-
     public function flagged(Request $request)
     {
         $blogs = Blog::flagged()
@@ -90,8 +88,6 @@ class BlogController extends Controller
 
         return view('admin.blogs.flagged', compact('blogs'));
     }
-
-    // ── Carousel Management ───────────────────────────────────────────────────
 
     public function carousel()
     {
@@ -108,8 +104,6 @@ class BlogController extends Controller
         return view('admin.blogs.carousel', compact('featured', 'eligible'));
     }
 
-    // ── CRUD: Create ──────────────────────────────────────────────────────────
-
     public function create()
     {
         $categories = Category::where('is_active', true)->get(['id', 'name']);
@@ -118,35 +112,13 @@ class BlogController extends Controller
         return view('admin.blogs.create', compact('categories', 'tags'));
     }
 
-    public function store(BlogRequest $request)
+    public function store(StoreBlogRequest $request)
     {
-        $data = $request->validated();
-
-        if ($request->hasFile('cover_image')) {
-            $data['cover_image'] = $request->file('cover_image')
-                ->store('blogs/covers', 'public');
-        }
-
-        $data['author_id'] = Auth::id();
-        $data['author_role'] = 'admin';
-        $data['status'] = Blog::STATUS_PUBLISHED;
-        $data['published_at'] = now();
-        $data['reviewed_by'] = Auth::id();
-        $data['reviewed_at'] = now();
-
-        unset($data['tag_ids']);
-
-        $blog = Blog::create($data);
-
-        if ($request->filled('tag_ids')) {
-            $blog->tags()->sync($request->input('tag_ids'));
-        }
+        $blog = $this->blogService->create($request, Auth::id());
 
         return redirect()->route('admin.blogs.show', $blog)
             ->with('success', 'Blog published successfully.');
     }
-
-    // ── CRUD: Show ────────────────────────────────────────────────────────────
 
     public function show(Blog $blog)
     {
@@ -162,11 +134,8 @@ class BlogController extends Controller
         return view('admin.blogs.show', compact('blog'));
     }
 
-    // ── CRUD: Edit ────────────────────────────────────────────────────────────
-
     public function edit(Blog $blog)
     {
-        // Prevent editing a soft-deleted blog
         abort_if($blog->trashed(), 404);
 
         $categories = Category::where('is_active', true)->get(['id', 'name']);
@@ -176,24 +145,12 @@ class BlogController extends Controller
         return view('admin.blogs.edit', compact('blog', 'categories', 'tags', 'selectedTags'));
     }
 
-    // ── CRUD: Update ──────────────────────────────────────────────────────────
-
-    public function update(BlogRequest $request, Blog $blog)
+    public function update(UpdateBlogRequest $request, Blog $blog)
     {
-        // Safety: bail out if the blog has already been soft-deleted
         abort_if($blog->trashed(), 404);
-
-        // DEBUG: remove these two Log lines once confirmed working
-        Log::info('BlogController@update called', [
-            'blog_id' => $blog->id,
-            'http_method' => $request->method(),
-            '_method' => $request->input('_method'),
-            'route' => $request->route()->getName(),
-        ]);
 
         $data = $request->validated();
 
-        // ── 1. Slug ───────────────────────────────────────────────────────────
         if (! empty($data['slug'])) {
             $data['slug'] = Str::slug($data['slug']);
         } elseif ($blog->slug) {
@@ -202,35 +159,27 @@ class BlogController extends Controller
             $data['slug'] = Blog::generateUniqueSlug($data['title'], $blog->id);
         }
 
-        // ── 2. Cover image ────────────────────────────────────────────────────
         if ($request->hasFile('cover_image')) {
-            // Replace existing cover
             if ($blog->cover_image) {
                 Storage::disk('public')->delete($blog->cover_image);
             }
             $data['cover_image'] = $request->file('cover_image')
                 ->store('blogs/covers', 'public');
         } elseif (! empty($data['remove_cover'])) {
-            // Explicit remove
             if ($blog->cover_image) {
                 Storage::disk('public')->delete($blog->cover_image);
             }
             $data['cover_image'] = null;
         } else {
-            // No change — keep existing path
             unset($data['cover_image']);
         }
 
-        // ── 3. Booleans (unchecked checkboxes are not sent by browsers) ───────
         $data['is_featured'] = $request->boolean('is_featured');
         $data['allow_comments'] = $request->boolean('allow_comments');
         $data['is_pinned'] = $request->boolean('is_pinned');
         $data['allow_likes'] = $request->boolean('allow_likes');
         $data['show_share'] = $request->boolean('show_share');
 
-        // ── 4. Whitelist — only update columns that belong to this form ───────
-        // 'status' is deliberately excluded; use approve/reject/archive actions
-        // for workflow transitions instead.
         $allowed = [
             'title',
             'slug',
@@ -252,12 +201,9 @@ class BlogController extends Controller
 
         $blog->update($updateData);
 
-        // ── 5. Tags ───────────────────────────────────────────────────────────
         if ($request->filled('tag_ids')) {
-            // Multiselect array of IDs
             $blog->tags()->sync($request->input('tag_ids'));
         } elseif ($request->has('tags')) {
-            // Comma-separated chip string of tag names
             $tagList = array_filter(
                 array_map('trim', explode(',', $request->input('tags', '')))
             );
@@ -272,62 +218,25 @@ class BlogController extends Controller
             ->with('success', 'Blog updated successfully.');
     }
 
-    // ── CRUD: Destroy (Soft Delete) ───────────────────────────────────────────
-
     public function destroy(Blog $blog)
     {
-        // DEBUG: remove once soft-delete issue is confirmed resolved
-        Log::info('BlogController@destroy called', [
-            'blog_id' => $blog->id,
-            'trace' => collect(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 6))
-                ->pluck('function')
-                ->implode(' → '),
-        ]);
-
         $blog->delete();
 
         return redirect()->route('admin.blogs.index')
             ->with('success', 'Blog soft-deleted.');
     }
 
-    // ── Bulk Actions ──────────────────────────────────────────────────────────
-
-    public function bulk(Request $request)
+    public function bulk(BulkBlogActionRequest $request)
     {
-        $request->validate([
-            'ids' => 'required|array',
-            'ids.*' => 'integer',
-            'action' => 'required|in:publish,delete',
-        ]);
-
         $ids = $request->input('ids');
         $action = $request->input('action');
 
         if ($action === 'delete') {
-            $count = Blog::whereIn('id', $ids)->delete(); // soft delete
+            $count = Blog::whereIn('id', $ids)->delete();
             $msg = $count.' blog'.($count === 1 ? '' : 's').' deleted.';
         } else {
-            $pending = Blog::whereIn('id', $ids)
-                ->where('status', Blog::STATUS_PENDING)
-                ->get();
-
-            Blog::whereIn('id', $ids)->update([
-                'status' => Blog::STATUS_PUBLISHED,
-                'published_at' => now(),
-                'reviewed_by' => Auth::id(),
-                'reviewed_at' => now(),
-            ]);
-
-            $count = count($ids);
-
-            foreach ($pending as $blog) {
-                try {
-                    Mail::to($blog->author)->send(new BlogStatusMail($blog, 'published'));
-                } catch (\Throwable $e) {
-                    Log::warning('Bulk publish mail failed: '.$e->getMessage());
-                }
-            }
-
+            $result = $this->blogService->bulkPublish($ids, Auth::id());
+            $count = $result['count'];
             $msg = $count.' blog'.($count === 1 ? '' : 's').' published.';
         }
 
@@ -337,8 +246,6 @@ class BlogController extends Controller
             'msg' => $msg,
         ]);
     }
-
-    // ── CRUD: Force Delete ────────────────────────────────────────────────────
 
     public function forceDestroy(int $id)
     {
@@ -355,8 +262,6 @@ class BlogController extends Controller
             ->with('success', 'Blog permanently deleted.');
     }
 
-    // ── CRUD: Restore ─────────────────────────────────────────────────────────
-
     public function restore(int $id)
     {
         $blog = Blog::withTrashed()->findOrFail($id);
@@ -365,19 +270,11 @@ class BlogController extends Controller
         return back()->with('success', 'Blog restored.');
     }
 
-    // ── Workflow: Approve ─────────────────────────────────────────────────────
-
     public function approve(Request $request, Blog $blog)
     {
         abort_unless($blog->status === Blog::STATUS_PENDING, 422, 'Only pending blogs can be approved.');
 
-        $blog->transitionTo(Blog::STATUS_PUBLISHED, Auth::id(), $request->get('note'));
-
-        try {
-            Mail::to($blog->author)->send(new BlogStatusMail($blog, 'published'));
-        } catch (\Throwable $e) {
-            Log::warning('Blog approve mail failed: '.$e->getMessage());
-        }
+        $this->blogService->approve($blog, Auth::id(), $request->get('note'));
 
         if ($request->wantsJson()) {
             return response()->json([
@@ -390,43 +287,23 @@ class BlogController extends Controller
         return back()->with('success', "Blog \"{$blog->title}\" approved and published.");
     }
 
-    // ── Workflow: Reject ──────────────────────────────────────────────────────
-
-    public function reject(Request $request, Blog $blog)
+    public function reject(RejectBlogRequest $request, Blog $blog)
     {
-        $request->validate(['reason' => 'required|string|max:1000']);
-
         abort_unless(
             in_array($blog->status, [Blog::STATUS_PENDING, Blog::STATUS_FLAGGED]),
             422,
             'Blog cannot be rejected in its current state.'
         );
 
-        $blog->transitionTo(Blog::STATUS_REJECTED, Auth::id(), $request->reason);
-
-        Mail::to($blog->author)->send(new BlogStatusMail($blog, 'rejected', $request->reason));
+        $this->blogService->reject($blog, Auth::id(), $request->reason);
 
         return back()->with('success', "Blog \"{$blog->title}\" rejected.");
     }
 
-    // ── Workflow: Feature / Unfeature ─────────────────────────────────────────
-
     public function feature(Request $request, Blog $blog)
     {
-        abort_unless($blog->is_publicly_visible, 422, 'Only visible blogs can be featured.');
-
-        if ($blog->is_featured) {
-            $blog->update(['is_featured' => false, 'featured_at' => null]);
-            $msg = 'Blog removed from carousel.';
-        } else {
-            $maxOrder = Blog::where('is_featured', true)->max('carousel_order') ?? 0;
-            $blog->update([
-                'is_featured' => true,
-                'carousel_order' => $maxOrder + 1,
-                'featured_at' => now(),
-            ]);
-            $msg = 'Blog added to carousel.';
-        }
+        $result = $this->blogService->toggleFeature($blog);
+        $msg = $result['message'];
 
         if ($request->wantsJson()) {
             return response()->json([
@@ -439,11 +316,9 @@ class BlogController extends Controller
         return back()->with('success', $msg);
     }
 
-    // ── Workflow: Archive ─────────────────────────────────────────────────────
-
     public function archive(Request $request, Blog $blog)
     {
-        $blog->transitionTo(Blog::STATUS_ARCHIVED, Auth::id(), 'Archived by admin.');
+        $this->blogService->archive($blog, Auth::id());
 
         if ($request->wantsJson()) {
             return response()->json([
@@ -456,15 +331,9 @@ class BlogController extends Controller
         return back()->with('success', "Blog \"{$blog->title}\" archived.");
     }
 
-    // ── Workflow: Flag ────────────────────────────────────────────────────────
-
     public function flag(Request $request, Blog $blog)
     {
-        $blog->transitionTo(
-            Blog::STATUS_FLAGGED,
-            Auth::id(),
-            $request->get('note', 'Manually flagged by admin.')
-        );
+        $this->blogService->flag($blog, Auth::id(), $request->get('note'));
 
         if ($request->wantsJson()) {
             return response()->json([
@@ -477,25 +346,16 @@ class BlogController extends Controller
         return back()->with('success', 'Blog flagged for review.');
     }
 
-    // ── AJAX: Carousel Reorder ────────────────────────────────────────────────
-
-    public function reorder(Request $request)
+    public function reorder(ReorderBlogRequest $request)
     {
-        $request->validate([
-            'order' => 'required|array',
-            'order.*' => 'integer|exists:blogs,id',
-        ]);
-
         DB::transaction(function () use ($request) {
-            foreach ($request->order as $position => $blogId) {
+            foreach ($request->validated()['order'] as $position => $blogId) {
                 Blog::where('id', $blogId)->update(['carousel_order' => $position + 1]);
             }
         });
 
         return response()->json(['success' => true]);
     }
-
-    // ── Analytics Overview ────────────────────────────────────────────────────
 
     public function analytics()
     {
@@ -520,8 +380,6 @@ class BlogController extends Controller
 
         return view('admin.blogs.analytics', compact('stats', 'topBlogs', 'recentActivity'));
     }
-
-    // ── Dismiss a Report ──────────────────────────────────────────────────────
 
     public function dismissReport(BlogReport $report)
     {

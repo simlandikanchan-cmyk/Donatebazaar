@@ -2,48 +2,48 @@
 
 namespace App\Models;
 
+use App\Enums\PaymentStatus;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Donation extends Model
 {
-    protected $fillable = [
+    use HasFactory;
+    use SoftDeletes;
 
+    protected $fillable = [
         'campaign_id',
         'user_id',
         'donor_name',
         'donor_email',
         'donor_phone',
-
         'donation_type',
-
         'total_amount',
-        'platform_fee',
-        'net_amount',
-
         'original_amount',
         'discount_amount',
-        'coupon_id',
-        'coupon_code',
-
+        'platform_fee',
+        'net_amount',
         'order_id',
         'payment_gateway',
-        'payment_id',
-        'signature',
+        'currency',
+        'receipt_number',
+        'coupon_id',
+        'coupon_code',
+        'is_anonymous',
+        'message',
+        'refund_idempotency_key',
+    ];
 
+    protected $guarded = [
         'payment_status',
+        'settlement_status',
+        'campaign_settlement_id',
+        'paid_at',
         'is_refunded',
         'refunded_at',
         'released_at',
-        'paid_at',
-        'settlement_status',
-        'campaign_settlement_id',
-
-        'currency',
-
-        'receipt_number',
-
-        'is_anonymous',
-        'message',
     ];
 
     protected $casts = [
@@ -58,6 +58,23 @@ class Donation extends Model
         'is_refunded' => 'boolean',
         'is_anonymous' => 'boolean',
     ];
+
+    protected function paymentStatus(): Attribute
+    {
+        return Attribute::make(
+            set: function (string|PaymentStatus $value): string {
+                if ($value instanceof PaymentStatus) {
+                    return $value->value;
+                }
+                $enum = PaymentStatus::tryFrom($value);
+                if ($enum === null) {
+                    throw new \InvalidArgumentException("Invalid payment status: '$value'");
+                }
+
+                return $enum->value;
+            },
+        );
+    }
 
     public function campaign()
     {
@@ -78,6 +95,7 @@ class Donation extends Model
     {
         return $this->hasMany(Refund::class);
     }
+
     public function items()
     {
         return $this->hasMany(DonationItem::class);

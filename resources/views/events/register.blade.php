@@ -8,7 +8,7 @@
 @section('title', 'Register – ' . $event->title)
 
 @section('content')
-@push('styles') @vite(['resources/css/events-register.css']) @endpush
+@push('styles') @vite(['resources/css/public/events-register.css']) @endpush
 
 <div class="reg-wrap">
 
@@ -122,7 +122,7 @@
             </div>
 
             <div class="reg-field">
-                <label for="message" class="reg-label">Note <span class="reg-label" style="font-weight:400;color:var(--text3);">(optional)</span></label>
+                <label for="message" class="reg-label">Note <span class="reg-label reg-label--muted">(optional)</span></label>
                 <textarea id="message" name="message" rows="3"
                           placeholder="Any questions or notes for the organiser?"
                           class="reg-input reg-textarea @error('message') error @enderror">{{ old('message') }}</textarea>
@@ -131,9 +131,9 @@
                 @enderror
             </div>
 
-            <button type="submit" class="reg-btn">
+            <x-button variant="primary" type="submit">
                 Confirm Registration
-            </button>
+            </x-button>
         </form>
 
         <p class="reg-footnote">A confirmation email will be sent after you register.</p>

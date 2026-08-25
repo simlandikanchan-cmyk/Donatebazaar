@@ -3,7 +3,7 @@
 @section('title', 'About Us')
 
 @push('styles')
-    @vite('resources/css/about.css')
+    @vite('resources/css/public/about.css')
 @endpush
 
 @section('content')
@@ -23,5 +23,5 @@
 @endsection
 
 @push('scripts')
-    @vite('resources/js/about.js')
+    @vite('resources/js/public/about.js')
 @endpush

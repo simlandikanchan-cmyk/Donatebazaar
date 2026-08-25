@@ -14,9 +14,11 @@ class WalletTransaction extends Model
         'source',
         'reference_type',
         'reference_id',
+        'notes',
         'balance_after',
         'status',
-        'notes',
+        'actor_type',
+        'actor_id',
     ];
 
     protected $casts = [

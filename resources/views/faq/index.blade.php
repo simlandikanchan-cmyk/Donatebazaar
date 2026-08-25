@@ -20,8 +20,7 @@
             <div class="faq-list">
                 @foreach($items as $i => $item)
                 <div class="faq-item">
-                    <button class="faq-question" onclick="toggleFaq(this)">
-                        <span>{{ $item['q'] }}</span>
+                    <button class="faq-question" data-action="toggle-faq" type="button">                        <span>{{ $item['q'] }}</span>
                         <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8l5 5 5-5"/></svg>
                     </button>
                     <div class="faq-answer" @if($loop->parent->first && $i === 0) style="max-height:600px;padding-bottom:20px;opacity:1;" @endif>
@@ -37,17 +36,7 @@
 @endsection
 
 @push('scripts')
-<script>
-function toggleFaq(btn) {
-    var item = btn.parentElement;
-    var answer = item.querySelector('.faq-answer');
-    var isOpen = answer.style.maxHeight && answer.style.maxHeight !== '0px';
-    answer.style.maxHeight = isOpen ? '0px' : answer.scrollHeight + 'px';
-    answer.style.paddingBottom = isOpen ? '0px' : '20px';
-    answer.style.opacity = isOpen ? '0' : '1';
-    item.classList.toggle('faq-open');
-}
-</script>
+@vite(['resources/js/public/faq.js'])
 @endpush
 
-@push('styles') @vite(['resources/css/faq.css']) @endpush
+@push('styles') @vite(['resources/css/public/faq.css']) @endpush

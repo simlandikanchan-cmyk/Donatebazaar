@@ -51,7 +51,7 @@ class CampaignShowComposer
         $recentDonors = $donorsList->take(3);
 
         $daysLeft = isset($campaign->end_date) && $campaign->end_date
-                    ? now()->diffInDays($campaign->end_date, false)
+                    ? (int) ceil(now()->diffInDays($campaign->end_date, false))
                     : null;
         $isEnded = $daysLeft !== null && $daysLeft < 0;
 
@@ -71,7 +71,11 @@ class CampaignShowComposer
 
         $publicUrl = null;
         try {
-            if ($campaign->category && $campaign->slug) {
+            if (
+                in_array($campaign->campaign_state, ['active', 'completed', 'expired']) &&
+                $campaign->category &&
+                $campaign->slug
+            ) {
                 $publicUrl = route('campaign.public', ['category' => $campaign->category->slug, 'slug' => $campaign->slug]);
             }
         } catch (\Throwable $e) {

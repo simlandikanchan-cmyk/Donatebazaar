@@ -7,6 +7,7 @@ use App\Models\Campaign;
 use App\Models\Donation;
 use App\Models\Refund;
 use App\Models\User;
+use App\Services\Payment\PaymentWebhookService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
@@ -225,7 +226,7 @@ class AdminDonationRefundTest extends TestCase
             ],
         ];
 
-        $controller = new PaymentController;
+        $controller = app(PaymentWebhookService::class);
         $method = new ReflectionMethod($controller, 'handleRefundProcessed');
         $method->setAccessible(true);
         $method->invoke($controller, $payload);

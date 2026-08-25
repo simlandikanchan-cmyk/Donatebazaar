@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@push('styles') @vite(['resources/css/errors.css']) @endpush
+@push('styles') @vite(['resources/css/public/errors.css']) @endpush
 
 @section('content')
 <div id="error-root">
@@ -19,14 +19,14 @@
             <h1 class="e-title">You don't have permission</h1>
             <p class="e-desc">This area is restricted. If you believe this is an error, please contact the site administrator.</p>
             <div class="e-actions">
-                <a href="/" class="btn-home">
+                <x-button variant="primary" href="/">
                     <svg viewBox="0 0 24 24"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 001 1h3a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1h3a1 1 0 001-1V10"/></svg>
                     Back to Home
-                </a>
-                <button class="btn-back" onclick="window.history.back()">
+                </x-button>
+                <x-button variant="secondary" type="button">
                     <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
                     Go Back
-                </button>
+                </x-button>
             </div>
         </div>
     </div>

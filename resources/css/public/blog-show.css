@@ -1,0 +1,72 @@
+body { font-family: 'DM Sans', sans-serif; }
+    .font-display { font-family: 'DM Mono', monospace; }
+
+    /* ── Reading progress bar ── */
+    #reading-progress-bar {
+        position: fixed;
+        top: 0; left: 0;
+        height: 3px;
+        width: 0%;
+        background: linear-gradient(to right, var(--warning), var(--danger));
+        z-index: 9999;
+        transition: width 0.1s linear;
+        border-radius: 0 2px 2px 0;
+    }
+
+    /* ── Prose ── */
+    .prose-custom { font-family: 'DM Mono', monospace; font-size: 1.0625rem; line-height: 1.9; color: var(--warm-ink-3); }
+
+    .prose-custom h2,
+    .prose-custom h3,
+    .prose-custom h4 {
+        font-family: 'DM Mono', monospace;
+        font-weight: 700;
+        margin-top: 2.2em;
+        margin-bottom: 0.6em;
+        color: var(--dark-warm);
+        scroll-margin-top: 80px;
+    }
+
+    .prose-custom h2 { font-size: 1.5rem; }
+    .prose-custom h3 { font-size: 1.2rem; }
+    .prose-custom p { margin-bottom: 1.5em; }
+    .prose-custom a { color: var(--primary-deep); text-decoration: underline; text-underline-offset: 3px; }
+    .prose-custom blockquote { border-left: 3px solid var(--warning); padding: 14px 22px; margin: 32px 0; background: var(--warning-tint-bg); border-radius: 0 10px 10px 0; font-style: italic; color: var(--warm-ink-5); font-size: 1.05rem; }
+    .prose-custom ul, .prose-custom ol { padding-left: 1.5rem; margin-bottom: 1.5em; }
+    .prose-custom li { margin-bottom: 0.5em; }
+    .prose-custom img { max-width: 100%; border-radius: 14px; margin: 28px 0; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+    .prose-custom code { background: var(--warm-bg-4); padding: 2px 7px; border-radius: 5px; font-size: 0.875em; font-family: 'Courier New', monospace; color: var(--danger-dark); }
+    .prose-custom pre { background: var(--warm-ink-2); color: var(--warm-surface-2); padding: 22px 26px; border-radius: 14px; overflow-x: auto; margin: 30px 0; }
+    .prose-custom pre code { background: none; padding: 0; color: inherit; }
+    .prose-custom strong { font-weight: 700; color: var(--dark-warm); }
+    .prose-custom hr { border: none; border-top: 1px solid var(--warm-surface-2); margin: 2.5em 0; }
+
+    /* ── TOC ── */
+    #toc-nav a { display: block; padding: 5px 10px; font-size: 0.8rem; border-left: 2px solid transparent; color: var(--warm-ink-6); text-decoration: none; transition: all 0.2s; border-radius: 0 6px 6px 0; line-height: 1.4; }
+    #toc-nav a:hover { color: var(--warning-hover); border-left-color: var(--warning-tint); background: var(--warning-tint-bg); }
+    #toc-nav a.toc-active { color: var(--warning-hover); border-left-color: var(--warning); background: var(--warning-tint-bg); font-weight: 500; }
+
+    /* ── Floating like ── */
+    #float-like { transition: transform 0.15s, box-shadow 0.15s; }
+    #float-like:hover { transform: scale(1.08); }
+    #float-like.liked { background: var(--rose-tint-bg); border-color: var(--rose-tint) !important; color: var(--rose-hover) !important; }
+
+    /* ── Comment box focus ── */
+    #comment-body:focus { border-color: var(--warning); box-shadow: 0 0 0 3px rgba(245,158,11,0.12); }
+    #reply-input:focus { border-color: var(--warning); box-shadow: 0 0 0 3px rgba(245,158,11,0.12); }
+
+    /* ── Animations ── */
+    @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+    .animate-up { animation: fadeUp 0.45s ease both; }
+    .animate-up-2 { animation: fadeUp 0.45s 0.1s ease both; }
+    .animate-up-3 { animation: fadeUp 0.45s 0.2s ease both; }
+
+    /* ── btn-primary (not defined in public/app.css) ── */
+    .btn-primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: var(--white); box-shadow: 0 4px 14px rgba(37,99,235,.35); }
+    .btn-primary:hover { opacity: .92; box-shadow: 0 6px 24px rgba(37,99,235,.5); transform: translateY(-1px); }
+
+    /* ── Misc ── */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+    .line-clamp-2 { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+    .line-clamp-3 { display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }

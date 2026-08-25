@@ -28,4 +28,15 @@ class LegalPage extends Model
             'cookies' => 'Cookie Policy',
         ];
     }
+
+    public static function publicPath(string $slug): string
+    {
+        return match ($slug) {
+            'privacy' => '/privacy-policy',
+            'terms' => '/terms-of-service',
+            'refund' => '/refund-cancellation',
+            'cookies' => '/cookie-policy',
+            default => '/'.$slug,
+        };
+    }
 }

@@ -42,6 +42,7 @@ class FundraiserLevel extends Model
     }
 
     public static function nextAfter(int $currentLevelNumber): ?self
+    
     {
         return static::where('level_number', $currentLevelNumber + 1)->first();
     }

@@ -2,11 +2,7 @@
 
 namespace Tests\Unit\Gateway;
 
-use App\Contracts\Gateway\GatewayInterface;
-use App\Contracts\Gateway\PayoutResult;
-use App\Exceptions\DuplicateRequestException;
 use App\Exceptions\GatewayException;
-use App\Exceptions\InvalidSignatureException;
 use App\Exceptions\PermanentFailureException;
 use App\Exceptions\TemporaryFailureException;
 use App\Exceptions\TimeoutException;
@@ -59,13 +55,10 @@ class RazorpayGatewayTest extends TestCase
 
         $result = $this->gateway->initiatePayout($org, 500.00, $settlement);
 
-        $this->assertInstanceOf(PayoutResult::class, $result);
-        $this->assertTrue($result->success);
-        $this->assertStringStartsWith('PAYOUT_', $result->gatewayReference);
-        $this->assertSame('processed', $result->providerStatus);
-        $this->assertFalse($result->retryable);
-        $this->assertNull($result->failureReason);
-        $this->assertSame(500.00, $result->metadata['amount']);
+        $this->assertIsArray($result);
+        $this->assertStringStartsWith('PAYOUT_', $result['gateway_reference']);
+        $this->assertSame('processed', $result['provider_status']);
+        $this->assertSame(500.00, $result['metadata']['amount']);
     }
 
     #[Test]
@@ -169,5 +162,61 @@ class RazorpayGatewayTest extends TestCase
         $this->expectExceptionMessage('Malformed webhook payload.');
 
         $this->gateway->parseWebhook('not valid json');
+    }
+
+    #[Test]
+    public function create_order_with_notes_returns_order_array(): void
+    {
+        $mockApi = $this->createMock(\Razorpay\Api\Api::class);
+        $mockApi->order = new class {
+            public function create(array $data): object {
+                return new class($data) {
+                    private array $data;
+                    public function __construct(array $data) { $this->data = $data; }
+                    public function toArray(): array { return $this->data; }
+                };
+            }
+        };
+
+        $gateway = new RazorpayGateway(
+            keyId: 'test_key',
+            keySecret: 'test_secret',
+            webhookSecret: 'test_webhook_secret',
+            api: $mockApi
+        );
+
+        $result = $gateway->createOrderWithNotes(500.00, ['type' => 'gift_card'], 'gc_test_123');
+
+        $this->assertIsArray($result);
+        $this->assertSame('INR', $result['currency']);
+        $this->assertSame(50000, $result['amount']);
+        $this->assertSame('gc_test_123', $result['receipt']);
+    }
+
+    #[Test]
+    public function create_order_with_notes_generates_receipt_when_not_provided(): void
+    {
+        $mockApi = $this->createMock(\Razorpay\Api\Api::class);
+        $mockApi->order = new class {
+            public function create(array $data): object {
+                return new class($data) {
+                    private array $data;
+                    public function __construct(array $data) { $this->data = $data; }
+                    public function toArray(): array { return $this->data; }
+                };
+            }
+        };
+
+        $gateway = new RazorpayGateway(
+            keyId: 'test_key',
+            keySecret: 'test_secret',
+            webhookSecret: 'test_webhook_secret',
+            api: $mockApi
+        );
+
+        $result = $gateway->createOrderWithNotes(500.00, ['type' => 'gift_card']);
+
+        $this->assertIsArray($result);
+        $this->assertNotNull($result['receipt']);
     }
 }

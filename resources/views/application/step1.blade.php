@@ -12,7 +12,7 @@
         <div class="field-wrap">
           <label class="field-label">Organisation name <span class="req">*</span></label>
           <input type="text" name="name" class="field-input" value="{{ old('name', $application->name ?? '') }}" placeholder="e.g. Hope Foundation Trust">
-          @error('name')<p class="field-hint" style="color:var(--danger)">{{ $message }}</p>@enderror
+          @error('name')<p class="field-hint field-hint--err">{{ $message }}</p>@enderror
         </div>
         <div class="field-wrap">
           <label class="field-label">Organisation type <span class="req">*</span></label>
@@ -22,7 +22,7 @@
               <option value="{{ $type }}" {{ old('organization_type', $application->organization_type ?? '') == $type ? 'selected' : '' }}>{{ $type }}</option>
             @endforeach
           </select>
-          @error('organization_type')<p class="field-hint" style="color:var(--danger)">{{ $message }}</p>@enderror
+          @error('organization_type')<p class="field-hint field-hint--err">{{ $message }}</p>@enderror
         </div>
       </div>
 

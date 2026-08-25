@@ -37,7 +37,7 @@ class DdrfController extends Controller
             // (COUNT/SUM at the DB level) instead of loading every donation
             // row into PHP memory just to count or sum them.
             ->withCount('donations')
-            ->withSum('donations', 'amount')
+            ->withSum('donations', 'total_amount')
             ->with(['category:id,slug,name'])
             ->select([
                 'id', 'title', 'slug', 'description', 'cover_image',
@@ -51,7 +51,7 @@ class DdrfController extends Controller
                 // denormalized raised_amount column, falling back to it
                 // only if there are no donation rows yet (e.g. brand new
                 // campaign where the sum is null).
-                $raised = (float) ($campaign->donations_sum_amount ?? $campaign->raised_amount ?? 0);
+                $raised = (float) ($campaign->donations_sum_total_amount ?? $campaign->raised_amount ?? 0);
                 $goal = (float) ($campaign->goal_amount > 0 ? $campaign->goal_amount : 1);
                 $donors = (int) ($campaign->donations_count ?? 0);
 
@@ -89,16 +89,16 @@ class DdrfController extends Controller
 
         // CSR Partners — static until a partners table exists.
         $csrPartners = [
-            ['name' => 'Tata Trusts',           'logo' => asset('images/partners/tata.png')],
-            ['name' => 'Infosys Foundation',    'logo' => asset('images/partners/infosys.png')],
-            ['name' => 'Wipro Cares',           'logo' => asset('images/partners/wipro.png')],
-            ['name' => 'HCL Foundation',        'logo' => asset('images/partners/hcl.png')],
-            ['name' => 'Reliance Foundation',   'logo' => asset('images/partners/reliance.png')],
-            ['name' => 'Azim Premji Foundation', 'logo' => asset('images/partners/azim-premji.png')],
-            ['name' => 'HDFC Bank CSR',         'logo' => asset('images/partners/hdfc.png')],
-            ['name' => 'Mahindra Rise',         'logo' => asset('images/partners/mahindra.png')],
-            ['name' => 'Godrej & Boyce',        'logo' => asset('images/partners/godrej.png')],
-            ['name' => 'Bajaj CSR',             'logo' => asset('images/partners/bajaj.png')],
+            ['name' => 'Tata Trusts',           'logo' => 'https://upload.wikimedia.org/wikipedia/commons/8/8e/Tata_logo.svg'],
+            ['name' => 'Infosys Foundation',    'logo' => 'https://upload.wikimedia.org/wikipedia/commons/9/95/Infosys_logo.svg'],
+            ['name' => 'Wipro Cares',           'logo' => 'https://upload.wikimedia.org/wikipedia/commons/8/80/Wipro_Logo_Black.svg'],
+            ['name' => 'HCL Foundation',        'logo' => 'https://upload.wikimedia.org/wikipedia/commons/8/8a/HCL_Technologies_logo.svg'],
+            ['name' => 'Reliance Foundation',   'logo' => 'https://upload.wikimedia.org/wikipedia/commons/c/ca/Reliance_Foundation_Logo.svg'],
+            ['name' => 'Azim Premji Foundation', 'logo' => 'https://upload.wikimedia.org/wikipedia/commons/c/cb/PremjiInvestLogo.png'],
+            ['name' => 'HDFC Bank CSR',         'logo' => 'https://upload.wikimedia.org/wikipedia/commons/2/28/HDFC_Bank_Logo.svg'],
+            ['name' => 'Mahindra Rise',         'logo' => 'https://upload.wikimedia.org/wikipedia/commons/d/da/Mahindra_Automotive_new_logo.png'],
+            ['name' => 'Godrej & Boyce',        'logo' => 'https://upload.wikimedia.org/wikipedia/commons/9/9c/Godrej_Industries_Group_Logo.png'],
+            ['name' => 'Bajaj CSR',             'logo' => 'https://upload.wikimedia.org/wikipedia/commons/7/7e/Bajaj_Group_logo.svg'],
         ];
 
         return [

@@ -4,108 +4,13 @@
 @section('page_subtitle', Str::limit($campaign->title, 45))
 
 @push('page_styles')
-<style>
-.page-grid{display:grid;grid-template-columns:1fr 308px;gap:20px;align-items:start;}
-.right-col{position:sticky;top:80px;display:flex;flex-direction:column;gap:16px;}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;animation:fadeUp .4s both;}
-.card:nth-child(1){animation-delay:0.05s;}.card:nth-child(2){animation-delay:0.10s;}.card:nth-child(3){animation-delay:0.15s;}.card:nth-child(4){animation-delay:0.20s;}
-.card+.card{margin-top:16px;}
-.card-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;}
-.card-header-left{display:flex;align-items:center;gap:10px;}
-.card-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.card-icon svg{width:14px;height:14px;}
-.ic-indigo{background:rgba(99,102,241,0.12);color:var(--accent);}
-.ic-green{background:rgba(16,185,129,0.12);color:var(--green);}
-.ic-yellow{background:rgba(245,158,11,0.12);color:var(--yellow);}
-.ic-blue{background:rgba(59,130,246,0.12);color:var(--blue);}
-.ic-red{background:rgba(239,68,68,0.12);color:var(--red);}
-.card-title{font-size:13px;font-weight:700;color:var(--text);letter-spacing:-0.01em;font-family:var(--font-display);}
-.card-sub{font-size:11px;color:var(--text3);margin-top:1px;}
-.card-body{padding:18px;}
-.stepper{display:flex;align-items:center;margin-bottom:4px;}
-.step-item{display:flex;flex-direction:column;align-items:center;gap:5px;}
-.step-circle{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;font-family:var(--mono);}
-.step-done .step-circle{background:rgba(16,185,129,0.15);border:1.5px solid rgba(16,185,129,0.35);color:var(--green);}
-.step-active .step-circle{background:var(--accent-glow);border:2px solid var(--accent);color:var(--accent);}
-.step-idle .step-circle{background:var(--surface2);border:1.5px solid var(--border2);color:var(--text3);}
-.step-label{font-size:10px;font-weight:700;font-family:var(--mono);letter-spacing:0.04em;white-space:nowrap;}
-.step-done .step-label{color:var(--green);}
-.step-active .step-label{color:var(--accent);}
-.step-idle .step-label{color:var(--text3);}
-.step-connector{flex:1;height:1.5px;margin:0 10px;margin-bottom:18px;}
-.step-connector-done{background:rgba(16,185,129,0.4);}
-.step-connector-idle{background:var(--border2);}
-.doc-type-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:0;}
-.doc-type-label{display:block;cursor:pointer;position:relative;}
-.doc-type-label input{position:absolute;opacity:0;width:0;height:0;}
-.doc-type-inner{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 8px;border-radius:var(--radius-sm);border:1.5px solid var(--border2);background:var(--surface2);transition:all var(--tr);text-align:center;}
-.doc-type-inner:hover{border-color:var(--accent);background:var(--accent-glow);}
-.doc-type-label input:checked ~ .doc-type-inner{border-color:var(--accent);background:var(--accent-glow);border-width:2px;}
-.doc-type-inner svg{width:20px;height:20px;color:var(--text3);transition:color var(--tr);}
-.doc-type-label input:checked ~ .doc-type-inner svg,
-.doc-type-inner:hover svg{color:var(--accent);}
-.doc-type-inner span{font-size:11px;font-weight:600;color:var(--text2);line-height:1.3;font-family:var(--mono);}
-.doc-type-label input:checked ~ .doc-type-inner span{color:var(--accent);}
-.input-wrap{position:relative;margin-bottom:0;}
-.input-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);display:flex;align-items:center;pointer-events:none;}
-.input-icon svg{width:14px;height:14px;color:var(--text3);}
-.form-input{width:100%;padding:10px 14px 10px 34px;border-radius:var(--radius-sm);border:1.5px solid var(--border2);background:var(--surface2);color:var(--text);font-family:var(--font);font-size:13px;transition:border-color var(--tr),background var(--tr),color var(--tr);outline:none;}
-.form-input::placeholder{color:var(--text3);}
-.form-input:focus{border-color:var(--accent);background:var(--surface);box-shadow:0 0 0 3px var(--accent-glow);}
-.form-input:disabled{cursor:not-allowed;opacity:0.6;}
-.input-hint{font-size:10.5px;color:var(--text3);margin-top:5px;font-family:var(--mono);}
-.drop-zone{border:2px dashed var(--border2);border-radius:var(--radius);padding:32px 20px;text-align:center;cursor:pointer;transition:all var(--tr);margin-bottom:16px;background:var(--surface2);}
-.drop-zone:hover,.drop-zone.drag-over{border-color:var(--accent);background:var(--accent-glow);}
-.drop-zone.file-selected{border-color:var(--green);background:rgba(16,185,129,0.06);border-style:solid;}
-.drop-zone-icon{display:flex;justify-content:center;margin-bottom:10px;}
-.drop-zone-icon svg{width:36px;height:36px;color:var(--text3);}
-.drop-zone.file-selected .drop-zone-icon svg{color:var(--green);}
-.drop-zone-primary{font-size:13px;font-weight:600;color:var(--accent);font-family:var(--font);}
-.drop-zone.file-selected .drop-zone-primary{color:var(--green);}
-.drop-zone-sub{font-size:11px;color:var(--text3);margin-top:4px;font-family:var(--mono);}
-.file-selected-row{display:none;align-items:center;justify-content:center;gap:6px;margin-top:10px;}
-.file-selected-row.visible{display:flex;}
-.file-selected-row svg{width:13px;height:13px;color:var(--green);}
-.file-selected-name{font-size:12px;font-weight:600;color:var(--green);font-family:var(--mono);}
-.security-notice{display:flex;align-items:flex-start;gap:10px;background:rgba(99,102,241,0.07);border:1px solid rgba(99,102,241,0.15);border-radius:var(--radius-sm);padding:11px 13px;margin-bottom:16px;}
-.security-notice svg{width:13px;height:13px;color:var(--accent);flex-shrink:0;margin-top:1px;}
-.security-notice p{font-size:11.5px;color:var(--text2);line-height:1.6;}
-.submit-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:7px;padding:11px 20px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;font-family:var(--font);border:none;cursor:pointer;transition:all var(--tr);background:var(--accent);color:#fff;box-shadow:0 4px 14px rgba(99,102,241,0.28);}
-.submit-btn:hover:not(:disabled){background:var(--accent2);transform:translateY(-1px);box-shadow:0 6px 20px rgba(99,102,241,0.35);}
-.submit-btn:disabled{background:var(--surface2);color:var(--text3);cursor:not-allowed;box-shadow:none;transform:none;}
-.submit-btn svg{width:14px;height:14px;}
-.alert{display:flex;gap:11px;border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:14px;font-size:12.5px;}
-.alert svg{width:15px;height:15px;flex-shrink:0;margin-top:1px;}
-.alert-title{font-weight:700;font-size:12px;margin-bottom:2px;font-family:var(--font-display);}
-.alert-body{font-size:11.5px;opacity:0.9;line-height:1.5;}
-.alert-warning{background:rgba(245,158,11,0.09);border:1px solid rgba(245,158,11,0.25);color:#92400e;}
-.alert-warning svg{color:#f59e0b;}
-.alert-error{background:rgba(239,68,68,0.09);border:1px solid rgba(239,68,68,0.25);color:#991b1b;}
-.alert-error svg{color:#ef4444;}
-.alert-success{background:rgba(16,185,129,0.09);border:1px solid rgba(16,185,129,0.25);color:#065f46;}
-.alert-success svg{color:#10b981;}
-[data-theme="dark"] .alert-warning{color:#fbbf24;} [data-theme="dark"] .alert-error{color:#f87171;} [data-theme="dark"] .alert-success{color:#34d399;}
-.status-section{padding:16px;}
-.status-section-label{font-size:9.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.14em;font-family:var(--mono);margin-bottom:10px;}
-.how-step{display:flex;align-items:flex-start;gap:12px;padding:11px 0;}
-.how-step+.how-step{border-top:1px solid var(--border);}
-.how-step-num{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;font-family:var(--font-display);flex-shrink:0;}
-.how-step-1{background:rgba(99,102,241,0.12);color:var(--accent);}
-.how-step-2{background:rgba(245,158,11,0.12);color:var(--yellow);}
-.how-step-3{background:rgba(16,185,129,0.12);color:var(--green);}
-.how-step-title{font-size:12px;font-weight:700;color:var(--text);font-family:var(--font-display);}
-.how-step-desc{font-size:11px;color:var(--text3);margin-top:2px;}
-.info-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:9px 0;}
-.info-row+.info-row{border-top:1px solid var(--border);}
-.info-row-lbl{color:var(--text3);font-family:var(--mono);letter-spacing:0.04em;font-size:10.5px;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
-@keyframes shrink{from{width:100%;}to{width:0%;}}
-@media(max-width:960px){.page-grid{grid-template-columns:1fr;}.right-col{position:static;}}
-@media(max-width:600px){.doc-type-grid{grid-template-columns:repeat(2,1fr);}}
-</style>
+@vite(['resources/css/user/pages/kyc-upload.css'])
 @endpush
 
 @section('content')
+<script type="application/json" id="kycUploadData">
+@json(['selectedDocType' => old('document_type') ?? ''])
+</script>
 {{-- Stepper --}}
 <div class="card" style="margin-bottom:20px;">
     <div class="card-body" style="padding:16px 20px;">
@@ -193,7 +98,7 @@
 
                         <label class="doc-type-label">
                             <input type="radio" name="document_type" value="pan"
-                                   onchange="onDocTypeChange('pan')"
+                                   data-action="doc-type" data-type="pan"
                                    {{ old('document_type') === 'pan' ? 'checked' : '' }}>
                             <div class="doc-type-inner">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="5" width="20" height="14" rx="2"/><path stroke-linecap="round" d="M16 10h2M16 14h2M6 10h5M6 14h3"/></svg>
@@ -203,7 +108,7 @@
 
                         <label class="doc-type-label">
                             <input type="radio" name="document_type" value="aadhaar"
-                                   onchange="onDocTypeChange('aadhaar')"
+                                   data-action="doc-type" data-type="aadhaar"
                                    {{ old('document_type') === 'aadhaar' ? 'checked' : '' }}>
                             <div class="doc-type-inner">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 11c0-1.105.895-2 2-2s2 .895 2 2v3m-2-3c0-1.105-.895-2-2-2s-2 .895-2 2v3m8-1a8 8 0 11-16 0 8 8 0 0116 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 13v1a3 3 0 006 0v-1"/></svg>
@@ -213,7 +118,7 @@
 
                         <label class="doc-type-label">
                             <input type="radio" name="document_type" value="passport"
-                                   onchange="onDocTypeChange('passport')"
+                                   data-action="doc-type" data-type="passport"
                                    {{ old('document_type') === 'passport' ? 'checked' : '' }}>
                             <div class="doc-type-inner">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0118 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
@@ -223,7 +128,7 @@
 
                         <label class="doc-type-label">
                             <input type="radio" name="document_type" value="other"
-                                   onchange="onDocTypeChange('other')"
+                                   data-action="doc-type" data-type="other"
                                    {{ old('document_type') === 'other' ? 'checked' : '' }}>
                             <div class="doc-type-inner">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
@@ -285,15 +190,12 @@
 
                     <div
                         id="dropZone"
-                        onclick="document.getElementById('document_file').click()"
-                        ondragover="handleDragOver(event)"
-                        ondragleave="handleDragLeave(event)"
-                        ondrop="handleDrop(event)"
+                        data-action="dz-zone"
                         class="drop-zone">
 
                         <input type="file" name="document_file" id="document_file"
                                accept=".pdf,.jpg,.jpeg,.png" style="display:none;"
-                               onchange="handleFileSelect(this)">
+                               data-action="dz-file">
 
                         <div class="drop-zone-icon" id="uploadIconWrap">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 16V4m0 0L8 8m4-4l4 4"/><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
@@ -311,10 +213,10 @@
                         <p>Your documents are <strong>end-to-end encrypted</strong> and only accessible by our compliance team. We never share your data with third parties.</p>
                     </div>
 
-                    <button type="submit" id="submitBtn" disabled class="submit-btn">
+                    <x-button variant="primary" type="submit">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
                         <span id="submitLabel">Complete Verification</span>
-                    </button>
+                    </x-button>
 
                 </div>
             </div>
@@ -422,104 +324,5 @@
 @endsection
 
 @push('page_scripts')
-<script>
-const docConfig = {
-    pan:      { placeholder: 'ABCDE1234F',           hint: 'Format: ABCDE1234F (5 letters · 4 digits · 1 letter)' },
-    aadhaar:  { placeholder: 'XXXX XXXX XXXX',       hint: 'Format: 12-digit Aadhaar number' },
-    passport: { placeholder: 'A1234567',              hint: 'Format: Letter followed by 7 digits' },
-    other:    { placeholder: 'Enter document number', hint: 'Enter the number printed on your document' },
-};
-
-let selectedDocType = '{{ old('document_type') ?? '' }}';
-let hasFile = false;
-
-function onDocTypeChange(type) {
-    selectedDocType = type;
-    const input  = document.getElementById('documentNumber');
-    const hintEl = document.getElementById('docFormatHint');
-    const config = docConfig[type];
-    input.placeholder = config.placeholder;
-    input.disabled = false;
-    input.focus();
-    hintEl.textContent = config.hint;
-    checkReady();
-}
-
-function handleFileSelect(input) {
-    if (input.files && input.files.length > 0) setFileSelected(input.files[0].name);
-}
-function handleDragOver(e) {
-    e.preventDefault();
-    document.getElementById('dropZone').classList.add('drag-over');
-}
-function handleDragLeave(e) {
-    document.getElementById('dropZone').classList.remove('drag-over');
-}
-function handleDrop(e) {
-    e.preventDefault();
-    handleDragLeave(e);
-    const files = e.dataTransfer.files;
-    if (files && files.length > 0) {
-        const dt = new DataTransfer();
-        dt.items.add(files[0]);
-        document.getElementById('document_file').files = dt.files;
-        setFileSelected(files[0].name);
-    }
-}
-function resetDropZone() {
-    const zone = document.getElementById('dropZone');
-    zone.classList.remove('file-selected','drag-over');
-    document.getElementById('uploadIconWrap').innerHTML = `
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:36px;height:36px;color:var(--text3);">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 16V4m0 0L8 8m4-4l4 4"/>
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2"/>
-        </svg>`;
-    document.getElementById('uploadPrimary').textContent = 'Drag & drop or click to upload';
-    document.getElementById('uploadSub').style.display = '';
-    document.getElementById('fileName').textContent = '';
-    document.getElementById('filePreview').classList.remove('visible');
-    hasFile = false;
-}
-function setFileSelected(name) {
-    resetDropZone();
-    hasFile = true;
-    const zone = document.getElementById('dropZone');
-    zone.classList.add('file-selected');
-    document.getElementById('uploadIconWrap').innerHTML = `
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:36px;height:36px;color:var(--green);">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-        </svg>`;
-    document.getElementById('uploadPrimary').textContent = 'File selected — click to change';
-    document.getElementById('uploadSub').style.display = 'none';
-    document.getElementById('fileName').textContent = name;
-    document.getElementById('filePreview').classList.add('visible');
-    checkReady();
-}
-function checkReady() {
-    const numVal = document.getElementById('documentNumber').value.trim();
-    const btn = document.getElementById('submitBtn');
-    btn.disabled = !(selectedDocType && hasFile && numVal.length > 2);
-}
-
-document.getElementById('documentNumber').addEventListener('input', checkReady);
-
-document.getElementById('kycForm').addEventListener('submit', function(e) {
-    const btn = document.getElementById('submitBtn');
-    const label = document.getElementById('submitLabel');
-    label.textContent = 'Submitting…';
-    btn.disabled = true;
-    btn.style.opacity = '0.7';
-    showToast();
-    e.preventDefault();
-    setTimeout(() => this.submit(), 600);
-});
-
-function showToast() {
-    const t = document.getElementById('successToast');
-    t.style.transform = 'translateX(-50%) translateY(0)';
-    t.style.opacity = '1';
-}
-
-if (selectedDocType) onDocTypeChange(selectedDocType);
-</script>
+@vite(['resources/js/user/kyc-upload.js'])
 @endpush

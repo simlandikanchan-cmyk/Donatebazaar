@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Reconciliation;
 
-use App\Contracts\Gateway\GatewayInterface;
+use App\Gateways\RazorpayGateway;
 use App\Models\CampaignSettlement;
 use App\Models\Organization;
 use App\Models\PayoutAccount;
@@ -39,7 +39,7 @@ class ReconciliationJobTest extends TestCase
             'gateway_reference' => 'PAYOUT_123',
         ]);
 
-        $gateway = $this->createMock(GatewayInterface::class);
+        $gateway = $this->createMock(RazorpayGateway::class);
         $gateway->method('getPayoutStatus')
             ->willReturn(['id' => 'PAYOUT_123', 'status' => 'paid', 'amount' => 500.00, 'currency' => 'INR']);
 
@@ -59,7 +59,7 @@ class ReconciliationJobTest extends TestCase
     #[Test]
     public function job_handles_empty_batch_gracefully(): void
     {
-        $gateway = $this->createMock(GatewayInterface::class);
+        $gateway = $this->createMock(RazorpayGateway::class);
         $service = new ReconciliationService(
             gateway: $gateway,
             stateMachine: new SettlementStateMachine(),

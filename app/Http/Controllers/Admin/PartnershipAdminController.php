@@ -86,7 +86,7 @@ class PartnershipAdminController extends Controller
         return view('admin.partnership.delete', compact('partnership'));
     }
 
-    public function delete($id)
+    public function destroy($id)
     {
         $partnership = Partnership::findOrFail($id);
 

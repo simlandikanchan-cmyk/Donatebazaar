@@ -79,8 +79,9 @@ class AdminCampaignProductTest extends TestCase
             'campaign_id'    => $this->campaign->id,
             'donation_type'  => 'product',
             'total_amount'   => 100,
-            'payment_status' => 'completed',
         ]);
+        $donation->payment_status = 'completed';
+        $donation->save();
 
         // donation_items.product_id FK references the legacy products table.
         DB::table('products')->insert([

@@ -2,7 +2,7 @@
 
 @section('content')
 
-@push('styles') @vite(['resources/css/payment.css']) @endpush
+@push('styles') @vite(['resources/css/public/payment.css']) @endpush
 
 <div class="min-h-screen flex items-center justify-center px-4 py-10"
      style="background: linear-gradient(180deg,#F8FAFC 0%,#EEF2FF 100%);">
@@ -237,34 +237,26 @@
                 auto-open Razorpay on page load. Prevents the modal from
                 re-opening when the user refreshes after a completed payment.
             --}}
-            <button id="rzp-button" type="button"
-                    class="btn btn-primary w-full"
-                    data-payment-status="{{ $donation->payment_status ?? 'pending' }}">
-
-                <span class="flex items-center justify-center gap-2">
-
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                         width="17"
-                         height="17"
-                         viewBox="0 0 24 24"
-                         fill="none"
-                         stroke="currentColor"
-                         stroke-width="2">
-                        <rect x="3" y="11" width="18" height="11" rx="2"/>
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                    </svg>
-
-                    Pay ₹{{ number_format($amount, 2) }} Securely
-                </span>
-            </button>
+            <x-button id="rzp-button" type="button" variant="primary" fullWidth data-payment-status="{{ $donation->payment_status ?? 'pending' }}">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     width="17"
+                     height="17"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2"/>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+                Pay ₹{{ number_format($amount, 2) }} Securely
+            </x-button>
 
             {{-- Cancel / Back link --}}
             <a id="cancel-link"
                href="{{ route('campaign.public', ['category' => $campaign->category->slug, 'slug' => $campaign->slug]) }}"
                class="block text-center py-3 rounded-2xl mt-3 text-sm font-medium transition"
                style="border:1px solid #E5E7EB; color:#6B7280;"
-               onmouseover="this.style.background='#F9FAFB'"
-               onmouseout="this.style.background='transparent'">
+               data-action="cancel-link-hover">
 
                 Cancel Donation
             </a>
@@ -336,205 +328,29 @@
 {{-- Razorpay SDK --}}
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-<script>
-
-    const payBtn = document.getElementById('rzp-button');
-    const cancelLink = document.getElementById('cancel-link');
-    const datetimeEl = document.getElementById('payment-datetime');
-
-    {{--
-        paymentStatus from data-* attribute — not a JS string literal.
-        Keeps DB state in the DOM rather than floating in JS global scope.
-    --}}
-    const paymentStatus = payBtn.dataset.paymentStatus;
-
-    const campaignUrl = "{{ route('campaign.public', ['category' => $campaign->category->slug, 'slug' => $campaign->slug]) }}";
-
-    const idleButtonHtml = `
-        <span class="flex items-center justify-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg"
-                 width="17"
-                 height="17"
-                 viewBox="0 0 24 24"
-                 fill="none"
-                 stroke="currentColor"
-                 stroke-width="2">
-                <rect x="3" y="11" width="18" height="11" rx="2"/>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-            </svg>
-            Pay ₹{{ number_format($amount, 2) }} Securely
-        </span>
-    `;
-
-    function resetButton() {
-        payBtn.disabled = false;
-        payBtn.style.background = "linear-gradient(135deg,#4F46E5 0%,#7C3AED 100%)";
-        payBtn.innerHTML = idleButtonHtml;
-    }
-
-    var options = {
-
-        key: "{{ $razorpay_key }}",
-        amount: "{{ (int) round($amount * 100) }}",
-        currency: "INR",
-
-        name: "DonateBazaar",
-
-        {{--
-            addslashes() prevents a campaign title containing a quote or
-            backslash from breaking the JS string literal.
-            e.g. title: Help "Children" Today  →  without fix: broken JS
-        --}}
-        description: "{{ addslashes($campaign->title) }}",
-
-        image: "{{ asset('logo.png') }}",
-
-        order_id: "{{ $order_id }}",
-
-        prefill: {
-            {{--
-                Js::from() JSON-encodes the PHP value so quotes/backslashes
-                in the donor's name or email cannot break the JS string.
-                {{ }} alone only HTML-escapes — not safe inside <script>.
-            --}}
-            name:  {{ Js::from(auth()->user()?->name  ?? 'Guest Donor') }},
-            email: {{ Js::from(auth()->user()?->email ?? '') }}
-        },
-
-        notes: {
-            campaign_id: "{{ $campaign->id }}",
-            donation_id: "{{ $donation_id }}"
-        },
-
-        theme: {
-            color: "#4F46E5"
-        },
-
-        modal: {
-            ondismiss: function () {
-                resetButton();
-            }
-        },
-
-        handler: function (response) {
-
-            payBtn.disabled = true;
-            cancelLink.style.visibility = "hidden";
-
-            payBtn.innerHTML = `
-                <span class="flex items-center justify-center gap-2">
-                    <span class="btn-spinner"></span>
-                    Verifying Payment...
-                </span>
-            `;
-
-            // Guarantee the "Verifying" state is visible for at least 1s,
-            // even if the server responds instantly, so the user actually
-            // registers what's happening instead of seeing a flash.
-            const minDelay = new Promise(resolve => setTimeout(resolve, 1000));
-
-            const verifyRequest = fetch("{{ route('payment.verify') }}", {
-
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                },
-
-                body: JSON.stringify({
-                    razorpay_payment_id: response.razorpay_payment_id,
-                    razorpay_order_id:   response.razorpay_order_id,
-                    razorpay_signature:  response.razorpay_signature,
-                    donation_id:         "{{ $donation_id }}"
-                })
-            })
-            .then(res => res.json());
-
-            Promise.all([verifyRequest, minDelay])
-
-            .then(([data]) => {
-
-                if (data.success) {
-
-                    const completedAt = data.paid_at
-                        ? new Date(data.paid_at)
-                        : new Date();
-
-                    datetimeEl.textContent = completedAt.toLocaleString('en-IN', {
-                        day: '2-digit', month: 'short', year: 'numeric',
-                        hour: '2-digit', minute: '2-digit', hour12: true
-                    });
-
-                    payBtn.innerHTML = `
-                        <span class="flex items-center justify-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg"
-                                 width="18" height="18"
-                                 viewBox="0 0 24 24"
-                                 fill="none"
-                                 stroke="currentColor"
-                                 stroke-width="2.5">
-                                <polyline points="20 6 9 17 4 12"/>
-                            </svg>
-                            Payment Successful
-                        </span>
-                    `;
-
-                    payBtn.style.background = "#059669";
-
-                    // No auto-redirect. The user stays on this confirmation
-                    // state and decides themselves when to leave.
-                    cancelLink.style.visibility = "visible";
-                    cancelLink.textContent      = "Back to Campaign";
-                    cancelLink.href             = campaignUrl;
-                    cancelLink.style.borderColor = "#A7F3D0";
-                    cancelLink.style.color       = "#047857";
-                    cancelLink.style.fontWeight  = "600";
-
-                } else {
-
-                    resetButton();
-                    cancelLink.style.visibility = "visible";
-                    alert(data.message || 'Payment verification failed.');
-                }
-            })
-
-            .catch(() => {
-
-                resetButton();
-                cancelLink.style.visibility = "visible";
-                alert('Something went wrong. Please try again.');
-            });
-        }
-    };
-
-    const rzp = new Razorpay(options);
-
-    payBtn.addEventListener('click', function (e) {
-
-        e.preventDefault();
-
-        payBtn.disabled = true;
-
-        payBtn.innerHTML = `
-            <span class="flex items-center justify-center gap-2">
-                <span class="btn-spinner"></span>
-                Opening Payment Gateway...
-            </span>
-        `;
-
-        rzp.open();
-    });
-
-    // Auto-open on page load ONLY when the payment is still pending.
-    // Without this check, refreshing the page after a completed payment
-    // would re-open the modal and could trigger a duplicate payment.
-    window.addEventListener('load', function () {
-        if (paymentStatus === 'pending') {
-            rzp.open();
-        }
-    });
-
+<script type="application/json" id="paymentData">
+@php
+    $paymentData = [
+        'campaignUrl' => route('campaign.public', ['category' => $campaign->category->slug, 'slug' => $campaign->slug]),
+        'amountLabel' => number_format($amount, 2),
+        'key' => $razorpay_key,
+        'amount' => (string) (int) round($amount * 100),
+        'description' => $campaign->title,
+        'image' => asset('logo.png'),
+        'orderId' => $order_id,
+        'donorName' => auth()->user()?->name ?? 'Guest Donor',
+        'donorEmail' => auth()->user()?->email ?? '',
+        'campaignId' => (string) $campaign->id,
+        'donationId' => (string) $donation_id,
+        'verifyUrl' => route('payment.verify'),
+        'csrfToken' => csrf_token(),
+    ];
+@endphp
+@json($paymentData)
 </script>
+
+@push('scripts')
+@vite('resources/js/public/payment.js')
+@endpush
 
 @endsection

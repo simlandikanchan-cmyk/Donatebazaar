@@ -69,6 +69,13 @@
         <button class="dh-filter-tab" data-filter="failed">Failed</button>
         <button class="dh-filter-tab" data-filter="refunded">Refunded</button>
     </div>
+    <select class="dh-filter-select" id="dhFilterSelect">
+        <option value="all">All Statuses</option>
+        <option value="completed">Completed</option>
+        <option value="pending">Pending</option>
+        <option value="failed">Failed</option>
+        <option value="refunded">Refunded</option>
+    </select>
     <div class="dh-search">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="M21 21l-3.5-3.5"/></svg>
         <input type="text" class="dh-search-input" id="searchInput" placeholder="Search by campaign…">
@@ -119,24 +126,23 @@
         </div>
         <div class="dh-actions">
             @if($donation->payment_status === 'completed')
-            <a href="{{ route('donation.receipt', $donation->id) }}" class="btn btn-accent" target="_blank">
+            <x-button variant="primary" href="{{ route('donation.receipt', $donation->id) }}" target="_blank">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 Receipt
-            </a>
+            </x-button>
             @elseif($donation->is_refunded && $donation->refunds->isNotEmpty())
-            <button type="button" class="btn btn-gray" onclick="toggleRefundDetails({{ $donation->id }})">
+            <x-button variant="secondary" type="button" onclick="toggleRefundDetails({{ $donation->id }})">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m4 0h1M3 10l2-5h14l2 5v9a1 1 0 01-1 1H4a1 1 0 01-1-1v-9z"/></svg>
                 Refund Info
-            </button>
+            </x-button>
             @endif
-            @if($donation->campaign?->slug)
-            <a href="{{ route('campaign.public', ['category' => $donation->campaign->category->slug ?? 'uncategorized', 'slug' => $donation->campaign->slug]) }}" class="btn btn-secondary">
-            @else
-            <a href="#" class="btn btn-secondary">
-            @endif
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                View
-            </a>
+            @php
+            $campaignUrl = $donation->campaign?->slug ? route('campaign.public', ['category' => $donation->campaign->category->slug ?? 'uncategorized', 'slug' => $donation->campaign->slug]) : '#';
+        @endphp
+        <x-button variant="secondary" href="{{ $campaignUrl }}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+            View
+        </x-button>
         </div>
     </div>
     @if($donation->is_refunded && $donation->refunds->isNotEmpty())
@@ -198,10 +204,10 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
     <h3>No Donations Yet</h3>
     <p>When you donate to a campaign, it will appear here with receipt details.</p>
-    <a href="{{ route('all.campaigns') }}" class="btn btn-primary">
+    <x-button variant="primary" href="{{ route('all.campaigns') }}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
         Explore Campaigns
-    </a>
+    </x-button>
 </div>
 @endif
 
@@ -234,6 +240,16 @@
 .dh-search-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow);}
 .dh-search-input::placeholder{color:var(--text3);}
 
+.dh-filter-select{display:none;width:100%;padding:8px 32px 8px 10px;border:1px solid var(--border2);border-radius:var(--r-sm);font-size:12.5px;font-weight:500;font-family:var(--font);background:var(--surface2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M1 3l4 4 4-4' fill='none' stroke='%23939AB1' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 10px center;color:var(--text);outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;}
+.dh-filter-select:focus{border-color:var(--accent);}
+
+@media(max-width:600px){
+  .dh-filter-bar{flex-direction:column;align-items:stretch;}
+  .dh-filter-tabs{display:none;}
+  .dh-filter-select{display:block;}
+  .dh-search{min-width:0;}
+}
+
 .dh-list{display:flex;flex-direction:column;gap:10px;}
 .dh-row{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);box-shadow:var(--sh);transition:border-color var(--ease),transform var(--ease);animation:fadeUp .4s both;}
 .dh-row:hover{border-color:var(--border2);transform:translateY(-1px);}
@@ -257,9 +273,7 @@
 [data-theme="dark"] .chip-refunded{color:#9ca3af;}
 
 .dh-actions{display:flex;align-items:center;gap:7px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;}
-.btn-gray{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;border-radius:var(--r-sm);border:1px solid var(--border2);background:var(--surface);color:var(--text2);font-size:11px;font-weight:600;font-family:var(--font);cursor:pointer;transition:all var(--ease);text-decoration:none;white-space:nowrap;}
 .btn-gray:hover{border-color:#6b7280;color:#6b7280;}
-.btn-gray svg{width:13px;height:13px;flex-shrink:0;}
 .dh-refund-details{background:var(--surface2);border:1px dashed var(--border2);border-radius:var(--r-sm);padding:14px 18px;margin:-6px 0 10px;animation:fadeUp .3s both;}
 .dh-refund-header{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text3);font-family:var(--mono);margin-bottom:10px;}
 .dh-refund-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
@@ -278,12 +292,19 @@
 .dh-empty .btn svg{width:13px;height:13px;opacity:1;}
 .dh-pagination{display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:22px;}
 .dh-pagination .pagination{display:flex;gap:6px;list-style:none;flex-wrap:wrap;padding:0;margin:0;}
+.dh-pagination .page-item{display:flex;}
 .dh-pagination .page-link{display:flex;align-items:center;justify-content:center;min-width:34px;height:34px;padding:0 10px;border-radius:var(--r-sm);border:1px solid var(--border2);background:var(--surface);color:var(--text2);font-size:12px;font-weight:600;font-family:var(--mono);transition:all var(--ease);text-decoration:none;}
 .dh-pagination .page-link:hover{border-color:var(--accent);color:var(--accent);}
-.dh-pagination .active .page-link{background:var(--accent);border-color:var(--accent);color:#fff;}
-.dh-pagination .disabled .page-link{opacity:.4;cursor:default;pointer-events:none;}
+.dh-pagination .page-item.active .page-link{background:var(--accent);border-color:var(--accent);color:#fff;}
+.dh-pagination .page-item.disabled .page-link{opacity:.4;cursor:default;pointer-events:none;}
 .dh-pagination .pagination-info{font-size:12px;color:var(--text3);font-family:var(--mono);margin:0;}
 .dh-pagination .pagination-info strong{font-weight:700;color:var(--text2);}
+
+@media(max-width:600px){
+  .dh-pagination .pagination{gap:4px;}
+  .dh-pagination .page-link{min-width:30px;height:30px;padding:0 8px;font-size:11px;}
+  .dh-pagination .pagination-info{font-size:11px;}
+}
 
 @media(max-width:960px){.dh-stats{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:860px){
@@ -294,6 +315,31 @@
 }
 @media(max-width:600px){.dh-stats{grid-template-columns:1fr 1fr;}.dh-filter-bar{flex-direction:column;align-items:stretch;}.dh-search{min-width:0;}}
 @media(max-width:480px){.dh-stats{grid-template-columns:1fr;}}
+@media(max-width:360px){
+  .dh-stats{grid-template-columns:1fr;gap:4px;}
+  .dh-stat{padding:8px 10px;gap:6px;}
+  .dh-stat-icon{width:28px;height:28px;border-radius:7px;}
+  .dh-stat-icon svg{width:12px;height:12px;}
+  .dh-stat-num{font-size:14px;}
+  .dh-stat-lbl{font-size:7.5px;}
+  .dh-filter-select{font-size:9px;height:26px;padding:4px 22px 4px 6px;}
+  .dh-search-input{font-size:10px;padding:5px 8px 5px 24px;}
+  .dh-row{padding:8px 10px;gap:6px;}
+  .dh-avatar{width:30px;height:30px;border-radius:7px;}
+  .dh-avatar svg{width:12px;height:12px;}
+  .dh-title{font-size:10px;}
+  .dh-amount{font-size:12px;}
+  .dh-chip{font-size:7.5px;padding:2px 6px;gap:3px;}
+  .dh-chip .dot{width:3px;height:3px;}
+  .dh-meta-item{font-size:8px;}
+  .dh-actions{gap:3px;}
+  .dh-pagination .page-link{min-width:24px;height:24px;padding:0 5px;font-size:9px;}
+  .dh-pagination .pagination-info{font-size:9px;}
+  .dh-refund-row{grid-template-columns:1fr;gap:4px;}
+  .dh-refund-details{padding:8px 10px;}
+  .dh-refund-label{font-size:7.5px;}
+  .dh-refund-value{font-size:9px;}
+}
 </style>
 @endpush
 
@@ -301,6 +347,7 @@
 <script>
 var currentFilter = 'all';
 var searchInput = document.getElementById('searchInput');
+var filterSelect = document.getElementById('dhFilterSelect');
 var rows = Array.prototype.slice.call(document.querySelectorAll('.dh-row'));
 var noResults = document.getElementById('noResults');
 
@@ -323,6 +370,7 @@ document.querySelectorAll('.dh-stat').forEach(function(card){
         currentFilter = filter;
         document.querySelectorAll('.dh-stat').forEach(function(c){ c.classList.toggle('is-active', c.getAttribute('data-filter') === filter); });
         document.querySelectorAll('.dh-filter-tab').forEach(function(t){ t.classList.toggle('active', t.getAttribute('data-filter') === filter); });
+        if (filterSelect) filterSelect.value = filter;
         applyFilters();
     });
 });
@@ -333,9 +381,19 @@ document.querySelectorAll('.dh-filter-tab').forEach(function(tab){
         currentFilter = filter;
         document.querySelectorAll('.dh-filter-tab').forEach(function(t){ t.classList.toggle('active', t.getAttribute('data-filter') === filter); });
         document.querySelectorAll('.dh-stat').forEach(function(c){ c.classList.toggle('is-active', c.getAttribute('data-filter') === filter); });
+        if (filterSelect) filterSelect.value = filter;
         applyFilters();
     });
 });
+
+if (filterSelect) {
+    filterSelect.addEventListener('change', function(){
+        currentFilter = this.value;
+        document.querySelectorAll('.dh-filter-tab').forEach(function(t){ t.classList.toggle('active', t.getAttribute('data-filter') === currentFilter); });
+        document.querySelectorAll('.dh-stat').forEach(function(c){ c.classList.toggle('is-active', c.getAttribute('data-filter') === currentFilter); });
+        applyFilters();
+    });
+}
 
 searchInput?.addEventListener('input', applyFilters);
 

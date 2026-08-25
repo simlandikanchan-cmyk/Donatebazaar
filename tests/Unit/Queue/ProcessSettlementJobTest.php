@@ -2,17 +2,15 @@
 
 namespace Tests\Unit\Queue;
 
-use App\Contracts\Gateway\GatewayInterface;
-use App\Exceptions\PermanentFailureException;
-use App\Exceptions\TemporaryFailureException;
-use App\Exceptions\TimeoutException;
 use App\Jobs\ProcessSettlementJob;
 use App\Jobs\RetryPolicy;
 use App\Jobs\RetrySettlementJob;
 use App\Models\CampaignSettlement;
 use App\Models\Organization;
 use App\Models\PayoutAccount;
+use App\Models\PayoutAttempt;
 use App\Models\User;
+use App\Services\SettlementService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use PHPUnit\Framework\Attributes\Test;
@@ -45,7 +43,7 @@ class ProcessSettlementJobTest extends TestCase
         ]);
 
         $job = new ProcessSettlementJob($settlement);
-        $job->handle(app(\App\Services\SettlementService::class));
+        $job->handle(app(SettlementService::class));
 
         $settlement->refresh();
         $this->assertSame('paid', $settlement->status);
@@ -74,10 +72,10 @@ class ProcessSettlementJobTest extends TestCase
             'net_amount' => 500.00,
         ]);
 
-        $this->expectException(TemporaryFailureException::class);
+        Queue::fake();
 
         $job = new ProcessSettlementJob($settlement);
-        $job->handle(app(\App\Services\SettlementService::class));
+        $job->handle(app(SettlementService::class));
 
         $settlement->refresh();
         $this->assertSame('retry_pending', $settlement->status);
@@ -115,10 +113,8 @@ class ProcessSettlementJobTest extends TestCase
 
         Queue::fake();
 
-        $this->expectException(\App\Exceptions\TemporaryFailureException::class);
-
         $job = new ProcessSettlementJob($settlement);
-        $job->handle(app(\App\Services\SettlementService::class));
+        $job->handle(app(SettlementService::class));
 
         $settlement->refresh();
         $this->assertSame('retry_pending', $settlement->status);
@@ -141,7 +137,7 @@ class ProcessSettlementJobTest extends TestCase
         ]);
 
         $job = new ProcessSettlementJob($settlement);
-        $job->handle(app(\App\Services\SettlementService::class));
+        $job->handle(app(SettlementService::class));
 
         $settlement->refresh();
         $this->assertSame('failed', $settlement->status);
@@ -170,21 +166,21 @@ class ProcessSettlementJobTest extends TestCase
         ]);
 
         $job = new ProcessSettlementJob($settlement);
-        $job->handle(app(\App\Services\SettlementService::class));
+        $job->handle(app(SettlementService::class));
 
         $settlement->refresh();
         $this->assertSame('paid', $settlement->status);
 
         $job2 = new ProcessSettlementJob($settlement);
-        $job2->handle(app(\App\Services\SettlementService::class));
+        $job2->handle(app(SettlementService::class));
 
         $settlement->refresh();
         $this->assertSame('paid', $settlement->status);
-        $this->assertSame(1, \App\Models\PayoutAttempt::where('settlement_id', $settlement->id)->count());
+        $this->assertSame(1, PayoutAttempt::where('settlement_id', $settlement->id)->count());
     }
 
     #[Test]
-    public function already_paid_settlement_skips_processing(): void
+    public function already_paid_settlement_is_skipped(): void
     {
         $org = Organization::factory()->create();
         $user = User::factory()->create();
@@ -206,9 +202,43 @@ class ProcessSettlementJobTest extends TestCase
         ]);
 
         $job = new ProcessSettlementJob($settlement);
-        $job->handle(app(\App\Services\SettlementService::class));
+        $job->handle(app(SettlementService::class));
 
         $this->assertSame('paid', $settlement->status);
     }
 
+    #[Test]
+    public function job_does_not_process_when_max_retries_exceeded(): void
+    {
+        $org = Organization::factory()->create();
+        $user = User::factory()->create();
+        $org->update(['user_id' => $user->id]);
+
+        PayoutAccount::create([
+            'organization_id' => $org->id,
+            'account_holder_name' => 'Test',
+            'bank_name' => 'Test Bank',
+            'account_number' => '1234567890',
+            'ifsc_code' => 'TEST0001234',
+            'is_verified' => true,
+        ]);
+
+        $policy = app(RetryPolicy::class);
+        $maxRetries = $policy->maxRetries();
+
+        $settlement = CampaignSettlement::factory()->create([
+            'organization_id' => $org->id,
+            'status' => 'retry_pending',
+            'net_amount' => 500.00,
+            'retry_count' => $maxRetries,
+        ]);
+
+        $initialPayoutCount = PayoutAttempt::count();
+
+        $job = new ProcessSettlementJob($settlement);
+        $job->handle(app(SettlementService::class));
+
+        // No new payout attempt should be created
+        $this->assertSame($initialPayoutCount, PayoutAttempt::count());
+    }
 }

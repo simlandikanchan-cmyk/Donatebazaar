@@ -13,10 +13,10 @@
 
 <div style="max-width:800px;">
 
-<a href="{{ route('recurring.index') }}" class="btn btn-secondary" style="margin-bottom:18px;">
+<x-button variant="secondary" href="{{ route('recurring.index') }}">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5m7 7l-7-7 7-7"/></svg>
     Back to All Plans
-</a>
+</x-button>
 
 <div class="card">
     <div style="padding:24px 28px;">
@@ -118,19 +118,19 @@
         @endif
 
         <div style="display:flex;gap:10px;flex-wrap:wrap;">
-            <a href="{{ route('recurring.index') }}" class="btn btn-secondary">
+            <x-button variant="secondary" href="{{ route('recurring.index') }}">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5m7 7l-7-7 7-7"/></svg>
                 Back to All Plans
-            </a>
+            </x-button>
 
             @if($status === 'active')
             <form action="{{ route('recurring.pause', $rd->id) }}" method="POST">
                 @csrf
                 @method('PATCH')
-                <button type="submit" class="btn btn-yellow">
+                <x-button variant="secondary" type="submit">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
                     Pause Plan
-                </button>
+                </x-button>
             </form>
             @endif
 
@@ -138,10 +138,10 @@
             <form action="{{ route('recurring.resume', $rd->id) }}" method="POST">
                 @csrf
                 @method('PATCH')
-                <button type="submit" class="btn btn-green">
+                <x-button variant="primary" type="submit">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                     Resume Plan
-                </button>
+                </x-button>
             </form>
             @endif
 
@@ -149,10 +149,10 @@
             <form action="{{ route('recurring.cancel', $rd->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to cancel this recurring donation? This action cannot be undone.')">
                 @csrf
                 @method('PATCH')
-                <button type="submit" class="btn btn-red">
+                <x-button variant="destructive" type="submit">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
                     Cancel Plan
-                </button>
+                </x-button>
             </form>
             @endif
         </div>

@@ -1,3 +1,7 @@
+@push('page_css')
+@vite('resources/css/admin/entries/misc.css')
+@endpush
+
 @extends('layouts.admin')
 
 @section('sidebar_success_stories', 'active')
@@ -20,7 +24,9 @@
 .search-input:focus{border-color:var(--a);box-shadow:0 0 0 3px var(--a-glow);}
 .filter-btn{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 13px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--r-sm);font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;font-family:var(--font);transition:all var(--ease);text-decoration:none;}
 .filter-btn:hover,.filter-btn.on{border-color:var(--a);color:var(--a);background:var(--a-lt);}
-.table-wrap{overflow-x:auto;}
+.table-scroll{overflow-x:auto;}
+@media(max-width:640px){.table-scroll{min-width:640px}.actions{flex-wrap:wrap}.actions .btn{width:100%;justify-content:center}}
+@media(max-width:480px){.table-scroll{min-width:480px}table{min-width:480px}}
 table{width:100%;border-collapse:collapse;}
 thead th{padding:10px 18px;text-align:left;font-size:10px;font-family:var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--text3);background:var(--surface2);border-bottom:1px solid var(--border);font-weight:500;white-space:nowrap;}
 thead th:last-child{text-align:right;}
@@ -43,6 +49,8 @@ td{padding:13px 18px;font-size:13px;vertical-align:middle;}
 .toggle-on:hover{background:rgba(245,158,11,.22);}
 .toggle-off{background:var(--surface2);color:var(--text2);border-color:var(--border2);}
 .toggle-off:hover{border-color:var(--a);color:var(--a);background:var(--a-lt);}
+.ab-view{background:var(--a-lt);color:var(--a);border-color:rgba(37,99,235,.2)}
+.ab-view:hover{background:var(--a);color:#fff;box-shadow:0 4px 14px rgba(37,99,235,.35)}
 .empty-state{padding:64px 24px;text-align:center;}
 .empty-icon-wrap{width:64px;height:64px;border-radius:18px;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 16px;}
 .empty-state h3{font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;}
@@ -88,7 +96,7 @@ td{padding:13px 18px;font-size:13px;vertical-align:middle;}
       <p>Completed campaigns can be featured on the public Impact / Success Stories page.</p>
     </div>
   @else
-    <div class="table-wrap">
+    <div class="table-scroll">
       <table>
         <thead>
           <tr>
@@ -137,7 +145,13 @@ td{padding:13px 18px;font-size:13px;vertical-align:middle;}
                     @endif
                   </button>
                 </form>
-                <a href="{{ route('campaign.public', ['category' => $c->category?->slug ?? 'campaign', 'slug' => $c->slug]) }}" target="_blank" class="btn btn-secondary toggle-btn toggle-off" title="View">View</a>
+                <a href="{{ route('campaign.public', ['category' => $c->category?->slug ?? 'campaign', 'slug' => $c->slug]) }}" target="_blank" class="btn btn-secondary act-btn ab-view" title="View">View</a>
+                <form method="POST" action="{{ route('admin.success-stories.destroy', $c->id) }}" style="display:inline;" onsubmit="return confirm('Remove this success story? This cannot be undone.');">
+                  @csrf @method('DELETE')
+                  <button type="submit" class="btn btn-red act-btn ab-delete" title="Remove">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Remove
+                  </button>
+                </form>
               </div>
             </td>
           </tr>

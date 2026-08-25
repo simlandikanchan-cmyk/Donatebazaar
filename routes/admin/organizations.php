@@ -9,6 +9,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
         [OrganizationController::class, 'index']
     )->name('organizations.index');
 
+    Route::delete('/organizations/{organization}', [OrganizationController::class, 'destroy'])->name('organizations.destroy');
+
     Route::get('/organizations/create',
         [OrganizationController::class, 'create']
     )->name('organizations.create');

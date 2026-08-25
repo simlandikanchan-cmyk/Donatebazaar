@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Reconciliation;
 
-use App\Contracts\Gateway\GatewayInterface;
+use App\Gateways\RazorpayGateway;
 use App\Events\SettlementCancelled;
 use App\Events\SettlementFailed;
 use App\Events\SettlementPaid;
@@ -25,7 +25,7 @@ class ReconciliationServiceTest extends TestCase
 {
     use RefreshDatabase;
 
-    private GatewayInterface $gateway;
+    private RazorpayGateway $gateway;
 
     private SettlementStateMachine $stateMachine;
 
@@ -35,7 +35,7 @@ class ReconciliationServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->gateway = $this->createMock(GatewayInterface::class);
+        $this->gateway = $this->createMock(RazorpayGateway::class);
         $this->stateMachine = new SettlementStateMachine();
         $this->service = new ReconciliationService(
             gateway: $this->gateway,

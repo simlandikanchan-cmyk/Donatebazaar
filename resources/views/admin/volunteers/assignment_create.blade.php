@@ -1,3 +1,7 @@
+@push('page_css')
+@vite('resources/css/admin/entries/misc.css')
+@endpush
+
 @extends('layouts.admin')
 
 @section('sidebar_volunteer_assignments', 'active')

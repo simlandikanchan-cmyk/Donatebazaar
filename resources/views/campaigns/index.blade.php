@@ -2,7 +2,7 @@
 
 @section('content')
 
-@push('styles') @vite(['resources/css/campaigns-index.css']) @endpush
+@push('styles') @vite(['resources/css/public/campaigns-index.css']) @endpush
 
 
 <section class="campaign-section">
@@ -15,7 +15,7 @@
             @forelse($campaigns as $campaign)
 
                 @php
-                    $raised = $campaign->donations->sum('amount');
+                    $raised = $campaign->donations_sum_total_amount ?? $campaign->raised_amount ?? 0;
                     $goal = $campaign->goal_amount;
                     $percent = $goal > 0 ? min(100, round(($raised / $goal) * 100)) : 0;
                 @endphp
@@ -56,9 +56,9 @@
                         </div>
 
                         {{-- Button --}}
-                        <a href="#" class="btn-donate">
+                        <x-button variant="primary" href="{{ route('campaign.public', ['category' => $campaign->category?->slug ?? 'general', 'slug' => $campaign->slug]) }}">
                             Donate Now
-                        </a>
+                        </x-button>
 
                     </div>
 

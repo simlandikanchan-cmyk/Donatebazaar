@@ -39,9 +39,7 @@
 .doc-img-inner{position:relative;}
 .doc-img-inner img{width:100%;max-height:340px;object-fit:contain;display:block;padding:12px;cursor:zoom-in;transition:transform 0.3s ease;background:var(--surface2);}
 .doc-img-inner:hover img{transform:scale(1.015);}
-.doc-expand-btn{position:absolute;bottom:10px;right:10px;width:30px;height:30px;border-radius:8px;background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;transition:background 0.2s;}
 .doc-expand-btn:hover{background:rgba(0,0,0,0.78);}
-.doc-expand-btn svg{width:13px;height:13px;}
 .doc-pdf-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:40px 20px;text-align:center;}
 .doc-pdf-icon{width:60px;height:60px;border-radius:14px;background:rgba(239,68,68,0.10);display:flex;align-items:center;justify-content:center;}
 .doc-pdf-icon svg{width:30px;height:30px;color:#ef4444;}
@@ -117,7 +115,6 @@
 .lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:9998;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
 .lightbox.open{display:flex;animation:fadeIn 0.2s ease;}
 .lightbox img{max-width:90vw;max-height:90vh;border-radius:10px;box-shadow:0 20px 80px rgba(0,0,0,0.6);object-fit:contain;}
-.lightbox-close{position:absolute;top:20px;right:20px;width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,0.12);color:#fff;border:none;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;}
 .lightbox-close:hover{background:rgba(255,255,255,0.22);}
 @keyframes toastIn{from{opacity:0;transform:translateX(20px) scale(0.96);}to{opacity:1;transform:translateX(0) scale(1);}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
@@ -313,14 +310,14 @@
                             </span>
                             @if($kycAadhaarUrl)
                             <div style="display:flex;gap:5px;">
-                                <a href="{{ $kycAadhaarUrl }}" target="_blank" class="kyc-doc-btn kyc-doc-btn-view">
+                                <x-button variant="outline" href="{{ $kycAadhaarUrl }}" target="_blank">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                                     Open
-                                </a>
-                                <a href="{{ $kycAadhaarUrl }}" download class="kyc-doc-btn kyc-doc-btn-dl">
+                                </x-button>
+                                <x-button variant="outline" href="{{ $kycAadhaarUrl }}">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                                     DL
-                                </a>
+                                </x-button>
                             </div>
                             @endif
                         </div>
@@ -348,14 +345,14 @@
                             </span>
                             @if($kycPanUrl)
                             <div style="display:flex;gap:5px;">
-                                <a href="{{ $kycPanUrl }}" target="_blank" class="kyc-doc-btn kyc-doc-btn-view">
+                                <x-button variant="outline" href="{{ $kycPanUrl }}" target="_blank">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                                     Open
-                                </a>
-                                <a href="{{ $kycPanUrl }}" download class="kyc-doc-btn kyc-doc-btn-dl">
+                                </x-button>
+                                <x-button variant="outline" href="{{ $kycPanUrl }}">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                                     DL
-                                </a>
+                                </x-button>
                             </div>
                             @endif
                         </div>
@@ -395,14 +392,14 @@
                         <div class="kyc-selfie-sub">Photo holding your Aadhaar or PAN card next to your face, used to verify your identity against submitted documents.</div>
                         @if($kycSelfieUrl)
                         <div style="margin-top:10px;display:flex;gap:6px;">
-                            <a href="{{ $kycSelfieUrl }}" target="_blank" onclick="event.preventDefault();openLightbox('{{ $kycSelfieUrl }}')" class="kyc-doc-btn kyc-doc-btn-view">
+                            <x-button variant="outline" href="{{ $kycSelfieUrl }}" target="_blank">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                                 View full size
-                            </a>
-                            <a href="{{ $kycSelfieUrl }}" download class="kyc-doc-btn kyc-doc-btn-dl">
+                            </x-button>
+                            <x-button variant="outline" href="{{ $kycSelfieUrl }}">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                                 Download
-                            </a>
+                            </x-button>
                         </div>
                         @endif
                     </div>
@@ -502,9 +499,9 @@
                                  alt="{{ ucfirst($kyc->document_type) }}"
                                  loading="lazy"
                                  onclick="openLightbox(this.src)">
-                            <button class="doc-expand-btn" onclick="openLightbox('{{ $docServeUrl }}')">
+                            <x-button variant="ghost" type="button">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
-                            </button>
+                            </x-button>
                         </div>
                     </div>
                 @endif
@@ -641,10 +638,10 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                     Campaign Overview
                 </a>
-                <a href="{{ url('/user/dashboard') }}" class="btn btn-secondary">
+                <x-button variant="secondary" href="{{ url('/user/dashboard') }}">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M12 5l-7 7 7 7"/></svg>
                     Back to Dashboard
-                </a>
+                </x-button>
                 </div>
             </div>
         </div>

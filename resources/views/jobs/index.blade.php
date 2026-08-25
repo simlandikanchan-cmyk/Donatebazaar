@@ -11,7 +11,7 @@
             <option value="part-time">Part-Time</option>
             <option value="volunteer">Volunteer</option>
         </select>
-        <button type="submit" class="btn btn-primary">Search</button>
+        <x-button variant="primary" type="submit">Search</x-button>
     </form>
 
     @foreach($jobs as $job)

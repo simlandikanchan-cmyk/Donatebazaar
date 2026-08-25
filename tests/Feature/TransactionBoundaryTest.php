@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Contracts\Gateway\GatewayInterface;
+use App\Gateways\RazorpayGateway;
 use App\Events\SettlementProcessingStarted;
 use App\Exceptions\PermanentFailureException;
 use App\Exceptions\TemporaryFailureException;
@@ -61,14 +61,14 @@ class TransactionBoundaryTest extends TestCase
         $gatewayCalled = false;
         $settlementInProcessing = null;
 
-        $gateway = $this->createMock(GatewayInterface::class);
+        $gateway = $this->createMock(RazorpayGateway::class);
         $gateway->method('initiatePayout')->willReturnCallback(function () use (&$gatewayCalled, &$settlementInProcessing, $settlement) {
             $gatewayCalled = true;
             $settlementInProcessing = CampaignSettlement::find($settlement->id);
-            return \App\Contracts\Gateway\PayoutResult::success(
-                gatewayReference: 'PAYOUT_'.$settlement->id,
-                providerStatus: 'paid'
-            );
+            return [
+                'gateway_reference' => 'PAYOUT_'.$settlement->id,
+                'provider_status' => 'paid',
+            ];
         });
 
         $service = new SettlementService(
@@ -94,7 +94,7 @@ class TransactionBoundaryTest extends TestCase
             'net_amount' => 500.00,
         ]);
 
-        $gateway = $this->createMock(GatewayInterface::class);
+        $gateway = $this->createMock(RazorpayGateway::class);
         $gateway->method('initiatePayout')->willThrowException(new TimeoutException('Gateway timeout'));
 
         $service = new SettlementService(
@@ -114,20 +114,20 @@ class TransactionBoundaryTest extends TestCase
     }
 
     #[Test]
-    public function processing_settlement_without_gateway_reference_calls_gateway(): void
+    public function retry_pending_settlement_without_gateway_reference_calls_gateway(): void
     {
         $settlement = CampaignSettlement::factory()->create([
             'organization_id' => $this->org->id,
-            'status' => 'processing',
+            'status' => 'retry_pending',
             'processed_at' => now(),
             'gateway_reference' => null,
         ]);
 
-        $gateway = $this->createMock(GatewayInterface::class);
-        $gateway->method('initiatePayout')->willReturn(\App\Contracts\Gateway\PayoutResult::success(
-            gatewayReference: 'PAYOUT_'.$settlement->id,
-            providerStatus: 'paid'
-        ));
+        $gateway = $this->createMock(RazorpayGateway::class);
+        $gateway->method('initiatePayout')->willReturn([
+            'gateway_reference' => 'PAYOUT_'.$settlement->id,
+            'provider_status' => 'paid',
+        ]);
 
         $service = new SettlementService(
             walletService: app(\App\Services\WalletService::class),
@@ -144,17 +144,20 @@ class TransactionBoundaryTest extends TestCase
     }
 
     #[Test]
-    public function processing_settlement_with_gateway_reference_skips_gateway_call(): void
+    public function retry_pending_settlement_with_gateway_reference_still_calls_gateway(): void
     {
         $settlement = CampaignSettlement::factory()->create([
             'organization_id' => $this->org->id,
-            'status' => 'processing',
+            'status' => 'retry_pending',
             'processed_at' => now(),
             'gateway_reference' => 'PAYOUT_123',
         ]);
 
-        $gateway = $this->createMock(GatewayInterface::class);
-        $gateway->expects($this->never())->method('initiatePayout');
+        $gateway = $this->createMock(RazorpayGateway::class);
+        $gateway->expects($this->once())->method('initiatePayout')->willReturn([
+            'gateway_reference' => 'PAYOUT_123',
+            'provider_status' => 'paid',
+        ]);
 
         $service = new SettlementService(
             walletService: app(\App\Services\WalletService::class),
@@ -166,7 +169,8 @@ class TransactionBoundaryTest extends TestCase
         $result = $service->processSettlementPayout($settlement);
 
         $this->assertTrue($result['success']);
-        $this->assertSame('processing', $settlement->status);
+        $settlement->refresh();
+        $this->assertSame('paid', $settlement->status);
     }
 
     #[Test]
@@ -180,7 +184,7 @@ class TransactionBoundaryTest extends TestCase
 
         $lockHeldDuringGateway = false;
 
-        $gateway = $this->createMock(GatewayInterface::class);
+        $gateway = $this->createMock(RazorpayGateway::class);
         $gateway->method('initiatePayout')->willReturnCallback(function () use ($settlement, &$lockHeldDuringGateway) {
             $fresh = CampaignSettlement::find($settlement->id);
             $lockHeldDuringGateway = DB::selectOne(
@@ -188,10 +192,10 @@ class TransactionBoundaryTest extends TestCase
                 ['campaign_settlements']
             )->count > 0;
 
-            return \App\Contracts\Gateway\PayoutResult::success(
-                gatewayReference: 'PAYOUT_'.$settlement->id,
-                providerStatus: 'paid'
-            );
+            return [
+                'gateway_reference' => 'PAYOUT_'.$settlement->id,
+                'provider_status' => 'paid',
+            ];
         });
 
         $service = new SettlementService(
@@ -214,7 +218,7 @@ class TransactionBoundaryTest extends TestCase
             'net_amount' => 500.00,
         ]);
 
-        $gateway = $this->createMock(GatewayInterface::class);
+        $gateway = $this->createMock(RazorpayGateway::class);
         $gateway->method('initiatePayout')->willThrowException(new PermanentFailureException('Permanent failure'));
 
         $service = new SettlementService(
@@ -241,11 +245,11 @@ class TransactionBoundaryTest extends TestCase
             'net_amount' => 500.00,
         ]);
 
-        $gateway = $this->createMock(GatewayInterface::class);
-        $gateway->method('initiatePayout')->willReturn(\App\Contracts\Gateway\PayoutResult::success(
-            gatewayReference: 'PAYOUT_'.$settlement->id,
-            providerStatus: 'paid'
-        ));
+        $gateway = $this->createMock(RazorpayGateway::class);
+        $gateway->method('initiatePayout')->willReturn([
+            'gateway_reference' => 'PAYOUT_'.$settlement->id,
+            'provider_status' => 'paid',
+        ]);
 
         $service = new SettlementService(
             walletService: app(\App\Services\WalletService::class),

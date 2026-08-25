@@ -2,18 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreEventRequest;
+use App\Http\Requests\UpdateEventRequest;
 use App\Models\Campaign;
 use App\Models\Event;
+use App\Services\SlugGenerator;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class EventController extends Controller
 {
+    public function __construct(
+        private SlugGenerator $slugGenerator
+    ) {}
+
     /*
     |--------------------------------------------------------------------------
     | Create Event Form
@@ -53,7 +59,7 @@ class EventController extends Controller
     */
 
     public function store(
-        Request $request,
+        StoreEventRequest $request,
         Campaign $campaign
     ): RedirectResponse {
 
@@ -82,52 +88,7 @@ class EventController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $validated = $request->validate([
-            'title' => [
-                'required',
-                'string',
-                'max:255',
-            ],
-
-            'description' => [
-                'required',
-                'string',
-            ],
-
-            'event_date' => [
-                'required',
-                'date',
-                'after_or_equal:today',
-            ],
-
-            'start_time' => [
-                'required',
-            ],
-
-            'end_time' => [
-                'required',
-                'after:start_time',
-            ],
-
-            'goal_amount' => [
-                'nullable',
-                'numeric',
-                'min:0',
-            ],
-
-            'max_participants' => [
-                'nullable',
-                'integer',
-                'min:1',
-            ],
-
-            'cover_image' => [
-                'nullable',
-                'image',
-                'mimes:jpg,jpeg,png,webp',
-                'max:2048',
-            ],
-        ]);
+        $validated = $request->validated();
 
         /*
         |--------------------------------------------------------------------------
@@ -135,18 +96,7 @@ class EventController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $baseSlug = Str::slug($validated['title']);
-
-        $slug = $baseSlug;
-
-        $counter = 1;
-
-        while (Event::where('slug', $slug)->exists()) {
-
-            $slug = $baseSlug.'-'.$counter;
-
-            $counter++;
-        }
+        $slug = $this->slugGenerator->unique(new Event(), $validated['title']);
 
         /*
         |--------------------------------------------------------------------------
@@ -230,7 +180,13 @@ class EventController extends Controller
             $event->refresh();
         }
 
-        return view('events.view', compact('event'));
+        // Public visitors and non-owners see the public event page.
+        // Owners see the admin/management view.
+        if (auth()->check() && auth()->id() === $event->user_id) {
+            return view('events.view', compact('event'));
+        }
+
+        return view('public.events-show', compact('event'));
     }
 
     /*
@@ -269,7 +225,7 @@ class EventController extends Controller
     */
 
     public function update(
-        Request $request,
+        UpdateEventRequest $request,
         Event $event
     ): RedirectResponse {
 
@@ -295,52 +251,7 @@ class EventController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $validated = $request->validate([
-            'title' => [
-                'required',
-                'string',
-                'max:255',
-            ],
-
-            'description' => [
-                'required',
-                'string',
-            ],
-
-            'event_date' => [
-                'required',
-                'date',
-                'after_or_equal:today',
-            ],
-
-            'start_time' => [
-                'required',
-            ],
-
-            'end_time' => [
-                'required',
-                'after:start_time',
-            ],
-
-            'goal_amount' => [
-                'nullable',
-                'numeric',
-                'min:0',
-            ],
-
-            'max_participants' => [
-                'required',
-                'integer',
-                'min:1',
-            ],
-
-            'cover_image' => [
-                'nullable',
-                'image',
-                'mimes:jpg,jpeg,png,webp',
-                'max:2048',
-            ],
-        ]);
+        $validated = $request->validated();
 
         /*
         |--------------------------------------------------------------------------
@@ -349,25 +260,12 @@ class EventController extends Controller
         */
 
         if ($event->title !== $validated['title']) {
-
-            $baseSlug = Str::slug($validated['title']);
-
-            $slug = $baseSlug;
-
-            $counter = 1;
-
-            while (
-                Event::where('slug', $slug)
-                    ->where('id', '!=', $event->id)
-                    ->exists()
-            ) {
-
-                $slug = $baseSlug.'-'.$counter;
-
-                $counter++;
-            }
-
-            $validated['slug'] = $slug;
+            $validated['slug'] = $this->slugGenerator->unique(
+                $event,
+                $validated['title'],
+                'slug',
+                $event->id
+            );
         }
 
         /*

@@ -23,6 +23,10 @@ class CategoryProduct extends Model
 
     protected $appends = ['image_url'];
 
+    protected $casts = [
+        'price' => 'decimal:2',
+    ];
+
     /**
      * Normalise whatever path is stored in the DB and
      * return a fully-qualified public URL.

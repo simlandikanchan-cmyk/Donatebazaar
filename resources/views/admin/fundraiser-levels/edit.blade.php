@@ -1,3 +1,7 @@
+@push('page_css')
+@vite('resources/css/admin/entries/finance.css')
+@endpush
+
 @extends('layouts.admin')
 
 @section('sidebar_fundraiser_levels', 'active')
@@ -17,11 +21,11 @@
 .back-btn:hover{border-color:var(--a);color:var(--a);background:var(--a-lt);}
 .back-btn svg{width:13px;height:13px;}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;max-width:760px;}
-.card-head{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--border);background:var(--surface2);}
+.card-head{display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:14px 24px;border-bottom:1px solid var(--border);background:var(--surface2);}
 .card-head-icon{width:30px;height:30px;border-radius:8px;background:var(--a-lt);color:var(--a);display:flex;align-items:center;justify-content:center;}
 .card-head-icon svg{width:14px;height:14px;}
 .card-head-title{font-size:11.5px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.09em;font-family:var(--mono);}
-.card-body{padding:22px;}
+.card-body{padding:24px;}
 .field{margin-bottom:18px;}
 .field:last-child{margin-bottom:0;}
 .f-label{display:block;font-size:11.5px;font-weight:600;color:var(--text2);margin-bottom:7px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;}
@@ -32,13 +36,14 @@
 .f-input.err{border-color:var(--red);}
 .f-hint{font-size:11px;color:var(--text3);margin-top:5px;line-height:1.5;}
 .f-error{font-size:11.5px;color:var(--red);margin-top:5px;font-family:var(--mono);}
-.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:4px 0;}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:8px 8px;}
 .toggle-lbl{font-size:13px;font-weight:600;color:var(--text);}
 .toggle-sub{font-size:11.5px;color:var(--text3);margin-top:2px;}
-.sw{position:relative;flex-shrink:0;}
+.sw{position:relative;width:46px;height:26px;flex-shrink:0;}
 .sw input{position:absolute;opacity:0;width:0;height:0;}
 .sw label{display:block;width:46px;height:26px;border-radius:100px;background:var(--border2);cursor:pointer;position:relative;transition:background .2s;}
 .sw label::after{content:'';position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .25s cubic-bezier(.4,0,.2,1);box-shadow:0 1px 4px rgba(0,0,0,.2);}
+.sw::after,.sw::before{display:none;}
 .sw input:checked+label{background:var(--a);}
 .sw input:checked+label::after{transform:translateX(20px);}
 .submit-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 22px;background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;border:none;border-radius:var(--r-sm);font-size:14px;font-weight:700;cursor:pointer;font-family:var(--mono);transition:opacity .2s,transform .15s;box-shadow:0 4px 18px rgba(37,99,235,.35);}
@@ -49,8 +54,8 @@
 [data-theme="dark"] .alert-error{color:#f87171;}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
 @media(max-width:640px){.grid-2{grid-template-columns:1fr;}}
-@media(max-width:480px){.card-body{padding:16px}.card-head{padding:12px 16px}.f-input{font-size:12px;padding:8px 11px}.f-label{font-size:10px}.submit-btn{font-size:12px;padding:10px 18px}.back-btn{font-size:11px;height:32px;padding:0 12px}}
-@media(max-width:380px){.card-body{padding:12px}.f-input{font-size:11px;padding:7px 10px}.f-label{font-size:9px}.field{margin-bottom:14px}.f-hint{font-size:10px}.f-error{font-size:10px}.submit-btn{font-size:11px;padding:9px 16px;width:100%;justify-content:center}.card-head-title{font-size:10px}}
+@media(max-width:480px){.card-body{padding:18px}.card-head{padding:12px 18px}.f-input{font-size:12px;padding:8px 11px}.f-label{font-size:10px}.submit-btn{font-size:12px;padding:10px 18px}.back-btn{font-size:11px;height:32px;padding:0 12px}}
+@media(max-width:380px){.card-body{padding:16px}.f-input{font-size:11px;padding:7px 10px}.f-label{font-size:9px}.field{margin-bottom:14px}.f-hint{font-size:10px}.f-error{font-size:10px}.submit-btn{font-size:11px;padding:9px 16px;width:100%;justify-content:center}.card-head-title{font-size:10px}}
 </style>
 @endpush
 

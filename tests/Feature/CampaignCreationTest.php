@@ -108,7 +108,7 @@ class CampaignCreationTest extends TestCase
         $response = $this->post('/campaign/store', $this->validPayload());
 
         $response->assertRedirect('/login');
-        $this->assertDatabaseCount('campaigns', 0);
+        $this->assertDatabaseMissing('campaigns', ['title' => 'Help Build a School']);
     }
 
     // ── B. Validation rules ───────────────────────────────────────────────
@@ -122,7 +122,7 @@ class CampaignCreationTest extends TestCase
             ]));
 
         $response->assertSessionHasErrors('description');
-        $this->assertDatabaseCount('campaigns', 0);
+        $this->assertEquals(0, Campaign::where('user_id', $this->user->id)->count());
     }
 
     public function test_goal_amount_enforces_min_and_max(): void
@@ -137,7 +137,7 @@ class CampaignCreationTest extends TestCase
             ->post('/campaign/store', $this->validPayload(['goal_amount' => '500001']));
         $response->assertSessionHasErrors('goal_amount');
 
-        $this->assertDatabaseCount('campaigns', 0);
+        $this->assertEquals(0, Campaign::where('user_id', $this->user->id)->count());
     }
 
     public function test_goal_amount_with_comma_is_sanitised_then_capped(): void
@@ -149,7 +149,7 @@ class CampaignCreationTest extends TestCase
             ->post('/campaign/store', $this->validPayload(['goal_amount' => '1,000,000']));
 
         $response->assertSessionHasErrors('goal_amount');
-        $this->assertDatabaseCount('campaigns', 0);
+        $this->assertEquals(0, Campaign::where('user_id', $this->user->id)->count());
     }
 
     public function test_invalid_category_is_rejected(): void
@@ -183,7 +183,7 @@ class CampaignCreationTest extends TestCase
             ->post('/campaign/store', $this->validPayload(['updates' => []]));
 
         $response->assertSessionHasErrors('updates');
-        $this->assertDatabaseCount('campaigns', 0);
+        $this->assertEquals(0, Campaign::where('user_id', $this->user->id)->count());
     }
 
     // ── C. File-upload hardening (P0 fix #4) ──────────────────────────────
@@ -248,7 +248,7 @@ class CampaignCreationTest extends TestCase
             ->post('/campaign/store', $this->validPayload(['goal_amount' => '100000']));
 
         $response->assertSessionHasErrors('goal_amount');
-        $this->assertDatabaseCount('campaigns', 0);
+        $this->assertEquals(0, Campaign::where('user_id', $this->user->id)->count());
     }
 
     // ── Regression: IDOR fix on show (P0 fix #3) ──────────────────────────

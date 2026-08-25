@@ -4,317 +4,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-@vite('resources/css/user.css')
-
-<style>
-:root {
-    --bg:           #f4f5fb;
-    --surface:      #ffffff;
-    --surface2:     #f8f9fe;
-    --border:       rgba(0,0,0,0.06);
-    --border2:      rgba(0,0,0,0.10);
-    --text:         #0f1117;
-    --text2:        #4b5563;
-    --text3:        #9ca3af;
-    --accent:       #6366f1;
-    --accent2:      #8b5cf6;
-    --accent-glow:  rgba(99,102,241,0.18);
-    --green:        #10b981;
-    --yellow:       #f59e0b;
-    --red:          #ef4444;
-    --font:         'DM Sans', sans-serif;
-    --font-mono:    'DM Mono', monospace;
-    --radius:       14px;
-    --radius-sm:    9px;
-    --shadow:       0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
-    --transition:   0.2s ease;
-}
-[data-theme="dark"] {
-    --bg:           #0b0c14;
-    --surface:      #13141f;
-    --surface2:     #1a1b2e;
-    --border:       rgba(255,255,255,0.06);
-    --border2:      rgba(255,255,255,0.10);
-    --text:         #f0f1ff;
-    --text2:        #a5b4c8;
-    --text3:        #5a6579;
-    --accent-glow:  rgba(99,102,241,0.25);
-    --shadow:       0 1px 3px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.2);
-}
-
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-    font-family: var(--font);
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
-    transition: background var(--transition), color var(--transition);
-}
-
-/* ─── SHELL ─── */
-.shell { display: flex; min-height: 100vh; }
-
-
-
-/* ─── MAIN ─── */
-.main { margin-left: 256px; flex: 1; min-width: 0; display: flex; flex-direction: column; }
-
-/* ─── TOPBAR ─── */
-.topbar {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 28px; height: 64px;
-    background: var(--surface); border-bottom: 1px solid var(--border);
-    position: sticky; top: 0; z-index: 100; gap: 16px;
-}
-.topbar-left { display: flex; align-items: center; gap: 12px; }
-.topbar-back {
-    display: flex; align-items: center; justify-content: center;
-    width: 32px; height: 32px; border-radius: 8px;
-    border: 1px solid var(--border2); background: var(--surface2);
-    color: var(--text2); cursor: pointer; text-decoration: none;
-    transition: background var(--transition), color var(--transition), border-color var(--transition);
-    flex-shrink: 0;
-}
-.topbar-back:hover { background: var(--accent-glow); color: var(--accent); border-color: var(--accent); }
-.topbar-back svg { width: 14px; height: 14px; }
-.topbar-title h1 { font-size: 17px; font-weight: 800; color: var(--text); letter-spacing: -0.02em; }
-.topbar-title p  { font-size: 11px; color: var(--text3); margin-top: 1px; }
-.topbar-right { display: flex; align-items: center; gap: 8px; }
-
-.hamburger {
-    display: none; width: 36px; height: 36px; border-radius: 10px;
-    border: 1px solid var(--border2); background: var(--surface2); cursor: pointer;
-    color: var(--text2); align-items: center; justify-content: center; flex-shrink: 0;
-}
-.hamburger svg { width: 16px; height: 16px; }
-
-/* ─── BODY ─── */
-.body { padding: 24px 28px 60px; }
-
-/* ─── TWO-COL ─── */
-.page-grid {
-    display: grid;
-    grid-template-columns: 1fr 280px;
-    gap: 20px;
-    align-items: start;
-}
-.right-col { position: sticky; top: 84px; display: flex; flex-direction: column; gap: 16px; }
-
-/* ─── CARD ─── */
-.card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); box-shadow: var(--shadow);
-    overflow: hidden; animation: fadeUp 0.35s both;
-}
-.card:nth-child(1) { animation-delay: 0.04s; }
-.card:nth-child(2) { animation-delay: 0.08s; }
-.card:nth-child(3) { animation-delay: 0.12s; }
-.card:nth-child(4) { animation-delay: 0.16s; }
-
-.card-header {
-    padding: 15px 20px; border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; gap: 10px;
-}
-.card-icon {
-    width: 32px; height: 32px; border-radius: 9px;
-    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-}
-.card-icon svg { width: 15px; height: 15px; }
-.ic-indigo { background: rgba(99,102,241,0.12);  color: var(--accent); }
-.ic-green  { background: rgba(16,185,129,0.12);  color: var(--green); }
-.ic-yellow { background: rgba(245,158,11,0.12);  color: var(--yellow); }
-.ic-red    { background: rgba(239,68,68,0.12);   color: var(--red); }
-.ic-blue   { background: rgba(59,130,246,0.12);  color: #3b82f6; }
-.card-title { font-size: 13px; font-weight: 700; color: var(--text); letter-spacing: -0.01em; }
-.card-sub   { font-size: 11px; color: var(--text3); margin-top: 1px; }
-.card-body  { padding: 20px; }
-
-/* ─── FORM ELEMENTS ─── */
-.field { display: flex; flex-direction: column; gap: 6px; }
-.field + .field { margin-top: 16px; }
-
-.field-label {
-    font-size: 11px; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 0.08em;
-    color: var(--text3); font-family: var(--font-mono);
-}
-
-.field-input,
-.field-textarea,
-.field-select {
-    width: 100%;
-    background: var(--surface2);
-    border: 1px solid var(--border2);
-    border-radius: var(--radius-sm);
-    padding: 9px 12px;
-    font-family: var(--font);
-    font-size: 13.5px;
-    color: var(--text);
-    outline: none;
-    transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
-    appearance: none;
-}
-.field-input:focus,
-.field-textarea:focus,
-.field-select:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-glow);
-    background: var(--surface);
-}
-.field-input::placeholder,
-.field-textarea::placeholder { color: var(--text3); }
-.field-textarea { resize: vertical; min-height: 110px; line-height: 1.65; }
-
-/* number input — hide arrows */
-.field-input[type="number"]::-webkit-inner-spin-button,
-.field-input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
-.field-input[type="number"] { -moz-appearance: textfield; }
-
-/* date/time inputs */
-.field-input[type="date"],
-.field-input[type="time"] { font-family: var(--font-mono); font-size: 13px; }
-
-/* input with prefix icon */
-.field-input-wrap { position: relative; }
-.field-input-wrap .field-prefix {
-    position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
-    font-size: 13px; font-weight: 600; color: var(--text3); font-family: var(--font-mono);
-    pointer-events: none; user-select: none;
-}
-.field-input-wrap .field-input { padding-left: 26px; }
-
-/* field grid */
-.field-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-.field-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
-
-/* ─── ERROR BLOCK ─── */
-.error-block {
-    background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.22);
-    border-radius: var(--radius-sm); padding: 12px 16px;
-    margin-bottom: 4px;
-}
-.error-block ul { list-style: none; display: flex; flex-direction: column; gap: 4px; }
-.error-block li {
-    font-size: 12.5px; color: var(--red);
-    display: flex; align-items: flex-start; gap: 6px;
-}
-.error-block li::before { content: '·'; font-size: 18px; line-height: 1; margin-top: -1px; }
-
-/* ─── ACTION BTNS ─── */
-.action-btn {
-    display: flex; align-items: center; justify-content: center; gap: 6px;
-    width: 100%; padding: 10px 16px; border-radius: var(--radius-sm);
-    font-size: 12.5px; font-weight: 600; cursor: pointer;
-    border: 1px solid transparent; font-family: var(--font);
-    transition: opacity var(--transition), transform var(--transition);
-    text-decoration: none;
-}
-.action-btn:hover { opacity: 0.86; transform: translateY(-1px); }
-.action-btn:active { transform: scale(0.98); }
-.action-btn svg { width: 13px; height: 13px; }
-.btn-accent {
-    background: var(--accent); color: #fff; border-color: var(--accent);
-    box-shadow: 0 4px 14px rgba(99,102,241,0.28);
-}
-.btn-ghost  { background: var(--surface2); color: var(--text2); border-color: var(--border2); }
-.btn-danger { background: rgba(239,68,68,0.09); color: var(--red); border-color: rgba(239,68,68,0.2); }
-.btn-danger:hover { background: rgba(239,68,68,0.16); }
-.action-btn + .action-btn { margin-top: 8px; }
-
-/* submit btn inside form */
-.submit-row {
-    display: flex; align-items: center; justify-content: flex-end; gap: 10px;
-    padding-top: 20px; margin-top: 4px; border-top: 1px solid var(--border);
-}
-.btn-cancel {
-    display: inline-flex; align-items: center; gap: 5px;
-    padding: 9px 18px; border-radius: var(--radius-sm);
-    font-size: 12.5px; font-weight: 600; cursor: pointer;
-    background: var(--surface2); color: var(--text2);
-    border: 1px solid var(--border2); text-decoration: none;
-    transition: background var(--transition), color var(--transition);
-    font-family: var(--font);
-}
-.btn-cancel:hover { background: var(--border); }
-.btn-submit {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 9px 22px; border-radius: var(--radius-sm);
-    font-size: 12.5px; font-weight: 700; cursor: pointer;
-    background: var(--accent); color: #fff;
-    border: none; font-family: var(--font);
-    box-shadow: 0 4px 14px rgba(99,102,241,0.28);
-    transition: opacity var(--transition), transform var(--transition);
-}
-.btn-submit:hover  { opacity: 0.88; transform: translateY(-1px); }
-.btn-submit:active { transform: scale(0.98); }
-.btn-submit svg { width: 13px; height: 13px; }
-
-/* ─── INFO ROWS (right panel) ─── */
-.info-row {
-    display: flex; justify-content: space-between; align-items: center;
-    font-size: 12px; padding: 10px 0; border-top: 1px solid var(--border);
-}
-.info-row:first-child { border-top: none; padding-top: 0; }
-.info-row-label { color: var(--text3); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.06em; font-size: 10px; }
-.info-row-val   { font-weight: 600; color: var(--text2); font-size: 12px; }
-
-/* status chip */
-.status-chip {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 4px 10px; border-radius: 100px;
-    font-size: 10px; font-weight: 700; letter-spacing: 0.05em;
-    text-transform: uppercase; font-family: var(--font-mono);
-}
-.status-chip .dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
-.chip-active    { background: rgba(16,185,129,0.12);  color: #10b981; border: 1px solid rgba(16,185,129,0.25); }
-.chip-pending   { background: rgba(245,158,11,0.12);  color: #f59e0b; border: 1px solid rgba(245,158,11,0.25); }
-.chip-rejected  { background: rgba(239,68,68,0.12);   color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
-.chip-completed { background: rgba(99,102,241,0.12);  color: #818cf8; border: 1px solid rgba(99,102,241,0.25); }
-
-.ic-blue   { background: rgba(59,130,246,0.12);  color: #3b82f6; }
-
-/* ─── UPLOAD ZONE ─── */
-.upload-zone{border:2px dashed var(--border2);border-radius:var(--radius-sm);padding:28px 20px;text-align:center;cursor:pointer;transition:all .2s ease;position:relative;overflow:hidden;background:var(--surface2);}
-.upload-zone:hover{border-color:var(--accent);background:var(--accent-glow);}
-.upload-zone.has-preview{border-style:solid;border-color:var(--accent);padding:0;}
-.upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;}
-.upload-icon{width:44px;height:44px;border-radius:12px;background:var(--accent-glow);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;}
-.upload-icon svg{width:20px;height:20px;color:var(--accent);}
-.upload-text{font-size:13px;font-weight:600;color:var(--text2);}
-.upload-sub{font-size:11px;color:var(--text3);margin-top:4px;}
-.upload-preview{width:100%;height:160px;object-fit:cover;border-radius:calc(var(--radius-sm) - 2px);display:none;}
-.upload-preview.show{display:block;}
-.upload-overlay{position:absolute;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;border-radius:calc(var(--radius-sm) - 2px);}
-.upload-zone.has-preview:hover .upload-overlay{display:flex;}
-.upload-overlay span{color:#fff;font-size:12px;font-weight:600;font-family:var(--font-mono);}
-.field-hint{font-size:11px;color:var(--text3);font-family:var(--font-mono);}
-.err-msg{color:var(--red);}
-
-/* ─── ANIMATION ─── */
-@keyframes fadeUp {
-    from { opacity: 0; transform: translateY(12px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-
-/* ─── RESPONSIVE ─── */
-@media (max-width: 960px) {
-    .page-grid { grid-template-columns: 1fr; }
-    .right-col { position: static; }
-    .field-grid-3 { grid-template-columns: 1fr 1fr; }
-}
-@media (max-width: 860px) {
-    .sidebar { transform: translateX(-100%); }
-    .sidebar.open { transform: translateX(0); }
-    .main { margin-left: 0; }
-    .hamburger { display: flex; }
-}
-@media (max-width: 600px) {
-    .topbar { padding: 0 16px; }
-    .body   { padding: 16px 16px 48px; }
-    .field-grid-3, .field-grid-2 { grid-template-columns: 1fr; }
-}
-</style>
+@vite(['resources/css/user/user.css', 'resources/css/public/events-edit.css', 'resources/js/public/events-edit.js'])
 
 @php
     // Status chip
@@ -367,7 +57,7 @@ body {
                     </div>
                 </label>
             </div>
-            <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+            <div class="c-avatar">
                 {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 1)) }}
             </div>
         </div>
@@ -382,7 +72,7 @@ body {
 
                 {{-- Validation errors --}}
                 @if ($errors->any())
-                <div class="card" style="margin-bottom:16px;">
+                <div class="card card--mb">
                     <div class="card-header">
                         <div class="card-icon ic-red">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
@@ -544,11 +234,11 @@ body {
                         </div>
                         <div class="card-body">
                             <div class="upload-zone" id="editUploadZone">
-                                <input type="file" name="cover_image" id="editCoverInput" accept="image/*" onchange="previewEditImage(this)">
+                                <input type="file" name="cover_image" id="editCoverInput" accept="image/*" data-action="preview-edit-image">
                                 <img src="{{ $event->cover_image ? asset('storage/'.$event->cover_image) : '' }}" alt="Preview"
                                      class="upload-preview {{ $event->cover_image ? 'show' : '' }}" id="editUploadPreview">
                                 <div class="upload-overlay"><span>Click to change</span></div>
-                                <div id="editUploadPlaceholder" {{ $event->cover_image ? 'style=display:none' : '' }}>
+                                <div id="editUploadPlaceholder" @if(!$event->cover_image)class="show"@endif>
                                     <div class="upload-icon">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                                     </div>
@@ -556,7 +246,7 @@ body {
                                     <div class="upload-sub">PNG, JPG, WEBP — max 2MB</div>
                                 </div>
                             </div>
-                            @error('cover_image')<p class="field-hint err-msg" style="margin-top:8px;">{{ $message }}</p>@enderror
+                            @error('cover_image')<p class="field-hint err-msg field-hint--mt">{{ $message }}</p>@enderror
                         </div>
                     </div>
 
@@ -566,10 +256,10 @@ body {
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M12 5l-7 7 7 7"/></svg>
                             Cancel
                         </a>
-                        <button type="submit" class="btn-submit">
+                        <x-button variant="primary" type="submit">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                             Save Changes
-                        </button>
+                        </x-button>
                     </div>
 
                 </form>
@@ -588,7 +278,7 @@ body {
                             <div class="card-title">Event Info</div>
                         </div>
                     </div>
-                    <div class="card-body" style="display:flex;flex-direction:column;">
+                    <div class="card-body card-body--col">
                         <div class="info-row">
                             <span class="info-row-label">Status</span>
                             <span class="status-chip {{ $chipClass }}"><span class="dot"></span>{{ $chipLabel }}</span>
@@ -611,7 +301,7 @@ body {
                         @endif
                         <div class="info-row">
                             <span class="info-row-label">Campaign</span>
-                            <span class="info-row-val" style="font-size:11px;color:var(--accent);max-width:130px;text-align:right;">{{ Str::limit($event->campaign->title, 22) }}</span>
+                            <span class="info-row-val info-row-val--accent">{{ Str::limit($event->campaign->title, 22) }}</span>
                         </div>
                     </div>
                 </div>
@@ -627,10 +317,10 @@ body {
                         </div>
                     </div>
                     <div class="card-body">
-                        <button type="submit" form="editForm" class="action-btn btn-accent">
+                        <x-button variant="primary" type="submit">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                             Save Changes
-                        </button>
+                        </x-button>
                         <a href="{{ route('events.show', $event->id) }}" class="action-btn btn-ghost">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                             View Event
@@ -652,10 +342,10 @@ body {
                             <div class="card-title">Tips</div>
                         </div>
                     </div>
-                    <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
-                        <p style="font-size:12px;color:var(--text3);line-height:1.65;">A clear title and description help donors find and trust your event.</p>
-                        <p style="font-size:12px;color:var(--text3);line-height:1.65;">Setting a goal amount shows your progress and motivates donors.</p>
-                        <p style="font-size:12px;color:var(--text3);line-height:1.65;">Leave Max Participants blank for unlimited registrations.</p>
+                    <div class="card-body card-body--col card-body--gap">
+                        <p class="text-muted-sm">A clear title and description help donors find and trust your event.</p>
+                        <p class="text-muted-sm">Setting a goal amount shows your progress and motivates donors.</p>
+                        <p class="text-muted-sm">Leave Max Participants blank for unlimited registrations.</p>
                     </div>
                 </div>
 
@@ -664,44 +354,5 @@ body {
     </div>{{-- /.body --}}
 </div>{{-- /.main --}}
 </div>{{-- /.shell --}}
-
-<script>
-(function () {
-    'use strict';
-    var html   = document.documentElement;
-    var toggle = document.getElementById('themeToggle');
-    var saved  = localStorage.getItem('theme') || 'light';
-    if (saved === 'dark') { html.setAttribute('data-theme', 'dark'); toggle.checked = true; }
-    toggle.addEventListener('change', function () {
-        var t = this.checked ? 'dark' : 'light';
-        html.setAttribute('data-theme', t);
-        localStorage.setItem('theme', t);
-    });
-    var sidebar   = document.getElementById('sidebar');
-    var hamburger = document.getElementById('hamburger');
-    hamburger.addEventListener('click', function () { sidebar.classList.toggle('open'); });
-    document.addEventListener('click', function (e) {
-        if (window.innerWidth <= 860 && !sidebar.contains(e.target) && !hamburger.contains(e.target)) {
-            sidebar.classList.remove('open');
-        }
-    });
-
-window.previewEditImage = function(input) {
-    if (!input.files || !input.files[0]) return;
-    var reader = new FileReader();
-    reader.onload = function(e) {
-        var preview = document.getElementById('editUploadPreview');
-        var zone = document.getElementById('editUploadZone');
-        var placeholder = document.getElementById('editUploadPlaceholder');
-        preview.src = e.target.result;
-        preview.classList.add('show');
-        placeholder.style.display = 'none';
-        zone.classList.add('has-preview');
-    };
-    reader.readAsDataURL(input.files[0]);
-};
-
-})();
-</script>
 
 @endsection

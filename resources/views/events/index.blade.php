@@ -5,7 +5,7 @@
 
 @section('content')
 
-@push('styles') @vite(['resources/css/events-index.css']) @endpush
+@push('styles') @vite(['resources/css/public/events-index.css']) @endpush
 
 {{-- ── HERO ── --}}
 <section class="ev-hero">
@@ -69,25 +69,25 @@
 
         {{-- ── PERIOD FILTER ── --}}
         <div class="ev-period-wrap">
-            <button class="ev-period-btn" data-period="today" onclick="filterPeriod('today', this)">Today</button>
-            <button class="ev-period-btn" data-period="week" onclick="filterPeriod('week', this)">This Week</button>
-            <button class="ev-period-btn" data-period="month" onclick="filterPeriod('month', this)">This Month</button>
-            <button class="ev-period-btn active" data-period="all" onclick="filterPeriod('all', this)">All Upcoming</button>
+            <x-button variant="primary" type="button" class="ev-period-btn">Today</x-button>
+            <x-button variant="primary" type="button" class="ev-period-btn">This Week</x-button>
+            <x-button variant="primary" type="button" class="ev-period-btn">This Month</x-button>
+            <x-button variant="primary" type="button" class="ev-period-btn active">All Upcoming</x-button>
         </div>
 
         {{-- ── FILTER TABS ── --}}
         <div class="ev-filter-wrap">
             <div class="ev-filter-scroll">
-                <button class="ev-filter-btn active" data-cat="all" onclick="filterCat('all', this)">
+                <x-button variant="primary" type="button" class="ev-filter-btn active" data-action="filter-cat" data-cat="all">
                     All Events
                     <span class="ev-filter-count">{{ $totalEvents }}</span>
-                </button>
+                </x-button>
                 @foreach($categories as $cat)
                     @if($eventsByCategory->has($cat->id))
-                    <button class="ev-filter-btn" data-cat="{{ $cat->id }}" onclick="filterCat('{{ $cat->id }}', this)">
+                    <x-button variant="primary" type="button" class="ev-filter-btn" data-action="filter-cat" data-cat="{{ $cat->id }}">
                         {{ $cat->emoji ?? '' }} {{ $cat->name }}
                         <span class="ev-filter-count">{{ $eventsByCategory[$cat->id]->count() }}</span>
-                    </button>
+                    </x-button>
                     @endif
                 @endforeach
             </div>
@@ -134,7 +134,7 @@
                          tabindex="0"
                          role="link"
                          aria-label="View event: {{ $event->title }}"
-                         style="animation-delay:{{ $loop->index * 0.06 }}s;">
+                          style="--delay:{{ $loop->index * 0.06 }}s;">
 
                         {{-- Cover --}}
                         <div class="ev-card-cover">
@@ -252,20 +252,20 @@
 
                             {{-- CTA button --}}
                             @if($canRegister)
-                                <a href="{{ route('events.register', $event->id) }}" class="ev-reg-btn">
+                                <x-button variant="primary" href="{{ route('events.register', $event->id) }}">
                                     Register
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
                                     </svg>
-                                </a>
+                                </x-button>
                             @elseif($event->hasEnded())
-                                <span class="ev-reg-btn disabled">Event Ended</span>
+                                <x-button variant="primary" disabled>Event Ended</x-button>
                             @elseif($event->isFull())
-                                <span class="ev-reg-btn disabled">Full</span>
+                                <x-button variant="primary" disabled>Full</x-button>
                             @else
-                                <a href="{{ route('events.show', $event->id) }}" class="ev-reg-btn" style="background:var(--surface2);color:var(--text2);">
+                                <x-button variant="secondary" href="{{ route('events.show', $event->id) }}">
                                     View Details
-                                </a>
+                                </x-button>
                             @endif
                         </div>
                     </div>
@@ -294,131 +294,12 @@
             </svg>
             <div class="ev-empty-title">No matching events</div>
             <div class="ev-empty-sub">Try adjusting your search, category, or time period.</div>
-            <button type="button" class="ev-reg-btn" onclick="resetFilters()">Clear filters</button>
+            <x-button variant="secondary" type="button">Clear filters</x-button>
         </div>
 
     </div>
 </div>
 
-<script>
-(function () {
-    const searchInput = document.getElementById('evSearch');
-    const clearBtn    = document.getElementById('evClear');
-    const sortSel     = document.getElementById('evSort');
-    const countEl     = document.getElementById('evCount');
-    const noResults   = document.getElementById('evNoResults');
-    let activeCategory = 'all';
-    let activePeriod = 'all';
-
-    function sortKey(el) {
-        return (el.dataset.date || '0000-00-00') + ' ' + (el.dataset.time || '00:00');
-    }
-
-    function animateCard(card, show) {
-        if (show) {
-            card.classList.remove('ev-card--hidden');
-            requestAnimationFrame(function() {
-                card.classList.remove('ev-card--fade');
-            });
-        } else {
-            card.classList.add('ev-card--fade');
-            setTimeout(function() {
-                card.classList.add('ev-card--hidden');
-                card.classList.remove('ev-card--fade');
-            }, 300);
-        }
-    }
-
-    function applyFilters() {
-        const term = (searchInput.value || '').trim().toLowerCase();
-        let total = 0;
-
-        document.querySelectorAll('.ev-category-section').forEach(section => {
-            if (activeCategory !== 'all' && section.dataset.cat !== activeCategory) {
-                section.classList.add('hidden');
-                return;
-            }
-            section.classList.remove('hidden');
-
-            const grid  = section.querySelector('.ev-grid');
-            const cards = Array.from(grid.querySelectorAll('.ev-card'));
-            const dir   = sortSel.value;
-
-            cards.sort((a, b) => {
-                const cmp = sortKey(a).localeCompare(sortKey(b));
-                return dir === 'date-desc' ? -cmp : cmp;
-            });
-            cards.forEach(c => grid.appendChild(c));
-
-            let visible = 0;
-            cards.forEach(function(card) {
-                const hay = (card.dataset.title + ' ' + card.dataset.location).toLowerCase();
-                const matchesSearch = !term || hay.includes(term);
-                const matchesPeriod = activePeriod === 'all' || card.dataset.period === activePeriod;
-                const show = matchesSearch && matchesPeriod;
-                animateCard(card, show);
-                if (show) visible++;
-            });
-
-            section.classList.toggle('ev-section--empty', visible === 0);
-            total += visible;
-        });
-
-        countEl.textContent = total + (total === 1 ? ' event' : ' events');
-        noResults.hidden = total !== 0;
-        clearBtn.hidden = term === '';
-    }
-
-    window.filterCat = function (catId, btn) {
-        document.querySelectorAll('.ev-filter-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        activeCategory = catId;
-        applyFilters();
-    };
-
-    window.filterPeriod = function (period, btn) {
-        document.querySelectorAll('.ev-period-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        activePeriod = period;
-        applyFilters();
-    };
-
-    window.resetFilters = function () {
-        searchInput.value = '';
-        activeCategory = 'all';
-        activePeriod = 'all';
-        sortSel.value = 'date-asc';
-        document.querySelectorAll('.ev-filter-btn').forEach(b =>
-            b.classList.toggle('active', b.dataset.cat === 'all'));
-        document.querySelectorAll('.ev-period-btn').forEach(b =>
-            b.classList.toggle('active', b.dataset.period === 'all'));
-        applyFilters();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
-    if (searchInput) searchInput.addEventListener('input', applyFilters);
-    if (sortSel)     sortSel.addEventListener('change', applyFilters);
-    if (clearBtn)    clearBtn.addEventListener('click', function () {
-        searchInput.value = '';
-        applyFilters();
-        searchInput.focus();
-    });
-
-    document.querySelectorAll('.ev-card').forEach(function (card) {
-        card.addEventListener('click', function (e) {
-            if (e.target.closest('a, button, select, input')) return;
-            window.location.href = card.dataset.url;
-        });
-        card.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                window.location.href = card.dataset.url;
-            }
-        });
-    });
-
-    applyFilters();
-})();
-</script>
-
 @endsection
+
+@push('scripts') @vite(['resources/js/public/events-index.js']) @endpush

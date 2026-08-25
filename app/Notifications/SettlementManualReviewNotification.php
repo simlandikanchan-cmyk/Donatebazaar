@@ -17,7 +17,14 @@ class SettlementManualReviewNotification extends Notification implements ShouldQ
 
     public function via(object $notifiable): array
     {
-        return ['mail', 'database'];
+        $channels = [];
+        if ($notifiable->preferNotification('settlement_manual_review', 'email')) {
+            $channels[] = 'mail';
+        }
+        if ($notifiable->preferNotification('settlement_manual_review', 'database')) {
+            $channels[] = 'database';
+        }
+        return $channels;
     }
 
     public function toMail(object $notifiable): MailMessage
@@ -47,3 +54,4 @@ class SettlementManualReviewNotification extends Notification implements ShouldQ
         ];
     }
 }
+

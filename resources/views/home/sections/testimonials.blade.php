@@ -5,9 +5,9 @@
             <h2 class="section-title">Testimonials</h2>
         </div>
         <div class="tab-btns">
-            <button class="tab-btn active" onclick="switchTab('donors', this)">Donors</button>
-            <button class="tab-btn" onclick="switchTab('ngos', this)">NGOs</button>
-            <button class="tab-btn" onclick="switchTab('celebs', this)">Celebrities</button>
+            <x-button variant="secondary" type="button" class="tab-btn active" data-action="switch-testi-tab" data-tab="donors">Donors</x-button>
+            <x-button variant="secondary" type="button" class="tab-btn" data-action="switch-testi-tab" data-tab="ngos">NGOs</x-button>
+            <x-button variant="secondary" type="button" class="tab-btn" data-action="switch-testi-tab" data-tab="celebs">Celebrities</x-button>
         </div>
 
         <div id="donors" class="testi-tab active">
@@ -18,7 +18,7 @@
                     <span class="testi-badge badge-blue">Contributed {{ $i+2 }} Times</span>
                     <p class="testi-text">Donating here makes me happy. Helping others is the greatest joy I have experienced on this platform.</p>
                     <div class="testi-author">
-                        <div class="testi-avatar-initials" style="background:{{ ['#6366f1','#10b981','#f59e0b','#ef4444','#2563eb ','#ec4899','#14b8a6','#f97316','#06b6d4','#84cc16'][($i-1)%10] }}">D</div>
+                        <img class="testi-avatar" src="https://i.pravatar.cc/150?img={{ ($i + 9) % 70 + 1 }}" alt="Donor {{ $i }}" loading="lazy">
                         <div><div class="testi-name">Donor {{ $i }}</div><div class="testi-role">Supporter</div></div>
                     </div>
                 </div>
@@ -34,7 +34,7 @@
                     <span class="testi-badge badge-green">NGO Partner</span>
                     <p class="testi-text">This platform helps NGOs reach donors easily. The verification process builds genuine trust with supporters.</p>
                     <div class="testi-author">
-                        <div class="testi-avatar-initials" style="background:{{ ['#6366f1','#10b981','#f59e0b','#ef4444','#2563eb ','#ec4899','#14b8a6','#f97316','#06b6d4','#84cc16'][($i-1)%10] }}">N</div>
+                        <img class="testi-avatar" src="https://i.pravatar.cc/150?img={{ ($i + 29) % 70 + 1 }}" alt="NGO {{ $i }}" loading="lazy">
                         <div><div class="testi-name">NGO {{ $i }}</div><div class="testi-role">Organization</div></div>
                     </div>
                 </div>
@@ -50,7 +50,7 @@
                     <span class="testi-badge badge-purple">Celebrity Supporter</span>
                     <p class="testi-text">Giving back to society is important. This platform makes it easy to contribute meaningfully.</p>
                     <div class="testi-author">
-                        <div class="testi-avatar-initials" style="background:{{ ['#6366f1','#10b981','#f59e0b','#ef4444','#2563eb ','#ec4899','#14b8a6','#f97316','#06b6d4','#84cc16'][($i-1)%10] }}">C</div>
+                        <img class="testi-avatar" src="https://i.pravatar.cc/150?img={{ ($i + 49) % 70 + 1 }}" alt="Celebrity {{ $i }}" loading="lazy">
                         <div><div class="testi-name">Celebrity {{ $i }}</div><div class="testi-role">Influencer</div></div>
                     </div>
                 </div>

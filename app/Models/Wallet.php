@@ -12,9 +12,6 @@ class Wallet extends Model
         'user_id',
         'owner_type',
         'owner_id',
-        'balance',
-        'reserved_balance',
-        'pending_settlement_balance',
         'currency',
     ];
 
@@ -46,11 +43,12 @@ class Wallet extends Model
     }
 
     /**
-     * Withdrawable amount = balance minus any amount locked in a
-     * pending settlement request.
+     * Withdrawable amount. Settlement funds are already moved out of
+     * `balance` into `pending_settlement_balance` when a payout is
+     * requested, so the available amount is simply the balance.
      */
     public function getAvailableBalanceAttribute(): float
     {
-        return (float) $this->balance - (float) $this->pending_settlement_balance;
+        return (float) $this->balance;
     }
 }

@@ -49,27 +49,4 @@ class CampaignKycController extends Controller
 
         return back()->with('success', 'KYC request sent to '.$owner->name.' via email and in-app notification.');
     }
-
-    /**
-     * Approve campaign after verifying KYC.
-     * Route: POST /admin/campaigns/{campaign}/approve
-     *
-     * Add this to your existing approve method — checks KYC before approving.
-     */
-    public function approve(Campaign $campaign): RedirectResponse
-    {
-        $owner = User::findOrFail($campaign->user_id);
-
-        $kyc = KycVerification::where('user_id', $owner->id)
-            ->where('status', 'approved')
-            ->first();
-
-        if (! $kyc) {
-            return back()->with('error', 'Cannot approve: User has not submitted KYC.');
-        }
-
-        $campaign->update(['status' => 'approved']);
-
-        return back()->with('success', 'Campaign approved successfully.');
-    }
 }

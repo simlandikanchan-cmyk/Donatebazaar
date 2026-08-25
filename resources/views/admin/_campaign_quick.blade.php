@@ -17,15 +17,19 @@
   };
 @endphp
 
-<div class="qk-hero">
+<div class="qk-hero" style="position:relative;overflow:hidden">
   @if($campaign->cover_image)
-    <img src="{{ asset('storage/'.$campaign->cover_image) }}" alt="{{ $campaign->title }}" class="qk-cover">
+    <img src="{{ asset('storage/'.$campaign->cover_image) }}" alt="{{ $campaign->title }}" class="qk-cover" style="width:100%;height:180px;object-fit:cover;display:block">
   @else
-    <div class="qk-cover qk-cover-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+    <div class="qk-cover qk-cover-ph" style="width:100%;height:180px;display:flex;align-items:center;justify-content:center;background:var(--surface2)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:48px;height:48px;color:var(--text3);opacity:.4"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
   @endif
-  <div class="qk-hero-grad"></div>
-  <span class="badge {{ $badgeClass }} qk-badge">{{ ucfirst($state) }}</span>
+  <div class="qk-hero-grad" style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(0,0,0,.45) 100%);pointer-events:none"></div>
+  <span class="badge {{ $badgeClass }} qk-badge" style="position:absolute;top:12px;left:12px;">{{ ucfirst($state) }}</span>
 </div>
+
+<style>
+@media(max-width:640px){.qk-hero{max-height:200px}.qk-cover{height:140px!important}.qk-body{padding:14px!important}.qk-stats{grid-template-columns:1fr 1fr!important}.qk-acts{flex-direction:column!important}.qk-acts>form,.qk-acts>button{width:100%!important;justify-content:center}}
+</style>
 
 <div class="qk-body">
   <h3 class="qk-title">{{ $campaign->title }}</h3>
@@ -67,14 +71,14 @@
   @endif
 
   <div class="qk-acts">
-    <a href="{{ route('admin.campaign.show',$campaign->id) }}" class="btn btn-secondary c-btn c-btn-view" style="flex:1;">Open Full Page</a>
+    <a href="{{ route('admin.campaign.show',$campaign->id) }}" class="btn btn-secondary act-btn ab-view" style="flex:1;">Open Full Page</a>
     @if($state === 'pending')
-      <form action="{{ route('admin.campaign.approve',$campaign->id) }}" method="POST" style="flex:1;" onsubmit="return handleSub(this,'Approving…')">@csrf<button class="btn btn-green c-btn c-btn-approve">Approve</button></form>
-      <button type="button" onclick="closeQuick();openReject({{ $campaign->id }})" class="btn btn-red c-btn c-btn-reject">Reject</button>
+      <form action="{{ route('admin.campaign.approve',$campaign->id) }}" method="POST" style="flex:1;" data-loading-text="Approving…">@csrf<button type="submit" class="btn btn-green c-btn c-btn-approve">Approve</button></form>
+      <button type="button" data-action="close-quick" data-action-2="open-reject" data-id="{{ $campaign->id }}" class="btn btn-red c-btn c-btn-reject">Reject</button>
     @elseif($state === 'active')
-      <button type="button" onclick="closeQuick();openPause({{ $campaign->id }})" class="btn btn-secondary c-btn c-btn-pause" style="flex:1;">Pause</button>
+      <button type="button" data-action="close-quick" data-action-2="open-pause" data-id="{{ $campaign->id }}" class="btn btn-secondary c-btn c-btn-pause" style="flex:1;">Pause</button>
     @elseif($state === 'paused')
-      <form action="{{ route('admin.campaign.resume',$campaign->id) }}" method="POST" style="flex:1;" onsubmit="return handleSub(this,'Resuming…')">@csrf<button class="btn btn-green c-btn c-btn-resume">Resume</button></form>
+      <form action="{{ route('admin.campaign.resume',$campaign->id) }}" method="POST" style="flex:1;" data-loading-text="Resuming…">@csrf<button type="submit" class="btn btn-green c-btn c-btn-resume">Resume</button></form>
     @endif
   </div>
 </div>

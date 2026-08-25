@@ -38,7 +38,15 @@ return [
     'razorpay' => [
         'key' => env('RAZORPAY_KEY'),
         'secret' => env('RAZORPAY_SECRET'),
+        'webhook_secret' => env('RAZORPAY_WEBHOOK_SECRET'),
+    ],
 
+    'donation' => [
+        'platform_fee_percent' => env('DONATION_PLATFORM_FEE_PERCENT', 5.0),
+        'receipt_url_ttl_hours' => env('DONATION_RECEIPT_URL_TTL_HOURS', 24),
+        'min_amount' => env('DONATION_MIN_AMOUNT', 1),
+        'max_amount' => env('DONATION_MAX_AMOUNT', 500000),
+        'currency' => env('DONATION_CURRENCY', 'INR'),
     ],
 
     'google' => [

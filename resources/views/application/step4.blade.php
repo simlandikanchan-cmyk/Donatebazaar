@@ -9,9 +9,9 @@
     <div class="field-stack">
 
       <div class="section-divider">Upload documents</div>
-      <p class="field-hint" style="margin-top:-10px">PDF, JPG, or PNG — max 2 MB each.</p>
+      <p class="field-hint field-hint--mt">PDF, JPG, or PNG — max 2 MB each.</p>
 
-      <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="field-stack">
         @php
           $docs = [
             'doc_registration_cert' => ['Registration Certificate',   'Trust deed / society certificate'],
@@ -35,13 +35,13 @@
             </div>
             <label class="doc-upload-btn" for="docfile-{{ $field }}">
               @if(!empty($application->$field))
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><path d="M20 6L9 17l-5-5"/></svg> Uploaded
+                <svg class="btn-icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Uploaded
               @else
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg> Upload
+                <svg class="btn-icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg> Upload
               @endif
             </label>
             <input type="file" id="docfile-{{ $field }}" name="{{ $field }}" accept=".pdf,.jpg,.jpeg,.png"
-              style="display:none" onchange="markUploaded('{{ $field }}',this)">
+              style="display:none" data-action="mark-uploaded" data-key="{{ $field }}">
           </div>
         @endforeach
       </div>

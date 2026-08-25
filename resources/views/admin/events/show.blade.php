@@ -1,3 +1,7 @@
+@push('page_css')
+@vite('resources/css/admin/entries/events.css')
+@endpush
+
 {{-- resources/views/admin/events/show.blade.php --}}
 @extends('layouts.admin')
 
@@ -5,125 +9,6 @@
 @section('page_title', $event->title)
 @section('page_subtitle', 'Event details')
 
-@push('page_styles')
-<style>
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;animation:fadeUp .4s ease both;}
-.card+.card{margin-top:16px;}
-.card-header{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
-.card-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.card-icon svg{width:16px;height:16px;}
-.ci-purple{background:var(--a-lt);color:var(--a);}
-.ci-green{background:var(--green-lt);color:var(--green);}
-.ci-amber{background:var(--amber-lt);color:var(--amber);}
-.ci-blue{background:var(--blue-lt);color:var(--blue);}
-.ci-red{background:var(--red-lt);color:var(--red);}
-.card-title{font-family:var(--font);font-size:14px;font-weight:700;color:var(--text);letter-spacing:-.01em;}
-.card-subtitle{font-size:11px;color:var(--text3);margin-top:2px;}
-.card-body{padding:22px;}
-.event-cover{width:100%;height:260px;object-fit:cover;display:block;}
-.event-cover-placeholder{width:100%;height:160px;background:linear-gradient(135deg,var(--a-lt),var(--surface3));display:flex;align-items:center;justify-content:center;}
-.event-cover-placeholder svg{width:44px;height:44px;color:var(--a);opacity:.25;}
-.status-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:100px;font-size:11px;font-weight:700;font-family:var(--mono);}
-.sp-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
-.pill-active{background:var(--green-lt);color:#059669;}.pill-active .sp-dot{background:var(--green);}
-.pill-draft{background:var(--amber-lt);color:#b45309;}.pill-draft .sp-dot{background:var(--amber);}
-.pill-cancelled{background:var(--red-lt);color:var(--red);}.pill-cancelled .sp-dot{background:var(--red);}
-.pill-expired{background:var(--gray-lt);color:var(--gray);}.pill-expired .sp-dot{background:var(--gray);}
-.pill-completed{background:var(--blue-lt);color:var(--blue);}.pill-completed .sp-dot{background:var(--blue);}
-.pill-pending{background:var(--a-lt);color:var(--a);}.pill-pending .sp-dot{background:var(--a);}
-[data-theme="dark"] .pill-active{color:#34d399;}
-[data-theme="dark"] .pill-pending{color:#c4b5fd;}
-
-/* ---------- Status banner (was missing — caused the raw unstyled SVG icon to render full-size) ---------- */
-.status-banner{display:flex;align-items:center;gap:14px;padding:16px 20px;border-radius:var(--r);margin-bottom:20px;border:1px solid var(--border);box-shadow:var(--sh);animation:fadeUp .35s ease both;flex-wrap:wrap;}
-.status-banner svg{width:28px;height:28px;flex-shrink:0;}
-.status-banner .sb-text{flex:1;min-width:200px;}
-.status-banner .sb-title{font-size:14px;font-weight:700;color:var(--text);font-family:var(--mono);line-height:1.3;}
-.status-banner .sb-sub{font-size:12px;color:var(--text3);margin-top:2px;}
-.sb-pending{background:var(--a-lt);border-color:rgba(37,99,235,.25);}
-.sb-draft{background:var(--amber-lt);border-color:rgba(245,158,11,.25);}
-.sb-active{background:var(--green-lt);border-color:rgba(5,196,138,.25);}
-.sb-completed{background:var(--blue-lt);border-color:rgba(59,130,246,.25);}
-.sb-cancelled{background:var(--red-lt);border-color:rgba(240,68,68,.25);}
-.sb-expired{background:var(--surface2);border-color:var(--border2);}
-@media(max-width:560px){.status-banner{flex-direction:column;align-items:flex-start;}.status-banner > div[style]{margin-left:0 !important;width:100%;}.status-banner > div[style] form{flex:1;}.status-banner > div[style] .btn{width:100%;justify-content:center;}}
-
-.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;}
-.detail-item{padding:13px 0;border-bottom:1px solid var(--border);}
-.detail-item:nth-last-child(-n+2){border-bottom:none;}
-.detail-item:nth-child(odd){padding-right:18px;}
-.detail-key{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-family:var(--mono);margin-bottom:4px;}
-.detail-val{font-size:13.5px;font-weight:500;color:var(--text);}
-.detail-val.muted{color:var(--text3);font-style:italic;font-weight:400;}
-.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
-.stat-mini{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:16px 18px;box-shadow:var(--sh);animation:fadeUp .4s ease both;}
-.stat-mini:nth-child(1){animation-delay:.04s;}
-.stat-mini:nth-child(2){animation-delay:.08s;}
-.stat-mini:nth-child(3){animation-delay:.12s;}
-.stat-mini-lbl{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-family:var(--mono);margin-bottom:6px;}
-.stat-mini-val{font-size:1.6rem;font-weight:800;color:var(--text);font-family:var(--mono);letter-spacing:-.02em;line-height:1;}
-.stat-mini-sub{font-size:11px;color:var(--text3);margin-top:5px;}
-.progress-label{display:flex;justify-content:space-between;font-size:11px;font-family:var(--mono);color:var(--text3);margin-bottom:6px;}
-.progress-bar{height:7px;background:var(--surface3);border-radius:100px;overflow:hidden;}
-.progress-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--a),var(--green));}
-.setting-row{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);}
-.setting-row:last-child{border-bottom:none;}
-.setting-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.setting-icon svg{width:13px;height:13px;}
-.setting-info{flex:1;}
-.setting-name{font-size:13px;font-weight:600;color:var(--text);}
-.setting-desc{font-size:11px;color:var(--text3);margin-top:1px;}
-.toggle-wrap{position:relative;display:inline-block;width:46px;height:26px;flex-shrink:0;cursor:pointer;}
-.toggle-wrap input{position:absolute;opacity:0;width:0;height:0;pointer-events:none;}
-.toggle-track{position:absolute;inset:0;border-radius:100px;background:var(--surface3);border:1.5px solid var(--border2);transition:background .25s,border-color .25s;cursor:pointer;}
-.toggle-track::after{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;top:2px;left:2px;transition:transform .25s;box-shadow:0 2px 4px rgba(0,0,0,.18);}
-.toggle-wrap input:checked ~ .toggle-track{background:var(--a);border-color:var(--a);}
-.toggle-wrap input:checked ~ .toggle-track::after{transform:translateX(20px);}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:var(--r-sm);font-size:13px;font-weight:600;font-family:var(--font);cursor:pointer;border:none;transition:all var(--ease);text-decoration:none;white-space:nowrap;}
-.btn svg{width:14px;height:14px;}
-.btn-sm{padding:7px 14px;font-size:12px;}
-.btn-approve{background:linear-gradient(135deg,var(--green),#059669);color:#fff;box-shadow:0 4px 18px rgba(5,196,138,.4);}
-.btn-approve:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(5,196,138,.5);}
-.btn-publish{background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;box-shadow:0 4px 18px rgba(37,99,235,.4);}
-.btn-publish:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(37,99,235,.5);}
-.btn-draft{background:var(--amber-lt);color:#b45309;border:1px solid rgba(245,158,11,.3);}
-.btn-draft:hover{background:rgba(245,158,11,.2);}
-.btn-edit{background:var(--surface2);color:var(--text2);border:1px solid var(--border2);}
-.btn-edit:hover{background:var(--a-lt);color:var(--a);border-color:rgba(37,99,235,.3);}
-.btn-danger{background:var(--red-lt);color:var(--red);border:1px solid rgba(240,68,68,.2);}
-.btn-danger:hover{background:rgba(240,68,68,.16);}
-.btn-reject{background:var(--red-lt);color:var(--red);border:1px solid rgba(240,68,68,.2);}
-.btn-reject:hover{background:rgba(240,68,68,.16);}
-.show-sidebar{position:sticky;top:82px;}
-.show-sidebar .card+.card{margin-top:14px;}
-.summary-hdr{padding:14px 18px;border-bottom:1px solid var(--border);background:var(--surface2);}
-.summary-hdr-title{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--text);}
-.summary-body{padding:14px 18px;}
-.summary-row{display:flex;flex-direction:column;gap:3px;padding:10px 0;border-bottom:1px solid var(--border);}
-.summary-row:last-child{border-bottom:none;padding-bottom:0;}
-.summary-row:first-child{padding-top:0;}
-.summary-key{font-size:9.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.09em;font-family:var(--mono);}
-.summary-val{font-size:12.5px;font-weight:500;color:var(--text);font-family:var(--mono);}
-.action-zone{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;animation:fadeUp .4s .1s ease both;}
-.action-zone-header{padding:14px 18px;border-bottom:1px solid var(--border);background:var(--surface2);}
-.action-zone-title{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--text);}
-.action-zone-body{padding:16px 18px;display:flex;flex-direction:column;gap:8px;}
-.flash{padding:12px 16px;border-radius:var(--r-sm);margin-bottom:20px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:10px;animation:fadeUp .3s ease both;}
-.flash-success{background:var(--green-lt);border:1px solid rgba(5,196,138,.25);color:#059669;}
-.flash svg{width:14px;height:14px;flex-shrink:0;}
-.campaign-mini{display:flex;align-items:center;gap:12px;padding:12px;background:var(--surface2);border-radius:var(--r-sm);border:1px solid var(--border2);}
-.campaign-mini-thumb{width:44px;height:44px;border-radius:9px;object-fit:cover;flex-shrink:0;background:var(--a-lt);}
-.campaign-mini-placeholder{width:44px;height:44px;border-radius:9px;background:var(--a-lt);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.campaign-mini-placeholder svg{width:18px;height:18px;color:var(--a);opacity:.5;}
-.campaign-mini-info{flex:1;min-width:0;}
-.campaign-mini-title{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.campaign-mini-meta{font-size:10.5px;color:var(--text3);margin-top:2px;font-family:var(--mono);}
-.desc-block{font-size:13.5px;color:var(--text2);line-height:1.75;white-space:pre-line;}
-.show-grid{display:grid;grid-template-columns:1fr 310px;gap:20px;align-items:start;}
-@media(max-width:860px){.show-grid{grid-template-columns:1fr}}
-@media(max-width:700px){.stat-row{grid-template-columns:1fr 1fr}.detail-grid{grid-template-columns:1fr}}
-</style>
-@endpush
 @section('content')
 @if(session('success'))
 <div class="flash flash-success">
@@ -380,8 +265,8 @@
             </a>
           </div>
         @else
-          <div style="text-align:center;padding:28px;color:var(--text3);font-size:13px;">
-            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 8px;display:block;opacity:.2;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
             No campaign linked
           </div>
         @endif
@@ -441,12 +326,15 @@
           <form method="POST" action="{{ route('admin.events.toggleSetting', $event) }}" id="form_allow_reg">
             @csrf
             <input type="hidden" name="field" value="allow_registrations">
-            <div class="toggle-wrap" onclick="document.getElementById('chk_allow_reg').click()">
-              <input type="checkbox" id="chk_allow_reg"
-                     onchange="document.getElementById('form_allow_reg').submit()"
-                     {{ $event->allow_registrations ? 'checked' : '' }}>
-              <div class="toggle-track"></div>
-            </div>
+             <div class="toggle-wrap" data-action="toggle-check" data-target="chk_allow_reg">
+               <input type="checkbox" id="chk_allow_reg"
+                      role="switch"
+                      aria-checked="{{ $event->allow_registrations ? 'true' : 'false' }}"
+                      aria-label="Allow Registrations"
+                      data-action="submit-form" data-target="form_allow_reg"
+                      {{ $event->allow_registrations ? 'checked' : '' }}>
+               <div class="toggle-track"></div>
+             </div>
           </form>
         </div>
 
@@ -462,12 +350,15 @@
           <form method="POST" action="{{ route('admin.events.toggleSetting', $event) }}" id="form_show_campaign">
             @csrf
             <input type="hidden" name="field" value="show_on_campaign">
-            <div class="toggle-wrap" onclick="document.getElementById('chk_show_campaign').click()">
-              <input type="checkbox" id="chk_show_campaign"
-                     onchange="document.getElementById('form_show_campaign').submit()"
-                     {{ $event->show_on_campaign ? 'checked' : '' }}>
-              <div class="toggle-track"></div>
-            </div>
+             <div class="toggle-wrap" data-action="toggle-check" data-target="chk_show_campaign">
+               <input type="checkbox" id="chk_show_campaign"
+                      role="switch"
+                      aria-checked="{{ $event->show_on_campaign ? 'true' : 'false' }}"
+                      aria-label="Show on Campaign Page"
+                      data-action="submit-form" data-target="form_show_campaign"
+                      {{ $event->show_on_campaign ? 'checked' : '' }}>
+               <div class="toggle-track"></div>
+             </div>
           </form>
         </div>
 
@@ -483,12 +374,15 @@
           <form method="POST" action="{{ route('admin.events.toggleSetting', $event) }}" id="form_send_notif">
             @csrf
             <input type="hidden" name="field" value="send_notification">
-            <div class="toggle-wrap" onclick="document.getElementById('chk_send_notif').click()">
-              <input type="checkbox" id="chk_send_notif"
-                     onchange="document.getElementById('form_send_notif').submit()"
-                     {{ ($event->send_notification ?? false) ? 'checked' : '' }}>
-              <div class="toggle-track"></div>
-            </div>
+             <div class="toggle-wrap" data-action="toggle-check" data-target="chk_send_notif">
+               <input type="checkbox" id="chk_send_notif"
+                      role="switch"
+                      aria-checked="{{ ($event->send_notification ?? false) ? 'true' : 'false' }}"
+                      aria-label="Send Notification Email"
+                      data-action="submit-form" data-target="form_send_notif"
+                      {{ ($event->send_notification ?? false) ? 'checked' : '' }}>
+               <div class="toggle-track"></div>
+             </div>
           </form>
         </div>
 
@@ -509,88 +403,79 @@
           $regActive  = $event->registrations->where('status', 'registered')->count();
           $regCancelled = $event->registrations->where('status', 'cancelled')->count();
         @endphp
-        <div style="margin-left:auto;display:flex;gap:10px;flex-shrink:0;">
+        <div class="reg-counts">
           @if($regActive > 0)
-          <span style="display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:100px;font-size:10px;font-weight:700;font-family:var(--mono);background:var(--green-lt);color:#059669;">
-            <span style="width:5px;height:5px;border-radius:50%;background:#10b981;"></span> {{ $regActive }} active
-          </span>
+          <span class="pill-count pc-green"><span class="dot"></span> {{ $regActive }} active</span>
           @endif
           @if($regCancelled > 0)
-          <span style="display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:100px;font-size:10px;font-weight:700;font-family:var(--mono);background:var(--red-lt);color:#dc2626;">
-            <span style="width:5px;height:5px;border-radius:50%;background:#ef4444;"></span> {{ $regCancelled }} cancelled
-          </span>
+          <span class="pill-count pc-red"><span class="dot"></span> {{ $regCancelled }} cancelled</span>
           @endif
         </div>
       </div>
       @if($event->registrations->isNotEmpty())
-      <div style="padding:0 22px 12px;border-bottom:1px solid var(--border);">
-        <input type="text" id="regSearch" placeholder="Search by name, email, or phone…" style="width:100%;padding:8px 12px;border:1px solid var(--border2);border-radius:var(--r-sm);font-size:12.5px;font-family:var(--font);background:var(--surface2);color:var(--text);outline:none;box-sizing:border-box;" oninput="filterRegistrations(this.value)">
+      <div class="reg-search-bar">
+        <div class="reg-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m1.35-5.15a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0z"/></svg>
+          <input type="text" id="regSearch" placeholder="Search by name, email, or phone…" data-action="filter-registrations">
+        </div>
       </div>
       <div class="card-body" style="padding:0;">
-        <div style="overflow-x:auto;">
-          <table style="width:100%;border-collapse:collapse;font-size:12.5px;" id="regTable">
-            <thead>
-              <tr style="background:var(--surface2);">
-                <th style="text-align:left;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);width:36px;">#</th>
-                <th style="text-align:left;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);">Name</th>
-                <th style="text-align:left;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);">Email</th>
-                <th style="text-align:left;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);">Phone</th>
-                <th style="text-align:left;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);">Date</th>
-                <th style="text-align:center;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);">Status</th>
-              </tr>
-            </thead>
-            <tbody id="regBody">
-              @foreach($event->registrations as $idx => $reg)
-              <tr class="reg-row" style="border-bottom:1px solid var(--border);{{ $loop->last ? 'border-bottom:none;' : '' }}"
-                  data-search="{{ strtolower($reg->name.' '.$reg->email.' '.($reg->phone ?? '')) }}">
-                <td style="padding:11px 18px;color:var(--text3);font-family:var(--mono);font-size:11px;">{{ $idx + 1 }}</td>
-                <td style="padding:11px 18px;font-weight:600;color:var(--text);">
-                  @if($reg->user)
-                    <a href="{{ route('admin.users.show', $reg->user) }}" style="color:var(--a);text-decoration:none;">{{ $reg->name }}</a>
-                  @else
-                    {{ $reg->name }}
-                    <span style="font-size:10px;color:var(--text3);font-family:var(--mono);">(guest)</span>
-                  @endif
-                </td>
-                <td style="padding:11px 18px;color:var(--text2);font-family:var(--mono);font-size:11.5px;">
-                  <a href="mailto:{{ $reg->email }}" style="color:var(--a);text-decoration:none;">{{ $reg->email }}</a>
-                </td>
-                <td style="padding:11px 18px;color:var(--text2);font-family:var(--mono);font-size:11.5px;">{{ $reg->phone ?? '—' }}</td>
-                <td style="padding:11px 18px;color:var(--text2);font-family:var(--mono);font-size:11px;">{{ $reg->created_at->format('d M Y, h:i A') }}</td>
-                <td style="padding:11px 18px;text-align:center;">
-                  @if($reg->status === 'registered')
-                    <span style="display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:100px;font-size:10px;font-weight:700;font-family:var(--mono);background:var(--green-lt);color:#059669;white-space:nowrap;">
-                      <span style="width:5px;height:5px;border-radius:50%;background:#10b981;"></span> Registered
-                    </span>
-                  @else
-                    <span style="display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:100px;font-size:10px;font-weight:700;font-family:var(--mono);background:var(--red-lt);color:#dc2626;white-space:nowrap;">
-                      <span style="width:5px;height:5px;border-radius:50%;background:#ef4444;"></span> Cancelled
-                    </span>
-                  @endif
-                </td>
-              </tr>
-              @if($reg->message)
-              <tr class="reg-row" style="border-bottom:1px solid var(--border);{{ $loop->last ? 'border-bottom:none;' : '' }}"
-                  data-search="{{ strtolower($reg->name.' '.$reg->email.' '.($reg->phone ?? '')) }}">
-                <td colspan="6" style="padding:0 18px 11px 54px;color:var(--text3);font-size:12px;font-style:italic;line-height:1.5;">
-                  <span style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);font-style:normal;">Message: </span>
-                  {{ $reg->message }}
-                </td>
-              </tr>
-              @endif
-              @endforeach
-            </tbody>
-          </table>
-          <div id="regEmpty" style="display:none;text-align:center;padding:32px 20px;color:var(--text3);font-size:13px;">
+        <div class="table-scroll">
+            <table class="data-table" id="regTable">
+              <thead>
+                <tr>
+                  <th style="width:36px;">#</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Date</th>
+                  <th class="ta-c">Status</th>
+                </tr>
+              </thead>
+              <tbody id="regBody">
+                @foreach($event->registrations as $idx => $reg)
+                <tr class="reg-row" data-search="{{ strtolower($reg->name.' '.$reg->email.' '.($reg->phone ?? '')) }}">
+                  <td class="tbl-num" data-label="#">{{ $idx + 1 }}</td>
+                  <td class="tbl-name" data-label="Name">
+                    @if($reg->user)
+                      <a href="{{ route('admin.users.show', $reg->user) }}">{{ $reg->name }}</a>
+                    @else
+                      {{ $reg->name }}
+                      <span class="guest-tag">(guest)</span>
+                    @endif
+                  </td>
+                  <td data-label="Email"><a href="mailto:{{ $reg->email }}" class="tbl-mail">{{ $reg->email }}</a></td>
+                  <td class="tbl-phone" data-label="Phone">{{ $reg->phone ?? '—' }}</td>
+                  <td class="tbl-date" data-label="Date">{{ $reg->created_at->format('d M Y, h:i A') }}</td>
+                  <td class="ta-c tbl-status" data-label="Status">
+                    @if($reg->status === 'registered')
+                      <span class="status-pill pill-registered"><span class="sp-dot"></span> Registered</span>
+                    @else
+                      <span class="status-pill pill-cancelled"><span class="sp-dot"></span> Cancelled</span>
+                    @endif
+                  </td>
+                </tr>
+                @if($reg->message)
+                <tr class="reg-row" data-search="{{ strtolower($reg->name.' '.$reg->email.' '.($reg->phone ?? '')) }}">
+                  <td colspan="6" class="reg-msg">
+                    <span class="reg-msg-label">Message:</span>
+                    {{ $reg->message }}
+                  </td>
+                </tr>
+                @endif
+                @endforeach
+              </tbody>
+            </table>
+          <div id="regEmpty" class="empty-state" style="display:none;">
             No registrations match your search.
           </div>
         </div>
       </div>
       @else
       <div class="card-body">
-        <div style="text-align:center;padding:32px 20px;color:var(--text3);font-size:13px;">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 10px;display:block;opacity:.25;"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg>
-          <div style="font-weight:600;margin-bottom:4px;">No registrations yet</div>
+        <div class="empty-state">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg>
+          <div class="es-title">No registrations yet</div>
           <div>Share the event link to get people signed up.</div>
         </div>
       </div>
@@ -610,35 +495,33 @@
         </div>
       </div>
       <div class="card-body" style="padding:0;">
-        <div style="overflow-x:auto;">
-          <table style="width:100%;border-collapse:collapse;font-size:12.5px;">
+        <div class="table-scroll">
+          <table class="data-table">
             <thead>
-              <tr style="background:var(--surface2);">
-                <th style="text-align:left;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);">Name</th>
-                <th style="text-align:left;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);">Role</th>
-                <th style="text-align:left;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);">Dates</th>
-                <th style="text-align:center;padding:12px 18px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);border-bottom:1px solid var(--border);">Status</th>
+              <tr>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Dates</th>
+                <th class="ta-c">Status</th>
               </tr>
             </thead>
             <tbody>
               @foreach($event->volunteerAssignments as $va)
-              <tr style="border-bottom:1px solid var(--border);{{ $loop->last ? 'border-bottom:none;' : '' }}">
-                <td style="padding:11px 18px;font-weight:600;color:var(--text);">
+              <tr>
+                <td class="tbl-name">
                   @if($va->volunteer?->user)
                     {{ $va->volunteer->user->name }}
                   @else
                     {{ $va->volunteer->name ?? 'Volunteer #'.$va->volunteer_id }}
                   @endif
                 </td>
-                <td style="padding:11px 18px;color:var(--text2);font-size:12px;">{{ $va->role ?? '—' }}</td>
-                <td style="padding:11px 18px;color:var(--text2);font-family:var(--mono);font-size:11px;">
+                <td class="tbl-role">{{ $va->role ?? '—' }}</td>
+                <td class="tbl-mono">
                   {{ $va->start_date ? $va->start_date->format('d M Y') : '—' }}
                   @if($va->end_date && $va->end_date != $va->start_date) – {{ $va->end_date->format('d M Y') }} @endif
                 </td>
-                <td style="padding:11px 18px;text-align:center;">
-                  <span style="display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:100px;font-size:10px;font-weight:700;font-family:var(--mono);background:var(--green-lt);color:#059669;white-space:nowrap;">
-                    <span style="width:5px;height:5px;border-radius:50%;background:#10b981;"></span> {{ ucfirst($va->status) }}
-                  </span>
+                <td class="ta-c">
+                  <span class="status-pill pill-active"><span class="sp-dot"></span> {{ ucfirst($va->status) }}</span>
                 </td>
               </tr>
               @endforeach
@@ -650,7 +533,7 @@
     @endif
 
     {{-- Bottom action row --}}
-    <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;animation:fadeUp .4s .18s ease both;align-items:center;">
+    <div class="show-actions">
       <a href="{{ route('admin.events.edit', $event) }}" class="btn btn-green btn-publish">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
         Edit Event
@@ -660,13 +543,13 @@
         All Events
       </a>
       @if($event->status === 'active')
-      <button class="btn btn-edit" onclick="copyEventLink(this)" data-url="{{ url('events/'.$event->id) }}" style="cursor:pointer;">
+      <button class="btn btn-edit" aria-label="Copy event link to clipboard" data-action="copy-event-link" data-url="{{ url('events/'.$event->id) }}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
         <span>Copy Link</span>
       </button>
       @endif
       <form method="POST" action="{{ route('admin.events.destroy', $event) }}"
-            onsubmit="return confirm('Permanently delete \'{{ addslashes($event->title) }}\'? This cannot be undone.')"
+            data-confirm="Permanently delete '{{ $event->title }}'? This cannot be undone."
             style="margin-left:auto;">
         @csrf @method('DELETE')
         <button type="submit" class="btn btn-red btn-sm">
@@ -703,7 +586,7 @@
               Reject Event
             </button>
           </form>
-          <a href="{{ route('admin.events.edit', $event) }}" class="btn btn-edit" style="width:100%;justify-content:center;">
+          <a href="{{ route('admin.events.edit', $event) }}" class="btn btn-edit">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
             Edit Event
           </a>
@@ -715,7 +598,7 @@
               Publish Event
             </button>
           </form>
-          <a href="{{ route('admin.events.edit', $event) }}" class="btn btn-edit" style="width:100%;justify-content:center;">
+          <a href="{{ route('admin.events.edit', $event) }}" class="btn btn-edit">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
             Continue Editing
           </a>
@@ -727,7 +610,7 @@
               Revert to Draft
             </button>
           </form>
-          <a href="{{ route('admin.events.edit', $event) }}" class="btn btn-edit" style="width:100%;justify-content:center;">
+          <a href="{{ route('admin.events.edit', $event) }}" class="btn btn-edit">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
             Edit Event
           </a>
@@ -738,11 +621,11 @@
           </a>
         @endif
 
-        <div style="height:1px;background:var(--border);margin:2px 0;"></div>
+        <div class="az-sep"></div>
         <form method="POST" action="{{ route('admin.events.destroy', $event) }}"
-              onsubmit="return confirm('Permanently delete this event?')">
+              data-confirm="Permanently delete this event?">
           @csrf @method('DELETE')
-          <button type="submit" class="btn btn-red btn-sm">
+          <button type="submit" class="btn btn-red">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
             Delete Event
           </button>
@@ -770,7 +653,7 @@
         </div>
         <div class="summary-row">
           <div class="summary-key">Campaign</div>
-          <div class="summary-val" style="font-size:11.5px;line-height:1.3;">{{ $event->campaign->title ?? '—' }}</div>
+          <div class="summary-val summary-val-sm">{{ $event->campaign->title ?? '—' }}</div>
         </div>
         <div class="summary-row">
           <div class="summary-key">Date</div>
@@ -792,11 +675,11 @@
         </div>
         <div class="summary-row">
           <div class="summary-key">Created</div>
-          <div class="summary-val" style="font-size:11px;">{{ $event->created_at->format('d M Y, H:i') }}</div>
+          <div class="summary-val summary-val-sm">{{ $event->created_at->format('d M Y, H:i') }}</div>
         </div>
         <div class="summary-row">
           <div class="summary-key">Last Updated</div>
-          <div class="summary-val" style="font-size:11px;">{{ $event->updated_at->format('d M Y, H:i') }}</div>
+          <div class="summary-val summary-val-sm">{{ $event->updated_at->format('d M Y, H:i') }}</div>
         </div>
       </div>
     </div>
@@ -805,21 +688,21 @@
     <div class="card" style="animation-delay:.14s;">
       <div class="summary-hdr"><div class="summary-hdr-title">Fundraising</div></div>
       <div class="summary-body">
-        <div class="summary-row">
+        <div class="summary-row" style="padding-bottom:6px;">
           <div class="summary-key">Raised</div>
-          <div class="summary-val" style="color:var(--green);font-size:15px;">₹{{ number_format($raised, 0) }}</div>
+          <div class="summary-val summary-val-lg" style="color:var(--green);">₹{{ number_format($raised, 0) }}</div>
         </div>
-        <div class="summary-row">
-          <div class="summary-key">Progress</div>
-          <div style="margin-top:4px;">
-            <div class="progress-label"><span style="color:var(--text);">{{ $pct }}%</span><span>₹{{ number_format($goal, 0) }} goal</span></div>
-            <div class="progress-bar"><div class="progress-fill" style="width:{{ $pct }}%;"></div></div>
-          </div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:10px;text-align:right;">
+          of ₹{{ number_format($goal, 0) }} goal
         </div>
-        <div class="summary-row">
-          <div class="summary-key">Registrations</div>
-          <div class="summary-val">{{ $regCount }}
-            @if($event->max_participants)<span style="font-size:11px;color:var(--text3);"> / {{ $event->max_participants }}</span>@endif
+        <div class="summary-progress">
+          <div class="progress-label"><span style="color:var(--text);">{{ $pct }}%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:{{ $pct }}%;"></div></div>
+        </div>
+        <div class="summary-regs">
+          <div class="summary-regs-label">Registrations</div>
+          <div class="summary-regs-val">{{ $regCount }}
+            @if($event->max_participants)<span class="sum-muted"> / {{ $event->max_participants }}</span>@endif
           </div>
         </div>
       </div>
@@ -830,71 +713,9 @@
 @endsection
 
 @push('page_scripts')
-<script>
-(function(){
-'use strict';
-var html   = document.documentElement;
-var toggle = document.getElementById('themeToggle');
-var saved  = localStorage.getItem('adminTheme') || 'light';
-if (saved === 'dark') { html.setAttribute('data-theme','dark'); toggle.checked = true; }
-toggle.addEventListener('change', function(){
-  var t = this.checked ? 'dark' : 'light';
-  html.setAttribute('data-theme', t);
-  localStorage.setItem('adminTheme', t);
-});
-document.getElementById('hamburger').addEventListener('click', function(){
-  document.getElementById('sidebar').classList.toggle('open');
-});
-window.toggleDD = function(){ document.getElementById('avDD').classList.toggle('open'); };
-document.addEventListener('click', function(e){
-  var w = document.getElementById('avWrap');
-  if (w && !w.contains(e.target)) document.getElementById('avDD').classList.remove('open');
-});
+@vite('resources/js/admin/entries/events-show.js')
+@endpush
 
-/* ── Registration search ── */
-window.filterRegistrations = function(q) {
-  q = q.toLowerCase().trim();
-  var rows = document.querySelectorAll('.reg-row');
-  var visible = 0;
-  rows.forEach(function(r) {
-    var match = !q || r.dataset.search.includes(q);
-    r.style.display = match ? '' : 'none';
-    if (match) visible++;
-  });
-  var empty = document.getElementById('regEmpty');
-  if (empty) empty.style.display = visible === 0 ? 'block' : 'none';
-};
-
-/* ── Copy event link ── */
-window.copyEventLink = function(btn) {
-  var url = btn.dataset.url;
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(url).then(function() {
-      var span = btn.querySelector('span');
-      var orig = span.textContent;
-      span.textContent = 'Copied!';
-      btn.style.borderColor = 'var(--green)';
-      btn.style.color = 'var(--green)';
-      setTimeout(function() { span.textContent = orig; btn.style.borderColor = ''; btn.style.color = ''; }, 2000);
-    }).catch(function() { fallbackCopy(url, btn); });
-  } else { fallbackCopy(url, btn); }
-};
-function fallbackCopy(url, btn) {
-  var i = document.createElement('input');
-  i.value = url; i.style.position = 'fixed'; i.style.opacity = '0';
-  document.body.appendChild(i); i.select();
-  try { document.execCommand('copy'); btn.querySelector('span').textContent = 'Copied!'; } catch(e) {}
-  document.body.removeChild(i);
-}
-
-/* ── Toggle loading indicator ── */
-document.querySelectorAll('.toggle-wrap input[type=checkbox]').forEach(function(chk) {
-  chk.addEventListener('change', function() {
-    var wrap = this.closest('.toggle-wrap');
-    wrap.style.opacity = '.5';
-    wrap.style.pointerEvents = 'none';
-  });
-});
-})();
-</script>
+@push('page_styles')
+@vite('resources/css/admin/pages/events-show.css')
 @endpush

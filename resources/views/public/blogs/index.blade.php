@@ -4,7 +4,7 @@
 
 @section('content')
 
-@push('styles') @vite(['resources/css/blogs.css']) @endpush
+@push('styles') @vite(['resources/css/public/blogs.css']) @endpush
 
 {{-- ═══ HERO ═══ --}}
 <section class="blog-hero">
@@ -112,7 +112,7 @@
                 <option value="popular"  @selected(request('sort') === 'popular')>Most Popular</option>
                 <option value="trending" @selected(request('sort') === 'trending')>Trending</option>
             </select>
-            <button type="submit" class="btn btn-accent">Search</button>
+            <x-button variant="primary" type="submit">Search</x-button>
             @if(request('q') || (request('sort') && request('sort') !== 'recent'))
                 <a href="{{ route('blogs.index') }}" class="bfb-clear">✕ Clear</a>
             @endif
@@ -199,10 +199,10 @@
                             @else Nothing published yet — check back soon!
                             @endif
                         </p>
-                        <a href="{{ route('blogs.index') }}" class="btn btn-accent">
+                        <x-button variant="primary" href="{{ route('blogs.index') }}">
                             Browse all
                             <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                        </a>
+                        </x-button>
                     </div>
                 </div>
 
@@ -343,7 +343,7 @@
                         </svg>
                     </div>
                     <p>Have something to share with the community? Write your story today.</p>
-                    <a href="{{ route('user.blogs.create') }}" class="btn btn-accent btn-block">Write a Story</a>
+                    <x-button variant="primary" href="{{ route('user.blogs.create') }}">Write a Story</x-button>
                 </div>
                 @endauth
 

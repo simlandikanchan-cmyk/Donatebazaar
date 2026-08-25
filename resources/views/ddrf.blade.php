@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&family=DM+Mono:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
 
-@push('styles') @vite(['resources/css/ddrf.css']) @endpush
+@push('styles') @vite(['resources/css/public/ddrf.css']) @endpush
 @endpush
 
 @section('content')
@@ -64,14 +64,14 @@
                 </span>
             </div>
             <div class="ddrf-hero-btns">
-                <a href="{{ route('all.campaigns') }}?type=disaster" class="btn btn-accent" style="font-size:15px;padding:14px 32px">
+                <x-button variant="primary" href="{{ route('all.campaigns') }}?type=disaster">
                     Donate to Relief
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
-                </a>
-                <a href="{{ route('partnership') }}" class="btn btn-white" style="font-size:15px;padding:14px 32px">
+                </x-button>
+                <x-button variant="outline" href="{{ route('partnership') }}">
                     Apply For Partnership
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                </a>
+                </x-button>
             </div>
         </div>
 
@@ -151,13 +151,15 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
                         {{ $campaign['donors'] ?? 0 }} donors
                     </span>
-<a href="{{ route('campaign.public', [
+<x-button variant="primary" href="{{ route('campaign.public', [
     'category' => $campaign['category'],
+    'slug'     => $campaign['slug']
+]) }}" class="cf-btn"> $campaign['category'],
     'slug'     => $campaign['slug']
 ]) }}" class="cf-btn">
                         Donate Now
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                    </a>
+                    </x-button>
                 </div>
             </div>
             @empty
@@ -165,10 +167,10 @@
                 <div class="no-campaigns-icon">🆘</div>
                 <h3>No Active Campaigns Right Now</h3>
                 <p>There are currently no active disaster relief campaigns. Check back soon — new campaigns launch within hours of a disaster.</p>
-                <a href="{{ route('campaign.create') }}" class="btn btn-accent" style="font-size:14px;padding:12px 26px">
+                <x-button variant="outline" href="{{ route('campaign.create') }}">
                     Start a Relief Campaign
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 4v16m8-8H4"/></svg>
-                </a>
+                </x-button>
             </div>
             @endforelse
         </div>
@@ -251,10 +253,10 @@
                     <div class="hiw-step"><div class="hiw-step-num">3</div><div class="hiw-step-body"><div class="hiw-step-title">Track &amp; Get Your 80G</div><div class="hiw-step-desc">Receive real-time field updates, photo/video proof of delivery, and your 80G tax certificate — all from your donor dashboard.</div></div></div>
                 </div>
                 <div class="hiw-col-cta">
-                    <a href="{{ route('all.campaigns') }}?type=disaster" class="btn btn-accent" style="font-size:14px;padding:12px 26px">
+                    <x-button variant="primary" href="{{ route('all.campaigns') }}?type=disaster">
                         Donate Now
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                    </a>
+                    </x-button>
                 </div>
             </div>
             <div class="hiw-col reveal-right">
@@ -268,10 +270,10 @@
                     <div class="hiw-step"><div class="hiw-step-num">3</div><div class="hiw-step-body"><div class="hiw-step-title">Receive Milestone-Based Funds</div><div class="hiw-step-desc">Funds are released in tranches as you upload field proof — photos, bills, delivery reports — keeping donors informed and confident.</div></div></div>
                 </div>
                 <div class="hiw-col-cta">
-                    <a href="{{ route('campaign.create') }}" class="btn btn-accent" style="font-size:14px;padding:12px 26px">
+                    <x-button variant="outline" href="{{ route('campaign.create') }}">
                         Start a Relief Campaign
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 4v16m8-8H4"/></svg>
-                    </a>
+                    </x-button>
                 </div>
             </div>
         </div>
@@ -352,7 +354,7 @@
         <div class="founder-inner">
             <div class="founder-photo-wrap reveal-left">
                 <div class="founder-photo">
-                    <img src="{{ asset('images/founder.jpg') }}" alt="Founder of DonateBazaar" loading="lazy">
+                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800&q=80" alt="Founder of DonateBazaar" loading="lazy">
                 </div>
                 <div class="founder-card-badge">
                     <div class="fcb-icon">
@@ -393,7 +395,7 @@
             @foreach($csrPartners ?? ['Partner NGO 1','Partner NGO 2','Partner NGO 3','Partner NGO 4','Partner NGO 5','Partner Corp 1','Partner Corp 2','Partner Corp 3','Partner Corp 4','Partner Corp 5'] as $partner)
             <div class="partner-logo reveal">
                 @if(is_array($partner) && isset($partner['logo']))
-                    <img src="{{ $partner['logo'] }}" alt="{{ $partner['name'] }}" style="max-height:36px;filter:brightness(0) invert(.55);transition:.3s" onmouseover="this.style.filter='brightness(0) invert(.82)'" onmouseout="this.style.filter='brightness(0) invert(.55)'">
+                    <img src="{{ $partner['logo'] }}" alt="{{ $partner['name'] }}" style="max-height:36px;filter:brightness(0) invert(.55);transition:.3s" data-action="partner-hover" data-hover-filter="brightness(0) invert(.82)" data-hover-filter-base="brightness(0) invert(.55)">
                 @else
                     <span>{{ is_array($partner) ? $partner['name'] : $partner }}</span>
                 @endif
@@ -411,115 +413,22 @@
         <h2 class="ddrf-cta-title reveal d1">Together, We <em>Rebuild</em></h2>
         <p class="ddrf-cta-sub reveal d2">Donate, volunteer, partner with us for CSR — every action, big or small, brings us closer to a world where no community suffers alone.</p>
         <div class="ddrf-cta-btns reveal d3">
-            <a href="{{ route('all.campaigns') }}?type=disaster" class="btn btn-accent" style="font-size:15px;padding:15px 34px">
+            <x-button variant="primary" href="{{ route('all.campaigns') }}?type=disaster">
                 Donate to Relief
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
-            </a>
-            <a href="{{ route('campaign.create') }}" class="btn btn-white" style="font-size:15px;padding:15px 34px">
+            </x-button>
+            <x-button variant="outline" href="{{ route('campaign.create') }}">
                 Start Relief Campaign
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 4v16m8-8H4"/></svg>
-            </a>
+            </x-button>
         </div>
     </div>
 </section>
 
-<button class="scroll-top" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Scroll to top">
+<button class="scroll-top" id="scrollTopBtn" data-action="scroll-top" aria-label="Scroll to top">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 15l-6-6-6 6"/></svg>
 </button>
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-
-    /* ── Scroll Reveal ── */
-    var revEls = document.querySelectorAll('.reveal,.reveal-left,.reveal-right');
-    var obs = new IntersectionObserver(function(entries){
-        entries.forEach(function(e){
-            if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
-        });
-    },{ threshold: 0.08, rootMargin: '0px 0px -28px 0px' });
-    revEls.forEach(function(el){ obs.observe(el); });
-
-    /* ── Scroll to top ── */
-    var sBtn = document.getElementById('scrollTopBtn');
-    window.addEventListener('scroll', function(){
-        sBtn.classList.toggle('visible', window.scrollY > 600);
-    },{ passive: true });
-
-    /* ── Animate progress bars ── */
-    var bars = document.querySelectorAll('.campaign-progress-fill');
-    var barObs = new IntersectionObserver(function(entries){
-        entries.forEach(function(e){
-            if(e.isIntersecting){
-                var target = e.target.dataset.width || e.target.style.width;
-                e.target.style.width = target;
-                barObs.unobserve(e.target);
-            }
-        });
-    },{ threshold: 0.2 });
-    bars.forEach(function(bar){
-        var w = bar.style.width;
-        bar.dataset.width = w;
-        bar.style.width = '0';
-        setTimeout(function(){ barObs.observe(bar); }, 200);
-    });
-
-    /* ── Counter animation ── */
-    function animateCounter(el) {
-        var originalText = el.textContent.trim();
-
-        // Detect currency symbol
-        var hasRupee = originalText.indexOf('₹') !== -1;
-
-        // Detect plus sign
-        var hasPlus = originalText.indexOf('+') !== -1;
-
-        // Extract numeric value only
-        var num = parseInt(originalText.replace(/[^\d]/g, ''), 10);
-
-        if (isNaN(num) || num === 0) return;
-
-        var duration = 1500;
-        var startTime = null;
-
-        function step(timestamp) {
-            if (!startTime) startTime = timestamp;
-
-            var progress = Math.min((timestamp - startTime) / duration, 1);
-            var current = Math.floor(progress * num);
-
-            var formatted = current.toLocaleString('en-IN');
-
-            if (hasRupee) formatted = '₹' + formatted;
-            if (hasPlus) formatted += '+';
-
-            el.textContent = formatted;
-
-            if (progress < 1) {
-                requestAnimationFrame(step);
-            } else {
-                var finalText = num.toLocaleString('en-IN');
-                if (hasRupee) finalText = '₹' + finalText;
-                if (hasPlus) finalText += '+';
-                el.textContent = finalText;
-            }
-        }
-
-        requestAnimationFrame(step);
-    }
-
-    /* ── Wire up counter animation on stat numbers ── */
-    var statEls = document.querySelectorAll('.ddrf-stat-val, .ns-val');
-    var statObs = new IntersectionObserver(function(entries){
-        entries.forEach(function(e){
-            if (e.isIntersecting) {
-                animateCounter(e.target);
-                statObs.unobserve(e.target);
-            }
-        });
-    }, { threshold: 0.3 });
-    statEls.forEach(function(el){ statObs.observe(el); });
-
-});
-</script>
-
 @endsection
+
+@push('scripts') @vite(['resources/js/public/ddrf.js']) @endpush

@@ -1,3 +1,7 @@
+@push('page_css')
+@vite('resources/css/admin/entries/misc.css')
+@endpush
+
 @extends('layouts.admin')
 
 @section('sidebar_volunteer_applications', 'active')
@@ -45,6 +49,7 @@
 [data-theme="dark"] .btn-reject{color:#f87171}
 [data-theme="dark"] .btn-reject:hover{color:#fff}
 @media(max-width:960px){.detail-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:860px){.detail-grid{grid-template-columns:repeat(2,1fr)!important}.hero-card{flex-direction:column;align-items:stretch;padding:22px 20px}.hero-right{align-items:flex-start;width:100%;margin-top:12px}.hero-title{font-size:18px}}
 @media(max-width:640px){.detail-grid{grid-template-columns:1fr}.hero-card{flex-direction:column;align-items:stretch;padding:22px 20px}.hero-right{align-items:flex-start}.hero-title{font-size:18px}}
 @media(max-width:480px){.hero-card{padding:18px 16px}.hero-title{font-size:16px}.hero-sub{font-size:11px}.info-box{padding:12px 14px}.info-value{font-size:12px}}
 @media(max-width:380px){.hero-av{width:44px;height:44px;font-size:18px;border-radius:12px}.info-value{font-size:11px}.action-bar{flex-direction:column}.action-bar .btn-approve,.action-bar .btn-reject{width:100%;justify-content:center}}

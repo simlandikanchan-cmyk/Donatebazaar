@@ -69,21 +69,21 @@
             </div>
  
             <div class="hbs-controls">
-                <button class="hbs-btn" id="hbsPrev" aria-label="Previous">
+                <x-button variant="primary" type="button" class="hbs-btn" id="hbsPrev">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M15 18l-6-6 6-6"/></svg>
-                </button>
+                </x-button>
                 <div class="hbs-dots" id="hbsDots"></div>
-                <button class="hbs-btn" id="hbsNext" aria-label="Next">
+                <x-button variant="primary" type="button" class="hbs-btn" id="hbsNext">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M9 18l6-6-6-6"/></svg>
-                </button>
+                </x-button>
             </div>
         </div>
  
         <div class="hbs-footer-link">
-            <a href="{{ route('blogs.index') }}" class="btn btn-outline-dark">
+            <x-button variant="outline" href="{{ route('blogs.index') }}" class="hbs-view-all">
                 View all posts
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </a>
+            </x-button>
         </div>
         @endif
  

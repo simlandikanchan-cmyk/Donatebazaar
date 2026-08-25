@@ -101,7 +101,7 @@ class OrganizationController extends Controller
             'reviewed_by' => Auth::id(),
             'reviewed_at' => now(),
             'admin_notes' => $request->admin_notes,
-        ]));
+        ]))->load('user');
 
         $recipient = $validated['contact_email'];
         if ($recipient) {
@@ -110,5 +110,14 @@ class OrganizationController extends Controller
 
         return redirect()->route('admin.organizations.index')
             ->with('success', 'NGO onboarded successfully.');
+    }
+
+    public function destroy(OrganizationApplication $organization): RedirectResponse
+    {
+        $organization->delete();
+
+        return redirect()
+            ->route('admin.organizations.index')
+            ->with('success', 'NGO application deleted successfully.');
     }
 }

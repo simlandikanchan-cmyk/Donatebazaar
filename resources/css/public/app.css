@@ -1,0 +1,74 @@
+@import "../base/_variables.css";
+@import "../components/_button.css";
+
+@import "@fontsource/dm-sans/400.css";
+@import "@fontsource/dm-sans/500.css";
+@import "@fontsource/dm-sans/600.css";
+@import "@fontsource/dm-sans/700.css";
+@import "@fontsource/dm-sans/800.css";
+
+@import "@fontsource/dm-mono/300.css";
+@import "@fontsource/dm-mono/400.css";
+@import "@fontsource/dm-mono/500.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global SVG fix */
+svg:not([width]):not([height]) {
+  width: 24px;
+  height: 24px;
+  display: block;
+  flex-shrink: 0;
+}
+
+/* Charity palette — global defaults (page-specific :root overrides where present) */
+:root {
+  --accent-glow: rgba(37,99,235,0.18);
+  --green:       #16a34a;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+    BUTTON SYSTEM — single source of truth (resources/css/components/_button.css)
+    ═══════════════════════════════════════════════════════════════ */
+
+/* Skip link (accessible, hidden until keyboard focus) */
+.skip-link {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: #2563eb;
+  color: #ffffff;
+  padding: 8px 16px;
+  z-index: 10000;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 0 0 8px 0;
+  transform: translateY(-120%);
+  transition: transform 0.2s ease;
+  pointer-events: none;
+}
+.skip-link:focus {
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* Navbar Links */
+.nav-link {
+  @apply text-gray-700 hover:text-blue-600 transition relative;
+}
+
+.nav-link::after {
+  content: '';
+  @apply absolute left-0 -bottom-1 w-0 h-[2px] bg-blue-600 transition-all duration-300;
+}
+
+.nav-link:hover::after {
+  @apply w-full;
+}
+
+.active-link {
+  @apply text-blue-600;
+}

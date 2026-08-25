@@ -1,3 +1,7 @@
+@push('page_css')
+@vite('resources/css/admin/entries/misc.css')
+@endpush
+
 @extends('layouts.admin')
 
 @section('sidebar_faqs', 'active')
@@ -27,7 +31,16 @@
 .search-input:focus{border-color:var(--a);box-shadow:0 0 0 3px var(--a-glow);}
 .filter-btn{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 13px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--r-sm);font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;font-family:var(--font);transition:all var(--ease);text-decoration:none;}
 .filter-btn:hover,.filter-btn.on{border-color:var(--a);color:var(--a);background:var(--a-lt);}
-.table-wrap{overflow-x:auto;}
+@media(max-width:640px){.table-wrap{min-width:480px;overflow-x:auto}}
+@media(max-width:480px){
+  #faqTable thead{display:none}
+  #faqTable tbody tr{display:flex;flex-direction:column;padding:14px 16px;border-bottom:1px solid var(--border);gap:8px}
+  #faqTable tbody tr td{padding:0;border:none;display:flex;align-items:flex-start;gap:8px}
+  #faqTable tbody tr td::before{content:attr(data-label);font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);min-width:75px;flex-shrink:0;padding-top:2px}
+  #faqTable .actions{justify-content:flex-start;width:100%}
+  #faqTable td[data-label="Actions"]{flex-wrap:wrap}
+  #faqTable td[data-label="Actions"]::before{content:"Actions";min-width:auto;margin-right:auto}
+}
 table{width:100%;border-collapse:collapse;}
 thead th{padding:10px 18px;text-align:left;font-size:10px;font-family:var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--text3);background:var(--surface2);border-bottom:1px solid var(--border);font-weight:500;white-space:nowrap;}
 thead th:last-child{text-align:right;}
@@ -99,7 +112,7 @@ td{padding:13px 18px;font-size:13px;vertical-align:middle;}
     </div>
   @else
     <div class="table-wrap">
-      <table>
+       <table id="faqTable">
         <thead>
           <tr>
             <th style="width:50px;">#</th>
@@ -114,18 +127,18 @@ td{padding:13px 18px;font-size:13px;vertical-align:middle;}
         <tbody>
           @foreach($faqs as $faq)
           <tr>
-            <td><span style="font-size:11.5px;color:var(--text3);font-family:var(--mono);">{{ str_pad($loop->iteration,2,'0',STR_PAD_LEFT) }}</span></td>
-            <td><span class="cat-pill">{{ $faq->category }}</span></td>
-            <td><div class="q-text">{{ $faq->question }}</div></td>
-            <td><div class="a-text">{{ strip_tags($faq->answer) }}</div></td>
-            <td><span style="font-family:var(--mono);font-size:12px;color:var(--text3);">{{ $faq->sort_order }}</span></td>
-            <td>
+            <td data-label="#"><span style="font-size:11.5px;color:var(--text3);font-family:var(--mono);">{{ str_pad($loop->iteration,2,'0',STR_PAD_LEFT) }}</span></td>
+            <td data-label="Category"><span class="cat-pill">{{ $faq->category }}</span></td>
+            <td data-label="Question"><div class="q-text">{{ $faq->question }}</div></td>
+            <td data-label="Answer"><div class="a-text">{{ strip_tags($faq->answer) }}</div></td>
+            <td data-label="Order"><span style="font-family:var(--mono);font-size:12px;color:var(--text3);">{{ $faq->sort_order }}</span></td>
+            <td data-label="Status">
               <span class="status-pill {{ $faq->is_active?'s-active':'s-inactive' }}">
                 <span style="width:5px;height:5px;border-radius:50%;background:currentColor;display:inline-block;"></span>
                 {{ $faq->is_active?'Active':'Hidden' }}
               </span>
             </td>
-            <td>
+            <td data-label="Actions">
               <div class="actions">
                 <a href="{{ route('admin.faqs.edit', $faq->id) }}" class="btn btn-secondary act-btn act-edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</a>
                 <form method="POST" action="{{ route('admin.faqs.destroy', $faq->id) }}" onsubmit="return confirm('Delete this FAQ?');">

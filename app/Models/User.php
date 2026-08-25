@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasNotificationPreferences;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
@@ -11,7 +12,7 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory, \Illuminate\Auth\MustVerifyEmail, Notifiable;
+    use HasFactory, HasNotificationPreferences, \Illuminate\Auth\MustVerifyEmail, Notifiable;
 
     // -------------------------------------------------------------------------
     // Fillable / Hidden / Casts
@@ -26,11 +27,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'avatar',
         'cover_image',
         'bio',
-        'role',
-        'otp_hash',
-        'otp_expires_at',
-        'otp_attempts',
-        'phone_verified_at',
         'last_login_at',
     ];
 
@@ -174,6 +170,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function fundraiserLevelName(): string
     {
         return $this->assignedLevel?->level_name ?? 'Starter';
+    }
+
+    public function isAccountActive(): bool
+    {
+        return $this->status === 'active';
     }
 
     /**

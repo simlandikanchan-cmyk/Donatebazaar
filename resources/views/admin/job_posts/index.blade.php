@@ -1,3 +1,7 @@
+@push('page_css')
+@vite('resources/css/admin/entries/jobs.css')
+@endpush
+
 @extends('layouts.admin')
 
 @section('sidebar_job_posts', 'active')
@@ -145,24 +149,6 @@ tbody tr:hover{background:var(--surface2)}
 
 @section('content')
 
-@php
-  $totalJobs   = $jobPosts->total();
-  $cntActive   = \App\Models\JobPost::where('status', 'active')
-                   ->where(fn($q) => $q->whereNull('application_deadline')
-                                        ->orWhereDate('application_deadline', '>=', now()))
-                   ->count();
-  $cntDraft    = \App\Models\JobPost::where('status', 'draft')->count();
-  $cntClosed   = \App\Models\JobPost::where(fn($q) =>
-                   $q->where('status', 'closed')
-                     ->orWhere(fn($q2) => $q2->whereNotNull('application_deadline')
-                                             ->whereDate('application_deadline', '<', now()))
-                 )->count();
-  $cntRemote   = \App\Models\JobPost::where('is_remote', 1)->count();
-  $cntFeatured = \App\Models\JobPost::where('featured', 1)->count();
-  $totalVac    = \App\Models\JobPost::sum('vacancies');
-  $totalViews  = \App\Models\JobPost::sum('views_count');
-  $totalApps   = \App\Models\JobPost::sum('applications_count');
-@endphp
 
 <div class="hero">
   <div class="hero-left">
@@ -195,7 +181,7 @@ tbody tr:hover{background:var(--surface2)}
 </div>
 
 <div class="stats-grid" style="grid-template-columns:repeat(4,1fr)">
-  <div class="stat" onclick="setFilter('all')" style="cursor:pointer">
+  <div class="stat" data-action="navigate" data-href="?filter=all" style="cursor:pointer">
     <div class="stat-icon si-teal">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
     </div>
@@ -205,7 +191,7 @@ tbody tr:hover{background:var(--surface2)}
       <div class="stat-foot">All listings</div>
     </div>
   </div>
-  <div class="stat" onclick="setFilter('active')" style="cursor:pointer">
+  <div class="stat" data-action="navigate" data-href="?filter=active" style="cursor:pointer">
     <div class="stat-icon si-green">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
     </div>
@@ -215,7 +201,7 @@ tbody tr:hover{background:var(--surface2)}
       <div class="stat-foot">Open &amp; accepting</div>
     </div>
   </div>
-  <div class="stat" onclick="setFilter('draft')" style="cursor:pointer">
+  <div class="stat" data-action="navigate" data-href="?filter=draft" style="cursor:pointer">
     <div class="stat-icon si-amber">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
     </div>
@@ -225,7 +211,7 @@ tbody tr:hover{background:var(--surface2)}
       <div class="stat-foot">Unpublished</div>
     </div>
   </div>
-  <div class="stat" onclick="setFilter('closed')" style="cursor:pointer">
+  <div class="stat" data-action="navigate" data-href="?filter=closed" style="cursor:pointer">
     <div class="stat-icon si-gray">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
     </div>
@@ -238,7 +224,7 @@ tbody tr:hover{background:var(--surface2)}
 </div>
 
 <div class="stats-grid" style="grid-template-columns:repeat(4,1fr)">
-  <div class="stat" onclick="setFilter('remote')" style="cursor:pointer">
+  <div class="stat" data-action="navigate" data-href="?filter=remote" style="cursor:pointer">
     <div class="stat-icon si-a">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064"/></svg>
     </div>
@@ -248,7 +234,7 @@ tbody tr:hover{background:var(--surface2)}
       <div class="stat-foot">Work from anywhere</div>
     </div>
   </div>
-  <div class="stat" onclick="setFilter('featured')" style="cursor:pointer">
+  <div class="stat" data-action="navigate" data-href="?filter=featured" style="cursor:pointer">
     <div class="stat-icon si-amber">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
     </div>
@@ -510,10 +496,13 @@ tbody tr:hover{background:var(--surface2)}
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                 <span>Edit</span>
               </a>
-              <button type="button" onclick="confirmDelete({{ $job->id }}, '{{ addslashes($job->title) }}')" class="btn btn-red act-btn ab-delete">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                <span>Delete</span>
-              </button>
+              <form method="POST" action="{{ route('admin.job_posts.destroy', $job->id) }}" style="display:inline;" onsubmit="return confirm('Delete this job post? This cannot be undone.');">
+                @csrf @method('DELETE')
+                <button type="submit" class="btn btn-red act-btn ab-delete" title="Delete">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+                  <span>Delete</span>
+                </button>
+              </form>
             </div>
           </td>
         </tr>
@@ -549,7 +538,7 @@ tbody tr:hover{background:var(--surface2)}
 
 <div id="deleteOverlay" class="overlay" role="dialog" aria-modal="true">
   <div class="modal">
-    <button type="button" class="modal-x" onclick="closeDelete()">
+    <button type="button" class="modal-x" data-action="close-modal" data-target="#deleteOverlay">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
     </button>
     <div class="modal-head">
@@ -563,7 +552,7 @@ tbody tr:hover{background:var(--surface2)}
     </div>
     <div class="modal-body">Are you sure you want to delete <strong id="deleteJobTitle">"Job Title"</strong>? All applicants for this listing will also lose access.</div>
     <div class="modal-acts">
-      <button type="button" onclick="closeDelete()" class="btn btn-secondary modal-btn modal-cancel">Cancel</button>
+      <button type="button" data-action="close-modal" data-target="#deleteOverlay" class="btn btn-secondary modal-btn modal-cancel">Cancel</button>
       <form id="deleteForm" method="POST" style="flex:1;">
         @csrf @method('DELETE')
         <button type="submit" class="btn btn-red modal-btn modal-red">🗑 Delete Permanently</button>
@@ -575,106 +564,6 @@ tbody tr:hover{background:var(--surface2)}
 <div id="toastWrap" class="toast-wrap"></div>
 
 @endsection
-
 @push('page_scripts')
-<script>
-(function () {
-  'use strict';
-
-  /* ── toast notifications ── */
-  function toast(msg, type) {
-    var icons = {
-      success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
-      error:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
-    };
-    var t = document.createElement('div');
-    t.className = 'toast toast-' + (type === 'success' ? 'ok' : 'err');
-    t.innerHTML = (icons[type] || '') + '<span>' + msg + '</span><button class="toast-x" onclick="this.parentElement.remove()">✕</button>';
-    document.getElementById('toastWrap').appendChild(t);
-    setTimeout(function () {
-      t.style.transition = 'opacity .3s,transform .3s';
-      t.style.opacity = '0';
-      t.style.transform = 'translateX(20px)';
-      setTimeout(function () { t.remove(); }, 300);
-    }, 4200);
-  }
-  @if(session('success')) setTimeout(function(){toast(@json(session('success')),'success');},200); @endif
-
-  /* ── filter / sort / search ── */
-  var rows         = Array.from(document.querySelectorAll('#tableBody tr[data-filter]'));
-  var activeFilter = 'all';
-  var searchQ      = '';
-  var sortVal      = '';
-
-  function applyFilters() {
-    var sorted = rows.slice();
-    var fn = {
-      'date-desc':  function (a, b) { return new Date(b.dataset.date)  - new Date(a.dataset.date); },
-      'date-asc':   function (a, b) { return new Date(a.dataset.date)  - new Date(b.dataset.date); },
-      'az':         function (a, b) { return (a.dataset.title || '').localeCompare(b.dataset.title || ''); },
-      'za':         function (a, b) { return (b.dataset.title || '').localeCompare(a.dataset.title || ''); },
-      'views-desc': function (a, b) { return +b.dataset.views  - +a.dataset.views; },
-      'apps-desc':  function (a, b) { return +b.dataset.apps   - +a.dataset.apps; },
-      'vac-desc':   function (a, b) { return +b.dataset.vac    - +a.dataset.vac; },
-    };
-    if (fn[sortVal]) sorted.sort(fn[sortVal]);
-    var tb = document.getElementById('tableBody');
-    sorted.forEach(function (r) { tb.appendChild(r); });
-
-    var visible = 0;
-    rows.forEach(function (r) {
-      var mf;
-      if      (activeFilter === 'all')      mf = true;
-      else if (activeFilter === 'remote')   mf = r.dataset.remote   === 'remote';
-      else if (activeFilter === 'featured') mf = r.dataset.featured === 'featured';
-      else                                  mf = r.dataset.filter   === activeFilter;
-
-      var ms = !searchQ || (r.dataset.title || '').includes(searchQ);
-      r.style.display = (mf && ms) ? '' : 'none';
-      if (mf && ms) visible++;
-    });
-    document.getElementById('noResults').style.display = visible > 0 ? 'none' : 'block';
-  }
-
-  document.querySelectorAll('.ftab').forEach(function (tab) {
-    tab.addEventListener('click', function () {
-      document.querySelectorAll('.ftab').forEach(function (t) { t.classList.remove('on'); });
-      this.classList.add('on');
-      activeFilter = this.dataset.filter;
-      applyFilters();
-    });
-  });
-
-  window.setFilter = function (f) {
-    activeFilter = f;
-    document.querySelectorAll('.ftab').forEach(function (t) {
-      t.classList.toggle('on', t.dataset.filter === f);
-    });
-    applyFilters();
-  };
-
-  var st;
-  document.getElementById('searchInput').addEventListener('input', function () {
-    clearTimeout(st);
-    searchQ = this.value.toLowerCase().trim();
-    st = setTimeout(applyFilters, 180);
-  });
-
-  document.getElementById('sortSelect').addEventListener('change', function () {
-    sortVal = this.value;
-    applyFilters();
-  });
-
-  /* ── delete modal ── */
-  window.confirmDelete = function (id, title) {
-    document.getElementById('deleteForm').action = '{{ route('admin.job_posts.destroy', ':id') }}'.replace(':id', id);
-    document.getElementById('deleteJobTitle').textContent = '"' + title + '"';
-    document.getElementById('deleteOverlay').classList.add('open');
-  };
-  window.closeDelete = function () { document.getElementById('deleteOverlay').classList.remove('open'); };
-  document.getElementById('deleteOverlay').addEventListener('click', function (e) { if (e.target === this) closeDelete(); });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeDelete(); });
-
-}());
-</script>
+@vite('resources/js/admin/entries/job-posts-index.js')
 @endpush

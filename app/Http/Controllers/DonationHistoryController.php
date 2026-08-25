@@ -2,46 +2,34 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Campaign;
 use App\Models\Donation;
 use App\Models\RecurringDonation;
+use App\Repositories\CampaignRepository;
+use App\Repositories\DonationRepository;
 use Illuminate\Support\Facades\Auth;
 
 class DonationHistoryController extends Controller
 {
+    public function __construct(
+        private DonationRepository $donationRepo,
+        private CampaignRepository $campaignRepo,
+    ) {}
+
     public function index()
     {
         $user = Auth::user();
 
-        $donations = Donation::where('user_id', $user->id)
-            ->with(['campaign' => function ($q) {
-                $q->select('id', 'title', 'slug', 'cover_image', 'goal_amount', 'raised_amount', 'category_id')
-                    ->with('category:id,name,slug');
-            }, 'refunds'])
-            ->orderByRaw("FIELD(payment_status, 'completed', 'pending', 'failed', 'refunded')")
-            ->latest('created_at')
-            ->paginate(15);
-
-        $campaigns = Campaign::where('user_id', $user->id)->get();
+        $donations = $this->donationRepo->getUserDonations($user->id);
+        $campaigns = $this->campaignRepo->getUserCampaigns($user->id, 9999);
         $recurringCount = RecurringDonation::where('user_id', $user->id)
             ->where('status', 'active')
             ->count();
 
-        $totalDonated = Donation::where('user_id', $user->id)
-            ->where('payment_status', 'completed')
-            ->sum('total_amount');
-
-        $completedCount = Donation::where('user_id', $user->id)
-            ->where('payment_status', 'completed')
-            ->count();
-
-        $pendingCount = Donation::where('user_id', $user->id)
-            ->where('payment_status', 'pending')
-            ->count();
-
-        $refundedCount = Donation::where('user_id', $user->id)
-            ->where('is_refunded', true)
-            ->count();
+        $stats = $this->donationRepo->getUserStats($user->id);
+        $totalDonated = (float) $stats->total_donated;
+        $completedCount = (int) $stats->completed_count;
+        $pendingCount = (int) $stats->pending_count;
+        $refundedCount = (int) $stats->refunded_count;
 
         return view('donations.history', compact(
             'donations', 'campaigns', 'recurringCount',
@@ -51,7 +39,7 @@ class DonationHistoryController extends Controller
 
     public function receipt(Donation $donation)
     {
-        if ($donation->user_id !== Auth::id()) {
+        if (! app(\App\Services\DonationReceiptService::class)->isAuthorized($donation)) {
             abort(403);
         }
 

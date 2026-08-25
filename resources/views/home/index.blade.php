@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
 @push('styles')
-    @vite(['resources/css/home.css'])
+    @vite(['resources/css/public/home.css'])
 @endpush
 
 @push('scripts')
-    @vite(['resources/js/home.js'])
+    @vite(['resources/js/public/home.js'])
 @endpush
 
 @section('content')
@@ -18,6 +18,7 @@
 @include('home.sections.how')
 @include('home.sections.testimonials')
 @include('home.sections.why')
+@include('home.sections.transparency')
 @include('home.sections.cta')
 @include('home.sections.blogs')
 @include('home.sections.impact')

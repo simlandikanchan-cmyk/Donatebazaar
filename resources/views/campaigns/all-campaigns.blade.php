@@ -3,18 +3,18 @@
 @section('content')
 
 @push('styles')
-    @vite(['resources/css/campaigns.css'])
+    @vite(['resources/css/public/campaigns.css'])
 @endpush
 
 
 {{-- ═══════════════════════════════════════════════════════════
      FILTER MODAL
 ═══════════════════════════════════════════════════════════ --}}
-<div class="filter-modal-backdrop" id="filterBackdrop" onclick="closeFilterModal()"></div>
+<div class="filter-modal-backdrop" id="filterBackdrop" data-action="close-filter-modal"></div>
 <div class="filter-modal" id="filterModal" role="dialog" aria-modal="true" aria-label="Filter campaigns">
     <div class="fm-header">
         <span class="fm-title">Filter Campaigns</span>
-        <button class="fm-close" onclick="closeFilterModal()" aria-label="Close">
+        <button class="fm-close" data-action="close-filter-modal" aria-label="Close">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
     </div>
@@ -25,7 +25,7 @@
         <div class="fm-section">
             <span class="fm-group-label">Location</span>
             <div class="custom-select" id="locationSelect">
-                <div class="cs-trigger" id="locationTrigger" onclick="toggleDropdown('locationDropdown','locationTrigger')">
+                <div class="cs-trigger" id="locationTrigger" data-action="toggle-dropdown" data-dropdown="locationDropdown" data-trigger="locationTrigger">
                     <span id="locationLabel">All Locations</span>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
                 </div>
@@ -59,9 +59,9 @@
                     ];
                     @endphp
                     @foreach($locations as $val => $label)
-                    <div class="cs-option {{ request('location','all') === $val ? 'selected' : '' }}"
-                         data-value="{{ $val }}"
-                         onclick="selectOption('locationDropdown','locationTrigger','locationLabel','{{ $val }}','{{ $label }}','filterLocation')">
+                     <div class="cs-option {{ request('location','all') === $val ? 'selected' : '' }}"
+                          data-value="{{ $val }}"
+                          data-action="select-option" data-dropdown="locationDropdown" data-trigger="locationTrigger" data-label="locationLabel" data-hidden="filterLocation">
                         <div class="cs-option-check"></div>
                         {{ $label }}
                     </div>
@@ -76,7 +76,7 @@
         <div class="fm-section">
             <span class="fm-group-label">Campaign Type</span>
             <div class="custom-select" id="typeSelect">
-                <div class="cs-trigger" id="typeTrigger" onclick="toggleDropdown('typeDropdown','typeTrigger')">
+                <div class="cs-trigger" id="typeTrigger" data-action="toggle-dropdown" data-dropdown="typeDropdown" data-trigger="typeTrigger">
                     <span id="typeLabel">Active</span>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
                 </div>
@@ -92,9 +92,9 @@
                     ];
                     @endphp
                     @foreach($campTypes as $val => $label)
-                    <div class="cs-option {{ request('campaign_type','active') === $val ? 'selected' : '' }}"
-                         data-value="{{ $val }}"
-                         onclick="selectOption('typeDropdown','typeTrigger','typeLabel','{{ $val }}','{{ $label }}','filterCampaignType')">
+                     <div class="cs-option {{ request('campaign_type','active') === $val ? 'selected' : '' }}"
+                          data-value="{{ $val }}"
+                          data-action="select-option" data-dropdown="typeDropdown" data-trigger="typeTrigger" data-label="typeLabel" data-hidden="filterCampaignType">
                         <div class="cs-option-check"></div>
                         {{ $label }}
                     </div>
@@ -110,8 +110,7 @@
             <div class="type-chips" id="fundingChips">
                 @foreach(['any'=>'Any','lt25'=>'Under 25%','25to75'=>'25% – 75%','gt75'=>'75%+','100'=>'Fully Funded'] as $val => $label)
                 <span class="type-chip {{ request('funding','any') === $val ? 'selected' : '' }}"
-                      onclick="selectChip(this,'fundingChips','filterFunding','{{ $val }}')"
-                      data-value="{{ $val }}">{{ $label }}</span>
+                      data-action="select-chip" data-group="fundingChips" data-hidden="filterFunding" data-value="{{ $val }}">{{ $label }}</span>
                 @endforeach
             </div>
             <input type="hidden" id="filterFunding" value="{{ request('funding','any') }}">
@@ -122,12 +121,10 @@
             <span class="fm-group-label">Category</span>
             <div class="type-chips" id="categoryChips">
                 <span class="type-chip {{ !request('category') ? 'selected' : '' }}"
-                      onclick="selectChip(this,'categoryChips','filterCategory','')"
-                      data-value="">All</span>
+                      data-action="select-chip" data-group="categoryChips" data-hidden="filterCategory" data-value="">All</span>
                 @foreach($categories ?? [] as $cat)
                 <span class="type-chip {{ request('category') === $cat->slug ? 'selected' : '' }}"
-                      onclick="selectChip(this,'categoryChips','filterCategory','{{ $cat->slug }}')"
-                      data-value="{{ $cat->slug }}">{{ $cat->name }}</span>
+                      data-action="select-chip" data-group="categoryChips" data-hidden="filterCategory" data-value="{{ $cat->slug }}">{{ $cat->name }}</span>
                 @endforeach
             </div>
             <input type="hidden" id="filterCategory" value="{{ request('category','') }}">
@@ -136,8 +133,8 @@
     </div>
 
     <div class="fm-footer">
-        <button class="fm-clear-btn" onclick="clearAllFilters()">Clear All</button>
-        <button class="fm-apply-btn" onclick="applyModalFilters()">Apply Filters</button>
+                <x-button variant="primary" type="button" class="fm-clear-btn" data-action="clear-all-filters">Clear All</x-button>
+                <x-button variant="primary" type="button" class="fm-apply-btn" data-action="apply-modal-filters">Apply Filters</x-button>
     </div>
 </div>
 
@@ -173,7 +170,7 @@
                 <input type="text" name="search" placeholder="Search campaigns, causes, NGOs…" value="{{ request('search') }}">
                 @if(request('category'))<input type="hidden" name="category" value="{{ request('category') }}">@endif
                 @if(request('sort'))<input type="hidden" name="sort" value="{{ request('sort') }}">@endif
-                <button type="submit" class="hero-search-btn">Search</button>
+                <x-button variant="primary" type="submit">Search</x-button>
             </form>
 
             <div class="hero-causes">
@@ -267,16 +264,16 @@
             <span class="results-count">{{ $campaigns->total() ?? $campaigns->count() }} campaigns</span>
 
             {{-- Filter button --}}
-            <button class="filter-trigger-btn" onclick="openFilterModal()" id="filterTriggerBtn">
+            <x-button variant="primary" type="button" class="filter-trigger-btn" data-action="open-filter-modal">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4h18M7 12h10M11 20h2"/></svg>
                 Filters
                 <span class="filter-badge" id="filterBadge" style="display:none">0</span>
-            </button>
+            </x-button>
 
             <form method="GET" action="{{ url()->current() }}" id="sortForm">
                 @if(request('search'))<input type="hidden" name="search" value="{{ request('search') }}">@endif
                 @if(request('category'))<input type="hidden" name="category" value="{{ request('category') }}">@endif
-                <select name="sort" class="sort-select" onchange="document.getElementById('sortForm').submit()">
+                <select name="sort" class="sort-select" data-action="set-select-view">
                     <option value="newest"      {{ request('sort','newest') === 'newest'      ? 'selected' : '' }}>Newest First</option>
                     <option value="ending_soon" {{ request('sort') === 'ending_soon'          ? 'selected' : '' }}>Ending Soon</option>
                     <option value="most_funded" {{ request('sort') === 'most_funded'          ? 'selected' : '' }}>Most Funded</option>
@@ -285,12 +282,12 @@
             </form>
 
             <div class="view-toggle">
-                <button class="view-btn active" id="gridBtn" onclick="setView('grid')" title="Grid view">
+                <x-button variant="primary" type="button" class="view-btn active">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-                </button>
-                <button class="view-btn" id="listBtn" onclick="setView('list')" title="List view">
+                </x-button>
+                <x-button variant="primary" type="button" class="view-btn">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-                </button>
+                </x-button>
             </div>
         </div>
     </div>
@@ -300,13 +297,13 @@
 {{-- ═══ MAIN CONTENT ═══ --}}
 <section class="campaigns-section">
     <div class="container">
-        <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
+        <div class="sidebar-backdrop" id="sidebarBackdrop" data-action="close-sidebar"></div>
 
         <div class="campaigns-layout">
 
             {{-- ── SIDEBAR ── --}}
             <aside class="sidebar" id="sidebarDrawer">
-                <button class="sidebar-close" onclick="closeSidebar()" aria-label="Close filters">
+                <button class="sidebar-close" data-action="close-sidebar" aria-label="Close filters">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
 
@@ -346,28 +343,28 @@
                 <div class="filter-card">
                     <div class="filter-card-title">
                         Funding Progress
-                        <span class="filter-card-clear" onclick="clearFundingFilter()">Clear</span>
+                        <span class="filter-card-clear" data-action="clear-funding-filter">Clear</span>
                     </div>
                     <label class="filter-checkbox">
-                        <input type="checkbox" name="funding" value="any" {{ !request('funding') || request('funding') === 'any' ? 'checked' : '' }} onchange="applySidebarFilters()">
+                        <input type="checkbox" name="funding" value="any" {{ !request('funding') || request('funding') === 'any' ? 'checked' : '' }} data-action="apply-sidebar-filters">
                         <span class="filter-checkbox-label">Any progress</span>
                         <span class="filter-checkbox-count">{{ $campaigns->total() ?? '' }}</span>
                     </label>
                     <div class="filter-divider"></div>
                     <label class="filter-checkbox">
-                        <input type="checkbox" name="funding" value="lt25" {{ request('funding') === 'lt25' ? 'checked' : '' }} onchange="applySidebarFilters()">
+                        <input type="checkbox" name="funding" value="lt25" {{ request('funding') === 'lt25' ? 'checked' : '' }} data-action="apply-sidebar-filters">
                         <span class="filter-checkbox-label">Under 25% funded</span>
                     </label>
                     <label class="filter-checkbox">
-                        <input type="checkbox" name="funding" value="25to75" {{ request('funding') === '25to75' ? 'checked' : '' }} onchange="applySidebarFilters()">
+                        <input type="checkbox" name="funding" value="25to75" {{ request('funding') === '25to75' ? 'checked' : '' }} data-action="apply-sidebar-filters">
                         <span class="filter-checkbox-label">25% – 75% funded</span>
                     </label>
                     <label class="filter-checkbox">
-                        <input type="checkbox" name="funding" value="gt75" {{ request('funding') === 'gt75' ? 'checked' : '' }} onchange="applySidebarFilters()">
+                        <input type="checkbox" name="funding" value="gt75" {{ request('funding') === 'gt75' ? 'checked' : '' }} data-action="apply-sidebar-filters">
                         <span class="filter-checkbox-label">75%+ funded</span>
                     </label>
                     <label class="filter-checkbox">
-                        <input type="checkbox" name="funding" value="100" {{ request('funding') === '100' ? 'checked' : '' }} onchange="applySidebarFilters()">
+                        <input type="checkbox" name="funding" value="100" {{ request('funding') === '100' ? 'checked' : '' }} data-action="apply-sidebar-filters">
                         <span class="filter-checkbox-label">Fully funded</span>
                     </label>
                 </div>
@@ -377,7 +374,7 @@
                     <div class="filter-card-title">Categories</div>
                     @foreach($categories ?? [] as $cat)
                     <label class="filter-checkbox">
-                        <input type="checkbox" name="cat_sidebar" value="{{ $cat->slug }}" onchange="applySidebarFilters()" {{ request('category') === $cat->slug ? 'checked' : '' }}>
+                        <input type="checkbox" name="cat_sidebar" value="{{ $cat->slug }}" data-action="apply-sidebar-filters" {{ request('category') === $cat->slug ? 'checked' : '' }}>
                         <span class="filter-checkbox-label">{{ $cat->name }}</span>
                         <span class="filter-checkbox-count">{{ $cat->campaigns_count ?? '' }}</span>
                     </label>
@@ -405,10 +402,10 @@
             <div>
 
                 {{-- Mobile/tablet drawer toggle --}}
-                <button class="sidebar-toggle-btn" onclick="openSidebar()" aria-label="Open filters and stats">
+                <x-button variant="secondary" type="button">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4h18M7 12h10M11 20h2"/></svg>
                     Filters &amp; Stats
-                </button>
+                </x-button>
 
                 {{-- Active filter chips --}}
                 <div class="active-filters" id="activeFilters"></div>
@@ -420,6 +417,7 @@
     @php
         $isExpired =
             $campaign->end_date &&
+            $campaign->campaign_state !== 'active' &&
             \Carbon\Carbon::parse($campaign->end_date)->isPast();
     @endphp
 
@@ -428,10 +426,10 @@
     @endif
 
     @php
-        $raised = $campaign->donations_sum_amount ?? $campaign->raised_amount ?? 0;
+        $raised = $campaign->donations_sum_total_amount ?? $campaign->raised_amount ?? 0;
         $goal        = $campaign->goal_amount ?? 0;
         $percentage  = $goal > 0 ? round(($raised / $goal) * 100) : 0;
-        $donors      = $campaign->donations->count() ?? 0;
+        $donors      = $campaign->donations_count ?? 0;
         $daysLeft    = isset($campaign->end_date)
             ? max(0, now()->diffInDays($campaign->end_date, false))
             : null;
@@ -585,7 +583,7 @@
             @if ($page == $campaigns->currentPage())
                 <span class="page-btn active">{{ $page }}</span>
             @else
-                <a href="{{ $url }}" class="page-btn">{{ $page }}</a>
+                <x-button variant="secondary" href="{{ $url }}" class="page-btn">{{ $page }}</x-button>
             @endif
         @endforeach
 
@@ -654,25 +652,25 @@
         <h2 class="cta-title reveal d1">Start Your Own <em>Campaign</em></h2>
         <p class="cta-sub reveal d2">Medical emergency, education, disaster relief — whatever the cause, our team verifies and supports your fundraiser from day one.</p>
         <div class="cta-btns reveal d3">
-            <a href="/campaign/create" class="btn btn-accent btn-lg">
+            <x-button variant="primary" size="lg" href="/campaign/create">
                 Start Fundraiser
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 4v16m8-8H4"/></svg>
-            </a>
-            <a href="{{ url('/about') }}" class="btn btn-white btn-lg">
+            </x-button>
+            <x-button variant="outline" size="lg" href="{{ url('/about') }}" style="--btn-fg:#fff;--btn-bd:rgba(255,255,255,.35);--btn-bg-h:rgba(255,255,255,.12);--btn-fg-h:#fff;--btn-bd-h:rgba(255,255,255,.6)">
                 How It Works
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </a>
+            </x-button>
         </div>
     </div>
 </section>
 
-<button class="scroll-top" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Scroll to top">
+<button class="scroll-top" id="scrollTopBtn" data-action="scroll-top" aria-label="Scroll to top">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 15l-6-6-6 6"/></svg>
 </button>
 
 
 @push('scripts')
-    @vite(['resources/js/campaigns.js'])
+    @vite(['resources/js/public/campaigns.js'])
 @endpush
 
 @endsection

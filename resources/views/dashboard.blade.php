@@ -19,13 +19,18 @@
     $countPaused   = $campaigns->where('campaign_state','paused')->count();
     $countRejected = $campaigns->where('campaign_state','rejected')->count();
     $countExpired  = $campaigns->where('campaign_state','expired')->count();
-    $blogTotal     = \App\Models\Blog::where('author_id', auth()->id())->count();
 @endphp
 
 {{-- ══ WELCOME BANNER ══ --}}
 <div class="welcome-banner">
     <span class="wb-glow g1"></span>
     <span class="wb-glow g2"></span>
+    <svg class="wb-deco" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <circle cx="180" cy="30" r="80" stroke="currentColor" stroke-width=".5" opacity=".06"/>
+        <circle cx="180" cy="30" r="100" stroke="currentColor" stroke-width=".5" opacity=".04"/>
+        <circle cx="180" cy="30" r="120" stroke="currentColor" stroke-width=".5" opacity=".03"/>
+        <path d="M0 200 Q 50 150 100 180 T 200 160" stroke="currentColor" stroke-width=".5" opacity=".04"/>
+    </svg>
     <div class="wb-left">
         <div class="wb-tag">
             <span class="wb-tag-dot"></span>
@@ -67,86 +72,41 @@
         </div>
     </div>
     <div class="wb-right">
-        <a href="{{ route('campaign.create') }}" class="btn btn-primary">
+        <x-button variant="primary" href="{{ route('campaign.create') }}" class="wb-btn wb-btn-primary">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
             New Campaign
-        </a>
+        </x-button>
         @if(!$kyc || $kyc->status !== 'approved')
-        <a href="{{ url('/user/kyc') }}" class="btn btn-yellow">
+        <x-button variant="primary" href="{{ url('/user/kyc') }}" class="wb-btn wb-btn-yellow">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
             {{ $kyc ? 'KYC '.ucfirst($kyc->status) : 'Submit KYC' }}
-        </a>
+        </x-button>
         @endif
-        <a href="{{ route('profile.show') }}" class="btn btn-secondary">
+        <x-button variant="ghost" href="{{ route('profile.show') }}" class="wb-btn wb-btn-ghost">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
             My Profile
-        </a>
+        </x-button>
     </div>
 </div>
 
 {{-- ══ STATS (5 cards) ══ --}}
-@php $avgDonation = $totalDonationsCount > 0 ? round($totalRaised / $totalDonationsCount) : 0; @endphp
+@php
+$avgDonation = $totalDonationsCount > 0 ? round($totalRaised / $totalDonationsCount) : 0;
+
+$icoTotalRaised = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
+$icoTotalGoal  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>';
+$icoActive     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
+$icoDonations  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2 1 3 3 3h10c2 0 3-1 3-3V7c0-2-1-3-3-3H7C5 4 4 5 4 7z"/><polyline points="16 10 12 14 8 10"/></svg>';
+$icoAllCamps   = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>';
+$icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>';
+@endphp
 <div class="stats-grid">
-    <div class="stat-card">
-        <div class="stat-icon-wrap si-indigo">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        </div>
-        <div class="stat-info">
-            <div class="stat-label">Total Raised</div>
-            <div class="stat-val sv-indigo">₹{{ number_format($totalRaised, 0) }}</div>
-            <div class="stat-foot">{{ $overallPct }}% of total goal</div>
-        </div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-icon-wrap si-pink">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-        </div>
-        <div class="stat-info">
-            <div class="stat-label">Total Goal</div>
-            <div class="stat-val sv-pink">₹{{ number_format($totalGoal, 0) }}</div>
-            <div class="stat-foot">Across {{ $countAll }} campaigns</div>
-        </div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-icon-wrap si-green">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        </div>
-        <div class="stat-info">
-            <div class="stat-label">Active Campaigns</div>
-            <div class="stat-val sv-green">{{ $countActive }}</div>
-            <div class="stat-foot">Live &amp; accepting donations</div>
-        </div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-icon-wrap si-yellow">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2 1 3 3 3h10c2 0 3-1 3-3V7c0-2-1-3-3-3H7C5 4 4 5 4 7z"/><polyline points="16 10 12 14 8 10"/></svg>
-        </div>
-        <div class="stat-info">
-            <div class="stat-label">Total Donations</div>
-            <div class="stat-val sv-yellow">{{ number_format($totalDonationsCount) }}</div>
-            <div class="stat-foot">Avg ₹{{ number_format($avgDonation) }} per donation</div>
-        </div>
-    </div>
-    <a href="{{ url('/user/dashboard') }}#cGrid" class="stat-card is-link" style="cursor:pointer;text-decoration:none;display:flex;">
-        <div class="stat-icon-wrap si-blue">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-        </div>
-        <div class="stat-info">
-            <div class="stat-label">All Campaigns</div>
-            <div class="stat-val sv-blue">{{ $countAll }}</div>
-            <div class="stat-foot">View all →</div>
-        </div>
-    </a>
-    <a href="{{ route('dashboard.wallet') }}" class="stat-card is-link" style="cursor:pointer;text-decoration:none;display:flex;">
-        <div class="stat-icon-wrap si-purple">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-        </div>
-        <div class="stat-info">
-            <div class="stat-label">Wallet</div>
-            <div class="stat-val sv-purple">₹{{ number_format($wallet->available_balance) }}</div>
-            <div class="stat-foot">Available balance →</div>
-        </div>
-    </a>
+    <x-stat-card color="indigo" label="Total Raised" value="₹{{ number_format($totalRaised, 0) }}" footer="{{ $overallPct }}% of total goal" :icon="$icoTotalRaised" />
+    <x-stat-card color="pink" label="Total Goal" value="₹{{ number_format($totalGoal, 0) }}" footer="Across {{ $countAll }} campaigns" :icon="$icoTotalGoal" />
+    <x-stat-card color="green" label="Active Campaigns" value="{{ $countActive }}" footer="Live &amp; accepting donations" :icon="$icoActive" />
+    <x-stat-card color="yellow" label="Total Donations" value="{{ number_format($totalDonationsCount) }}" footer="Avg ₹{{ number_format($avgDonation) }} per donation" :icon="$icoDonations" />
+    <x-stat-card color="blue" label="All Campaigns" value="{{ $countAll }}" footer="View all &rarr;" href="{{ url('/user/dashboard') }}#cGrid" :icon="$icoAllCamps" />
+    <x-stat-card color="purple" label="Wallet" value="₹{{ number_format($wallet->available_balance) }}" footer="Available balance &rarr;" href="{{ route('dashboard.wallet') }}" :icon="$icoWallet" />
 </div>
 
 {{-- ══ RECENT DONOR ACTIVITY ══ --}}
@@ -163,76 +123,48 @@
         @php
             $initial = $donation->is_anonymous ? '?' : strtoupper(substr(trim($donation->donor_name) ?: 'D', 0, 1));
         @endphp
-        <div class="activity-item">
-            <div class="activity-dot-col">
-                <div class="activity-dot d-green"><span class="ad-letter">{{ $initial }}</span></div>
-                <div class="activity-line"></div>
-            </div>
-            <div class="activity-body">
-                <div class="activity-body-top">
-                    <div class="activity-lbl">
-                        @if($donation->is_anonymous)
-                            <span>Someone</span>
-                        @else
-                            {{ $donation->donor_name ?? 'A donor' }}
-                        @endif
-                        donated
-                    </div>
-                    <div class="activity-amt">+₹{{ number_format($donation->total_amount) }}</div>
-                </div>
-                <div class="activity-sub">
-                    to <span>{{ $donation->campaign?->title ?? 'a campaign' }}</span>
-                    @if($donation->message)
-                        · "{{ Str::limit($donation->message, 60) }}"
+        <x-activity-item color="green" :initial="$initial">
+            <div class="activity-body-top">
+                <div class="activity-lbl">
+                    @if($donation->is_anonymous)
+                        <span>Someone</span>
+                    @else
+                        {{ $donation->donor_name ?? 'A donor' }}
                     @endif
+                    donated
                 </div>
+                <div class="activity-amt">+₹{{ number_format($donation->total_amount) }}</div>
             </div>
-        </div>
+            <div class="activity-sub">
+                to <span>{{ $donation->campaign?->title ?? 'a campaign' }}</span>
+                @if($donation->message)
+                    · "{{ Str::limit($donation->message, 60) }}"
+                @endif
+            </div>
+        </x-activity-item>
         @endforeach
     </div>
 </div>
 @endif
 
-{{-- ══ ONBOARDING CHECKLIST (new users) ══ --}}
-@php
-    $checklist = [];
-    if (!$kyc || $kyc->status !== 'approved') {
-        $checklist[] = ['label' => 'Complete KYC Verification', 'sub' => 'Submit identity documents', 'url' => url('/user/kyc'), 'done' => false];
-    } else {
-        $checklist[] = ['label' => 'KYC Verified', 'sub' => 'Identity confirmed', 'url' => '#', 'done' => true];
-    }
-    $campaignCount = $campaigns->count();
-    if ($campaignCount === 0) {
-        $checklist[] = ['label' => 'Create Your First Campaign', 'sub' => 'Start fundraising', 'url' => route('campaign.create'), 'done' => false];
-    } else {
-        $checklist[] = ['label' => 'Campaigns Created', 'sub' => $campaignCount.' campaign(s) live', 'url' => '#', 'done' => true];
-    }
-    $pendingItems = array_filter($checklist, fn($i) => !$i['done']);
-@endphp
-@if(!empty($pendingItems))
-<div class="checklist-card">
-    <div class="checklist-title">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-        Getting Started
-    </div>
-    <div class="checklist-grid">
-        @foreach($checklist as $item)
-        <div class="checklist-item {{ $item['done'] ? 'done' : '' }}">
-            <div class="checklist-ico {{ $item['done'] ? 'done' : 'pending' }}">
-                @if($item['done'])
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                @else
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
-                @endif
-            </div>
-            <div class="checklist-body">
-                <div class="checklist-lbl">{{ $item['label'] }}</div>
-                <div class="checklist-sub">{{ $item['sub'] }}</div>
-            </div>
-            @if(!$item['done'])
-            <a href="{{ $item['url'] }}" class="checklist-action">Go →</a>
-            @endif
+{{-- ══ PENDING TASKS / ALERTS ══ --}}
+@if($pendingTasks->isNotEmpty())
+<div class="pending-card">
+    <div class="pending-hdr">
+        <div class="pending-title">
+            <svg class="pending-title-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+            Action Needed
         </div>
+        <span class="pending-count">{{ $pendingTasks->count() }} task{{ $pendingTasks->count() !== 1 ? 's' : '' }}</span>
+    </div>
+    <div class="pending-list">
+        @foreach($pendingTasks as $task)
+        <x-pending-item
+            :icon="$task['icon']"
+            :label="$task['label']"
+            :sub="$task['sub']"
+            :url="$task['url']"
+        />
         @endforeach
     </div>
 </div>
@@ -258,7 +190,7 @@
         <div class="impact-ring-hdr">Funding Health</div>
         <div class="impact-ring-sub">Overall goal completion</div>
         <div class="impact-ring-wrap">
-            <svg viewBox="0 0 120 120" width="150" height="150">
+            <svg viewBox="0 0 120 120" class="impact-ring-svg">
                 <defs>
                     <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                         <stop offset="0%" stop-color="#2563eb"/>
@@ -292,8 +224,7 @@
         @endphp
         @foreach($qsRows as [$color, $label, $val, $filter])
         <div class="qs-row" role="button" tabindex="0"
-             onclick="setFilter('{{ $filter }}')"
-             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setFilter('{{ $filter }}');}">
+             data-action="set-filter" data-filter="{{ $filter }}">
             <div class="qs-row-left">
                 <div class="qs-dot" style="background:{{ $color }}"></div>
                 <span class="qs-label">{{ $label }}</span>
@@ -312,6 +243,50 @@
         </div>
     </div>
 </div>
+
+{{-- ══ WALLET MINI-VIEW ══ --}}
+@if($recentTransactions->isNotEmpty())
+<div class="wallet-mini-card">
+    <div class="wallet-mini-hdr">
+        <div class="wallet-mini-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+            Wallet Activity
+        </div>
+        <a href="{{ route('dashboard.wallet') }}" class="wallet-mini-link">Full Wallet →</a>
+    </div>
+    <div class="wallet-mini-bal">
+        <div class="wallet-mini-bal-lbl">Available Balance</div>
+        <div class="wallet-mini-bal-val">₹{{ number_format($wallet->available_balance, 2) }}</div>
+    </div>
+    <div class="wallet-mini-list">
+        @foreach($recentTransactions as $tx)
+        @php
+            $txIcon = $tx->type === 'credit' ? 'plus' : 'minus';
+            $txColor = $tx->type === 'credit' ? 'var(--green)' : 'var(--red)';
+            $txLabel = ucfirst(str_replace('_', ' ', $tx->source));
+        @endphp
+        <div class="wallet-mini-item">
+            <div class="wallet-mini-item-left">
+                <div class="wallet-mini-ico" style="background:{{ $tx->type === 'credit' ? 'var(--green-lt)' : 'rgba(239,68,68,.12)' }};color:{{ $txColor }};">
+                    @if($tx->type === 'credit')
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14m-7-7h14"/></svg>
+                    @else
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 12h14"/></svg>
+                    @endif
+                </div>
+                <div>
+                    <div class="wallet-mini-lbl">{{ $txLabel }}</div>
+                    <div class="wallet-mini-sub">{{ $tx->created_at->diffForHumans() }}</div>
+                </div>
+            </div>
+            <div class="wallet-mini-amt" style="color:{{ $txColor }};">
+                {{ $tx->type === 'credit' ? '+' : '-' }}₹{{ number_format(abs($tx->amount), 2) }}
+            </div>
+        </div>
+        @endforeach
+    </div>
+</div>
+@endif
 
 {{-- ══ CAMPAIGN COMPARISON BAR CHART ══ --}}
 @php $campChartData = $campaigns->count() > 1 ? $campaigns->map(fn($c) => ['title' => Str::limit($c->title, 22), 'raised' => (float)$c->raised_amount, 'goal' => (float)$c->goal_amount])->values() : collect(); @endphp
@@ -355,6 +330,193 @@
     @endforeach
 </div>
 
+{{-- ══ LEVEL PROGRESS + TOP CAMPAIGN ══ --}}
+@php
+    $achievements = [
+        ['ico'=>'target','lbl'=>'First Campaign', 'sub'=>'Create your first campaign', 'done'=>$countAll > 0, 'color'=>'var(--blue)'],
+        ['ico'=>'heart','lbl'=>'First Donation', 'sub'=>'Receive your first donation', 'done'=>$totalDonationsCount > 0, 'color'=>'var(--pink)'],
+        ['ico'=>'shield','lbl'=>'KYC Verified', 'sub'=>'Complete identity verification', 'done'=>$kyc && $kyc->status === 'approved', 'color'=>'var(--green)'],
+        ['ico'=>'zap','lbl'=>'Active Fundraiser', 'sub'=>'Have a live campaign', 'done'=>$countActive > 0, 'color'=>'var(--yellow)'],
+        ['ico'=>'award','lbl'=>'Goal Crusher', 'sub'=>'Reach 100% on any campaign', 'done'=>$campaigns->contains(fn($c)=>($c->goal_amount>0 && ($c->raised_amount/$c->goal_amount)>=1)), 'color'=>'var(--accent)'],
+        ['ico'=>'refresh','lbl'=>'Recurring Ready', 'sub'=>'Set up recurring donations', 'done'=>$recurringCount > 0, 'color'=>'var(--purple)'],
+    ];
+    $earnedCount = count(array_filter($achievements, fn($a)=>$a['done']));
+@endphp
+<div class="insight-row">
+    @if($nextLevel)
+    <div class="insight-card level-card">
+        <div class="insight-card-hdr">
+            <div class="insight-card-title">Fundraiser Level</div>
+            <div class="level-badge" style="--lbg:{{ $currentLevelModel?->badge_color ?? 'var(--accent)' }}">{{ $levelName }}</div>
+        </div>
+        <div class="level-next">Next: <strong>{{ $nextLevel->level_name }}</strong></div>
+        <div class="level-bar-wrap">
+            <div class="level-bar">
+                <div class="level-fill" id="levelFill" style="width:0%"></div>
+            </div>
+            <div class="level-pct">{{ $levelProgress }}%</div>
+        </div>
+        <div class="level-reqs">
+            <div class="level-req {{ $campaignsCompleted >= $nextLevel->min_campaigns_completed ? 'done' : '' }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                {{ $campaignsCompleted }}/{{ $nextLevel->min_campaigns_completed }} campaigns
+            </div>
+        </div>
+    </div>
+    @endif
+
+    @if($topCampaign)
+    @php
+        $tcr = $topCampaign->raised_amount ?? 0;
+        $tcg = $topCampaign->goal_amount > 0 ? $topCampaign->goal_amount : 1;
+        $tcp = min(100, round(($tcr / $tcg) * 100));
+    @endphp
+    <div class="insight-card top-campaign-card">
+        <div class="insight-card-hdr">
+            <div class="insight-card-title">Top Performer</div>
+            <span class="badge b-active">Active</span>
+        </div>
+        <div class="tpc-title">{{ $topCampaign->title }}</div>
+        <div class="tpc-stats">
+            <div class="tpc-stat">
+                <div class="tpc-stat-val">₹{{ number_format($tcr) }}</div>
+                <div class="tpc-stat-lbl">Raised</div>
+            </div>
+            <div class="tpc-stat">
+                <div class="tpc-stat-val">{{ $topCampaign->donations_count }}</div>
+                <div class="tpc-stat-lbl">Donors</div>
+            </div>
+            <div class="tpc-stat">
+                <div class="tpc-stat-val">{{ $tcp }}%</div>
+                <div class="tpc-stat-lbl">Funded</div>
+            </div>
+        </div>
+        <div class="tpc-bar"><div class="tpc-fill" style="width:{{ $tcp }}%"></div></div>
+        <a href="{{ route('campaign.show', $topCampaign->id) }}" class="tpc-link">View Campaign →</a>
+    </div>
+    @endif
+</div>
+
+{{-- ══ ACHIEVEMENT BADGES ══ --}}
+<div class="achieve-card">
+    <div class="achieve-hdr">
+        <div class="achieve-title">Achievements</div>
+        <div class="achieve-count">{{ $earnedCount }}/{{ count($achievements) }} earned</div>
+    </div>
+    <div class="achieve-grid">
+        @foreach($achievements as $a)
+        <div class="achieve-item {{ $a['done'] ? 'earned' : '' }}" title="{{ $a['sub'] }}">
+            <div class="achieve-ico" style="--ac:{{ $a['color'] }}">
+                @if($a['ico']==='target')
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                @elseif($a['ico']==='heart')
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                @elseif($a['ico']==='shield')
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                @elseif($a['ico']==='zap')
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                @elseif($a['ico']==='award')
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+                @elseif($a['ico']==='refresh')
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+                @endif
+            </div>
+            <div class="achieve-lbl">{{ $a['lbl'] }}</div>
+        </div>
+        @endforeach
+    </div>
+</div>
+
+{{-- ══ UPCOMING EVENTS ══ --}}
+@php
+    $allEvents = $myEvents->merge($registeredEvents->pluck('event'))->sortBy('event_date')->take(5);
+@endphp
+@if($allEvents->isNotEmpty())
+<div class="events-card">
+    <div class="events-hdr">
+        <div class="events-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            Upcoming Events
+        </div>
+        @if($allEvents->count() > 3)
+        <a href="{{ url('/events') }}" class="events-link">View all →</a>
+        @endif
+    </div>
+    <div class="events-list">
+        @foreach($allEvents as $event)
+        @php
+            $daysUntil = now()->startOfDay()->diffInDays(\Carbon\Carbon::parse($event->event_date)->startOfDay(), false);
+            $isUrgent = $daysUntil !== null && $daysUntil >= 0 && $daysUntil <= 3;
+            $isToday = $daysUntil === 0;
+        @endphp
+        <div class="events-item">
+            <div class="events-date {{ $isUrgent ? 'urgent' : '' }}">
+                <div class="events-date-day">{{ \Carbon\Carbon::parse($event->event_date)->format('d') }}</div>
+                <div class="events-date-mon">{{ \Carbon\Carbon::parse($event->event_date)->format('M') }}</div>
+            </div>
+            <div class="events-body">
+                <div class="events-body-title">{{ $event->title }}</div>
+                <div class="events-body-meta">
+                    @if($event->location)
+                    <span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:11px;height:11px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        {{ $event->location }}
+                    </span>
+                    @endif
+                    @if($daysUntil !== null && $daysUntil >= 0)
+                    <span class="events-countdown {{ $isUrgent ? 'urgent' : '' }}">
+                        @if($isToday)
+                        Today
+                        @elseif($daysUntil === 1)
+                        Tomorrow
+                        @else
+                        {{ $daysUntil }} days away
+                        @endif
+                    </span>
+                    @elseif($daysUntil !== null && $daysUntil < 0)
+                    <span class="events-countdown">Past</span>
+                    @endif
+                </div>
+            </div>
+        </div>
+        @endforeach
+    </div>
+</div>
+@endif
+
+{{-- ══ RECENT BLOG POSTS ══ --}}
+@if($recentBlogs->isNotEmpty())
+<div class="insight-card blog-section">
+    <div class="insight-card-hdr">
+        <div class="insight-card-title">Recent Blog Posts</div>
+        <a href="{{ url('/user/dashboard/blogs') }}" class="insight-link">View all →</a>
+    </div>
+    <div class="blog-list">
+        @foreach($recentBlogs as $blog)
+        @php
+            $bs = $blog->status;
+            $bc = $bs === 'approved' ? 'b-active' : ($bs === 'pending' ? 'b-pending' : ($bs === 'draft' ? 'b-paused' : 'b-default'));
+            $bl = ucfirst($bs);
+        @endphp
+        <div class="blog-item">
+            <div class="blog-info">
+                <div class="blog-title">{{ $blog->title }}</div>
+                <div class="blog-meta">
+                    <span class="badge {{ $bc }}" style="font-size:9px;padding:2px 6px;">{{ $bl }}</span>
+                    <span>{{ $blog->views_count }} views</span>
+                    <span>{{ $blog->created_at->diffForHumans() }}</span>
+                </div>
+            </div>
+            <x-button variant="secondary" href="{{ url('/user/dashboard/blogs') }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                View
+            </x-button>
+        </div>
+        @endforeach
+    </div>
+</div>
+@endif
+
 {{-- ══ CAMPAIGNS SECTION ══ --}}
 <div class="sec-hdr" id="cGrid">
     <div class="sec-title">
@@ -384,14 +546,10 @@
             <option value="rejected">Rejected ({{ $countRejected }})</option>
             <option value="expired">Expired ({{ $countExpired }})</option>
         </select>
-        <div class="view-toggle">
-            <button class="vt-btn on" id="btnGrid" title="Grid view">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-            </button>
-            <button class="vt-btn" id="btnList" title="List view">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-            </button>
-        </div>
+        <select class="view-select" id="viewSelect">
+                <option value="grid">Grid View</option>
+                <option value="list">List View</option>
+            </select>
     </div>
 </div>
 
@@ -402,237 +560,14 @@
 {{-- GRID VIEW --}}
 <div class="c-grid" id="campaignGrid">
     @foreach($campaigns as $i => $campaign)
-    @php
-        $state = $campaign->campaign_state;
-        if      ($state === 'active')   { $fv='active';   $bc='b-active';   $bl='Active'; }
-        elseif  ($state === 'paused')   { $fv='paused';   $bc='b-paused';   $bl='Paused'; }
-        elseif  ($state === 'rejected') { $fv='rejected'; $bc='b-rejected'; $bl='Rejected'; }
-        elseif  ($state === 'expired')  { $fv='expired';  $bc='b-expired';  $bl='Expired'; }
-        elseif  ($state === 'inactive') { $fv='inactive'; $bc='b-inactive'; $bl='Under Review'; }
-        elseif  ($state === 'pending')  { $fv='pending';  $bc='b-pending';  $bl='Pending'; }
-        else                            { $fv='other';    $bc='b-default';  $bl=ucfirst($state ?? 'Draft'); }
-        $raised = $campaign->raised_amount ?? 0;
-        $goal   = $campaign->goal_amount > 0 ? $campaign->goal_amount : 1;
-        $pct    = min(100, round(($raised / $goal) * 100));
-    @endphp
-    @php
-        $daysLeft = $campaign->end_date ? now()->startOfDay()->diffInDays(\Carbon\Carbon::parse($campaign->end_date)->startOfDay(), false) : null;
-        $campCats = $campaign->category;
-    @endphp
-    <div class="c-card"
-         data-filter="{{ $fv }}"
-         data-title="{{ strtolower($campaign->title) }}"
-         data-amount="{{ $campaign->goal_amount }}"
-         data-date="{{ $campaign->created_at }}"
-         style="animation-delay:{{ $i * .04 }}s">
-        <div class="c-thumb">
-            @if($campaign->cover_image)
-                <img src="{{ asset('storage/'.$campaign->cover_image) }}" alt="{{ $campaign->title }}" loading="lazy">
-                <div class="c-thumb-overlay"></div>
-            @else
-                <div class="c-thumb-placeholder">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                </div>
-            @endif
-            <div class="c-badge-wrap">
-                <span class="badge {{ $bc }}">{{ $bl }}</span>
-                @if($fv === 'active' && $daysLeft !== null && $daysLeft >= 0)
-                    <span class="badge b-active" style="margin-left:4px;">
-                        @if($daysLeft === 0)
-                            Ends today
-                        @elseif($daysLeft <= 3)
-                            {{ $daysLeft }} day{{ $daysLeft !== 1 ? 's' : '' }} left
-                        @else
-                            {{ $daysLeft }}d left
-                        @endif
-                    </span>
-                @elseif($fv === 'expired')
-                    <span class="badge b-expired" style="margin-left:4px;">Ended</span>
-                @endif
-            </div>
-        </div>
-        <div class="c-body">
-            <div class="c-title">
-                {{ $campaign->title }}
-                @if($campCats)
-                    <span style="display:inline-block;font-size:10px;font-weight:500;color:var(--text3);font-family:var(--mono);margin-left:6px;">{{ $campCats->name }}</span>
-                @endif
-            </div>
-
-            @if($fv === 'inactive')
-            <div class="reason reason-b">
-                <div class="reason-lbl"><svg class="reason-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Awaiting admin review</div>
-                <div class="reason-txt">Your campaign will go live once approved.</div>
-            </div>
-            @elseif($fv === 'pending')
-            <div class="reason reason-b">
-                <div class="reason-lbl">Pending submission</div>
-                <div class="reason-txt">Waiting to be reviewed by an admin.</div>
-            </div>
-            @elseif($fv === 'rejected' && $campaign->rejection_reason)
-            <div class="reason reason-r">
-                <div class="reason-lbl"><svg class="reason-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>Rejection reason</div>
-                <div class="reason-txt">{{ $campaign->rejection_reason }}</div>
-            </div>
-            @elseif($fv === 'paused' && $campaign->pause_reason)
-            <div class="reason reason-y">
-                <div class="reason-lbl"><svg class="reason-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>Pause reason</div>
-                <div class="reason-txt">{{ $campaign->pause_reason }}</div>
-            </div>
-            @elseif($fv === 'expired')
-            <div class="reason reason-g">
-                <div class="reason-lbl">Expired</div>
-                <div class="reason-txt">This campaign has ended. Create a new one to continue.</div>
-            </div>
-            @endif
-
-            <div class="prog-wrap">
-                <div class="prog-numbers">
-                    <span class="prog-raised">₹{{ number_format($raised) }}</span>
-                    <span class="prog-goal">of ₹{{ number_format($campaign->goal_amount) }}</span>
-                </div>
-                <div class="prog-bar"><div class="prog-fill" style="width:{{ $pct }}%"></div></div>
-                <div class="prog-meta">
-                    <span class="prog-pct">{{ $pct }}% funded</span>
-                    @if($campaign->donations_count > 0)
-                        <span style="margin-left:auto;font-size:10.5px;color:var(--text3);">{{ $campaign->donations_count }} donation{{ $campaign->donations_count !== 1 ? 's' : '' }}</span>
-                    @endif
-                </div>
-            </div>
-
-            <div class="c-actions">
-                <a href="{{ route('campaign.show', $campaign->id) }}" class="btn btn-secondary">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                    View
-                </a>
-                <a href="{{ route('campaign.edit', $campaign->id) }}" class="btn btn-secondary">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                    Edit
-                </a>
-                @if($fv === 'active')
-                <form action="{{ route('campaign.pause', $campaign->id) }}" method="POST" onsubmit="return handleSub(this,'Pausing…')">
-                    @csrf
-                    <button class="btn btn-secondary">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        Pause
-                    </button>
-                </form>
-                @elseif($fv === 'paused')
-                <form action="{{ route('campaign.resume', $campaign->id) }}" method="POST" onsubmit="return handleSub(this,'Resuming…')">
-                    @csrf
-                    <button class="btn btn-secondary">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        Resume
-                    </button>
-                </form>
-                @elseif($fv === 'rejected')
-                <form action="{{ route('campaign.resubmit', $campaign->id) }}" method="POST" onsubmit="return handleSub(this,'Resubmitting…')">
-                    @csrf
-                    <button class="btn btn-secondary">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                        Resubmit
-                    </button>
-                </form>
-                @endif
-            </div>
-        </div>
-    </div>
+        <x-campaign-card :campaign="$campaign" variant="grid" :index="$i" />
     @endforeach
 </div>
 
 {{-- LIST VIEW --}}
 <div class="c-list" id="campaignList" style="display:none;">
     @foreach($campaigns as $i => $campaign)
-    @php
-        $state = $campaign->campaign_state;
-        if      ($state === 'active')   { $fv='active';   $bc='b-active';   $bl='Active'; }
-        elseif  ($state === 'paused')   { $fv='paused';   $bc='b-paused';   $bl='Paused'; }
-        elseif  ($state === 'rejected') { $fv='rejected'; $bc='b-rejected'; $bl='Rejected'; }
-        elseif  ($state === 'expired')  { $fv='expired';  $bc='b-expired';  $bl='Expired'; }
-        elseif  ($state === 'inactive') { $fv='inactive'; $bc='b-inactive'; $bl='Under Review'; }
-        elseif  ($state === 'pending')  { $fv='pending';  $bc='b-pending';  $bl='Pending'; }
-        else                            { $fv='other';    $bc='b-default';  $bl=ucfirst($state ?? 'Draft'); }
-        $raised = $campaign->raised_amount ?? 0;
-        $goal   = $campaign->goal_amount > 0 ? $campaign->goal_amount : 1;
-        $pct    = min(100, round(($raised / $goal) * 100));
-    @endphp
-    @php
-        $daysLeft = $campaign->end_date ? now()->startOfDay()->diffInDays(\Carbon\Carbon::parse($campaign->end_date)->startOfDay(), false) : null;
-        $campCats = $campaign->category;
-    @endphp
-    <div class="c-list-item"
-         data-filter="{{ $fv }}"
-         data-title="{{ strtolower($campaign->title) }}"
-         data-amount="{{ $campaign->goal_amount }}"
-         data-date="{{ $campaign->created_at }}"
-         style="animation-delay:{{ $i * .03 }}s">
-        <div class="c-list-thumb">
-            @if($campaign->cover_image)
-                <img src="{{ asset('storage/'.$campaign->cover_image) }}" alt="{{ $campaign->title }}" loading="lazy">
-            @else
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-            @endif
-        </div>
-        <div class="c-list-info">
-            <div class="c-list-title">
-                {{ $campaign->title }}
-                @if($campCats)
-                    <span style="font-size:10px;font-weight:500;color:var(--text3);font-family:var(--mono);margin-left:6px;">{{ $campCats->name }}</span>
-                @endif
-            </div>
-            <div class="c-list-sub">
-                <span>₹{{ number_format($raised) }} raised</span>
-                <span class="c-list-dot"></span>
-                <span>of ₹{{ number_format($campaign->goal_amount) }}</span>
-                @if($campaign->donations_count > 0)
-                    <span class="c-list-dot"></span>
-                    <span>{{ $campaign->donations_count }} donation{{ $campaign->donations_count !== 1 ? 's' : '' }}</span>
-                @endif
-                @if($fv === 'active' && $daysLeft !== null && $daysLeft >= 0)
-                    <span class="c-list-dot"></span>
-                    <span style="color:var(--yellow);font-weight:600;">
-                        @if($daysLeft === 0) Ends today
-                        @elseif($daysLeft <= 3) {{ $daysLeft }}d left
-                        @else {{ $daysLeft }}d
-                        @endif
-                    </span>
-                @endif
-            </div>
-        </div>
-        <div class="c-list-prog">
-            <div class="c-list-pct">{{ $pct }}%</div>
-            <div class="c-list-bar"><div class="c-list-fill" style="width:{{ $pct }}%"></div></div>
-        </div>
-        <div class="c-list-badge">
-            <span class="badge {{ $bc }}">{{ $bl }}</span>
-            @if($fv === 'expired')
-                <span class="badge b-expired" style="margin-left:3px;">Ended</span>
-            @endif
-        </div>
-        <div class="c-list-actions">
-            <a href="{{ route('campaign.show', $campaign->id) }}" class="btn btn-secondary">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>View
-            </a>
-            <a href="{{ route('campaign.edit', $campaign->id) }}" class="btn btn-secondary">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>Edit
-            </a>
-            @if($fv === 'active')
-            <form action="{{ route('campaign.pause', $campaign->id) }}" method="POST" onsubmit="return handleSub(this,'…')">
-                @csrf
-                <button class="btn btn-secondary">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Pause
-                </button>
-            </form>
-            @elseif($fv === 'paused')
-            <form action="{{ route('campaign.resume', $campaign->id) }}" method="POST" onsubmit="return handleSub(this,'…')">
-                @csrf
-                <button class="btn btn-secondary">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Resume
-                </button>
-            </form>
-            @endif
-        </div>
-    </div>
+        <x-campaign-card :campaign="$campaign" variant="list" :index="$i" />
     @endforeach
 </div>
 
@@ -649,10 +584,10 @@
     </div>
     <div class="empty-title">Start your first fundraiser</div>
     <div class="empty-sub">Create a campaign and start making a difference in the world today.</div>
-    <a href="{{ route('campaign.create') }}" class="btn btn-primary">
+    <x-button variant="primary" href="{{ route('campaign.create') }}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
         Create Campaign
-    </a>
+    </x-button>
 </div>
 @endif
 
@@ -678,23 +613,23 @@
             <span class="rec-amt-val">₹{{ number_format($rd->amount) }}/{{ $rd->frequency }}</span>
         </div>
         <div class="rec-actions">
-            <a href="{{ route('recurring.show', $rd->id) }}" class="btn btn-secondary">
+            <x-button variant="secondary" href="{{ route('recurring.show', $rd->id) }}" class="btn btn-secondary">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                 View
-            </a>
+            </x-button>
             @if($rd->status === 'active')
             <form action="{{ route('recurring.pause', $rd->id) }}" method="POST">
                 @csrf @method('PATCH')
-                <button class="btn btn-secondary">
+                <x-button variant="secondary" type="submit">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6"/></svg>Pause
-                </button>
+                </x-button>
             </form>
             @elseif($rd->status === 'paused')
             <form action="{{ route('recurring.resume', $rd->id) }}" method="POST">
                 @csrf @method('PATCH')
-                <button class="btn btn-green">
+                <x-button variant="primary" type="submit">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/></svg>Resume
-                </button>
+                </x-button>
             </form>
             @endif
         </div>
@@ -704,280 +639,11 @@
 @endif
 @endsection
 
-@push('page_scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-'use strict';
-
-var html = document.documentElement;
-
-/* ── Animated stat counters ── */
-function animateCounter(el, target, prefix, suffix) {
-    var duration = 900, start = 0, startTime = null;
-    prefix = prefix || '';
-    suffix = suffix || '';
-    function step(timestamp) {
-        if (!startTime) startTime = timestamp;
-        var progress = Math.min((timestamp - startTime) / duration, 1);
-        var eased = 1 - Math.pow(1 - progress, 3);
-        var current = Math.floor(eased * target);
-        el.textContent = prefix + current.toLocaleString('en-IN') + suffix;
-        if (progress < 1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
-}
-document.querySelectorAll('.stat-val').forEach(function (el) {
-    var original = el.textContent;
-    var prefixMatch = original.match(/^(\D*)/);
-    var prefix = prefixMatch ? prefixMatch[1] : '';
-    var raw = original.replace(/[₹,]/g, '').trim();
-    var num = parseInt(raw, 10);
-    if (!isNaN(num) && num > 0) {
-        var suffix = original.includes('%') ? '%' : '';
-        el.textContent = prefix + '0' + suffix;
-        animateCounter(el, num, prefix, suffix);
-    }
-});
-
-/* ── Animate overall funding bar ── */
-setTimeout(function(){
-    var bar = document.getElementById('overallBar');
-    if (bar) bar.style.width = '{{ $overallPct }}%';
-}, 700);
-
-/* ── Animate impact ring ── */
-setTimeout(function(){
-    var ring = document.getElementById('impactRing');
-    if (!ring) return;
-    var pct = parseInt('{{ $overallPct }}', 10) || 0;
-    var circ = 2 * Math.PI * 52;
-    ring.style.strokeDasharray = circ;
-    ring.style.strokeDashoffset = circ - (circ * pct / 100);
-}, 450);
-
-/* ── Filter + Search + Sort ── */
-var activeFilter = 'all', searchQ = '', sortVal = '';
-
-function getCards(){
-    var isGrid = document.getElementById('campaignGrid').style.display !== 'none';
-    return Array.from(document.querySelectorAll(isGrid ? '#campaignGrid .c-card' : '#campaignList .c-list-item'));
-}
-
-function applyFilters(){
-    var all = Array.from(document.querySelectorAll('#campaignGrid .c-card, #campaignList .c-list-item'));
-
-    if (sortVal) {
-        var grids = Array.from(document.querySelectorAll('#campaignGrid .c-card'));
-        var lists = Array.from(document.querySelectorAll('#campaignList .c-list-item'));
-        [grids, lists].forEach(function(arr){
-            if (!arr.length) return;
-            if (sortVal === 'amount-desc') arr.sort(function(a,b){ return +b.dataset.amount - +a.dataset.amount; });
-            if (sortVal === 'amount-asc')  arr.sort(function(a,b){ return +a.dataset.amount - +b.dataset.amount; });
-            if (sortVal === 'date-desc')   arr.sort(function(a,b){ return new Date(b.dataset.date) - new Date(a.dataset.date); });
-            if (sortVal === 'date-asc')    arr.sort(function(a,b){ return new Date(a.dataset.date) - new Date(b.dataset.date); });
-            var parent = arr[0].parentElement;
-            arr.forEach(function(c){ parent.appendChild(c); });
-        });
-    }
-
-    var visible = 0;
-    all.forEach(function(c){
-        var mF = activeFilter === 'all' || c.dataset.filter === activeFilter;
-        var mS = !searchQ || (c.dataset.title || '').includes(searchQ);
-        c.style.display = (mF && mS) ? '' : 'none';
-        if (mF && mS) visible++;
-    });
-    document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
-}
-
-document.querySelectorAll('.ftab').forEach(function(tab){
-    tab.addEventListener('click', function(){
-        document.querySelectorAll('.ftab').forEach(function(t){ t.classList.remove('on'); });
-        this.classList.add('on');
-        activeFilter = this.dataset.filter;
-        document.getElementById('ftabSelect').value = activeFilter;
-        applyFilters();
-    });
-});
-
-document.getElementById('ftabSelect').addEventListener('change', function(){
-    activeFilter = this.value;
-    document.querySelectorAll('.ftab').forEach(function(t){ t.classList.toggle('on', t.dataset.filter === activeFilter); });
-    applyFilters();
-});
-
-window.setFilter = function(f){
-    activeFilter = f;
-    document.querySelectorAll('.ftab').forEach(function(t){ t.classList.toggle('on', t.dataset.filter === f); });
-    document.getElementById('ftabSelect').value = f;
-    applyFilters();
-    var el = document.getElementById('cGrid');
-    if (el) el.scrollIntoView({ behavior:'smooth', block:'start' });
-};
-
-var searchTimeout;
-document.getElementById('searchInput').addEventListener('input', function(){
-    clearTimeout(searchTimeout);
-    searchQ = this.value.toLowerCase().trim();
-    searchTimeout = setTimeout(applyFilters, 180);
-});
-
-document.getElementById('sortSelect').addEventListener('change', function(){
-    sortVal = this.value;
-    applyFilters();
-});
-
-var mobileSearch = document.getElementById('mobileSearchInput');
-var mobileSort = document.getElementById('mobileSortSelect');
-if (mobileSearch) mobileSearch.addEventListener('input', function(){
-    document.getElementById('searchInput').value = this.value;
-    document.getElementById('searchInput').dispatchEvent(new Event('input'));
-});
-if (mobileSort) mobileSort.addEventListener('change', function(){
-    document.getElementById('sortSelect').value = this.value;
-    document.getElementById('sortSelect').dispatchEvent(new Event('change'));
-});
-
-var grid    = document.getElementById('campaignGrid');
-var list    = document.getElementById('campaignList');
-var btnGrid = document.getElementById('btnGrid');
-var btnList = document.getElementById('btnList');
-
-btnGrid.addEventListener('click', function(){
-    grid.style.display = ''; list.style.display = 'none';
-    btnGrid.classList.add('on'); btnList.classList.remove('on');
-    applyFilters();
-});
-btnList.addEventListener('click', function(){
-    grid.style.display = 'none'; list.style.display = '';
-    btnList.classList.add('on'); btnGrid.classList.remove('on');
-    applyFilters();
-});
-
-window.handleSub = function(form, txt){
-    form.querySelectorAll('button[type=submit]').forEach(function(b){ b.disabled = true; b.textContent = txt; });
-    return true;
-};
-
-/* ── Chart ── */
-var fundChart;
-window.renderChart = function(){
-    var isDark    = html.getAttribute('data-theme') === 'dark';
-    var gridColor = isDark ? 'rgba(255,255,255,.05)' : 'rgba(0,0,0,.04)';
-    var lblColor  = isDark ? 'rgba(255,255,255,.35)' : 'rgba(0,0,0,.35)';
-    var tipBg     = isDark ? '#1e2033' : '#fff';
-    var tipTx     = isDark ? '#eef0ff' : '#111';
-
-    Chart.defaults.color       = lblColor;
-    Chart.defaults.font.family = "'DM Mono', monospace";
-    Chart.defaults.font.size   = 10.5;
-
-    var ctx = document.getElementById('fundChart');
-    if (!ctx) return;
-    if (fundChart) fundChart.destroy();
-
-    var monthlyData = @json($monthlyData ?? []);
-    var labels = Object.keys(monthlyData);
-    var values = Object.values(monthlyData);
-
-    var cctx = ctx.getContext('2d');
-    var grad = cctx.createLinearGradient(0, 0, 0, 180);
-    grad.addColorStop(0, 'rgba(37,99,235,.20)');
-    grad.addColorStop(1, 'rgba(37,99,235,0)');
-
-    fundChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Amount Raised (₹)',
-                data: values,
-                borderColor: '#2563eb', backgroundColor: grad,
-                borderWidth: 2.5, fill: true, tension: .45,
-                pointBackgroundColor: '#2563eb',
-                pointBorderColor: tipBg, pointBorderWidth: 2,
-                pointRadius: 4, pointHoverRadius: 6,
-            }]
-        },
-        options: {
-            responsive: true, maintainAspectRatio: false,
-            interaction: { intersect: false, mode: 'index' },
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    backgroundColor: tipBg, titleColor: tipTx, bodyColor: tipTx,
-                    borderColor: gridColor, borderWidth: 1, padding: 12, cornerRadius: 10,
-                    callbacks: { label: function(c){ return ' ₹' + Number(c.parsed.y).toLocaleString('en-IN'); } }
-                }
-            },
-            scales: {
-                x: { grid:{ color:gridColor }, border:{ dash:[3,3] } },
-                y: { grid:{ color:gridColor }, border:{ dash:[3,3] }, ticks:{ callback: function(v){ return '₹'+Number(v).toLocaleString('en-IN'); } } }
-            }
-        }
-    });
-}
-renderChart();
-
-/* ── Campaign comparison bar chart ── */
-var campChart;
-(function(){
-    var ctx = document.getElementById('campChart');
-    if (!ctx) return;
-    if (campChart) campChart.destroy();
-
-    var isDark    = html.getAttribute('data-theme') === 'dark';
-    var gridColor = isDark ? 'rgba(255,255,255,.05)' : 'rgba(0,0,0,.04)';
-    var lblColor  = isDark ? 'rgba(255,255,255,.35)' : 'rgba(0,0,0,.35)';
-    var tipBg     = isDark ? '#1e2033' : '#fff';
-    var tipTx     = isDark ? '#eef0ff' : '#111';
-
-    var campaigns = @json($campChartData);
-
-    campChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: campaigns.map(function(c){ return c.title; }),
-            datasets: [
-                {
-                    label: 'Raised (₹)',
-                    data: campaigns.map(function(c){ return c.raised; }),
-                    backgroundColor: '#2563eb',
-                    borderRadius: 4,
-                    barPercentage: .65,
-                },
-                {
-                    label: 'Goal (₹)',
-                    data: campaigns.map(function(c){ return c.goal; }),
-                    backgroundColor: isDark ? 'rgba(37,99,235,.2)' : 'rgba(37,99,235,.10)',
-                    borderRadius: 4,
-                    barPercentage: .65,
-                }
-            ]
-        },
-        options: {
-            responsive: true, maintainAspectRatio: false,
-            interaction: { intersect: false, mode: 'index' },
-            plugins: {
-                legend: {
-                    position: 'top',
-                    align: 'end',
-                    labels: { boxWidth: 10, boxHeight: 10, borderRadius: 2, usePointStyle: true, padding: 16, color: lblColor, font: { family: "'DM Sans', sans-serif", size: 11 } }
-                },
-                tooltip: {
-                    backgroundColor: tipBg, titleColor: tipTx, bodyColor: tipTx,
-                    borderColor: gridColor, borderWidth: 1, padding: 12, cornerRadius: 10,
-                    callbacks: { label: function(c){ return c.dataset.label + ': ₹' + Number(c.parsed.y).toLocaleString('en-IN'); } }
-                }
-            },
-            scales: {
-                x: { grid:{ display:false }, ticks:{ color: lblColor, font:{ size:10 } } },
-                y: { grid:{ color:gridColor }, border:{ dash:[3,3] }, ticks:{ callback: function(v){ return '₹'+Number(v).toLocaleString('en-IN'); } } }
-            }
-        }
-    });
-})();
-
-});
+{{-- Server data for user/dashboard.js --}}
+<script type="application/json" id="dashboardData">
+@json($userDashboardData)
 </script>
+
+@push('page_scripts')
+@vite('resources/js/user/dashboard.js')
 @endpush

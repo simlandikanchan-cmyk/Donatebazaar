@@ -1,0 +1,74 @@
+/* ══════════════════════════════════════
+   ADMIN — Danger Zone card (shared)
+   Used by: categories edit, job posts edit/show
+   ══════════════════════════════════════ */
+.danger-card, .danger-zone {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px;
+  background: linear-gradient(135deg, rgba(240, 68, 68, .05), rgba(240, 68, 68, .015));
+  border: 1px solid rgba(240, 68, 68, .18);
+  border-radius: var(--btn-radius);
+}
+.danger-card {
+  margin-top: 16px;
+}
+.danger-head, .danger-hdr {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+.danger-head svg, .danger-hdr svg {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  color: var(--red);
+}
+.danger-desc {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--text2);
+}
+.danger-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+.danger-actions .btn {
+  min-width: 180px;
+}
+[data-theme="dark"] .danger-card, [data-theme="dark"] .danger-zone {
+  background: rgba(240, 68, 68, .06);
+  border-color: rgba(240, 68, 68, .25);
+}
+/* job post show page entrance */
+.danger-zone {
+  animation: fadeUp .4s .18s ease both;
+}
+/* profile page keeps its plain .card look */
+.card.danger-card {
+  display: block;
+  gap: 0;
+  margin-top: 0;
+  padding: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  box-shadow: var(--sh);
+}
+@media (max-width: 640px) {
+  .danger-actions {
+    justify-content: stretch;
+  }
+  .danger-actions .btn {
+    width: 100%;
+    min-width: 0;
+  }
+}

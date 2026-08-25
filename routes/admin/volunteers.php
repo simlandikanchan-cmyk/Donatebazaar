@@ -7,6 +7,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 
     Route::get('/volunteers', [VolunteerAdminController::class, 'index'])->name('volunteers.index');
     Route::get('/volunteers/{volunteer}', [VolunteerAdminController::class, 'show'])->name('volunteers.show');
+    Route::delete('/volunteers/{volunteer}', [VolunteerAdminController::class, 'destroy'])->name('volunteers.destroy');
 
     Route::get('/volunteer-applications', [VolunteerAdminController::class, 'applications'])->name('volunteer_applications.index');
     Route::get('/volunteer-applications/{application}', [VolunteerAdminController::class, 'applicationShow'])->name('volunteer_applications.show');

@@ -55,6 +55,21 @@ class RecurringDonation extends Model
         return $this->status === 'active';
     }
 
+    // Display line for the dashboard card (status-aware, never shows a stale billing date)
+    public function statusLine(): string
+    {
+        return match ($this->status) {
+            'paused' => 'Paused · Next payment not scheduled',
+            'active' => $this->next_billing_date
+                ? 'Next: '.$this->next_billing_date->format('d M Y')
+                : 'Next payment not scheduled',
+            'cancelled' => 'Cancelled',
+            'completed' => 'Completed',
+            'failed' => 'Failed',
+            default => ucfirst($this->status),
+        };
+    }
+
     public function cancel(): void
     {
         if ($this->status === 'cancelled') {

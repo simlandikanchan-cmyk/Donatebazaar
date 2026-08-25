@@ -117,10 +117,10 @@
                     <form action="{{ route('recurring.pause', $donation->id) }}" method="POST">
                         @csrf
                         @method('PATCH')
-                        <button type="submit" class="btn btn-yellow">
+                        <x-button variant="secondary" type="submit">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
                             Pause
-                        </button>
+                        </x-button>
                     </form>
                     @endif
 
@@ -128,10 +128,10 @@
                     <form action="{{ route('recurring.resume', $donation->id) }}" method="POST">
                         @csrf
                         @method('PATCH')
-                        <button type="submit" class="btn btn-green">
+                        <x-button variant="primary" type="submit">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                             Resume
-                        </button>
+                        </x-button>
                     </form>
                     @endif
                 </div>
@@ -157,11 +157,11 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21s-7-4.35-9-8.5C1 8 3.5 4 7.5 4c2.04 0 3.04 1 4.5 2.5C13.46 5 14.46 4 16.5 4 20.5 4 23 8 21 12.5 19 16.65 12 21 12 21z"/></svg>
             <h3>No Recurring Donations Yet</h3>
             <p>Start supporting campaigns with recurring contributions and see them tracked here.</p>
-            <a href="/all-campaigns" class="btn btn-primary">
+            <x-button variant="primary" href="/all-campaigns">
                 
-                Explore Campaigns
+                Donate Now
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
-            </a>
+            </x-button>
         </div>
     </div>
     @endif

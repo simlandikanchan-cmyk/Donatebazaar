@@ -14,6 +14,7 @@ class BlogRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'action' => ['nullable', 'string', 'in:draft,schedule,publish'],
             'title' => ['required', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:255'],
             'excerpt' => ['nullable', 'string', 'max:500'],
