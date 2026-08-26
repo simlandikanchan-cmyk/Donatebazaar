@@ -311,3 +311,8 @@
     .upload-placeholder { padding: 24px 16px; }
     .editor-toolbar { overflow-x: auto; flex-wrap: nowrap; }
 }
+
+/* Dynamic utility classes */
+.upload-preview-wrap-hidden { display: none; }
+.bar-fill-dynamic { width: var(--bar-width, 0%); background: var(--bar-bg, var(--primary)); }
+.serp-bar-fill-dynamic { width: var(--bar-width, 0%); background: var(--bar-bg, var(--border2)); }

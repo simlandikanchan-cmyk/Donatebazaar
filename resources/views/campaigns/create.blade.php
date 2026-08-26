@@ -31,7 +31,7 @@
 
     <div class="form-card">
       <div class="progress-track">
-        <div class="progress-fill" id="progressBar" style="width:16.6%;"></div>
+        <div class="progress-fill progress-fill-dynamic" id="progressBar" style="--progress-width:16.6%;"></div>
       </div>
 
       <form action="{{ route('campaign.store') }}" method="POST" enctype="multipart/form-data" id="campaignForm">
@@ -124,10 +124,10 @@
           <div class="step-panel" id="step-3">
             <div class="updates-info-bar">
               <div class="updates-info-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" style="width:17px;height:17px;"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" class="updates-info-icon-svg"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
               </div>
               <div class="updates-info-text">
-                <div class="title">Campaign updates &amp; documents <span style="color:var(--danger);font-size:11px;font-weight:700;margin-left:6px;">● Required</span></div>
+                <div class="title">Campaign updates &amp; documents <span class="required-tag">● Required</span></div>
                 <div class="sub">Add at least one update or supporting document. Donors trust campaigns with transparent records.</div>
               </div>
             </div>
@@ -136,9 +136,9 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
               Add update or document
             </button>
-            <div class="skip-note" style="background:rgba(254,242,242,.6);border-color:#fecaca;">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--danger);"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
-              <span><strong style="color:var(--danger);">Required:</strong> You must add at least one update with a title and description before continuing.</span>
+            <div class="skip-note skip-note-danger">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
+              <span><strong>You must add at least one update with a title and description before continuing.</strong></span>
             </div>
           </div>
 
@@ -148,10 +148,10 @@
               <input type="file" id="coverInput" name="cover_image" accept="image/*">
               <div id="uploadPrompt">
                 <div class="upload-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg></div>
-                <div class="upload-title">Drop your cover image here <span style="color:var(--danger);">*</span></div>
+                <div class="upload-title">Drop your cover image here <span class="required-mark">*</span></div>
                 <div class="upload-hint">or click to browse from your device</div>
                 <div class="upload-btn">Choose file</div>
-                <div style="font-size:11px;color:var(--ink-muted);margin-top:12px;">JPG or PNG · Max 2MB · Min 1200×630px recommended</div>
+                <div class="upload-hint-text">JPG or PNG · Max 2MB · Min 1200×630px recommended</div>
               </div>
               <div id="imagePreview">
                 <img id="previewImg" src="" alt="Cover preview">
@@ -159,26 +159,26 @@
                 <div><span class="change-img-btn">Change image</span></div>
               </div>
             </div>
-            <p style="font-size:12px;color:var(--ink-muted);margin-top:14px;line-height:1.6;text-align:center;">
-              <strong style="color:var(--danger);">Required.</strong> Campaigns with a compelling cover image raise <strong style="color:var(--purple-main);">3× more</strong> on average.
+            <p class="cover-image-hint">
+              <strong>Required.</strong> Campaigns with a compelling cover image raise <span class="highlight">3× more</span> on average.
             </p>
           </div>
 
           {{-- STEP 5: Products --}}
           <div class="step-panel" id="step-5">
-            <div style="display:flex;align-items:flex-start;gap:14px;padding:16px 18px;background:var(--purple-mist);border:1px solid var(--border);border-radius:16px;margin-bottom:20px;">
-              <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--purple-main),var(--indigo-main));display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" style="width:17px;height:17px;"><path d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2zM16 3H8l-2 4h12l-2-4z"/></svg>
+            <div class="products-info-box">
+              <div class="products-info-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" class="updates-info-icon-svg"><path d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2zM16 3H8l-2 4h12l-2-4z"/></svg>
               </div>
               <div>
-                <div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:3px;">Fundraiser products</div>
-                <div style="font-size:12px;color:var(--ink-soft);line-height:1.6;">Pick from admin suggestions for your category or add your own custom products.</div>
+                <div class="products-info-title">Fundraiser products</div>
+                <div class="products-info-desc">Pick from admin suggestions for your category or add your own custom products.</div>
               </div>
             </div>
             <div id="suggestionsSection">
               <div class="suggestions-label">Suggested for your category</div>
               <div class="suggestions-wrap" id="suggestionsWrap">
-                <span style="font-size:12px;color:var(--ink-muted);">Select a category in Step 1 to see suggestions.</span>
+                <span class="suggestions-empty">Select a category in Step 1 to see suggestions.</span>
               </div>
             </div>
             <div id="productList" class="product-list"></div>
@@ -210,16 +210,16 @@
               <div class="review-row"><span class="review-label">Duration</span><span class="review-value" id="rv-dates">—</span></div>
               <div class="review-row"><span class="review-label">Cover image</span><span class="review-value" id="rv-image">Not uploaded</span></div>
             </div>
-            <div class="review-card" id="rvUpdatesCard" style="display:none;">
-              <div class="review-card-header"><div class="review-card-title">Updates &amp; documents <span id="rvUpdateCount" style="font-weight:400;color:var(--ink-soft);"></span></div></div>
+            <div class="review-card review-card-hidden" id="rvUpdatesCard">
+              <div class="review-card-header"><div class="review-card-title">Updates &amp; documents <span id="rvUpdateCount" class="review-count"></span></div></div>
               <div class="review-updates-body" id="rvUpdatesBody"></div>
             </div>
-            <div class="review-card" id="rvProductsCard" style="display:none;">
-              <div class="review-card-header"><div class="review-card-title">Products <span id="rvProductCount" style="font-weight:400;color:var(--ink-soft);"></span></div></div>
+            <div class="review-card review-card-hidden" id="rvProductsCard">
+              <div class="review-card-header"><div class="review-card-title">Products <span id="rvProductCount" class="review-count"></span></div></div>
               <div class="review-products-body" id="rvProductsBody"></div>
-              <div class="review-row" style="background:var(--purple-mist);">
-                <span class="review-label" style="font-weight:600;color:var(--ink-mid);">Total product value</span>
-                <span class="review-value" style="color:var(--purple-deep);font-size:15px;" id="rv-products-total">₹0</span>
+              <div class="review-row review-row-highlight">
+                <span class="review-label review-label-bold">Total product value</span>
+                <span class="review-value review-value-highlight" id="rv-products-total">₹0</span>
               </div>
             </div>
             <div class="grand-summary-card" id="grandSummaryCard">
@@ -228,12 +228,12 @@
                 Campaign financial summary
               </div>
               <div class="grand-summary-row"><span class="lbl">Fundraising goal</span><span class="val" id="gs-goal">—</span></div>
-              <div class="grand-summary-row" id="gs-products-row" style="display:none;"><span class="lbl">Total product value</span><span class="val" id="gs-products">₹0</span></div>
+              <div class="grand-summary-row grand-summary-row-hidden" id="gs-products-row"><span class="lbl">Total product value</span><span class="val" id="gs-products">₹0</span></div>
               <div class="grand-summary-total-row"><span class="lbl">Combined total</span><span class="val" id="gs-combined">—</span></div>
             </div>
 
             {{-- KYC next-step notice (replaces old KYC form) --}}
-            <div class="review-notice" style="margin-top:16px;">
+            <div class="review-notice review-notice-mt">
               <div class="review-notice-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
               </div>

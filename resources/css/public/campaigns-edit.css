@@ -152,3 +152,20 @@ body {
 @keyframes fadeUp  { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 
 @media (max-width: 900px) { .form-layout { grid-template-columns: 1fr; } .sidebar-stack { position: static; } }
+
+/* Dynamic utility classes replacing inline styles */
+.card-mb { margin-bottom: 14px; }
+.level-info { font-size: 11px; color: var(--text3); margin-top: 5px; font-family: var(--font-mono); }
+.level-info strong { color: var(--accent); }
+.file-drop-disabled { pointer-events: none; opacity: 0.45; }
+.pending-note { text-align: center; padding: 8px 0; font-size: 12px; color: var(--text3); }
+.btn-ghost-mt { margin-top: 8px; display: inline-flex; }
+.progress-header { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 6px; }
+.progress-raised { font-weight: 700; color: var(--accent); font-family: var(--font-mono); }
+.progress-goal { color: var(--text3); font-family: var(--font-mono); }
+.progress-track { width: 100%; background: var(--surface2); border-radius: 100px; height: 5px; overflow: hidden; margin-bottom: 5px; }
+.progress-fill-dynamic { height: 100%; border-radius: 100px; width: var(--progress-width, 0%); background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width 1s ease; }
+.progress-footer { font-size: 10px; color: var(--text3); font-family: var(--font-mono); }
+.modal-icon-warn { background: rgba(245,158,11,0.12); color: var(--yellow); }
+.modal-icon-success { background: rgba(16,185,129,0.12); color: var(--green); }
+.required-mark { color: var(--red); }

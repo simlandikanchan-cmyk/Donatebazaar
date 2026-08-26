@@ -26,11 +26,11 @@
         $daysLeft = $campaign->end_date ? now()->startOfDay()->diffInDays(\Carbon\Carbon::parse($campaign->end_date)->startOfDay(), false) : null;
         $campCats = $campaign->category;
     @endphp
-    <div class="c-card"
+    <div class="c-card c-card-dynamic"
          data-title="{{ strtolower($campaign->title) }}"
          data-amount="{{ $campaign->goal_amount }}"
          data-date="{{ $campaign->created_at }}"
-         style="animation-delay:{{ $i * .04 }}s">
+         style="--card-delay:{{ $i * .04 }}s">
         <div class="c-thumb">
             @if($campaign->cover_image)
                 <img src="{{ asset('storage/'.$campaign->cover_image) }}" alt="{{ $campaign->title }}" loading="lazy">
@@ -65,7 +65,7 @@
                     <span class="prog-raised">₹{{ number_format($raised) }}</span>
                     <span class="prog-goal">of ₹{{ number_format($campaign->goal_amount) }}</span>
                 </div>
-                <div class="prog-bar"><div class="prog-fill" style="width:{{ $pct }}%"></div></div>
+                <div class="prog-bar"><div class="prog-fill prog-fill-dynamic" style="--prog-width:{{ $pct }}%"></div></div>
                 <div class="prog-meta">
                     <span class="prog-pct">{{ $pct }}% funded</span>
                     @if($campaign->donations_count > 0)

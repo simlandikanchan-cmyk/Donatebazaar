@@ -36,19 +36,19 @@
             <span class="wb-tag-dot"></span>
             Good {{ $greeting }}, Fundraiser
             @if($levelName !== 'Starter')
-                <span class="wb-badge wbb-purple" style="margin-left:8px;font-size:10px;">{{ $levelName }}</span>
+                <span class="wb-badge wbb-purple wb-badge--inline">{{ $levelName }}</span>
             @endif
         </div>
         <div class="wb-name">{{ auth()->user()->name }} <span class="wave"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2"/><path d="M14 10V4a2 2 0 0 0-2-2 2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg></span></div>
-        <div class="wb-sub" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <div class="wb-sub wb-sub--flex">
             <span>Here's what's happening with your campaigns today.</span>
             @if($daysActive > 0)
-                <span style="font-size:11.5px;color:var(--text3);font-family:var(--mono);">
+                <span class="wb-sub-text">
                     Member for {{ $daysActive }} day{{ $daysActive !== 1 ? 's' : '' }}
                 </span>
             @endif
             @if($level)
-                <span style="font-size:11.5px;color:var(--text3);font-family:var(--mono);">
+                <span class="wb-sub-text">
                     {{ $levelName }} · Max goal ₹{{ number_format($user->maxCampaignGoal()) }}
                 </span>
             @endif
@@ -226,7 +226,7 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
         <div class="qs-row" role="button" tabindex="0"
              data-action="set-filter" data-filter="{{ $filter }}">
             <div class="qs-row-left">
-                <div class="qs-dot" style="background:{{ $color }}"></div>
+                <div class="qs-dot qs-dot-dynamic" style="background:{{ $color }}"></div>
                 <span class="qs-label">{{ $label }}</span>
             </div>
             <span class="qs-val">{{ $val }}</span>
@@ -238,7 +238,7 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
                 <span>{{ $overallPct }}%</span>
             </div>
             <div class="qs-prog-bar">
-                <div class="qs-prog-fill" id="overallBar" style="width:0%"></div>
+                <div class="qs-prog-fill qs-prog-fill--init" id="overallBar"></div>
             </div>
         </div>
     </div>
@@ -267,7 +267,7 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
         @endphp
         <div class="wallet-mini-item">
             <div class="wallet-mini-item-left">
-                <div class="wallet-mini-ico" style="background:{{ $tx->type === 'credit' ? 'var(--green-lt)' : 'rgba(239,68,68,.12)' }};color:{{ $txColor }};">
+                <div class="wallet-mini-ico {{ $tx->type === 'credit' ? 'wallet-mini-ico--credit' : 'wallet-mini-ico--debit' }}">
                     @if($tx->type === 'credit')
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14m-7-7h14"/></svg>
                     @else
@@ -279,7 +279,7 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
                     <div class="wallet-mini-sub">{{ $tx->created_at->diffForHumans() }}</div>
                 </div>
             </div>
-            <div class="wallet-mini-amt" style="color:{{ $txColor }};">
+            <div class="wallet-mini-amt {{ $tx->type === 'credit' ? 'wallet-mini-amt--credit' : 'wallet-mini-amt--debit' }}">
                 {{ $tx->type === 'credit' ? '+' : '-' }}₹{{ number_format(abs($tx->amount), 2) }}
             </div>
         </div>
@@ -318,8 +318,8 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
     ];
     @endphp
     @foreach($navItems as $item)
-    <a href="{{ $item['url'] }}" class="qnav-card" style="animation-delay:{{ $item['delay'] }};--qc:{{ $item['bg'] }};">
-        <div class="qnav-ico" style="background:{{ $item['bg'] }};color:{{ $item['color'] }};">
+    <a href="{{ $item['url'] }}" class="qnav-card qnav-card-dynamic" style="--qnav-delay:{{ $item['delay'] }};--qnav-bg:{{ $item['bg'] }};">
+        <div class="qnav-ico qnav-ico-dynamic" style="--qnav-bg:{{ $item['bg'] }};--qnav-color:{{ $item['color'] }};">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-icon="{{ $item['lbl'] }}">{!! $item['icon'] !!}</svg>
         </div>
         <div>
@@ -347,12 +347,12 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
     <div class="insight-card level-card">
         <div class="insight-card-hdr">
             <div class="insight-card-title">Fundraiser Level</div>
-            <div class="level-badge" style="--lbg:{{ $currentLevelModel?->badge_color ?? 'var(--accent)' }}">{{ $levelName }}</div>
+            <div class="level-badge level-badge-dynamic" style="--level-badge-color:{{ $currentLevelModel?->badge_color ?? 'var(--accent)' }}">{{ $levelName }}</div>
         </div>
         <div class="level-next">Next: <strong>{{ $nextLevel->level_name }}</strong></div>
         <div class="level-bar-wrap">
             <div class="level-bar">
-                <div class="level-fill" id="levelFill" style="width:0%"></div>
+                <div class="level-fill level-fill--init" id="levelFill"></div>
             </div>
             <div class="level-pct">{{ $levelProgress }}%</div>
         </div>
@@ -376,13 +376,13 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
     <div class="insight-card top-campaign-card">
         <div class="insight-card-hdr">
             <div class="insight-card-title">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;color:var(--warning);vertical-align:middle;margin-right:6px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tpc-star-svg"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                 Top Performer
             </div>
             <span class="badge b-active">Active</span>
         </div>
 
-        <svg style="position:absolute;width:0;height:0;" aria-hidden="true">
+        <svg class="svg-hidden" aria-hidden="true">
             <defs>
                 <linearGradient id="tpcRingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                     <stop offset="0%" stop-color="var(--primary)"/>
@@ -394,8 +394,8 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
         <div class="tpc-ring-wrap">
             <svg viewBox="0 0 80 80" class="tpc-ring-svg">
                 <circle class="tpc-ring-bg" cx="40" cy="40" r="36"/>
-                <circle class="tpc-ring-fg" id="tpcRing" cx="40" cy="40" r="36"
-                    style="stroke-dasharray:{{ $tcCircum }};stroke-dashoffset:{{ $tcOffset }}"/>
+                <circle class="tpc-ring-fg tpc-ring-dynamic" id="tpcRing" cx="40" cy="40" r="36"
+                    style="--tpc-circum:{{ $tcCircum }};--tpc-offset:{{ $tcOffset }}"/>
             </svg>
             <div class="tpc-ring-center">
                 <div class="tpc-ring-pct">{{ $tcp }}%</div>
@@ -462,14 +462,14 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
                 <span class="achieve-progress-pct">{{ $achievePct }}%</span>
             </div>
             <div class="achieve-progress-bar">
-                <div class="achieve-progress-fill" style="width:{{ $achievePct }}%"></div>
+                <div class="achieve-progress-fill achieve-progress-fill-dynamic" style="--achieve-width:{{ $achievePct }}%"></div>
             </div>
         </div>
     </div>
     <div class="achieve-grid">
         @foreach($achievements as $a)
         <div class="achieve-item {{ $a['done'] ? 'earned' : '' }}" title="{{ $a['sub'] }}">
-            <div class="achieve-ico" style="--ac:{{ $a['color'] }}">
+            <div class="achieve-ico achieve-ico-dynamic" style="--achieve-color:{{ $a['color'] }}">
                 @if($a['done'])
                 <div class="achieve-check">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
@@ -535,7 +535,7 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
                 <div class="events-body-meta">
                     @if($event->location)
                     <span>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:11px;height:11px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="events-location-svg"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
                         {{ $event->location }}
                     </span>
                     @endif
@@ -578,7 +578,7 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
             <div class="blog-info">
                 <div class="blog-title">{{ $blog->title }}</div>
                 <div class="blog-meta">
-                    <span class="badge {{ $bc }}" style="font-size:9px;padding:2px 6px;">{{ $bl }}</span>
+                    <span class="badge {{ $bc }} badge-sm">{{ $bl }}</span>
                     <span>{{ $blog->views_count }} views</span>
                     <span>{{ $blog->created_at->diffForHumans() }}</span>
                 </div>
@@ -597,11 +597,11 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 <div class="sec-hdr" id="cGrid">
     <div class="sec-title">
         Your Campaigns
-        @if($campaigns->total() > 0)
-            <span style="font-size:11px;font-weight:400;color:var(--text3);font-family:var(--mono);margin-left:8px;">
-                {{ $campaigns->firstItem() }}–{{ $campaigns->lastItem() }} of {{ $campaigns->total() }}
-            </span>
-        @endif
+            @if($campaigns->total() > 0)
+                <span class="text-meta">
+                    {{ $campaigns->firstItem() }}–{{ $campaigns->lastItem() }} of {{ $campaigns->total() }}
+                </span>
+            @endif
     </div>
     <div class="sec-right">
         <div class="ftabs" id="ftabs">
@@ -641,14 +641,14 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 </div>
 
 {{-- LIST VIEW --}}
-<div class="c-list" id="campaignList" style="display:none;">
+<div class="c-list c-list-hidden" id="campaignList">
     @foreach($campaigns as $i => $campaign)
         <x-campaign-card :campaign="$campaign" variant="list" :index="$i" />
     @endforeach
 </div>
 
 @if($campaigns->hasPages())
-<div class="rd-pagination" style="margin-top:18px;">
+<div class="rd-pagination mt-18">
     {{ $campaigns->links() }}
 </div>
 @endif
@@ -669,16 +669,16 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 
 {{-- ══ RECURRING DONATIONS SECTION ══ --}}
 @if(isset($recurringDonations) && $recurringDonations->count() > 0)
-<div class="sec-hdr" style="margin-top:32px;">
+<div class="sec-hdr mt-32">
     <div class="sec-title">Recurring Donations</div>
     <div class="sec-right">
         <a href="{{ route('recurring.index') }}" class="sec-link">View all →</a>
     </div>
 </div>
-<div style="display:flex;flex-direction:column;gap:10px;">
+<div class="flex-column-gap">
     @foreach($recurringDonations->take(3) as $rd)
     <div class="rec-card">
-        <div class="rec-icon" style="background:var(--accent-lt);">
+        <div class="rec-icon rec-icon-accent">
             <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
         </div>
         <div class="rec-info">

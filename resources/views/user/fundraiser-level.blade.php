@@ -9,7 +9,7 @@
 <div class="welcome-banner">
     <div class="wb-left">
         <div class="wb-tag">
-            <span class="wb-tag-dot" style="background:{{ $currentLevel->badge_color }};box-shadow:0 0 0 3px {{ $currentLevel->badge_color }}33;"></span>
+            <span class="wb-tag-dot wb-tag-dot-dynamic" style="--dot-color:{{ $currentLevel->badge_color }};--dot-color-shadow:{{ $currentLevel->badge_color }}33;"></span>
             Current Level
         </div>
         <div class="wb-name">
@@ -35,7 +35,7 @@
         <div class="level-progress-box">
             <div class="level-progress-label">Progress to {{ $nextLevel->level_name }}</div>
             <div class="level-progress-track">
-                <div class="level-progress-fill" style="width:{{ $completionPct }}%;background:linear-gradient(90deg,{{ $currentLevel->badge_color }},{{ $nextLevel->badge_color }});"></div>
+                <div class="level-progress-fill level-progress-fill-dynamic" style="--level-progress-width:{{ $completionPct }}%;--level-progress-bg:linear-gradient(90deg,{{ $currentLevel->badge_color }},{{ $nextLevel->badge_color }});"></div>
             </div>
             <div class="level-progress-pct">{{ round($completionPct) }}% complete</div>
         </div>
@@ -71,7 +71,7 @@
                 <tr class="{{ $isCurrent ? 'is-current' : '' }}">
                     <td>
                         <div class="level-table-name">
-                            <span class="level-table-badge" style="background:{{ $level->badge_color }};">{{ $level->level_number }}</span>
+                            <span class="level-table-badge level-table-badge-dynamic" style="--badge-bg:{{ $level->badge_color }};">{{ $level->level_number }}</span>
                             <span>{{ $level->level_name }}</span>
                             @if($isCurrent)
                             <span class="level-table-you">YOU</span>
@@ -148,7 +148,7 @@
                 @endif
             </div>
             <div class="next-req-bar">
-                <div class="next-req-fill" style="width:{{ min($pct,100) }}%;background:{{ $color }};"></div>
+                <div class="next-req-fill next-req-fill-dynamic" style="--req-width:{{ min($pct,100) }}%;--req-bg:{{ $color }};"></div>
             </div>
         </div>
         @endforeach

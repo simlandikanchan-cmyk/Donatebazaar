@@ -630,3 +630,33 @@
   .bar-chart-card .chart-wrap { height: 180px; }
   .chart-card, .qs-panel { padding: 16px; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   Utility classes replacing inline styles
+   ═══════════════════════════════════════════════════════════════════ */
+.wb-badge--inline { margin-left: 8px; font-size: 10px; }
+.wb-sub--flex { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.wb-sub-text { font-size: 11.5px; color: var(--text3); font-family: var(--mono); }
+.qs-dot-dynamic { background: var(--qs-dot-color, var(--primary)); }
+.qs-prog-fill--init { width: 0; }
+.wallet-mini-ico--credit { background: var(--green-lt); color: var(--green); }
+.wallet-mini-ico--debit { background: rgba(239,68,68,.12); color: var(--red); }
+.wallet-mini-amt--credit { color: var(--green); }
+.wallet-mini-amt--debit { color: var(--red); }
+.qnav-card-dynamic { animation-delay: var(--qnav-delay, 0s); --qc: var(--qnav-bg, var(--accent-lt)); }
+.qnav-ico-dynamic { background: var(--qnav-bg, var(--accent-lt)); color: var(--qnav-color, var(--accent)); }
+.level-badge-dynamic { --lbg: var(--level-badge-color, var(--accent)); }
+.level-fill--init { width: 0; }
+.tpc-star-svg { width: 16px; height: 16px; color: var(--warning); vertical-align: middle; margin-right: 6px; }
+.svg-hidden { position: absolute; width: 0; height: 0; }
+.achieve-progress-fill-dynamic { width: var(--achieve-width, 0%); }
+.achieve-ico-dynamic { --ac: var(--achieve-color, var(--accent)); }
+.events-location-svg { width: 11px; height: 11px; }
+.badge-sm { font-size: 9px; padding: 2px 6px; }
+.text-meta { font-size: 11px; font-weight: 400; color: var(--text3); font-family: var(--mono); margin-left: 8px; }
+.c-list-hidden { display: none; }
+.mt-18 { margin-top: 18px; }
+.mt-32 { margin-top: 32px; }
+.flex-column-gap { display: flex; flex-direction: column; gap: 10px; }
+.rec-icon-accent { background: var(--accent-lt); }
+.tpc-ring-dynamic { stroke-dasharray: var(--tpc-circum, 226.19); stroke-dashoffset: var(--tpc-offset, 226.19); }

@@ -176,3 +176,9 @@
   .achieve-item { padding: 14px 16px; }
   .achieve-desc { display: none; }
 }
+
+/* Dynamic utility classes */
+.wb-tag-dot-dynamic { background: var(--dot-color, var(--green)); box-shadow: 0 0 0 3px var(--dot-color-shadow, rgba(22,163,74,.15)); }
+.level-progress-fill-dynamic { width: var(--level-progress-width, 0%); background: var(--level-progress-bg, linear-gradient(90deg, var(--primary), var(--secondary))); }
+.level-table-badge-dynamic { background: var(--badge-bg, var(--primary)); }
+.next-req-fill-dynamic { width: var(--req-width, 0%); background: var(--req-bg, var(--primary)); }

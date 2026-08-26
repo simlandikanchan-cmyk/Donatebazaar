@@ -103,3 +103,7 @@
 @media(max-width:660px){.anl-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:480px){.topbar-right .status-chip{display:none;}.t-avatar{width:28px;height:28px;font-size:10px;}}
 @media(max-width:420px){.anl-grid{grid-template-columns:1fr;}}
+
+/* Dynamic utility classes replacing inline styles */
+.anl-chart-body-centered { display: flex; justify-content: center; min-height: 240px; }
+.anl-canvas-constrained { max-width: 260px; max-height: 260px; }

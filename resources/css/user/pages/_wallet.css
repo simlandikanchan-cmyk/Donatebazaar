@@ -84,3 +84,17 @@
   .wallet-table th, .wallet-table td { padding: 6px 5px; font-size: 11px; }
   .wallet-table .hide-mobile { display: none; }
 }
+
+/* Dynamic utility classes */
+.mb-24 { margin-bottom: 24px; }
+.badge-sm { font-size: 10px; padding: 2px 8px; margin-left: 8px; }
+.badge-sm--failed { background: var(--red-lt); color: var(--red); }
+.activity-sub--danger { color: var(--red); }
+.p-0-16-16 { padding: 0 16px 16px; }
+.p-16 { padding: 16px; }
+.text-center { text-align: center; }
+.text-muted { color: var(--text3); }
+.font-13 { font-size: 13px; }
+.tx-type { color: var(--tx-color, var(--text)); font-weight: 600; }
+.tx-notes { color: var(--text3); }
+.tx-empty { padding: 24px; text-align: center; color: var(--text3); font-size: 13px; }
