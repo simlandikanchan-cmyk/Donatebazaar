@@ -14,7 +14,7 @@
         </div>
         <div class="wb-name">
             {{ $currentLevel->level_name }}
-            <span class="level-number-badge" style="--level-color:{{ $currentLevel->badge_color }};">
+            <span class="level-number-badge">
                 {{ $currentLevel->level_number }}
             </span>
         </div>

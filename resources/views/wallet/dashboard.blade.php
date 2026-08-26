@@ -164,7 +164,7 @@ $icoLocked     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
                     @endphp
                     <tr>
                         <td data-label="Date" class="mono-sm">{{ $tx->created_at->format('Y-m-d H:i') }}</td>
-                        <td data-label="Type"><span class="tx-type" style="--tx-color:{{ $txColor }}">{{ ucfirst($tx->type) }}</span></td>
+                        <td data-label="Type"><span class="tx-type">{{ ucfirst($tx->type) }}</span></td>
                         <td class="hide-mobile" data-label="Source">{{ $tx->source ?? '—' }}</td>
                         <td class="text-right mono" data-label="Amount">₹{{ number_format($tx->amount, 2) }}</td>
                         <td class="hide-tablet text-right mono" data-label="Balance">₹{{ number_format($tx->balance_after, 2) }}</td>

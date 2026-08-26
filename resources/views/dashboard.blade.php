@@ -226,7 +226,7 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
         <div class="qs-row" role="button" tabindex="0"
              data-action="set-filter" data-filter="{{ $filter }}">
             <div class="qs-row-left">
-                <div class="qs-dot qs-dot-dynamic" style="background:{{ $color }}"></div>
+                <div class="qs-dot qs-dot-dynamic" style="--qs-dot-color:{{ $color }}"></div>
                 <span class="qs-label">{{ $label }}</span>
             </div>
             <span class="qs-val">{{ $val }}</span>
