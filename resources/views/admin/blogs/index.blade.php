@@ -1,5 +1,5 @@
 @push('page_styles')
-@vite('resources/css/admin/entries/blogs.css')
+@vite('resources/css/admin/entries/blogs-list.css')
 <style>
 @media(max-width:860px){
   .stats-grid{grid-template-columns:repeat(2,1fr)!important}

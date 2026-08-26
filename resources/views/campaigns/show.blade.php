@@ -10,7 +10,6 @@
 @endsection
 
 @section('topbar_right')
-    <span class="status-chip {{ $chipClass }}"><span class="dot"></span> {{ $chipLabel }}</span>
     <div class="theme-toggle" title="Toggle dark mode">
         <input type="checkbox" id="themeToggle">
         <label for="themeToggle">

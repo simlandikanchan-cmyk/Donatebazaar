@@ -7,8 +7,8 @@
     </a>
 
     <a href="{{ route('all.campaigns') }}"
-       class="db-nav__link {{ request()->routeIs('all.campaigns*') ? 'db-nav__link--active' : '' }}"
-       @if(request()->routeIs('all.campaigns*')) aria-current="page" @endif>
+       class="db-nav__link {{ request()->routeIs('all.campaigns') ? 'db-nav__link--active' : '' }}"
+       @if(request()->routeIs('all.campaigns')) aria-current="page" @endif>
         Campaigns
     </a>
 

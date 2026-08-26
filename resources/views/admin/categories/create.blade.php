@@ -1,5 +1,5 @@
 @push('page_css')
-@vite('resources/css/admin/entries/categories.css')
+@vite('resources/css/admin/entries/categories-create.css')
 @endpush
 
 @extends('layouts.admin')

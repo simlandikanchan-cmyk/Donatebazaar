@@ -1,14 +1,10 @@
 ﻿/* ══════════════════════════════════════
-   ADMIN — Page: Campaigns (list, quick-view cards & show)
-   Bulk bars → components/_toolbar.css
-   Tabs → components/_tabs.css
+   ADMIN — Page: Campaigns (list + create/edit)
+   Campaign show styles live in campaign-show.css.
    ══════════════════════════════════════ */
 @import '../components/_campaign-cards.css';
 
-/* ══════════════════════════════════════
-   CAMPAIGN SHOW PAGE
-   ══════════════════════════════════════ */
-/* ── PAGE GRID ── */
+/* ── COVER UPLOAD (campaign create) ── */
 .page-grid {
   display: grid;
   align-items: start;

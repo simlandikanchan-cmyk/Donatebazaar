@@ -1,5 +1,5 @@
 @push('page_css')
-@vite('resources/css/admin/entries/applications.css')
+@vite('resources/css/admin/entries/applications-index.css')
 @endpush
 
 {{-- resources/views/admin/applications/index.blade.php --}}

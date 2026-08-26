@@ -1,6 +1,3 @@
-@push('page_css')
-@vite('resources/css/admin/entries/misc.css')
-@endpush
 
 @extends('layouts.admin')
 
@@ -209,8 +206,12 @@
 @vite('resources/js/admin/entries/volunteers-index.js')
 @endpush
 
-@push('page_styles')
+@push('page_css')
+@vite('resources/css/admin/entries/volunteers.css')
 @vite('resources/css/admin/pages/volunteers-index.css')
+@endpush
+
+@push('page_styles')
 <style>
 @media(max-width:860px){
   .stats-grid{grid-template-columns:repeat(2,1fr)!important}
@@ -224,4 +225,5 @@
   .hero-right .hero-btn{width:100%;justify-content:center}
 }
 </style>
+@endpush
 @endpush

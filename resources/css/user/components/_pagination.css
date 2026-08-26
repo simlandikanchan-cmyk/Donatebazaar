@@ -1,0 +1,32 @@
+/* ═══════════════════════════════════════════════════════════════════
+   COMPONENTS — Pagination
+   ═══════════════════════════════════════════════════════════════════ */
+
+.rd-pagination {
+  display: flex; align-items: center; justify-content: center;
+  gap: 4px; margin-top: 24px;
+}
+
+.rd-pagination a,
+.rd-pagination span {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 36px; height: 36px; padding: 0 8px;
+  border-radius: var(--r-sm); font-size: 13px; font-weight: 500;
+  color: var(--text2); background: var(--surface);
+  border: 1px solid var(--border);
+  text-decoration: none; transition: all .2s ease;
+}
+
+.rd-pagination a:hover {
+  background: var(--surface2); border-color: var(--border2);
+  color: var(--text);
+}
+
+.rd-pagination .active {
+  background: var(--primary); color: var(--white);
+  border-color: var(--primary); font-weight: 600;
+}
+
+.rd-pagination .disabled {
+  opacity: .4; pointer-events: none;
+}

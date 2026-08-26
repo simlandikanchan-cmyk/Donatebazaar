@@ -1,5 +1,5 @@
 @push('page_css')
-@vite('resources/css/admin/entries/blogs.css')
+@vite('resources/css/admin/entries/blogs-analytics.css')
 @endpush
 
 @extends('layouts.admin')

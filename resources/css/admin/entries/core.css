@@ -22,5 +22,6 @@
 @import '../components/_dropdowns.css';
 @import '../components/_modals.css';
 @import '../components/_empty-state.css';
+@import '../components/_compact-hero.css';
 @import '../utilities/_helpers.css';
 @import '../utilities/_colors.css';
