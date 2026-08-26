@@ -30,6 +30,7 @@
   opacity: 0; transition: opacity .35s ease; pointer-events: none;
 }
 .qnav-card:hover { transform: translateY(-5px); box-shadow: var(--sh-lg); border-color: var(--primary); }
+.qnav-card:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 18px; }
 .qnav-card:hover::before { opacity: 1; }
 .qnav-card:hover::after { opacity: 1; }
 .qnav-ico {

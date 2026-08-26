@@ -197,7 +197,7 @@
                   <span>Refund</span>
                 </button>
               @endif
-              <form method="POST" action="{{ route('admin.donations.destroy', $d->id) }}" style="display:inline;" onsubmit="return confirm('Delete this donation record? This cannot be undone.');">
+              <form method="POST" action="{{ route('admin.donations.destroy', $d->id) }}" style="display:inline;" data-confirm="Delete this donation record? This cannot be undone.">
                 @csrf @method('DELETE')
                 <button type="submit" class="btn btn-red act-btn ab-delete" title="Delete">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Delete

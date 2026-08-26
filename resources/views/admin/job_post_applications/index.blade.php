@@ -1,5 +1,5 @@
 @push('page_css')
-@vite('resources/css/admin/entries/jobs.css')
+@vite('resources/css/admin/entries/job-applications-index.css')
 @endpush
 
 @extends('layouts.admin')
@@ -186,7 +186,7 @@
                   Review
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
                 </a>
-                <form method="POST" action="{{ route('admin.job_post_applications.destroy', $app) }}" style="display:inline;" onsubmit="return confirm('Delete this application? This cannot be undone.');">
+                <form method="POST" action="{{ route('admin.job_post_applications.destroy', $app) }}" style="display:inline;" data-confirm="Delete this application? This cannot be undone.">
                   @csrf @method('DELETE')
                   <button type="submit" class="btn btn-red act-btn ab-delete" title="Delete" style="margin-left:8px;">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Delete
@@ -215,23 +215,6 @@
 @endsection
 
 @push('page_scripts')
-<script>
-(function(){
-'use strict';
-var searchEl = document.getElementById('liveSearch');
-if (searchEl) {
-  var st;
-  searchEl.addEventListener('input', function(){
-    clearTimeout(st);
-    var q = this.value.toLowerCase().trim();
-    st = setTimeout(function(){
-      document.querySelectorAll('#appTable tbody tr[data-name]').forEach(function(row){
-        row.style.display = (!q || row.dataset.name.includes(q)) ? '' : 'none';
-      });
-    }, 160);
-  });
-}
-})();
-</script>
+@vite('resources/js/admin/entries/job-applications-index2.js')
 @endpush
 

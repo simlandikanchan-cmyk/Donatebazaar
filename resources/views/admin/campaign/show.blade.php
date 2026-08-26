@@ -1,5 +1,5 @@
 @push('page_css')
-@vite('resources/css/admin/entries/campaigns.css')
+@vite('resources/css/admin/entries/campaign-show.css')
 @endpush
 
 @extends('layouts.admin')
@@ -43,8 +43,7 @@
         <form id="rejectForm" method="POST">
             @csrf
             <textarea name="rejection_reason" placeholder="Rejection reason (optional)…"
-                style="width:100%;min-height:80px;border-radius:9px;border:1px solid var(--border2);background:var(--surface2);color:var(--text);font-family:var(--font);font-size:13px;padding:10px 12px;outline:none;resize:vertical;margin-bottom:14px;transition:border-color var(--ease);"
-                onfocus="this.style.borderColor='var(--a)'" onblur="this.style.borderColor='var(--border2)'"></textarea>
+                class="c-reject-ta"></textarea>
             <div class="modal-actions">
                 <button type="button" class="btn btn-secondary action-btn btn-ghost" data-action="close-reject">Cancel</button>
                 <button type="submit" class="action-btn btn-red">Confirm Reject</button>
@@ -168,7 +167,7 @@
             Edit
         </a>
         @endif
-        <form action="{{ route('admin.campaign.destroy', $campaign->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Delete this campaign permanently? This cannot be undone.');">
+        <form action="{{ route('admin.campaign.destroy', $campaign->id) }}" method="POST" style="display:inline;" data-confirm="Delete this campaign permanently? This cannot be undone.">
           @csrf @method('DELETE')
           <button type="submit" class="btn btn-red act-btn ab-delete" title="Delete">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
@@ -194,8 +193,8 @@
                             <div class="cover-title">{{ Str::limit($campaign->title, 50) }}</div>
                             <div class="cover-created">Created {{ $campaign->created_at->diffForHumans() }}</div>
                         </div>
-                        <span class="badge" style="backdrop-filter:blur(8px);background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.15);color:#fff;">
-                            <span class="badge-dot" style="background:#fff;"></span>
+                        <span class="badge c-cover-badge">
+                            <span class="badge-dot"></span>
                             {{ $chipLabel }}
                         </span>
                     </div>
@@ -204,9 +203,9 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                         <span>No cover image</span>
                     </div>
-                    <div style="padding:14px 18px;border-bottom:1px solid var(--border);">
-                        <div style="font-family:var(--mono);font-size:18px;font-weight:800;color:var(--text);letter-spacing:-.02em;margin-bottom:3px;">{{ $campaign->title }}</div>
-                        <div style="font-size:11px;color:var(--text3);font-family:var(--mono);">Created {{ $campaign->created_at->diffForHumans() }}</div>
+                    <div class="c-cover-no-img">
+                        <div class="c-cover-no-title">{{ $campaign->title }}</div>
+                        <div class="c-cover-no-date">Created {{ $campaign->created_at->diffForHumans() }}</div>
                     </div>
                 @endif
             </div>
@@ -321,7 +320,7 @@
                     @endif
 
                     {{-- ── Aadhaar + PAN side-by-side ── --}}
-                    <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;font-family:var(--mono);margin-bottom:10px;">Identity Documents</div>
+                    <div class="c-section-label">Identity Documents</div>
                     <div class="kyc-docs-grid">
 
                         {{-- Aadhaar --}}
@@ -332,7 +331,7 @@
                                     Aadhaar Card
                                 </span>
                                 @if($kycAadhaarUrl)
-                                <div style="display:flex;gap:5px;">
+                                <div class="c-doc-btns">
                                     <a href="{{ $kycAadhaarUrl }}" target="_blank" class="kyc-doc-btn kyc-doc-btn-view">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                                         Open
@@ -367,7 +366,7 @@
                                     PAN Card
                                 </span>
                                 @if($kycPanUrl)
-                                <div style="display:flex;gap:5px;">
+                                <div class="c-doc-btns">
                                     <a href="{{ $kycPanUrl }}" target="_blank" class="kyc-doc-btn kyc-doc-btn-view">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                                         Open
@@ -397,7 +396,7 @@
                     </div>{{-- /kyc-docs-grid --}}
 
                     {{-- ── Selfie with ID ── --}}
-                    <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;font-family:var(--mono);margin-bottom:10px;margin-top:6px;">Selfie Verification</div>
+                    <div class="c-section-label">Selfie Verification</div>
                     <div class="kyc-selfie-wrap">
                         @if($kycSelfieUrl)
                             <a href="{{ $kycSelfieUrl }}" target="_blank">
@@ -413,7 +412,7 @@
                             <div class="kyc-selfie-title">Selfie with ID Document</div>
                             <div class="kyc-selfie-sub">Applicant must appear holding their Aadhaar or PAN card next to their face. Used to cross-verify identity against submitted documents.</div>
                             @if($kycSelfieUrl)
-                            <div style="margin-top:10px;display:flex;gap:6px;">
+                            <div class="c-selfie-actions">
                                 <a href="{{ $kycSelfieUrl }}" target="_blank" class="kyc-doc-btn kyc-doc-btn-view">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                                     View full size
@@ -428,7 +427,7 @@
                     </div>
 
                     {{-- ── Bank Account Details ── --}}
-                    <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;font-family:var(--mono);margin-bottom:10px;margin-top:6px;padding-top:14px;border-top:1px solid var(--border);">Bank Account Details</div>
+                    <div class="c-bank-label">Bank Account Details</div>
                     <div class="bank-grid">
                         <div class="bank-field">
                             <div class="bank-field-lbl">Account Holder</div>
@@ -449,9 +448,9 @@
                         <div class="bank-field">
                             <div class="bank-field-lbl">Account Number</div>
                             @if($bankAcc)
-                                <div class="bank-field-val" style="letter-spacing:.08em;">
-                                    <span id="accNum" style="filter:blur(4px);cursor:pointer;transition:filter .2s;" data-action="reveal-acc">{{ $bankAcc }}</span>
-                                    <span id="accReveal" style="font-size:10px;color:var(--a);cursor:pointer;font-family:var(--font);font-weight:500;" data-action="reveal-acc">click to reveal</span>
+                                <div class="bank-field-val c-acc-nums">
+                                    <span id="accNum" class="c-acc-hidden" data-action="reveal-acc">{{ $bankAcc }}</span>
+                                    <span id="accReveal" class="c-acc-reveal" data-action="reveal-acc">click to reveal</span>
                                 </div>
                             @else
                                 <div class="bank-field-val empty">Not provided</div>
@@ -460,7 +459,7 @@
                         <div class="bank-field">
                             <div class="bank-field-lbl">IFSC Code</div>
                             @if($bankIfsc)
-                                <div class="bank-field-val" style="letter-spacing:.1em;">{{ strtoupper($bankIfsc) }}</div>
+                                <div class="bank-field-val c-ifsc">{{ strtoupper($bankIfsc) }}</div>
                             @else
                                 <div class="bank-field-val empty">Not provided</div>
                             @endif
@@ -469,8 +468,8 @@
 
                     {{-- Legacy single doc fallback --}}
                     @if($kycDocUrl && !$kycAadhaarUrl && !$kycPanUrl)
-                    <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
-                        <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;font-family:var(--mono);margin-bottom:10px;">Legacy Document</div>
+                    <div class="c-legacy-sep">
+                        <div class="c-section-label">Legacy Document</div>
                         <div class="kyc-doc-row">
                             <div class="kyc-doc-icon">📄</div>
                             <div>
@@ -598,7 +597,7 @@
                 </div>
 
                 @if($kyc && $kyc->status === 'pending')
-                    <form action="{{ route('admin.kyc.approve', $kyc->id) }}" method="POST" style="margin-bottom:8px;">
+                        <form action="{{ route('admin.kyc.approve', $kyc->id) }}" method="POST" class="c-form-mb">
                         @csrf
                         <button type="submit" class="action-btn btn-accent">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
@@ -609,7 +608,7 @@
 
                 @if($state === 'pending')
                     @if($kyc && $kyc->status === 'approved')
-                        <form action="{{ route('admin.campaign.approve', $campaign->id) }}" method="POST" style="margin-bottom:8px;">
+                        <form action="{{ route('admin.campaign.approve', $campaign->id) }}" method="POST" class="c-form-mb">
                             @csrf
                             <button type="submit" class="action-btn btn-green">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -621,7 +620,7 @@
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                             Approve Campaign
                         </button>
-                        <p style="font-size:10.5px;color:var(--amber);margin-top:5px;margin-bottom:8px;font-family:var(--mono);">⚠ KYC must be approved before approving campaign</p>
+                        <p class="c-kyc-warn">⚠ KYC must be approved before approving campaign</p>
                     @endif
                     <button type="button" class="action-btn btn-red" data-action="open-reject" data-id="{{ $campaign->id }}">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -633,7 +632,7 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                         Reject Campaign
                     </button>
-                    <form action="{{ route('admin.campaign.pause', $campaign->id) }}" method="POST" style="margin-top:8px;">
+                    <form action="{{ route('admin.campaign.pause', $campaign->id) }}" method="POST" class="c-form-mt">
                         @csrf
                         <button type="submit" class="action-btn btn-yellow">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
@@ -642,7 +641,7 @@
                     </form>
 
                 @elseif($state === 'paused')
-                    <form action="{{ route('admin.campaign.resume', $campaign->id) }}" method="POST" style="margin-bottom:8px;">
+                    <form action="{{ route('admin.campaign.resume', $campaign->id) }}" method="POST" class="c-form-mb">
                         @csrf
                         <button type="submit" class="action-btn btn-green">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -664,12 +663,12 @@
                     </form>
 
                 @elseif($state === 'expired' || $state === 'completed')
-                    <div style="padding:10px 12px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm);font-size:12px;color:var(--text3);text-align:center;">
+                    <div class="c-expired-notice">
                         This campaign is {{ $chipLabel }} and no further actions are available.
                     </div>
                 @endif
 
-                <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary action-btn btn-ghost" style="margin-top:12px;">
+                <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary action-btn btn-ghost c-back-btn">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M12 5l-7 7 7 7"/></svg>
                     Back to Dashboard
                 </a>
@@ -755,11 +754,11 @@
                         <div class="mini-stat-lbl">Donors</div>
                     </div>
                     <div class="mini-stat">
-                        <div class="mini-stat-val" style="font-size:13px;">₹{{ number_format($remaining) }}</div>
+                        <div class="mini-stat-val c-mini-stat-sm">₹{{ number_format($remaining) }}</div>
                         <div class="mini-stat-lbl">Remaining</div>
                     </div>
                     <div class="mini-stat">
-                        <div class="mini-stat-val" style="font-size:13px;">₹{{ number_format($avgDonation) }}</div>
+                        <div class="mini-stat-val c-mini-stat-sm">₹{{ number_format($avgDonation) }}</div>
                         <div class="mini-stat-lbl">Avg gift</div>
                     </div>
                 </div>
@@ -778,14 +777,14 @@
                     </div>
                 </div>
             </div>
-            <div class="card-body" style="padding-top:10px;padding-bottom:10px;">
+            <div class="card-body c-info-pad">
                 <div class="info-row">
                     <span class="info-row-lbl">STATE</span>
                     <span class="badge b-{{ $state }}"><span class="badge-dot"></span>{{ $chipLabel }}</span>
                 </div>
                 <div class="info-row">
                     <span class="info-row-lbl">KYC</span>
-                    <span style="font-size:11px;font-weight:700;color:{{ $kyc?->status === 'approved' ? 'var(--green)' : ($kyc?->status === 'pending' ? 'var(--amber)' : 'var(--red)') }};">
+                    <span class="c-info-val-dynamic" style="color:{{ $kyc?->status === 'approved' ? 'var(--green)' : ($kyc?->status === 'pending' ? 'var(--amber)' : 'var(--red)') }};">
                         @if(!$kyc) ⚠ Not Submitted
                         @elseif($kyc->status === 'pending') ✓ Pending
                         @elseif($kyc->status === 'approved') ✓ Verified
@@ -795,32 +794,32 @@
                 </div>
                 <div class="info-row">
                     <span class="info-row-lbl">UPDATES</span>
-                    <span style="font-weight:700;color:var(--text);font-family:var(--mono);">{{ $updates->count() }}</span>
+                    <span class="c-info-val-mono">{{ $updates->count() }}</span>
                 </div>
                 <div class="info-row">
                     <span class="info-row-lbl">FUNDRAISER</span>
-                    <span style="font-size:11.5px;font-weight:600;color:var(--text);">{{ $campaign->user->name ?? '—' }}</span>
+                    <span class="c-info-val-text">{{ $campaign->user->name ?? '—' }}</span>
                 </div>
                 <div class="info-row">
                     <span class="info-row-lbl">CATEGORY</span>
-                    <span style="font-size:11.5px;font-weight:600;color:var(--text);">{{ $campaign->category->name ?? '—' }}</span>
+                    <span class="c-info-val-text">{{ $campaign->category->name ?? '—' }}</span>
                 </div>
                 @if($campaign->end_date)
                 <div class="info-row">
                     <span class="info-row-lbl">END DATE</span>
-                    <span style="font-size:11px;font-weight:600;color:{{ now()->gt($campaign->end_date) ? 'var(--red)' : 'var(--text2)' }};">
+                    <span class="c-info-val-date" style="color:{{ now()->gt($campaign->end_date) ? 'var(--red)' : 'var(--text2)' }};">
                         {{ \Carbon\Carbon::parse($campaign->end_date)->format('d M Y') }}
-                        @if(now()->gt($campaign->end_date))<span style="font-size:9px;"> (expired)</span>@endif
+                        @if(now()->gt($campaign->end_date))<span class="c-info-val-date-expired"> (expired)</span>@endif
                     </span>
                 </div>
                 @endif
                 <div class="info-row">
                     <span class="info-row-lbl">EVENTS</span>
-                    <span style="font-weight:700;color:var(--text);font-family:var(--mono);">{{ $campaign->events->count() }}</span>
+                    <span class="c-info-val-mono">{{ $campaign->events->count() }}</span>
                 </div>
                 <div class="info-row">
                     <span class="info-row-lbl">CREATED</span>
-                    <span style="font-weight:600;color:var(--text2);font-size:11px;">{{ $campaign->created_at->format('d M Y') }}</span>
+                    <span class="c-created-val">{{ $campaign->created_at->format('d M Y') }}</span>
                 </div>
             </div>
         </div>

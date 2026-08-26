@@ -1,5 +1,5 @@
 @push('page_css')
-@vite('resources/css/admin/entries/blogs.css')
+@vite('resources/css/admin/entries/blogs-list.css')
 @endpush
 
 @extends('layouts.admin')
@@ -35,7 +35,7 @@
           <button class="btn btn-green">✓ Approve</button>
         </form>
  
-<form method="POST" action="{{ route('admin.blogs.reject', $blog) }}"
+        <form method="POST" action="{{ route('admin.blogs.reject', $blog) }}"
               data-action="reject-reason">
           @csrf
           <input type="hidden" name="reason" id="reject_reason_{{ $blog->id }}">
@@ -54,29 +54,10 @@
 </div>
   
 @push('page_styles')
-<style>
-@media(max-width:640px){
-  .bg-white.rounded-2xl.shadow{flex-direction:column}
-  .bg-white.rounded-2xl.shadow img{width:100%!important;height:auto!important;margin-left:0!important;margin-top:12px}
-  .flex.gap-3.mt-5{flex-wrap:wrap}
-  .flex.gap-3.mt-5 .btn{flex:1;min-width:120px;justify-content:center}
-}
-</style>
+@vite('resources/css/admin/pages/blogs-pending.css')
 @endpush
  
 @push('page_scripts')
-<script>
-document.addEventListener('submit', function (event) {
-  const form = event.target.closest('form[data-action="reject-reason"]');
-  if (!form) return;
-  const id = form.querySelector('button[data-id]').dataset.id;
-  const reason = prompt('Rejection reason (required):');
-  if (!reason || !reason.trim()) {
-    event.preventDefault();
-    return;
-  }
-  document.getElementById('reject_reason_' + id).value = reason;
-});
-</script>
+@vite('resources/js/admin/entries/blogs-pending.js')
 @endpush
 @endsection

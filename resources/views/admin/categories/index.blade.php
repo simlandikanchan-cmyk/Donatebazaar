@@ -1,5 +1,5 @@
 @push('page_css')
-@vite('resources/css/admin/entries/categories.css')
+@vite('resources/css/admin/entries/categories-index.css')
 @endpush
 
 @extends('layouts.admin')
@@ -182,7 +182,7 @@
              <td data-label="Actions">
                 <div class="actions">
                  <a href="{{ route('admin.categories.edit',$category->id) }}" class="btn btn-secondary act-btn act-edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</a>
-                 <form method="POST" action="{{ route('admin.categories.destroy',$category->id) }}" style="display:inline;" onsubmit="return confirm('Delete this category? This cannot be undone.');">
+                 <form method="POST" action="{{ route('admin.categories.destroy',$category->id) }}" style="display:inline;" data-confirm="Delete this category? This cannot be undone.">
                    @csrf @method('DELETE')
                    <button type="submit" class="btn btn-red act-btn act-del" title="Delete">
                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Delete
@@ -251,7 +251,7 @@
         <div class="grid-count-badge">{{ $category->campaigns_count??0 }} campaigns</div>
         <div class="grid-actions">
           <a href="{{ route('admin.categories.edit',$category->id) }}" class="btn btn-secondary act-btn act-edit" style="font-size:11px;padding:4px 10px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</a>
-          <form method="POST" action="{{ route('admin.categories.destroy',$category->id) }}" style="display:inline;" onsubmit="return confirm('Delete this category? This cannot be undone.');">
+           <form method="POST" action="{{ route('admin.categories.destroy',$category->id) }}" style="display:inline;" data-confirm="Delete this category? This cannot be undone.">
             @csrf @method('DELETE')
             <button type="submit" class="btn btn-red act-btn act-del" style="font-size:11px;padding:4px 10px;" title="Delete">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Delete

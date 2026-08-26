@@ -249,7 +249,7 @@
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Read
                 @endif
               </button>
-              <form action="{{ route('admin.messages.delete', $msg->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Delete this message? This cannot be undone.');">
+              <form action="{{ route('admin.messages.delete', $msg->id) }}" method="POST" style="display:inline;" data-confirm="Delete this message? This cannot be undone.">
                 @csrf @method('DELETE')
                 <button type="submit" class="btn btn-red act-btn ab-delete" title="Delete">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Delete

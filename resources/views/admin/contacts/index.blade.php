@@ -1,5 +1,5 @@
 @push('page_css')
-@vite('resources/css/admin/entries/misc.css')
+@vite('resources/css/admin/entries/contacts.css')
 @endpush
 
 @extends('layouts.admin')
@@ -28,8 +28,8 @@
     </div>
 
     <div class="bg-white shadow-xl rounded-2xl overflow-hidden border border-gray-100">
-        <div style="overflow-x:auto;">
-        <table class="w-full text-sm" style="min-width:560px;">
+        <div class="ct-table-wrap">
+        <table class="w-full text-sm ct-table">
             <thead class="bg-gray-100 text-gray-700 uppercase text-xs">
                 <tr>
                     <th class="p-4 text-left">Name</th>
@@ -52,7 +52,7 @@
                     </td>
                     <td class="text-gray-500 truncate max-w-xs">{{ $c->message }}</td>
                     <td class="text-center">
-                        <form method="POST" action="{{ route('admin.contacts.destroy', $c->id) }}" style="display:inline;" onsubmit="return confirm('Delete this message? This cannot be undone.');">
+                        <form method="POST" action="{{ route('admin.contacts.destroy', $c->id) }}" style="display:inline;" data-confirm="Delete this message? This cannot be undone.">
                             @csrf @method('DELETE')
                             <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-1.5 rounded-lg text-xs transition">
                                 Delete
@@ -69,25 +69,5 @@
 @endsection
 
 @push('page_scripts')
-<script>
-const searchInput = document.getElementById('searchInput');
-const subjectFilter = document.getElementById('subjectFilter');
-const rows = document.querySelectorAll('.contact-row');
-
-function filterTable() {
-    const search = searchInput.value.toLowerCase();
-    const subject = subjectFilter.value;
-    rows.forEach(row => {
-        const name = row.dataset.name;
-        const email = row.dataset.email;
-        const rowSubject = row.dataset.subject;
-        const matchesSearch = name.includes(search) || email.includes(search);
-        const matchesSubject = subject === "" || rowSubject === subject;
-        row.style.display = (matchesSearch && matchesSubject) ? "" : "none";
-    });
-}
-
-searchInput.addEventListener('keyup', filterTable);
-subjectFilter.addEventListener('change', filterTable);
-</script>
+@vite('resources/js/admin/entries/contacts-index.js')
 @endpush

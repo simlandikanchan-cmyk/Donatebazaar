@@ -147,7 +147,7 @@
                         <div class="cp-actions">
                             <a href="{{ route('admin.coupons.edit', $cp) }}" class="cp-action-btn cp-action-view">Edit</a>
                             @if($cp->is_active)
-                            <form method="POST" action="{{ route('admin.coupons.destroy', $cp) }}" onsubmit="return confirm('Deactivate this coupon?');" style="display:inline;">
+                            <form method="POST" action="{{ route('admin.coupons.destroy', $cp) }}" data-confirm="Deactivate this coupon?" style="display:inline;">
                                 @csrf @method('DELETE')
                                 <button type="submit" class="cp-action-btn cp-action-cancel">Deactivate</button>
                             </form>

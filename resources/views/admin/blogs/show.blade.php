@@ -322,14 +322,14 @@
             {{ $blog->is_featured ? 'Unfeature Post' : 'Feature Post' }}
           </button>
         </form>
-        <form method="POST" action="{{ route('admin.blogs.archive', $blog) }}" onsubmit="return confirm('Archive \'{{ addslashes($blog->title) }}\'?')">
+        <form method="POST" action="{{ route('admin.blogs.archive', $blog) }}" data-confirm="Archive \'{{ addslashes($blog->title) }}\'?">
           @csrf
           <button type="submit" class="btn act-full af-archive">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8v13H3V8m2-4h14a2 2 0 012 2v2H3V6a2 2 0 012-2z"/></svg>
             Archive Post
           </button>
         </form>
-        <form method="POST" action="{{ route('admin.blogs.destroy', $blog) }}" onsubmit="return confirm('Delete \'{{ addslashes($blog->title) }}\' permanently? This cannot be undone.');">
+        <form method="POST" action="{{ route('admin.blogs.destroy', $blog) }}" data-confirm="Delete \'{{ addslashes($blog->title) }}\' permanently? This cannot be undone.">
           @csrf @method('DELETE')
           <button type="submit" class="btn btn-red act-btn ab-delete">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>

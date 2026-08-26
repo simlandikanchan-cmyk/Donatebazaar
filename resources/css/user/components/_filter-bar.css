@@ -1,0 +1,35 @@
+/* ═══════════════════════════════════════════════════════════════════
+   COMPONENTS — Filter Bar
+   ═══════════════════════════════════════════════════════════════════ */
+
+.filter-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; margin-bottom: 20px; flex-wrap: wrap;
+}
+
+.filter-tabs {
+  display: flex; gap: 6px; flex-wrap: wrap;
+}
+
+.filter-tab {
+  padding: 7px 16px; border-radius: 20px;
+  font-size: 13px; font-weight: 500;
+  color: var(--text3); background: var(--surface2);
+  border: 1px solid transparent;
+  cursor: pointer; transition: all .2s ease;
+  white-space: nowrap;
+}
+.filter-tab:hover { color: var(--text); background: var(--surface3); }
+.filter-tab.active {
+  color: var(--primary); background: var(--primary-tint-bg);
+  border-color: var(--primary-tint-2); font-weight: 600;
+}
+
+.filter-bar .filter-count {
+  font-size: 13px; color: var(--text3);
+}
+
+@media (max-width: 600px) {
+  .filter-tabs { display: none; }
+  .filter-bar { flex-wrap: wrap; }
+}

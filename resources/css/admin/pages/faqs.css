@@ -1,0 +1,12 @@
+/* Admin FAQs page styles */
+.q-text {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--text);
+}
+.a-text {
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: var(--text2);
+}

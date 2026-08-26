@@ -1,3 +1,25 @@
+/* ── CONTACT ROWS ── */
+.contact-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+.contact-row:last-child {
+  border-bottom: none;
+}
+
+/* ── Table layout ── */
+.ct-table-wrap {
+  overflow-x: auto;
+}
+.ct-table {
+  width: 100%;
+  min-width: 560px;
+}
+
 @media (max-width: 480px) {
   .max-w-7xl {
     padding: 0 14px!important;

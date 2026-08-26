@@ -1,5 +1,5 @@
 @push('page_css')
-@vite('resources/css/admin/entries/misc.css')
+@vite('resources/css/admin/entries/volunteers.css')
 @endpush
 
 @extends('layouts.admin')
@@ -173,7 +173,7 @@ td{padding:13px 18px;font-size:13px;vertical-align:middle;}
             <td data-label="Actions">
                <div class="actions">
                 <a href="{{ route('admin.volunteer_assignments.edit', $a->id) }}" class="btn btn-secondary act-btn act-edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</a>
-                <form method="POST" action="{{ route('admin.volunteer_assignments.destroy', $a->id) }}" onsubmit="return confirm('Remove this assignment?');">@csrf @method('DELETE')
+                <form method="POST" action="{{ route('admin.volunteer_assignments.destroy', $a->id) }}" data-confirm="Remove this assignment?">@csrf @method('DELETE')
                   <button type="submit" class="btn btn-red act-btn act-del"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Delete</button>
                 </form>
               </div>

@@ -1,5 +1,5 @@
 @push('page_css')
-@vite('resources/css/admin/entries/misc.css')
+@vite('resources/css/admin/entries/campaign-products.css')
 @endpush
 
 @extends('layouts.admin')
@@ -77,7 +77,7 @@
   </div>
 
   {{-- FILTER TOOLBAR --}}
-  <div style="padding:16px 20px;border-bottom:1px solid var(--border);background:var(--surface2);">
+  <div class="cp-filter-bar">
     <form method="GET" action="{{ route('admin.campaign-products.index') }}" id="filterForm" class="toolbar">
       <div class="toolbar-left">
         <input type="hidden" name="status" value="{{ $status }}">
@@ -158,13 +158,13 @@
       <table class="p-table" id="productsTable">
         <thead>
           <tr>
-            <th style="width:36px;">
-              <input type="checkbox" id="selectAll" data-action="toggle-all" style="cursor:pointer;">
+            <th class="cp-col-id">
+              <input type="checkbox" id="selectAll" data-action="toggle-all" class="cp-cursor">
             </th>
-            <th style="width:50px;">Image</th>
+            <th class="cp-col-img">Image</th>
             <th>
               <a href="{{ route('admin.campaign-products.index', array_merge(request()->except(['sort', 'direction', 'page']), ['sort' => 'name', 'direction' => ($sort === 'name' && $dir === 'asc') ? 'desc' : 'asc'])) }}"
-                 style="color:var(--text);text-decoration:none;display:inline-flex;align-items:center;gap:4px;">
+                 class="cp-sort-link">
                 Product
                 @if($sort === 'name')
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="{{ $dir === 'asc' ? 'M12 5l7 7H5l7-7z' : 'M12 19l7-7H5l7 7z' }}"/></svg>
@@ -175,7 +175,7 @@
             <th>Owner</th>
             <th>
               <a href="{{ route('admin.campaign-products.index', array_merge(request()->except(['sort', 'direction', 'page']), ['sort' => 'price', 'direction' => ($sort === 'price' && $dir === 'asc') ? 'desc' : 'asc'])) }}"
-                 style="color:var(--text);text-decoration:none;display:inline-flex;align-items:center;gap:4px;">
+                 class="cp-sort-link">
                 Price
                 @if($sort === 'price')
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="{{ $dir === 'asc' ? 'M12 5l7 7H5l7-7z' : 'M12 19l7-7H5l7 7z' }}"/></svg>
@@ -184,7 +184,7 @@
             </th>
             <th>
               <a href="{{ route('admin.campaign-products.index', array_merge(request()->except(['sort', 'direction', 'page']), ['sort' => 'quantity', 'direction' => ($sort === 'quantity' && $dir === 'asc') ? 'desc' : 'asc'])) }}"
-                 style="color:var(--text);text-decoration:none;display:inline-flex;align-items:center;gap:4px;">
+                 class="cp-sort-link">
                 Qty
                 @if($sort === 'quantity')
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="{{ $dir === 'asc' ? 'M12 5l7 7H5l7-7z' : 'M12 19l7-7H5l7 7z' }}"/></svg>
@@ -196,64 +196,63 @@
             <th>Source</th>
             <th>
               <a href="{{ route('admin.campaign-products.index', array_merge(request()->except(['sort', 'direction', 'page']), ['sort' => 'approval_status', 'direction' => ($sort === 'approval_status' && $dir === 'asc') ? 'desc' : 'asc'])) }}"
-                 style="color:var(--text);text-decoration:none;display:inline-flex;align-items:center;gap:4px;">
+                 class="cp-sort-link">
                 Status
                 @if($sort === 'approval_status')
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="{{ $dir === 'asc' ? 'M12 5l7 7H5l7-7z' : 'M12 19l7-7H5l7 7z' }}"/></svg>
                 @endif
               </a>
             </th>
-            <th style="width:240px;">Actions</th>
+            <th class="cp-col-actions">Actions</th>
           </tr>
         </thead>
         <tbody>
           @foreach($products as $product)
           <tr>
             <td>
-              <input type="checkbox" class="product-checkbox" value="{{ $product->id }}"
+              <input type="checkbox" class="product-checkbox cp-cursor" value="{{ $product->id }}"
                      {{ $product->approval_status !== 'pending' ? 'disabled' : '' }}
-                     data-action="update-bulk" style="cursor:pointer;">
+                     data-action="update-bulk" class="cp-cursor">
             </td>
             <td>
               @if($product->image)
                 <img src="{{ asset('storage/' . $product->image) }}"
                      alt="{{ $product->name }}"
-                     class="p-thumb"
-                     data-action="open-lightbox"
-                     style="cursor:pointer;">
+                     class="p-thumb cp-cursor"
+                     data-action="open-lightbox">
               @else
                 <span class="p-thumb-ph">&#128230;</span>
               @endif
             </td>
             <td>
-              <strong style="color:var(--text);">{{ $product->name }}</strong>
+              <strong class="cp-cell-name">{{ $product->name }}</strong>
               @if($product->description)
-                <br><small style="color:var(--text3);">{{ Str::limit($product->description, 60) }}</small>
+                <br><small class="cp-cell-desc">{{ Str::limit($product->description, 60) }}</small>
               @endif
             </td>
             <td>
               @if($product->campaign)
-                <a href="{{ route('admin.campaign.show', $product->campaign) }}" style="color:var(--a);font-weight:600;">
+                <a href="{{ route('admin.campaign.show', $product->campaign) }}" class="cp-cell-link">
                   {{ Str::limit($product->campaign->title, 40) }}
                 </a>
               @else
-                <span style="color:var(--text3);">&mdash;</span>
+                <span class="cp-cell-muted">&mdash;</span>
               @endif
             </td>
             <td>
               @if($product->user)
-                <span style="color:var(--text);">{{ $product->user->name }}</span><br>
-                <small style="color:var(--text3);">{{ $product->user->email }}</small>
+                <span class="cp-cell-name">{{ $product->user->name }}</span><br>
+                <small class="cp-cell-desc">{{ $product->user->email }}</small>
               @else
-                <span style="color:var(--text3);">&mdash;</span>
+                <span class="cp-cell-muted">&mdash;</span>
               @endif
             </td>
-            <td style="font-family:var(--mono);color:var(--text);">&#8377;{{ number_format($product->price, 2) }}</td>
-            <td style="font-family:var(--mono);color:var(--text);">{{ $product->quantity }}</td>
-            <td style="font-family:var(--mono);color:var(--text);font-size:12px;">
+            <td class="cp-cell-mono">&#8377;{{ number_format($product->price, 2) }}</td>
+            <td class="cp-cell-mono">{{ $product->quantity }}</td>
+            <td class="cp-cell-remaining">
               @if($product->quantity > 0)
                 {{ $product->remaining_quantity }} / {{ $product->quantity }}
-                <span style="color:{{ $product->remaining_quantity <= 0 ? 'var(--red)' : 'var(--green)' }};font-size:11px;">
+                <span class="cp-remaining-pct" style="color:{{ $product->remaining_quantity <= 0 ? 'var(--red)' : 'var(--green)' }};">
                   ({{ round(($product->remaining_quantity / $product->quantity) * 100) }}%)
                 </span>
               @else
@@ -261,7 +260,7 @@
               @endif
             </td>
             <td>
-              <span style="font-size:12px;color:var(--text2);">
+              <span class="cp-cat-name">
                 {{ $product->categoryProduct?->category?->name ?? $product->categoryProduct?->name ?? '—' }}
               </span>
             </td>
@@ -282,7 +281,7 @@
             <td>
               <div class="cp-actions">
                 @if($product->approval_status === 'pending')
-                  <form action="{{ route('admin.campaign-products.approve', $product) }}" method="POST" style="display:inline;">
+                  <form action="{{ route('admin.campaign-products.approve', $product) }}" method="POST" class="cp-inline">
                     @csrf
                     <button type="submit" class="btn btn-green c-btn c-btn-approve">Approve</button>
                   </form>
@@ -299,7 +298,7 @@
                   </span>
                 @endif
                 <form action="{{ route('admin.campaign-products.destroy', $product) }}" method="POST"
-                      style="display:inline;"
+                      class="cp-inline"
                       data-confirm="Delete product &quot;{{ $product->name }}&quot;? This cannot be undone.">
                   @csrf
                   @method('DELETE')
@@ -313,7 +312,7 @@
       </table>
     </div>
 
-    <div class="pagination-wrap" style="margin-top:0;">
+    <div class="pagination-wrap cp-pagination">
       {{ $products->withQueryString()->links() }}
     </div>
   @endif
@@ -337,7 +336,7 @@
     <form id="rejectForm" method="POST">
       @csrf
       <div class="modal-lbl">Reason <span>*</span></div>
-      <textarea name="reason" class="modal-ta" rows="3" placeholder="Provide a reason for rejection..." required minlength="10" maxlength="500" style="width:100%;"></textarea>
+      <textarea name="reason" class="modal-ta cp-modal-ta" rows="3" placeholder="Provide a reason for rejection..." required minlength="10" maxlength="500"></textarea>
       <div class="modal-acts">
         <button type="button" class="btn btn-secondary modal-btn modal-cancel" data-action="close-modal" data-target="#rejectModal">Cancel</button>
         <button type="submit" class="btn btn-red modal-btn modal-red">Reject Product</button>
@@ -365,7 +364,7 @@
       @csrf
       <div id="bulkRejectIds"></div>
       <div class="modal-lbl">Reason <span>*</span></div>
-      <textarea name="reason" class="modal-ta" rows="3" placeholder="Provide a reason for rejection..." required minlength="10" maxlength="500" style="width:100%;"></textarea>
+      <textarea name="reason" class="modal-ta cp-modal-ta" rows="3" placeholder="Provide a reason for rejection..." required minlength="10" maxlength="500"></textarea>
       <div class="modal-acts">
         <button type="button" class="btn btn-secondary modal-btn modal-cancel" data-action="close-modal" data-target="#bulkRejectModal">Cancel</button>
         <button type="submit" class="btn btn-red modal-btn modal-red">Reject Products</button>
@@ -375,9 +374,9 @@
 </div>
 
 {{-- Image Lightbox --}}
-<div class="overlay" id="imageLightbox" style="cursor:zoom-out;background:rgba(0,0,0,.8);backdrop-filter:blur(8px);">
-  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);max-width:90%;max-height:90%;">
-    <img id="lightboxImg" src="" alt="" style="max-width:100%;max-height:90vh;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.5);">
+<div class="overlay cp-lightbox-overlay" id="imageLightbox">
+  <div class="cp-lightbox-inner">
+    <img id="lightboxImg" src="" alt="" class="cp-lightbox-img">
   </div>
   <button type="button" class="lightbox-close">&times;</button>
 </div>

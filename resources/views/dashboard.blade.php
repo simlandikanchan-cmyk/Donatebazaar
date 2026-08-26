@@ -398,15 +398,39 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 </div>
 
 {{-- ══ ACHIEVEMENT BADGES ══ --}}
+@php
+    $achievePct = count($achievements) > 0 ? round(($earnedCount / count($achievements)) * 100) : 0;
+@endphp
 <div class="achieve-card">
     <div class="achieve-hdr">
-        <div class="achieve-title">Achievements</div>
-        <div class="achieve-count">{{ $earnedCount }}/{{ count($achievements) }} earned</div>
+        <div class="achieve-hdr-left">
+            <div class="achieve-title-row">
+                <div class="achieve-trophy">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 010-5H6"/><path d="M18 9h1.5a2.5 2.5 0 000-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0012 0V2Z"/></svg>
+                </div>
+                <div class="achieve-title">Achievements</div>
+            </div>
+            <div class="achieve-subtitle">Complete milestones to unlock badges</div>
+        </div>
+        <div class="achieve-progress-wrap">
+            <div class="achieve-progress-header">
+                <span class="achieve-progress-label">{{ $earnedCount }} of {{ count($achievements) }}</span>
+                <span class="achieve-progress-pct">{{ $achievePct }}%</span>
+            </div>
+            <div class="achieve-progress-bar">
+                <div class="achieve-progress-fill" style="width:{{ $achievePct }}%"></div>
+            </div>
+        </div>
     </div>
     <div class="achieve-grid">
         @foreach($achievements as $a)
         <div class="achieve-item {{ $a['done'] ? 'earned' : '' }}" title="{{ $a['sub'] }}">
             <div class="achieve-ico" style="--ac:{{ $a['color'] }}">
+                @if($a['done'])
+                <div class="achieve-check">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                </div>
+                @endif
                 @if($a['ico']==='target')
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
                 @elseif($a['ico']==='heart')
@@ -421,7 +445,15 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
                 @endif
             </div>
-            <div class="achieve-lbl">{{ $a['lbl'] }}</div>
+            <div class="achieve-info">
+                <div class="achieve-lbl">{{ $a['lbl'] }}</div>
+                <div class="achieve-desc">{{ $a['sub'] }}</div>
+            </div>
+            @if(!$a['done'])
+            <div class="achieve-lock">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            </div>
+            @endif
         </div>
         @endforeach
     </div>
@@ -596,7 +628,7 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 <div class="sec-hdr" style="margin-top:32px;">
     <div class="sec-title">Recurring Donations</div>
     <div class="sec-right">
-        <a href="{{ route('recurring.index') }}" style="font-size:12.5px;color:var(--accent);font-weight:600;">View all →</a>
+        <a href="{{ route('recurring.index') }}" class="sec-link">View all →</a>
     </div>
 </div>
 <div style="display:flex;flex-direction:column;gap:10px;">
@@ -613,7 +645,7 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
             <span class="rec-amt-val">₹{{ number_format($rd->amount) }}/{{ $rd->frequency }}</span>
         </div>
         <div class="rec-actions">
-            <x-button variant="secondary" href="{{ route('recurring.show', $rd->id) }}" class="btn btn-secondary">
+            <x-button variant="secondary" href="{{ route('recurring.show', $rd->id) }}">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                 View
             </x-button>

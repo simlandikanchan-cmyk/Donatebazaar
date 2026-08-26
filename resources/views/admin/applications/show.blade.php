@@ -1,5 +1,5 @@
 @push('page_css')
-@vite('resources/css/admin/entries/applications.css')
+@vite('resources/css/admin/entries/applications-show.css')
 @endpush
 
 {{-- resources/views/admin/applications/show.blade.php --}}
@@ -78,7 +78,7 @@ $causesList = is_array($application->causes) ? $application->causes : (json_deco
     @php $s = $statusLabel[$application->status] ?? ['Unknown', 'b-pending']; @endphp
     <span class="badge {{ $s[1] }}">{{ $s[0] }}</span>
     @if($application->reviewer)
-    <div style="display:flex;align-items:center;gap:6px;font-size:10.5px;font-family:var(--mono);color:var(--text3);">
+    <div class="app-reviewer-info">
       <svg style="width:11px;height:11px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
       {{ $application->reviewer->name }}
     </div>
@@ -88,7 +88,7 @@ $causesList = is_array($application->causes) ? $application->causes : (json_deco
 
 {{-- ORGANIZATION INFO --}}
 <div class="detail-card">
-  <div class="sec-hdr" style="margin-bottom:18px;">
+  <div class="sec-hdr app-sec-hdr">
     <span class="sec-ttl">Organization Info</span>
   </div>
   <div class="detail-grid">
@@ -133,7 +133,7 @@ $causesList = is_array($application->causes) ? $application->causes : (json_deco
         @endif
       </div>
     </div>
-    <div class="info-box" style="grid-column:span 2;">
+    <div class="info-box app-box-span2">
       <div class="info-label">Address</div>
       <div class="info-value {{ !$application->address ? 'empty' : '' }}">
         {{ $application->address ?? '—' }}
@@ -146,9 +146,9 @@ $causesList = is_array($application->causes) ? $application->causes : (json_deco
       </div>
     </div>
     @if(!empty($causesList))
-    <div class="info-box" style="grid-column:1/-1;">
+    <div class="info-box app-box-full">
       <div class="info-label">Causes / Areas of Work</div>
-      <div class="info-value" style="display:flex;flex-wrap:wrap;gap:3px;">
+      <div class="info-value app-causes-list">
         @foreach($causesList as $cause)
         <span class="tag">{{ $cause }}</span>
         @endforeach
@@ -156,9 +156,9 @@ $causesList = is_array($application->causes) ? $application->causes : (json_deco
     </div>
     @endif
     @if($application->mission_statement)
-    <div class="info-box" style="grid-column:1/-1;">
+    <div class="info-box app-box-full">
       <div class="info-label">Mission Statement</div>
-      <div class="info-value" style="font-weight:400;line-height:1.7;">{{ $application->mission_statement }}</div>
+      <div class="info-value app-mission">{{ $application->mission_statement }}</div>
     </div>
     @endif
   </div>
@@ -166,7 +166,7 @@ $causesList = is_array($application->causes) ? $application->causes : (json_deco
 
 {{-- CONTACT PERSON --}}
 <div class="detail-card">
-  <div class="sec-hdr" style="margin-bottom:18px;">
+  <div class="sec-hdr app-sec-hdr">
     <span class="sec-ttl">Contact Person</span>
   </div>
   <div class="detail-grid">
@@ -218,7 +218,7 @@ $causesList = is_array($application->causes) ? $application->causes : (json_deco
 
 {{-- CERTIFICATIONS & LEGAL --}}
 <div class="detail-card">
-  <div class="sec-hdr" style="margin-bottom:18px;">
+  <div class="sec-hdr app-sec-hdr">
     <span class="sec-ttl">Certifications &amp; Legal</span>
   </div>
   <div class="detail-grid">
@@ -304,7 +304,7 @@ $causesList = is_array($application->causes) ? $application->causes : (json_deco
 {{-- BANK DETAILS --}}
 @if($application->bank_name || $application->bank_account_number || $application->bank_ifsc)
 <div class="detail-card">
-  <div class="sec-hdr" style="margin-bottom:18px;">
+  <div class="sec-hdr app-sec-hdr">
     <span class="sec-ttl">Bank Details</span>
   </div>
   <div class="detail-grid">
@@ -339,7 +339,7 @@ $causesList = is_array($application->causes) ? $application->causes : (json_deco
 {{-- REFERENCES --}}
 @if($application->reference_1_name || $application->reference_2_name)
 <div class="detail-card">
-  <div class="sec-hdr" style="margin-bottom:18px;">
+  <div class="sec-hdr app-sec-hdr">
     <span class="sec-ttl">References</span>
   </div>
   <div class="detail-grid">
@@ -385,7 +385,7 @@ $causesList = is_array($application->causes) ? $application->causes : (json_deco
 
 {{-- SOCIAL & PROFILE --}}
 <div class="detail-card">
-  <div class="sec-hdr" style="margin-bottom:18px;">
+  <div class="sec-hdr app-sec-hdr">
     <span class="sec-ttl">Profile &amp; Social</span>
   </div>
   <div class="detail-grid">
@@ -512,7 +512,7 @@ foreach ($docs as $field => $info) { if ($application->$field) { $hasDocs = true
 @endphp
 @if($hasDocs)
 <div class="detail-card">
-  <div class="sec-hdr" style="margin-bottom:18px;">
+  <div class="sec-hdr app-sec-hdr">
     <span class="sec-ttl">Uploaded Documents</span>
   </div>
   <div class="detail-grid">
@@ -525,7 +525,7 @@ foreach ($docs as $field => $info) { if ($application->$field) { $hasDocs = true
     @endphp
     <div class="info-box">
       <div class="info-label">{{ $info[0] }}</div>
-      <div style="margin-top:8px;">
+      <div class="app-doc-margin">
         <a href="{{ $url }}" target="_blank" class="doc-link">
           @if($isPdf)
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v6h6"/></svg>
@@ -544,7 +544,7 @@ foreach ($docs as $field => $info) { if ($application->$field) { $hasDocs = true
 
 {{-- TIMELINE --}}
 <div class="detail-card">
-  <div class="sec-hdr" style="margin-bottom:18px;">
+  <div class="sec-hdr app-sec-hdr">
     <span class="sec-ttl">Timeline</span>
   </div>
   <div class="timeline">
@@ -594,7 +594,7 @@ foreach ($docs as $field => $info) { if ($application->$field) { $hasDocs = true
   <form method="POST" action="{{ route('admin.applications.approve', $application->id) }}" id="adminNotesForm">
     @csrf
     <input type="hidden" name="admin_notes" id="adminNotesInput">
-    <textarea id="adminNotesTextarea" rows="3" class="modal-ta" placeholder="Add internal notes about this application…" style="margin-bottom:12px;">{{ $application->admin_notes }}</textarea>
+    <textarea id="adminNotesTextarea" rows="3" class="modal-ta app-ta-mb" placeholder="Add internal notes about this application…">{{ $application->admin_notes }}</textarea>
     <button type="button" onclick="saveAdminNotes()">Save Notes</button>
   </form>
   @else
@@ -609,7 +609,7 @@ foreach ($docs as $field => $info) { if ($application->$field) { $hasDocs = true
     @if($application->status === 'pending' || $application->status === 'under_review')
       Approve to onboard this NGO, or reject with a reason.
     @else
-      This application has been <strong style="color:var(--text);text-transform:capitalize;">{{ str_replace('_', ' ', $application->status) }}</strong>.
+      This application has been <strong class="app-status-cap">{{ str_replace('_', ' ', $application->status) }}</strong>.
       @if($application->reviewed_at)
       on {{ $application->reviewed_at->format('d M Y') }}
       @endif
@@ -633,7 +633,7 @@ foreach ($docs as $field => $info) { if ($application->$field) { $hasDocs = true
         Reject Application
       </button>
     @endif
-    <form method="POST" action="{{ route('admin.applications.destroy', $application->id) }}" onsubmit="return confirm('Delete this application permanently? This cannot be undone.');">
+    <form method="POST" action="{{ route('admin.applications.destroy', $application->id) }}" data-confirm="Delete this application permanently? This cannot be undone.">
       @csrf @method('DELETE')
       <button type="submit" class="btn btn-red act-btn ab-delete">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>

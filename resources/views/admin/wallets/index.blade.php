@@ -124,13 +124,13 @@
             <td data-label="Currency" class="cell-mono" style="text-align:center;">{{ $w->currency }}</td>
             <td data-label="Actions" style="text-align:right;">
               <div class="action-btns">
-                <a href="{{ route('admin.wallets.show', $w) }}" class="btn btn-secondary act-btn ab-view" title="View ledger">
+                <a href="{{ route('admin.wallets.show', $w) }}" class="act-btn ab-view" title="View ledger">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                 </a>
-                <form method="POST" action="{{ route('admin.wallets.destroy', $w) }}" style="display:inline;" onsubmit="return confirm('Delete this wallet? This cannot be undone.');">
+                <form method="POST" action="{{ route('admin.wallets.destroy', $w) }}" style="display:inline-flex;gap:4px;align-items:center;" data-confirm="Delete this wallet? This cannot be undone.">
                   @csrf @method('DELETE')
-                  <button type="submit" class="btn btn-red act-btn ab-delete" title="Delete">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Delete
+                  <button type="submit" class="act-btn ab-delete" title="Delete">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
                   </button>
                 </form>
               </div>
@@ -189,6 +189,45 @@
   #walletsTable tbody tr td.cell-id{font-size:10px;color:var(--text3);margin-bottom:0}
   #walletsTable .td-mono{font-size:12px}
   .ftabs{display:none!important}
+}
+.action-btns .ab-view,
+.action-btns .ab-delete {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: var(--r-xs);
+  cursor: pointer;
+  transition: all var(--ease);
+}
+.action-btns .ab-view {
+  color: var(--text2);
+  background: var(--surface2);
+  border-color: var(--border2);
+}
+.action-btns .ab-view:hover {
+  color: var(--a);
+  background: var(--a-lt);
+  border-color: var(--a);
+}
+.action-btns .ab-delete {
+  color: var(--red);
+  background: var(--red-lt);
+  border-color: rgba(240, 68, 68, .2);
+}
+.action-btns .ab-delete:hover {
+  color: var(--white);
+  background: var(--red);
+  border-color: var(--red);
+}
+.action-btns .ab-view svg,
+.action-btns .ab-delete svg {
+  width: 16px;
+  height: 16px;
 }
 @media(max-width:480px){
   .hero-name{font-size:20px}

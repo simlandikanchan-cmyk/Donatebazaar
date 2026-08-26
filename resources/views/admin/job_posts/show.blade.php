@@ -1,5 +1,5 @@
 @push('page_css')
-@vite('resources/css/admin/entries/jobs.css')
+@vite('resources/css/admin/entries/jobs-index.css')
 @endpush
 
 @extends('layouts.admin')
@@ -10,18 +10,6 @@
 
 @push('page_styles')
 @vite('resources/css/admin/entries/jobs-show.css')
-<style>
-@media(max-width:860px){
-  .content-grid{grid-template-columns:1fr!important}
-  .hero-right{width:100%;margin-top:16px}
-  .hero-right .hero-stat-card{width:100%}
-}
-@media(max-width:640px){
-  .table-scroll{min-width:520px}
-  .act-btns{flex-direction:column;gap:4px}
-  .act-btns .btn{width:100%;justify-content:center}
-}
-</style>
 @endpush
 
 @section('content')
@@ -589,19 +577,5 @@
 @endsection
 
 @push('page_scripts')
-<script>
-(function(){
-'use strict';
-
-document.addEventListener('click', function (e) {
-  var open  = e.target.closest('[data-action="open-delete"]');
-  if (open)  { document.getElementById('deleteOverlay').classList.add('open'); return; }
-  var close = e.target.closest('[data-action="close-delete"]');
-  if (close) { document.getElementById('deleteOverlay').classList.remove('open'); }
-});
-document.getElementById('deleteOverlay').addEventListener('click', function(e){ if(e.target === this) this.classList.remove('open'); });
-document.addEventListener('keydown', function(e){ if(e.key === 'Escape') document.getElementById('deleteOverlay').classList.remove('open'); });
-
-})();
-</script>
+@vite('resources/js/admin/entries/job-posts-show.js')
 @endpush

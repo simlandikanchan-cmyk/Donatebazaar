@@ -87,14 +87,6 @@
 .camp-placeholder svg{width:26px;height:26px;color:var(--text3);opacity:.22;}
 .camp-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.35) 0%,transparent 50%);}
 .camp-badge-wrap{position:absolute;top:10px;left:10px;display:flex;gap:5px;flex-wrap:wrap;}
-.badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);}
-.b-active{background:var(--green);color:#fff;}
-.b-pending{background:var(--yellow);color:#fff;}
-.b-rejected{background:var(--red);color:#fff;}
-.b-inactive{background:var(--gray);color:#fff;}
-.b-expired{background:#64748b;color:#fff;}
-.b-completed{background:#475569;color:#fff;}
-.b-paused{background:var(--a);color:#fff;}
 .camp-body{padding:14px 15px 15px;}
 .camp-title{font-size:14.5px;font-weight:700;color:var(--text);font-family:var(--mono);letter-spacing:-.01em;margin-bottom:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.3;}
 .camp-desc{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
@@ -155,8 +147,8 @@
 .toggle-sw input:checked ~ .toggle-track::after{transform:translateX(20px);box-shadow:0 1px 6px rgba(37,99,235,.3);}
 .toggle-sw input:focus-visible ~ .toggle-track{outline:2px solid var(--a);outline-offset:2px;}
 
-.empty-state{text-align:center;padding:48px 24px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);}
-.empty-icon{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,var(--a-lt),rgba(13,148,136,.08));display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
+.empty-state{text-align:center;padding:48px 24px;}
+.empty-icon{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,var(--a-lt),rgba(13,148,136,.08));margin:0 auto 16px;}
 .empty-icon svg{width:24px;height:24px;color:var(--a);}
 .empty-state h3{font-family:var(--mono);font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;}
 .empty-state p{font-size:13px;color:var(--text3);margin-bottom:20px;line-height:1.6;}
@@ -179,7 +171,6 @@
 
 @keyframes modalIn{from{opacity:0;transform:scale(.95) translateY(10px)}to{opacity:1;transform:none}}
 @keyframes fadeSlide{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;}

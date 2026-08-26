@@ -80,11 +80,11 @@
     </div>
 
     <div class="receipt-actions">
-        <x-button variant="primary" type="button" onclick="window.print()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
-            Print Receipt
+        <x-button variant="primary" type="button" data-action="download-receipt" data-receipt-no="{{ $receiptNo ?? 'donation-receipt' }}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            Download Receipt
         </x-button>
-        <x-button variant="secondary" type="button" onclick="history.back()">
+        <x-button variant="secondary" type="button" data-action="go-back">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
             Back
         </x-button>
@@ -117,8 +117,12 @@
 .receipt-footer p{font-size:10px;color:var(--text3);line-height:1.5;max-width:400px;}
 .receipt-stamp{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:100px;background:rgba(16,185,129,0.12);color:var(--green);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;font-family:var(--mono);flex-shrink:0;border:1.5px dashed var(--green);opacity:.7;}
 .receipt-stamp svg{width:14px;height:14px;}
-.receipt-actions{display:flex;align-items:center;gap:10px;justify-content:center;}
+  .receipt-actions{display:flex;align-items:center;gap:10px;justify-content:center;}
 @media(max-width:600px){.receipt-grid{grid-template-columns:1fr;}.receipt{padding:20px;}}
-@media print{body{background:#fff !important;}.receipt{box-shadow:none;border:1px solid #ddd;max-width:100%;}:is(.sidebar,.n-header,.receipt-actions,*[onclick*=print]){display:none !important;}}
+@media print{body{background:#fff !important;}.receipt{box-shadow:none;border:1px solid #ddd;max-width:100%;}:is(.sidebar,.n-header,.receipt-actions){display:none !important;}}
 </style>
+@endpush
+
+@push('page_scripts')
+@vite('resources/js/user/donations-receipt.js')
 @endpush

@@ -1,6 +1,3 @@
-@push('page_css')
-@vite('resources/css/admin/entries/misc.css')
-@endpush
 
 @extends('layouts.admin')
 
@@ -168,7 +165,7 @@
                   View
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
                 </a>
-                <form method="POST" action="{{ route('admin.volunteers.destroy', $v) }}" style="display:inline;" onsubmit="return confirm('Delete this volunteer? This cannot be undone.');">
+                <form method="POST" action="{{ route('admin.volunteers.destroy', $v) }}" style="display:inline;" data-confirm="Delete this volunteer? This cannot be undone.">
                   @csrf @method('DELETE')
                   <button type="submit" class="btn btn-red act-btn ab-delete" title="Delete" style="margin-left:8px;">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Delete
@@ -209,8 +206,12 @@
 @vite('resources/js/admin/entries/volunteers-index.js')
 @endpush
 
-@push('page_styles')
+@push('page_css')
+@vite('resources/css/admin/entries/volunteers.css')
 @vite('resources/css/admin/pages/volunteers-index.css')
+@endpush
+
+@push('page_styles')
 <style>
 @media(max-width:860px){
   .stats-grid{grid-template-columns:repeat(2,1fr)!important}
@@ -224,4 +225,5 @@
   .hero-right .hero-btn{width:100%;justify-content:center}
 }
 </style>
+@endpush
 @endpush

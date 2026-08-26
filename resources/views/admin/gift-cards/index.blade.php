@@ -195,7 +195,7 @@
               @endif
               @if(!$gc->isRedeemed())
               <form method="POST" action="{{ route('admin.gift-cards.destroy', $gc->id) }}"
-                    onsubmit="return confirm('Cancel this gift card?')" style="display:inline;">
+                    data-confirm="Cancel this gift card?" style="display:inline;">
                 @csrf @method('DELETE')
                 <button type="submit" class="btn btn-secondary act-btn ab-cancel"
                         aria-label="Cancel gift card {{ $gc->code }}">

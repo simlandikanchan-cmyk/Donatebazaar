@@ -40,6 +40,7 @@
   display: flex; align-items: center; justify-content: center;
   cursor: pointer; color: var(--text2); flex-shrink: 0;
   transition: all var(--ease); position: relative;
+  box-shadow: none;
 }
 .tb-btn:hover { background: var(--accent-lt); color: var(--primary); border-color: var(--primary); }
 .tb-btn svg { width: 14px; height: 14px; }
@@ -52,7 +53,9 @@
   width: 50px; height: 26px; border-radius: 100px;
   background: var(--surface2); border: 1px solid var(--border2);
   cursor: pointer; padding: 3px; position: relative;
+  transition: border-color var(--ease);
 }
+.theme-toggle label:hover { border-color: var(--primary); }
 .theme-toggle label::after {
   content: ''; width: 18px; height: 18px; border-radius: 50%;
   background: var(--primary); position: absolute; left: 4px;
@@ -125,7 +128,9 @@
   display: none; width: 34px; height: 34px; border-radius: var(--r-sm);
   border: 1px solid var(--border2); background: var(--surface2); cursor: pointer;
   color: var(--text2); align-items: center; justify-content: center; flex-shrink: 0;
+  transition: all var(--ease);
 }
+.hamburger:hover { background: var(--accent-lt); color: var(--primary); border-color: var(--primary); }
 .hamburger svg { width: 15px; height: 15px; }
 
 @keyframes notifPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }

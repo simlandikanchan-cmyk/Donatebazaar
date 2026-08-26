@@ -1,6 +1,3 @@
-@push('page_css')
-@vite('resources/css/admin/entries/misc.css')
-@endpush
 
 @extends('layouts.admin')
 
@@ -301,7 +298,7 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                 View
               </a>
-              <form method="POST" action="{{ route('admin.partnership.destroy', $p->id) }}" style="display:inline;" onsubmit="return confirm('Delete this partnership? This cannot be undone.');">
+              <form method="POST" action="{{ route('admin.partnership.destroy', $p->id) }}" style="display:inline;" data-confirm="Delete this partnership? This cannot be undone.">
                 @csrf @method('DELETE')
                 <button type="submit" class="btn btn-red act-btn act-del" title="Delete">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Delete

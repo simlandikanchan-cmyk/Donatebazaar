@@ -1,5 +1,5 @@
 @push('page_css')
-@vite('resources/css/admin/entries/blogs.css')
+@vite('resources/css/admin/entries/blogs-list.css')
 @endpush
 
 @extends('layouts.admin')
@@ -490,7 +490,7 @@
       </p>
       <form method="POST"
             action="{{ route('admin.blogs.destroy', $blog) }}"
-            onsubmit="return confirm('Delete \'{{ addslashes($blog->title ?? '') }}\'?\nThis will soft-delete the post.')">
+            data-confirm="Delete \'{{ addslashes($blog->title ?? '') }}\'?\nThis will soft-delete the post.">
         @csrf
         @method('DELETE')
         <button type="submit" class="btn btn-red">

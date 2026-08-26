@@ -1,5 +1,5 @@
 @push('page_css')
-@vite('resources/css/admin/entries/jobs.css')
+@vite('resources/css/admin/entries/jobs-index.css')
 @endpush
 
 @extends('layouts.admin')
@@ -496,7 +496,7 @@ tbody tr:hover{background:var(--surface2)}
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                 <span>Edit</span>
               </a>
-              <form method="POST" action="{{ route('admin.job_posts.destroy', $job->id) }}" style="display:inline;" onsubmit="return confirm('Delete this job post? This cannot be undone.');">
+              <form method="POST" action="{{ route('admin.job_posts.destroy', $job->id) }}" style="display:inline;" data-confirm="Delete this job post? This cannot be undone.">
                 @csrf @method('DELETE')
                 <button type="submit" class="btn btn-red act-btn ab-delete" title="Delete">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>

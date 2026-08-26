@@ -1,30 +1,7 @@
 @extends('layouts.admin')
 
 @push('page_styles')
-<style>
-.flag-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;margin-bottom:14px;animation:fadeUp .4s ease both;}
-.flag-hdr{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border);}
-.flag-title{font-size:14px;font-weight:700;color:var(--text);}
-.flag-meta{font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:3px;}
-.flag-reports{padding:10px 18px;border-bottom:1px solid var(--border);}
-.report-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
-.report-row:last-child{border-bottom:none;}
-.report-info{flex:1;min-width:0;}
-.report-reason{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700;font-family:var(--mono);background:var(--amber-lt);color:#b45309;margin-left:6px;}
-.report-note{font-size:11px;color:var(--text3);margin-top:3px;font-style:italic;}
-.report-status{font-size:10.5px;color:var(--text3);font-family:var(--mono);margin-top:3px;}
-.report-status.done{color:var(--green);}
-.flag-actions{display:flex;gap:8px;padding:12px 18px;flex-wrap:wrap;}
-.empty-state{display:flex;flex-direction:column;align-items:center;gap:10px;padding:56px 20px;color:var(--text3);}
-.empty-state svg{width:48px;height:48px;opacity:.25;}
-.flash-success{background:var(--green-lt);border:1px solid rgba(5,196,138,.25);color:#059669;padding:10px 14px;border-radius:var(--r-sm);margin-bottom:14px;font-size:12.5px;font-weight:600;}
-.flash-error{background:var(--red-lt);border:1px solid rgba(240,68,68,.25);color:var(--red);padding:10px 14px;border-radius:var(--r-sm);margin-bottom:14px;font-size:12.5px;font-weight:600;}
-@media(max-width:640px){
-  .flag-hdr{flex-wrap:wrap}
-  .flag-hdr img{width:100%!important;height:auto!important;margin-top:10px}
-}
-@media(max-width:640px){.flag-hdr{flex-wrap:wrap}.flag-hdr img{width:100%;height:auto;margin-top:8px}}
-</style>
+@vite('resources/css/admin/pages/blogs-flagged.css')
 @endpush
 
 
@@ -40,7 +17,7 @@
 <div class="flash-error">{{ session('error') }}</div>
 @endif
 
-<h2 style="font-family:var(--mono);font-size:15px;font-weight:800;color:var(--text);margin-bottom:16px;">
+<h2 class="flag-page-hdr">
   Flagged Posts ({{ $blogs->total() }})
 </h2>
 
@@ -48,11 +25,11 @@
 <div class="flag-card">
   <div class="flag-hdr">
     <div>
-      <a href="{{ route('admin.blogs.show', $blog) }}" class="flag-title" style="text-decoration:none;color:var(--a)">{{ $blog->title }}</a>
+      <a href="{{ route('admin.blogs.show', $blog) }}" class="flag-title flag-title-link">{{ $blog->title }}</a>
       <div class="flag-meta">#{{ $blog->id }} · by {{ $blog->author->name ?? 'Unknown' }} ({{ ucfirst($blog->author->role ?? 'user') }}) · {{ $blog->reports_count ?? $blog->reports->count() }} report(s)</div>
     </div>
     @if($blog->cover_image)
-      <img src="{{ $blog->cover_image_url }}" alt="" style="width:72px;height:52px;object-fit:cover;border-radius:8px;border:1px solid var(--border);">
+      <img src="{{ $blog->cover_image_url }}" alt="" class="flag-cover">
     @endif
   </div>
 
@@ -105,18 +82,10 @@
 @endforelse
 
 @if($blogs->hasPages())
-<div style="margin-top:18px;">{{ $blogs->links('vendor.pagination.admin') }}</div>
+<div class="flag-pagination">{{ $blogs->links('vendor.pagination.admin') }}</div>
 @endif
 @endsection
 
 @push('page_scripts')
-<script>
-function promptFlagReason(form) {
-  const id = form.querySelector('button[data-id]').dataset.id;
-  const reason = prompt('Rejection reason (required):');
-  if (!reason || !reason.trim()) return false;
-  document.getElementById('flag_reject_reason_' + id).value = reason;
-  return true;
-}
-</script>
+@vite('resources/js/admin/entries/blogs-flagged.js')
 @endpush

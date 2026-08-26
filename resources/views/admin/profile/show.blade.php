@@ -1,6 +1,3 @@
-@push('page_css')
-@vite('resources/css/admin/entries/misc.css')
-@endpush
 
 @extends('layouts.admin')
 
@@ -264,7 +261,7 @@
               </div>
             </div>
             @if(!$session->is_current)
-              <form method="POST" action="{{ route('admin.profile.sessions.revoke', $session->id) }}" onsubmit="return confirm('Revoke this session? The device will be signed out.');" style="display:inline-flex;">
+              <form method="POST" action="{{ route('admin.profile.sessions.revoke', $session->id) }}" data-confirm="Revoke this session? The device will be signed out." style="display:inline-flex;">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="btn btn-red sess-revoke">Revoke</button>
@@ -278,7 +275,7 @@
           <div class="sess-footer">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;color:var(--text3);flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             <span style="font-size:11.5px;color:var(--text3);flex:1;">Revoke all sessions on other devices. You will stay logged in here.</span>
-            <form method="POST" action="{{ route('admin.profile.sessions.revoke-all') }}" onsubmit="return confirm('Revoke all other active sessions? You will stay logged in on this device.');" style="display:inline-flex;">
+            <form method="POST" action="{{ route('admin.profile.sessions.revoke-all') }}" data-confirm="Revoke all other active sessions? You will stay logged in on this device." style="display:inline-flex;">
               @csrf
               @method('DELETE')
               <button type="submit" class="btn btn-red sess-revoke-all">

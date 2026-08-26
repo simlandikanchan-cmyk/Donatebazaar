@@ -509,10 +509,11 @@
     gap: 8px;
   }
   .ftabs {
-    overflow-x: auto;
-    white-space: nowrap;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 2px;
+    display: none;
+  }
+  .ftab-select {
+    display: block;
+    width: 100%;
   }
 }
 @media (max-width: 480px) {
