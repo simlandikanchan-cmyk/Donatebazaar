@@ -298,3 +298,29 @@ textarea.field-input{resize:vertical;min-height:100px;line-height:1.6;}
 .confetti-dot:nth-child(4){background:var(--primary) ;animation-delay:.3s;}
 .confetti-dot:nth-child(5){background:var(--secondary);animation-delay:.4s;}
 @keyframes confettiBounce{from{transform:translateY(0)}to{transform:translateY(-8px)}}
+
+/* Dynamic utility classes replacing inline styles */
+.progress-fill-dynamic { width: var(--progress-width, 16.6%); }
+.updates-info-icon-svg { width: 17px; height: 17px; }
+.required-tag { color: var(--danger); font-size: 11px; font-weight: 700; margin-left: 6px; }
+.skip-note-danger { background: rgba(254,242,242,.6); border-color: #fecaca; }
+.skip-note-danger svg { color: var(--danger); }
+.skip-note-danger strong { color: var(--danger); }
+.upload-title .required-mark { color: var(--danger); }
+.upload-hint-text { font-size: 11px; color: var(--ink-muted); margin-top: 12px; }
+.cover-image-hint { font-size: 12px; color: var(--ink-muted); margin-top: 14px; line-height: 1.6; text-align: center; }
+.cover-image-hint strong { color: var(--danger); }
+.cover-image-hint .highlight { color: var(--purple-main); }
+.products-info-box { display: flex; align-items: flex-start; gap: 14px; padding: 16px 18px; background: var(--purple-mist); border: 1px solid var(--border); border-radius: 16px; margin-bottom: 20px; }
+.products-info-icon { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg,var(--purple-main),var(--indigo-main)); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.products-info-icon svg { width: 17px; height: 17px; }
+.products-info-title { font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 3px; }
+.products-info-desc { font-size: 12px; color: var(--ink-soft); line-height: 1.6; }
+.suggestions-empty { font-size: 12px; color: var(--ink-muted); }
+.review-card-hidden { display: none; }
+.review-count { font-weight: 400; color: var(--ink-soft); }
+.review-row-highlight { background: var(--purple-mist); }
+.review-label-bold { font-weight: 600; color: var(--ink-mid); }
+.review-value-highlight { color: var(--purple-deep); font-size: 15px; }
+.grand-summary-row-hidden { display: none; }
+.review-notice-mt { margin-top: 16px; }

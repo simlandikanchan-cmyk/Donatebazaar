@@ -128,3 +128,7 @@
   .rec-actions { flex-shrink: 1; width: 100%; justify-content: flex-end; }
   .rec-amount { text-align: left; }
 }
+
+/* Dynamic utility classes */
+.c-card-dynamic { animation-delay: var(--card-delay, 0s); }
+.prog-fill-dynamic { width: var(--prog-width, 0%); }

@@ -70,7 +70,7 @@
             <div>
 
                 {{-- Basic Info --}}
-                <div class="card" style="margin-bottom:14px;">
+                <div class="card card-mb">
                     <div class="card-header">
                         <div class="card-icon ic-indigo">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
@@ -117,8 +117,8 @@
                                 $userMaxGoal = auth()->user()->maxCampaignGoal();
                             @endphp
                             @if($userMaxGoal)
-                            <div style="font-size:11px;color:var(--text3);margin-top:5px;font-family:var(--font-mono);">
-                                Level: <strong style="color:var(--accent);">{{ $userLevel }}</strong>
+                            <div class="level-info">
+                                Level: <strong>{{ $userLevel }}</strong>
                                 — Max goal: <strong>₹{{ number_format($userMaxGoal) }}</strong>
                             </div>
                             @endif
@@ -158,7 +158,7 @@
                             </div>
                         @endif
 
-                        <div class="file-drop" style="{{ $campaign->isPaused() ? 'pointer-events:none;opacity:0.45;' : '' }}">
+                        <div class="file-drop {{ $campaign->isPaused() ? 'file-drop-disabled' : '' }}">
                             <input type="file" name="cover_image" accept="image/*"
                                    {{ $campaign->isPaused() ? 'disabled' : '' }}>
                             <div class="file-drop-icon">
@@ -211,7 +211,7 @@
                             Pause Campaign
                         </x-button>
                         @elseif($campaign->isPending())
-                        <div style="text-align:center;padding:8px 0;font-size:12px;color:var(--text3);">
+                        <div class="pending-note">
                             Campaign is awaiting admin approval. You can still edit content.
                         </div>
                         @endif
@@ -234,7 +234,7 @@
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
                             Save Changes
                         </x-button>
-                        <a href="{{ route('campaign.show', $campaign->id) }}" class="btn btn-ghost" style="margin-top:8px;display:inline-flex;">
+                        <a href="{{ route('campaign.show', $campaign->id) }}" class="btn btn-ghost btn-ghost-mt">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                             Cancel
                         </a>
@@ -258,14 +258,14 @@
                             $goal   = $campaign->goal_amount > 0 ? $campaign->goal_amount : 1;
                             $pct    = min(100, round(($raised / $goal) * 100));
                         @endphp
-                        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:6px;">
-                            <span style="font-weight:700;color:var(--accent);font-family:var(--font-mono);">₹{{ number_format($raised) }}</span>
-                            <span style="color:var(--text3);font-family:var(--font-mono);">of ₹{{ number_format($campaign->goal_amount) }}</span>
+                        <div class="progress-header">
+                            <span class="progress-raised">₹{{ number_format($raised) }}</span>
+                            <span class="progress-goal">of ₹{{ number_format($campaign->goal_amount) }}</span>
                         </div>
-                        <div style="width:100%;background:var(--surface2);border-radius:100px;height:5px;overflow:hidden;margin-bottom:5px;">
-                            <div style="height:100%;border-radius:100px;width:{{ $pct }}%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width 1s ease;"></div>
+                        <div class="progress-track">
+                            <div class="progress-fill-dynamic" style="--progress-width:{{ $pct }}%;"></div>
                         </div>
-                        <div style="font-size:10px;color:var(--text3);font-family:var(--font-mono);">{{ $pct }}% funded · {{ $campaign->donor_count ?? 0 }} donors</div>
+                        <div class="progress-footer">{{ $pct }}% funded · {{ $campaign->donor_count ?? 0 }} donors</div>
                     </div>
                 </div>
 
@@ -281,7 +281,7 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
             <div class="modal-head">
-                <div class="modal-icon" style="background:rgba(245,158,11,0.12);color:var(--yellow);">
+                <div class="modal-icon modal-icon-warn">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
                 <div>
@@ -291,7 +291,7 @@
             </div>
             <form action="{{ route('campaign.pause', $campaign->id) }}" method="POST" id="pauseForm">
                 @csrf
-                <label class="modal-label">Reason for pausing <span style="color:var(--red);">*</span></label>
+                <label class="modal-label">Reason for pausing <span class="required-mark">*</span></label>
                 <textarea id="pauseReason" name="reason" rows="3"
                           placeholder="Tell us why you're pausing (min 10 chars)..."
                           class="modal-ta" minlength="10" maxlength="500"></textarea>
@@ -312,7 +312,7 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
             <div class="modal-head">
-                <div class="modal-icon" style="background:rgba(16,185,129,0.12);color:var(--green);">
+                <div class="modal-icon modal-icon-success">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
                 <div>
@@ -322,7 +322,7 @@
             </div>
             <form action="{{ route('campaign.resume', $campaign->id) }}" method="POST" id="resumeForm">
                 @csrf
-                <label class="modal-label">Reason for resuming <span style="color:var(--red);">*</span></label>
+                <label class="modal-label">Reason for resuming <span class="required-mark">*</span></label>
                 <textarea id="resumeReason" name="resume_reason" rows="3"
                           placeholder="Tell us why you're resuming (min 10 chars)..."
                           class="modal-ta" minlength="10" maxlength="500"></textarea>

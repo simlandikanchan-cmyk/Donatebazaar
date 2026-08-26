@@ -223,3 +223,50 @@
   .sp-lbl{font-size:9px;}
   .stat-pill{padding:10px 6px 8px;}
 }
+
+/* Profile Edit specific */
+.profile-grid{display:grid;grid-template-columns:minmax(0,640px);justify-content:center;}
+.mb-12{margin-bottom:12px;}
+
+/* Dynamic utility classes replacing inline styles */
+.hidden { display: none; }
+
+/* Dynamic utility classes replacing inline styles */
+.hidden { display: none; }
+.cover-img-hidden { display: none; }
+.ir-val-truncated { font-size: 10.5px; max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ir-val-verified { color: var(--verified-color, var(--green)); }
+.card-animated { animation-delay: var(--card-delay, 0s); }
+.card-ico-dynamic { background: var(--ico-bg, var(--accent-lt)); }
+.act-stat-dynamic { background: var(--stat-bg); border: 1px solid var(--stat-border); }
+.act-stat-val-dynamic { color: var(--stat-color); }
+.act-stat-lbl-dynamic { color: var(--stat-color); }
+.bio-text { font-size: 12.5px; color: var(--text2); line-height: 1.7; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+.pf-level-badge-dynamic { --lbg: var(--badge-color, var(--a)); }
+.level-progress-text { margin-bottom: 10px; }
+.level-progress-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px; }
+.level-progress-label { font-size: 11px; color: var(--text3); font-family: var(--mono); }
+.level-progress-label strong { color: var(--text); }
+.level-progress-pct { font-size: 11px; font-weight: 700; font-family: var(--mono); color: var(--a); }
+.level-progress-track { width: 100%; background: var(--surface3); border-radius: 100px; height: 6px; overflow: hidden; }
+.level-progress-fill-dynamic { height: 100%; border-radius: 100px; background: var(--progress-bg); width: var(--progress-width, 0%); transition: width 1s ease; }
+.level-reqs-wrap { display: flex; gap: 8px; flex-wrap: wrap; }
+.level-maximized { text-align: center; padding: 4px 0; }
+.level-maximized-svg { width: 22px; height: 22px; display: block; margin: 0 auto 4px; }
+.level-maximized-title { font-size: 12px; font-weight: 700; color: var(--a); font-family: var(--mono); }
+.level-maximized-sub { font-size: 10.5px; color: var(--text3); margin-top: 2px; }
+.prog-fill-dynamic { width: var(--prog-width, 0%); }
+.prog-pct-gray { color: #64748b; }
+.badge-urgent { background: rgba(240,68,68,.85); color: #fff; }
+.camp-card-animated { animation-delay: var(--camp-delay, 0s); }
+.mt-16 { margin-top: 16px; }
+.mb-14 { margin-bottom: 14px; }
+.card-danger { border-color: rgba(240,68,68,.2); }
+.card-head-danger { border-color: rgba(240,68,68,.12); }
+.card-ttl-danger { color: var(--red); }
+.text-secondary { color: var(--text2); }
+.font-12-5 { font-size: 12.5px; }
+.mb-16 { margin-bottom: 16px; }
+.line-height-1-7 { line-height: 1.7; }
+.acct-val-verified { color: var(--verified-color, var(--green)); }
+.btn-ghost { margin-top: 16px; }

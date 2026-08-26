@@ -107,7 +107,7 @@
                         <div class="upload-text">Click to upload or drag &amp; drop</div>
                         <div class="upload-sub">JPG, PNG, WebP &middot; Max 3MB &middot; Recommended 1200&times;630px</div>
                     </div>
-                    <div class="upload-preview-wrap" id="uploadPreviewWrap" style="display:none;">
+                    <div class="upload-preview-wrap upload-preview-wrap-hidden" id="uploadPreviewWrap">
                         <img id="uploadPreview" class="upload-preview" alt="Cover preview">
                         <button type="button" class="upload-remove" id="uploadRemove" title="Remove image">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -276,7 +276,7 @@
                         <small id="readScore">&mdash;</small>
                     </div>
                     <div class="bar-track">
-                        <div class="bar-fill" id="readBar" style="width:0%;background:var(--red)"></div>
+                        <div class="bar-fill bar-fill-dynamic" id="readBar" style="--bar-bg:var(--red)"></div>
                     </div>
                 </div>
                 <div class="read-stats">
@@ -309,14 +309,14 @@
                     <div class="serp-bar-row">
                         <span class="serp-bar-lbl">Title</span>
                         <div class="serp-bar-track">
-                            <div class="serp-bar-fill" id="titleBar" style="width:0%;background:var(--border2)"></div>
+                            <div class="serp-bar-fill serp-bar-fill-dynamic" id="titleBar" style="--bar-bg:var(--border2)"></div>
                         </div>
                         <span class="serp-bar-num" id="titleBarNum">0/60</span>
                     </div>
                     <div class="serp-bar-row">
                         <span class="serp-bar-lbl">Desc</span>
                         <div class="serp-bar-track">
-                            <div class="serp-bar-fill" id="descBar" style="width:0%;background:var(--border2)"></div>
+                            <div class="serp-bar-fill serp-bar-fill-dynamic" id="descBar" style="--bar-bg:var(--border2)"></div>
                         </div>
                         <span class="serp-bar-num" id="descBarNum">0/160</span>
                     </div>

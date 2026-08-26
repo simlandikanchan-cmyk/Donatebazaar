@@ -150,8 +150,8 @@
                     Donation Type
                 </div>
             </div>
-            <div class="anl-chart-body" style="display:flex;justify-content:center;min-height:240px;">
-                <canvas id="typeChart" style="max-width:260px;max-height:260px;"></canvas>
+            <div class="anl-chart-body anl-chart-body-centered">
+                <canvas id="typeChart" class="anl-canvas-constrained"></canvas>
             </div>
         </div>
         <div class="anl-card anl-chart-card anl-chart-card-full">

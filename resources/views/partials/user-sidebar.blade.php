@@ -19,7 +19,7 @@
                 {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 1)) }}
             @endif
         </div>
-        <div style="flex:1;overflow:hidden;">
+        <div class="s-user-info">
             <div class="s-user-name">{{ auth()->user()->name ?? 'User' }}</div>
             <div class="s-user-role">Fundraiser</div>
         </div>
@@ -225,30 +225,30 @@
         @if($sidebarBlogPublished > 0)
         <a href="{{ url('/user/dashboard/blogs?status=approved') }}" class="s-sub-link">
             <span class="s-sub-dot"></span>Published
-            <span style="margin-left:auto;font-size:10px;color:var(--green);font-family:var(--mono);">{{ $sidebarBlogPublished }}</span>
+            <span class="s-sub-count green">{{ $sidebarBlogPublished }}</span>
         </a>
         @endif
         @if($sidebarBlogDraft > 0)
         <a href="{{ url('/user/dashboard/blogs?status=draft') }}" class="s-sub-link">
             <span class="s-sub-dot"></span>Drafts
-            <span style="margin-left:auto;font-size:10px;color:var(--yellow);font-family:var(--mono);">{{ $sidebarBlogDraft }}</span>
+            <span class="s-sub-count yellow">{{ $sidebarBlogDraft }}</span>
         </a>
         @endif
         @if($sidebarBlogPending > 0)
         <a href="{{ url('/user/dashboard/blogs?status=pending') }}" class="s-sub-link">
             <span class="s-sub-dot"></span>In Review
-            <span style="margin-left:auto;font-size:10px;color:var(--text3);font-family:var(--mono);">{{ $sidebarBlogPending }}</span>
+            <span class="s-sub-count muted">{{ $sidebarBlogPending }}</span>
         </a>
         @endif
     </div>
     @endif
 
     <div class="s-bottom">
-        <a href="{{ route('profile.show') }}" class="s-link" style="color:#64748b;margin-bottom:2px;">
+        <a href="{{ route('profile.show') }}" class="s-link">
             <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
             My Profile
         </a>
-        <a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('__lf').submit();" class="s-link" style="color:#ef4444;">
+        <a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('__lf').submit();" class="s-link s-link-logout">
             <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
             Sign Out
         </a>

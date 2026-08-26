@@ -17,7 +17,7 @@ $icoLocked     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 </div>
 
 @if($pendingSettlements->isNotEmpty())
-    <div class="activity-card" style="margin-bottom:24px;">
+    <div class="activity-card mb-24">
         <div class="activity-hdr">
             <div class="activity-title">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
@@ -32,22 +32,22 @@ $icoLocked     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
                             <div class="activity-lbl">
                                 Request #{{ $ps->id }}
                                 @if($ps->status === 'manual_review')
-                                    <span class="badge b-pending" style="font-size:10px;padding:2px 8px;margin-left:8px;">Manual review</span>
+                                    <span class="badge b-pending badge-sm">Manual review</span>
                                 @elseif($ps->isPendingApproval())
-                                    <span class="badge b-pending" style="font-size:10px;padding:2px 8px;margin-left:8px;">Pending approval</span>
+                                    <span class="badge b-pending badge-sm">Pending approval</span>
                                 @elseif($ps->isAutoApproved())
-                                    <span class="badge b-active" style="font-size:10px;padding:2px 8px;margin-left:8px;">Approved — payout in progress</span>
+                                    <span class="badge b-active badge-sm">Approved — payout in progress</span>
                                 @elseif($ps->status === 'failed')
-                                    <span class="badge" style="font-size:10px;padding:2px 8px;margin-left:8px;background:var(--red-lt);color:var(--red);">Payout failed</span>
+                                    <span class="badge badge-sm badge-sm--failed">Payout failed</span>
                                 @endif
                             </div>
                             <div class="activity-amt">₹{{ number_format($ps->net_amount, 2) }}</div>
                         </div>
                         @if($ps->rejection_reason)
-                            <div class="activity-sub" style="color:var(--red);">Rejected: {{ $ps->rejection_reason }}</div>
+                            <div class="activity-sub activity-sub--danger">Rejected: {{ $ps->rejection_reason }}</div>
                         @endif
                         @if($ps->status === 'failed' && $ps->payoutAttempt->first()?->error_message)
-                            <div class="activity-sub" style="color:var(--red);">Failed: {{ $ps->payoutAttempt->first()->error_message }}</div>
+                            <div class="activity-sub activity-sub--danger">Failed: {{ $ps->payoutAttempt->first()->error_message }}</div>
                         @endif
                     </div>
                 </div>
@@ -56,14 +56,14 @@ $icoLocked     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
     </div>
 @endif
 
-<div class="chart-card" style="margin-bottom:24px;">
+<div class="chart-card mb-24">
     <div class="chart-card-hdr">
         <div>
             <div class="chart-title">Payout Account</div>
             <div class="chart-sub">Add your bank or UPI details where payouts will be sent.</div>
         </div>
     </div>
-    <div style="padding:0 16px 16px;">
+    <div class="p-0-16-16">
         @if($payoutAccounts->isNotEmpty())
             <div class="wallet-pa-grid">
                 @foreach($payoutAccounts as $pa)
@@ -98,7 +98,7 @@ $icoLocked     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
     </div>
 </div>
 
-<div class="chart-card" style="margin-bottom:24px;">
+<div class="chart-card mb-24">
     <div class="chart-card-hdr">
         <div>
             <div class="chart-title">Request a Payout</div>
@@ -106,9 +106,9 @@ $icoLocked     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
         </div>
     </div>
     @if($eligible->isEmpty())
-        <p style="padding:16px;text-align:center;color:var(--text3);font-size:13px;">No eligible donations available for payout right now.</p>
+        <p class="p-16 text-center text-muted font-13">No eligible donations available for payout right now.</p>
     @else
-        <form method="POST" action="{{ route('dashboard.wallet.request') }}" style="padding:16px;">
+        <form method="POST" action="{{ route('dashboard.wallet.request') }}" class="p-16">
             @csrf
             <div class="wallet-table-wrap">
                 <table class="wallet-table">
@@ -144,7 +144,7 @@ $icoLocked     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
             <div class="chart-sub">All wallet transactions</div>
         </div>
     </div>
-    <div class="wallet-table-wrap" style="padding:16px;">
+    <div class="wallet-table-wrap p-16">
         <table class="wallet-table tx-table">
             <thead>
                 <tr>
@@ -164,21 +164,21 @@ $icoLocked     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
                     @endphp
                     <tr>
                         <td data-label="Date" class="mono-sm">{{ $tx->created_at->format('Y-m-d H:i') }}</td>
-                        <td data-label="Type"><span style="color:{{ $txColor }};font-weight:600;">{{ ucfirst($tx->type) }}</span></td>
+                        <td data-label="Type"><span class="tx-type" style="--tx-color:{{ $txColor }}">{{ ucfirst($tx->type) }}</span></td>
                         <td class="hide-mobile" data-label="Source">{{ $tx->source ?? '—' }}</td>
                         <td class="text-right mono" data-label="Amount">₹{{ number_format($tx->amount, 2) }}</td>
                         <td class="hide-tablet text-right mono" data-label="Balance">₹{{ number_format($tx->balance_after, 2) }}</td>
-                        <td class="hide-mobile" data-label="Notes" style="color:var(--text3);">{{ $tx->notes ?? '—' }}</td>
+                        <td class="hide-mobile tx-notes" data-label="Notes">{{ $tx->notes ?? '—' }}</td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" style="padding:24px;text-align:center;color:var(--text3);font-size:13px;">No transactions yet.</td>
+                        <td colspan="6" class="tx-empty">No transactions yet.</td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
-    <div style="padding:0 16px 16px;">
+    <div class="p-0-16-16">
         <div class="pagination-wrap">
             {{ $transactions->links() }}
         </div>

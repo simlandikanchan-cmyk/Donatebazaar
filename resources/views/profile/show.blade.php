@@ -5,10 +5,10 @@
 
 @section('content')
 {{-- Hidden upload forms --}}
-<form id="avatarForm" action="{{ route('profile.avatar') }}" method="POST" enctype="multipart/form-data" style="display:none">
+<form id="avatarForm" action="{{ route('profile.avatar') }}" method="POST" enctype="multipart/form-data" class="hidden">
   @csrf <input type="file" name="avatar" id="avatarInput" accept="image/jpeg,image/png,image/webp">
 </form>
-<form id="coverForm" action="{{ route('profile.cover') }}" method="POST" enctype="multipart/form-data" style="display:none">
+<form id="coverForm" action="{{ route('profile.cover') }}" method="POST" enctype="multipart/form-data" class="hidden">
   @csrf <input type="file" name="cover_image" id="coverInput" accept="image/jpeg,image/png,image/webp">
 </form>
 
@@ -68,7 +68,7 @@
     @if($user->cover_image)
       <img class="cover-img" src="{{ asset('storage/'.$user->cover_image) }}" id="coverImg" alt="Cover photo of {{ $user->name }}">
     @else
-      <img class="cover-img" src="" id="coverImg" style="display:none;" alt="">
+      <img class="cover-img cover-img-hidden" src="" id="coverImg" alt="">
     @endif
     <x-button variant="primary" type="button" class="cover-edit-btn" data-action="trigger-click" data-target="coverInput">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -88,7 +88,7 @@
             <img src="{{ asset('storage/'.$user->avatar) }}" id="avatarImg" alt="">
           @else
             <span id="avatarInitials">{{ strtoupper(substr($user->name,0,1)) }}</span>
-            <img src="" id="avatarImg" style="display:none;" alt="">
+            <img src="" id="avatarImg" class="cover-img-hidden" alt="">
           @endif
         </div>
         <button type="button" class="av-cam" data-action="trigger-click" data-target="avatarInput" title="Change photo">
@@ -156,10 +156,10 @@
   <div>
 
     {{-- Intro card --}}
-    <div class="card" style="animation-delay:.06s;">
+    <div class="card card-animated" style="--card-delay:.06s;">
       <div class="card-head">
         <div class="card-head-left">
-          <div class="card-ico" style="background:var(--a-lt);">
+          <div class="card-ico card-ico-dynamic" style="--ico-bg:var(--a-lt);">
             <svg viewBox="0 0 24 24" fill="none" stroke="var(--a)" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
           </div>
           <div>
@@ -171,7 +171,7 @@
       </div>
       <div class="card-body">
         @if($user->bio)
-        <p style="font-size:12.5px;color:var(--text2);line-height:1.7;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border);">{{ $user->bio }}</p>
+        <p class="bio-text">{{ $user->bio }}</p>
         @endif
         <div class="info-row">
           <span class="ir-left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>Role</span>
@@ -185,7 +185,7 @@
         @endif
         <div class="info-row">
           <span class="ir-left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Email</span>
-          <span class="ir-val" style="font-size:10.5px;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ $user->email }}</span>
+          <span class="ir-val ir-val-truncated">{{ $user->email }}</span>
         </div>
         <div class="info-row">
           <span class="ir-left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Joined</span>
@@ -193,7 +193,7 @@
         </div>
         <div class="info-row">
           <span class="ir-left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Verified</span>
-          <span class="ir-val" style="color:{{ $user->email_verified_at ? 'var(--green)' : 'var(--red)' }}">
+          <span class="ir-val ir-val-verified" style="--verified-color:{{ $user->email_verified_at ? 'var(--green)' : 'var(--red)' }}">
             {{ $user->email_verified_at ? 'Yes ✓' : 'No' }}
           </span>
         </div>
@@ -201,10 +201,10 @@
     </div>
 
     {{-- Activity card --}}
-    <div class="card" style="animation-delay:.1s;">
+    <div class="card card-animated" style="--card-delay:.1s;">
       <div class="card-head">
         <div class="card-head-left">
-          <div class="card-ico" style="background:var(--green-lt);">
+          <div class="card-ico card-ico-dynamic" style="--ico-bg:var(--green-lt);">
             <svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
           </div>
           <div>
@@ -215,28 +215,28 @@
       </div>
       <div class="card-body">
         <div class="activity-grid">
-          <div class="act-stat" style="background:var(--a-lt);border:1px solid rgba(37,99,235,.14);">
-            <div class="act-stat-val" style="color:var(--a);">{{ $campaignCount }}</div>
-            <div class="act-stat-lbl" style="color:var(--a);">Campaigns</div>
+          <div class="act-stat act-stat-dynamic" style="--stat-bg:var(--a-lt);--stat-border:rgba(37,99,235,.14);">
+            <div class="act-stat-val act-stat-val-dynamic" style="--stat-color:var(--a);">{{ $campaignCount }}</div>
+            <div class="act-stat-lbl act-stat-lbl-dynamic" style="--stat-color:var(--a);">Campaigns</div>
           </div>
-          <div class="act-stat" style="background:var(--green-lt);border:1px solid rgba(5,196,138,.14);">
-            <div class="act-stat-val" style="color:var(--green);">{{ $donationCount }}</div>
-            <div class="act-stat-lbl" style="color:var(--green);">Donations</div>
+          <div class="act-stat act-stat-dynamic" style="--stat-bg:var(--green-lt);--stat-border:rgba(5,196,138,.14);">
+            <div class="act-stat-val act-stat-val-dynamic" style="--stat-color:var(--green);">{{ $donationCount }}</div>
+            <div class="act-stat-lbl act-stat-lbl-dynamic" style="--stat-color:var(--green);">Donations</div>
           </div>
         </div>
-        <div class="act-stat" style="background:var(--amber-lt);border:1px solid rgba(245,158,11,.14);border-radius:var(--r-sm);padding:13px;text-align:center;margin-top:8px;">
-          <div class="act-stat-val" style="color:var(--amber);">₹{{ number_format($donationTotal) }}</div>
-          <div class="act-stat-lbl" style="color:var(--amber);">Total Raised</div>
+        <div class="act-stat act-stat-dynamic" style="--stat-bg:var(--amber-lt);--stat-border:rgba(245,158,11,.14);border-radius:var(--r-sm);padding:13px;text-align:center;margin-top:8px;">
+          <div class="act-stat-val act-stat-val-dynamic" style="--stat-color:var(--amber);">₹{{ number_format($donationTotal) }}</div>
+          <div class="act-stat-lbl act-stat-lbl-dynamic" style="--stat-color:var(--amber);">Total Raised</div>
         </div>
       </div>
     </div>
 
     {{-- ══ LEVEL CARD ══ --}}
     @if($currentLevel)
-    <div class="card" style="animation-delay:.14s;">
+    <div class="card card-animated" style="--card-delay:.14s;">
       <div class="card-head">
         <div class="card-head-left">
-          <div class="card-ico" style="background:{{ $currentLevel->badge_color ?: 'var(--a)' }}22;">
+          <div class="card-ico card-ico-dynamic" style="--ico-bg:{{ $currentLevel->badge_color ?: 'var(--a)' }}22;">
             <svg viewBox="0 0 24 24" fill="none" stroke="{{ $currentLevel->badge_color ?: 'var(--a)' }}" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
           </div>
           <div>
@@ -244,20 +244,20 @@
             <div class="card-sub">Your fundraising rank</div>
           </div>
         </div>
-        <span class="pf-level-badge" style="--lbg:{{ $currentLevel->badge_color ?: 'var(--a)' }}">{{ $levelName }}</span>
+        <span class="pf-level-badge pf-level-badge-dynamic" style="--badge-color:{{ $currentLevel->badge_color ?: 'var(--a)' }}">{{ $levelName }}</span>
       </div>
       <div class="card-body">
         @if($nextLevel)
-        <div style="margin-bottom:10px;">
-          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;">
-            <span style="font-size:11px;color:var(--text3);font-family:var(--mono);">Progress to <strong style="color:var(--text);">{{ $nextLevel->level_name }}</strong></span>
-            <span style="font-size:11px;font-weight:700;font-family:var(--mono);color:var(--a);">{{ $levelProgress }}%</span>
+        <div class="level-progress-text">
+          <div class="level-progress-header">
+            <span class="level-progress-label">Progress to <strong>{{ $nextLevel->level_name }}</strong></span>
+            <span class="level-progress-pct">{{ $levelProgress }}%</span>
           </div>
-          <div style="width:100%;background:var(--surface3);border-radius:100px;height:6px;overflow:hidden;">
-            <div style="height:100%;border-radius:100px;background:linear-gradient(90deg,{{ $currentLevel->badge_color ?: 'var(--a)' }},{{ $currentLevel->badge_color ?: 'var(--a2)' }});width:{{ $levelProgress }}%;transition:width 1s ease;"></div>
+          <div class="level-progress-track">
+            <div class="level-progress-fill-dynamic" style="--progress-bg:linear-gradient(90deg,{{ $currentLevel->badge_color ?: 'var(--a)' }},{{ $currentLevel->badge_color ?: 'var(--a2)' }});--progress-width:{{ $levelProgress }}%;"></div>
           </div>
         </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <div class="level-reqs-wrap">
           <div class="pf-level-req {{ $campaignsCompleted >= $nextLevel->min_campaigns_completed ? 'done' : '' }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>
             {{ $campaignsCompleted }}/{{ $nextLevel->min_campaigns_completed }} campaigns
@@ -270,10 +270,10 @@
           @endif
         </div>
         @else
-        <div style="text-align:center;padding:4px 0;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="var(--a)" stroke-width="2" style="width:22px;height:22px;display:block;margin:0 auto 4px;"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
-          <div style="font-size:12px;font-weight:700;color:var(--a);font-family:var(--mono);">Highest Level Reached!</div>
-          <div style="font-size:10.5px;color:var(--text3);margin-top:2px;">You're at the top tier.</div>
+        <div class="level-maximized">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--a)" stroke-width="2" class="level-maximized-svg"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+          <div class="level-maximized-title">Highest Level Reached!</div>
+          <div class="level-maximized-sub">You're at the top tier.</div>
         </div>
         @endif
       </div>
@@ -314,7 +314,7 @@
         $campId   = $campaign->id ?? '';
         $statusClass = match($status) { 'active'=>'b-active','pending'=>'b-pending','rejected'=>'b-rejected','paused'=>'b-paused','expired'=>'b-expired','completed'=>'b-completed', default=>'b-inactive' };
       @endphp
-      <div class="camp-card" style="animation-delay:{{ $i * 0.05 }}s;">
+      <div class="camp-card camp-card-animated" style="--camp-delay:{{ $i * 0.05 }}s;">
         <div class="camp-thumb">
           @if(!empty($campaign->cover_image))
             <img src="{{ asset('storage/'.$campaign->cover_image) }}" alt="{{ $campaign->title }}">
@@ -330,7 +330,7 @@
           <div class="camp-badge-wrap">
             <span class="badge {{ $statusClass }}">{{ ucfirst($status) }}</span>
             @if($daysLeft !== null && $daysLeft <= 7 && $status === 'active')
-              <span class="badge" style="background:rgba(240,68,68,.85);color:#fff;">
+              <span class="badge badge-urgent">
                 {{ $daysLeft == 0 ? 'Last day!' : $daysLeft.' day'.($daysLeft!=1?'s':'').' left' }}
               </span>
             @endif
@@ -348,9 +348,9 @@
               <span class="prog-goal">of ₹{{ number_format($goal) }}</span>
             </div>
             <div class="prog-bar">
-              <div class="prog-fill {{ in_array($status,['inactive','expired','completed']) ? 'prog-fill-gray' : '' }}" style="width:{{ $pct }}%"></div>
+              <div class="prog-fill {{ in_array($status,['inactive','expired','completed']) ? 'prog-fill-gray' : '' }} prog-fill-dynamic" style="--prog-width:{{ $pct }}%"></div>
             </div>
-            <div class="prog-pct" style="{{ in_array($status,['inactive','expired','completed']) ? 'color:#64748b' : '' }}">{{ $pct }}% funded</div>
+            <div class="prog-pct {{ in_array($status,['inactive','expired','completed']) ? 'prog-pct-gray' : '' }}">{{ $pct }}% funded</div>
           </div>
           @endif
         </div>
@@ -408,10 +408,10 @@
     <div id="tc-about" class="tab-content">
 
       {{-- Personal info --}}
-      <div class="card" style="margin-bottom:14px;">
+      <div class="card mb-14">
         <div class="card-head">
           <div class="card-head-left">
-            <div class="card-ico" style="background:var(--a-lt);">
+            <div class="card-ico card-ico-dynamic" style="--ico-bg:var(--a-lt);">
               <svg viewBox="0 0 24 24" fill="none" stroke="var(--a)" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
             </div>
             <div>
@@ -451,10 +451,10 @@
       </div>
 
       {{-- Change password --}}
-      <div class="card" style="margin-bottom:14px;">
+      <div class="card mb-14">
         <div class="card-head">
           <div class="card-head-left">
-            <div class="card-ico" style="background:var(--amber-lt);">
+            <div class="card-ico card-ico-dynamic" style="--ico-bg:var(--amber-lt);">
               <svg viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M7 11V7a5 5 0 0110 0v4"/></svg>
             </div>
             <div>
@@ -492,7 +492,7 @@
                 <input type="password" name="password_confirmation" placeholder="Repeat new password">
               </div>
             </div>
-            <x-button variant="primary" type="submit" class="ghost" style="margin-top:16px;">Update Password</x-button>
+            <x-button variant="primary" type="submit" class="ghost btn-ghost">Update Password</x-button>
           </form>
         </div>
       </div>
@@ -501,7 +501,7 @@
       <div class="card">
         <div class="card-head">
           <div class="card-head-left">
-            <div class="card-ico" style="background:var(--blue-lt);">
+            <div class="card-ico card-ico-dynamic" style="--ico-bg:var(--blue-lt);">
               <svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
             </div>
             <div>
@@ -522,7 +522,7 @@
             </div>
             <div class="acct-item">
               <div class="acct-lbl">Email Verified</div>
-              <div class="acct-val" style="color:{{ $user->email_verified_at ? 'var(--green)' : 'var(--red)' }}">
+              <div class="acct-val acct-val-verified" style="--verified-color:{{ $user->email_verified_at ? 'var(--green)' : 'var(--red)' }}">
                 {{ $user->email_verified_at ? 'Verified ✓' : 'Not verified' }}
               </div>
             </div>
@@ -540,10 +540,10 @@
     <div id="tc-settings" class="tab-content">
 
       {{-- Privacy & notifications --}}
-      <div class="card" style="margin-bottom:14px;">
+      <div class="card mb-14">
         <div class="card-head">
           <div class="card-head-left">
-            <div class="card-ico" style="background:var(--a-lt);">
+            <div class="card-ico card-ico-dynamic" style="--ico-bg:var(--a-lt);">
               <svg viewBox="0 0 24 24" fill="none" stroke="var(--a)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M7 11V7a5 5 0 0110 0v4"/></svg>
             </div>
             <div>
@@ -593,27 +593,27 @@
               <div class="toggle-track" data-action="trigger-click" data-target="ts-cu"></div>
             </div>
           </div>
-          <div style="margin-top:16px;">
+          <div class="mt-16">
             <x-button variant="primary" type="button">Save Settings</x-button>
           </div>
         </div>
       </div>
 
       {{-- Danger zone --}}
-      <div class="card" style="border-color:rgba(240,68,68,.2);">
-        <div class="card-head" style="border-color:rgba(240,68,68,.12);">
+      <div class="card card-danger">
+        <div class="card-head card-head-danger">
           <div class="card-head-left">
-            <div class="card-ico" style="background:var(--red-lt);">
+            <div class="card-ico card-ico-dynamic" style="--ico-bg:var(--red-lt);">
               <svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
             </div>
             <div>
-              <div class="card-ttl" style="color:var(--red);">Danger Zone</div>
+              <div class="card-ttl card-ttl-danger">Danger Zone</div>
               <div class="card-sub">Irreversible actions</div>
             </div>
           </div>
         </div>
         <div class="card-body">
-          <p style="font-size:12.5px;color:var(--text2);margin-bottom:16px;line-height:1.7;">These actions are permanent and cannot be undone. Please be absolutely certain before proceeding.</p>
+          <p class="font-12-5 text-secondary mb-16 line-height-1-7">These actions are permanent and cannot be undone. Please be absolutely certain before proceeding.</p>
           <x-button variant="destructive" type="button" class="danger" data-action="open-delete-modal">
             Delete My Account
           </x-button>
