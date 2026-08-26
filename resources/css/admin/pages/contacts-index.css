@@ -11,6 +11,15 @@
   border-bottom: none;
 }
 
+/* ── Table layout ── */
+.ct-table-wrap {
+  overflow-x: auto;
+}
+.ct-table {
+  width: 100%;
+  min-width: 560px;
+}
+
 @media (max-width: 480px) {
   .max-w-7xl {
     padding: 0 14px!important;

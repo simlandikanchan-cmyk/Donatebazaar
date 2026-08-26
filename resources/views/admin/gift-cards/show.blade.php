@@ -171,7 +171,7 @@
       </form>
       @endif
       @if(!$giftCard->isRedeemed())
-      <form method="POST" action="{{ route('admin.gift-cards.destroy', $giftCard->id) }}" style="display:inline;" onsubmit="return confirm('Cancel this gift card?')">
+      <form method="POST" action="{{ route('admin.gift-cards.destroy', $giftCard->id) }}" style="display:inline;" data-confirm="Cancel this gift card?">
         @csrf @method('DELETE')
         <button type="submit" class="btn btn-secondary act-btn ab-cancel">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 18L18 6M6 6l12 12"/></svg>

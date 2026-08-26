@@ -536,3 +536,44 @@
     font-size: 12px;
   }
 }
+/* ── Inline style replacements ── */
+.app-sec-hdr {
+  margin-bottom: 18px;
+}
+.app-reviewer-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10.5px;
+  font-family: var(--mono);
+  color: var(--text3);
+}
+.app-reviewer-info svg {
+  width: 11px;
+  height: 11px;
+}
+.app-box-span2 {
+  grid-column: span 2;
+}
+.app-box-full {
+  grid-column: 1 / -1;
+}
+.app-causes-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+.app-mission {
+  font-weight: 400;
+  line-height: 1.7;
+}
+.app-doc-margin {
+  margin-top: 8px;
+}
+.app-status-cap {
+  color: var(--text);
+  text-transform: capitalize;
+}
+.app-ta-mb {
+  margin-bottom: 12px;
+}

@@ -90,7 +90,7 @@ tbody tr:hover{background:var(--surface2)}
     <span class="badge {{ $volunteer->is_verified ? 'b-shortlisted' : 'b-rejected' }}" style="font-size:13px;padding:6px 16px">
       {{ $volunteer->is_verified ? 'Verified' : 'Unverified' }}
     </span>
-    <form method="POST" action="{{ route('admin.volunteers.destroy', $volunteer) }}" style="display:inline;" onsubmit="return confirm('Delete this volunteer? This cannot be undone.');">
+    <form method="POST" action="{{ route('admin.volunteers.destroy', $volunteer) }}" style="display:inline;" data-confirm="Delete this volunteer? This cannot be undone.">
       @csrf @method('DELETE')
       <button type="submit" class="btn btn-red act-btn ab-delete" title="Delete" style="margin-top:8px;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Delete
@@ -239,7 +239,7 @@ tbody tr:hover{background:var(--surface2)}
 @if($volunteer->is_verified)
 <div class="detail-card">
   <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--text3);font-family:var(--mono);margin-bottom:16px">Assign to Event</div>
-  <form id="assignForm" method="POST">
+  <form id="assignForm" method="POST" data-url="{{ url('admin/events') }}">
     @csrf
     <input type="hidden" name="volunteer_id" value="{{ $volunteer->id }}">
     <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:12px;align-items:end">
@@ -279,39 +279,7 @@ tbody tr:hover{background:var(--surface2)}
 </div>
 
 @push('page_scripts')
-<script>
-(function(){
-  var sel = document.getElementById('assignEvent');
-  var btn = document.getElementById('assignBtn');
-  var hint = document.getElementById('assignHint');
-  var form = document.getElementById('assignForm');
-  var startInp = document.getElementById('assignStart');
-  var endInp = document.getElementById('assignEnd');
-
-  if (sel) {
-    sel.addEventListener('change', function(){
-      var val = this.value;
-      if (val) {
-        var opt = this.options[this.selectedIndex];
-        btn.disabled = false;
-        hint.textContent = 'Will be assigned to event #' + val;
-        form.action = '{{ url('admin/events') }}/' + val + '/assign-volunteer';
-        var d = opt.getAttribute('data-date');
-        if (d) {
-          startInp.value = d;
-          endInp.value = d;
-        }
-      } else {
-        btn.disabled = true;
-        hint.textContent = 'Select an event above';
-        form.action = '';
-        startInp.value = '';
-        endInp.value = '';
-      }
-    });
-  }
-})();
-</script>
+@vite('resources/js/admin/entries/volunteers-show.js')
 @endpush
 @else
 <div class="detail-card" style="background:var(--amber-lt);border-color:rgba(245,158,11,.25)">

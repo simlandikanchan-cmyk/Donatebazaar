@@ -96,6 +96,15 @@ import { initThemeToggle } from '../../shared/theme.js';
     });
   });
 
+  /* ══════════════════════════════════════
+     DATA-CONFIRM — global confirm before submit
+     ══════════════════════════════════════ */
+  document.addEventListener('submit', function (e) {
+    var form = e.target.closest('form[data-confirm]');
+    if (!form) return;
+    if (!confirm(form.getAttribute('data-confirm'))) e.preventDefault();
+  });
+
   /* ── navigate (data-action="navigate" data-href="...") ── */
   document.addEventListener('click', function (e) {
     var el = e.target.closest('[data-action="navigate"]');

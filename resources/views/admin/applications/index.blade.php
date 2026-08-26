@@ -260,7 +260,7 @@ tbody tr:hover{background:var(--surface2)}
               Reject
             </button>
             @endif
-            <form method="POST" action="{{ route('admin.applications.destroy', $app->id) }}" style="display:inline;" onsubmit="return confirm('Delete this application? This cannot be undone.');">
+            <form method="POST" action="{{ route('admin.applications.destroy', $app->id) }}" style="display:inline;" data-confirm="Delete this application? This cannot be undone.">
               @csrf @method('DELETE')
               <button type="submit" class="btn btn-red act-btn ab-delete" title="Delete">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>

@@ -87,7 +87,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
         Reply via Email
       </button>
-      <form action="{{ route('admin.messages.delete', $message->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Delete this message? This cannot be undone.');">
+      <form action="{{ route('admin.messages.delete', $message->id) }}" method="POST" style="display:inline;" data-confirm="Delete this message? This cannot be undone.">
         @csrf @method('DELETE')
         <button type="submit" class="btn btn-red act-btn ab-delete" title="Delete">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Delete

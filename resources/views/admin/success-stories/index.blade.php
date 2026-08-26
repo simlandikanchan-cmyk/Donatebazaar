@@ -146,7 +146,7 @@ td{padding:13px 18px;font-size:13px;vertical-align:middle;}
                   </button>
                 </form>
                 <a href="{{ route('campaign.public', ['category' => $c->category?->slug ?? 'campaign', 'slug' => $c->slug]) }}" target="_blank" class="btn btn-secondary act-btn ab-view" title="View">View</a>
-                <form method="POST" action="{{ route('admin.success-stories.destroy', $c->id) }}" style="display:inline;" onsubmit="return confirm('Remove this success story? This cannot be undone.');">
+                <form method="POST" action="{{ route('admin.success-stories.destroy', $c->id) }}" style="display:inline;" data-confirm="Remove this success story? This cannot be undone.">
                   @csrf @method('DELETE')
                   <button type="submit" class="btn btn-red act-btn ab-delete" title="Remove">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>Remove
