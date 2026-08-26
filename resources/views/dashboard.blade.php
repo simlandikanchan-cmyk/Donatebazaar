@@ -370,13 +370,54 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
         $tcr = $topCampaign->raised_amount ?? 0;
         $tcg = $topCampaign->goal_amount > 0 ? $topCampaign->goal_amount : 1;
         $tcp = min(100, round(($tcr / $tcg) * 100));
+        $tcCircum = 2 * 3.14159 * 36;
+        $tcOffset = $tcCircum - ($tcp / 100) * $tcCircum;
     @endphp
     <div class="insight-card top-campaign-card">
         <div class="insight-card-hdr">
-            <div class="insight-card-title">Top Performer</div>
+            <div class="insight-card-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;color:var(--warning);vertical-align:middle;margin-right:6px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                Top Performer
+            </div>
             <span class="badge b-active">Active</span>
         </div>
+
+        <svg style="position:absolute;width:0;height:0;" aria-hidden="true">
+            <defs>
+                <linearGradient id="tpcRingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="var(--primary)"/>
+                    <stop offset="100%" stop-color="var(--secondary)"/>
+                </linearGradient>
+            </defs>
+        </svg>
+
+        <div class="tpc-ring-wrap">
+            <svg viewBox="0 0 80 80" class="tpc-ring-svg">
+                <circle class="tpc-ring-bg" cx="40" cy="40" r="36"/>
+                <circle class="tpc-ring-fg" id="tpcRing" cx="40" cy="40" r="36"
+                    style="stroke-dasharray:{{ $tcCircum }};stroke-dashoffset:{{ $tcOffset }}"/>
+            </svg>
+            <div class="tpc-ring-center">
+                <div class="tpc-ring-pct">{{ $tcp }}%</div>
+                <div class="tpc-ring-label">Funded</div>
+            </div>
+        </div>
+
+        <div class="tpc-meta">
+            @if($topCampaign->category)
+                <span class="tpc-meta-chip cat">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+                    {{ $topCampaign->category->name }}
+                </span>
+            @endif
+            <span class="tpc-meta-chip goal">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8V7m0 1v8m0 1v1"/></svg>
+                ₹{{ number_format($tcg) }} goal
+            </span>
+        </div>
+
         <div class="tpc-title">{{ $topCampaign->title }}</div>
+
         <div class="tpc-stats">
             <div class="tpc-stat">
                 <div class="tpc-stat-val">₹{{ number_format($tcr) }}</div>
@@ -391,8 +432,11 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
                 <div class="tpc-stat-lbl">Funded</div>
             </div>
         </div>
-        <div class="tpc-bar"><div class="tpc-fill" style="width:{{ $tcp }}%"></div></div>
-        <a href="{{ route('campaign.show', $topCampaign->id) }}" class="tpc-link">View Campaign →</a>
+
+        <a href="{{ route('campaign.show', $topCampaign->id) }}" class="tpc-link">
+            View Campaign
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+        </a>
     </div>
     @endif
 </div>
