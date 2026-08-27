@@ -130,7 +130,9 @@ class RiskIntegrationTest extends TestCase
 
     private function createSettlementOrg(string $prefix): Organization
     {
-        $org = Organization::factory()->create(['user_id' => $this->owner->id]);
+        $owner = User::factory()->create();
+
+        $org = Organization::factory()->create(['user_id' => $owner->id]);
 
         PayoutAccount::create([
             'organization_id' => $org->id,
@@ -141,19 +143,19 @@ class RiskIntegrationTest extends TestCase
             'is_verified' => true,
         ]);
 
-        $wallet = $this->walletService->getOrCreateWallet($this->owner);
+        $wallet = $this->walletService->getOrCreateWallet($owner);
         $this->walletService->credit($wallet, 2000.00, WalletTransaction::SOURCE_ADJUSTMENT, 2, Organization::class);
 
         $campaign = Campaign::create([
             'title' => $prefix . ' Campaign',
             'slug' => strtolower($prefix) . '-' . uniqid(),
-            'user_id' => $this->owner->id,
+            'user_id' => $owner->id,
             'description' => 'Campaign for ' . $prefix,
             'goal_amount' => 10000.00,
         ]);
 
         $donation = Donation::create([
-            'user_id' => $this->owner->id,
+            'user_id' => $owner->id,
             'campaign_id' => $campaign->id,
             'donation_type' => 'money',
             'total_amount' => 1000.00,
@@ -186,7 +188,8 @@ class RiskIntegrationTest extends TestCase
     #[Test]
     public function aml_hit_blocks_settlement(): void
     {
-        $org = Organization::factory()->create(['user_id' => $this->owner->id]);
+        $owner = User::factory()->create();
+        $org = Organization::factory()->create(['user_id' => $owner->id]);
 
         $settlement = CampaignSettlement::factory()->create([
             'organization_id' => $org->id,

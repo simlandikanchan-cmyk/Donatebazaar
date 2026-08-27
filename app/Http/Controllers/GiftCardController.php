@@ -125,6 +125,7 @@ class GiftCardController extends Controller
             $giftCard = GiftCard::where('code', strtoupper($request->code))
                 ->where('payment_status', 'completed')
                 ->where('status', '!=', 'redeemed')
+                ->whereNotNull('payment_verified_at')
                 ->lockForUpdate()
                 ->firstOrFail();
 

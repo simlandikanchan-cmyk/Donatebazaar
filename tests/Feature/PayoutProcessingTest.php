@@ -104,8 +104,8 @@ class PayoutProcessingTest extends TestCase
     #[Test]
     public function payout_failure_restores_balance_and_records_reversal(): void
     {
-        // Organization named with "FAIL" triggers the stub to throw.
-        $org = Organization::factory()->create(['user_id' => $this->owner->id, 'name' => 'FAIL Org']);
+        $failOwner = User::factory()->create();
+        $org = Organization::factory()->create(['user_id' => $failOwner->id, 'name' => 'FAIL Org']);
         PayoutAccount::create([
             'organization_id' => $org->id,
             'account_holder_name' => 'Test',
@@ -115,7 +115,7 @@ class PayoutProcessingTest extends TestCase
             'is_verified' => true,
         ]);
 
-        $wallet = $this->walletService->getOrCreateWallet($this->owner);
+        $wallet = $this->walletService->getOrCreateWallet($failOwner);
         $wallet->balance = 0;
         $wallet->pending_settlement_balance = 0;
         $wallet->save();
@@ -123,14 +123,14 @@ class PayoutProcessingTest extends TestCase
         $campaign = Campaign::create([
             'title' => 'Fail Restore Campaign',
             'slug' => 'fail-restore-'.uniqid(),
-            'user_id' => $this->owner->id,
+            'user_id' => $failOwner->id,
             'description' => 'test',
             'goal_amount' => 10000.00,
         ]);
         $settlement = CampaignSettlement::create([
             'campaign_id' => $campaign->id,
             'organization_id' => $org->id,
-            'user_id' => $this->owner->id,
+            'user_id' => $failOwner->id,
             'gross_amount' => 525.00,
             'net_amount' => 500.00,
             'platform_fee' => 25.00,
@@ -182,7 +182,8 @@ class PayoutProcessingTest extends TestCase
     #[Test]
     public function payout_is_idempotent_when_already_failed(): void
     {
-        $org = Organization::factory()->create(['user_id' => $this->owner->id, 'name' => 'FAIL Org Retry']);
+        $failOwner = User::factory()->create();
+        $org = Organization::factory()->create(['user_id' => $failOwner->id, 'name' => 'FAIL Org Retry']);
         PayoutAccount::create([
             'organization_id' => $org->id,
             'account_holder_name' => 'Test',
@@ -192,20 +193,20 @@ class PayoutProcessingTest extends TestCase
             'is_verified' => true,
         ]);
 
-        $wallet = $this->walletService->getOrCreateWallet($this->owner);
+        $wallet = $this->walletService->getOrCreateWallet($failOwner);
         $wallet->update(['balance' => 0, 'pending_settlement_balance' => 500]);
 
         $campaign = Campaign::create([
             'title' => 'Fail Idempotent Campaign',
             'slug' => 'fail-idem-'.uniqid(),
-            'user_id' => $this->owner->id,
+            'user_id' => $failOwner->id,
             'description' => 'test',
             'goal_amount' => 10000.00,
         ]);
         $settlement = CampaignSettlement::create([
             'campaign_id' => $campaign->id,
             'organization_id' => $org->id,
-            'user_id' => $this->owner->id,
+            'user_id' => $failOwner->id,
             'gross_amount' => 525.00,
             'net_amount' => 500.00,
             'platform_fee' => 25.00,
@@ -227,7 +228,8 @@ class PayoutProcessingTest extends TestCase
     #[Test]
     public function payout_retry_after_failure_can_succeed_with_fixed_org_name(): void
     {
-        $org = Organization::factory()->create(['user_id' => $this->owner->id, 'name' => 'FAIL Then Fix']);
+        $failOwner = User::factory()->create();
+        $org = Organization::factory()->create(['user_id' => $failOwner->id, 'name' => 'FAIL Then Fix']);
         PayoutAccount::create([
             'organization_id' => $org->id,
             'account_holder_name' => 'Test',
@@ -237,20 +239,20 @@ class PayoutProcessingTest extends TestCase
             'is_verified' => true,
         ]);
 
-        $wallet = $this->walletService->getOrCreateWallet($this->owner);
+        $wallet = $this->walletService->getOrCreateWallet($failOwner);
         $wallet->update(['balance' => 0, 'pending_settlement_balance' => 500]);
 
         $campaign = Campaign::create([
             'title' => 'Fail Then Fix Campaign',
             'slug' => 'fail-fix-'.uniqid(),
-            'user_id' => $this->owner->id,
+            'user_id' => $failOwner->id,
             'description' => 'test',
             'goal_amount' => 10000.00,
         ]);
         $settlement = CampaignSettlement::create([
             'campaign_id' => $campaign->id,
             'organization_id' => $org->id,
-            'user_id' => $this->owner->id,
+            'user_id' => $failOwner->id,
             'gross_amount' => 525.00,
             'net_amount' => 500.00,
             'platform_fee' => 25.00,
@@ -340,7 +342,8 @@ class PayoutProcessingTest extends TestCase
     {
         Notification::fake();
 
-        $org = Organization::factory()->create(['user_id' => $this->owner->id, 'name' => 'FAIL Notification']);
+        $failOwner = User::factory()->create();
+        $org = Organization::factory()->create(['user_id' => $failOwner->id, 'name' => 'FAIL Notification']);
         PayoutAccount::create([
             'organization_id' => $org->id,
             'account_holder_name' => 'Test',
@@ -350,20 +353,20 @@ class PayoutProcessingTest extends TestCase
             'is_verified' => true,
         ]);
 
-        $wallet = $this->walletService->getOrCreateWallet($this->owner);
+        $wallet = $this->walletService->getOrCreateWallet($failOwner);
         $wallet->update(['balance' => 0, 'pending_settlement_balance' => 500]);
 
         $campaign = Campaign::create([
             'title' => 'Fail Notification Campaign',
             'slug' => 'fail-notif-'.uniqid(),
-            'user_id' => $this->owner->id,
+            'user_id' => $failOwner->id,
             'description' => 'test',
             'goal_amount' => 10000.00,
         ]);
         $settlement = CampaignSettlement::create([
             'campaign_id' => $campaign->id,
             'organization_id' => $org->id,
-            'user_id' => $this->owner->id,
+            'user_id' => $failOwner->id,
             'gross_amount' => 525.00,
             'net_amount' => 500.00,
             'platform_fee' => 25.00,
@@ -375,12 +378,12 @@ class PayoutProcessingTest extends TestCase
         $this->settlementService->processSettlementPayout($settlement);
 
         Notification::assertSentTo(
-            $this->owner,
+            $failOwner,
             SettlementProcessingStartedNotification::class
         );
 
         Notification::assertSentTo(
-            $this->owner,
+            $failOwner,
             SettlementRetryScheduledNotification::class
         );
     }

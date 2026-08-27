@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Jobs\ProcessSettlementJob;
+use App\Models\ActivityLog;
 use App\Models\CampaignSettlement;
 use App\Models\Refund;
+use App\Jobs\ProcessSettlementJob;
 use App\Repositories\SettlementRepository;
 use App\Services\SettlementService;
 use Illuminate\Http\RedirectResponse;
@@ -91,6 +92,8 @@ class SettlementController extends Controller
 
     public function approve(Request $request, CampaignSettlement $settlement): RedirectResponse
     {
+        $originalStatus = $settlement->status;
+
         try {
             $this->settlementService->approveSettlement($settlement, auth()->user());
         } catch (\InvalidArgumentException $e) {
@@ -101,6 +104,20 @@ class SettlementController extends Controller
 
         ProcessSettlementJob::dispatch($settlement);
 
+        ActivityLog::create([
+            'user_id' => auth()->id(),
+            'action' => 'settlement_approved',
+            'loggable_type' => CampaignSettlement::class,
+            'loggable_id' => $settlement->id,
+            'meta' => [
+                'settlement_id' => $settlement->id,
+                'net_amount' => $settlement->net_amount,
+                'organization_id' => $settlement->organization_id,
+                'previous_status' => $originalStatus,
+                'new_status' => 'approved',
+            ],
+        ]);
+
         return redirect()
             ->route('admin.settlements.show', $settlement)
             ->with('success', 'Settlement approved. Payout processing started.');
@@ -108,6 +125,8 @@ class SettlementController extends Controller
 
     public function reject(Request $request, CampaignSettlement $settlement): RedirectResponse
     {
+        $originalStatus = $settlement->status;
+
         $data = $request->validate([
             'reason' => 'required|string|max:1000',
         ]);
@@ -120,6 +139,21 @@ class SettlementController extends Controller
                 ->with('error', $e->getMessage());
         }
 
+        ActivityLog::create([
+            'user_id' => auth()->id(),
+            'action' => 'settlement_rejected',
+            'loggable_type' => CampaignSettlement::class,
+            'loggable_id' => $settlement->id,
+            'meta' => [
+                'settlement_id' => $settlement->id,
+                'net_amount' => $settlement->net_amount,
+                'organization_id' => $settlement->organization_id,
+                'previous_status' => $originalStatus,
+                'new_status' => 'rejected',
+                'reason' => $data['reason'],
+            ],
+        ]);
+
         return redirect()
             ->route('admin.settlements.show', $settlement)
             ->with('success', 'Settlement rejected. Funds returned to balance.');
@@ -127,10 +161,29 @@ class SettlementController extends Controller
 
     public function destroy(CampaignSettlement $settlement): RedirectResponse
     {
+        if (in_array($settlement->status, ['paid', 'processing'], true)) {
+            return redirect()
+                ->route('admin.settlements.index')
+                ->with('error', 'Paid or processing settlements cannot be deleted.');
+        }
+
         $settlement->delete();
+
+        ActivityLog::create([
+            'user_id' => auth()->id(),
+            'action' => 'settlement_archived',
+            'loggable_type' => CampaignSettlement::class,
+            'loggable_id' => $settlement->id,
+            'meta' => [
+                'settlement_id' => $settlement->id,
+                'net_amount' => $settlement->net_amount,
+                'organization_id' => $settlement->organization_id,
+                'previous_status' => $settlement->status,
+            ],
+        ]);
 
         return redirect()
             ->route('admin.settlements.index')
-            ->with('success', 'Settlement deleted successfully.');
+            ->with('success', 'Settlement archived successfully.');
     }
 }

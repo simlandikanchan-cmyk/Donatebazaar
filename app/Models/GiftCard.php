@@ -26,6 +26,7 @@ class GiftCard extends Model
         'send_at' => 'datetime',
         'redeemed_at' => 'datetime',
         'expires_at' => 'datetime',
+        'payment_verified_at' => 'datetime',
         'amount' => 'decimal:2',
     ];
 

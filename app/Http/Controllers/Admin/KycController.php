@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\KycRejectRequest;
+use App\Models\ActivityLog;
 use App\Models\KycVerification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
@@ -40,11 +41,26 @@ class KycController extends Controller
      */
     public function approve(KycVerification $kyc): RedirectResponse
     {
+        $originalStatus = $kyc->status;
+
         $kyc->status = 'approved';
         $kyc->verified_by = auth()->id();
         $kyc->verified_at = now();
         $kyc->rejection_reason = null;
         $kyc->save();
+
+        ActivityLog::create([
+            'user_id' => auth()->id(),
+            'action' => 'kyc_approved',
+            'loggable_type' => KycVerification::class,
+            'loggable_id' => $kyc->id,
+            'meta' => [
+                'kyc_id' => $kyc->id,
+                'user_id' => $kyc->user_id,
+                'previous_status' => $originalStatus,
+                'new_status' => 'approved',
+            ],
+        ]);
 
         return back()->with('success', "KYC approved for {$kyc->user->name}.");
     }
@@ -54,11 +70,27 @@ class KycController extends Controller
      */
     public function reject(KycRejectRequest $request, KycVerification $kyc): RedirectResponse
     {
+        $originalStatus = $kyc->status;
+
         $kyc->status = 'rejected';
         $kyc->rejection_reason = $request->rejection_reason;
         $kyc->verified_by = auth()->id();
         $kyc->verified_at = now();
         $kyc->save();
+
+        ActivityLog::create([
+            'user_id' => auth()->id(),
+            'action' => 'kyc_rejected',
+            'loggable_type' => KycVerification::class,
+            'loggable_id' => $kyc->id,
+            'meta' => [
+                'kyc_id' => $kyc->id,
+                'user_id' => $kyc->user_id,
+                'previous_status' => $originalStatus,
+                'new_status' => 'rejected',
+                'reason' => $request->rejection_reason,
+            ],
+        ]);
 
         return back()->with('success', "KYC rejected for {$kyc->user->name}.");
     }

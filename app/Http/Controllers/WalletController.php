@@ -113,11 +113,13 @@ class WalletController extends Controller
             return $org;
         }
 
-        return Organization::create([
-            'user_id' => $user->id,
-            'name' => $user->name ?? ('User #'.$user->id),
-            'type' => 'individual',
-        ]);
+        return Organization::firstOrCreate(
+            ['user_id' => $user->id],
+            [
+                'name' => $user->name ?? ('User #'.$user->id),
+                'type' => 'individual',
+            ]
+        );
     }
 
     public function savePayoutAccount(Request $request): RedirectResponse

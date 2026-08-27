@@ -10,5 +10,5 @@ Route::prefix('admin/wallets')
         Route::get('/', [AdminWalletController::class, 'index'])->name('index');
         Route::get('/{wallet}', [AdminWalletController::class, 'show'])->name('show');
         Route::delete('/{wallet}', [AdminWalletController::class, 'destroy'])->name('destroy');
-        Route::post('/{wallet}/adjust', [AdminWalletController::class, 'adjust'])->name('adjust');
+        Route::post('/{wallet}/adjust', [AdminWalletController::class, 'adjust'])->middleware('throttle:financial')->name('adjust');
     });
