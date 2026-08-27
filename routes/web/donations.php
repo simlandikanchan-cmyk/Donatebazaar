@@ -21,7 +21,7 @@ Route::post('/payment/verify', [PaymentController::class, 'verify'])
 
 Route::post('/payment/webhook', [PaymentController::class, 'webhook'])
     ->name('payment.webhook')
-    ->middleware('throttle:120,1');
+    ->middleware('throttle:webhooks');
 
 // Secure receipt PDF download. Access is granted via a Laravel signed
 // temporary URL embedded in the receipt email — never via a raw donation id.

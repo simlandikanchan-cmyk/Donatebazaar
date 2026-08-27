@@ -1,11 +1,5 @@
 <?php
 
-// Add these methods to your existing Admin CampaignController
-// ---------------------------------------------------------------
-// This is NOT a standalone file — merge into your existing
-// App\Http\Controllers\Admin\CampaignController (or equivalent)
-// ---------------------------------------------------------------
-
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -18,6 +12,10 @@ use Illuminate\Http\Request;
 
 class CampaignKycController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(['auth', 'admin']);
+    }
     /**
      * Send a KYC request to the campaign owner.
      * Route: POST /admin/campaigns/{campaign}/request-kyc

@@ -61,6 +61,7 @@ class GiftCardService
             'payment_id' => $paymentId,
             'payment_status' => 'completed',
             'status' => 'sent',
+            'payment_verified_at' => now(),
         ]);
 
         try {

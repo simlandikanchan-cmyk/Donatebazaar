@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Gateways\RazorpayGateway;
 use App\Models\Campaign;
 use App\Models\Donation;
 use App\Models\Refund;
@@ -11,10 +12,8 @@ use App\Services\Payment\RefundService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
-use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use Razorpay\Api\Errors\Error as RazorpayError;
-use Razorpay\Api\Payment as RazorpayPayment;
 use Tests\TestCase;
 
 class RefundHardeningTest extends TestCase
@@ -69,38 +68,35 @@ class RefundHardeningTest extends TestCase
             'owner_type' => User::class,
             'owner_id' => $this->admin->id,
             'user_id' => $this->admin->id,
-            'balance' => 1000.00,
+            'balance' => 0.00,
             'reserved_balance' => 0.00,
             'currency' => 'INR',
         ]);
+
+        Wallet::where('owner_id', $this->admin->id)->update(['balance' => '1000.00']);
     }
 
-    protected function tearDown(): void
+    private function mockRazorpayGateway(?string $refundId, bool $shouldThrow = false, int $times = 1): void
     {
-        Mockery::close();
-        parent::tearDown();
-    }
-
-    private function mockRazorpay(?string $refundId, bool $shouldThrow = false, int $times = 1): void
-    {
-        $paymentMock = Mockery::mock('overload:'.RazorpayPayment::class);
-        $paymentMock->shouldReceive('fetch')->andReturnSelf();
+        $mock = $this->createMock(RazorpayGateway::class);
 
         if ($shouldThrow) {
-            $paymentMock->shouldReceive('refund')
-                ->times($times)
-                ->andThrow(new RazorpayError('gateway declined', 'BAD_REQUEST_ERROR', 400));
+            $mock->method('initiateRefund')
+                ->willThrowException(new RazorpayError('gateway declined', 'BAD_REQUEST_ERROR', 400));
         } else {
             $entity = new \stdClass;
             $entity->id = $refundId;
-            $paymentMock->shouldReceive('refund')->times($times)->andReturn($entity);
+            $mock->method('initiateRefund')
+                ->willReturn($entity);
         }
+
+        $this->app->instance(RazorpayGateway::class, $mock);
     }
 
     #[Test]
     public function successful_refund_marks_refund_processed_and_reverses_wallet(): void
     {
-        $this->mockRazorpay('rfnd_success_1');
+        $this->mockRazorpayGateway('rfnd_success_1');
 
         $service = app(RefundService::class);
         $refund = $service->processAdminRefund($this->donation, $this->admin, 'duplicate charge');
@@ -114,7 +110,6 @@ class RefundHardeningTest extends TestCase
         $this->assertNotNull($refund->processed_at);
         $this->assertNull($refund->notes);
 
-        // Org wallet was debited by the donation net amount.
         $wallet = Wallet::where('owner_id', $this->admin->id)->first();
         $this->assertEquals('515.00', $wallet->balance);
     }
@@ -122,7 +117,7 @@ class RefundHardeningTest extends TestCase
     #[Test]
     public function admin_refund_persists_a_stable_gateway_idempotency_key(): void
     {
-        $this->mockRazorpay('rfnd_stable_1');
+        $this->mockRazorpayGateway('rfnd_stable_1');
 
         $service = app(RefundService::class);
         $service->processAdminRefund($this->donation, $this->admin, 'duplicate charge');
@@ -131,32 +126,27 @@ class RefundHardeningTest extends TestCase
         $this->assertNotNull($this->donation->refund_idempotency_key);
         $this->assertMatchesRegularExpression('/^ref_[A-Za-z0-9]{20,}$/', $this->donation->refund_idempotency_key);
 
-        // A second refund attempt must reuse the SAME key (no duplicate gateway refund).
         $keyAfterFirst = $this->donation->refund_idempotency_key;
 
-        // Reset refund flags to simulate a retry after a transient DB failure
-        // (gateway already refunded, donation not yet marked refunded).
         DB::table('donations')->where('id', $this->donation->id)->update([
             'payment_status' => 'completed',
             'is_refunded' => false,
         ]);
 
-        $this->mockRazorpay('rfnd_stable_1', false, 2);
+        $this->mockRazorpayGateway('rfnd_stable_1', false, 2);
         $service->processAdminRefund($this->donation, $this->admin, 'retry');
 
         $this->donation->refresh();
         $this->assertEquals($keyAfterFirst, $this->donation->refund_idempotency_key);
 
-        // Exactly one refund row for this gateway refund id.
         $this->assertEquals(1, Refund::where('gateway_refund_id', 'rfnd_stable_1')->count());
     }
 
     #[Test]
     public function wallet_debit_failure_leaves_refund_in_reversal_pending_state(): void
     {
-        $this->mockRazorpay('rfnd_pending_1');
+        $this->mockRazorpayGateway('rfnd_pending_1');
 
-        // Starve the owner wallet so the reversal debit must fail.
         Wallet::where('owner_id', $this->admin->id)->update(['balance' => 0.00]);
 
         $service = app(RefundService::class);
@@ -167,8 +157,6 @@ class RefundHardeningTest extends TestCase
 
         $refund = Refund::where('donation_id', $this->donation->id)->first();
         $this->assertNotNull($refund);
-        // The refund must NOT be marked successfully processed while the
-        // required wallet accounting failed — it enters the recovery state.
         $this->assertEquals(Refund::STATUS_REVERSAL_PENDING, $refund->status);
         $this->assertNull($refund->processed_at);
         $this->assertNotNull($refund->notes);
@@ -178,10 +166,8 @@ class RefundHardeningTest extends TestCase
     #[Test]
     public function retry_reuses_existing_refund_and_does_not_call_gateway_again(): void
     {
-        // Gateway is called exactly ONCE across both attempts.
-        $this->mockRazorpay('rfnd_retry_1', false, 1);
+        $this->mockRazorpayGateway('rfnd_retry_1', false, 1);
 
-        // First attempt: wallet is starved → reversal fails → reversal_pending.
         Wallet::where('owner_id', $this->admin->id)->update(['balance' => 0.00]);
 
         $service = app(RefundService::class);
@@ -190,8 +176,6 @@ class RefundHardeningTest extends TestCase
         $refund = Refund::where('donation_id', $this->donation->id)->first();
         $this->assertEquals(Refund::STATUS_REVERSAL_PENDING, $refund->status);
 
-        // Second attempt: funds available. Retry must NOT re-call the gateway —
-        // the existing gateway_refund_id short-circuits straight to the reversal.
         Wallet::where('owner_id', $this->admin->id)->update(['balance' => 1000.00]);
 
         $retried = $service->processAdminRefund($this->donation, $this->admin, 'retry');
@@ -200,7 +184,6 @@ class RefundHardeningTest extends TestCase
         $this->assertEquals(Refund::STATUS_PROCESSED, $retried->status);
         $this->assertNull($retried->notes);
 
-        // Gateway refund was initiated exactly once across the whole lifecycle.
         $this->assertEquals(1, Refund::where('gateway_refund_id', 'rfnd_retry_1')->count());
     }
 
@@ -234,7 +217,7 @@ class RefundHardeningTest extends TestCase
     #[Test]
     public function gateway_failure_records_a_failed_refund(): void
     {
-        $this->mockRazorpay(null, true);
+        $this->mockRazorpayGateway(null, true);
 
         $service = app(RefundService::class);
 
@@ -249,7 +232,6 @@ class RefundHardeningTest extends TestCase
         $this->assertNotNull($refund);
         $this->assertEquals(Refund::STATUS_FAILED, $refund->status);
 
-        // Donation is untouched when the gateway refund never happened.
         $this->donation->refresh();
         $this->assertFalse($this->donation->is_refunded);
     }

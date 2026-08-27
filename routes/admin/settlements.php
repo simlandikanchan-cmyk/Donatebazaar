@@ -10,6 +10,6 @@ Route::prefix('admin/settlements')
         Route::get('/', [AdminSettlementController::class, 'index'])->name('index');
         Route::get('/{settlement}', [AdminSettlementController::class, 'show'])->name('show');
         Route::delete('/{settlement}', [AdminSettlementController::class, 'destroy'])->name('destroy');
-        Route::post('/{settlement}/approve', [AdminSettlementController::class, 'approve'])->name('approve');
-        Route::post('/{settlement}/reject', [AdminSettlementController::class, 'reject'])->name('reject');
+        Route::post('/{settlement}/approve', [AdminSettlementController::class, 'approve'])->middleware('throttle:financial')->name('approve');
+        Route::post('/{settlement}/reject', [AdminSettlementController::class, 'reject'])->middleware('throttle:financial')->name('reject');
     });

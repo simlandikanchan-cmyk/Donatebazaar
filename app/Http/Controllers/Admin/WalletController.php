@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\InsufficientWalletBalanceException;
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
 use App\Models\User;
 use App\Models\Wallet;
 use App\Models\WalletTransaction;
 use App\Services\WalletService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class WalletController extends Controller
@@ -77,17 +79,15 @@ class WalletController extends Controller
     {
         $data = $request->validate([
             'direction' => 'required|in:credit,debit',
-            'amount' => 'required|numeric|min:0.01',
+            'amount' => 'required|numeric|min:0.01|max:100000',
             'notes' => 'required|string|max:1000',
         ]);
 
         $amount = (float) $data['amount'];
 
-        // reference_id is an unsignedBigInteger column (with a unique index on
-        // wallet_id/reference_type/reference_id/source/type), so each adjustment
-        // gets a unique integer id — microsecond timestamp fits in BIGINT and
-        // cannot collide with system references (donation/refund/settlement ids).
         $referenceId = (int) now()->format('Uu');
+
+        $originalBalance = $wallet->balance;
 
         try {
             if ($data['direction'] === 'credit') {
@@ -109,17 +109,65 @@ class WalletController extends Controller
                 ->with('error', $e->getMessage());
         }
 
+        $wallet->refresh();
+
+        ActivityLog::create([
+            'user_id' => auth()->id(),
+            'action' => 'wallet_adjusted',
+            'loggable_type' => Wallet::class,
+            'loggable_id' => $wallet->id,
+            'meta' => [
+                'wallet_id' => $wallet->id,
+                'owner_type' => $wallet->owner_type,
+                'owner_id' => $wallet->owner_id,
+                'direction' => $data['direction'],
+                'amount' => $amount,
+                'previous_balance' => $originalBalance,
+                'new_balance' => $wallet->balance,
+                'notes' => $data['notes'],
+            ],
+        ]);
+
         return redirect()
             ->route('admin.wallets.show', $wallet)
             ->with('success', 'Wallet adjusted ('.$data['direction'].').');
     }
 
-    public function destroy(Wallet $wallet): RedirectResponse
+    public function destroy(Request $request, Wallet $wallet): RedirectResponse
     {
-        $wallet->delete();
+        $request->validate([
+            'reason' => ['required', 'string', 'max:1000'],
+        ]);
+
+        $originalBalance = $wallet->balance;
+        $transactionCount = $wallet->transactions()->count();
+
+        if ($transactionCount > 0) {
+            return redirect()
+                ->route('admin.wallets.show', $wallet)
+                ->with('error', 'Wallets with financial transaction history cannot be deleted. Use archival or contact support.');
+        }
+
+        DB::transaction(function () use ($wallet, $request) {
+            $wallet->delete();
+
+            ActivityLog::create([
+                'user_id' => auth()->id(),
+                'action' => 'wallet_archived',
+                'loggable_type' => Wallet::class,
+                'loggable_id' => $wallet->id,
+                'meta' => [
+                    'wallet_id' => $wallet->id,
+                    'owner_type' => $wallet->owner_type,
+                    'owner_id' => $wallet->owner_id,
+                    'previous_balance' => $originalBalance,
+                    'reason' => $request->input('reason'),
+                ],
+            ]);
+        });
 
         return redirect()
             ->route('admin.wallets.index')
-            ->with('success', 'Wallet deleted successfully.');
+            ->with('success', 'Wallet archived successfully.');
     }
 }

@@ -9,10 +9,10 @@ Route::prefix('gift-cards')->name('gift-cards.')->group(function () {
     Route::post('/verify', [GiftCardController::class, 'verify'])->name('verify');
     Route::get('/redeem', [GiftCardController::class, 'redeemPage'])->name('redeem');
     Route::post('/validate-code', [GiftCardController::class, 'validateCode'])
-        ->middleware('throttle:10,1')
+        ->middleware('throttle:gift-card')
         ->name('validate-code');
     Route::post('/redeem', [GiftCardController::class, 'redeem'])
-        ->middleware('throttle:10,1')
+        ->middleware('throttle:gift-card')
         ->name('redeem.submit');
     Route::get('/success/{code}', [GiftCardController::class, 'redeemSuccess'])->name('redeem.success');
 });

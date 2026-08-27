@@ -2,19 +2,19 @@
 
 namespace Tests\Feature;
 
+use App\Gateways\RazorpayGateway;
 use App\Http\Controllers\PaymentController;
 use App\Models\Campaign;
 use App\Models\Donation;
 use App\Models\Refund;
 use App\Models\User;
+use App\Models\Wallet;
 use App\Services\Payment\PaymentWebhookService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
-use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use Razorpay\Api\Errors\Error as RazorpayError;
-use Razorpay\Api\Payment as RazorpayPayment;
 use ReflectionMethod;
 use Tests\TestCase;
 
@@ -26,8 +26,6 @@ class AdminDonationRefundTest extends TestCase
     {
         parent::setUp();
 
-        // PaymentController/DonationController construct a Razorpay Api client
-        // which aborts unless credentials are configured.
         Config::set('services.razorpay.key', 'rzp_test_key');
         Config::set('services.razorpay.secret', 'rzp_test_secret');
 
@@ -43,8 +41,6 @@ class AdminDonationRefundTest extends TestCase
             'goal_amount' => 10000.00,
         ]);
 
-        // Razorpay payment ids are "pay_" + 14+ alphanumerics (enforced by the
-        // refund controller's payment_id format guard).
         $paymentId = 'pay_'.str_repeat('A', 15);
 
         $this->donation = Donation::create([
@@ -60,41 +56,39 @@ class AdminDonationRefundTest extends TestCase
             'order_id' => 'order_manual_1',
         ]);
 
-        // payment_id / payment_status / is_refunded are guarded on the model,
-        // so persist them via a raw query (mirrors how PaymentController stores them).
         DB::table('donations')->where('id', $this->donation->id)->update([
             'payment_id' => $paymentId,
             'payment_status' => 'completed',
             'is_refunded' => false,
         ]);
+
+        Wallet::create([
+            'owner_type' => User::class,
+            'owner_id' => $this->admin->id,
+            'user_id' => $this->admin->id,
+            'balance' => 0.00,
+            'reserved_balance' => 0.00,
+            'currency' => 'INR',
+        ]);
+
+        Wallet::where('owner_id', $this->admin->id)->update(['balance' => '1000.00']);
     }
 
-    protected function tearDown(): void
+    private function mockRazorpayGateway(?string $refundId, bool $shouldThrow = false): void
     {
-        Mockery::close();
-        parent::tearDown();
-    }
-
-    /**
-     * Mock the Razorpay Payment entity so no real network call is made.
-     * $refundId = the gateway refund id the SDK should return (or null to throw).
-     * The controller does `$api->payment->fetch($id)->refund($attrs)`; Api lazily
-     * instantiates `Razorpay\Api\Payment` via __get, so overloading that class
-     * is enough to intercept the whole chain.
-     */
-    private function mockRazorpay(?string $refundId, bool $shouldThrow = false): void
-    {
-        $paymentMock = Mockery::mock('overload:'.RazorpayPayment::class);
-        $paymentMock->shouldReceive('fetch')->andReturnSelf();
+        $mock = $this->createMock(RazorpayGateway::class);
 
         if ($shouldThrow) {
-            $paymentMock->shouldReceive('refund')
-                ->andThrow(new RazorpayError('gateway declined', 'BAD_REQUEST_ERROR', 400));
+            $mock->method('initiateRefund')
+                ->willThrowException(new RazorpayError('gateway declined', 'BAD_REQUEST_ERROR', 400));
         } else {
             $entity = new \stdClass;
             $entity->id = $refundId;
-            $paymentMock->shouldReceive('refund')->andReturn($entity);
+            $mock->method('initiateRefund')
+                ->willReturn($entity);
         }
+
+        $this->app->instance(RazorpayGateway::class, $mock);
     }
 
     #[Test]
@@ -120,7 +114,7 @@ class AdminDonationRefundTest extends TestCase
     #[Test]
     public function admin_can_refund_a_completed_donation(): void
     {
-        $this->mockRazorpay('rfnd_abc123');
+        $this->mockRazorpayGateway('rfnd_abc123');
 
         $this->actingAs($this->admin)
             ->post(route('admin.donations.refund', $this->donation), ['reason' => 'duplicate charge'])
@@ -181,7 +175,7 @@ class AdminDonationRefundTest extends TestCase
     #[Test]
     public function gateway_failure_does_not_modify_donation_but_logs_failed_refund(): void
     {
-        $this->mockRazorpay(null, shouldThrow: true);
+        $this->mockRazorpayGateway(null, shouldThrow: true);
 
         $this->actingAs($this->admin)
             ->post(route('admin.donations.refund', $this->donation))
@@ -201,8 +195,7 @@ class AdminDonationRefundTest extends TestCase
     #[Test]
     public function admin_refund_then_webhook_is_idempotent_no_double_processing(): void
     {
-        // 1) Admin triggers the refund (creates Refund + flips donation flags).
-        $this->mockRazorpay('rfnd_shared_1');
+        $this->mockRazorpayGateway('rfnd_shared_1');
 
         $this->actingAs($this->admin)
             ->post(route('admin.donations.refund', $this->donation))
@@ -213,7 +206,6 @@ class AdminDonationRefundTest extends TestCase
         $this->assertTrue($this->donation->is_refunded);
         $this->assertEquals(1, Refund::where('donation_id', $this->donation->id)->count());
 
-        // 2) Simulate the refund.processed webhook firing for the SAME gateway_refund_id.
         $payload = [
             'payload' => [
                 'refund' => [
@@ -231,7 +223,6 @@ class AdminDonationRefundTest extends TestCase
         $method->setAccessible(true);
         $method->invoke($controller, $payload);
 
-        // 3) Still exactly one refund, donation still flipped once, no double-processing.
         $this->donation->refresh();
         $this->assertTrue($this->donation->is_refunded);
         $this->assertEquals('refunded', $this->donation->payment_status);

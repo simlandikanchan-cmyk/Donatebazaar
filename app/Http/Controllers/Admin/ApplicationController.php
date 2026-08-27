@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Mail\OrganizationApplicationStatus;
 use App\Mail\OrganizationApplicationSubmitted;
+use App\Models\ActivityLog;
 use App\Models\OrganizationApplication;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,9 +27,9 @@ class ApplicationController extends Controller
     }
 
     /**
-     * Used in steps 2, 3, 4 — fetches existing draft or redirects to step1.
-     */
-    private function getDraftApplication(): OrganizationApplication
+      * Used in steps 2, 3, 4 — fetches existing draft or redirects to step1.
+      */
+    private function getDraftApplication(): \Illuminate\Http\RedirectResponse|OrganizationApplication
     {
         $application = OrganizationApplication::with('user')
             ->where('user_id', Auth::id())
@@ -36,10 +37,9 @@ class ApplicationController extends Controller
             ->first();
 
         if (! $application) {
-            redirect()->route('application.step1')
-                ->with('error', 'Please start your application from Step 1.')
-                ->send();
-            exit;
+            return redirect()
+                ->route('application.step1')
+                ->with('error', 'Please start your application from Step 1.');
         }
 
         return $application;
@@ -98,11 +98,26 @@ class ApplicationController extends Controller
     public function approve(Request $request, $id)
     {
         $application = OrganizationApplication::with('user')->findOrFail($id);
+        $originalStatus = $application->status;
+
         $application->update([
             'status' => 'approved',
             'reviewed_by' => Auth::id(),
             'reviewed_at' => now(),
             'admin_notes' => $request->admin_notes,
+        ]);
+
+        ActivityLog::create([
+            'user_id' => Auth::id(),
+            'action' => 'application_approved',
+            'loggable_type' => OrganizationApplication::class,
+            'loggable_id' => $application->id,
+            'meta' => [
+                'application_id' => $application->id,
+                'user_id' => $application->user_id,
+                'previous_status' => $originalStatus,
+                'new_status' => 'approved',
+            ],
         ]);
 
         $this->notifyStatus($application);
@@ -115,12 +130,28 @@ class ApplicationController extends Controller
         $request->validate(['rejection_reason' => 'required|string']);
 
         $application = OrganizationApplication::with('user')->findOrFail($id);
+        $originalStatus = $application->status;
+
         $application->update([
             'status' => 'rejected',
             'reviewed_by' => Auth::id(),
             'reviewed_at' => now(),
             'rejection_reason' => $request->rejection_reason,
             'admin_notes' => $request->admin_notes,
+        ]);
+
+        ActivityLog::create([
+            'user_id' => Auth::id(),
+            'action' => 'application_rejected',
+            'loggable_type' => OrganizationApplication::class,
+            'loggable_id' => $application->id,
+            'meta' => [
+                'application_id' => $application->id,
+                'user_id' => $application->user_id,
+                'previous_status' => $originalStatus,
+                'new_status' => 'rejected',
+                'reason' => $request->rejection_reason,
+            ],
         ]);
 
         $this->notifyStatus($application);
@@ -186,6 +217,10 @@ class ApplicationController extends Controller
     {
         $application = $this->getDraftApplication();
 
+        if ($application instanceof \Illuminate\Http\RedirectResponse) {
+            return $application;
+        }
+
         return view('application.step2', compact('application'));
     }
 
@@ -201,6 +236,11 @@ class ApplicationController extends Controller
         ]);
 
         $application = $this->getDraftApplication();
+
+        if ($application instanceof \Illuminate\Http\RedirectResponse) {
+            return $application;
+        }
+
         $application->update(array_merge($validated, ['current_step' => 3]));
 
         return redirect()->route('application.step3');
@@ -211,6 +251,10 @@ class ApplicationController extends Controller
     public function step3()
     {
         $application = $this->getDraftApplication();
+
+        if ($application instanceof \Illuminate\Http\RedirectResponse) {
+            return $application;
+        }
 
         return view('application.step3', compact('application'));
     }
@@ -233,6 +277,11 @@ class ApplicationController extends Controller
         $validated['has_csr_eligible'] = $request->boolean('has_csr_eligible');
 
         $application = $this->getDraftApplication();
+
+        if ($application instanceof \Illuminate\Http\RedirectResponse) {
+            return $application;
+        }
+
         $application->update(array_merge($validated, ['current_step' => 4]));
 
         return redirect()->route('application.step4');
@@ -243,6 +292,10 @@ class ApplicationController extends Controller
     public function step4()
     {
         $application = $this->getDraftApplication();
+
+        if ($application instanceof \Illuminate\Http\RedirectResponse) {
+            return $application;
+        }
 
         return view('application.step4', compact('application'));
     }
@@ -296,6 +349,11 @@ class ApplicationController extends Controller
         $validated['has_crowdfunded'] = $request->boolean('has_crowdfunded');
 
         $application = $this->getDraftApplication();
+
+        if ($application instanceof \Illuminate\Http\RedirectResponse) {
+            return $application;
+        }
+
         $application->update(array_merge($validated, [
             'status' => 'pending',
             'current_step' => 4,

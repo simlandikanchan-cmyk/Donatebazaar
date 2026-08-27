@@ -21,6 +21,7 @@ use App\View\Composers\CampaignShowComposer;
 use App\View\Composers\UserSidebarComposer;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\App;
@@ -102,6 +103,11 @@ class AppServiceProvider extends ServiceProvider
     {
         // Bootstrap pagination styling
         Paginator::useBootstrapFive();
+
+        // Named rate limiters for sensitive endpoints
+        RateLimiter::for('webhooks', fn (\Illuminate\Http\Request $request) => \Illuminate\Cache\RateLimiting\Limit::perMinute(120));
+        RateLimiter::for('financial', fn (\Illuminate\Http\Request $request) => \Illuminate\Cache\RateLimiting\Limit::perMinute(10));
+        RateLimiter::for('gift-card', fn (\Illuminate\Http\Request $request) => \Illuminate\Cache\RateLimiting\Limit::perMinute(10));
 
         // Eager-load category + donations on every {campaign} route binding
         Route::bind('campaign', function ($value) {
