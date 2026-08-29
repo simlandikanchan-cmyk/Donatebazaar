@@ -911,7 +911,7 @@ tbody tr:hover .cat-icon-box {
 }
 .bulk-bar {
   position: sticky;
-  z-index: 20;
+  z-index: var(--z-dropdown);
   right: 0;
   bottom: 16px;
   left: 0;

@@ -64,7 +64,7 @@
     <div class="hero-name">Events Management</div>
     <div class="hero-sub">Manage all campaign events — monitor status, participants, and fundraising goals across every organizer.</div>
     <div class="hero-badges">
-      <span class="hero-badge hb-purple">{{ $events->total() }} total</span>
+      <span class="hero-badge hb-primary">{{ $events->total() }} total</span>
       @if(($stats['active'] ?? 0) > 0)
         <span class="hero-badge hb-green">● {{ $stats['active'] }} active</span>
       @endif
@@ -72,7 +72,7 @@
         <span class="hero-badge hb-amber">⏱ {{ $stats['pending'] }} pending</span>
       @endif
       @if(($stats['draft'] ?? 0) > 0)
-        <span class="hero-badge hb-purple">✎ {{ $stats['draft'] }} drafts</span>
+        <span class="hero-badge hb-primary">✎ {{ $stats['draft'] }} drafts</span>
       @endif
       @if(($stats['completed'] ?? 0) > 0)
         <span class="hero-badge hb-blue">✓ {{ $stats['completed'] }} completed</span>
@@ -131,12 +131,12 @@
     </div>
   </a>
   <a href="{{ $mkStatUrl('draft') }}" class="stat {{ $curStatus === 'draft' ? 'stat-on' : '' }}">
-    <div class="stat-icon si-purple">
+    <div class="stat-icon si-primary">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
     </div>
     <div class="stat-body">
       <div class="stat-lbl">Drafts</div>
-      <div class="stat-val sv-purple">{{ $stats['draft'] ?? 0 }}</div>
+      <div class="stat-val sv-primary">{{ $stats['draft'] ?? 0 }}</div>
       <div class="stat-foot">Not published</div>
     </div>
   </a>

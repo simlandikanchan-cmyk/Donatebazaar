@@ -43,7 +43,7 @@ body{font-family:'Outfit',sans-serif;color:var(--ink)}
 }
 .page-shell::before,.page-shell::after{
     content:'';position:fixed;border-radius:50%;
-    filter:blur(80px);pointer-events:none;z-index:0;
+    filter:blur(80px);pointer-events:none;z-index: var(--z-base);
 }
 .page-shell::before{width:420px;height:420px;top:-100px;left:-120px;background:rgba(13,148,136,.14)}
 .page-shell::after {width:360px;height:360px;bottom:-80px;right:-100px;background:rgba(37,99,235,.12)}

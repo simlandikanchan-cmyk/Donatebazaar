@@ -47,7 +47,7 @@
                 @for($i=1;$i<=10;$i++)
                 <div class="testi-card">
                     <div class="testi-quote">"</div>
-                    <span class="testi-badge badge-purple">Celebrity Supporter</span>
+                    <span class="testi-badge badge-teal">Celebrity Supporter</span>
                     <p class="testi-text">Giving back to society is important. This platform makes it easy to contribute meaningfully.</p>
                     <div class="testi-author">
                         <img class="testi-avatar" src="https://i.pravatar.cc/150?img={{ ($i + 49) % 70 + 1 }}" alt="Celebrity {{ $i }}" loading="lazy">

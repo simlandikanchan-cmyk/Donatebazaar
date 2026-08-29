@@ -35,7 +35,7 @@
 }
 /* ── CARDS ── */
 .card {
-  padding: 26px;
+  padding: 22px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--r);
@@ -48,9 +48,9 @@
 .card-hdr {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 22px;
-  padding-bottom: 18px;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding-bottom: 14px;
   border-bottom: 1px solid var(--border);
 }
 .card-ico {
@@ -97,7 +97,7 @@
 }
 /* ── FIELDS ── */
 .field {
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 .field:last-child {
   margin-bottom: 0;

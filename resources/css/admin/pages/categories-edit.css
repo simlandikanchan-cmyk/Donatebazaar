@@ -485,7 +485,7 @@
 }
 .danger-card {
   position: relative;
-  z-index: 0;
+  z-index: var(--z-base);
   overflow: hidden;
   clear: both;
   background: rgba(240, 68, 68, .03);

@@ -235,7 +235,7 @@ textarea:focus-visible {
   align-items:    center;
   justify-content:center;
   cursor:         pointer;
-  z-index:        10;
+  z-index: var(--z-sticky);
   transition:     background .2s;
   font-size:      17px;
 }
@@ -251,7 +251,7 @@ textarea:focus-visible {
   display:        flex;
   justify-content:center;
   gap:            10px;
-  z-index:        10;
+  z-index: var(--z-sticky);
 }
 .hero-dot {
   width:        8px;
@@ -977,7 +977,7 @@ textarea:focus-visible {
 }
 .badge-blue   { background:rgba(37,99,235,.1);  color:var(--primary);  border:1px solid rgba(37,99,235,.2) }
 .badge-green  { background:rgba(22,163,74,.1);  color:var(--success-hover);        border:1px solid rgba(22,163,74,.2) }
-.badge-purple { background:rgba(13,148,136,.1);  color:var(--secondary); border:1px solid rgba(13,148,136,.2) }
+.badge-teal { background:rgba(13,148,136,.1);  color:var(--secondary); border:1px solid rgba(13,148,136,.2) }
 
 .testi-text { font-size:13px; color:var(--text2); line-height:1.7; margin-bottom:16px; font-family:var(--font); font-weight:300 }
 
@@ -1290,7 +1290,7 @@ textarea:focus-visible {
 .camp-filter-sticky {
     position:   sticky;
     top:        72px;
-    z-index:    40;
+    z-index: var(--z-overlay);
     margin:     -8px 0 28px;
     padding:    10px 0;
     background: linear-gradient(180deg, var(--bg) 70%, rgba(244,245,251,0));
@@ -1580,7 +1580,7 @@ textarea:focus-visible {
   bottom:         0;
   left:           0;
   right:          0;
-  z-index:        20;
+  z-index: var(--z-dropdown);
   display:        grid;
   grid-template-columns: repeat(4, 1fr);
   background:     rgba(5, 5, 18, .92);
@@ -1995,7 +1995,7 @@ html:not(.js-enabled) .reveal {
   border-radius:   50%;
   filter:          blur(80px);
   pointer-events:  none;
-  z-index:         0;
+  z-index: var(--z-base);
 }
 .section-gradient::before { width:420px; height:420px; top:-100px;  left:-120px; background:rgba(13,148,136,.14); }
 .section-gradient::after  { width:360px; height:360px; bottom:-80px; right:-100px; background:rgba(37,99,235,.12); }

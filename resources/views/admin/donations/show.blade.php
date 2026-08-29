@@ -26,26 +26,26 @@
 @section('content')
 
 @if(session('success'))
-<div style="background:rgba(5,196,138,.09);border:1px solid rgba(5,196,138,.25);color:#065f46;padding:12px 16px;border-radius:var(--r-sm);font-size:13px;font-weight:500;margin-bottom:18px;display:flex;align-items:center;gap:8px">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+<div class="ds-flash-base ds-flash-success">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="ds-flash-icon"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
   {{ session('success') }}
 </div>
 @endif
 @if(session('error'))
-<div style="background:rgba(240,68,68,.09);border:1px solid rgba(240,68,68,.25);color:#7f1d1d;padding:12px 16px;border-radius:var(--r-sm);font-size:13px;font-weight:500;margin-bottom:18px;display:flex;align-items:center;gap:8px">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+<div class="ds-flash-base ds-flash-error">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="ds-flash-icon"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
   {{ session('error') }}
 </div>
 @endif
 @if(session('info'))
-<div style="background:rgba(59,130,246,.09);border:1px solid rgba(59,130,246,.25);color:#1e40af;padding:12px 16px;border-radius:var(--r-sm);font-size:13px;font-weight:500;margin-bottom:18px;display:flex;align-items:center;gap:8px">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:15px;height:15px;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+<div class="ds-flash-base ds-flash-info">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="ds-flash-icon"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
   {{ session('info') }}
 </div>
 @endif
 
-<div style="margin-bottom:18px;">
-  <a href="{{ route('admin.donations.index') }}" class="btn btn-secondary act-btn ab-view" style="text-decoration:none;">
+<div class="ds-mb-sm">
+  <a href="{{ route('admin.donations.index') }}" class="btn btn-secondary act-btn ab-view ds-no-underline">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6"/></svg>
     <span>Back to donations</span>
   </a>
@@ -68,7 +68,7 @@
   </div>
   <div class="hero-right">
     @if($donation->payment_status === 'completed' && !$donation->is_refunded)
-      <button type="button" data-action="open-refund" data-id="{{ $donation->id }}" data-donor="{{ addslashes($donation->donor_name ?? 'this donation') }}" data-amount="{{ $donation->total_amount }}" class="hero-btn hero-btn-primary" style="background:var(--amber);border-color:var(--amber);color:#fff">
+      <button type="button" data-action="open-refund" data-id="{{ $donation->id }}" data-donor="{{ addslashes($donation->donor_name ?? 'this donation') }}" data-amount="{{ $donation->total_amount }}" class="hero-btn hero-btn-primary ds-btn-refund">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m4 0h1M3 10l2-5h14l2 5v9a1 1 0 01-1 1H4a1 1 0 01-1-1v-9z"/></svg>
         Refund Donation
       </button>
@@ -78,26 +78,26 @@
   </div>
 </div>
 
-<div class="dn-grid" style="margin-bottom:18px;">
-  <div class="table-card" style="padding:18px 20px;">
-    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-family:var(--mono);margin-bottom:12px;">Donor</div>
+<div class="dn-grid ds-mb-sm">
+  <div class="table-card ds-card">
+    <div class="ds-card-hdr">Donor</div>
     <div class="dn-kv"><span class="k">Name</span><span class="v">{{ $donation->is_anonymous ? 'Anonymous' : ($donation->donor_name ?? ($donation->user->name ?? 'Guest')) }}</span></div>
-    <div class="dn-kv" style="margin-top:10px;"><span class="k">Email</span><span class="v">{{ $donation->donor_email ?? ($donation->user->email ?? '—') }}</span></div>
-    <div class="dn-kv" style="margin-top:10px;"><span class="k">Phone</span><span class="v">{{ $donation->donor_phone ?? '—' }}</span></div>
+    <div class="dn-kv ds-mt-xs"><span class="k">Email</span><span class="v">{{ $donation->donor_email ?? ($donation->user->email ?? '—') }}</span></div>
+    <div class="dn-kv ds-mt-xs"><span class="k">Phone</span><span class="v">{{ $donation->donor_phone ?? '—' }}</span></div>
   </div>
-  <div class="table-card" style="padding:18px 20px;">
-    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-family:var(--mono);margin-bottom:12px;">Campaign</div>
+  <div class="table-card ds-card">
+    <div class="ds-card-hdr">Campaign</div>
     <div class="dn-kv"><span class="k">Title</span><span class="v">{{ $donation->campaign->title ?? 'General / Direct' }}</span></div>
-    <div class="dn-kv" style="margin-top:10px;"><span class="k">Type</span><span class="v">{{ ucfirst($donation->donation_type) }}</span></div>
-    <div class="dn-kv" style="margin-top:10px;"><span class="k">Coupon</span><span class="v">{{ $donation->coupon_code ?? '—' }}</span></div>
+    <div class="dn-kv ds-mt-xs"><span class="k">Type</span><span class="v">{{ ucfirst($donation->donation_type) }}</span></div>
+    <div class="dn-kv ds-mt-xs"><span class="k">Coupon</span><span class="v">{{ $donation->coupon_code ?? '—' }}</span></div>
   </div>
-  <div class="table-card" style="padding:18px 20px;">
-    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-family:var(--mono);margin-bottom:12px;">Amounts</div>
-    <div class="dn-kv"><span class="k">Total</span><span class="v" style="color:var(--green)">₹{{ number_format($donation->total_amount, 2) }}</span></div>
-    <div class="dn-kv" style="margin-top:10px;"><span class="k">Platform Fee</span><span class="v">₹{{ number_format($donation->platform_fee, 2) }}</span></div>
-    <div class="dn-kv" style="margin-top:10px;"><span class="k">Net to Campaign</span><span class="v">₹{{ number_format($donation->net_amount, 2) }}</span></div>
+  <div class="table-card ds-card">
+    <div class="ds-card-hdr">Amounts</div>
+    <div class="dn-kv"><span class="k">Total</span><span class="v ds-amount-green">₹{{ number_format($donation->total_amount, 2) }}</span></div>
+    <div class="dn-kv ds-mt-xs"><span class="k">Platform Fee</span><span class="v">₹{{ number_format($donation->platform_fee, 2) }}</span></div>
+    <div class="dn-kv ds-mt-xs"><span class="k">Net to Campaign</span><span class="v">₹{{ number_format($donation->net_amount, 2) }}</span></div>
     @if($donation->discount_amount > 0)
-      <div class="dn-kv" style="margin-top:10px;"><span class="k">Discount</span><span class="v">−₹{{ number_format($donation->discount_amount, 2) }}</span></div>
+      <div class="dn-kv ds-mt-xs"><span class="k">Discount</span><span class="v">−₹{{ number_format($donation->discount_amount, 2) }}</span></div>
     @endif
   </div>
 </div>

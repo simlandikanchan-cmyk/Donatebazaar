@@ -12,6 +12,8 @@ import { csrfFetch } from '../shared/api.js';
   })();
 
   var _cities = data.cities || {};
+  var currentStep = 1;
+  var totalSteps = 4;
 
   var countryEl = document.getElementById('country');
   var stateEl = document.getElementById('state');
@@ -19,7 +21,187 @@ import { csrfFetch } from '../shared/api.js';
   var form = document.getElementById('volunteerForm');
   var submitBtn = document.getElementById('volSubmitBtn');
   var successEl = document.getElementById('volSuccess');
+  var progressFill = document.getElementById('volProgressFill');
 
+  /* ── STEP NAVIGATION (event delegation) ── */
+  document.addEventListener('click', function(e) {
+    var btn = e.target.closest('.vol-btn-next');
+    if (btn) {
+      e.preventDefault();
+      var step = parseInt(btn.getAttribute('data-step'), 10);
+      if (step) volGoToStep(step);
+    }
+    var prevBtn = e.target.closest('.vol-btn-prev');
+    if (prevBtn) {
+      e.preventDefault();
+      var step = parseInt(prevBtn.getAttribute('data-step'), 10);
+      if (step) volGoToStep(step);
+    }
+  });
+
+  window.volGoToStep = function(step) {
+    if (step > currentStep) {
+      if (!validateStep(currentStep)) return;
+    }
+
+    currentStep = step;
+    updateStepVisibility();
+    updateProgress();
+  };
+
+  function updateStepVisibility() {
+    document.querySelectorAll('.vol-step').forEach(function(el) {
+      el.classList.remove('active');
+    });
+    var target = document.querySelector('.vol-step[data-step="' + currentStep + '"]');
+    if (target) target.classList.add('active');
+  }
+
+  function updateProgress() {
+    if (!progressFill) return;
+    var pct = ((currentStep - 1) / (totalSteps - 1)) * 100;
+    progressFill.style.width = pct + '%';
+
+    document.querySelectorAll('.vol-progress-step').forEach(function(el) {
+      var stepNum = parseInt(el.getAttribute('data-step'), 10);
+      el.classList.remove('active', 'completed');
+      if (stepNum < currentStep) {
+        el.classList.add('completed');
+      } else if (stepNum === currentStep) {
+        el.classList.add('active');
+      }
+    });
+  }
+
+  /* ── VALIDATION ── */
+  function validateStep(step) {
+    var stepEl = document.querySelector('.vol-step[data-step="' + step + '"]');
+    if (!stepEl) return true;
+
+    var inputs = stepEl.querySelectorAll('input[required], select[required], textarea[required]');
+    var valid = true;
+
+    inputs.forEach(function(input) {
+      if (!input.value.trim()) {
+        valid = false;
+        showFieldError(input);
+      } else {
+        clearFieldError(input);
+      }
+    });
+
+    if (!valid) {
+      toast({
+        type: 'warning',
+        title: 'Please complete all required fields',
+        message: 'Fields marked with * are required.',
+        duration: 4000
+      });
+    }
+
+    return valid;
+  }
+
+  function showFieldError(input) {
+    input.classList.add('input-error');
+    var field = input.closest('.vol-field');
+    if (field) {
+      var existing = field.querySelector('.vol-error');
+      if (!existing) {
+        var error = document.createElement('div');
+        error.className = 'vol-error';
+        error.textContent = 'This field is required';
+        field.appendChild(error);
+      }
+    }
+  }
+
+  function clearFieldError(input) {
+    input.classList.remove('input-error');
+    var field = input.closest('.vol-field');
+    if (field) {
+      var existing = field.querySelector('.vol-error');
+      if (existing && !existing.hasAttribute('data-laravel')) {
+        existing.remove();
+      }
+    }
+  }
+
+  /* ── CHARACTER COUNTERS ── */
+  window.updateCharCount = function(textarea, counterId) {
+    var counter = document.getElementById(counterId);
+    if (!counter) return;
+    var len = textarea.value.length;
+    var max = parseInt(textarea.getAttribute('maxlength'), 10) || 1000;
+    counter.textContent = len;
+
+    counter.parentElement.classList.remove('warning', 'danger');
+    if (len > max * 0.9) {
+      counter.parentElement.classList.add('danger');
+    } else if (len > max * 0.75) {
+      counter.parentElement.classList.add('warning');
+    }
+  };
+
+  /* Initialize character counters */
+  try {
+    document.querySelectorAll('[oninput*="updateCharCount"]').forEach(function(el) {
+      var match = el.getAttribute('oninput').match(/updateCharCount\([^,]+,\s*['"]([^'"]+)['"]\)/);
+      if (match) updateCharCount(el, match[1]);
+    });
+  } catch (e) { /* ignore counter init errors */ }
+
+  /* ── SKILLS TAG INPUT ── */
+  var skillsInput = document.getElementById('skillsInput');
+  var skillsHidden = document.getElementById('skills');
+  var tagsContainer = document.getElementById('tagsContainer');
+  var skills = [];
+
+  function renderSkills() {
+    tagsContainer.innerHTML = '';
+    skills.forEach(function(skill, index) {
+      var tag = document.createElement('span');
+      tag.className = 'vol-tag';
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.setAttribute('aria-label', 'Remove ' + skill);
+      btn.setAttribute('data-index', String(index));
+      btn.innerHTML = '&times;';
+      btn.addEventListener('click', function() {
+        var idx = parseInt(this.getAttribute('data-index'), 10);
+        skills.splice(idx, 1);
+        renderSkills();
+      });
+      tag.appendChild(document.createTextNode(skill + ' '));
+      tag.appendChild(btn);
+      tagsContainer.appendChild(tag);
+    });
+    skillsHidden.value = skills.join(', ');
+  }
+
+  if (skillsInput && tagsContainer) {
+    skillsInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        var val = this.value.trim();
+        if (val && !skills.includes(val)) {
+          skills.push(val);
+          renderSkills();
+          this.value = '';
+        }
+      } else if (e.key === 'Backspace' && !this.value && skills.length > 0) {
+        skills.pop();
+        renderSkills();
+      }
+    });
+
+    if (data.oldSkills) {
+      skills = data.oldSkills.split(',').map(function(s) { return s.trim(); }).filter(Boolean);
+      renderSkills();
+    }
+  }
+
+  /* ── LOCATION DROPDOWNS ── */
   function loadStates(country) {
     if (country === 'India') {
       csrfFetch('/api/v1/states/india')
@@ -31,13 +213,15 @@ import { csrfFetch } from '../shared/api.js';
             stateEl.innerHTML += '<option value="' + s + '"' + selected + '>' + s + '</option>';
           });
           stateEl.style.display = '';
+          stateEl.closest('.vol-field').style.display = '';
           if (stateEl.value) { loadCities(stateEl.value); }
         });
     } else {
       stateEl.innerHTML = '<option value="">Select state</option>';
       stateEl.style.display = 'none';
-      cityEl.innerHTML = '<option value="">Select city</option>';
-      cityEl.style.display = 'none';
+      stateEl.closest('.vol-field').style.display = 'none';
+      cityEl.value = '';
+      cityEl.closest('.vol-field').querySelector('.vol-city-wrap').style.display = 'none';
     }
   }
 
@@ -52,10 +236,14 @@ import { csrfFetch } from '../shared/api.js';
       cityEl.innerHTML += '<option value="' + c + '"' + selected + '>' + c + '</option>';
     });
     cityEl.style.display = '';
+    cityEl.closest('.vol-field').querySelector('.vol-city-wrap').style.display = '';
   }
 
   if (countryEl) {
-    countryEl.addEventListener('change', function() { loadStates(this.value); });
+    countryEl.addEventListener('change', function() {
+      loadStates(this.value);
+      updateStepVisibility();
+    });
     loadStates(countryEl.value);
   }
 
@@ -63,6 +251,7 @@ import { csrfFetch } from '../shared/api.js';
     stateEl.addEventListener('change', function() { loadCities(this.value); });
   }
 
+  /* ── TOAST NOTIFICATIONS ── */
   var stack = document.getElementById('toastStack');
 
   function toast(opts){
@@ -88,7 +277,7 @@ import { csrfFetch } from '../shared/api.js';
             (title   ? '<div class="toast-title">'+ title   +'</div>' : '') +
             (message ? '<div class="toast-msg">'  + message +'</div>' : '') +
         '</div>' +
-        '<button class="toast-close" aria-label="Dismiss">✕</button>';
+        '<button class="toast-close" aria-label="Dismiss">&times;</button>';
 
     t.querySelector('.toast-close').addEventListener('click', function(){ dismiss(t); });
     stack.appendChild(t);
@@ -106,7 +295,7 @@ import { csrfFetch } from '../shared/api.js';
     setTimeout(function(){ if(t.parentNode) t.parentNode.removeChild(t); }, 320);
   }
 
-  /* Form submit with loading state */
+  /* ── FORM SUBMIT ── */
   if (form && submitBtn) {
     form.addEventListener('submit', function() {
       submitBtn.classList.add('loading');
@@ -114,18 +303,22 @@ import { csrfFetch } from '../shared/api.js';
     });
   }
 
-  /* FAQ accordion */
+  /* ── FAQ ACCORDION ── */
   document.querySelectorAll('.vol-faq-q').forEach(function(btn) {
     btn.addEventListener('click', function() {
       var item = this.closest('.vol-faq-item');
       var isOpen = item.classList.contains('open');
       document.querySelectorAll('.vol-faq-item').forEach(function(el) { el.classList.remove('open'); });
-      if (!isOpen) { item.classList.add('open'); this.setAttribute('aria-expanded', 'true'); }
-      else { this.setAttribute('aria-expanded', 'false'); }
+      if (!isOpen) {
+        item.classList.add('open');
+        this.setAttribute('aria-expanded', 'true');
+      } else {
+        this.setAttribute('aria-expanded', 'false');
+      }
     });
   });
 
-  /* Success state from session */
+  /* ── SUCCESS / ERROR HANDLING ── */
   if (data.success) {
     setTimeout(function(){
       toast({ type:'success', title:'Application Submitted!', message: data.success, duration:6000 });
@@ -151,7 +344,7 @@ import { csrfFetch } from '../shared/api.js';
     }, 300);
   }
 
-  /* Animate hero stats counter */
+  /* ── ANIMATE HERO COUNTERS ── */
   function animateCounters() {
     document.querySelectorAll('[data-count]').forEach(function(el) {
       var target = parseInt(el.getAttribute('data-count'), 10);
@@ -180,4 +373,11 @@ import { csrfFetch } from '../shared/api.js';
 
   var heroStats = document.querySelector('.vol-hero-stats');
   if (heroStats) heroObserver.observe(heroStats);
+
+  /* ── INITIALIZE ── */
+  try {
+    updateProgress();
+  } catch (e) {
+    console.error('Volunteer apply init error:', e);
+  }
 })();

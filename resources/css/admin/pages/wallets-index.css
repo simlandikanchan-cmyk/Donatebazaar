@@ -1,0 +1,136 @@
+/* ═══════════════════════════════════════════════════════════════════
+   ADMIN — Pages: Wallets Index
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .table-card-head {
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+  .table-card-head > div:last-child {
+    width: 100%;
+  }
+  .table-card-head .swrap {
+    width: 100%;
+  }
+  .table-card-head .sinp {
+    width: 100% !important;
+  }
+  #walletsTable thead {
+    display: none;
+  }
+  #walletsTable tbody tr {
+    display: flex;
+    flex-direction: column;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    gap: 8px;
+  }
+  #walletsTable tbody tr td {
+    padding: 0;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  #walletsTable tbody tr td::before {
+    content: attr(data-label);
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    font-family: var(--mono);
+    min-width: 75px;
+    flex-shrink: 0;
+  }
+  #walletsTable .action-btns {
+    justify-content: flex-start;
+    width: 100%;
+  }
+  #walletsTable td[data-label="Actions"] {
+    flex-wrap: wrap;
+  }
+  #walletsTable td[data-label="Actions"]::before {
+    content: "Actions";
+    min-width: auto;
+    margin-right: auto;
+  }
+  #walletsTable tbody tr td.cell-id {
+    font-size: 10px;
+    color: var(--text3);
+    margin-bottom: 0;
+  }
+  #walletsTable .td-mono {
+    font-size: 12px;
+  }
+  .ftabs {
+    display: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-name {
+    font-size: 20px;
+  }
+  .hero-sub {
+    font-size: 12px;
+  }
+  .hero-badges {
+    gap: 6px;
+  }
+  .hero-badge {
+    font-size: 10px;
+    padding: 4px 10px;
+  }
+}
+
+/* ── ACTION BUTTONS ─────────────────────────────────────────────────── */
+.action-btns .ab-view,
+.action-btns .ab-delete {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: var(--r-xs);
+  cursor: pointer;
+  transition: all var(--ease);
+}
+.action-btns .ab-view {
+  color: var(--text2);
+  background: var(--surface2);
+  border-color: var(--border2);
+}
+.action-btns .ab-view:hover {
+  color: var(--a);
+  background: var(--a-lt);
+  border-color: var(--a);
+}
+.action-btns .ab-delete {
+  color: var(--red);
+  background: var(--red-lt);
+  border-color: rgba(240, 68, 68, .2);
+}
+.action-btns .ab-delete:hover {
+  color: var(--white);
+  background: var(--red);
+  border-color: var(--red);
+}
+.action-btns .ab-view svg,
+.action-btns .ab-delete svg {
+  width: 16px;
+  height: 16px;
+}

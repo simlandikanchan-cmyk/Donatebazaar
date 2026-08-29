@@ -9,9 +9,9 @@
         'yellow' => 'd-yellow',
         'pink' => 'd-pink',
         'blue' => 'd-blue',
-        'purple' => 'd-purple',
+        'primary' => 'd-primary',
+        'secondary' => 'd-secondary',
         'red' => 'd-red',
-        'indigo' => 'd-indigo',
     ];
     $dotClass = $colorMap[$color] ?? 'd-green';
 @endphp

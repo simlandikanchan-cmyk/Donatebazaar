@@ -117,7 +117,7 @@ html:not(.js-enabled) .reveal { opacity: 1; transform: none; }
 @keyframes marquee { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
 
 .blog-filter-bar {
-    position: sticky; top: 64px; z-index: 40;
+    position: sticky; top: 64px; z-index: var(--z-overlay);
     background: rgba(255,255,255,.96);
     backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border2);

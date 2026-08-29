@@ -13,7 +13,7 @@
         <div class="hero-name">Volunteer Applications</div>
         <div class="hero-sub">Review, approve or reject volunteer applications submitted through the platform.</div>
         <div class="hero-badges">
-          <span class="hero-badge hb-purple">{{ $stats['total'] }} total</span>
+          <span class="hero-badge hb-primary">{{ $stats['total'] }} total</span>
           @if($stats['pending'] > 0)
             <span class="hero-badge hb-amber">{{ $stats['pending'] }} pending</span>
           @endif
@@ -35,12 +35,12 @@
 
     <div class="stats-grid">
       <div class="stat">
-        <div class="stat-icon si-purple">
+        <div class="stat-icon si-primary">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
         </div>
         <div class="stat-body">
           <div class="stat-lbl">Total</div>
-          <div class="stat-val sv-purple">{{ $stats['total'] }}</div>
+          <div class="stat-val sv-primary">{{ $stats['total'] }}</div>
           <div class="stat-foot">All applications</div>
         </div>
       </div>
@@ -259,8 +259,8 @@ tbody tr:hover{background:var(--surface2);}
 .empty-inner strong{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--text2);}
 .empty-inner span{font-size:13px;color:var(--text3);}
 
-.hero-badge.hb-purple{background:rgba(37,99,235,.12);color:var(--a);border-color:rgba(37,99,235,.22);}
-[data-theme="dark"] .hero-badge.hb-purple{color:#93c5fd;}
+.hero-badge.hb-primary{background:rgba(37,99,235,.12);color:var(--a);border-color:rgba(37,99,235,.22);}
+[data-theme="dark"] .hero-badge.hb-primary{color:#93c5fd;}
 
 @media(max-width:860px){.search-wrap{display:none}}
 @media(max-width:600px){.filter-bar{flex-direction:column;align-items:stretch}.filter-inp,.filter-sel{width:100%}}

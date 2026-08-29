@@ -57,7 +57,7 @@
             {{-- Card 1: Basic Info --}}
             <div class="card d1">
                 <div class="card-header">
-                    <div class="card-icon ic-indigo">
+                    <div class="card-icon ic-primary">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a2 2 0 012-2z"/></svg>
                     </div>
                     <div>
@@ -266,7 +266,7 @@
         {{-- Campaign Preview --}}
         <div class="card" style="--delay:.08s">
             <div class="card-header">
-                <div class="card-icon ic-indigo">
+                <div class="card-icon ic-primary">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                 </div>
                 <div>
@@ -350,7 +350,7 @@
 .card-header{padding:15px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
 .card-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .card-icon svg{width:15px;height:15px;}
-.ic-indigo{background:rgba(99,102,241,0.12);color:var(--accent);}
+.ic-primary{background:rgba(37,99,235,0.12);color:var(--primary);}
 .ic-green {background:rgba(16,185,129,0.12);color:var(--green);}
 .ic-yellow{background:rgba(245,158,11,0.12);color:var(--yellow);}
 .ic-pink  {background:rgba(236,72,153,0.12);color:#ec4899;}

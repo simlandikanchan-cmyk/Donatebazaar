@@ -47,7 +47,7 @@ a    { text-decoration: none; color: inherit; }
     1. HERO
 ══════════════════════════════════════════════════════════ */
 .hero { position: relative; width: 100%; min-height: 76vh; overflow: hidden; display: flex; flex-direction: column; }
-.hero-bg { position: absolute; inset: 0; z-index: 0; }
+.hero-bg { position: absolute; inset: 0; z-index: var(--z-base); }
 .hero-bg img { width: 100%; height: 100%; object-fit: cover; object-position: center 30%; }
 .hero-overlay { position: absolute; inset: 0; z-index: 1; background: linear-gradient(160deg, var(--dark-bg), var(--slate-900) 50%, var(--secondary-ink)); }
 .hero-grid-lines { position: absolute; inset: 0; z-index: 1; background-image: linear-gradient(rgba(37,99,235,.06) 1px,transparent 1px), linear-gradient(90deg,rgba(37,99,235,.06) 1px,transparent 1px); background-size: 60px 60px; opacity: .5; }
@@ -88,7 +88,7 @@ a    { text-decoration: none; color: inherit; }
 /* ═══════════════════════════════════════════════════════════
     2. FILTER + SORT TOOLBAR
 ══════════════════════════════════════════════════════════ */
-.toolbar-section { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 64px; z-index: 200; box-shadow: var(--shadow); }
+.toolbar-section { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 64px; z-index: var(--z-scroll); box-shadow: var(--shadow); }
 .toolbar-inner { display: flex; align-items: center; gap: 12px; padding: 14px 24px; max-width: 1180px; margin: 0 auto; flex-wrap: wrap; }
 
 /* Category chips */
@@ -227,7 +227,7 @@ a    { text-decoration: none; color: inherit; }
     border: 1.5px solid var(--border2);
     border-radius: var(--radius-sm);
     box-shadow: 0 8px 28px rgba(0,0,0,.12);
-    z-index: 20;
+    z-index: var(--z-dropdown);
     max-height: 200px;
     overflow-y: auto;
     scrollbar-width: thin;
@@ -557,7 +557,7 @@ a    { text-decoration: none; color: inherit; }
 ══════════════════════════════════════════════════════════ */
 .cta-section { position: relative; overflow: hidden; padding: 100px 0; text-align: center; background: linear-gradient(160deg,var(--dark-bg-deep) 0%,var(--dark-bg) 50%,var(--dark-surface) 100%); }
 .cta-section::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 700px; height: 700px; border-radius: 50%; background: radial-gradient(circle,rgba(37,99,235,.12) 0%,transparent 70%); pointer-events: none; }
-.cta-bg-img { position: absolute; inset: 0; z-index: 0; }
+.cta-bg-img { position: absolute; inset: 0; z-index: var(--z-base); }
 .cta-bg-img img { width: 100%; height: 100%; object-fit: cover; opacity: .15; }
 .cta-inner { position: relative; z-index: 1; max-width: 600px; margin: 0 auto; padding: 0 24px; }
 .cta-title { font-family: var(--font-display); font-size: clamp(2rem,4vw,3rem); font-weight: 700; color: var(--white); margin-bottom: 14px; line-height: 1.1; }

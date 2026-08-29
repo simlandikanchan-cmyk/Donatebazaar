@@ -34,7 +34,7 @@ html:not(.js-enabled) .reveal, html:not(.js-enabled) .reveal-left, html:not(.js-
     position:relative; width:100%; min-height:72vh;
     overflow:hidden; display:flex; flex-direction:column;
 }
-.hiw-hero-bg { position:absolute; inset:0; z-index:0; }
+.hiw-hero-bg { position:absolute; inset:0; z-index: var(--z-base); }
 .hiw-hero-bg img { width:100%; height:100%; object-fit:cover; object-position:center 35%; }
 .hiw-hero-overlay {
     position:absolute; inset:0; z-index:1;
@@ -148,7 +148,7 @@ html:not(.js-enabled) .reveal, html:not(.js-enabled) .reveal-left, html:not(.js-
 /* ═══════════════════════════════════════════════
    3. TAB SWITCHER
 ═══════════════════════════════════════════════ */
-.tabs-section { background:var(--surface); border-bottom:1px solid var(--border2); position:sticky; top:64px; z-index:100; box-shadow:var(--shadow); }
+.tabs-section { background:var(--surface); border-bottom:1px solid var(--border2); position:sticky; top:64px; z-index: var(--z-toolbar); box-shadow:var(--shadow); }
 .tabs-inner { display:flex; align-items:center; gap:4px; max-width:1180px; margin:0 auto; padding:10px 24px; }
 .hiw-tab {
     display:flex; align-items:center; gap:8px;
@@ -187,7 +187,7 @@ html:not(.js-enabled) .reveal, html:not(.js-enabled) .reveal-left, html:not(.js-
     top:52px; left:12.5%; right:12.5%;
     height:2px;
     background:linear-gradient(90deg,transparent,var(--primary),var(--secondary),var(--primary),transparent);
-    z-index:0;
+    z-index: var(--z-base);
     opacity:.3;
 }
 @media(max-width:960px){ .steps-grid::before{display:none;} }
@@ -282,7 +282,7 @@ html:not(.js-enabled) .reveal, html:not(.js-enabled) .reveal-left, html:not(.js-
     top:28px; right:0; left:50%;
     height:2px;
     background:linear-gradient(90deg,rgba(37,99,235,.5),rgba(13,148,136,.5));
-    z-index:0;
+    z-index: var(--z-base);
 }
 @media(max-width:768px){
     .journey-step { flex-direction:row; align-items:flex-start; text-align:left; padding:0 0 36px 0; gap:18px; width:100%; }

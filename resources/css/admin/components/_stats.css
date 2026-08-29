@@ -146,8 +146,12 @@
   background: var(--pink-lt);
 }
 .si-purple {
-  color: var(--purple);
-  background: var(--purple-lt);
+  color: var(--primary);
+  background: var(--primary-tint-bg);
+}
+.si-primary {
+  color: var(--primary);
+  background: var(--primary-tint-bg);
 }
 .si-red {
   color: var(--red);
@@ -213,7 +217,10 @@
   color: var(--pink);
 }
 .sv-purple {
-  color: var(--purple);
+  color: var(--primary);
+}
+.sv-primary {
+  color: var(--primary);
 }
 .sv-red {
   color: var(--red);

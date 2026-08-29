@@ -55,13 +55,13 @@ body{font-family:var(--font);color:var(--ink);-webkit-font-smoothing:antialiased
 .page-shell::before,
 .page-shell::after{
   content:'';position:fixed;border-radius:50%;
-  filter:blur(90px);pointer-events:none;z-index:0;
+  filter:blur(90px);pointer-events:none;z-index: var(--z-base);
 }
 .page-shell::before{width:500px;height:500px;top:-140px;left:-160px;background:rgba(13,148,136,.12)}
 .page-shell::after{width:420px;height:420px;bottom:-100px;right:-120px;background:rgba(37,99,235,.1)}
 
 .grid-dots{
-  position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.35;
+  position:fixed;inset:0;pointer-events:none;z-index: var(--z-base);opacity:.35;
   background-image:radial-gradient(circle,#60a5fa 1px,transparent 1px);
   background-size:32px 32px;
 }

@@ -166,7 +166,7 @@
     border-radius: var(--r); padding: 14px 20px;
     display: flex; align-items: center; justify-content: space-between; gap: 12px;
     box-shadow: 0 4px 24px rgba(0,0,0,0.08); margin-top: 16px;
-    animation: fadeUp 0.4s 0.15s ease both; z-index: 50; flex-wrap: wrap;
+    animation: fadeUp 0.4s 0.15s ease both; z-index: var(--z-modal); flex-wrap: wrap;
 }
 .action-bar-left { display: flex; align-items: center; gap: 14px; }
 .action-indicator { display: flex; align-items: center; gap: 6px; }

@@ -12,7 +12,7 @@
 .card-header-left{display:flex;align-items:center;gap:10px;}
 .card-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .card-icon svg{width:15px;height:15px;}
-.ic-indigo{background:rgba(99,102,241,0.12);color:var(--accent);}
+.ic-primary{background:rgba(37,99,235,0.12);color:var(--primary);}
 .ic-green{background:rgba(16,185,129,0.12);color:var(--green);}
 .ic-yellow{background:rgba(245,158,11,0.12);color:var(--yellow);}
 .ic-blue{background:rgba(59,130,246,0.12);color:#3b82f6;}

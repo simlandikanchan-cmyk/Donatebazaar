@@ -1,6 +1,6 @@
-﻿/* ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ
-   PAGES ΓÇö Dashboard
-   ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ */
+/* G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��
+   PAGES G�� Dashboard
+   G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G��G�� */
 
 .welcome-banner {
   background: linear-gradient(135deg, var(--glass-bg) 0%, rgba(239,246,255,.85) 100%);
@@ -58,7 +58,8 @@
 .wb-badge:hover { transform: translateY(-1px); }
 .wbb-green  { background: var(--success-tint-3); color: var(--success-hover); border: 1px solid var(--success-tint-2); box-shadow: 0 1px 3px rgba(22,163,74,.08); }
 .wbb-yellow { background: var(--warning-tint-2); color: var(--warning-hover); border: 1px solid var(--warning-tint); box-shadow: 0 1px 3px rgba(245,158,11,.08); }
-.wbb-purple { background: var(--indigo-tint-bg); color: var(--indigo); border: 1px solid var(--indigo-tint-2); box-shadow: 0 1px 3px rgba(79,70,229,.08); }
+.wbb-purple { background: var(--primary-tint-3); color: var(--primary); border: 1px solid var(--primary-tint-2); box-shadow: 0 1px 3px rgba(37,99,235,.08); }
+.wbb-primary { background: var(--primary-tint-3); color: var(--primary); border: 1px solid var(--primary-tint-2); box-shadow: 0 1px 3px rgba(37,99,235,.08); }
 .wbb-red    { background: var(--danger-tint-2); color: var(--danger-hover); border: 1px solid var(--danger-tint); box-shadow: 0 1px 3px rgba(239,68,68,.08); }
 .wb-badge .badge-ico { width: 12px; height: 12px; flex-shrink: 0; }
 .wb-right {
@@ -241,7 +242,7 @@
 [data-theme="dark"] .alert-warning { background: rgba(245,158,11,.10); border-color: rgba(245,158,11,.25); color: var(--warning-tint); }
 [data-theme="dark"] .alert-danger  { background: rgba(239,68,68,.10); border-color: rgba(239,68,68,.25); color: var(--danger-soft); }
 
-/* ΓòÉΓòÉ RECENT DONOR ACTIVITY ΓòÉΓòÉ */
+/* G��G�� RECENT DONOR ACTIVITY G��G�� */
 .activity-card {
   background: var(--glass-bg); border: 1px solid var(--glass-border);
   border-radius: 18px; padding: 22px;
@@ -288,8 +289,10 @@
 .activity-dot.d-accent { background: linear-gradient(135deg, var(--primary), var(--info-light)); }
 .activity-dot.d-pink   { background: linear-gradient(135deg, var(--pink), var(--pink-light)); }
 .activity-dot.d-blue   { background: linear-gradient(135deg, var(--primary-hover), var(--primary-light)); }
-.activity-dot.d-purple { background: linear-gradient(135deg, var(--violet-hover), var(--violet-light)); }
-.activity-dot.d-indigo { background: linear-gradient(135deg, var(--primary), var(--indigo-light)); }
+.activity-dot.d-purple { background: linear-gradient(135deg, var(--primary), var(--primary-light)); }
+.activity-dot.d-indigo { background: linear-gradient(135deg, var(--primary-hover), var(--primary)); }
+.activity-dot.d-primary { background: linear-gradient(135deg, var(--primary), var(--primary-light)); }
+.activity-dot.d-secondary { background: linear-gradient(135deg, var(--primary-hover), var(--primary)); }
 .activity-dot .ad-letter { line-height: 1; }
 .activity-line {
   width: 2px; flex: 1;
@@ -305,7 +308,7 @@
 .activity-sub { font-size: 11.5px; color: var(--text3); margin-top: 2px; }
 .activity-sub span { color: var(--primary); font-weight: 600; }
 
-/* ΓòÉΓòÉ PENDING TASKS ΓòÉΓòÉ */
+/* G��G�� PENDING TASKS G��G�� */
 .pending-card {
   background: var(--card-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--border); border-radius: 18px; padding: 20px;
@@ -336,7 +339,7 @@
 .pending-arrow { width: 16px; height: 16px; color: var(--text3); flex-shrink: 0; transition: all .2s ease; }
 .pending-item:hover .pending-arrow { transform: translateX(4px); color: var(--primary); }
 
-/* ΓòÉΓòÉ ANALYTICS ROW ΓòÉΓòÉ */
+/* G��G�� ANALYTICS ROW G��G�� */
 .analytics-row { display: grid; grid-template-columns: 1fr 300px; gap: 16px; margin-bottom: 22px; }
 .chart-card {
   background: var(--glass-bg); border: 1px solid var(--glass-border);
@@ -345,6 +348,7 @@
   backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
   animation: fadeUp .5s .22s ease both;
   transition: transform .3s ease, box-shadow .3s ease;
+  margin-bottom: 22px;
 }
 .chart-card:hover { transform: translateY(-3px); box-shadow: var(--sh-md); }
 .chart-card-hdr { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; gap: 10px; }
@@ -385,9 +389,9 @@
 .qs-prog-bar  { height: 6px; background: var(--surface3); border-radius: 100px; overflow: hidden; }
 .qs-prog-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg, var(--primary), var(--secondary)); transition: width 1.2s cubic-bezier(.4,0,.2,1); }
 
-/* ═══════════════════════════════════════════════════════════════════
-   INSIGHT ROW — Level + Top Campaign cards
-   ═══════════════════════════════════════════════════════════════════ */
+/* -------------------------------------------------------------------
+   INSIGHT ROW � Level + Top Campaign cards
+   ------------------------------------------------------------------- */
 .insight-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -418,9 +422,9 @@
   letter-spacing: -.01em;
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   TOP CAMPAIGN CARD — Redesigned
-   ═══════════════════════════════════════════════════════════════════ */
+/* -------------------------------------------------------------------
+   TOP CAMPAIGN CARD � Redesigned
+   ------------------------------------------------------------------- */
 .top-campaign-card {
   display: flex;
   flex-direction: column;
@@ -631,9 +635,9 @@
   .chart-card, .qs-panel { padding: 16px; }
 }
 
-/* ═══════════════════════════════════════════════════════════════════
+/* -------------------------------------------------------------------
    Utility classes replacing inline styles
-   ═══════════════════════════════════════════════════════════════════ */
+   ------------------------------------------------------------------- */
 .wb-badge--inline { margin-left: 8px; font-size: 10px; }
 .wb-sub--flex { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .wb-sub-text { font-size: 11.5px; color: var(--text3); font-family: var(--mono); }

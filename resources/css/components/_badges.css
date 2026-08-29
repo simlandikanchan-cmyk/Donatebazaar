@@ -5,8 +5,8 @@
   font-weight: 600;
   letter-spacing: .1em;
   text-transform: uppercase;
-  color: var(--purple-main);
-  background: var(--purple-pale);
+  color: var(--primary);
+  background: var(--primary-tint-3);
   padding: 3px 10px;
   border-radius: 100px;
   margin-bottom: 10px;

@@ -24,8 +24,8 @@
 .stat-card:nth-child(2){ animation-delay:.10s } .stat-card:nth-child(2)::before { background: linear-gradient(90deg, var(--pink), var(--pink-light)); }
 .stat-card:nth-child(3){ animation-delay:.15s } .stat-card:nth-child(3)::before { background: linear-gradient(90deg, var(--success), var(--success-light)); }
 .stat-card:nth-child(4){ animation-delay:.20s } .stat-card:nth-child(4)::before { background: linear-gradient(90deg, var(--warning), var(--warning-light)); }
-.stat-card:nth-child(5){ animation-delay:.25s } .stat-card:nth-child(5)::before { background: linear-gradient(90deg, var(--primary-hover), var(--primary) ); }
-.stat-card:nth-child(6){ animation-delay:.30s } .stat-card:nth-child(6)::before { background: linear-gradient(90deg, var(--violet-hover), var(--violet)); }
+.stat-card:nth-child(5){ animation-delay:.25s } .stat-card:nth-child(5)::before { background: linear-gradient(90deg, var(--secondary), var(--secondary-light)); }
+.stat-card:nth-child(6){ animation-delay:.30s } .stat-card:nth-child(6)::before { background: linear-gradient(90deg, var(--secondary-hover), var(--secondary)); }
 
 .stat-icon-wrap {
   width: 46px; height: 46px; border-radius: 13px;
@@ -41,11 +41,13 @@
 .stat-card.is-link:hover::after { color: var(--primary); transform: translateX(3px); }
 .stat-icon-wrap svg { width: 20px; height: 20px; }
 .si-indigo { background: linear-gradient(135deg, rgba(37,99,235,.12), rgba(13,148,136,.08)); color: var(--primary); box-shadow: 0 2px 8px rgba(37,99,235,.12); }
+.si-primary { background: linear-gradient(135deg, rgba(37,99,235,.12), rgba(13,148,136,.08)); color: var(--primary); box-shadow: 0 2px 8px rgba(37,99,235,.12); }
 .si-pink   { background: linear-gradient(135deg, rgba(236,72,153,.12), rgba(244,114,182,.08)); color: var(--pink); box-shadow: 0 2px 8px rgba(236,72,153,.12); }
 .si-green  { background: linear-gradient(135deg, rgba(22,163,74,.12), rgba(52,211,153,.08)); color: var(--green); box-shadow: 0 2px 8px rgba(22,163,74,.12); }
 .si-yellow { background: linear-gradient(135deg, rgba(245,158,11,.12), rgba(251,191,36,.08)); color: var(--warning); box-shadow: 0 2px 8px rgba(245,158,11,.12); }
 .si-blue   { background: linear-gradient(135deg, rgba(59,130,246,.12), rgba(37,99,235,.08)); color: var(--blue); box-shadow: 0 2px 8px rgba(59,130,246,.12); }
-.si-purple { background: linear-gradient(135deg, rgba(124,58,237,.12), rgba(139,92,246,.08)); color: var(--purple); box-shadow: 0 2px 8px rgba(124,58,237,.12); }
+.si-purple { background: linear-gradient(135deg, rgba(37,99,235,.12), rgba(13,148,136,.08)); color: var(--primary); box-shadow: 0 2px 8px rgba(37,99,235,.12); }
+.si-secondary { background: linear-gradient(135deg, rgba(13,148,136,.12), rgba(45,212,191,.08)); color: var(--secondary); box-shadow: 0 2px 8px rgba(13,148,136,.12); }
 
 .stat-info { flex: 1; min-width: 0; }
 .stat-label { font-size: 10.5px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: .07em; font-family: var(--mono); margin-bottom: 6px; }
@@ -58,7 +60,7 @@
 .sv-green  { background: linear-gradient(135deg, var(--success), var(--success-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; background-size: 200% 200%; animation: gradShift 6s ease-in-out infinite; }
 .sv-yellow { background: linear-gradient(135deg, var(--warning), var(--warning-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; background-size: 200% 200%; animation: gradShift 6s ease-in-out infinite; }
 .sv-blue   { background: linear-gradient(135deg, var(--primary-hover), var(--primary) ); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; background-size: 200% 200%; animation: gradShift 6s ease-in-out infinite; }
-.sv-purple { background: linear-gradient(135deg, var(--violet-hover), var(--violet)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; background-size: 200% 200%; animation: gradShift 6s ease-in-out infinite; }
+.sv-purple { background: linear-gradient(135deg, var(--primary) , var(--info-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; background-size: 200% 200%; animation: gradShift 6s ease-in-out infinite; }
 
 @media (max-width: 1280px) { .stats-grid { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 600px)  { .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; } }

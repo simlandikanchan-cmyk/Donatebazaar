@@ -95,8 +95,8 @@
   $bc = $badgeClass[$settlement->status] ?? 'st-approved';
 @endphp
 
-<div style="margin-bottom:18px;">
-  <a href="{{ route('admin.settlements.index', ['status' => $settlement->status]) }}" class="btn btn-secondary act-btn ab-view" style="text-decoration:none;">
+<div class="ss-mb-sm">
+  <a href="{{ route('admin.settlements.index', ['status' => $settlement->status]) }}" class="btn btn-secondary act-btn ab-view ss-no-underline">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6"/></svg>
     <span>Back to settlements</span>
   </a>
@@ -106,7 +106,7 @@
   <div class="hero-left">
     <div class="hero-tag"><span class="hero-tag-dot"></span>Settlement</div>
     <div class="hero-name">₹{{ number_format($settlement->net_amount, 2) }}</div>
-    <div class="hero-sub" style="flex-wrap:wrap;">
+    <div class="hero-sub ss-flex-wrap">
       <span class="st-badge {{ $bc }}">{{ $statusLabels[$settlement->status] ?? $settlement->status }}</span>
       <span class="hero-badge hb-gray">{{ $settlement->settlementItems->count() }} donation item(s)</span>
       @if(!empty($flags))
@@ -116,12 +116,12 @@
   </div>
   @if($settlement->isPendingApproval())
     <div class="hero-right">
-      <button type="button" data-action="open-modal" data-target="#approveOverlay" class="hero-btn hero-btn-primary" style="background:linear-gradient(135deg,var(--green),var(--success-mid-3));box-shadow:0 4px 20px rgba(5,196,138,.4);">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+      <button type="button" data-action="open-modal" data-target="#approveOverlay" class="hero-btn hero-btn-primary ss-btn-approve">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="ss-icon-sm"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
         Approve Settlement
       </button>
-      <button type="button" data-action="open-modal" data-target="#rejectOverlay" class="hero-btn hero-btn-ghost" style="color:var(--red);">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      <button type="button" data-action="open-modal" data-target="#rejectOverlay" class="hero-btn hero-btn-ghost ss-text-red">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="ss-icon-sm"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
         Reject
       </button>
     </div>
@@ -132,18 +132,18 @@
   @endif
 </div>
 
-<div class="stats-grid" style="grid-template-columns:repeat(4,1fr)">
+<div class="stats-grid ss-grid-4">
   <div class="stat">
     <div class="stat-icon si-gray"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg></div>
-    <div class="stat-body"><div class="stat-lbl">Organization</div><div class="stat-val sv-gray" style="font-size:16px;">{{ optional($org)->name ?? '—' }}</div><div class="stat-foot">Org ID: {{ $org?->id ?? '—' }}</div></div>
+    <div class="stat-body"><div class="stat-lbl">Organization</div><div class="stat-val sv-gray ss-fs-16">{{ optional($org)->name ?? '—' }}</div><div class="stat-foot">Org ID: {{ $org?->id ?? '—' }}</div></div>
   </div>
   <div class="stat">
     <div class="stat-icon si-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-    <div class="stat-body"><div class="stat-lbl">Status</div><div class="stat-val sv-amber" style="font-size:16px;">{{ $statusLabels[$settlement->status] ?? $settlement->status }}</div><div class="stat-foot">Created {{ $settlement->created_at->format('d M Y H:i') }}</div></div>
+    <div class="stat-body"><div class="stat-lbl">Status</div><div class="stat-val sv-amber ss-fs-16">{{ $statusLabels[$settlement->status] ?? $settlement->status }}</div><div class="stat-foot">Created {{ $settlement->created_at->format('d M Y H:i') }}</div></div>
   </div>
   <div class="stat">
     <div class="stat-icon si-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
-    <div class="stat-body"><div class="stat-lbl">Net Amount</div><div class="stat-val sv-green" style="font-size:16px;">₹{{ number_format($settlement->net_amount, 2) }}</div><div class="stat-foot">Gross: ₹{{ number_format($settlement->gross_amount, 2) }} · Fee: ₹{{ number_format($settlement->platform_fee, 2) }}</div></div>
+    <div class="stat-body"><div class="stat-lbl">Net Amount</div><div class="stat-val sv-green ss-fs-16">₹{{ number_format($settlement->net_amount, 2) }}</div><div class="stat-foot">Gross: ₹{{ number_format($settlement->gross_amount, 2) }} · Fee: ₹{{ number_format($settlement->platform_fee, 2) }}</div></div>
   </div>
   <div class="stat">
     <div class="stat-icon si-a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg></div>

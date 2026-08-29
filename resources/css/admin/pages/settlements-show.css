@@ -1,0 +1,96 @@
+/* ── settlements-show page — extracted inline styles ── */
+
+/* spacing */
+.ss-mb-sm { margin-bottom: 18px; }
+.ss-mb-card { margin-bottom: 20px; }
+.ss-mt-sm { margin-top: 10px; }
+
+/* text */
+.ss-no-underline { text-decoration: none; }
+.ss-text-red { color: var(--red); }
+.ss-fw-500 { font-weight: 500; }
+.ss-text-muted { color: var(--text3); font-size: 12px; }
+
+/* typography */
+.ss-fs-16 { font-size: 16px; }
+.ss-fs-14-mono { font-size: 14px; font-family: var(--mono); }
+.ss-mono { font-family: var(--mono); }
+
+/* flex / layout */
+.ss-flex-wrap { flex-wrap: wrap; }
+.ss-flex-fill { flex: 1; min-width: 0; }
+.ss-grid-4 { grid-template-columns: repeat(4, 1fr); }
+.ss-content-2col { grid-template-columns: 1fr 340px; gap: 18px; margin-bottom: 20px; }
+
+/* icon sizing */
+.ss-icon-sm { width: 14px; height: 14px; }
+.ss-icon-md { width: 15px; height: 15px; }
+.ss-icon-empty { width: 38px; height: 38px; color: var(--text3); opacity: .25; }
+
+/* approve button */
+.ss-btn-approve {
+  background: linear-gradient(135deg, var(--green), var(--success-mid-3));
+  box-shadow: 0 4px 20px rgba(5, 196, 138, .4);
+}
+
+/* alert body wrapper */
+.ss-alert-body { flex: 1; min-width: 0; }
+.ss-alert-foot { margin-top: 4px; font-size: 11px; color: var(--text3); }
+
+/* meta / status bar text */
+.ss-meta { font-size: 12px; color: var(--text3); font-family: var(--mono); }
+
+/* table */
+.ss-table-min { min-width: 480px; }
+.ss-th-right { text-align: right; }
+.ss-link-a { color: var(--a); text-decoration: none; }
+.ss-td-bold-right { text-align: right; font-weight: 700; }
+.ss-td-total { text-align: right; font-weight: 700; color: var(--text2); }
+.ss-td-total-green { text-align: right; font-weight: 700; color: var(--green); }
+
+/* card */
+.ss-card-pad { padding: 20px; }
+.ss-empty-pad { padding: 24px 10px; }
+
+/* payout account */
+.ss-account-block { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--border); }
+.ss-dn-grid-mt { margin-top: 10px; }
+
+/* form */
+.ss-form-inline { display: inline; }
+
+/* payout action buttons */
+.ss-btn-unverify {
+  padding: 4px 10px;
+  font-size: 11px;
+  color: var(--red);
+  border-color: rgba(240, 68, 68, .3);
+}
+.ss-btn-verify {
+  padding: 4px 10px;
+  font-size: 11px;
+  color: var(--green);
+  border-color: rgba(5, 196, 138, .3);
+}
+
+/* modal */
+.ss-modal-surface {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ss-kv-row { flex-direction: row; justify-content: space-between; }
+.ss-kv-total { flex-direction: row; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 6px; }
+.ss-modal-flag-title { font-size: 12px; }
+.ss-modal-flag-list { font-size: 11.5px; }
+.ss-alert-top { margin: 14px 0 0; }
+.ss-alert-mid { margin: 0 0 10px; }
+.ss-half { flex: 1; }
+
+/* modal icon background */
+.ss-green-bg { background: var(--green-lt); }

@@ -6,7 +6,7 @@
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 28px; height: 60px;
   background: var(--surface); border-bottom: 1px solid var(--border);
-  position: sticky; top: 0; z-index: 100; gap: 14px;
+  position: sticky; top: 0; z-index: var(--z-toolbar); gap: 14px;
 }
 .topbar-left-wrap { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; }
 .topbar-left h1 { font-size: 16px; font-weight: 700; color: var(--text); letter-spacing: -.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }

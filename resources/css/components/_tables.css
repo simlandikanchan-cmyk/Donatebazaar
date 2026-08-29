@@ -1,0 +1,67 @@
+/* ═══════════════════════════════════════════════════════════════════
+   RESPONSIVE TABLE SYSTEM
+   ═══════════════════════════════════════════════════════════════════
+   Usage:
+     <div class="table-wrapper">
+       <table>...</table>
+     </div>
+
+   The wrapper provides horizontal scrolling on small screens.
+   For card-style mobile conversion, use .table-mobile-cards
+   together with data-label attributes on <td> elements.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── BASE TABLE WRAPPER ─────────────────────────────────────────────── */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ── MOBILE CARD LAYOUT ─────────────────────────────────────────────── */
+.table-mobile-cards {
+  border-collapse: collapse;
+}
+
+@media (max-width: 768px) {
+  .table-mobile-cards thead {
+    display: none;
+  }
+
+  .table-mobile-cards tbody tr {
+    display: block;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    gap: 8px;
+  }
+
+  .table-mobile-cards tbody tr td {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0;
+    border: none;
+  }
+
+  .table-mobile-cards tbody tr td::before {
+    content: attr(data-label);
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    font-family: var(--font-mono);
+    min-width: 75px;
+    flex-shrink: 0;
+  }
+
+  .table-mobile-cards td[data-label="Actions"] {
+    flex-wrap: wrap;
+  }
+
+  .table-mobile-cards td[data-label="Actions"]::before {
+    content: "Actions";
+    min-width: auto;
+    margin-right: auto;
+  }
+}

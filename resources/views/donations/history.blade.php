@@ -25,7 +25,7 @@
 
 <div class="dh-stats">
     <div class="dh-stat is-active" data-filter="all">
-        <div class="dh-stat-icon si-indigo">
+        <div class="dh-stat-icon si-primary">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
         </div>
         <div>
@@ -232,7 +232,7 @@
 .dh-stat.is-active{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow);}
 .dh-stat-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .dh-stat-icon svg{width:17px;height:17px;}
-.si-indigo{background:rgba(99,102,241,0.12);color:var(--accent);}
+.si-primary{background:rgba(37,99,235,0.12);color:var(--primary);}
 .si-green{background:rgba(16,185,129,0.12);color:var(--green);}
 .si-yellow{background:rgba(245,158,11,0.12);color:var(--yellow);}
 .si-pink{background:rgba(236,72,153,0.12);color:var(--pink);}

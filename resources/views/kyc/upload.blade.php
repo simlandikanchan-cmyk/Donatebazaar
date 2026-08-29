@@ -101,7 +101,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="card-header-left">
-                        <div class="card-icon ic-indigo">
+<div class="card-icon ic-primary">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path stroke-linecap="round" d="M16 10h2M16 14h2M6 10h5M6 14h3"/></svg>
                         </div>
                         <div>

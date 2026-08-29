@@ -52,7 +52,7 @@
         <span class="hero-badge hb-green">All caught up</span>
       @endif
       <span class="hero-badge hb-green"><span class="hb-count" data-count="{{ $cntActive }}">0</span> active campaigns</span>
-      <span class="hero-badge hb-purple"><span class="hb-count" data-count="{{ $approvalRate }}">0</span>% approval rate</span>
+      <span class="hero-badge hb-primary"><span class="hb-count" data-count="{{ $approvalRate }}">0</span>% approval rate</span>
       <span class="hero-badge hb-teal"><span class="hb-count" data-count="{{ $activeJobs }}">0</span> open jobs</span>
     </div>
     <div class="hero-ticker">
@@ -127,8 +127,8 @@
     <div class="stat-body"><div class="stat-lbl">New Today</div><div class="stat-val sv-blue">{{ $newUsersToday }}</div><div class="stat-foot">Users joined today</div></div>
   </div>
   <div class="stat">
-    <div class="stat-icon si-purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
-    <div class="stat-body"><div class="stat-lbl">Donations Today</div><div class="stat-val sv-purple">{{ $donationsToday }}</div><div class="stat-foot">Received in last 24h</div></div>
+    <div class="stat-icon si-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+    <div class="stat-body"><div class="stat-lbl">Donations Today</div><div class="stat-val sv-primary">{{ $donationsToday }}</div><div class="stat-foot">Received in last 24h</div></div>
   </div>
 </div>
 

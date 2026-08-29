@@ -13,7 +13,7 @@
         <div class="hero-name">All Volunteers</div>
         <div class="hero-sub">View, search and manage everyone who has registered as a volunteer on the platform.</div>
         <div class="hero-badges">
-          <span class="hero-badge hb-purple">{{ $stats['total'] }} total</span>
+          <span class="hero-badge hb-primary">{{ $stats['total'] }} total</span>
           <span class="hero-badge hb-green">{{ $stats['verified'] }} verified</span>
           @if($stats['pending'] > 0)
             <span class="hero-badge hb-amber">{{ $stats['pending'] }} pending applications</span>
@@ -34,12 +34,12 @@
 
     <div class="stats-grid">
       <div class="stat">
-        <div class="stat-icon si-purple">
+        <div class="stat-icon si-primary">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg>
         </div>
         <div class="stat-body">
           <div class="stat-lbl">Total</div>
-          <div class="stat-val sv-purple">{{ $stats['total'] }}</div>
+          <div class="stat-val sv-primary">{{ $stats['total'] }}</div>
           <div class="stat-foot">All volunteers</div>
         </div>
       </div>

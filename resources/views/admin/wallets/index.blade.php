@@ -1,5 +1,6 @@
 @push('page_css')
 @vite('resources/css/admin/entries/finance.css')
+@vite('resources/css/admin/pages/wallets-index.css')
 @endpush
 
 @extends('layouts.admin')
@@ -30,7 +31,7 @@
     <div class="hero-sub">Monitor balances, reserved funds, and settlement locks across all users and organizations.</div>
     <div class="hero-badges">
       <span class="hero-badge hb-teal">{{ $stats['total'] }} total</span>
-      <span class="hero-badge hb-purple">{{ $stats['users'] }} users</span>
+      <span class="hero-badge hb-primary">{{ $stats['users'] }} users</span>
       <span class="hero-badge hb-amber">{{ $stats['organizations'] }} organizations</span>
     </div>
   </div>
@@ -46,8 +47,8 @@
     <div class="stat-body"><div class="stat-lbl">Total Balance</div><div class="stat-val sv-green">₹{{ number_format($stats['total_balance'], 2) }}</div><div class="stat-foot">Across all wallets</div></div>
   </div>
   <div class="stat">
-    <div class="stat-icon si-purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg></div>
-    <div class="stat-body"><div class="stat-lbl">User Wallets</div><div class="stat-val sv-purple">{{ $stats['users'] }}</div><div class="stat-foot">Individual donors</div></div>
+    <div class="stat-icon si-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg></div>
+    <div class="stat-body"><div class="stat-lbl">User Wallets</div><div class="stat-val sv-primary">{{ $stats['users'] }}</div><div class="stat-foot">Individual donors</div></div>
   </div>
   <div class="stat">
     <div class="stat-icon si-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg></div>
@@ -168,73 +169,5 @@
 @push('page_scripts')
 @vite('resources/js/admin/entries/wallets-index.js')
 @endpush
-
-<style>
-@media(max-width:1024px){
-  .stats-grid{grid-template-columns:repeat(2,1fr)!important}
-}
-@media(max-width:768px){
-  .stats-grid{grid-template-columns:1fr!important}
-  .table-card-head{flex-direction:column;align-items:stretch!important}
-  .table-card-head > div:last-child{width:100%}
-  .table-card-head .swrap{width:100%}
-  .table-card-head .sinp{width:100%!important}
-  #walletsTable thead{display:none}
-  #walletsTable tbody tr{display:flex;flex-direction:column;padding:14px 16px;border-bottom:1px solid var(--border);gap:8px}
-  #walletsTable tbody tr td{padding:0;border:none;display:flex;align-items:center;gap:8px}
-  #walletsTable tbody tr td::before{content:attr(data-label);font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);min-width:75px;flex-shrink:0}
-  #walletsTable .action-btns{justify-content:flex-start;width:100%}
-  #walletsTable td[data-label="Actions"]{flex-wrap:wrap}
-  #walletsTable td[data-label="Actions"]::before{content:"Actions";min-width:auto;margin-right:auto}
-  #walletsTable tbody tr td.cell-id{font-size:10px;color:var(--text3);margin-bottom:0}
-  #walletsTable .td-mono{font-size:12px}
-  .ftabs{display:none!important}
-}
-.action-btns .ab-view,
-.action-btns .ab-delete {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  text-decoration: none;
-  border: 1px solid transparent;
-  border-radius: var(--r-xs);
-  cursor: pointer;
-  transition: all var(--ease);
-}
-.action-btns .ab-view {
-  color: var(--text2);
-  background: var(--surface2);
-  border-color: var(--border2);
-}
-.action-btns .ab-view:hover {
-  color: var(--a);
-  background: var(--a-lt);
-  border-color: var(--a);
-}
-.action-btns .ab-delete {
-  color: var(--red);
-  background: var(--red-lt);
-  border-color: rgba(240, 68, 68, .2);
-}
-.action-btns .ab-delete:hover {
-  color: var(--white);
-  background: var(--red);
-  border-color: var(--red);
-}
-.action-btns .ab-view svg,
-.action-btns .ab-delete svg {
-  width: 16px;
-  height: 16px;
-}
-@media(max-width:480px){
-  .hero-name{font-size:20px}
-  .hero-sub{font-size:12px}
-  .hero-badges{gap:6px}
-  .hero-badge{font-size:10px;padding:4px 10px}
-}
-</style>
 
 @endsection

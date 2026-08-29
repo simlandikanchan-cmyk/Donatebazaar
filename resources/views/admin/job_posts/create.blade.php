@@ -234,7 +234,7 @@
           {{-- ════ CARD 2: DESCRIPTION ════ --}}
           <div class="card" style="animation-delay:.10s;">
             <div class="card-hdr">
-              <div class="card-ico ci-purple">
+              <div class="card-ico ci-primary">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h10"/></svg>
               </div>
               <div>
