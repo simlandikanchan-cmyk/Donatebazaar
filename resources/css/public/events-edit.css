@@ -12,9 +12,9 @@
     --text:         #0f1117;
     --text2:        #4b5563;
     --text3:        #9ca3af;
-    --accent:       #6366f1;
-    --accent2:      #8b5cf6;
-    --accent-glow:  rgba(99,102,241,0.18);
+    --accent:       #2563eb;
+    --accent2:      #0d9488;
+    --accent-glow:  rgba(37,99,235,0.18);
     --green:        #10b981;
     --yellow:       #f59e0b;
     --red:          #ef4444;
@@ -61,7 +61,7 @@ body {
     display: flex; align-items: center; justify-content: space-between;
     padding: 0 28px; height: 64px;
     background: var(--surface); border-bottom: 1px solid var(--border);
-    position: sticky; top: 0; z-index: 100; gap: 16px;
+    position: sticky; top: 0; z-index: var(--z-toolbar); gap: 16px;
 }
 .topbar-left { display: flex; align-items: center; gap: 12px; }
 .topbar-back {
@@ -117,7 +117,7 @@ body {
     display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
 .card-icon svg { width: 15px; height: 15px; }
-.ic-indigo { background: rgba(99,102,241,0.12);  color: var(--accent); }
+.ic-indigo { background: rgba(37,99,235,0.12);  color: var(--primary); }
 .ic-green  { background: rgba(16,185,129,0.12);  color: var(--green); }
 .ic-yellow { background: rgba(245,158,11,0.12);  color: var(--yellow); }
 .ic-red    { background: rgba(239,68,68,0.12);   color: var(--red); }

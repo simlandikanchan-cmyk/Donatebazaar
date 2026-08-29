@@ -37,7 +37,7 @@
     <div class="hero-name">Categories</div>
     <div class="hero-sub">Organize campaigns into categories and control their visibility across the platform.</div>
     <div class="hero-badges">
-      <span class="hero-badge hb-purple">{{ $total }} total</span>
+      <span class="hero-badge hb-primary">{{ $total }} total</span>
       <span class="hero-badge hb-green">{{ $active }} active</span>
       <span class="hero-badge hb-gray">{{ $inactive }} inactive</span>
     </div>

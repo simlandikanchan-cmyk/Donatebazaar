@@ -75,7 +75,7 @@
   <div class="edit-layout">
 
     <div>
-      <div class="card" style="margin-bottom:20px;">
+      <div class="card be-card-mb-lg">
         <div class="card-header">
           <div class="card-title">
             <div class="card-title-icon">
@@ -118,7 +118,7 @@
             @enderror
           </div>
           <div class="form-row">
-            <div class="form-group" style="margin-bottom:0;">
+            <div class="form-group be-mb-0">
               <label class="form-label" for="category_id">Category</label>
               <select id="category_id" name="category_id" class="form-select">
                 <option value="">Select category…</option>
@@ -132,7 +132,7 @@
               <span class="form-error"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>{{ $message }}</span>
               @enderror
             </div>
-            <div class="form-group" style="margin-bottom:0;">
+            <div class="form-group be-mb-0">
               <label class="form-label" for="read_time_minutes">Read Time (min)</label>
               <input type="number" id="read_time_minutes" name="read_time_minutes"
                 min="1" max="60"
@@ -146,7 +146,7 @@
         </div>
       </div>
 
-      <div class="card" style="margin-bottom:20px;">
+      <div class="card be-card-mb-lg">
         <div class="card-header">
           <div class="card-title">
             <div class="card-title-icon">
@@ -154,10 +154,10 @@
             </div>
             Excerpt
           </div>
-          <span id="excerptCounter" style="font-size:11px;color:var(--text3);font-family:var(--mono);">0 / 200</span>
+          <span id="excerptCounter" class="be-excerpt-counter">0 / 200</span>
         </div>
         <div class="card-body">
-          <div class="form-group" style="margin-bottom:0;">
+          <div class="form-group be-mb-0">
             <textarea id="excerpt" name="excerpt"
               class="form-textarea {{ $errors->has('excerpt') ? 'error' : '' }}"
               placeholder="A short compelling summary shown in cards and previews…"
@@ -170,7 +170,7 @@
         </div>
       </div>
 
-      <div class="card" style="margin-bottom:20px;">
+      <div class="card be-card-mb-lg">
         <div class="card-header">
           <div class="card-title">
             <div class="card-title-icon">

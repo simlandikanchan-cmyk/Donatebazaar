@@ -1,14 +1,23 @@
 /* ═══════════════════════════════════════════════════════════════════
-   COMPONENTS — Cards
+   USER PORTAL — Cards
+   ═══════════════════════════════════════════════════════════════════
+   Canonical card styles live in ../../components/_cards.css.
+   This file imports the canonical system and adds user-portal-
+   specific overrides only.
    ═══════════════════════════════════════════════════════════════════ */
 
+@import "../../components/_cards.css";
+
+/* User-portal uses glass-morphism cards by default */
 .card {
-  background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--r);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
   box-shadow: var(--glass-shadow);
-  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
-/* ── Dark mode card overrides ─────────────────────────────────────── */
+/* Dark mode glass card overrides */
 [data-theme="dark"] .card,
 [data-theme="dark"] .chart-card,
 [data-theme="dark"] .qs-panel,

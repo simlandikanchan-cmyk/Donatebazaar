@@ -423,6 +423,31 @@ td {
   background: var(--red);
   transform: translateY(-1px);
 }
+.ab-view {
+  --btn-bg: var(--a-lt);
+  --btn-fg: var(--a);
+  --btn-bd: rgba(37, 99, 235, .2);
+  --btn-bg-h: var(--a);
+  --btn-fg-h: #fff;
+  --btn-bd-h: var(--a);
+}
+.ab-edit {
+  --btn-bg: var(--amber-lt);
+  --btn-fg: var(--amber);
+  --btn-bd: rgba(245, 158, 11, .2);
+  --btn-bg-h: var(--amber);
+  --btn-fg-h: #fff;
+  --btn-bd-h: var(--amber);
+}
+.ab-delete {
+  padding: 5px 8px;
+  --btn-bg: var(--red-lt);
+  --btn-fg: var(--red);
+  --btn-bd: rgba(240, 68, 68, .2);
+  --btn-bg-h: var(--red);
+  --btn-fg-h: #fff;
+  --btn-bd-h: var(--red);
+}
 .td-check {
   width: 40px;
   text-align: center;

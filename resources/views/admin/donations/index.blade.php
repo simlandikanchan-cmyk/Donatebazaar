@@ -1,5 +1,6 @@
 @push('page_css')
 @vite('resources/css/admin/entries/finance.css')
+@vite('resources/css/admin/pages/donations-index.css')
 @endpush
 
 @extends('layouts.admin')
@@ -9,26 +10,6 @@
 @section('page_subtitle', 'All donations across campaigns')
 
 @push('page_styles')
-<style>
-@media(max-width:860px){
-  .don-stats-grid{grid-template-columns:repeat(2,1fr)!important}
-}
-@media(max-width:480px){
-  .don-stats-grid{grid-template-columns:1fr!important}
-}
-@media(max-width:860px){
-  .filter-row{flex-wrap:wrap}
-  .filter-row .ftabs{width:100%;order:1}
-  .filter-row .ftab-select{width:100%;order:2;margin-top:8px}
-  .filter-row .filter-right{width:100%;order:3;margin-top:8px}
-  .filter-row .filter-right .swrap{min-width:0}
-}
-@media(max-width:640px){
-  .table-scroll{min-width:720px}
-  .act-btns{flex-direction:column;gap:4px}
-  .act-btns .btn{width:100%;justify-content:center}
-}
-</style>
 @endpush
 
 @section('content')

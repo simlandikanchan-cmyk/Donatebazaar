@@ -345,6 +345,11 @@
   background: rgba(37, 99, 235, .12);
   border: 1px solid rgba(37, 99, 235, .22);
 }
+.hb-primary {
+  color: var(--a);
+  background: rgba(37, 99, 235, .12);
+  border: 1px solid rgba(37, 99, 235, .22);
+}
 .hb-teal {
   color: var(--success-strong);
   background: rgba(5, 196, 138, .12);
@@ -376,6 +381,11 @@
   border-color: rgba(5, 196, 138, .22);
 }
 [data-theme="dark"] .hb-purple {
+  color: var(--primary-350);
+  background: rgba(37, 99, 235, .15);
+  border-color: rgba(37, 99, 235, .22);
+}
+[data-theme="dark"] .hb-primary {
   color: var(--primary-350);
   background: rgba(37, 99, 235, .15);
   border-color: rgba(37, 99, 235, .22);

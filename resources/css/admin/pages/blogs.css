@@ -653,9 +653,9 @@
   font-family: var(--mono);
   font-size: 11px;
   font-weight: 600;
-  color: #7c3aed;
-  background: rgba(124, 58, 237, .1);
-  border: 1px solid rgba(124, 58, 237, .2);
+  color: var(--primary);
+  background: var(--primary-tint-bg);
+  border: 1px solid var(--primary-tint-2);
   border-radius: 100px;
 }
 /* ── ADMIN STAT GRID ── */
@@ -1779,8 +1779,8 @@
   color: var(--a);
 }
 .si-violet {
-  color: #7c3aed;
-  background: rgba(124, 58, 237, .12);
+  color: var(--primary);
+  background: var(--primary-tint-bg);
 }
 /* ── COVER DROP (blogs create) ── */
 .cover-drop {

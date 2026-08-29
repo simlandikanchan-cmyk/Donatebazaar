@@ -10,6 +10,29 @@
 
 @section('content')
 
+<div class="hero">
+  <div class="hero-left">
+    <div class="hero-tag"><span class="hero-tag-dot"></span>Catalogue</div>
+    <div class="hero-name">Campaign Products</div>
+    <div class="hero-sub">
+      <svg class="hero-sub-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2zM16 3H8l-2 4h12l-2-4z"/></svg>
+      Review and manage fundraiser products. Approve submissions to make them live, or reject with a reason.
+    </div>
+    <div class="hero-badges">
+      <span class="hero-badge hb-purple">{{ $cntTotal }} total</span>
+      @if($cntPending > 0)
+        <span class="hero-badge hb-amber">● {{ $cntPending }} pending</span>
+      @endif
+      @if($cntApproved > 0)
+        <span class="hero-badge hb-green">✓ {{ $cntApproved }} approved</span>
+      @endif
+      @if($cntRejected > 0)
+        <span class="hero-badge hb-red">✕ {{ $cntRejected }} rejected</span>
+      @endif
+    </div>
+  </div>
+</div>
+
 {{-- STATS --}}
 <div class="stats-grid">
   <div class="stat">

@@ -1,0 +1,94 @@
+/* ═══════════════════════════════════════════════════════════════════
+   CANONICAL FORM SYSTEM
+   ═══════════════════════════════════════════════════════════════════
+   Shared form primitives used across public, user, and admin bundles.
+
+   API:
+     .field                form field wrapper
+     .field-label          label text
+     .field-input          text input
+     .field-textarea       textarea
+     .field-select         select dropdown
+     .field-error          error message
+     .field-hint           hint/help text
+     .field-input.error    error state
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── FIELD WRAPPER ─────────────────────────────────────────────────── */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* ── LABEL ─────────────────────────────────────────────────────────── */
+.field-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  font-family: var(--font-mono);
+}
+
+/* ── INPUTS ────────────────────────────────────────────────────────── */
+.field-input,
+.field-textarea,
+.field-select {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  color: var(--text);
+  transition: border-color var(--transition), box-shadow var(--transition);
+  outline: none;
+  font-family: var(--font);
+}
+
+.field-input::placeholder,
+.field-textarea::placeholder {
+  color: var(--text3);
+}
+
+.field-input:focus,
+.field-textarea:focus,
+.field-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, .1);
+}
+
+/* ── TEXTAREA ──────────────────────────────────────────────────────── */
+.field-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* ── SELECT ────────────────────────────────────────────────────────── */
+.field-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+
+/* ── ERROR / HINT ──────────────────────────────────────────────────── */
+.field-error {
+  font-size: 11px;
+  color: var(--danger);
+  font-weight: 500;
+}
+
+.field-hint {
+  font-size: 11px;
+  color: var(--text3);
+}
+
+.field-input.error,
+.field-textarea.error,
+.field-select.error {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, .1);
+}

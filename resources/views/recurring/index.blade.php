@@ -12,9 +12,21 @@
         $rdCancelled = $rdAll->where('status','cancelled')->count();
     @endphp
 
+    <x-page-hero
+        tag="Recurring"
+        title="Recurring Donations"
+        subtitle="Track, manage and control all your recurring contribution plans."
+    >
+        <x-slot:badges>
+            <span class="wb-badge wbb-primary">{{ $rdTotal }} total</span>
+            <span class="wb-badge wbb-green">{{ $rdActive }} active</span>
+            @if($rdPaused > 0)<span class="wb-badge wbb-yellow">{{ $rdPaused }} paused</span>@endif
+        </x-slot:badges>
+    </x-page-hero>
+
     <div class="stat-grid">
         <div class="stat-card is-active" data-filter="all">
-            <div class="stat-icon ic-indigo">
+            <div class="stat-icon ic-primary">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
             </div>
             <div>
@@ -179,7 +191,7 @@
 .stat-card.is-active{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow);}
 .stat-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .stat-icon svg{width:17px;height:17px;}
-.ic-indigo{background:rgba(99,102,241,0.12);color:var(--accent);}
+.ic-primary{background:rgba(37,99,235,0.12);color:var(--primary);}
 .ic-green{background:rgba(16,185,129,0.12);color:var(--green);}
 .ic-yellow{background:rgba(245,158,11,0.12);color:var(--yellow);}
 .ic-red{background:rgba(239,68,68,0.12);color:var(--red);}

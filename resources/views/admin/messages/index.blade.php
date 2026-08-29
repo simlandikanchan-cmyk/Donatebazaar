@@ -30,7 +30,7 @@
     <div class="hero-name">Contact Messages</div>
     <div class="hero-sub">Read and manage messages sent by visitors through the contact forms.</div>
     <div class="hero-badges">
-      <span class="hero-badge hb-purple">{{ $cntTotal }} total</span>
+      <span class="hero-badge hb-primary">{{ $cntTotal }} total</span>
       <span class="hero-badge hb-amber">{{ $cntNew }} unread</span>
       <span class="hero-badge hb-green">{{ $cntRead }} read</span>
       <span class="hero-badge hb-blue">{{ $today }} today</span>
@@ -70,12 +70,12 @@
     </div>
   </div>
   <div class="stat">
-    <div class="stat-icon si-purple">
+    <div class="stat-icon si-primary">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
     </div>
     <div class="stat-body">
       <div class="stat-lbl">Today</div>
-      <div class="stat-val sv-purple" id="statToday">{{ $today }}</div>
+      <div class="stat-val sv-primary" id="statToday">{{ $today }}</div>
       <div class="stat-foot">Received today</div>
     </div>
   </div>

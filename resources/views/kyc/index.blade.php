@@ -22,7 +22,7 @@
 .card-header-left{display:flex;align-items:center;gap:10px;}
 .card-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .card-icon svg{width:14px;height:14px;}
-.ic-indigo{background:rgba(99,102,241,0.12);color:var(--accent);}
+.ic-primary{background:rgba(37,99,235,0.12);color:var(--primary);}
 .ic-green{background:rgba(16,185,129,0.12);color:var(--green);}
 .ic-yellow{background:rgba(245,158,11,0.12);color:var(--yellow);}
 .ic-red{background:rgba(239,68,68,0.12);color:var(--red);}
@@ -86,6 +86,18 @@
     $rejectedCount      = $campaigns->filter(fn($c) => optional($c->kyc)->status === 'rejected')->count();
     $notSubmittedCount  = $campaigns->filter(fn($c) => !$c->kyc)->count();
 @endphp
+
+<x-page-hero
+    tag="Verification"
+    title="KYC Verification"
+    subtitle="Manage identity verification across all your campaigns."
+>
+    <x-slot:badges>
+        <span class="wb-badge wbb-green">{{ $verifiedCount }} verified</span>
+        <span class="wb-badge wbb-yellow">{{ $pendingCount }} pending</span>
+        <span class="wb-badge wbb-red">{{ $rejectedCount + $notSubmittedCount }} need attention</span>
+    </x-slot:badges>
+</x-page-hero>
 
 {{-- ══ STAT CARDS (double as filters) ══ --}}
 <div class="stat-grid">

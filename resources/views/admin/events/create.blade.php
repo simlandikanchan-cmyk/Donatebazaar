@@ -80,7 +80,7 @@
       <div class="step-panel active" id="panel-1">
         <div class="card">
           <div class="card-header">
-            <div class="card-icon ci-purple">
+            <div class="card-icon ci-primary">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a2 2 0 012-2z"/></svg>
             </div>
             <div>
@@ -289,7 +289,7 @@
       <div class="step-panel" id="panel-4">
         <div class="card" style="animation-delay:.05s;">
           <div class="card-header">
-            <div class="card-icon ci-purple">
+            <div class="card-icon ci-primary">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             </div>
             <div>

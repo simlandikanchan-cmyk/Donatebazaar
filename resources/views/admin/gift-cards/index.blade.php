@@ -59,7 +59,7 @@
       @if($stats['redeemed'] > 0)
         <span class="hero-badge hb-green">✓ {{ $stats['redeemed'] }} redeemed</span>
       @endif
-      <span class="hero-badge hb-purple">₹{{ number_format($stats['revenue'], 0) }} revenue</span>
+      <span class="hero-badge hb-primary">₹{{ number_format($stats['revenue'], 0) }} revenue</span>
     </div>
   </div>
 </div>

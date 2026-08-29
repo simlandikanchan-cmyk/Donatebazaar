@@ -1,5 +1,5 @@
 @props([
-    'color' => 'indigo',
+    'color' => 'primary',
     'label' => '',
     'value' => '',
     'footer' => null,
@@ -9,15 +9,15 @@
 
 @php
     $colorMap = [
-        'indigo' => ['si' => 'si-indigo', 'sv' => 'sv-indigo'],
+        'primary' => ['si' => 'si-indigo', 'sv' => 'sv-indigo'],
         'pink' => ['si' => 'si-pink', 'sv' => 'sv-pink'],
         'green' => ['si' => 'si-green', 'sv' => 'sv-green'],
         'yellow' => ['si' => 'si-yellow', 'sv' => 'sv-yellow'],
         'blue' => ['si' => 'si-blue', 'sv' => 'sv-blue'],
-        'purple' => ['si' => 'si-purple', 'sv' => 'sv-purple'],
+        'secondary' => ['si' => 'si-purple', 'sv' => 'sv-purple'],
         'red' => ['si' => 'si-red', 'sv' => 'sv-red'],
     ];
-    $c = $colorMap[$color] ?? $colorMap['indigo'];
+    $c = $colorMap[$color] ?? $colorMap['primary'];
     $isLink = filled($href);
 @endphp
 

@@ -1,131 +1,13 @@
-/* ══════════════════════════════════════
-   ADMIN — Button System (self-contained)
-   ══════════════════════════════════════
-   Admin owns its buttons. This file provides the canonical .btn
-   (used by <x-button>) plus the legacy button classes admin views
-   rely on, without importing the frontend components/_button.css.
+/* ═══════════════════════════════════════════════════════════════════
+   ADMIN — Button System
+   ═══════════════════════════════════════════════════════════════════
+   Canonical button styles live in ../../components/_button.css.
+   This file adds admin-specific legacy classes and overrides only.
+   ═══════════════════════════════════════════════════════════════════ */
 
-   Imported EARLY (right after _variables.css) so that admin-specific
-   button classes (.c-btn, .bb-btn, .modal-btn, .tb-btn, .hero-btn,
-   .act-btn, .add-btn) defined in later files win the cascade when an
-   element combines them with .btn — no override band-aids needed.
-   ══════════════════════════════════════ */
-/* ── 1. CANONICAL .btn BASE ── */
-.btn {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--btn-gap);
-  min-height: var(--btn-min-h);
-  padding: var(--btn-pad-y) var(--btn-pad-x);
-  font-family: var(--font, 'DM Sans', sans-serif);
-  font-size: var(--btn-font-size);
-  font-weight: var(--btn-fw);
-  line-height: 1.3;
-  letter-spacing: .01em;
-  text-decoration: none;
-  white-space: nowrap;
-  color: var(--btn-fg, var(--text2));
-  background: var(--btn-bg, var(--surface2));
-  border: 1px solid var(--btn-bd, transparent);
-  border-radius: var(--btn-radius);
-  cursor: pointer;
-  box-shadow: var(--btn-sh, none);
-  transition:
-    background var(--transition),
-    color var(--transition),
-    border-color var(--transition),
-    box-shadow var(--transition),
-    transform var(--transition),
-    opacity var(--transition);
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
-}
-.btn svg {
-  flex-shrink: 0;
-  width: 16px;
-  height: 16px;
-}
-.btn:hover {
-  color: var(--btn-fg-h, var(--text));
-  background: var(--btn-bg-h, var(--surface3));
-  border-color: var(--btn-bd-h, var(--btn-bd, transparent));
-  box-shadow: var(--btn-sh-h, var(--btn-sh, none));
-  transform: translateY(-1px);
-}
-.btn:active {
-  transition-duration: .08s;
-  transform: translateY(0) scale(.97);
-}
-.btn:focus-visible {
-  border-radius: inherit;
-  outline: 3px solid var(--btn-ring, rgba(37, 99, 235, .4));
-  outline-offset: 2px;
-}
-.btn:disabled, .btn[aria-disabled="true"] {
-  opacity: .55;
-  cursor: not-allowed;
-  box-shadow: none !important;
-  pointer-events: none;
-  transform: none !important;
-}
-/* ── 2. SPINNER ── */
-.spinner, .btn-spinner {
-  display: inline-block;
-  flex-shrink: 0;
-  width: var(--spinner-size, 16px);
-  height: var(--spinner-size, 16px);
-  vertical-align: middle;
-  border: 2px solid var(--spinner-track, rgba(128, 128, 128, .3));
-  border-radius: 50%;
-  animation: btn-spin .7s linear infinite;
-  border-top-color: var(--spinner-fg, currentColor);
-}
-.btn .spinner {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  display: none;
-  margin: calc(var(--spinner-size, 16px) / -2) 0 0 calc(var(--spinner-size, 16px) / -2);
-}
-.btn--loading .spinner {
-  display: inline-block;
-}
-.btn--loading .btn__label {
-  visibility: hidden;
-}
-.btn--loading, .btn--loading:hover, .btn--loading:active {
-  transform: none;
-  pointer-events: none;
-}
-@keyframes btn-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .spinner, .btn-spinner {
-    animation-duration: 1.4s;
-  }
-  .btn, .btn svg {
-    transition-duration: .01ms;
-  }
-}
-/* ── 3. LABEL / ICON ── */
-.btn__label {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--btn-gap);
-}
-.btn__icon {
-  display: inline-flex;
-  flex-shrink: 0;
-}
-.btn .btn__icon + .btn__label, .btn .btn__label + .btn__icon {
-  margin: 0;
-}
-/* ── 4. LEGACY STRUCTURE (button classes admin views use without <x-button>) ── */
+@import "../../components/_button.css";
+
+/* ── ADMIN LEGACY STRUCTURE ── */
 .action-btn, .cv-btn, .btn-edit, .btn-primary, .btn-secondary, .btn-ghost, .btn-red, .btn-modal-cancel, .btn-modal-delete, .bulk-btn, .export-btn, .filter-btn, .clear-btn, .clear-all-btn, .cover-preview-btn, .cover-preview-btn-change, .doc-btn, .editor-btn, .slug-lock-btn, .cp-btn-clear, .gc-btn-clear, .gc-action-btn, .modal-y-btn {
   position: relative;
   display: inline-flex;
@@ -184,8 +66,8 @@
   pointer-events: none;
   transform: none !important;
 }
-/* ── 5. LEGACY VARIANT MAPPINGS (before canonical variants so .btn--* wins on combined elements) ── */
-/* primary */
+
+/* ── ADMIN VARIANT MAPPINGS ── */
 .btn-primary, .bulk-btn, .cover-preview-btn-change, .slug-lock-btn {
   --btn-bg: var(--primary);
   --btn-fg: var(--white);
@@ -195,7 +77,6 @@
   --btn-sh-h: var(--btn-sh-primary-lg);
   --btn-ring: var(--btn-sh-primary);
 }
-/* secondary */
 .btn-secondary, .action-btn, .cv-btn, .btn-modal-cancel, .modal-y-btn, .gc-btn-clear, .cp-btn-clear, .export-btn, .filter-btn, .clear-btn, .clear-all-btn {
   --btn-bg: var(--surface);
   --btn-fg: var(--text2);
@@ -206,7 +87,6 @@
   --btn-sh: var(--btn-sh-neutral);
   --btn-sh-h: var(--btn-sh-neutral-lg);
 }
-/* ghost */
 .btn-ghost, .editor-btn {
   --btn-bg: transparent;
   --btn-fg: var(--text2);
@@ -214,7 +94,6 @@
   --btn-fg-h: var(--text);
   --btn-sh: none;
 }
-/* outline */
 .btn-edit, .doc-btn, .cover-preview-btn {
   --btn-bg: transparent;
   --btn-fg: var(--text2);
@@ -224,7 +103,6 @@
   --btn-bd-h: var(--primary);
   --btn-sh: none;
 }
-/* destructive */
 .btn-red, .btn-modal-delete, .gc-action-btn {
   --btn-bg: var(--danger);
   --btn-fg: var(--white);
@@ -234,172 +112,8 @@
   --btn-sh-h: var(--btn-sh-danger-lg);
   --btn-ring: var(--btn-sh-danger);
 }
-/* ── 6. CANONICAL VARIANTS ── */
-.btn--primary {
-  --btn-bg: var(--primary);
-  --btn-fg: var(--white);
-  --btn-bg-h: var(--primary-hover);
-  --btn-fg-h: var(--white);
-  --btn-sh: var(--btn-sh-primary);
-  --btn-sh-h: var(--btn-sh-primary-lg);
-  --btn-ring: var(--btn-sh-primary);
-}
-.btn--primary:active {
-  --btn-bg: var(--primary-active);
-}
-.btn--secondary {
-  --btn-bg: var(--surface);
-  --btn-fg: var(--text2);
-  --btn-bd: var(--border2);
-  --btn-bg-h: var(--surface3);
-  --btn-fg-h: var(--text);
-  --btn-bd-h: var(--border2);
-  --btn-sh: var(--btn-sh-neutral);
-  --btn-sh-h: var(--btn-sh-neutral-lg);
-}
-.btn--outline {
-  --btn-bg: transparent;
-  --btn-fg: var(--text2);
-  --btn-bd: var(--border2);
-  --btn-bg-h: var(--accent-glow, rgba(37, 99, 235, .18));
-  --btn-fg-h: var(--primary);
-  --btn-bd-h: var(--primary);
-  --btn-sh: none;
-}
-.btn--ghost {
-  --btn-bg: transparent;
-  --btn-fg: var(--text2);
-  --btn-bg-h: var(--surface3);
-  --btn-fg-h: var(--text);
-  --btn-sh: none;
-}
-.btn--destructive {
-  --btn-bg: var(--danger);
-  --btn-fg: var(--white);
-  --btn-bg-h: var(--danger-hover);
-  --btn-fg-h: var(--white);
-  --btn-sh: var(--btn-sh-danger);
-  --btn-sh-h: var(--btn-sh-danger-lg);
-  --btn-ring: var(--btn-sh-danger);
-}
-.btn--destructive:active {
-  --btn-bg: var(--danger-dark);
-}
-.btn--link {
-  --btn-bg: transparent;
-  --btn-fg: var(--primary);
-  --btn-pad-x: 8px;
-  --btn-pad-y: 4px;
-  --btn-min-h: auto;
-  --btn-bg-h: transparent;
-  --btn-fg-h: var(--primary-hover);
-  --btn-sh: none;
-}
-.btn--link:hover {
-  text-decoration: underline;
-}
-.btn--link:focus-visible {
-  outline-offset: 4px;
-}
-.btn--active {
-  --btn-bg: var(--primary);
-  --btn-fg: var(--white);
-  --btn-bg-h: var(--primary-hover);
-  --btn-fg-h: var(--white);
-  --btn-sh: var(--btn-sh-primary);
-  --btn-sh-h: var(--btn-sh-primary-lg);
-  --btn-ring: var(--btn-sh-primary);
-}
-/* ── 7. SIZES & MODIFIERS ── */
-.btn--sm {
-  gap: var(--btn-gap-sm);
-  min-height: var(--btn-min-h-sm);
-  padding: var(--btn-pad-y-sm) var(--btn-pad-x-sm);
-  font-size: var(--btn-font-size-sm);
-  border-radius: var(--btn-radius-sm);
-}
-.btn--sm svg {
-  width: 14px;
-  height: 14px;
-}
-.btn--sm .spinner {
-  --spinner-size: 14px;
-}
-.btn--md {
-  gap: var(--btn-gap);
-  min-height: var(--btn-min-h);
-  padding: var(--btn-pad-y) var(--btn-pad-x);
-  font-size: var(--btn-font-size);
-  border-radius: var(--btn-radius);
-}
-.btn--lg {
-  gap: var(--btn-gap-lg);
-  min-height: var(--btn-min-h-lg);
-  padding: var(--btn-pad-y-lg) var(--btn-pad-x-lg);
-  font-size: var(--btn-font-size-lg);
-  border-radius: var(--btn-radius-lg);
-}
-.btn--lg svg {
-  width: 18px;
-  height: 18px;
-}
-.btn--lg .spinner {
-  --spinner-size: 18px;
-}
-.btn--full {
-  justify-content: center;
-  width: 100%;
-}
-.btn--pill {
-  border-radius: 999px;
-}
-.btn--icon {
-  width: var(--btn-min-h);
-  padding: 0;
-}
-.btn--icon.btn--sm {
-  width: var(--btn-min-h-sm);
-}
-.btn--icon.btn--lg {
-  width: var(--btn-min-h-lg);
-}
-/* ── 8. LEGACY SIZE HELPERS ── */
-.btn-sm {
-  gap: var(--btn-gap-sm);
-  min-height: var(--btn-min-h-sm);
-  padding: var(--btn-pad-y-sm) var(--btn-pad-x-sm);
-  font-size: var(--btn-font-size-sm);
-  border-radius: var(--btn-radius-sm);
-}
-.btn-sm svg {
-  width: 14px;
-  height: 14px;
-}
-.btn-lg {
-  gap: var(--btn-gap-lg);
-  min-height: var(--btn-min-h-lg);
-  padding: var(--btn-pad-y-lg) var(--btn-pad-x-lg);
-  font-size: var(--btn-font-size-lg);
-  border-radius: var(--btn-radius-lg);
-}
-.btn-lg svg {
-  width: 18px;
-  height: 18px;
-}
-.btn-block {
-  justify-content: center;
-  width: 100%;
-}
-/* ── 9. LEGACY LOADING MARKER (JS-driven) ── */
-.btn.is-loading .btn-spinner, .btn-spinner {
-  display: inline-block;
-}
-.btn.is-loading .btn-label {
-  display: none;
-}
-/* ── 10. ADD BUTTON (topbar / empty-state "New …" primary action) ──
-   Was previously only defined in the frontend components/_button.css,
-   which the admin layout does not load — styled here via admin tokens. */
+
+/* ── ADD BUTTON (topbar / empty-state) ── */
 .add-btn {
   --btn-bg: var(--primary);
   --btn-fg: var(--white);

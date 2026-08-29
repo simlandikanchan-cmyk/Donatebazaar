@@ -9,6 +9,22 @@
 @section('page_subtitle', 'Manage Privacy, Terms, Refund & Cookie policies')
 
 @section('content')
+<div class="hero">
+  <div class="hero-left">
+    <div class="hero-tag"><span class="hero-tag-dot"></span>Compliance</div>
+    <div class="hero-name">Legal Pages</div>
+    <div class="hero-sub">
+      <svg class="hero-sub-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+      Manage your Privacy, Terms, Refund and Cookie policies. Custom content overrides defaults and publishes instantly to the public site.
+    </div>
+    <div class="hero-badges">
+      <span class="hero-badge hb-purple">{{ $rows->count() }} pages</span>
+      <span class="hero-badge hb-green">{{ $rows->where('exists', true)->count() }} customized</span>
+      <span class="hero-badge hb-gray">{{ $rows->where('exists', false)->count() }} default</span>
+    </div>
+  </div>
+</div>
+
 <div class="main-card">
   <div class="card-head">
     <div class="card-head-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div>

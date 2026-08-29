@@ -77,7 +77,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="card-header-left">
-                        <div class="card-icon ic-indigo">
+                        <div class="card-icon ic-teal">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                         </div>
                         <div>
@@ -141,7 +141,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="card-header-left">
-                        <div class="card-icon ic-indigo">
+                        <div class="card-icon ic-teal">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                         </div>
                         <div>
@@ -349,7 +349,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="card-header-left">
-                        <div class="card-icon ic-indigo">
+                        <div class="card-icon ic-teal">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                         </div>
                         <div>

@@ -36,7 +36,7 @@
             <span class="wb-tag-dot"></span>
             Good {{ $greeting }}, Fundraiser
             @if($levelName !== 'Starter')
-                <span class="wb-badge wbb-purple wb-badge--inline">{{ $levelName }}</span>
+                <span class="wb-badge wbb-primary wb-badge--inline">{{ $levelName }}</span>
             @endif
         </div>
         <div class="wb-name">{{ auth()->user()->name }} <span class="wave"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2"/><path d="M14 10V4a2 2 0 0 0-2-2 2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg></span></div>
@@ -64,10 +64,10 @@
                 <span class="wb-badge wbb-red"><svg class="badge-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>{{ $countRejected }} rejected</span>
             @endif
             @if($overallPct > 0)
-                <span class="wb-badge wbb-purple">{{ $overallPct }}% overall funded</span>
+                <span class="wb-badge wbb-primary">{{ $overallPct }}% overall funded</span>
             @endif
             @if($countAll === 0)
-                <span class="wb-badge wbb-purple">Get started — create your first campaign</span>
+                <span class="wb-badge wbb-primary">Get started — create your first campaign</span>
             @endif
         </div>
     </div>
@@ -101,12 +101,12 @@ $icoAllCamps   = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>';
 @endphp
 <div class="stats-grid">
-    <x-stat-card color="indigo" label="Total Raised" value="₹{{ number_format($totalRaised, 0) }}" footer="{{ $overallPct }}% of total goal" :icon="$icoTotalRaised" />
+    <x-stat-card color="primary" label="Total Raised" value="₹{{ number_format($totalRaised, 0) }}" footer="{{ $overallPct }}% of total goal" :icon="$icoTotalRaised" />
     <x-stat-card color="pink" label="Total Goal" value="₹{{ number_format($totalGoal, 0) }}" footer="Across {{ $countAll }} campaigns" :icon="$icoTotalGoal" />
     <x-stat-card color="green" label="Active Campaigns" value="{{ $countActive }}" footer="Live &amp; accepting donations" :icon="$icoActive" />
     <x-stat-card color="yellow" label="Total Donations" value="{{ number_format($totalDonationsCount) }}" footer="Avg ₹{{ number_format($avgDonation) }} per donation" :icon="$icoDonations" />
     <x-stat-card color="blue" label="All Campaigns" value="{{ $countAll }}" footer="View all &rarr;" href="{{ url('/user/dashboard') }}#cGrid" :icon="$icoAllCamps" />
-    <x-stat-card color="purple" label="Wallet" value="₹{{ number_format($wallet->available_balance) }}" footer="Available balance &rarr;" href="{{ route('dashboard.wallet') }}" :icon="$icoWallet" />
+    <x-stat-card color="secondary" label="Wallet" value="₹{{ number_format($wallet->available_balance) }}" footer="Available balance &rarr;" href="{{ route('dashboard.wallet') }}" :icon="$icoWallet" />
 </div>
 
 {{-- ══ RECENT DONOR ACTIVITY ══ --}}
@@ -314,7 +314,7 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
         ['url'=> url('/user/dashboard/blogs'),    'lbl'=>'My Blogs',         'sub'=>$blogTotal.' posts', 'delay'=>'.35s','bg'=>'rgba(245,158,11,.10)',       'color'=>'var(--yellow)',  'icon'=>'<path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>'],
         ['url'=> url('/user/dashboard/blogs/create'),'lbl'=>'Write Blog',   'sub'=>'New post',          'delay'=>'.40s','bg'=>'rgba(16,185,129,.10)',       'color'=>'var(--green)',   'icon'=>'<path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>'],
         ['url'=> route('gift-cards.index'),       'lbl'=>'Gift Cards',       'sub'=>'Buy & redeem',      'delay'=>'.45s','bg'=>'rgba(236,72,153,.10)',       'color'=>'var(--pink)',    'icon'=>'<path stroke-linecap="round" stroke-linejoin="round" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/>'],
-        ['url'=> route('dashboard.wallet'),        'lbl'=>'Wallet',           'sub'=>'View balance & payout','delay'=>'.50s','bg'=>'var(--purple-lt)',         'color'=>'var(--purple)',  'icon'=>'<path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>'],
+        ['url'=> route('dashboard.wallet'),        'lbl'=>'Wallet',           'sub'=>'View balance & payout','delay'=>'.50s','bg'=>'var(--primary-tint-bg)',         'color'=>'var(--primary)',  'icon'=>'<path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>'],
     ];
     @endphp
     @foreach($navItems as $item)
@@ -338,7 +338,7 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
         ['ico'=>'shield','lbl'=>'KYC Verified', 'sub'=>'Complete identity verification', 'done'=>$kyc && $kyc->status === 'approved', 'color'=>'var(--green)'],
         ['ico'=>'zap','lbl'=>'Active Fundraiser', 'sub'=>'Have a live campaign', 'done'=>$countActive > 0, 'color'=>'var(--yellow)'],
         ['ico'=>'award','lbl'=>'Goal Crusher', 'sub'=>'Reach 100% on any campaign', 'done'=>$campaigns->contains(fn($c)=>($c->goal_amount>0 && ($c->raised_amount/$c->goal_amount)>=1)), 'color'=>'var(--accent)'],
-        ['ico'=>'refresh','lbl'=>'Recurring Ready', 'sub'=>'Set up recurring donations', 'done'=>$recurringCount > 0, 'color'=>'var(--purple)'],
+        ['ico'=>'refresh','lbl'=>'Recurring Ready', 'sub'=>'Set up recurring donations', 'done'=>$recurringCount > 0, 'color'=>'var(--primary)'],
     ];
     $earnedCount = count(array_filter($achievements, fn($a)=>$a['done']));
 @endphp

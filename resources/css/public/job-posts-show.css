@@ -48,7 +48,7 @@ a { text-decoration: none; color: inherit; }
 
 /* ─── TOPBAR ─────────────────────────────── */
 .topbar {
-    position: sticky; top: 0; z-index: 100;
+    position: sticky; top: 0; z-index: var(--z-toolbar);
     background: var(--navy);
     border-bottom: 1px solid rgba(255,255,255,.08);
     padding: 0 clamp(1.25rem, 4vw, 2.5rem);

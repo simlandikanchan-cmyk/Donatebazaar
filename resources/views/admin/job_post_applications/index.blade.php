@@ -17,7 +17,7 @@
         <div class="hero-name">Job Applicants</div>
         <div class="hero-sub">Review and manage all submitted applications across every job post on DonateBazaar.</div>
         <div class="hero-badges">
-          <span class="hero-badge hb-purple">{{ $stats['total'] }} total</span>
+          <span class="hero-badge hb-primary">{{ $stats['total'] }} total</span>
           @if($stats['pending'] > 0)
             <span class="hero-badge hb-amber">⏱ {{ $stats['pending'] }} pending</span>
           @endif

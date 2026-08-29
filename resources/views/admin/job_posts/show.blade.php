@@ -190,7 +190,7 @@
     <div class="card">
       <div class="card-header">
         <div class="card-header-left">
-          <div class="card-hico ci-purple">
+          <div class="card-hico ci-primary">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h10"/></svg>
           </div>
           <div>
@@ -326,7 +326,7 @@
     <div class="side-card">
       <div class="card-header">
         <div class="card-header-left">
-          <div class="card-hico ci-purple">
+          <div class="card-hico ci-primary">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
           </div>
           <div class="card-title">Quick Actions</div>

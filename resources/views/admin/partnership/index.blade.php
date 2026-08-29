@@ -80,7 +80,7 @@
     <div class="hero-name">Partnership Requests</div>
     <div class="hero-sub">Review, approve or reject partnership inquiries submitted through the platform.</div>
     <div class="hero-badges">
-      <span class="hero-badge hb-purple">{{ $allTotal }} total</span>
+      <span class="hero-badge hb-primary">{{ $allTotal }} total</span>
       <span class="hero-badge hb-amber">{{ $allPending }} pending</span>
       <span class="hero-badge hb-green">{{ $allApproved }} approved</span>
       <span class="hero-badge hb-red">{{ $allRejected }} rejected</span>

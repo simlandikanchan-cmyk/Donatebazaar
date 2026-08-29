@@ -735,7 +735,7 @@
    ═══════════════════════════════════════════════════════════════════ */
 .action-bar {
   position: sticky;
-  z-index: 50;
+  z-index: var(--z-modal);
   bottom: 0;
   display: flex;
   flex-wrap: wrap;

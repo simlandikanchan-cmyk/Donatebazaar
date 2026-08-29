@@ -1,12 +1,16 @@
 /* ═══════════════════════════════════════════════════════════════════
    DESIGN TOKENS — Single Source of Truth
    ═══════════════════════════════════════════════════════════════════
-   All reusable colors are defined here. Component CSS must reference
-   var(--token) — never raw hex values.
-   NOTE: Admin (resources/css/admin/_variables.css) and the user-portal
-   core (resources/css/_core.css) override a few legacy tokens for their
-   own scope; the scale/semantic tokens below are scope-independent
-   (never overridden) so they resolve identically everywhere.
+   All reusable colors, typography, spacing, radius, shadows,
+   transitions, and z-index values are defined here.
+
+   Component CSS must reference var(--token) — never raw hex values.
+
+   This file replaces:
+   - resources/css/base/_variables.css
+   - resources/css/user/base/_variables.css
+   - resources/css/admin/core/_variables.css
+
    ═══════════════════════════════════════════════════════════════════ */
 
 :root {
@@ -179,35 +183,6 @@
   --rose-tint:        #fda4af;
   --rose-tint-bg:     #fff1f2;
 
-  /* ── Indigo ────────────────────────────────────────────────────────── */
-  --indigo:           #4f46e5;
-  --indigo-hover:     #4338ca;
-  --indigo-deep:      #3730a3;
-  --indigo-light:     #6366f1;
-  --indigo-soft:      #818cf8;
-  --indigo-tint:      #a5b4fc;
-  --indigo-tint-2:    #c7d2fe;
-  --indigo-tint-3:    #e0e7ff;
-  --indigo-tint-bg:   #eef2ff;
-  --indigo-ink-2:     #1e1b4b;
-  --indigo-ink-3:     #26215c;
-  --indigo-ink-4:     #3c3489;
-  --indigo-ink-5:     #1a1040;
-  --indigo-ink-6:     #050141;
-  --indigo-ink-7:     #0e0820;
-  --indigo-ink-8:     #13122b;
-
-  /* ── Violet ────────────────────────────────────────────────────────── */
-  --violet:           #8b5cf6;
-  --violet-hover:     #7c3aed;
-  --violet-deep:      #9333ea;
-  --violet-light:     #a78bfa;
-  --violet-tint:      #c4b5fd;
-  --violet-tint-2:    #ddd6fe;
-  --violet-tint-3:    #b3a2ff;
-  --violet-tint-bg-2: #fbfaff;
-  --violet-2:         #7e66db;
-
   /* ── Dark theme surfaces (dark sections / full-dark pages) ─────────── */
   --dark-bg:          #0d0e1a;
   --dark-bg-deep:     #07080f;
@@ -256,11 +231,55 @@
   --secondary-ink-3:  #085041;
   --info-tint-bg:     #e6f1fb;
   --info-ink:         #042c53;
-  --indigo-tint-bg-2: #eeedfe;
-  --indigo-tint-bg-3: #eff0fe;
-  --violet-tint-bg-4: #f0eeff;
-  --violet-tint-bg-5: #f8f7ff;
-  --violet-tint-bg-6: #f6f5ff;
+
+  /* ── Backward-compatible aliases (user/admin legacy tokens) ────────── */
+  --accent:       #0d9488;
+  --accent2:      #2563eb;
+  --accent-lt:    rgba(13,148,136,.10);
+  --sb-bg:        #ffffff;
+  --sb-txt:       #64748b;
+  --sb-act:       #eef2ff;
+  --yellow:       #f59e0b;
+  --yellow-lt:    rgba(245,158,11,.10);
+  --amber:        #f59e0b;
+  --amber-lt:     rgba(245,158,11,.10);
+  --gray:         #6b7280;
+  --gray-lt:      rgba(107,114,128,.10);
+  --blue:         #1d4ed8;
+  --blue-lt:      rgba(59,130,246,.10);
+  --green-lt:     rgba(22,163,74,.10);
+  --pink-lt:      rgba(236,72,153,.10);
+  --mono:         'DM Mono', monospace;
+  --sh:           var(--shadow);
+  --sh-md:        var(--shadow-md);
+  --sh-lg:        var(--shadow-lg);
+  --r:            var(--radius);
+  --r-xs:         7px;
+  --card-bg:      rgba(255,255,255,.65);
+  --glass-bg:     rgba(255,255,255,.65);
+  --glass-border: rgba(255,255,255,.35);
+  --glass-shadow: 0 8px 32px rgba(0,0,0,.06), 0 1px 4px rgba(0,0,0,.04);
+  --sb-w:        260px;
+  --a-glow:       rgba(13, 148, 136, .22);
+  --a-hover:      #1d4ed8;
+
+  /* ── Admin shorthand aliases ────────────────────────────────────────── */
+  --teal:         #0d9488;
+  --red-lt:       rgba(240, 68, 68, .10);
+  --pink:         #ec4899;
+  --pink-lt:      rgba(236, 72, 153, .10);
+  --purple:       #2563eb;
+  --purple-lt:    rgba(37, 99, 235, .10);
+  --sb-border:    rgba(0, 0, 0, .08);
+  --r-sm:         12px;
+  --sh-md:        0 4px 20px rgba(0, 0, 0, .08), 0 1px 4px rgba(0, 0, 0, .04);
+  --sh-lg:        0 6px 20px rgba(0, 0, 0, .16);
+  --sh-xl:        0 20px 60px rgba(0, 0, 0, .10), 0 4px 16px rgba(0, 0, 0, .06);
+  --spinner-track:rgba(128, 128, 128, .3);
+  --a:            var(--accent);
+  --a2:           var(--accent2);
+  --a-lt:         var(--accent-lt);
+  --a-hover:      var(--accent-hover);
 
   /* ── Typography ────────────────────────────────────────────────────── */
   --font:         'DM Sans', sans-serif;
@@ -308,4 +327,67 @@
 
   /* ── Motion ────────────────────────────────────────────────────────── */
   --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --ease:       .2s ease;
+  --ease-out:   .25s cubic-bezier(.4,0,.2,1);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   DARK THEME — Single Source of Truth
+   ═══════════════════════════════════════════════════════════════════════ */
+[data-theme="dark"] {
+  --bg:           #080910;
+  --surface:      #111220;
+  --surface2:     #181929;
+  --surface3:     #1e2033;
+  --border:       rgba(255,255,255,.055);
+  --border2:      rgba(255,255,255,.09);
+  --text:         #eef0ff;
+  --text2:        #9ba3c4;
+  --text3:        #505878;
+  --accent-glow:  rgba(37,99,235,.28);
+  --card-bg:      rgba(17,18,32,.72);
+  --glass-bg:     rgba(17,18,32,.72);
+  --glass-border: rgba(255,255,255,.08);
+  --glass-shadow: 0 8px 32px rgba(0,0,0,.25), 0 1px 4px rgba(0,0,0,.15);
+  --shadow:       0 1px 4px rgba(0,0,0,.3), 0 4px 20px rgba(0,0,0,.2);
+  --shadow-md:    0 4px 16px rgba(0,0,0,.35), 0 1px 4px rgba(0,0,0,.2);
+  --shadow-lg:    0 10px 40px rgba(0,0,0,.5);
+  --shadow-xl:    0 20px 60px rgba(0,0,0,.4), 0 4px 16px rgba(0,0,0,.25);
+
+  /* Admin-specific dark tokens */
+  --sb-bg:        #0b0d1a;
+  --sb-txt:       rgba(255,255,255,.55);
+  --sb-act:       rgba(37,99,235,.18);
+  --sb-border:    rgba(255, 255, 255, .04);
+  --a-glow:       rgba(13, 148, 136, .30);
+  --purple-lt:    rgba(139, 92, 246, .15);
+  --sh:           0 1px 2px rgba(0, 0, 0, .40), 0 4px 20px rgba(0, 0, 0, .25);
+  --sh-md:        0 4px 16px rgba(0, 0, 0, .35), 0 1px 3px rgba(0, 0, 0, .25);
+  --sh-lg:        0 8px 40px rgba(0, 0, 0, .50);
+  --sh-xl:        0 20px 60px rgba(0, 0, 0, .40), 0 4px 16px rgba(0, 0, 0, .25);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   DARK THEME — Body / Scrollbar / Global Backgrounds
+   ═══════════════════════════════════════════════════════════════════════ */
+[data-theme="dark"] body::before {
+  background:
+      radial-gradient(ellipse at 20% 0%, rgba(37,99,235,.10) 0%, transparent 55%),
+      radial-gradient(ellipse at 80% 100%, rgba(13,148,136,.08) 0%, transparent 55%),
+      radial-gradient(ellipse at 50% 50%, rgba(37,99,235,.06) 0%, transparent 55%);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.08); }
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.14); }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   GLOBAL ANIMATION REDUCED MOTION
+   ═══════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

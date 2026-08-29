@@ -48,7 +48,7 @@
       </div>
     </div>
     <div class="hero-badges">
-      <span class="hero-badge hb-purple">Administrator</span>
+      <span class="hero-badge hb-primary">Administrator</span>
       @if(auth()->user()->email_verified_at)
         <span class="hero-badge hb-green">✓ Verified email</span>
       @else

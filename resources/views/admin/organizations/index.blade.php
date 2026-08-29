@@ -26,7 +26,7 @@
     <div class="hero-badges">
       <span class="hero-badge hb-blue">Total {{ $organizations->total() }}</span>
       <span class="hero-badge hb-amber">Pending {{ $cntPending }}</span>
-      <span class="hero-badge hb-purple">Under Review {{ $cntReview }}</span>
+      <span class="hero-badge hb-primary">Under Review {{ $cntReview }}</span>
       <span class="hero-badge hb-green">Approved {{ $cntApproved }}</span>
       <span class="hero-badge hb-red">Rejected {{ $cntRejected }}</span>
     </div>

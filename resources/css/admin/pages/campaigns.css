@@ -1,10 +1,10 @@
-﻿/* ══════════════════════════════════════
-   ADMIN — Page: Campaigns (list + create/edit)
+/* --------------------------------------
+   ADMIN � Page: Campaigns (list + create/edit)
    Campaign show styles live in campaign-show.css.
-   ══════════════════════════════════════ */
+   -------------------------------------- */
 @import '../components/_campaign-cards.css';
 
-/* ── COVER UPLOAD (campaign create) ── */
+/* -- COVER UPLOAD (campaign create) -- */
 .page-grid {
   display: grid;
   align-items: start;
@@ -16,7 +16,7 @@
   flex-direction: column;
   gap: 20px;
 }
-/* ── COVER ── */
+/* -- COVER -- */
 .cover-wrap {
   position: relative;
   overflow: hidden;
@@ -76,7 +76,7 @@
   height: 32px;
   opacity: .3;
 }
-/* ── STATUS CHIPS ── */
+/* -- STATUS CHIPS -- */
 .status-section {
   padding: 16px 18px;
 }
@@ -154,7 +154,7 @@
 .chip-completed .chip-dot {
   background: var(--blue);
 }
-/* ── KYC PILL / NOTICE ── */
+/* -- KYC PILL / NOTICE -- */
 .kyc-pill {
   padding: 6px 12px;
   font-family: var(--mono);
@@ -212,7 +212,7 @@
   background: var(--green-lt);
   border: 1px solid rgba(5, 196, 138, .15);
 }
-/* ── FUNDRAISING RING ── */
+/* -- FUNDRAISING RING -- */
 .fund-ring-row {
   display: flex;
   align-items: center;
@@ -304,7 +304,7 @@
   text-transform: uppercase;
   color: var(--text3);
 }
-/* ── BANK DETAILS ── */
+/* -- BANK DETAILS -- */
 .bank-grid {
   display: grid;
   gap: 10px;
@@ -337,7 +337,7 @@
   letter-spacing: 0;
   color: var(--text3);
 }
-/* ── KYC DOC TILES ── */
+/* -- KYC DOC TILES -- */
 .kyc-docs-grid {
   display: grid;
   gap: 12px;
@@ -397,7 +397,7 @@
   height: 24px;
   opacity: .3;
 }
-/* ── SELFIE VERIFICATION ── */
+/* -- SELFIE VERIFICATION -- */
 .kyc-selfie-wrap {
   display: flex;
   align-items: flex-start;
@@ -440,7 +440,7 @@
   line-height: 1.5;
   color: var(--text3);
 }
-/* ── UPDATES ── */
+/* -- UPDATES -- */
 .updates-list {
   display: flex;
   flex-direction: column;
@@ -496,7 +496,7 @@
   width: 12px;
   height: 12px;
 }
-/* ── FUNDRAISER ── */
+/* -- FUNDRAISER -- */
 .fundraiser-box {
   display: flex;
   align-items: center;
@@ -549,7 +549,7 @@
   font-weight: 700;
   border-radius: 100px;
 }
-/* ── INFO ROW ── */
+/* -- INFO ROW -- */
 .info-row {
   display: flex;
   align-items: center;
@@ -570,7 +570,7 @@
   text-transform: uppercase;
   color: var(--text3);
 }
-/* ── LEGACY KYC DOC PREVIEW ── */
+/* -- LEGACY KYC DOC PREVIEW -- */
 .kyc-doc-preview {
   overflow: hidden;
   margin-top: 14px;
@@ -657,7 +657,7 @@
   font-size: 11px;
   color: var(--text3);
 }
-/* ── COVER UPLOAD (campaign create) ── */
+/* -- COVER UPLOAD (campaign create) -- */
 .cover-upload-zone {
   display: flex;
   flex-direction: column;
@@ -712,7 +712,7 @@
   gap: 8px;
   margin-top: 10px;
 }
-/* ── UNSAVED BAR (campaign edit) ── */
+/* -- UNSAVED BAR (campaign edit) -- */
 .unsaved-bar {
   display: flex;
   align-items: center;
@@ -734,20 +734,20 @@
   box-shadow: 0 0 0 3px rgba(245, 158, 11, .18);
   animation: pulse 2s ease infinite;
 }
-/* ── CAMPAIGN CHECKBOX ── */
+/* -- CAMPAIGN CHECKBOX -- */
 .cmp-checkbox {
   width: 15px;
   height: 15px;
   cursor: pointer;
   accent-color: var(--a);
 }
-/* ── CAMPAIGN QUICK (dashboard widget) ── */
+/* -- CAMPAIGN QUICK (dashboard widget) -- */
 .qk-body {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
-/* ── CAMPAIGN INDEX FILTERS ── */
+/* -- CAMPAIGN INDEX FILTERS -- */
 .date-input {
   height: 36px;
   padding: 0 10px;
@@ -769,7 +769,7 @@
   height: 22px;
   background: var(--border2);
 }
-/* ── CAMPAIGN CATEGORY TAG ── */
+/* -- CAMPAIGN CATEGORY TAG -- */
 .cat-tag {
   display: inline-flex;
   align-items: center;

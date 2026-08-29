@@ -39,8 +39,8 @@
   background: var(--red-lt);
 }
 .si-violet {
-  color: #8b5cf6;
-  background: rgba(139, 92, 246, .10);
+  color: var(--primary);
+  background: var(--primary-tint-bg);
 }
 .stat-num {
   font-family: var(--mono);

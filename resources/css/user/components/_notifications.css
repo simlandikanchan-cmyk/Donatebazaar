@@ -13,7 +13,7 @@
 .notif-panel {
   position: absolute; top: calc(100% + 12px); right: 0; width: 330px; max-width: 88vw;
   background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-sm, 14px);
-  box-shadow: 0 18px 50px rgba(15, 23, 42, .18); z-index: 60; overflow: hidden;
+  box-shadow: 0 18px 50px rgba(15, 23, 42, .18); z-index: var(--z-toast); overflow: hidden;
   animation: notifIn .22s cubic-bezier(.4, 0, .2, 1) both;
 }
 .notif-panel[hidden] { display: none; }

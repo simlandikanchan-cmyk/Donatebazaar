@@ -37,6 +37,30 @@
 
 @section('content')
 
+    <x-page-hero
+        tag="Campaign"
+        title="Edit Campaign"
+        subtitle="{{ $campaign->title }}"
+    >
+        <x-slot:badges>
+            @if($campaign->campaign_state === 'paused')
+            <span class="wb-badge wbb-yellow">Paused</span>
+            @elseif($campaign->campaign_state === 'active')
+            <span class="wb-badge wbb-green">Active</span>
+            @elseif($campaign->campaign_state === 'rejected')
+            <span class="wb-badge wbb-red">Rejected</span>
+            @else
+            <span class="wb-badge wbb-purple">{{ ucfirst($campaign->campaign_state) }}</span>
+            @endif
+        </x-slot:badges>
+        <x-slot:actions>
+            <x-button variant="primary" href="{{ route('campaign.show', $campaign->id) }}" class="wb-btn wb-btn-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                View Campaign
+            </x-button>
+        </x-slot:actions>
+    </x-page-hero>
+
     @if ($errors->any())
     <div class="validation-box">
         <ul>
@@ -72,7 +96,7 @@
                 {{-- Basic Info --}}
                 <div class="card card-mb">
                     <div class="card-header">
-                        <div class="card-icon ic-indigo">
+                        <div class="card-icon ic-primary">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                         </div>
                         <div>
@@ -139,7 +163,7 @@
                 {{-- Cover Image --}}
                 <div class="card">
                     <div class="card-header">
-                        <div class="card-icon ic-indigo">
+                        <div class="card-icon ic-primary">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                         </div>
                         <div>
@@ -221,7 +245,7 @@
                 {{-- Save --}}
                 <div class="card">
                     <div class="card-header">
-                        <div class="card-icon ic-indigo">
+                        <div class="card-icon ic-primary">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
                         </div>
                         <div>
@@ -244,7 +268,7 @@
                 {{-- Progress --}}
                 <div class="card">
                     <div class="card-header">
-                        <div class="card-icon ic-indigo">
+                        <div class="card-icon ic-primary">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
                         </div>
                         <div>

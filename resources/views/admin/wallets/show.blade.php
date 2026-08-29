@@ -30,7 +30,7 @@
     <div class="hero-sub">{{ optional($wallet->owner)->name ?? 'Unknown' }} · {{ class_basename($wallet->owner_type) }}</div>
     <div class="hero-badges">
       <span class="hero-badge hb-teal">{{ $wallet->currency }}</span>
-      <span class="hero-badge hb-purple">{{ $txStats['total'] }} transactions</span>
+      <span class="hero-badge hb-primary">{{ $txStats['total'] }} transactions</span>
     </div>
   </div>
   <div class="hero-right">

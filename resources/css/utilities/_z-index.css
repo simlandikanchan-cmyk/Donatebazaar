@@ -1,0 +1,38 @@
+/* ═══════════════════════════════════════════════════════════════════
+   Z-INDEX SCALE — Single Source of Truth
+   ═══════════════════════════════════════════════════════════════════
+   Use these semantic tokens instead of arbitrary numeric values.
+   For existing high-value z-indexes (modals, toasts, sidebars),
+   migration is incremental to preserve stacking behavior.
+
+   Scale:
+     --z-base:      0   — base content, pseudo-elements
+     --z-sticky:    10  — sticky headers, scroll indicators
+     --z-dropdown:  20  — dropdowns, filter bars
+     --z-sidebar:   30  — sidebars
+     --z-overlay:   40  — modal backdrops
+     --z-modal:     50  — modals, dialogs
+     --z-toast:     60  — toasts, alerts
+     --z-chat:      70  — chat window
+     --z-toolbar:   100 — toolbars, topbars
+     --z-scroll:    200 — scroll-top buttons
+     --z-topbar:    300 — top navigation bars
+     --z-special:   400 — special overlays
+     --z-max:       9999 — highest priority (skip links, critical modals)
+   ═══════════════════════════════════════════════════════════════════ */
+
+:root {
+  --z-base:      0;
+  --z-sticky:    10;
+  --z-dropdown:  20;
+  --z-sidebar:   30;
+  --z-overlay:   40;
+  --z-modal:     50;
+  --z-toast:     60;
+  --z-chat:      70;
+  --z-toolbar:   100;
+  --z-scroll:    200;
+  --z-topbar:    300;
+  --z-special:   400;
+  --z-max:       9999;
+}
