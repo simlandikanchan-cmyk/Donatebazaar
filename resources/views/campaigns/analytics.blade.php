@@ -43,6 +43,22 @@
 @endsection
 
 @section('content')
+<x-page-hero
+    tag="Analytics"
+    title="{{ $campaign->title }}"
+    subtitle="Donation trends, donor insights & performance"
+>
+    <x-slot:badges>
+        <span class="wb-badge wbb-primary">{{ $donationCount }} donations</span>
+        <span class="wb-badge wbb-green">{{ $uniqueDonors }} unique donors</span>
+    </x-slot:badges>
+    <x-slot:actions>
+        <x-button variant="primary" href="{{ route('campaign.show', $campaign->id) }}" class="wb-btn wb-btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+            View Campaign
+        </x-button>
+    </x-slot:actions>
+</x-page-hero>
 <script type="application/json" id="analyticsData">
 @php
     $analyticsData = [

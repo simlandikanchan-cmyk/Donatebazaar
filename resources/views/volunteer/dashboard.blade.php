@@ -12,6 +12,24 @@ $approvedApps = $applications->where('status', 'approved')->count();
 $rejectedApps = $applications->where('status', 'rejected')->count();
 @endphp
 
+<x-page-hero
+    tag="Volunteer"
+    title="Volunteer Dashboard"
+    subtitle="Manage your assignments, events & applications."
+>
+    <x-slot:badges>
+        <span class="wb-badge wbb-green">{{ $stats['total'] }} assignments</span>
+        <span class="wb-badge wbb-primary">{{ $stats['active'] }} active</span>
+        <span class="wb-badge wbb-yellow">{{ $stats['applications'] }} applications</span>
+    </x-slot:badges>
+    <x-slot:actions>
+        <x-button variant="primary" href="{{ route('volunteer.apply') }}" class="wb-btn wb-btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+            {{ $hasProfile ? 'Apply for more' : 'Apply Now' }}
+        </x-button>
+    </x-slot:actions>
+</x-page-hero>
+
 @if(!$hasProfile)
 <div class="vd-empty">
     <div class="vd-empty-icon">

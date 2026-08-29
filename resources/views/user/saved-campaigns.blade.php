@@ -5,6 +5,24 @@
 
 @section('content')
 
+<x-page-hero
+    tag="Campaigns"
+    title="Saved Campaigns"
+    subtitle="Campaigns you're following."
+>
+    <x-slot:badges>
+        @if(isset($campaigns) && $campaigns->count() > 0)
+        <span class="wb-badge wbb-primary">{{ $campaigns->count() }} saved</span>
+        @endif
+    </x-slot:badges>
+    <x-slot:actions>
+        <x-button variant="primary" href="{{ route('all.campaigns') }}" class="wb-btn wb-btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+            Discover Campaigns
+        </x-button>
+    </x-slot:actions>
+</x-page-hero>
+
 @if($campaigns->count() > 0)
 
 <div class="c-grid" id="campaignGrid">

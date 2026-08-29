@@ -11,6 +11,23 @@
     $totalBilled = $rd->amount * $billingCount;
 @endphp
 
+<x-page-hero
+    tag="Recurring"
+    title="Recurring Donation"
+    subtitle="{{ $rd->campaign->title ?? 'Campaign' }}"
+>
+    <x-slot:badges>
+        <span class="wb-badge wbb-green">₹{{ number_format($rd->amount, 2) }} / {{ $rd->frequency }}</span>
+        <span class="wb-badge wbb-primary">{{ ucfirst($status) }}</span>
+    </x-slot:badges>
+    <x-slot:actions>
+        <x-button variant="primary" href="{{ route('recurring.index') }}" class="wb-btn wb-btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+            All Plans
+        </x-button>
+    </x-slot:actions>
+</x-page-hero>
+
 <div style="max-width:800px;">
 
 <x-button variant="secondary" href="{{ route('recurring.index') }}">

@@ -4,6 +4,21 @@
 @section('page_subtitle', 'Update your Profile')
 
 @section('content')
+<x-page-hero
+    tag="Profile"
+    title="Edit Profile"
+    subtitle="Update your profile"
+>
+    <x-slot:badges>
+        <span class="wb-badge wbb-primary">{{ $user->name }}</span>
+    </x-slot:badges>
+    <x-slot:actions>
+        <x-button variant="primary" href="{{ route('profile.show') }}" class="wb-btn wb-btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+            View Profile
+        </x-button>
+    </x-slot:actions>
+</x-page-hero>
 <div class="profile-grid">
   <div>
     {{-- Personal Info --}}
