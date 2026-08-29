@@ -2,6 +2,7 @@
 
 namespace App\Services\Payment;
 
+use App\Mail\CampaignGoalReachedMail;
 use App\Mail\DonationReceiptMail;
 use App\Models\Campaign;
 use App\Models\CampaignProduct;
@@ -82,12 +83,41 @@ class DonationCompletionService
 
         if ($donationToMail) {
             $this->sendReceiptEmail($donationToMail);
+            $this->checkGoalReached($donationToMail);
         }
 
         return [
             'donation' => $donationToMail,
             'owner' => $ownerForNotif,
         ];
+    }
+
+    private function checkGoalReached(Donation $donation): void
+    {
+        $campaign = Campaign::lockForUpdate()->findOrFail($donation->campaign_id);
+
+        if ($campaign->isCompleted() || $campaign->goal_amount <= 0) {
+            return;
+        }
+
+        $raised = (float) ($campaign->raised_amount ?? 0);
+        $goal = (float) $campaign->goal_amount;
+
+        if ($raised >= $goal && $campaign->campaign_state === Campaign::STATE_ACTIVE) {
+            $campaign->update(['campaign_state' => Campaign::STATE_COMPLETED]);
+            $campaign->log('completed', 'Campaign goal reached');
+
+            try {
+                Mail::to($campaign->user->email)->queue(
+                    new CampaignGoalReachedMail($campaign->fresh())
+                );
+            } catch (\Throwable $e) {
+                Log::channel('donations')->error('Campaign goal reached email failed', [
+                    'campaign_id' => $campaign->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
     }
 
     private function decrementProductStock(Donation $donation): void

@@ -3,6 +3,8 @@
 namespace App\Services\Payment;
 
 use App\Gateways\RazorpayGateway;
+use App\Mail\AdminPaymentFailedMail;
+use App\Mail\DonationFailedMail;
 use App\Mail\DonationRefundMail;
 use App\Models\Donation;
 use App\Models\Refund;
@@ -170,10 +172,35 @@ class PaymentWebhookService
             return;
         }
 
-        DB::table('donations')
-            ->where('order_id', $orderId)
+        $donation = Donation::where('order_id', $orderId)
             ->where('payment_status', 'pending')
-            ->update(['payment_status' => 'failed']);
+            ->first();
+
+        if ($donation) {
+            DB::table('donations')
+                ->where('id', $donation->id)
+                ->update(['payment_status' => 'failed']);
+
+            if ($donation->donor_email) {
+                try {
+                    Mail::to($donation->donor_email)->queue(new DonationFailedMail($donation));
+                } catch (\Throwable $e) {
+                    Log::channel('payments')->error('Failed to queue donation failed email', [
+                        'donation_id' => $donation->id,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
+            }
+
+            try {
+                Mail::to(config('mail.from.address'))->queue(new AdminPaymentFailedMail($donation));
+            } catch (\Throwable $e) {
+                Log::channel('payments')->error('Failed to queue admin payment failed email', [
+                    'donation_id' => $donation->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
 
         Log::channel('payments')->info('Webhook: payment failed', ['order_id' => $orderId]);
     }

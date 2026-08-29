@@ -22,20 +22,32 @@ class LegalPage extends Model
     public static function slugs(): array
     {
         return [
-            'privacy' => 'Privacy Policy',
-            'terms' => 'Terms of Service',
-            'refund' => 'Refund & Cancellation Policy',
-            'cookies' => 'Cookie Policy',
+            'terms-of-service' => 'Terms of Service',
+            'privacy-policy' => 'Privacy Policy',
+            'refund-policy' => 'Refund Policy',
+            'cookie-policy' => 'Cookie Policy',
+            'donor-policy' => 'Donor Policy',
+            'campaign-policy' => 'Campaign Policy',
+            'kyc-policy' => 'KYC Policy',
+            'grievance-policy' => 'Grievance Redressal Policy',
+            'acceptable-use-policy' => 'Acceptable Use Policy',
+            'payment-policy' => 'Payment Policy',
         ];
     }
 
     public static function publicPath(string $slug): string
     {
         return match ($slug) {
-            'privacy' => '/privacy-policy',
-            'terms' => '/terms-of-service',
-            'refund' => '/refund-cancellation',
-            'cookies' => '/cookie-policy',
+            'privacy-policy' => '/privacy-policy',
+            'terms-of-service' => '/terms-of-service',
+            'refund-policy' => '/refund-policy',
+            'cookie-policy' => '/cookie-policy',
+            'donor-policy' => '/donor-policy',
+            'campaign-policy' => '/campaign-policy',
+            'kyc-policy' => '/kyc-policy',
+            'grievance-policy' => '/grievance-policy',
+            'acceptable-use-policy' => '/acceptable-use-policy',
+            'payment-policy' => '/payment-policy',
             default => '/'.$slug,
         };
     }

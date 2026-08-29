@@ -8,22 +8,52 @@ class LegalController extends Controller
 {
     public function privacy()
     {
-        return $this->show('privacy');
+        return $this->show('privacy-policy');
     }
 
     public function terms()
     {
-        return $this->show('terms');
+        return $this->show('terms-of-service');
     }
 
     public function refund()
     {
-        return $this->show('refund');
+        return $this->show('refund-policy');
     }
 
     public function cookies()
     {
-        return $this->show('cookies');
+        return $this->show('cookie-policy');
+    }
+
+    public function donor()
+    {
+        return $this->show('donor-policy');
+    }
+
+    public function campaign()
+    {
+        return $this->show('campaign-policy');
+    }
+
+    public function kyc()
+    {
+        return $this->show('kyc-policy');
+    }
+
+    public function grievance()
+    {
+        return $this->show('grievance-policy');
+    }
+
+    public function acceptableUse()
+    {
+        return $this->show('acceptable-use-policy');
+    }
+
+    public function payment()
+    {
+        return $this->show('payment-policy');
     }
 
     protected function show(string $slug)

@@ -87,7 +87,7 @@ class CampaignController extends Controller
         Cache::forget('active_campaign_categories');
 
         try {
-            Mail::to($campaign->user)->send(new CampaignCreatedMail($campaign));
+            Mail::to($campaign->user)->queue(new CampaignCreatedMail($campaign));
         } catch (\Throwable $e) {
             report($e);
         }

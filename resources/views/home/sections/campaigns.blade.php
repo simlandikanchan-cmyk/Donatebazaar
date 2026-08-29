@@ -14,29 +14,24 @@
             </p>
         </div>
 
-        {{-- ═══ CATEGORY FILTERS (sticky on scroll) ═══ --}}
-        <div class="camp-filter-sticky">
-            <div class="camp-filter-wrap" id="campFilterWrap">
-
-                <x-button variant="secondary" type="button" class="camp-filter-btn active" data-cat="all">
-                    All
-                </x-button>
-
-                @foreach($categories as $category)
-                    <x-button variant="secondary" type="button" class="camp-filter-btn" data-cat="{{ $category->slug }}">
-                        {{ $category->name }}
-                    </x-button>
-                @endforeach
-
+        {{-- ═══ FILTER TOOLBAR ═══ --}}
+        <div class="camp-filter-toolbar">
+            <div class="camp-filter-dropdown-wrap">
+                <label for="campFilterSelect" class="camp-filter-label">Category</label>
+                <div class="camp-filter-select-inner">
+                    <select class="camp-filter-select" id="campFilterSelect" aria-label="Filter campaigns by category">
+                        <option value="all" selected>All Categories</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->slug }}">{{ $category->name }}</option>
+                        @endforeach
+                    </select>
+                    <span class="camp-filter-chevron">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    </span>
+                </div>
             </div>
-
-            <div class="camp-filter-select-wrap">
-                <select class="camp-filter-select" id="campFilterSelect" aria-label="Filter campaigns by category">
-                    <option value="all" selected>All Categories</option>
-                    @foreach($categories as $category)
-                        <option value="{{ $category->slug }}">{{ $category->name }}</option>
-                    @endforeach
-                </select>
+            <div class="camp-filter-count">
+                <span id="campCount">{{ $campaigns->count() }}</span> campaigns
             </div>
         </div>
 
@@ -44,7 +39,8 @@
         <div class="camp-grid" id="campaignContainer">
 
             <p class="camp-filter-empty" id="campEmpty">
-                No campaigns found in this category.
+                No campaigns found
+                <span>There are currently no campaigns in this category.</span>
             </p>
 
             @foreach($campaigns as $index => $campaign)

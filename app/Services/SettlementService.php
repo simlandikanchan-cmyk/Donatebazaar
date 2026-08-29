@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Events\RiskEvaluationCompleted;
 use App\Events\SettlementAutoApproved;
 use App\Events\SettlementCancelled;
 use App\Events\SettlementFailed;
@@ -160,7 +159,6 @@ class SettlementService
         }
 
         event(new SettlementRequested($settlement));
-        event(new RiskEvaluationCompleted($settlement, $riskResult));
 
         if ($riskResult->isAutoApproved()) {
             event(new SettlementAutoApproved($settlement));

@@ -1,6 +1,6 @@
 <div class="footer-grid">
 
-    <div>
+    <div style="grid-column: 1 / -1;">
         <div class="footer-brand-name">DonateBazaar</div>
         <p class="footer-brand-desc">
             A trusted platform connecting donors with verified causes.
@@ -65,6 +65,22 @@
             <li><a href="{{ route('job_posts.index') }}">Careers</a></li>
             <li><a href="{{ route('blogs.index') }}">Blog</a></li>
             <li><a href="{{ route('partnership') }}">Partnership</a></li>
+        </ul>
+    </div>
+
+    <div class="footer-col">
+        <h3>Legal</h3>
+        <ul>
+            <li><a href="{{ route('terms') }}">Terms of Service</a></li>
+            <li><a href="{{ route('privacy') }}">Privacy Policy</a></li>
+            <li><a href="{{ route('refund') }}">Refund Policy</a></li>
+            <li><a href="{{ route('cookies') }}">Cookie Policy</a></li>
+            <li><a href="{{ route('donor') }}">Donor Policy</a></li>
+            <li><a href="{{ route('campaign') }}">Campaign Policy</a></li>
+            <li><a href="{{ route('kyc') }}">KYC Policy</a></li>
+            <li><a href="{{ route('grievance') }}">Grievance Policy</a></li>
+            <li><a href="{{ route('acceptable.use') }}">Acceptable Use</a></li>
+            <li><a href="{{ route('payment') }}">Payment Policy</a></li>
         </ul>
     </div>
 

@@ -208,6 +208,10 @@ function initCampaigns() {
     const empty = filteredCards.length === 0;
     campEmpty?.style.setProperty('display', empty ? 'block' : 'none');
 
+    // Update campaign count
+    const countEl = document.getElementById('campCount');
+    if (countEl) countEl.textContent = filteredCards.length;
+
     if (empty) {
       if (loader) loader.style.display = 'none';
       return;
@@ -227,28 +231,10 @@ function initCampaigns() {
     }
   }
 
-  // Filter button clicks — delegate to parent for better perf
-  const filterParent = $('#campFilterWrap') ?? document;
+  // Category dropdown filter
   const filterSelect = $('#campFilterSelect');
 
-  function syncSelect(cat) {
-    if (filterSelect && filterSelect.value !== cat) filterSelect.value = cat;
-  }
-
-  filterParent.addEventListener('click', (e) => {
-    const btn = e.target.closest('.camp-filter-btn');
-    if (!btn) return;
-
-    $$('.camp-filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    syncSelect(btn.dataset.cat);
-    applyFilter(btn.dataset.cat);
-    container?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
-
-  // Mobile dropdown — mirrors the pill buttons
   filterSelect?.addEventListener('change', (e) => {
-    $$('.camp-filter-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === e.target.value));
     applyFilter(e.target.value);
     container?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
@@ -446,7 +432,7 @@ function initImpactSection() {
 
 /* ═══════════════════════════════════════════════════════════
    9. SCROLL REVEAL — adds .visible to .reveal elements on scroll
-═══════════════════════════════════════════════════════════ */
+   ═══════════════════════════════════════════════════════════ */
 function initScrollReveal() {
   const els = $$('.reveal, .reveal-left, .reveal-right, .reveal-scale');
   if (!els.length) return;

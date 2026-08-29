@@ -2,6 +2,7 @@
 
 namespace App\Services\Campaign;
 
+use App\Mail\AdminNewCampaignMail;
 use App\Mail\CampaignStatusMail;
 use App\Models\Campaign;
 use App\Models\CampaignLog;
@@ -36,7 +37,8 @@ class CampaignWorkflowService
             ]);
         });
 
-        Mail::to($campaign->user)->send(new CampaignStatusMail($campaign, 'approved'));
+        Mail::to($campaign->user)->queue(new CampaignStatusMail($campaign, 'approved'));
+        Mail::to(config('mail.from.address'))->queue(new AdminNewCampaignMail($campaign));
     }
 
     public function reject(Campaign $campaign, User $admin, string $reason): void
@@ -60,7 +62,7 @@ class CampaignWorkflowService
             ]);
         });
 
-        Mail::to($campaign->user)->send(new CampaignStatusMail($campaign, 'rejected', $reason));
+        Mail::to($campaign->user)->queue(new CampaignStatusMail($campaign, 'rejected', $reason));
     }
 
     public function pause(Campaign $campaign, User $admin, ?string $reason = null): void
@@ -172,7 +174,7 @@ class CampaignWorkflowService
                 ]);
             });
 
-            Mail::to($campaign->user)->send(new CampaignStatusMail($campaign, 'approved'));
+            Mail::to($campaign->user)->queue(new CampaignStatusMail($campaign, 'approved'));
             $done++;
         }
 
@@ -204,7 +206,7 @@ class CampaignWorkflowService
                 ]);
             });
 
-            Mail::to($campaign->user)->send(new CampaignStatusMail($campaign, 'rejected', $reason));
+            Mail::to($campaign->user)->queue(new CampaignStatusMail($campaign, 'rejected', $reason));
             $done++;
         }
 

@@ -8,6 +8,20 @@
   gap: 24px;
   grid-template-columns: 1fr 340px;
 }
+.page-grid > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  box-shadow: var(--sh);
+  transition:
+    border-color var(--ease),
+    box-shadow var(--ease);
+}
 .form-col-main {
   display: flex;
   flex-direction: column;
@@ -719,6 +733,38 @@
 }
 .pub-card-inner:hover .pub-arrow {
   transform: scaleX(1);
+}
+/* ── SUBMIT BUTTON ── */
+.submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, var(--a) 0%, #7c3aed 100%);
+  border: none;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  transition:
+    transform var(--ease),
+    box-shadow var(--ease),
+    opacity var(--ease);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+.submit-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+}
+.submit-btn:active {
+  transform: scale(0.98);
+}
+.submit-btn svg {
+  width: 16px;
+  height: 16px;
 }
 /* ── MODIFIED BADGE (edit page) ── */
 .mod-badge {

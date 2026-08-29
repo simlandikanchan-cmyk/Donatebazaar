@@ -37,8 +37,14 @@ Route::get('/privacy', function () {
 });
 Route::get('/privacy-policy', [LegalController::class, 'privacy'])->name('privacy');
 Route::get('/terms-of-service', [LegalController::class, 'terms'])->name('terms');
-Route::get('/refund-cancellation', [LegalController::class, 'refund'])->name('refund');
+Route::get('/refund-policy', [LegalController::class, 'refund'])->name('refund');
 Route::get('/cookie-policy', [LegalController::class, 'cookies'])->name('cookies');
+Route::get('/donor-policy', [LegalController::class, 'donor'])->name('donor');
+Route::get('/campaign-policy', [LegalController::class, 'campaign'])->name('campaign');
+Route::get('/kyc-policy', [LegalController::class, 'kyc'])->name('kyc');
+Route::get('/grievance-policy', [LegalController::class, 'grievance'])->name('grievance');
+Route::get('/acceptable-use-policy', [LegalController::class, 'acceptableUse'])->name('acceptable.use');
+Route::get('/payment-policy', [LegalController::class, 'payment'])->name('payment');
 
 Route::get('/faq', [FaqController::class, 'index'])->name('faq');
 
