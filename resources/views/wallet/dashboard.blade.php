@@ -10,6 +10,25 @@ $icoReserved   = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 $icoLocked     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>';
 @endphp
 
+<x-page-hero
+    tag="Wallet"
+    title="My Wallet"
+    subtitle="Manage your balance, transactions and payout requests."
+>
+    <x-slot:badges>
+        <span class="wb-badge wbb-green">₹{{ number_format($wallet->balance, 2) }} available</span>
+        <span class="wb-badge wbb-yellow">₹{{ number_format($wallet->reserved_balance, 2) }} reserved</span>
+    </x-slot:badges>
+    <x-slot:actions>
+        @if($eligible->isNotEmpty())
+        <x-button variant="primary" href="#walletPayout" class="wb-btn wb-btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m-7-7h14"/></svg>
+            Request Payout
+        </x-button>
+        @endif
+    </x-slot:actions>
+</x-page-hero>
+
 <div class="wallet-stats-grid">
     <x-stat-card color="green" label="Available Balance" value="₹{{ number_format($wallet->balance, 2) }}" footer="{{ $wallet->currency }}" :icon="$icoWalletBal" />
     <x-stat-card color="yellow" label="Reserved (hold window)" value="₹{{ number_format($wallet->reserved_balance, 2) }}" footer="Released after the reserve period" :icon="$icoReserved" />
@@ -98,7 +117,7 @@ $icoLocked     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
     </div>
 </div>
 
-<div class="chart-card mb-24">
+<div class="chart-card mb-24" id="walletPayout">
     <div class="chart-card-hdr">
         <div>
             <div class="chart-title">Request a Payout</div>

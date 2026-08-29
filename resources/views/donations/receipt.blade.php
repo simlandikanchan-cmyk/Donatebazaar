@@ -4,6 +4,17 @@
 @section('page_subtitle', 'Tax-exempt receipt for your contribution')
 
 @section('content')
+<x-page-hero
+    tag="Receipt"
+    title="Donation Receipt"
+    subtitle="Official documentation for your contribution to {{ $campaign->title ?? 'General Fund' }}."
+>
+    <x-slot:badges>
+        <span class="wb-badge wbb-primary">₹{{ number_format($amount, 2) }} donated</span>
+        <span class="wb-badge wbb-yellow">{{ ucfirst($donation->donation_type ?? 'One-time') }}</span>
+    </x-slot:badges>
+</x-page-hero>
+
 <div class="receipt" id="receipt">
     <div class="receipt-header">
         <div class="receipt-brand">

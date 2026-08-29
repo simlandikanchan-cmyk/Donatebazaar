@@ -11,16 +11,24 @@
     $blogRejected  = $blogs->where('status', 'rejected')->count();
 @endphp
 
-<div class="page-hdr">
-    <div>
-        <div class="page-hdr-title">My Blogs</div>
-        <div class="page-hdr-sub" id="subLabel">{{ $blogTotal }} post{{ $blogTotal !== 1 ? 's' : '' }} total</div>
-    </div>
-    <x-button variant="primary" href="{{ url('/user/dashboard/blogs/create') }}">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-        Write a Blog
-    </x-button>
-</div>
+<x-page-hero
+    tag="Blogs"
+    title="My Blogs"
+    subtitle="{{ $blogTotal }} post{{ $blogTotal !== 1 ? 's' : '' }} total"
+>
+    <x-slot:badges>
+        <span class="wb-badge wbb-primary" id="subLabel">{{ $blogTotal }} total</span>
+        <span class="wb-badge wbb-green">{{ $blogPublished }} published</span>
+        <span class="wb-badge wbb-yellow">{{ $blogPending }} pending</span>
+        @if($blogDraft > 0)<span class="wb-badge wbb-purple">{{ $blogDraft }} drafts</span>@endif
+    </x-slot:badges>
+    <x-slot:actions>
+        <x-button variant="primary" href="{{ url('/user/dashboard/blogs/create') }}" class="wb-btn wb-btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+            Write a Blog
+        </x-button>
+    </x-slot:actions>
+</x-page-hero>
 
 <div class="stats-row">
     <div class="stat-card" data-filter="all"

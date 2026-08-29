@@ -170,6 +170,33 @@
     $hasMultiDocs = $kycAadhaarUrl || $kycPanUrl || $kycSelfieUrl;
 @endphp
 
+<x-page-hero
+    tag="KYC"
+    title="KYC Documents"
+    subtitle="{{ Str::limit($campaign->title, 45) }}"
+>
+    <x-slot:badges>
+        @if($kycStatus === 'none')
+        <span class="wb-badge wbb-red">Not submitted</span>
+        @elseif($kycStatus === 'approved')
+        <span class="wb-badge wbb-green">Verified</span>
+        @elseif($kycStatus === 'pending')
+        <span class="wb-badge wbb-yellow">Pending review</span>
+        @else
+        <span class="wb-badge wbb-red">Rejected</span>
+        @endif
+        <span class="wb-badge wbb-primary">{{ ucfirst($chipLabel) }}</span>
+    </x-slot:badges>
+    <x-slot:actions>
+        @if($kycStatus !== 'approved')
+        <x-button variant="primary" href="{{ route('kyc.upload.form', $campaign->id) }}" class="wb-btn wb-btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+            {{ $kyc ? 'Re-upload Documents' : 'Upload KYC' }}
+        </x-button>
+        @endif
+    </x-slot:actions>
+</x-page-hero>
+
 {{-- ══ STATUS BANNER ══ --}}
 @if($kycStatus === 'none')
     <div class="kyc-banner banner-none">
