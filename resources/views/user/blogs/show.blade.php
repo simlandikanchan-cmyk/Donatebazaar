@@ -3,6 +3,31 @@
 @section('page_title', $blog->title)
 
 @section('content')
+<x-page-hero
+    tag="Blog"
+    title="{{ $blog->title }}"
+    subtitle="Created {{ $blog->created_at->format('d M Y') }} · {{ ucfirst($blog->status) }}"
+>
+    <x-slot:badges>
+        @if($blog->status === 'draft')
+        <span class="wb-badge wbb-yellow">Draft</span>
+        @elseif($blog->status === 'rejected')
+        <span class="wb-badge wbb-red">Rejected</span>
+        @elseif($blog->status === 'approved')
+        <span class="wb-badge wbb-primary">Approved</span>
+        @else
+        <span class="wb-badge wbb-purple">{{ ucfirst($blog->status) }}</span>
+        @endif
+    </x-slot:badges>
+    @if($blog->status === 'draft' || $blog->status === 'rejected')
+    <x-slot:actions>
+        <x-button variant="primary" href="{{ route('user.blogs.edit', $blog) }}" class="wb-btn wb-btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+            Edit Blog
+        </x-button>
+    </x-slot:actions>
+    @endif
+</x-page-hero>
 <div class="breadcrumb">
     <a href="{{ url('/user/dashboard') }}">Dashboard</a>
     <span class="breadcrumb-sep">›</span>

@@ -37,6 +37,30 @@
 
 @section('content')
 
+    <x-page-hero
+        tag="Campaign"
+        title="Edit Campaign"
+        subtitle="{{ $campaign->title }}"
+    >
+        <x-slot:badges>
+            @if($campaign->campaign_state === 'paused')
+            <span class="wb-badge wbb-yellow">Paused</span>
+            @elseif($campaign->campaign_state === 'active')
+            <span class="wb-badge wbb-green">Active</span>
+            @elseif($campaign->campaign_state === 'rejected')
+            <span class="wb-badge wbb-red">Rejected</span>
+            @else
+            <span class="wb-badge wbb-purple">{{ ucfirst($campaign->campaign_state) }}</span>
+            @endif
+        </x-slot:badges>
+        <x-slot:actions>
+            <x-button variant="primary" href="{{ route('campaign.show', $campaign->id) }}" class="wb-btn wb-btn-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                View Campaign
+            </x-button>
+        </x-slot:actions>
+    </x-page-hero>
+
     @if ($errors->any())
     <div class="validation-box">
         <ul>

@@ -8,6 +8,24 @@
 @endpush
 
 @section('content')
+<x-page-hero
+    tag="KYC"
+    title="Verify Identity"
+    subtitle="{{ Str::limit($campaign->title, 45) }}"
+>
+    <x-slot:badges>
+        @if(!$existingKyc)
+        <span class="wb-badge wbb-red">Not submitted</span>
+        @elseif($existingKyc->status === 'approved')
+        <span class="wb-badge wbb-green">Verified</span>
+        @elseif($existingKyc->status === 'pending')
+        <span class="wb-badge wbb-yellow">Pending review</span>
+        @else
+        <span class="wb-badge wbb-red">Rejected</span>
+        @endif
+        <span class="wb-badge wbb-primary">Campaign</span>
+    </x-slot:badges>
+</x-page-hero>
 <script type="application/json" id="kycUploadData">
 @json(['selectedDocType' => old('document_type') ?? ''])
 </script>

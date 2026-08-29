@@ -87,6 +87,18 @@
     $notSubmittedCount  = $campaigns->filter(fn($c) => !$c->kyc)->count();
 @endphp
 
+<x-page-hero
+    tag="Verification"
+    title="KYC Verification"
+    subtitle="Manage identity verification across all your campaigns."
+>
+    <x-slot:badges>
+        <span class="wb-badge wbb-green">{{ $verifiedCount }} verified</span>
+        <span class="wb-badge wbb-yellow">{{ $pendingCount }} pending</span>
+        <span class="wb-badge wbb-red">{{ $rejectedCount + $notSubmittedCount }} need attention</span>
+    </x-slot:badges>
+</x-page-hero>
+
 {{-- ══ STAT CARDS (double as filters) ══ --}}
 <div class="stat-grid">
     <div class="stat-card is-active" data-filter="all">

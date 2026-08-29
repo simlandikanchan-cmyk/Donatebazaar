@@ -4,6 +4,15 @@
 @section('page_subtitle', 'Donation successful')
 
 @section('content')
+<x-page-hero
+    tag="Gift Card"
+    title="Gift Card Redeemed"
+    subtitle="Donation successful"
+>
+    <x-slot:badges>
+        <span class="wb-badge wbb-green">₹{{ number_format($giftCard->amount) }} donated</span>
+    </x-slot:badges>
+</x-page-hero>
 <div style="max-width:480px;">
 
     <div style="background:var(--surface);border-radius:20px;border:1px solid var(--border);padding:40px 32px;text-align:center;">

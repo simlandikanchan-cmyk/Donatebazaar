@@ -12,6 +12,17 @@
     $dhTotal      = $totalDonated;
 @endphp
 
+<x-page-hero
+    tag="Donations"
+    title="Donation History"
+    subtitle="All your contributions in one place."
+>
+    <x-slot:badges>
+        <span class="wb-badge wbb-green">{{ $dhAll }} total</span>
+        <span class="wb-badge wbb-primary">₹{{ number_format($dhTotal, 0) }} contributed</span>
+    </x-slot:badges>
+</x-page-hero>
+
 <div class="dh-stats">
     <div class="dh-stat is-active" data-filter="all">
         <div class="dh-stat-icon si-indigo">

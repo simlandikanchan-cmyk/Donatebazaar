@@ -3,16 +3,18 @@
 @section('page_title', 'Edit Blog')
 
 @section('content')
-<div class="page-hdr">
-    <div class="page-hdr-left">
-        <h2>Edit Blog</h2>
-        <p>Update "{{ Str::limit($blog->title, 50) }}"</p>
-    </div>
-    <x-button variant="secondary" href="{{ route('user.blogs.index') }}">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-        Back to Blogs
-    </x-button>
-</div>
+<x-page-hero
+    tag="Blog"
+    title="Edit Blog"
+    subtitle='Update "{{ Str::limit($blog->title, 50) }}"'
+>
+    <x-slot:actions>
+        <x-button variant="secondary" href="{{ route('user.blogs.index') }}" class="wb-btn wb-btn-ghost">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+            Back to Blogs
+        </x-button>
+    </x-slot:actions>
+</x-page-hero>
 
 <form action="{{ route('user.blogs.update', $blog) }}" method="POST" enctype="multipart/form-data">
     @csrf

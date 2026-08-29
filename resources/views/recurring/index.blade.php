@@ -12,6 +12,18 @@
         $rdCancelled = $rdAll->where('status','cancelled')->count();
     @endphp
 
+    <x-page-hero
+        tag="Recurring"
+        title="Recurring Donations"
+        subtitle="Track, manage and control all your recurring contribution plans."
+    >
+        <x-slot:badges>
+            <span class="wb-badge wbb-primary">{{ $rdTotal }} total</span>
+            <span class="wb-badge wbb-green">{{ $rdActive }} active</span>
+            @if($rdPaused > 0)<span class="wb-badge wbb-yellow">{{ $rdPaused }} paused</span>@endif
+        </x-slot:badges>
+    </x-page-hero>
+
     <div class="stat-grid">
         <div class="stat-card is-active" data-filter="all">
             <div class="stat-icon ic-indigo">

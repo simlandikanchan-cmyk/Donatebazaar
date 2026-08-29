@@ -16,6 +16,22 @@
 @endphp
 
 @section('content')
+<x-page-hero
+    tag="Events"
+    title="Create Event"
+    subtitle="{{ $campaign->title }}"
+>
+    <x-slot:badges>
+        <span class="wb-badge wbb-green">{{ $pct }}% funded</span>
+        <span class="wb-badge wbb-primary">{{ ucfirst($campaign->campaign_state) }}</span>
+    </x-slot:badges>
+    <x-slot:actions>
+        <x-button variant="primary" href="{{ route('campaign.show', $campaign->id) }}" class="wb-btn wb-btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+            View Campaign
+        </x-button>
+    </x-slot:actions>
+</x-page-hero>
 <div class="page-grid">
 
     {{-- ═════ LEFT — FORM ═════ --}}
