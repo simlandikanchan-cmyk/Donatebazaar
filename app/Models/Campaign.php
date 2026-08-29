@@ -289,9 +289,7 @@ class Campaign extends Model
             return false;
         }
 
-        return KycVerification::where('user_id', $this->user_id)
-            ->where('status', KycVerification::STATUS_APPROVED)
-            ->exists();
+        return $this->user?->isKycApproved() ?? false;
     }
 
     // -------------------------------------------------------------------------
@@ -300,6 +298,13 @@ class Campaign extends Model
 
     public function approve(): void
     {
+        if (! $this->ownerKycApproved()) {
+
+            throw new \RuntimeException(
+                'Campaign cannot be published until the owner KYC is approved.'
+            );
+        }
+
         $this->update([
 
             'campaign_state' => self::STATE_ACTIVE,

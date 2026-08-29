@@ -5,7 +5,6 @@ namespace App\Services\Campaign;
 use App\Mail\CampaignStatusMail;
 use App\Models\Campaign;
 use App\Models\CampaignLog;
-use App\Models\KycVerification;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -22,11 +21,7 @@ class CampaignWorkflowService
             throw new \InvalidArgumentException('Cannot approve expired campaign.');
         }
 
-        $hasKyc = KycVerification::where('user_id', $campaign->user_id)
-            ->where('status', KycVerification::STATUS_APPROVED)
-            ->exists();
-
-        if (! $hasKyc) {
+        if (! $campaign->ownerKycApproved()) {
             throw new \InvalidArgumentException('Cannot approve: User KYC not approved.');
         }
 
@@ -105,7 +100,7 @@ class CampaignWorkflowService
         }
 
         if (! $campaign->ownerKycApproved()) {
-            throw new \InvalidArgumentException('KYC not approved.');
+            throw new \RuntimeException('KYC not approved.');
         }
 
         DB::transaction(function () use ($campaign, $admin) {
@@ -160,8 +155,7 @@ class CampaignWorkflowService
                 continue;
             }
 
-            $hasKyc = $campaign->user?->kycVerification?->status === KycVerification::STATUS_APPROVED;
-            if (! $hasKyc) {
+            if (! $campaign->ownerKycApproved()) {
                 $skipped++;
 
                 continue;

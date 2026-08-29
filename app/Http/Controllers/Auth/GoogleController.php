@@ -81,13 +81,17 @@ class GoogleController extends Controller
                 // New user — create account
                 $isNewUser = true;
 
-                return User::create([
+                $user = User::create([
                     'name' => $googleUser->name ?? 'Google User',
                     'email' => $googleUser->email,
                     'google_id' => $googleUser->getId(),
                     'password' => bcrypt(Str::random(32)),
                     'email_verified_at' => now(),
                 ]);
+
+                $user->ensureDefaultLevel();
+
+                return $user;
             });
 
         } catch (\Exception $e) {

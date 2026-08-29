@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Mail\CampaignCreatedMail;
 use App\Models\Campaign;
 use App\Models\CategoryProduct;
-use App\Models\KycVerification;
 use App\Repositories\CampaignRepository;
 use App\Repositories\CategoryRepository;
 use App\Http\Requests\StoreCampaignRequest;
@@ -93,9 +92,7 @@ class CampaignController extends Controller
             report($e);
         }
 
-        $hasApprovedKyc = KycVerification::where('user_id', Auth::id())
-            ->where('status', KycVerification::STATUS_APPROVED)
-            ->exists();
+        $hasApprovedKyc = Auth::user()->isKycApproved();
 
         if (! $hasApprovedKyc) {
             return redirect()
@@ -178,7 +175,13 @@ class CampaignController extends Controller
             $request->end_date &&
             ! Carbon::parse($request->end_date)->endOfDay()->isPast()
         ) {
-            $campaign->update(['campaign_state' => Campaign::STATE_ACTIVE]);
+            if (! $campaign->ownerKycApproved()) {
+                return back()
+                    ->with('error', 'Please complete KYC verification before reactivating your campaign.')
+                    ->withInput();
+            }
+
+            $campaign->approve();
         }
 
         Cache::forget('active_campaign_categories');

@@ -130,6 +130,88 @@ class KycVerificationIntegrationTest extends TestCase
         ]);
     }
 
+    public function test_admin_cannot_approve_pending_campaign_without_kyc(): void
+    {
+        $campaign = Campaign::create([
+            'user_id' => $this->user->id,
+            'category_id' => $this->category->id,
+            'title' => 'Pending No KYC',
+            'slug' => 'pending-no-kyc',
+            'description' => 'Pending campaign without KYC cannot be published',
+            'goal_amount' => 50000,
+            'campaign_state' => Campaign::STATE_PENDING,
+        ]);
+
+        $this->actingAs($this->admin)
+            ->post(route('admin.campaign.approve', $campaign))
+            ->assertSessionHas('error');
+
+        $this->assertDatabaseHas('campaigns', [
+            'id' => $campaign->id,
+            'campaign_state' => Campaign::STATE_PENDING,
+        ]);
+    }
+
+    public function test_admin_can_approve_pending_campaign_with_approved_kyc(): void
+    {
+        $kyc = KycVerification::create([
+            'user_id' => $this->user->id,
+        ]);
+        $kyc->status = KycVerification::STATUS_APPROVED;
+        $kyc->verified_by = $this->admin->id;
+        $kyc->verified_at = now();
+        $kyc->save();
+
+        $campaign = Campaign::create([
+            'user_id' => $this->user->id,
+            'category_id' => $this->category->id,
+            'title' => 'Pending With KYC',
+            'slug' => 'pending-with-kyc',
+            'description' => 'Pending campaign with approved KYC can be published',
+            'goal_amount' => 50000,
+            'campaign_state' => Campaign::STATE_PENDING,
+        ]);
+
+        $this->actingAs($this->admin)
+            ->post(route('admin.campaign.approve', $campaign))
+            ->assertSessionHas('success');
+
+        $this->assertDatabaseHas('campaigns', [
+            'id' => $campaign->id,
+            'campaign_state' => Campaign::STATE_ACTIVE,
+        ]);
+    }
+
+    public function test_user_cannot_reactivate_expired_campaign_without_kyc(): void
+    {
+        $campaign = Campaign::create([
+            'user_id' => $this->user->id,
+            'category_id' => $this->category->id,
+            'title' => 'Expired No KYC',
+            'slug' => 'expired-no-kyc',
+            'description' => 'Expired campaign without KYC cannot be reactivated',
+            'goal_amount' => 50000,
+            'campaign_state' => Campaign::STATE_EXPIRED,
+            'end_date' => now()->subDay()->toDateString(),
+        ]);
+
+        $this->actingAs($this->user)
+            ->put(route('campaign.update', $campaign), [
+                'title' => 'Expired No KYC',
+                'description' => 'Expired campaign without KYC cannot be reactivated',
+                'goal_amount' => '50000',
+                'category_id' => $this->category->id,
+                'start_date' => now()->toDateString(),
+                'end_date' => now()->addDays(30)->toDateString(),
+            ])
+            ->assertSessionHas('error');
+
+        $this->assertDatabaseHas('campaigns', [
+            'id' => $campaign->id,
+            'campaign_state' => Campaign::STATE_EXPIRED,
+        ]);
+    }
+
     public function test_kyc_resubmission_after_rejection(): void
     {
         $kyc = KycVerification::create([

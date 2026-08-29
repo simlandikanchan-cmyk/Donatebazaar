@@ -25,9 +25,7 @@ class KycUploadController extends Controller
     {
         abort_unless(Auth::id() === $campaign->user_id, 403);
 
-        if (KycVerification::where('user_id', Auth::id())
-            ->where('status', KycVerification::STATUS_APPROVED)
-            ->exists()) {
+        if (Auth::user()->isKycApproved()) {
             return view('kyc.upload', compact('campaign'))->with('existingKyc', null)->with('kycAlreadyApproved', true);
         }
 
@@ -91,9 +89,7 @@ class KycUploadController extends Controller
     {
         abort_unless(Auth::id() === $campaign->user_id, 403);
 
-        if (KycVerification::where('user_id', Auth::id())
-            ->where('status', KycVerification::STATUS_APPROVED)
-            ->exists()) {
+        if (Auth::user()->isKycApproved()) {
             return redirect()
                 ->route('campaign.show', $campaign->id)
                 ->with('info', 'KYC already approved. No need to re-upload.');

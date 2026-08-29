@@ -119,13 +119,12 @@ class FundraiserLevelService
 
     private function resolveLevel(User $user): ?FundraiserLevel
     {
-        // assignedLevel is a hasOneThrough that returns FundraiserLevel directly.
-        // fundraiserLevel (the pivot row) is NOT used here — that returns UserFundraiserLevel.
-        // return $user->assignedLevel
-        //     ?? FundraiserLevel::where('is_default', true)->first();
-
+        // The user's explicitly assigned level takes precedence.
+        // Otherwise fall back to the site's single configured DEFAULT level
+        // (is_default = true). If neither exists, return null so the callers
+        // fail explicitly ("No fundraiser level assigned") rather than
+        // silently picking an arbitrary row via FundraiserLevel::first().
         return $user->assignedLevel
-         ?? FundraiserLevel::first();
-
+            ?? FundraiserLevel::where('is_default', true)->first();
     }
 }

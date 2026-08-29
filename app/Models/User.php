@@ -113,11 +113,27 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(KycVerification::class);
     }
 
-    public function hasApprovedKyc(): bool
+    /**
+     * Canonical per-user KYC rule: a user is KYC-approved iff they have at
+     * least one KycVerification row with status = approved for this user.
+     *
+     * This is intentionally per-user (NOT scoped to any single campaign) so
+     * that every publication path (admin approve/publish + user publish/resume)
+     * agrees on the same rule.
+     */
+    public function isKycApproved(): bool
     {
         return KycVerification::where('user_id', $this->id)
             ->where('status', KycVerification::STATUS_APPROVED)
             ->exists();
+    }
+
+    /**
+     * Alias kept for readability / existing call sites.
+     */
+    public function hasApprovedKyc(): bool
+    {
+        return $this->isKycApproved();
     }
 
     // -------------------------------------------------------------------------
@@ -157,11 +173,48 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * The site's configured default fundraiser level, if any.
+     */
+    public static function defaultLevel(): ?FundraiserLevel
+    {
+        return FundraiserLevel::where('is_default', true)->first();
+    }
+
+    /**
+     * Ensure this user has exactly one user_fundraiser_levels row pointing at
+     * the site's default level. Idempotent: does nothing if a row already
+     * exists (user_id is UNIQUE on that table) or if no default level exists.
+     */
+    public function ensureDefaultLevel(): void
+    {
+        if ($this->fundraiserLevel()->exists()) {
+            return;
+        }
+
+        $default = static::defaultLevel();
+        if (! $default) {
+            return;
+        }
+
+        $this->fundraiserLevel()->create([
+            'current_level_id' => $default->id,
+            'status' => 'active',
+            'level_upgraded_at' => now(),
+        ]);
+    }
+
+    /**
      * Maximum campaign goal amount allowed.
+     *
+     * Uses the user's assigned level, falling back to the site's default level.
+     * Returns 0.0 when no level exists so callers do not silently grant a
+     * fabricated limit.
      */
     public function maxCampaignGoal(): float
     {
-        return (float) ($this->assignedLevel?->max_goal_amount ?? 25000.00);
+        $level = $this->assignedLevel ?? static::defaultLevel();
+
+        return (float) ($level?->max_goal_amount ?? 0.00);
     }
 
     /**
@@ -169,7 +222,9 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function fundraiserLevelName(): string
     {
-        return $this->assignedLevel?->level_name ?? 'Starter';
+        $level = $this->assignedLevel ?? static::defaultLevel();
+
+        return $level?->level_name ?? 'Unassigned';
     }
 
     public function isAccountActive(): bool

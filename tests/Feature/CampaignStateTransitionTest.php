@@ -232,4 +232,28 @@ class CampaignStateTransitionTest extends TestCase
             ]);
         }
     }
+
+    public function test_bulk_approve_skips_campaign_without_kyc(): void
+    {
+        $noKycUser = User::factory()->create(['role' => 'ngo']);
+
+        $campaign = Campaign::create([
+            'user_id' => $noKycUser->id,
+            'category_id' => $this->category->id,
+            'title' => 'No KYC Bulk',
+            'slug' => 'no-kyc-bulk-'.uniqid(),
+            'description' => 'Campaign for a user without approved KYC',
+            'goal_amount' => 100000,
+            'campaign_state' => Campaign::STATE_PENDING,
+        ]);
+
+        $this->actingAs($this->admin)
+            ->postJson(route('admin.campaigns.bulk-approve'), ['ids' => [$campaign->id]])
+            ->assertStatus(200);
+
+        $this->assertDatabaseHas('campaigns', [
+            'id' => $campaign->id,
+            'campaign_state' => Campaign::STATE_PENDING,
+        ]);
+    }
 }

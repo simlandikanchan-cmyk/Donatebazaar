@@ -127,6 +127,8 @@ class OtpController extends Controller
             ]
         );
 
+        $user->ensureDefaultLevel();
+
         $user->role = 'donor';
         $user->phone_verified_at = $user->phone_verified_at ?? now();
         $user->last_login_at = now();
