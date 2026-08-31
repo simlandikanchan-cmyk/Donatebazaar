@@ -26,10 +26,10 @@
 </div>
 
 @php
-    $totalBlogs     = \App\Models\Blog::count();
-    $publishedBlogs = \App\Models\Blog::where('status','approved')->count();
-    $draftBlogs     = \App\Models\Blog::where('status','draft')->count();
-    $pendingBlogs   = \App\Models\Blog::where('status','pending')->count();
+    $totalBlogs     = $blogStats['total'];
+    $publishedBlogs = $blogStats['published'];
+    $draftBlogs     = $blogStats['drafts'];
+    $pendingBlogs   = $blogStats['pending'];
 @endphp
 <div class="stat-strip">
     <span class="stat-strip-item"><span class="stat-dot blue"></span> {{ $totalBlogs }} Total</span>

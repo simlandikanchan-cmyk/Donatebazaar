@@ -118,7 +118,7 @@
     <div class="stat-icon si-red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg></div>
     <div class="stat-body"><div class="stat-lbl">Donations</div><div class="stat-val sv-red">{{ $totalDonations }}</div><div class="stat-foot">All time on platform</div></div>
   </div>
-  <div class="stat" data-action="navigate" data-href="{{ route('admin.wallets.index') }}" style="cursor:pointer;">
+  <div class="stat" data-action="navigate" data-href="{{ route('admin.wallets.index') }}">
     <div class="stat-icon si-teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg></div>
     <div class="stat-body"><div class="stat-lbl">Wallet Balance</div><div class="stat-val sv-teal">₹{{ number_format($totalWalletBalance) }}</div><div class="stat-foot">Across all wallets →</div></div>
   </div>
@@ -140,19 +140,19 @@
         <div class="chart-sub">Monthly overview — last 6 months</div>
       </div>
       <div class="chart-legend">
-        <div class="leg-item"><div class="leg-dot" style="background:#0d9488"></div>Total</div>
-        <div class="leg-item"><div class="leg-dot" style="background:#f43f5e"></div>Approved</div>
+        <div class="leg-item"><div class="leg-dot leg-dot--teal"></div>Total</div>
+        <div class="leg-item"><div class="leg-dot leg-dot--rose"></div>Approved</div>
       </div>
     </div>
     <div class="chart-wrap"><canvas id="lineChart"></canvas></div>
   </div>
   <div class="status-panel">
     <div class="sp-ttl">Status Breakdown</div>
-    <div class="sp-row" data-action="set-filter" data-filter="active"><div class="sp-left"><div class="sp-dot" style="background:var(--green)"></div><span class="sp-label">Active</span></div><span class="sp-val">{{ $cntActive }}</span></div>
-    <div class="sp-row" data-action="set-filter" data-filter="pending"><div class="sp-left"><div class="sp-dot" style="background:var(--amber)"></div><span class="sp-label">Pending</span></div><span class="sp-val">{{ $cntPending }}</span></div>
-    <div class="sp-row" data-action="set-filter" data-filter="paused"><div class="sp-left"><div class="sp-dot" style="background:var(--a)"></div><span class="sp-label">Paused</span></div><span class="sp-val">{{ $cntPaused }}</span></div>
-    <div class="sp-row" data-action="set-filter" data-filter="rejected"><div class="sp-left"><div class="sp-dot" style="background:var(--red)"></div><span class="sp-label">Rejected</span></div><span class="sp-val">{{ $cntRejected }}</span></div>
-    <div class="sp-row" data-action="set-filter" data-filter="inactive"><div class="sp-left"><div class="sp-dot" style="background:var(--gray)"></div><span class="sp-label">Inactive / Expired</span></div><span class="sp-val">{{ $cntExpired + $cntCompleted }}</span></div>
+    <div class="sp-row" data-action="set-filter" data-filter="active"><div class="sp-left"><div class="sp-dot sp-dot--green"></div><span class="sp-label">Active</span></div><span class="sp-val">{{ $cntActive }}</span></div>
+    <div class="sp-row" data-action="set-filter" data-filter="pending"><div class="sp-left"><div class="sp-dot sp-dot--amber"></div><span class="sp-label">Pending</span></div><span class="sp-val">{{ $cntPending }}</span></div>
+    <div class="sp-row" data-action="set-filter" data-filter="paused"><div class="sp-left"><div class="sp-dot sp-dot--blue"></div><span class="sp-label">Paused</span></div><span class="sp-val">{{ $cntPaused }}</span></div>
+    <div class="sp-row" data-action="set-filter" data-filter="rejected"><div class="sp-left"><div class="sp-dot sp-dot--red"></div><span class="sp-label">Rejected</span></div><span class="sp-val">{{ $cntRejected }}</span></div>
+    <div class="sp-row" data-action="set-filter" data-filter="inactive"><div class="sp-left"><div class="sp-dot sp-dot--gray"></div><span class="sp-label">Inactive / Expired</span></div><span class="sp-val">{{ $cntExpired + $cntCompleted }}</span></div>
     <div class="sp-prog">
       <div class="sp-prog-lbl"><span>Approved of reviewed</span><span>{{ $approvalRate }}%</span></div>
       <div class="sp-bar"><div class="sp-fill" id="approvalBar" style="width:0%"></div></div>
@@ -168,9 +168,9 @@
         <span class="sp-label">Campaigns awaiting review</span>
       </div>
       @if($cntPending > 0)
-        <span class="pa-badge" style="background:var(--amber-lt);color:var(--amber);">{{ $cntPending }}</span>
+        <span class="pa-badge pa-badge--amber">{{ $cntPending }}</span>
       @else
-        <span class="sp-label" style="font-size:11px;color:var(--text3);">All caught up</span>
+        <span class="sp-label pa-empty">All caught up</span>
       @endif
     </a>
     <a href="{{ route('admin.volunteer_applications.index') }}" class="sp-row">
@@ -179,9 +179,9 @@
         <span class="sp-label">Volunteer applications pending</span>
       </div>
       @if($pendingVolunteerApps > 0)
-        <span class="pa-badge" style="background:var(--pink-lt);color:var(--pink);">{{ $pendingVolunteerApps }}</span>
+        <span class="pa-badge pa-badge--pink">{{ $pendingVolunteerApps }}</span>
       @else
-        <span class="sp-label" style="font-size:11px;color:var(--text3);">All caught up</span>
+        <span class="sp-label pa-empty">All caught up</span>
       @endif
     </a>
     <a href="{{ route('admin.messages') }}" class="sp-row">
@@ -190,9 +190,9 @@
         <span class="sp-label">Unread messages</span>
       </div>
       @if($unreadMessages > 0)
-        <span class="pa-badge" style="background:var(--a-lt);color:var(--a);">{{ $unreadMessages }}</span>
+        <span class="pa-badge pa-badge--blue">{{ $unreadMessages }}</span>
       @else
-        <span class="sp-label" style="font-size:11px;color:var(--text3);">All caught up</span>
+        <span class="sp-label pa-empty">All caught up</span>
       @endif
     </a>
     <a href="{{ route('admin.job_post_applications.index') }}" class="sp-row">
@@ -201,9 +201,9 @@
         <span class="sp-label">Job applicants awaiting review</span>
       </div>
       @if($pendingJobApplicants > 0)
-        <span class="pa-badge" style="background:var(--red-lt);color:var(--red);">{{ $pendingJobApplicants }}</span>
+        <span class="pa-badge pa-badge--red">{{ $pendingJobApplicants }}</span>
       @else
-        <span class="sp-label" style="font-size:11px;color:var(--text3);">All caught up</span>
+        <span class="sp-label pa-empty">All caught up</span>
       @endif
     </a>
     <a href="{{ route('admin.settlements.index') }}" class="sp-row">
@@ -212,9 +212,9 @@
         <span class="sp-label">Settlements pending approval</span>
       </div>
       @if($pendingSettlements > 0)
-        <span class="pa-badge" style="background:var(--teal-lt);color:var(--teal);">{{ $pendingSettlements }}</span>
+        <span class="pa-badge pa-badge--teal">{{ $pendingSettlements }}</span>
       @else
-        <span class="sp-label" style="font-size:11px;color:var(--text3);">All caught up</span>
+        <span class="sp-label pa-empty">All caught up</span>
       @endif
     </a>
   </div>
@@ -239,7 +239,7 @@
 
 {{-- ══ COMMUNITY IMPACT ══ --}}
 <div class="impact-row">
-  <div class="impact-card impact-revenue" style="--accent:#0d9488">
+  <div class="impact-card impact-revenue">
     <div class="impact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg></div>
     <div class="impact-body">
       <div class="impact-label"><svg class="impact-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Community Impact</div>
@@ -247,7 +247,7 @@
       <div class="impact-foot">Raised by <strong>{{ $uniqueDonors }}</strong> donors across <strong>{{ $totalDonations }}</strong> contributions</div>
     </div>
   </div>
-  <div class="impact-card impact-donors" style="--accent:#f43f5e">
+  <div class="impact-card impact-donors">
     <div class="impact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg></div>
     <div class="impact-body">
       <div class="impact-label"><svg class="impact-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Community Growth</div>
@@ -255,7 +255,7 @@
       <div class="impact-foot"><strong>{{ $newUsersToday }}</strong> new member{{ $newUsersToday !== 1 ? 's' : '' }} joined today</div>
     </div>
   </div>
-  <div class="impact-card impact-avg" style="--accent:#f59e0b">
+  <div class="impact-card impact-avg">
     <div class="impact-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
     <div class="impact-body">
       <div class="impact-label"><svg class="impact-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Average Gift</div>
@@ -274,7 +274,7 @@
         <div class="chart-sub">Monthly donation revenue — last 6 months</div>
       </div>
       <div class="chart-legend">
-        <div class="leg-item"><div class="leg-dot" style="background:var(--a)"></div>Revenue</div>
+        <div class="leg-item"><div class="leg-dot leg-dot--blue"></div>Revenue</div>
       </div>
     </div>
     <div class="chart-wrap"><canvas id="revenueChart"></canvas></div>
@@ -291,7 +291,7 @@
 </div>
 
 {{-- ══ RECENT ACTIVITY ══ --}}
-<div class="chart-card" style="margin-bottom:24px;">
+<div class="chart-card chart-card--mb">
   <div class="chart-hdr">
     <div>
       <div class="chart-ttl">Recent Activity</div>
@@ -405,9 +405,9 @@
 {{-- BULK REASON MODAL --}}
 <div id="bulkOverlay" class="overlay" role="dialog" aria-modal="true">
   <div class="modal">
-    <button type="button" class="modal-x" data-action="close-bulk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
+    <button type="button" class="modal-x" data-action="close-bulk" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
     <div class="modal-head">
-      <div class="modal-ico" id="bulkIco" style="background:var(--red-lt);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+      <div class="modal-ico modal-ico--destructive" id="bulkIco"><svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
       <div><div class="modal-ttl" id="bulkTtl">Bulk Action</div><div class="modal-sub" id="bulkSub"></div></div>
     </div>
     <form id="bulkForm" method="POST">@csrf
@@ -422,9 +422,9 @@
 {{-- PAUSE MODAL --}}
 <div id="pauseOverlay" class="overlay" role="dialog" aria-modal="true">
   <div class="modal">
-    <button type="button" class="modal-x" data-action="close-pause"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
+    <button type="button" class="modal-x" data-action="close-pause" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
     <div class="modal-head">
-      <div class="modal-ico" style="background:var(--amber-lt);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+      <div class="modal-ico modal-ico--warning"><svg viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
       <div><div class="modal-ttl">Pause Campaign</div><div class="modal-sub">Reason will be shown to the campaign owner</div></div>
     </div>
     <form id="pauseForm" method="POST">@csrf
@@ -446,9 +446,9 @@
 {{-- REJECT MODAL --}}
 <div id="rejectOverlay" class="overlay" role="dialog" aria-modal="true">
   <div class="modal">
-    <button type="button" class="modal-x" data-action="close-reject"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
+    <button type="button" class="modal-x" data-action="close-reject" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
     <div class="modal-head">
-      <div class="modal-ico" style="background:var(--red-lt);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+      <div class="modal-ico modal-ico--destructive"><svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
       <div><div class="modal-ttl">Reject Campaign</div><div class="modal-sub">Reason will be shown to the campaign owner</div></div>
     </div>
     <form id="rejectForm" method="POST">@csrf

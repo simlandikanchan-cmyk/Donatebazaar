@@ -9,6 +9,7 @@
 @section('page_subtitle', optional($org)->name . ' — Review payout request')
 
 @push('page_styles')
+@vite('resources/css/admin/pages/settlements-show.css')
 <style>
 /* ── settlement-specific badges / alerts (view-scoped, matches admin.css tokens) ── */
 .st-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:100px;font-size:10.5px;font-weight:700;font-family:var(--mono);white-space:nowrap;border:1px solid transparent}

@@ -119,7 +119,7 @@
             <tbody>
                 @forelse($coupons as $cp)
                 @php
-                $isExpired = $cp->expires_at && \Carbon\Carbon::parse($cp->expires_at)->endOfDay()->isPast();
+                $isExpired = $cp->expires_at && $cp->expires_at->endOfDay()->isPast();
                 $statusBadge = !$cp->is_active
                     ? ['bg'=>'rgba(239,68,68,0.15)','color'=>'#991b1b','txt'=>'Inactive']
                     : ($isExpired

@@ -15,12 +15,13 @@
 @section('content')
 
 @php
-  $isExpired = $jobPost->application_deadline && \Carbon\Carbon::parse($jobPost->application_deadline)->isPast();
+  $isExpired = $jobPost->application_deadline && $jobPost->application_deadline->isPast();
   $statusKey = ($jobPost->status === 'closed' || $isExpired) ? 'closed' : ($jobPost->status === 'draft' ? 'draft' : 'active');
-  $appCount  = $jobPost->applications()->count();
-  $pendCount = $jobPost->applications()->where('status','pending')->count();
-  $accCount  = $jobPost->applications()->whereIn('status',['shortlisted','accepted'])->count();
-  $rejCount  = $jobPost->applications()->where('status','rejected')->count();
+  $appCol    = $jobPost->applications;
+  $appCount  = $appCol->count();
+  $pendCount = $appCol->where('status','pending')->count();
+  $accCount  = $appCol->whereIn('status',['shortlisted','accepted'])->count();
+  $rejCount  = $appCol->where('status','rejected')->count();
   $skills    = is_array($jobPost->skills) ? $jobPost->skills : [];
   $views     = $jobPost->views_count ?? 0;
   $apps      = $jobPost->applications_count ?? 0;
@@ -409,7 +410,7 @@
         <div class="info-row">
           <span class="info-lbl">Deadline</span>
           <span class="info-val {{ $isExpired ? 'red' : 'amber' }}">
-            {{ \Carbon\Carbon::parse($jobPost->application_deadline)->format('d M Y') }}
+            {{ $jobPost->application_deadline->format('d M Y') }}
             {{ $isExpired ? '· Expired' : '' }}
           </span>
         </div>
@@ -545,9 +546,9 @@
             <div class="tl-body">
               <div class="tl-title">{{ $statusKey === 'active' ? 'Currently Active' : ($statusKey === 'draft' ? 'In Draft' : 'Closed / Expired') }}</div>
               @if($isExpired)
-              <div class="tl-sub">Deadline passed · {{ \Carbon\Carbon::parse($jobPost->application_deadline)->diffForHumans() }}</div>
+              <div class="tl-sub">Deadline passed · {{ $jobPost->application_deadline->diffForHumans() }}</div>
               @elseif($jobPost->application_deadline)
-              <div class="tl-sub">Deadline: {{ \Carbon\Carbon::parse($jobPost->application_deadline)->format('d M Y') }}</div>
+              <div class="tl-sub">Deadline: {{ $jobPost->application_deadline->format('d M Y') }}</div>
               @else
               <div class="tl-sub">No deadline set</div>
               @endif

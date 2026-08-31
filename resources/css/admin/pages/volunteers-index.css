@@ -149,15 +149,15 @@
 .table-wrap {
   overflow-x: auto;
 }
-table {
+#volTable {
   width: 100%;
   border-collapse: collapse;
 }
-thead {
+#volTable thead {
   background: var(--surface2);
   border-bottom: 1px solid var(--border);
 }
-thead th {
+#volTable thead th {
   padding: 12px 16px;
   font-family: var(--mono);
   font-size: 10px;
@@ -168,18 +168,18 @@ thead th {
   white-space: nowrap;
   color: var(--text3);
 }
-tbody td {
+#volTable tbody td {
   padding: 14px 16px;
   vertical-align: middle;
   border-bottom: 1px solid var(--border);
 }
-tbody tr:last-child td {
+#volTable tbody tr:last-child td {
   border-bottom: none;
 }
-tbody tr {
+#volTable tbody tr {
   transition: background var(--ease);
 }
-tbody tr:hover {
+#volTable tbody tr:hover {
   background: var(--surface2);
 }
 .cell-id {

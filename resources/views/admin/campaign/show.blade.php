@@ -249,7 +249,7 @@
                         <div class="update-item">
                             <div class="update-item-header">
                                 <div class="update-item-title">{{ $update->title }}</div>
-                                <div class="update-item-date">{{ \Carbon\Carbon::parse($update->created_at)->format('d M Y') }}</div>
+                                <div class="update-item-date">{{ $update->created_at->format('d M Y') }}</div>
                             </div>
                             @if($update->body)
                             <div class="update-item-body">{{ $update->body }}</div>
@@ -543,7 +543,7 @@
                     <div class="event-card">
                         <span class="event-badge {{ $evCls }}">{{ ucfirst($event->status) }}</span>
                         <div class="event-title">{{ $event->title }}</div>
-                        <div class="event-date">{{ \Carbon\Carbon::parse($event->event_date)->format('d M Y') }}</div>
+                        <div class="event-date">{{ $event->event_date->format('d M Y') }}</div>
                         <div class="event-desc">{{ Str::limit($event->description, 100) }}</div>
                         <a href="{{ route('admin.events.show', $event->id) }}" class="event-link">
                             View details
@@ -808,7 +808,7 @@
                 <div class="info-row">
                     <span class="info-row-lbl">END DATE</span>
                     <span class="c-info-val-date" style="color:{{ now()->gt($campaign->end_date) ? 'var(--red)' : 'var(--text2)' }};">
-                        {{ \Carbon\Carbon::parse($campaign->end_date)->format('d M Y') }}
+                        {{ $campaign->end_date->format('d M Y') }}
                         @if(now()->gt($campaign->end_date))<span class="c-info-val-date-expired"> (expired)</span>@endif
                     </span>
                 </div>

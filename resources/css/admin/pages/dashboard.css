@@ -20,6 +20,10 @@
 .stats-grid {
   grid-template-columns: repeat(3, 1fr);
 }
+/* walkable stat card — opens wallets index on click */
+.stat[data-action="navigate"] {
+  cursor: pointer;
+}
 /* ── ANALYTICS ROW ── */
 .analytics-row {
   display: grid;
@@ -448,6 +452,15 @@
 }
 .impact-foot strong {
   color: var(--text2);
+}
+.impact-revenue {
+  --accent: #0d9488;
+}
+.impact-donors {
+  --accent: #f43f5e;
+}
+.impact-avg {
+  --accent: #f59e0b;
 }
 /* ══════════════════════════════════════
    DASHBOARD RESPONSIVE

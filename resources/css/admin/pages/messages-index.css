@@ -288,15 +288,15 @@
 .table-scroll::-webkit-scrollbar-thumb:hover {
   background: var(--a);
 }
-table {
+.table-card table {
   width: 100%;
   min-width: 760px;
   border-collapse: collapse;
 }
-thead tr {
+.table-card thead tr {
   border-bottom: 1px solid var(--border);
 }
-thead th {
+.table-card thead th {
   padding: 12px 16px;
   font-family: var(--mono);
   font-size: 10px;
@@ -308,12 +308,12 @@ thead th {
   color: var(--text3);
   background: var(--surface2);
 }
-thead th.sortable {
+.table-card thead th.sortable {
   cursor: pointer;
   transition: color var(--ease);
   user-select: none;
 }
-thead th.sortable:hover {
+.table-card thead th.sortable:hover {
   color: var(--a);
 }
 .col-check {
@@ -329,7 +329,7 @@ thead th.sortable:hover {
   vertical-align: middle;
   opacity: .4;
 }
-thead th.sort-asc .sort-arrows, thead th.sort-desc .sort-arrows {
+.table-card thead th.sort-asc .sort-arrows, .table-card thead th.sort-desc .sort-arrows {
   color: var(--a);
   opacity: 1;
 }
@@ -337,18 +337,18 @@ thead th.sort-asc .sort-arrows, thead th.sort-desc .sort-arrows {
   width: 7px;
   height: 7px;
 }
-tbody tr {
+.table-card tbody tr {
   position: relative;
   border-bottom: 1px solid var(--border);
   transition: background var(--ease);
 }
-tbody tr:last-child {
+.table-card tbody tr:last-child {
   border-bottom: none;
 }
-tbody tr:hover {
+.table-card tbody tr:hover {
   background: var(--surface2);
 }
-tbody td {
+.table-card tbody td {
   padding: 14px 16px;
   font-size: 13px;
   vertical-align: middle;
@@ -402,14 +402,14 @@ tbody td {
   font-size: 10.5px;
   color: var(--text3);
 }
-tbody tr.unread .sender-name {
+.table-card tbody tr.unread .sender-name {
   font-weight: 800;
   color: var(--text);
 }
-tbody tr.unread {
+.table-card tbody tr.unread {
   background: rgba(37, 99, 235, .04);
 }
-tbody tr.unread::before {
+.table-card tbody tr.unread::before {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -663,13 +663,13 @@ tbody tr.unread::before {
     width: 100%;
     max-width: none;
   }
-  table {
+  .table-card table {
     min-width: 0;
   }
-  thead {
+  .table-card thead {
     display: none;
   }
-  tbody tr {
+  .table-card tbody tr {
     display: block;
     margin-bottom: 12px;
     padding: 6px 4px;
@@ -677,13 +677,13 @@ tbody tr.unread::before {
     border: 1px solid var(--border);
     border-radius: var(--r-sm);
   }
-  tbody tr.unread {
+  .table-card tbody tr.unread {
     background: rgba(37, 99, 235, .04);
   }
-  tbody tr::before {
+  .table-card tbody tr::before {
     display: none;
   }
-  tbody td {
+  .table-card tbody td {
     display: flex;
     align-items: flex-start;
     gap: 10px;
@@ -692,10 +692,10 @@ tbody tr.unread::before {
     white-space: normal;
     border: none!important;
   }
-  tbody td.col-check {
+  .table-card tbody td.col-check {
     display: none;
   }
-  tbody td::before {
+  .table-card tbody td::before {
     min-width: 74px;
     padding-top: 2px;
     font-family: var(--mono);
@@ -706,21 +706,21 @@ tbody tr.unread::before {
     color: var(--text3);
     content: attr(data-label);
   }
-  tbody td.msg-cell {
+  .table-card tbody td.msg-cell {
     max-width: none;
   }
-  tbody td.msg-cell::before {
+  .table-card tbody td.msg-cell::before {
     display: none;
   }
-  tbody td.date-cell {
+  .table-card tbody td.date-cell {
     flex-direction: column;
     align-items: flex-start;
     gap: 2px;
   }
-  tbody td.actions::before {
+  .table-card tbody td.actions::before {
     display: none;
   }
-  tbody td.actions {
+  .table-card tbody td.actions {
     flex-wrap: wrap;
     justify-content: flex-start;
   }

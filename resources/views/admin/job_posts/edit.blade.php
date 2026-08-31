@@ -195,7 +195,7 @@
           <label class="lbl" for="application_deadline">Application Deadline</label>
           <div class="inp-wrap">
             <svg class="inp-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-            <input type="date" id="application_deadline" name="application_deadline" class="inp @error('application_deadline') err @enderror" value="{{ old('application_deadline', $jobPost->application_deadline ? \Carbon\Carbon::parse($jobPost->application_deadline)->format('Y-m-d') : '') }}">
+            <input type="date" id="application_deadline" name="application_deadline" class="inp @error('application_deadline') err @enderror" value="{{ old('application_deadline', $jobPost->application_deadline ? $jobPost->application_deadline->format('Y-m-d') : '') }}">
           </div>
           @error('application_deadline')<p class="field-error show">{{ $message }}</p>@enderror
           <div class="field-hint">Leave blank for a rolling / no-deadline listing.</div>
@@ -379,7 +379,7 @@
           </span>
           <span class="prev-chip" id="prevDeadline" style="{{ $jobPost->application_deadline ? '' : 'display:none;' }}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-            <span id="prevDeadlineVal">{{ $jobPost->application_deadline ? 'Deadline: ' . \Carbon\Carbon::parse($jobPost->application_deadline)->format('M d, Y') : '' }}</span>
+            <span id="prevDeadlineVal">{{ $jobPost->application_deadline ? 'Deadline: ' . $jobPost->application_deadline->format('M d, Y') : '' }}</span>
           </span>
         </div>
         <div class="prev-desc" id="prevDesc" style="{{ $jobPost->description ? 'color:var(--text2);' : '' }}">{{ $jobPost->description ? Str::limit($jobPost->description, 160) : 'Description preview will appear here…' }}</div>

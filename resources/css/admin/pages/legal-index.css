@@ -47,11 +47,11 @@
 .table-wrap {
   overflow-x: auto;
 }
-table {
+#legalTable {
   width: 100%;
   border-collapse: collapse;
 }
-thead th {
+#legalTable thead th {
   padding: 10px 18px;
   font-family: var(--mono);
   font-size: 10px;
@@ -64,20 +64,20 @@ thead th {
   background: var(--surface2);
   border-bottom: 1px solid var(--border);
 }
-thead th:last-child {
+#legalTable thead th:last-child {
   text-align: right;
 }
-tbody tr {
+#legalTable tbody tr {
   border-bottom: 1px solid var(--border);
   transition: background var(--ease);
 }
-tbody tr:last-child {
+#legalTable tbody tr:last-child {
   border-bottom: none;
 }
-tbody tr:hover {
+#legalTable tbody tr:hover {
   background: var(--surface2);
 }
-td {
+#legalTable td {
   padding: 14px 18px;
   font-size: 13px;
   vertical-align: middle;

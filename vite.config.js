@@ -95,6 +95,7 @@ export default defineConfig({
                  'resources/css/admin/pages/events-show.css',
                 'resources/css/admin/pages/messages-show.css',
                 'resources/css/admin/pages/donations-show.css',
+                'resources/css/admin/pages/settlements-show.css',
                 'resources/css/admin/pages/blogs-carousel.css',
                 'resources/css/admin/pages/partnership-show.css',
                  'resources/css/admin/pages/volunteers-index.css',

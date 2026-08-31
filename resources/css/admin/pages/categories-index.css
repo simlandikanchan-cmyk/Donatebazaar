@@ -390,11 +390,11 @@
 .table-wrap {
   overflow-x: auto;
 }
-table {
+#catTable {
   width: 100%;
   border-collapse: collapse;
 }
-thead th {
+#catTable thead th {
   position: sticky;
   z-index: 2;
   top: 0;
@@ -410,17 +410,17 @@ thead th {
   background: var(--surface2);
   border-bottom: 1px solid var(--border);
 }
-thead th:last-child {
+#catTable thead th:last-child {
   text-align: right;
 }
-thead th.sortable {
+#catTable thead th.sortable {
   cursor: pointer;
   user-select: none;
 }
-thead th.sortable:hover {
+#catTable thead th.sortable:hover {
   color: var(--a);
 }
-thead th.sortable.active-sort {
+#catTable thead th.sortable.active-sort {
   color: var(--a);
 }
 .sort-icon {
@@ -452,20 +452,20 @@ thead th.sortable.active-sort {
   cursor: pointer;
   accent-color: var(--a);
 }
-tbody tr {
+#catTable tbody tr {
   border-bottom: 1px solid var(--border);
   transition: background var(--ease);
 }
-tbody tr:last-child {
+#catTable tbody tr:last-child {
   border-bottom: none;
 }
-tbody tr:hover {
+#catTable tbody tr:hover {
   background: var(--surface2);
 }
-tbody tr.row-selected {
+#catTable tbody tr.row-selected {
   background: var(--a-lt);
 }
-td {
+#catTable td {
   padding: 13px 18px;
   font-size: 13px;
   vertical-align: middle;
@@ -492,7 +492,7 @@ td {
   border-radius: 10px;
   transition: transform .2s;
 }
-tbody tr:hover .cat-icon-box {
+#catTable tbody tr:hover .cat-icon-box {
   transform: scale(1.08) rotate(-3deg);
 }
 .cat-name-text {
@@ -1087,11 +1087,11 @@ tbody tr:hover .cat-icon-box {
   .card-head-count {
     font-size: 9.5px;
   }
-  td {
+  #catTable td {
     padding: 10px 12px;
     font-size: 12px;
   }
-  thead th {
+  #catTable thead th {
     padding: 8px 12px;
     font-size: 9px;
   }

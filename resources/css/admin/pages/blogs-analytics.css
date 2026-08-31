@@ -78,17 +78,17 @@
 .scroll-x {
   overflow-x: auto;
 }
-table {
+.scroll-x table {
   width: 100%;
   border-collapse: collapse;
 }
-th, td {
+.scroll-x th, .scroll-x td {
   padding: 10px 14px;
   font-size: 12.5px;
   text-align: left;
   color: var(--text2);
 }
-th {
+.scroll-x th {
   font-family: var(--mono);
   font-size: 10px;
   font-weight: 700;
@@ -98,13 +98,13 @@ th {
   background: var(--surface2);
   border-bottom: 1px solid var(--border);
 }
-tbody tr {
+.scroll-x tbody tr {
   border-bottom: 1px solid var(--border);
 }
-tbody tr:last-child {
+.scroll-x tbody tr:last-child {
   border-bottom: none;
 }
-tbody tr:hover {
+.scroll-x tbody tr:hover {
   background: var(--surface2);
 }
 .rank {

@@ -264,15 +264,15 @@
 .table-wrap {
   overflow-x: auto;
 }
-table {
+#eventsTable {
   width: 100%;
   border-collapse: collapse;
 }
-thead {
+#eventsTable thead {
   background: var(--surface2);
   border-bottom: 1px solid var(--border);
 }
-thead th {
+#eventsTable thead th {
   position: sticky;
   z-index: 2;
   top: 0;
@@ -287,18 +287,18 @@ thead th {
   color: var(--text3);
   background: var(--surface2);
 }
-tbody td {
+#eventsTable tbody td {
   padding: 14px 16px;
   vertical-align: middle;
   border-bottom: 1px solid var(--border);
 }
-tbody tr:last-child td {
+#eventsTable tbody tr:last-child td {
   border-bottom: none;
 }
-tbody tr {
+#eventsTable tbody tr {
   transition: background var(--ease);
 }
-tbody tr:hover {
+#eventsTable tbody tr:hover {
   background: var(--surface2);
 }
 tbody tr.row-selected {

@@ -66,10 +66,10 @@
   .overflow-x-auto {
     -webkit-overflow-scrolling: touch;
   }
-  table {
+  .ct-table {
     font-size: 12px!important;
   }
-  table th, table td {
+  .ct-table th, .ct-table td {
     padding: 6px 8px!important;
   }
   .w-full.md\:w-auto {

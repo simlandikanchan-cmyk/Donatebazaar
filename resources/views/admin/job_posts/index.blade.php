@@ -346,7 +346,7 @@ tbody tr:hover{background:var(--surface2)}
 
         @php
           $isExpiredRow = $job->application_deadline
-              && \Carbon\Carbon::parse($job->application_deadline)->isPast();
+              && $job->application_deadline->isPast();
           $rowFilter = match(true) {
               $job->status === 'draft'           => 'draft',
               $job->status === 'closed'
@@ -438,7 +438,7 @@ tbody tr:hover{background:var(--surface2)}
 
           <td data-label="Deadline">
             @if($job->application_deadline)
-              @php $dl = \Carbon\Carbon::parse($job->application_deadline); @endphp
+              @php $dl = $job->application_deadline; @endphp
               <div class="deadline-chip {{ $isExpiredRow ? 'expired' : '' }}">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                 {{ $dl->format('d M Y') }}
@@ -477,7 +477,7 @@ tbody tr:hover{background:var(--surface2)}
               <div class="featured-star">★ Featured</div>
             @endif
             @if($job->published_at)
-              <div class="cell-date-sub" style="margin-top:3px;">Live {{ \Carbon\Carbon::parse($job->published_at)->diffForHumans() }}</div>
+              <div class="cell-date-sub" style="margin-top:3px;">Live {{ $job->published_at->diffForHumans() }}</div>
             @endif
           </td>
 

@@ -109,7 +109,14 @@ class BlogController extends Controller
         $categories = Category::where('is_active', true)->get(['id', 'name']);
         $tags = Tag::orderBy('name')->get(['id', 'name']);
 
-        return view('admin.blogs.create', compact('categories', 'tags'));
+        $blogStats = [
+            'total'     => Blog::count(),
+            'published' => Blog::where('status', 'approved')->count(),
+            'drafts'    => Blog::where('status', 'draft')->count(),
+            'pending'   => Blog::where('status', 'pending')->count(),
+        ];
+
+        return view('admin.blogs.create', compact('categories', 'tags', 'blogStats'));
     }
 
     public function store(StoreBlogRequest $request)

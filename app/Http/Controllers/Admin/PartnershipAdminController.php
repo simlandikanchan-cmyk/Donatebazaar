@@ -44,8 +44,15 @@ class PartnershipAdminController extends Controller
             ->orderBy($sort, $dir)
             ->paginate(10);
 
+        $stats = [
+            'total'    => Partnership::count(),
+            'pending'  => Partnership::where('status', 'pending')->count(),
+            'approved' => Partnership::where('status', 'approved')->count(),
+            'rejected' => Partnership::where('status', 'rejected')->count(),
+        ];
+
         return view('admin.partnership.index', compact(
-            'partnerships', 'search', 'status', 'sort', 'dir'
+            'partnerships', 'search', 'status', 'sort', 'dir', 'stats'
         ));
     }
 

@@ -62,11 +62,6 @@
 @endif
 
 @php
-  $allTotal    = \App\Models\Partnership::count();
-  $allPending  = \App\Models\Partnership::where('status','pending')->count();
-  $allApproved = \App\Models\Partnership::where('status','approved')->count();
-  $allRejected = \App\Models\Partnership::where('status','rejected')->count();
-
   $sortUrl = function($column) use ($sort, $dir) {
       $newDir = $sort === $column && $dir === 'asc' ? 'desc' : 'asc';
       return request()->fullUrlWithQuery(['sort' => $column, 'direction' => $newDir]);
@@ -80,10 +75,10 @@
     <div class="hero-name">Partnership Requests</div>
     <div class="hero-sub">Review, approve or reject partnership inquiries submitted through the platform.</div>
     <div class="hero-badges">
-      <span class="hero-badge hb-primary">{{ $allTotal }} total</span>
-      <span class="hero-badge hb-amber">{{ $allPending }} pending</span>
-      <span class="hero-badge hb-green">{{ $allApproved }} approved</span>
-      <span class="hero-badge hb-red">{{ $allRejected }} rejected</span>
+      <span class="hero-badge hb-primary">{{ $stats['total'] }} total</span>
+      <span class="hero-badge hb-amber">{{ $stats['pending'] }} pending</span>
+      <span class="hero-badge hb-green">{{ $stats['approved'] }} approved</span>
+      <span class="hero-badge hb-red">{{ $stats['rejected'] }} rejected</span>
     </div>
   </div>
   <div class="hero-right">
@@ -102,7 +97,7 @@
     </div>
     <div class="stat-body">
       <div class="stat-lbl">Pending</div>
-      <div class="stat-val sv-amber">{{ $allPending }}</div>
+      <div class="stat-val sv-amber">{{ $stats['pending'] }}</div>
       <div class="stat-foot">Awaiting review</div>
     </div>
   </div>
@@ -112,7 +107,7 @@
     </div>
     <div class="stat-body">
       <div class="stat-lbl">Approved</div>
-      <div class="stat-val sv-green">{{ $allApproved }}</div>
+      <div class="stat-val sv-green">{{ $stats['approved'] }}</div>
       <div class="stat-foot">Active partners</div>
     </div>
   </div>
@@ -122,7 +117,7 @@
     </div>
     <div class="stat-body">
       <div class="stat-lbl">Rejected</div>
-      <div class="stat-val sv-red">{{ $allRejected }}</div>
+      <div class="stat-val sv-red">{{ $stats['rejected'] }}</div>
       <div class="stat-foot">Declined requests</div>
     </div>
   </div>
@@ -132,7 +127,7 @@
     </div>
     <div class="stat-body">
       <div class="stat-lbl">Total</div>
-      <div class="stat-val sv-a">{{ $allTotal }}</div>
+      <div class="stat-val sv-a">{{ $stats['total'] }}</div>
       <div class="stat-foot">All requests</div>
     </div>
   </div>

@@ -53,7 +53,6 @@
 
 @php
   $total = $products->total();
-  $activeCount = \App\Models\CategoryProduct::where('is_active', 1)->count();
   $inactiveCount = $total - $activeCount;
 
   $sortUrl = function($column) use ($sort, $dir) {

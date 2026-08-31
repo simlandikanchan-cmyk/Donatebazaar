@@ -46,11 +46,13 @@ class CategoryProductController extends Controller
 
         $products = $query->orderBy($sort, $dir)->paginate(15);
 
+        $activeCount = CategoryProduct::where('is_active', 1)->count();
+
         $categories = Category::orderBy('name')->get();
 
         return view('admin.category-products.index', compact(
             'products', 'categories', 'search', 'catId', 'status',
-            'sort', 'dir'
+            'sort', 'dir', 'activeCount'
         ));
     }
 

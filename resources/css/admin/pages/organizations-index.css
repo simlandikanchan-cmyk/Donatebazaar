@@ -171,11 +171,11 @@
 .table-wrap {
   overflow-x: auto;
 }
-table {
+#orgTable {
   width: 100%;
   border-collapse: collapse;
 }
-thead th {
+#orgTable thead th {
   padding: 10px 16px;
   font-family: var(--mono);
   font-size: 10px;
@@ -188,20 +188,20 @@ thead th {
   background: var(--surface2);
   border-bottom: 1px solid var(--border);
 }
-thead th:last-child {
+#orgTable thead th:last-child {
   text-align: right;
 }
-tbody td {
+#orgTable tbody td {
   padding: 12px 16px;
   font-size: 13px;
   vertical-align: middle;
   color: var(--text2);
   border-bottom: 1px solid var(--border);
 }
-tbody tr:last-child {
+#orgTable tbody tr:last-child {
   border-bottom: none;
 }
-tbody tr:hover {
+#orgTable tbody tr:hover {
   background: var(--surface2);
 }
 .ngo-name {
@@ -512,11 +512,11 @@ tbody tr:hover {
   .card-head {
     padding: 10px 14px;
   }
-  td {
+  #orgTable td {
     padding: 10px 12px;
     font-size: 12px;
   }
-  thead th {
+  #orgTable thead th {
     padding: 8px 12px;
     font-size: 9px;
   }
