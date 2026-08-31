@@ -8,18 +8,8 @@
 @section('page_title', 'Edit Level')
 @section('page_subtitle', 'Update fundraiser level requirements')
 
-@section('topbar_left')
-  <a href="{{ route('admin.fundraiser-levels.index') }}" class="btn btn-secondary back-btn">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M12 19l-7-7 7-7"/></svg>
-    All Levels
-  </a>
-@endsection
-
 @push('page_styles')
 <style>
-.back-btn{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 16px;background:var(--surface2);color:var(--text2);border:1px solid var(--border2);border-radius:var(--r-sm);font-size:12.5px;font-weight:600;cursor:pointer;transition:all var(--ease);font-family:var(--font);text-decoration:none;}
-.back-btn:hover{border-color:var(--a);color:var(--a);background:var(--a-lt);}
-.back-btn svg{width:13px;height:13px;}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;max-width:760px;}
 .card-head{display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:14px 24px;border-bottom:1px solid var(--border);background:var(--surface2);}
 .card-head-icon{width:30px;height:30px;border-radius:8px;background:var(--a-lt);color:var(--a);display:flex;align-items:center;justify-content:center;}
@@ -36,16 +26,13 @@
 .f-input.err{border-color:var(--red);}
 .f-hint{font-size:11px;color:var(--text3);margin-top:5px;line-height:1.5;}
 .f-error{font-size:11.5px;color:var(--red);margin-top:5px;font-family:var(--mono);}
-.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:8px 8px;}
-.toggle-lbl{font-size:13px;font-weight:600;color:var(--text);}
-.toggle-sub{font-size:11.5px;color:var(--text3);margin-top:2px;}
-.sw{position:relative;width:46px;height:26px;flex-shrink:0;}
-.sw input{position:absolute;opacity:0;width:0;height:0;}
-.sw label{display:block;width:46px;height:26px;border-radius:100px;background:var(--border2);cursor:pointer;position:relative;transition:background .2s;}
-.sw label::after{content:'';position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .25s cubic-bezier(.4,0,.2,1);box-shadow:0 1px 4px rgba(0,0,0,.2);}
-.sw::after,.sw::before{display:none;}
-.sw input:checked+label{background:var(--a);}
-.sw input:checked+label::after{transform:translateX(20px);}
+/* toggles use the global shared component (components/_forms.css) — no local override */
+.color-row{display:flex;align-items:center;gap:12px;}
+.color-row input[type="color"]{flex:0 0 auto;width:44px;height:44px;padding:3px;border:1px solid var(--border2);border-radius:var(--r-sm);background:var(--surface2);cursor:pointer;}
+.color-row input[type="color"]::-webkit-color-swatch-wrapper{padding:0;}
+.color-row input[type="color"]::-webkit-color-swatch{border:none;border-radius:5px;}
+.color-row input[type="color"]::-moz-color-swatch{border:none;border-radius:5px;}
+.color-row .color-hex{font-family:var(--font-mono);font-size:13px;color:var(--text2);}
 .submit-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 22px;background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;border:none;border-radius:var(--r-sm);font-size:14px;font-weight:700;cursor:pointer;font-family:var(--mono);transition:opacity .2s,transform .15s;box-shadow:0 4px 18px rgba(37,99,235,.35);}
 .submit-btn:hover{opacity:.88;transform:translateY(-1px);}
 .submit-btn svg{width:15px;height:15px;}
@@ -60,6 +47,29 @@
 @endpush
 
 @section('content')
+<div class="breadcrumb">
+  <a href="{{ route('admin.dashboard') }}">Dashboard</a>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+  <a href="{{ route('admin.fundraiser-levels.index') }}">Fundraiser Levels</a>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+  <span>Edit Level</span>
+</div>
+
+{{-- HERO --}}
+<div class="hero">
+  <div class="hero-left">
+    <div class="hero-tag"><span class="hero-tag-dot"></span>Fundraiser Levels</div>
+    <div class="hero-name">Edit Level</div>
+    <div class="hero-sub">Update the requirements and settings for this fundraiser tier.</div>
+  </div>
+  <div class="hero-right">
+    <a href="{{ route('admin.fundraiser-levels.index') }}" class="hero-btn hero-btn-ghost">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+      All Levels
+    </a>
+  </div>
+</div>
+
 @if($errors->any())
 <div class="alert-error">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
@@ -137,7 +147,10 @@
         </div>
         <div class="field">
           <label class="f-label" for="badge_color">Badge Color</label>
-          <input id="badge_color" name="badge_color" type="text" value="{{ old('badge_color',$fundraiserLevel->badge_color) }}" class="f-input" placeholder="#6366f1">
+          <div class="color-row">
+            <input type="color" id="badge_color" name="badge_color" value="{{ old('badge_color',$fundraiserLevel->badge_color) }}" aria-label="Pick badge color">
+            <span class="color-hex">{{ old('badge_color',$fundraiserLevel->badge_color) }}</span>
+          </div>
           @error('badge_color')<p class="f-error">{{ $message }}</p>@enderror
         </div>
       </div>
