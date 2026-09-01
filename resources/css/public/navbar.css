@@ -690,7 +690,9 @@
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(15, 20, 34, 0.42);
+    backdrop-filter: blur(6px) saturate(120%);
+    -webkit-backdrop-filter: blur(6px) saturate(120%);
     z-index: 1050;
     opacity: 0;
     transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -766,26 +768,30 @@
     top: 0;
     left: 0;
     height: 100dvh;
-    width: 85%;
-    max-width: 380px;
+    width: 86%;
+    max-width: 384px;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
     background: var(--white);
     color: var(--drawer-text);
     z-index: 1100;
     flex-direction: column;
-    box-shadow: 24px 0 60px rgba(17, 24, 39, 0.18);
+    box-shadow: 32px 0 70px rgba(15, 20, 34, 0.35);
     border-top-right-radius: var(--drawer-radius);
     border-bottom-right-radius: var(--drawer-radius);
     transform: translateX(-100%);
     visibility: hidden;
-    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-                visibility 0s linear 0.25s;
+    transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1),
+                visibility 0s linear 0.32s;
     font-family: 'Inter', var(--db-font);
+    will-change: transform;
+    touch-action: pan-y;
 }
 
 .db-drawer.is-open {
     transform: translateX(0);
     visibility: visible;
-    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1),
                 visibility 0s;
 }
 
@@ -798,10 +804,12 @@
 
 /* Header */
 .db-drawer__header {
+    position: relative;
+    z-index: 2;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 24px;
+    padding: 20px 24px;
     flex-shrink: 0;
 }
 
@@ -862,11 +870,38 @@
 
 /* Scroll area */
 .db-drawer__scroll {
+    position: relative;
     flex: 1;
     overflow-y: auto;
     padding: 8px 16px 16px;
     -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
 }
+
+/* Scroll edge fade shadows (pointer to more content) */
+.db-drawer__scroll::before,
+.db-drawer__scroll::after {
+    content: '';
+    position: sticky;
+    display: block;
+    height: 28px;
+    pointer-events: none;
+    z-index: 3;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+.db-drawer__scroll::before {
+    top: -1px;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+}
+.db-drawer__scroll::after {
+    bottom: -1px;
+    background: linear-gradient(to top, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+}
+.db-drawer__scroll.is-top-fade::before { opacity: 0; }
+.db-drawer__scroll.is-scrollable::before { opacity: 1; }
+.db-drawer__scroll.is-bottom-fade::after { opacity: 0; }
+.db-drawer__scroll.is-bottom-scrollable::after { opacity: 1; }
 
 /* Primary nav */
 .db-drawer__nav {
@@ -875,7 +910,19 @@
     gap: 2px;
 }
 
+/* Section labels */
+.db-drawer__label {
+    padding: 18px 12px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--drawer-text-2);
+    opacity: 0.7;
+}
+
 .db-drawer__item {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 14px;
@@ -892,18 +939,36 @@
     cursor: pointer;
     text-align: left;
     width: 100%;
-    transition: background 0.18s ease, color 0.18s ease;
+    transition: background 0.18s ease, color 0.18s ease, transform 0.12s ease;
 }
 
 .db-drawer__item:hover,
 .db-drawer__item:active {
     background: var(--drawer-hover);
+    transform: scale(0.985);
 }
 
 .db-drawer__item.is-active {
     color: var(--drawer-primary);
-    background: rgba(37, 99, 235, 0.08);
     font-weight: 600;
+    background: linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--drawer-primary) 9%, transparent),
+        color-mix(in srgb, var(--drawer-primary) 3%, transparent)
+    );
+}
+
+.db-drawer__item.is-active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 26px;
+    border-radius: 99px;
+    background: var(--drawer-primary);
+    box-shadow: 0 2px 10px color-mix(in srgb, var(--drawer-primary) 45%, transparent);
 }
 
 .db-drawer__item-icon {
@@ -912,6 +977,7 @@
     justify-content: center;
     width: 22px;
     color: var(--drawer-text-2);
+    transition: color 0.18s ease;
 }
 
 .db-drawer__item.is-active .db-drawer__item-icon {
@@ -925,11 +991,11 @@
 .db-drawer__chevron {
     display: flex;
     color: var(--drawer-text-2);
-    transition: transform 0.25s ease;
+    transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
 .db-drawer__item--toggle[aria-expanded="true"] .db-drawer__chevron {
-    transform: rotate(90deg);
+    transform: rotate(180deg);
 }
 
 /* Expandable submenu (accordion via grid-rows) */
@@ -1110,9 +1176,34 @@
 @media (prefers-reduced-motion: reduce) {
     .db-drawer,
     .db-drawer__chevron,
-    .db-drawer__sub {
+    .db-drawer__sub,
+    [data-drawer-stagger] {
         transition: none !important;
     }
+    [data-drawer-stagger] {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+}
+
+/* ─── Staggered item entrance ────────────────────────────────────── */
+[data-drawer-stagger] {
+    opacity: 0;
+    transform: translateX(-16px);
+    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.db-drawer.is-open [data-drawer-stagger] {
+    opacity: 1;
+    transform: translateX(0);
+    transition-delay: var(--drawer-delay, 0ms);
+}
+.db-drawer.is-open .db-drawer__label {
+    animation: drawer-fade-in 0.35s ease forwards;
+}
+
+@keyframes drawer-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }
 
 /* ─── Responsive breakpoints ─────────────────────────────────────── */

@@ -147,6 +147,26 @@ import { escapeHtml } from '../shared/helpers.js';
 
     /* ── Mobile drawer (premium slide-in) ──────────────────── */
     const mobileClose = document.getElementById('mobile-close');
+    const drawerScroll = document.getElementById('drawer-scroll');
+
+    function setupStagger() {
+        if (!mobileDrawer) return;
+        // If user prefers reduced motion, no stagger needed
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (reduceMotion) return;
+        const items = mobileDrawer.querySelectorAll('[data-drawer-stagger]');
+        items.forEach((item, i) => {
+            item.style.setProperty('--drawer-delay', Math.min(40 + i * 28, 320) + 'ms');
+        });
+    }
+
+    function updateScrollShadows() {
+        if (!drawerScroll) return;
+        const { scrollTop, scrollHeight, clientHeight } = drawerScroll;
+        const canScroll = scrollHeight > clientHeight + 1;
+        drawerScroll.classList.toggle('is-scrollable', canScroll && scrollTop > 4);
+        drawerScroll.classList.toggle('is-bottom-scrollable', canScroll && scrollTop + clientHeight < scrollHeight - 4);
+    }
 
     function openMobileDrawer() {
         mobileDrawer.classList.add('is-open');
@@ -157,6 +177,11 @@ import { escapeHtml } from '../shared/helpers.js';
         mobileToggle.setAttribute('aria-label', 'Close navigation menu');
         document.body.style.overflow = 'hidden';
         if (window.lucide) window.lucide.createIcons();
+        setupStagger();
+        requestAnimationFrame(updateScrollShadows);
+        // Bring the active item into view
+        const active = mobileDrawer.querySelector('.db-drawer__item.is-active');
+        if (active && drawerScroll) drawerScroll.scrollTop = Math.max(0, active.offsetTop - 90);
         mobileClose?.focus();
     }
 
@@ -169,6 +194,10 @@ import { escapeHtml } from '../shared/helpers.js';
         mobileToggle?.setAttribute('aria-expanded', 'false');
         mobileToggle?.setAttribute('aria-label', 'Open navigation menu');
         document.body.style.overflow = '';
+        if (window.visualViewport) {
+            // ensure focus does not linger in the hidden drawer tree
+            if (drawerScroll) drawerScroll.scrollTop = 0;
+        }
     }
 
     if (mobileToggle) {
@@ -188,6 +217,86 @@ import { escapeHtml } from '../shared/helpers.js';
     if (backdrop) {
         backdrop.addEventListener('click', closeMobileDrawer);
     }
+
+    // Scroll edge shadows
+    if (drawerScroll) {
+        drawerScroll.addEventListener('scroll', updateScrollShadows, { passive: true });
+    }
+
+    /* ── Swipe-to-close gesture (drag drawer left to dismiss) ── */
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let isDragging = false;
+    let didSwipe = false;
+
+    if (mobileDrawer) {
+        mobileDrawer.addEventListener('touchstart', (e) => {
+            if (!mobileDrawer.classList.contains('is-open')) return;
+            if (e.touches.length !== 1) return;
+            dragStartX = e.touches[0].clientX;
+            dragStartY = e.touches[0].clientY;
+            isDragging = true;
+            didSwipe = false;
+            // Freeze scroll while dragging starts from the very left of drawer face
+        }, { passive: true });
+
+        mobileDrawer.addEventListener('touchmove', (e) => {
+            if (!isDragging || e.touches.length !== 1) return;
+            const dx = e.touches[0].clientX - dragStartX;
+            const dy = e.touches[0].clientY - dragStartY;
+            // Only treat as horizontal swipe-drag, ignore vertical scrolling
+            if (!didSwipe && Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)) {
+                didSwipe = true;
+                mobileDrawer.style.transition = 'none';
+            }
+            if (!didSwipe) return;
+            if (dx < 0) {
+                e.preventDefault();
+                mobileDrawer.style.transform = 'translateX(' + dx + 'px)';
+            }
+        }, { passive: false });
+
+        const endDrag = (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+            if (didSwipe) {
+                const dx = e.changedTouches[0].clientX - dragStartX;
+                mobileDrawer.style.transition = '';
+                mobileDrawer.style.transform = '';
+                if (dx < -80) {
+                    closeMobileDrawer();
+                }
+            }
+            didSwipe = false;
+        };
+
+        mobileDrawer.addEventListener('touchend', endDrag, { passive: true });
+        mobileDrawer.addEventListener('touchcancel', endDrag, { passive: true });
+    }
+
+    /* ── Edge swipe-to-open (swipe right from left edge) ── */
+    let edgeStartX = 0;
+    let edgeStartY = 0;
+    let edgeActive = false;
+
+    document.addEventListener('touchstart', (e) => {
+        if (mobileDrawer?.classList.contains('is-open')) { edgeActive = false; return; }
+        const t = e.touches[0];
+        edgeStartX = t.clientX;
+        edgeStartY = t.clientY;
+        edgeActive = (edgeStartX <= 24);
+    }, { passive: true });
+
+    document.addEventListener('touchmove', (e) => {
+        if (!edgeActive || mobileDrawer?.classList.contains('is-open')) return;
+        const t = e.touches[0];
+        const dx = t.clientX - edgeStartX;
+        const dy = t.clientY - edgeStartY;
+        if (dx > 70 && dx > Math.abs(dy) * 1.2) {
+            edgeActive = false;
+            openMobileDrawer();
+        }
+    }, { passive: true });
 
     // Accordion expandable sections
     if (mobileDrawer) {

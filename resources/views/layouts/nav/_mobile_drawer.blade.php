@@ -19,12 +19,15 @@
         </button>
     </header>
 
-    <div class="db-drawer__scroll">
+    <div id="drawer-scroll" class="db-drawer__scroll">
 
         <nav class="db-drawer__nav" aria-label="Primary">
 
+            <p class="db-drawer__label" aria-hidden="true">Menu</p>
+
             <a href="{{ route('home') }}"
                class="db-drawer__item {{ request()->routeIs('home') ? 'is-active' : '' }}"
+               data-drawer-stagger
                @if(request()->routeIs('home')) aria-current="page" @endif>
                 <span class="db-drawer__item-icon" aria-hidden="true"><i data-lucide="home"></i></span>
                 <span class="db-drawer__item-label">Home</span>
@@ -34,7 +37,8 @@
                     class="db-drawer__item db-drawer__item--toggle"
                     aria-expanded="false"
                     aria-controls="drawer-sub-campaigns"
-                    data-drawer-toggle="drawer-sub-campaigns">
+                    data-drawer-toggle="drawer-sub-campaigns"
+                    data-drawer-stagger>
                 <span class="db-drawer__item-icon" aria-hidden="true"><i data-lucide="megaphone"></i></span>
                 <span class="db-drawer__item-label">Campaigns</span>
                 <span class="db-drawer__chevron" aria-hidden="true"><i data-lucide="chevron-right"></i></span>
@@ -49,12 +53,12 @@
                 </div>
             </div>
 
-            <a href="{{ route('search') }}" class="db-drawer__item">
+            <a href="{{ route('search') }}" class="db-drawer__item" data-drawer-stagger>
                 <span class="db-drawer__item-icon" aria-hidden="true"><i data-lucide="search"></i></span>
                 <span class="db-drawer__item-label">Search</span>
             </a>
 
-            <a href="{{ route('all.campaigns') }}" class="db-drawer__item">
+            <a href="{{ route('all.campaigns') }}" class="db-drawer__item" data-drawer-stagger>
                 <span class="db-drawer__item-icon" aria-hidden="true"><i data-lucide="layout-grid"></i></span>
                 <span class="db-drawer__item-label">Categories</span>
             </a>
@@ -63,7 +67,8 @@
                     class="db-drawer__item db-drawer__item--toggle"
                     aria-expanded="false"
                     aria-controls="drawer-sub-about"
-                    data-drawer-toggle="drawer-sub-about">
+                    data-drawer-toggle="drawer-sub-about"
+                    data-drawer-stagger>
                 <span class="db-drawer__item-icon" aria-hidden="true"><i data-lucide="info"></i></span>
                 <span class="db-drawer__item-label">About</span>
                 <span class="db-drawer__chevron" aria-hidden="true"><i data-lucide="chevron-right"></i></span>
@@ -83,6 +88,7 @@
 
             <a href="{{ route('contact') }}"
                class="db-drawer__item {{ request()->routeIs('contact') ? 'is-active' : '' }}"
+               data-drawer-stagger
                @if(request()->routeIs('contact')) aria-current="page" @endif>
                 <span class="db-drawer__item-icon" aria-hidden="true"><i data-lucide="phone"></i></span>
                 <span class="db-drawer__item-label">Contact</span>
@@ -92,6 +98,8 @@
 
         @auth
             <div class="db-drawer__divider" role="separator"></div>
+
+            <p class="db-drawer__label" aria-hidden="true">Account</p>
 
             <div class="db-drawer__user">
                 <img src="{{ auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : asset('images/default-avatar.png') }}"
@@ -112,27 +120,27 @@
                 </a>
 
                 <a href="{{ auth()->user()->role === 'admin' ? route('admin.dashboard') : route('dashboard') }}"
-                   class="db-drawer__item">
+                   class="db-drawer__item" data-drawer-stagger>
                     <span class="db-drawer__item-icon" aria-hidden="true"><i data-lucide="layout-dashboard"></i></span>
                     <span class="db-drawer__item-label">Dashboard</span>
                 </a>
-                <a href="{{ route('profile.show') }}" class="db-drawer__item">
+                <a href="{{ route('profile.show') }}" class="db-drawer__item" data-drawer-stagger>
                     <span class="db-drawer__item-icon" aria-hidden="true"><i data-lucide="user"></i></span>
                     <span class="db-drawer__item-label">My Profile</span>
                 </a>
-                <a href="{{ Route::has('my.campaigns') ? route('my.campaigns') : route('dashboard') }}" class="db-drawer__item">
+                <a href="{{ Route::has('my.campaigns') ? route('my.campaigns') : route('dashboard') }}" class="db-drawer__item" data-drawer-stagger>
                     <span class="db-drawer__item-icon" aria-hidden="true"><i data-lucide="folder"></i></span>
                     <span class="db-drawer__item-label">My Campaigns</span>
                 </a>
-                <a href="{{ Route::has('saved.campaigns') ? route('saved.campaigns') : route('dashboard') }}" class="db-drawer__item">
+                <a href="{{ Route::has('saved.campaigns') ? route('saved.campaigns') : route('dashboard') }}" class="db-drawer__item" data-drawer-stagger>
                     <span class="db-drawer__item-icon" aria-hidden="true"><i data-lucide="bookmark"></i></span>
                     <span class="db-drawer__item-label">Saved Campaigns</span>
                 </a>
-                <a href="{{ route('recurring.index') }}" class="db-drawer__item">
+                <a href="{{ route('recurring.index') }}" class="db-drawer__item" data-drawer-stagger>
                     <span class="db-drawer__item-icon" aria-hidden="true"><i data-lucide="receipt"></i></span>
                     <span class="db-drawer__item-label">Donation History</span>
                 </a>
-                <a href="{{ route('profile.edit') }}" class="db-drawer__item">
+                <a href="{{ route('profile.edit') }}" class="db-drawer__item" data-drawer-stagger>
                     <span class="db-drawer__item-icon" aria-hidden="true"><i data-lucide="settings"></i></span>
                     <span class="db-drawer__item-label">Settings</span>
                 </a>
