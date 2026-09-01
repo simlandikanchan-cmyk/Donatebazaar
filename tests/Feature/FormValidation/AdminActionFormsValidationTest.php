@@ -560,9 +560,9 @@ class AdminActionFormsValidationTest extends TestCase
 
     public function test_legal_page_update_happy_path(): void
     {
-        LegalPage::create(['title' => 'Privacy Policy', 'slug' => 'privacy', 'content' => 'Policy content']);
+        LegalPage::create(['title' => 'Privacy Policy', 'slug' => 'privacy-policy', 'content' => 'Policy content']);
 
-        $response = $this->actingAs($this->admin)->put('/admin/legal/privacy', [
+        $response = $this->actingAs($this->admin)->put('/admin/legal/privacy-policy', [
             'title' => 'Updated Privacy Policy',
             'content' => 'Updated policy content.',
         ]);
@@ -572,9 +572,9 @@ class AdminActionFormsValidationTest extends TestCase
 
     public function test_legal_page_update_title_required(): void
     {
-        LegalPage::create(['title' => 'Terms', 'slug' => 'terms', 'content' => 'Terms content']);
+        LegalPage::create(['title' => 'Terms', 'slug' => 'terms-of-service', 'content' => 'Terms content']);
 
-        $response = $this->actingAs($this->admin)->put('/admin/legal/terms', [
+        $response = $this->actingAs($this->admin)->put('/admin/legal/terms-of-service', [
             'title' => '', 'content' => 'Content',
         ]);
 
@@ -583,9 +583,9 @@ class AdminActionFormsValidationTest extends TestCase
 
     public function test_legal_page_update_content_required(): void
     {
-        LegalPage::create(['title' => 'Terms', 'slug' => 'terms', 'content' => 'Terms content']);
+        LegalPage::create(['title' => 'Terms', 'slug' => 'terms-of-service', 'content' => 'Terms content']);
 
-        $response = $this->actingAs($this->admin)->put('/admin/legal/terms', [
+        $response = $this->actingAs($this->admin)->put('/admin/legal/terms-of-service', [
             'title' => 'Title', 'content' => '',
         ]);
 

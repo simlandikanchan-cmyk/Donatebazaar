@@ -26,7 +26,7 @@ class AdminNewCampaignMail extends Mailable implements ShouldQueue
         $adminEmail = config('mail.from.address');
 
         return new Envelope(
-            to: [$adminEmail => config('app.name').' Admin'],
+            to: [new \Illuminate\Mail\Mailables\Address($adminEmail, config('app.name').' Admin')],
             subject: 'New Campaign Submitted for Review — '.$this->campaign->title,
         );
     }

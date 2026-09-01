@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Gateways\RazorpayGateway;
 use App\Models\Campaign;
 use App\Models\CampaignSettlement;
 use App\Models\Donation;
@@ -16,6 +17,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use PHPUnit\Framework\Attributes\Test;
+use Razorpay\Api\Api;
+use Razorpay\Api\Transfer;
 use Tests\TestCase;
 
 class WalletSettlementFlowTest extends TestCase
@@ -44,6 +47,7 @@ class WalletSettlementFlowTest extends TestCase
             'bank_name' => 'Test Bank',
             'account_number' => '1234567890',
             'ifsc_code' => 'TEST0000',
+            'fund_account_id' => 'fa_ABCDEFG',
             'is_verified' => true,
         ]);
 
@@ -71,6 +75,68 @@ class WalletSettlementFlowTest extends TestCase
             'is_refunded' => false,
             'paid_at' => now()->subDays(10),
         ]);
+
+        $mock = $this->createMockGatewayForPayout();
+        $this->app->instance(RazorpayGateway::class, $mock);
+    }
+
+    private function createMockGatewayForPayout(): RazorpayGateway
+    {
+        $mockApi = new class extends Api {
+            public function __construct() {}
+            public $transfer;
+        };
+        $mockApi->transfer = new class($mockApi) extends Transfer {
+            private $api;
+            public function __construct($api) { $this->api = $api; }
+            public function create($attributes = []) {
+                $entity = new class([]) extends Transfer {
+                    public $id;
+                    public $status = 'processed';
+                    public $amount = 50000;
+                    public $currency = 'INR';
+                    public function __construct(array $data) {
+                        $this->id = 'trans_'.uniqid();
+                    }
+                    public function toArray(): array {
+                        return [
+                            'id' => $this->id,
+                            'status' => $this->status,
+                            'amount' => $this->amount,
+                            'currency' => $this->currency,
+                            'entity' => 'transfer',
+                        ];
+                    }
+                };
+                return $entity;
+            }
+            public function fetch($id) {
+                $entity = new class([]) extends Transfer {
+                    public $id = 'trans_ABCDEFG';
+                    public $status = 'processed';
+                    public $amount = 50000;
+                    public $currency = 'INR';
+                    public function toArray(): array {
+                        return [
+                            'id' => $this->id,
+                            'status' => $this->status,
+                            'amount' => $this->amount,
+                            'currency' => $this->currency,
+                            'entity' => 'transfer',
+                        ];
+                    }
+                };
+                $entity->id = $id;
+                return $entity;
+            }
+        };
+
+        return new RazorpayGateway(
+            keyId: 'test_key',
+            keySecret: 'test_secret',
+            webhookSecret: 'test_webhook_secret',
+            api: $mockApi
+        );
     }
 
     #[Test]

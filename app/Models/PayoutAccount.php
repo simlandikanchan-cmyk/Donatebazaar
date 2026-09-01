@@ -16,6 +16,7 @@ class PayoutAccount extends Model
         'account_number',
         'ifsc_code',
         'upi_id',
+        'fund_account_id',
         'is_verified',
         'verified_by',
         'verified_at',

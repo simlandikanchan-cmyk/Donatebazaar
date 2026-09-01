@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Exceptions\TemporaryFailureException;
+use App\Gateways\RazorpayGateway;
 use App\Jobs\ProcessSettlementJob;
 use App\Models\Campaign;
 use App\Models\CampaignSettlement;
@@ -18,6 +20,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Queue;
 use PHPUnit\Framework\Attributes\Test;
+use Razorpay\Api\Api;
+use Razorpay\Api\Transfer;
 use Tests\TestCase;
 
 class PayoutProcessingTest extends TestCase
@@ -50,8 +54,12 @@ class PayoutProcessingTest extends TestCase
             'bank_name' => 'Test Bank',
             'account_number' => '1234567890',
             'ifsc_code' => 'TEST0000',
+            'fund_account_id' => 'fa_ABCDEFG',
             'is_verified' => true,
         ]);
+
+        $mock = $this->mockGatewayForPayout();
+        $this->app->instance(RazorpayGateway::class, $mock);
 
         $this->walletService = app(WalletService::class);
         $this->settlementService = app(SettlementService::class);
@@ -80,9 +88,155 @@ class PayoutProcessingTest extends TestCase
         $this->donation->save();
     }
 
+    private function mockGatewayForPayout(?object $transferMock = null): RazorpayGateway
+    {
+        $mockApi = new class extends Api {
+            public function __construct() {}
+            public $transfer;
+        };
+        $mockApi->transfer = $transferMock ?? new class($mockApi) extends Transfer {
+            private $api;
+            public function __construct($api) { $this->api = $api; }
+            public function create($attributes = []) {
+                $entity = new class([]) extends Transfer {
+                    public $id;
+                    public $status = 'processed';
+                    public $amount = 50000;
+                    public $currency = 'INR';
+                    public function __construct(array $data) {
+                        $this->id = 'trans_'.uniqid();
+                    }
+                    public function toArray(): array {
+                        return [
+                            'id' => $this->id,
+                            'status' => $this->status,
+                            'amount' => $this->amount,
+                            'currency' => $this->currency,
+                            'entity' => 'transfer',
+                        ];
+                    }
+                };
+                return $entity;
+            }
+            public function fetch($id) {
+                $entity = new class([]) extends Transfer {
+                    public $id = 'trans_ABCDEFG';
+                    public $status = 'processed';
+                    public $amount = 50000;
+                    public $currency = 'INR';
+                    public function toArray(): array {
+                        return [
+                            'id' => $this->id,
+                            'status' => $this->status,
+                            'amount' => $this->amount,
+                            'currency' => $this->currency,
+                            'entity' => 'transfer',
+                        ];
+                    }
+                };
+                $entity->id = $id;
+                return $entity;
+            }
+        };
+
+        return new RazorpayGateway(
+            keyId: 'test_key',
+            keySecret: 'test_secret',
+            webhookSecret: 'test_webhook_secret',
+            api: $mockApi
+        );
+    }
+
+    private function mockGatewayThatThrowsTemporary(): RazorpayGateway
+    {
+        $mockApi = new class extends Api {
+            public function __construct() {}
+            public $transfer;
+        };
+        $mockApi->transfer = new class($mockApi) extends Transfer {
+            private $api;
+            public function __construct($api) { $this->api = $api; }
+            public function create($attributes = []) {
+                throw new TemporaryFailureException('Provider temporarily unable to process payout.');
+            }
+        };
+
+        return new RazorpayGateway(
+            keyId: 'test_key',
+            keySecret: 'test_secret',
+            webhookSecret: 'test_webhook_secret',
+            api: $mockApi
+        );
+    }
+
+    private function mockGatewayThatThrowsPermanent(): RazorpayGateway
+    {
+        $mockApi = new class extends Api {
+            public function __construct() {}
+            public $transfer;
+        };
+        $mockApi->transfer = new class($mockApi) extends Transfer {
+            private $api;
+            public function __construct($api) { $this->api = $api; }
+            public function create($attributes = []) {
+                throw new PermanentFailureException('Invalid payout account.');
+            }
+        };
+
+        return new RazorpayGateway(
+            keyId: 'test_key',
+            keySecret: 'test_secret',
+            webhookSecret: 'test_webhook_secret',
+            api: $mockApi
+        );
+    }
+
+    private function mockGatewayWithSequence(array $responses): RazorpayGateway
+    {
+        $mockApi = new class($responses) extends Api {
+            public function __construct(private array $responses) {}
+            public $transfer;
+            private int $callCount = 0;
+        };
+        $mockApi->transfer = new class($mockApi) extends Transfer {
+            private $api;
+            private array $responses;
+            private int $callCount = 0;
+            public function __construct($api) {
+                $this->api = $api;
+                $this->responses = $api->responses;
+            }
+            public function create($attributes = []) {
+                $response = $this->responses[$this->callCount];
+                $this->callCount++;
+                if ($response instanceof \Throwable) {
+                    throw $response;
+                }
+                return $response;
+            }
+            public function fetch($id) {
+                $response = $this->responses[$this->callCount] ?? end($this->responses);
+                if ($response instanceof \Throwable) {
+                    throw $response;
+                }
+                return $response;
+            }
+        };
+
+        return new RazorpayGateway(
+            keyId: 'test_key',
+            keySecret: 'test_secret',
+            webhookSecret: 'test_webhook_secret',
+            api: $mockApi
+        );
+    }
+
     #[Test]
     public function successful_payout_marks_settlement_paid_and_donations_settled(): void
     {
+        $mock = $this->mockGatewayForPayout();
+        $this->app->instance(RazorpayGateway::class, $mock);
+
         $settlement = $this->settlementService->requestSettlement($this->org, [$this->donation->id]);
         $this->settlementService->approveSettlement($settlement, $this->admin);
 
@@ -102,23 +256,26 @@ class PayoutProcessingTest extends TestCase
     }
 
     #[Test]
-    public function payout_failure_restores_balance_and_records_reversal(): void
+    public function payout_temporary_failure_marks_retry_pending_and_does_not_restore_balance(): void
     {
+        $mock = $this->mockGatewayThatThrowsTemporary();
+        $this->app->instance(RazorpayGateway::class, $mock);
+        $this->settlementService = app(SettlementService::class);
+
         $failOwner = User::factory()->create();
-        $org = Organization::factory()->create(['user_id' => $failOwner->id, 'name' => 'FAIL Org']);
+        $org = Organization::factory()->create(['user_id' => $failOwner->id]);
         PayoutAccount::create([
             'organization_id' => $org->id,
             'account_holder_name' => 'Test',
             'bank_name' => 'Test Bank',
             'account_number' => '1234567890',
             'ifsc_code' => 'TEST0000',
+            'fund_account_id' => 'fa_FAIL',
             'is_verified' => true,
         ]);
 
         $wallet = $this->walletService->getOrCreateWallet($failOwner);
-        $wallet->balance = 0;
-        $wallet->pending_settlement_balance = 0;
-        $wallet->save();
+        $wallet->update(['balance' => 0, 'pending_settlement_balance' => 500]);
 
         $campaign = Campaign::create([
             'title' => 'Fail Restore Campaign',
@@ -145,6 +302,7 @@ class PayoutProcessingTest extends TestCase
         $wallet->refresh();
 
         $this->assertFalse($result['success']);
+        $this->assertTrue($result['retryable']);
         $this->assertEquals('retry_pending', $settlement->status);
         $this->assertNull($settlement->failed_at);
         $this->assertNull($settlement->failed_reason);
@@ -162,6 +320,9 @@ class PayoutProcessingTest extends TestCase
     #[Test]
     public function payout_is_idempotent_when_already_paid(): void
     {
+        $mock = $this->mockGatewayForPayout();
+        $this->app->instance(RazorpayGateway::class, $mock);
+
         $settlement = $this->settlementService->requestSettlement($this->org, [$this->donation->id]);
         $this->settlementService->approveSettlement($settlement, $this->admin);
         $this->settlementService->processSettlementPayout($settlement);
@@ -169,7 +330,6 @@ class PayoutProcessingTest extends TestCase
         $paidAt = $settlement->paid_at;
         $reference = $settlement->gateway_reference;
 
-        // Second call returns immediately with success.
         $result = $this->settlementService->processSettlementPayout($settlement);
         $settlement->refresh();
 
@@ -182,14 +342,19 @@ class PayoutProcessingTest extends TestCase
     #[Test]
     public function payout_is_idempotent_when_already_failed(): void
     {
+        $mock = $this->mockGatewayThatThrowsTemporary();
+        $this->app->instance(RazorpayGateway::class, $mock);
+        $this->settlementService = app(SettlementService::class);
+
         $failOwner = User::factory()->create();
-        $org = Organization::factory()->create(['user_id' => $failOwner->id, 'name' => 'FAIL Org Retry']);
+        $org = Organization::factory()->create(['user_id' => $failOwner->id]);
         PayoutAccount::create([
             'organization_id' => $org->id,
             'account_holder_name' => 'Test',
             'bank_name' => 'Test Bank',
             'account_number' => '1234567890',
             'ifsc_code' => 'TEST0000',
+            'fund_account_id' => 'fa_FAIL',
             'is_verified' => true,
         ]);
 
@@ -219,7 +384,6 @@ class PayoutProcessingTest extends TestCase
         $settlement->refresh();
         $this->assertEquals('retry_pending', $settlement->status);
 
-        // Second call returns immediately (idempotent).
         $result = $this->settlementService->processSettlementPayout($settlement);
         $this->assertFalse($result['success']);
         $this->assertEquals('retry_pending', $settlement->status);
@@ -229,13 +393,14 @@ class PayoutProcessingTest extends TestCase
     public function payout_retry_after_failure_can_succeed_with_fixed_org_name(): void
     {
         $failOwner = User::factory()->create();
-        $org = Organization::factory()->create(['user_id' => $failOwner->id, 'name' => 'FAIL Then Fix']);
+        $org = Organization::factory()->create(['user_id' => $failOwner->id]);
         PayoutAccount::create([
             'organization_id' => $org->id,
             'account_holder_name' => 'Test',
             'bank_name' => 'Test Bank',
             'account_number' => '1234567890',
             'ifsc_code' => 'TEST0000',
+            'fund_account_id' => 'fa_FAIL',
             'is_verified' => true,
         ]);
 
@@ -261,17 +426,20 @@ class PayoutProcessingTest extends TestCase
             'approved_at' => now(),
         ]);
 
+        $mock = $this->mockGatewayThatThrowsTemporary();
+        $this->app->instance(RazorpayGateway::class, $mock);
+        $this->settlementService = app(SettlementService::class);
+
         $this->settlementService->processSettlementPayout($settlement);
         $settlement->refresh();
         $this->assertEquals('retry_pending', $settlement->status);
 
-        // "Fix" the org name so the stub no longer throws.
-        $org->update(['name' => 'Fixed Org']);
+        $mock = $this->mockGatewayForPayout();
+        $this->app->instance(RazorpayGateway::class, $mock);
+        $this->settlementService = app(SettlementService::class);
 
-        // Add balance back so retry can debit it.
         $wallet->update(['balance' => 500, 'pending_settlement_balance' => 0]);
 
-        // Reset status to retry_pending for retry.
         $settlement->update([
             'status' => 'retry_pending',
             'failed_at' => null,
@@ -292,14 +460,14 @@ class PayoutProcessingTest extends TestCase
     #[Test]
     public function processing_state_accessible_during_payout(): void
     {
+        $mock = $this->mockGatewayForPayout();
+        $this->app->instance(RazorpayGateway::class, $mock);
+
         $settlement = $this->settlementService->requestSettlement($this->org, [$this->donation->id]);
         $this->settlementService->approveSettlement($settlement, $this->admin);
 
         $this->assertFalse($settlement->refresh()->isProcessing());
 
-        // processSettlementPayout sets processing → paid atomically in the stub,
-        // but we can observe the processing state by inspecting inside the method.
-        // This validates the helper exists and works correctly.
         $settlement->update(['status' => 'processing', 'processed_at' => now()]);
         $this->assertTrue($settlement->refresh()->isProcessing());
         $this->assertNull($settlement->paid_at);
@@ -329,6 +497,9 @@ class PayoutProcessingTest extends TestCase
     #[Test]
     public function double_approval_throws(): void
     {
+        $mock = $this->mockGatewayForPayout();
+        $this->app->instance(RazorpayGateway::class, $mock);
+
         $settlement = $this->settlementService->requestSettlement($this->org, [$this->donation->id]);
         $this->settlementService->approveSettlement($settlement, $this->admin);
 
@@ -343,13 +514,14 @@ class PayoutProcessingTest extends TestCase
         Notification::fake();
 
         $failOwner = User::factory()->create();
-        $org = Organization::factory()->create(['user_id' => $failOwner->id, 'name' => 'FAIL Notification']);
+        $org = Organization::factory()->create(['user_id' => $failOwner->id]);
         PayoutAccount::create([
             'organization_id' => $org->id,
             'account_holder_name' => 'Test',
             'bank_name' => 'Test Bank',
             'account_number' => '1234567890',
             'ifsc_code' => 'TEST0000',
+            'fund_account_id' => 'fa_FAIL',
             'is_verified' => true,
         ]);
 
@@ -375,6 +547,10 @@ class PayoutProcessingTest extends TestCase
             'approved_at' => now(),
         ]);
 
+        $mock = $this->mockGatewayThatThrowsTemporary();
+        $this->app->instance(RazorpayGateway::class, $mock);
+        $this->settlementService = app(SettlementService::class);
+
         $this->settlementService->processSettlementPayout($settlement);
 
         Notification::assertSentTo(
@@ -391,6 +567,9 @@ class PayoutProcessingTest extends TestCase
     #[Test]
     public function balance_unchanged_when_payout_succeeds(): void
     {
+        $mock = $this->mockGatewayForPayout();
+        $this->app->instance(RazorpayGateway::class, $mock);
+
         $wallet = $this->walletService->getOrCreateWallet($this->owner);
         $this->walletService->credit($wallet, 1000.00, WalletTransaction::SOURCE_ADJUSTMENT, 2, Organization::class);
 
@@ -404,7 +583,6 @@ class PayoutProcessingTest extends TestCase
 
         $wallet->refresh();
         $this->assertEquals(0.00, (float) $wallet->pending_settlement_balance);
-        // processSettlementPayout does NOT change balance — it was debited at approval time.
         $this->assertEquals($balanceAfterApprove, (float) $wallet->balance, 'Payout processing must not modify wallet balance');
     }
 }

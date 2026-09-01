@@ -8,6 +8,7 @@ use App\Events\SettlementFailed;
 use App\Events\SettlementManualReviewRequired;
 use App\Events\SettlementPaid;
 use App\Events\SettlementProcessingStarted;
+use App\Events\RiskEvaluationCompleted;
 use App\Events\SettlementRejected;
 use App\Events\SettlementRequested;
 use App\Events\SettlementRetryScheduled;
@@ -153,6 +154,8 @@ class SettlementService
             'actor_type' => 'system',
             'reason' => 'Risk evaluation completed: '.$riskResult->verdict,
         ]);
+
+        event(new RiskEvaluationCompleted($settlement, $riskResult->verdict, $riskResult->score));
 
         if ($riskResult->isRejected()) {
             $this->refundSettlementFunds($settlement, 'rejected by risk evaluation');
@@ -384,7 +387,7 @@ class SettlementService
         try {
             $gatewayResult = $this->gateway->initiatePayout($org, $amount->toFloat(), $settlement, $idempotencyKey);
             $outcome = ['success' => true, 'result' => $gatewayResult];
-        } catch (PermanentFailureException|TimeoutException|TemporaryFailureException $e) {
+        } catch (PermanentFailureException|TimeoutException|TemporaryFailureException|GatewayException $e) {
             $outcome = [
                 'success' => false,
                 'retryable' => $e instanceof TimeoutException || $e instanceof TemporaryFailureException,
@@ -408,28 +411,41 @@ class SettlementService
 
             if ($outcome['success']) {
                 $result = $outcome['result'];
+                $providerStatus = strtolower($result['provider_status'] ?? '');
 
-                $this->stateMachine->transition($locked, 'paid', [
-                    'actor_type' => 'system',
-                    'reason' => 'Payout completed',
-                ]);
+                if (in_array($providerStatus, ['processed', 'paid'], true)) {
+                    $this->stateMachine->transition($locked, 'paid', [
+                        'actor_type' => 'system',
+                        'reason' => 'Payout completed',
+                    ]);
 
-                $locked->paid_at = now();
+                    $locked->paid_at = now();
+                    $locked->gateway_reference = $result['gateway_reference'];
+                    $locked->gateway_status = $result['provider_status'] ?? null;
+                    $locked->retry_count = 0;
+                    $locked->next_retry_at = null;
+                    $locked->save();
+
+                    $donationIds = $locked->settlementItems()->pluck('donation_id');
+                    Donation::whereIn('id', $donationIds)->update([
+                        'settlement_status' => 'settled',
+                        'campaign_settlement_id' => $locked->id,
+                    ]);
+
+                    event(new SettlementPaid($locked, $result['gateway_reference']));
+
+                    return ['success' => true, 'message' => 'Payout completed successfully.'];
+                }
+
                 $locked->gateway_reference = $result['gateway_reference'];
                 $locked->gateway_status = $result['provider_status'] ?? null;
-                $locked->retry_count = 0;
-                $locked->next_retry_at = null;
                 $locked->save();
 
-                $donationIds = $locked->settlementItems()->pluck('donation_id');
-                Donation::whereIn('id', $donationIds)->update([
-                    'settlement_status' => 'settled',
-                    'campaign_settlement_id' => $locked->id,
-                ]);
-
-                event(new SettlementPaid($locked, $result['gateway_reference']));
-
-                return ['success' => true, 'message' => 'Payout completed successfully.'];
+                return [
+                    'success' => false,
+                    'message' => 'Payout pending with provider: '.$providerStatus,
+                    'pending' => true,
+                ];
             }
 
             $e = $outcome['exception'];

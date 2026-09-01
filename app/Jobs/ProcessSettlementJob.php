@@ -110,6 +110,12 @@ class ProcessSettlementJob implements ShouldQueue
                     'finished_at' => now(),
                     'gateway_reference' => $settlement->fresh()->gateway_reference,
                 ]);
+            } elseif ($result['pending'] ?? false) {
+                $attempt->update([
+                    'status' => 'accepted',
+                    'finished_at' => now(),
+                    'gateway_reference' => $settlement->fresh()->gateway_reference,
+                ]);
             } else {
                 $attempt->update([
                     'status' => 'failed',
@@ -118,10 +124,6 @@ class ProcessSettlementJob implements ShouldQueue
                 ]);
 
                 if ($result['retryable'] ?? false) {
-                    // The service already transitioned the settlement to
-                    // retry_pending and scheduled the next attempt: do NOT
-                    // rethrow (Laravel would re-run this job and call the
-                    // gateway again), just hand over to the retry job.
                     RetrySettlementJob::dispatch($settlement)->delay(
                         app(RetryPolicy::class)->nextRetryAt($attemptNumber)
                     );

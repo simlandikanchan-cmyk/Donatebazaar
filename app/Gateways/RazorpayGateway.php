@@ -11,10 +11,15 @@ use App\Exceptions\TimeoutException;
 use App\Models\CampaignSettlement;
 use App\Models\Donation;
 use App\Models\Organization;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Razorpay\Api\Api;
+use Razorpay\Api\Errors\BadRequestError;
 use Razorpay\Api\Errors\Error as RazorpayError;
+use Razorpay\Api\Errors\GatewayError;
+use Razorpay\Api\Errors\ServerError;
+use Razorpay\Api\Request;
+use WpOrg\Requests\Exception as RequestsException;
+use WpOrg\Requests\Exception\Transport\Curl as CurlTransportException;
 
 class RazorpayGateway
 {
@@ -42,39 +47,124 @@ class RazorpayGateway
             throw PermanentFailureException::permanent('No verified payout account found for organization.');
         }
 
-        if (str_contains($org->name, 'FAIL')) {
-            throw TimeoutException::timeout('Gateway timeout: unable to process payout.');
+        if (empty($account->fund_account_id)) {
+            throw PermanentFailureException::permanent(
+                'Organization has no linked Razorpay fund account. Payout activation requires fund account configuration.'
+            );
         }
 
-        if (str_contains($org->name, 'TEMP')) {
-            throw TemporaryFailureException::temporary('Temporary gateway failure.');
+        $api = $this->getApi();
+        $amountPaise = (int) round($amount * 100);
+
+        $attributes = [
+            'amount' => $amountPaise,
+            'currency' => 'INR',
+            'fund_account_id' => $account->fund_account_id,
+            'notes' => [
+                'settlement_id' => (string) $settlement->id,
+                'organization_id' => (string) $org->id,
+                'campaign_id' => (string) $settlement->campaign_id,
+            ],
+        ];
+
+        if ($idempotencyKey !== null) {
+            $api->setHeader('X-Razorpay-Idempotency', $idempotencyKey);
         }
 
-        $reference = 'PAYOUT_'.$settlement->id.'_'.time();
+        try {
+            $transfer = $api->transfer->create($attributes);
+        } catch (BadRequestError $e) {
+            throw PermanentFailureException::permanent(
+                'Payout request rejected by provider: '.$e->getMessage()
+            );
+        } catch (GatewayError|ServerError $e) {
+            throw TemporaryFailureException::temporary(
+                'Provider unable to process payout: '.$e->getMessage()
+            );
+        } catch (RazorpayError $e) {
+            throw new GatewayException(
+                'Payout API error: '.$e->getMessage(),
+                $e->getCode(),
+                $e
+            );
+        } catch (RequestsException $e) {
+            throw new TimeoutException(
+                'Gateway timeout: unable to process payout.',
+                0,
+                $e
+            );
+        } catch (\Throwable $e) {
+            if ($e instanceof PermanentFailureException || $e instanceof TimeoutException || $e instanceof TemporaryFailureException) {
+                throw $e;
+            }
+
+            throw new GatewayException(
+                'Unexpected payout error: '.$e->getMessage(),
+                $e->getCode(),
+                $e
+            );
+        } finally {
+            if ($idempotencyKey !== null) {
+                Request::removeHeader('X-Razorpay-Idempotency');
+            }
+        }
 
         return [
-            'gateway_reference' => $reference,
-            'provider_status' => 'processed',
+            'gateway_reference' => $transfer->id,
+            'provider_status' => $transfer->status,
             'metadata' => [
                 'account_number' => $account->masked_account_number,
                 'ifsc_code' => $account->ifsc_code,
                 'amount' => $amount,
                 'currency' => 'INR',
-            ]
+                'fund_account_id' => $account->fund_account_id,
+            ],
         ];
     }
 
     public function getPayoutStatus(string $gatewayReference): array
     {
-        if (str_contains($gatewayReference, 'FAIL')) {
-            throw TemporaryFailureException::temporary('Gateway unable to retrieve status.');
+        $api = $this->getApi();
+
+        try {
+            $transfer = $api->transfer->fetch($gatewayReference);
+        } catch (BadRequestError $e) {
+            throw PermanentFailureException::permanent(
+                'Invalid payout reference: '.$e->getMessage()
+            );
+        } catch (GatewayError|ServerError $e) {
+            throw TemporaryFailureException::temporary(
+                'Provider unable to retrieve payout status: '.$e->getMessage()
+            );
+        } catch (RazorpayError $e) {
+            throw new GatewayException(
+                'Payout status lookup failed: '.$e->getMessage(),
+                $e->getCode(),
+                $e
+            );
+        } catch (RequestsException $e) {
+            throw new TimeoutException(
+                'Gateway timeout: unable to retrieve payout status.',
+                0,
+                $e
+            );
+        } catch (\Throwable $e) {
+            if ($e instanceof PermanentFailureException || $e instanceof TimeoutException || $e instanceof TemporaryFailureException) {
+                throw $e;
+            }
+
+            throw new GatewayException(
+                'Unexpected payout status error: '.$e->getMessage(),
+                $e->getCode(),
+                $e
+            );
         }
 
         return [
-            'id' => $gatewayReference,
-            'status' => 'paid',
-            'amount' => 0.00,
-            'currency' => 'INR',
+            'id' => $transfer->id,
+            'status' => $transfer->status,
+            'amount' => (float) ($transfer->amount / 100),
+            'currency' => $transfer->currency ?? 'INR',
         ];
     }
 
@@ -204,4 +294,3 @@ class RazorpayGateway
         }
     }
 }
-

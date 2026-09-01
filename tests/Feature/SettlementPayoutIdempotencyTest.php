@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Gateways\RazorpayGateway;
 use App\Jobs\ProcessSettlementJob;
 use App\Models\Campaign;
 use App\Models\CampaignSettlement;
@@ -15,6 +16,8 @@ use App\Services\WalletService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use PHPUnit\Framework\Attributes\Test;
+use Razorpay\Api\Api;
+use Razorpay\Api\Transfer;
 use Tests\TestCase;
 
 class SettlementPayoutIdempotencyTest extends TestCase
@@ -47,8 +50,12 @@ class SettlementPayoutIdempotencyTest extends TestCase
             'bank_name' => 'Test Bank',
             'account_number' => '1234567890',
             'ifsc_code' => 'TEST0000',
+            'fund_account_id' => 'fa_ABCDEFG',
             'is_verified' => true,
         ]);
+
+        $mock = $this->createMockGatewayForPayout();
+        $this->app->instance(RazorpayGateway::class, $mock);
 
         $this->walletService = app(WalletService::class);
         $this->settlementService = app(SettlementService::class);
@@ -77,6 +84,65 @@ class SettlementPayoutIdempotencyTest extends TestCase
         $this->donation->save();
     }
 
+    private function createMockGatewayForPayout(): RazorpayGateway
+    {
+        $mockApi = new class extends Api {
+            public function __construct() {}
+            public $transfer;
+        };
+        $mockApi->transfer = new class($mockApi) extends Transfer {
+            private $api;
+            public function __construct($api) { $this->api = $api; }
+            public function create($attributes = []) {
+                $entity = new class([]) extends Transfer {
+                    public $id;
+                    public $status = 'processed';
+                    public $amount = 50000;
+                    public $currency = 'INR';
+                    public function __construct(array $data) {
+                        $this->id = 'trans_'.uniqid();
+                    }
+                    public function toArray(): array {
+                        return [
+                            'id' => $this->id,
+                            'status' => $this->status,
+                            'amount' => $this->amount,
+                            'currency' => $this->currency,
+                            'entity' => 'transfer',
+                        ];
+                    }
+                };
+                return $entity;
+            }
+            public function fetch($id) {
+                $entity = new class([]) extends Transfer {
+                    public $id = 'trans_ABCDEFG';
+                    public $status = 'processed';
+                    public $amount = 50000;
+                    public $currency = 'INR';
+                    public function toArray(): array {
+                        return [
+                            'id' => $this->id,
+                            'status' => $this->status,
+                            'amount' => $this->amount,
+                            'currency' => $this->currency,
+                            'entity' => 'transfer',
+                        ];
+                    }
+                };
+                $entity->id = $id;
+                return $entity;
+            }
+        };
+
+        return new RazorpayGateway(
+            keyId: 'test_key',
+            keySecret: 'test_secret',
+            webhookSecret: 'test_webhook_secret',
+            api: $mockApi
+        );
+    }
+
     #[Test]
     public function payout_idempotency_key_is_persisted_and_reused_across_retries(): void
     {
@@ -101,7 +167,7 @@ class SettlementPayoutIdempotencyTest extends TestCase
         // "initiated" (not yet marked completed), and a fresh job dispatched.
         DB::table('campaign_settlements')->where('id', $settlement->id)->update([
             'status' => 'processing',
-            'gateway_reference' => 'PAYOUT_'.$settlement->id.'_'.time(),
+            'gateway_reference' => 'trans_'.$settlement->id.'_'.time(),
         ]);
         DB::table('payout_attempts')->where('settlement_id', $settlement->id)
             ->update(['status' => 'initiated', 'finished_at' => null]);
@@ -120,3 +186,4 @@ class SettlementPayoutIdempotencyTest extends TestCase
         $this->assertEquals('paid', $settlement->status);
     }
 }
+
