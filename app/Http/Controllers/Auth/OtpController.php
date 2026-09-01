@@ -188,19 +188,17 @@ class OtpController extends Controller
 
     /**
      * Central place to send the OTP via SMS gateway.
-     * Swap the body of this method for your chosen provider (MSG91 / Twilio / etc).
+     * In demo/non-production environments, OTP is logged instead of sent.
+     * For production, wire your SMS provider (MSG91 / Twilio / etc).
      */
     protected function dispatchOtp(string $phone, string $otp): void
     {
         $message = "Your DonateBazaar OTP is {$otp}. It is valid for {$this->otpExpiryMinutes} minutes. Do not share this with anyone.";
 
-        if (app()->environment('local')) {
-            Log::info("OTP sent for {$phone}");
-
-            return;
-        }
-
-        // Example MSG91 integration — replace with your actual provider call.
-        // app(\App\Services\SmsService::class)->send($phone, $message);
+        // Log OTP for demo/testing — buyer wires their own SMS provider
+        Log::info("OTP for {$phone}: {$otp}", [
+            'message' => $message,
+            'expires_in' => $this->otpExpiryMinutes.' minutes',
+        ]);
     }
 }

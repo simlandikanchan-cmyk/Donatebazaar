@@ -17,7 +17,8 @@
         "laravel/tinker": "^2.10.1",
         "predis/predis": "^3.4",
         "razorpay/razorpay": "^2.9",
-        "spatie/laravel-health": "^1.40"
+        "spatie/laravel-health": "^1.40",
+        "spatie/laravel-permission": "^6.25"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^4.2",

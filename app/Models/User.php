@@ -9,10 +9,11 @@ use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory, HasNotificationPreferences, \Illuminate\Auth\MustVerifyEmail, Notifiable;
+    use HasFactory, HasNotificationPreferences, \Illuminate\Auth\MustVerifyEmail, Notifiable, HasRoles;
 
     // -------------------------------------------------------------------------
     // Fillable / Hidden / Casts

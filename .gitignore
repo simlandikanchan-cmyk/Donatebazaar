@@ -10,6 +10,7 @@
 .env
 .env.backup
 .env.production
+.env.docker
 
 # Debug artifacts
 test_boot_debug.php
@@ -23,6 +24,26 @@ routes.json
 routes_full.txt
 full_app_report.md
 
+# Temporary debug files
+check_*.php
+debug_*.php
+tmp_*.php
+extract_*.php
+inspect_*.php
+schema_*.php
+schema_*.json
+test_*.php
+final_check.php
+create_db.php
+drop_tables.php
+run_migrations_safely.php
+setup_levels.php
+update_creator.php
+verify_db_deep.php
+check_status.php
+check_test_db.php
+check_user.php
+
 # Database dumps — never commit
 *.sql
 
@@ -35,3 +56,16 @@ full_app_report.md
 # OS
 .DS_Store
 Thumbs.db
+
+# Reports (keep in docs/ only)
+salary_report.md
+REAL_TIME_QA_REPORT.md
+AUGUST_2026_WORK_LOG.md
+test-results.txt
+tmp_diff_show.txt
+playwright-report/
+test-results/
+
+# Python
+__pycache__/
+*.pyc
