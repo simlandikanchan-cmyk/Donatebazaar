@@ -35,7 +35,7 @@
   margin-bottom: 20px;
   padding: 12px 16px;
   font-size: 13px;
-  color: #b91c1c;
+  color: var(--danger-dark);
   background: var(--red-lt);
   border: 1px solid rgba(240, 68, 68, .22);
   border-radius: var(--r-sm);
@@ -48,7 +48,7 @@
   margin-top: 1px;
 }
 [data-theme="dark"] .alert-error {
-  color: #f87171;
+  color: var(--danger-light);
 }
 /* ── PAGE GRID ── */
 .page-grid {
@@ -224,7 +224,7 @@
   left: 3px;
   width: 20px;
   height: 20px;
-  background: #fff;
+  background: var(--white);
   border-radius: 50%;
   content: '';
   box-shadow: 0 1px 4px rgba(0, 0, 0, .2);
@@ -325,7 +325,7 @@
   font-size: 14px;
   font-weight: 700;
   letter-spacing: -.01em;
-  color: #fff;
+  color: var(--white);
   background: linear-gradient(135deg, var(--a), var(--a2));
   border: none;
   border-radius: var(--r-sm);
@@ -473,7 +473,7 @@
   padding: 13px 16px;
   font-size: 13px;
   font-weight: 500;
-  color: #fff;
+  color: var(--white);
   border-radius: 14px;
   box-shadow: var(--sh-lg);
   animation: toastIn .3s ease both;
@@ -485,7 +485,7 @@
   height: 15px;
 }
 .toast-ok {
-  background: linear-gradient(135deg, #059669, #10b981);
+  background: linear-gradient(135deg, var(--success-mid), var(--success-soft));
 }
 @keyframes fadeUp {
   from {

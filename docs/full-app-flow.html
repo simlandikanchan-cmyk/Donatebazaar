@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DonateBazaar — Full Application Flow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* ══════════════ DESIGN TOKENS ══════════════ */
+  :root{
+    --bg:#070b14;
+    --bg2:#0b1120;
+    --panel:#111a2e;
+    --panel2:#0d1626;
+    --elev:#1a2440;
+    --stroke:#223154;
+    --stroke-2:#31446e;
+    --txt:#eaf0fb;
+    --muted:#93a7c8;
+    --faint:#5c7096;
+    --cyan:#22d3ee;
+    --blue:#5aa2ff;
+    --indigo:#7c8cff;
+    --green:#38e092;
+    --lime:#b6f36e;
+    --amber:#ffc24b;
+    --orange:#ff9a5a;
+    --red:#ff6b81;
+    --violet:#b18cff;
+    --pink:#ff7ac6;
+    --grad-title:linear-gradient(92deg,#7ee8ff 0%,#38e092 55%,#9be6ff 100%);
+    --grad-btn:linear-gradient(135deg,#22d3ee,#38e092);
+    --shadow:0 20px 60px rgba(0,0,0,.5);
+    --r:16px;
+    --font:'Inter',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;font-family:var(--font);color:var(--txt);line-height:1.55;
+    background:
+      radial-gradient(1200px 600px at 85% -10%, rgba(34,211,238,.12), transparent 55%),
+      radial-gradient(1000px 500px at -8% 20%, rgba(124,140,255,.12), transparent 55%),
+      radial-gradient(900px 500px at 50% 110%, rgba(56,224,146,.08), transparent 55%),
+      var(--bg);
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:90px;
+  }
+
+  .wrap{max-width:1240px;margin:0 auto;padding:0 22px}
+
+  /* ══════════════ HEADER ══════════════ */
+  header{padding:44px 0 10px}
+  .hero-badge{display:inline-flex;align-items:center;gap:8px;font-size:.72rem;font-weight:600;letter-spacing:1.1px;text-transform:uppercase;color:var(--cyan);background:rgba(34,211,238,.09);border:1px solid rgba(34,211,238,.28);padding:6px 14px;border-radius:999px;margin-bottom:18px}
+  .hero-badge .dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan);animation:blink 1.6s infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+  h1{font-size:clamp(1.9rem,5vw,3rem);margin:0 0 14px;letter-spacing:-.02em;font-weight:800;line-height:1.1}
+  h1 .ct{background:var(--grad-title);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{color:var(--muted);font-size:clamp(.95rem,2vw,1.08rem);max-width:760px;margin:0 0 26px}
+  .stat-row{display:flex;gap:12px;flex-wrap:wrap;margin:20px 0 8px}
+  .stat{background:var(--panel);border:1px solid var(--stroke);border-radius:14px;padding:12px 18px;min-width:110px}
+  .stat .v{font-size:1.5rem;font-weight:800;background:var(--grad-title);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .stat .l{font-size:.72rem;color:var(--muted);letter-spacing:.4px;text-transform:uppercase;font-weight:600}
+
+  /* ══════════════ STICKY TOOLBAR ══════════════ */
+  .toolbar{position:sticky;top:12px;z-index:60;display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:12px 14px;border-radius:16px;background:rgba(13,22,38,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--stroke);box-shadow:var(--shadow);margin:26px 0 20px}
+  .toolbar .grp{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .toolbar .divider{width:1px;height:26px;background:var(--stroke);margin:0 6px}
+  .toolbar .lbl{font-size:.68rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--faint);margin-right:4px}
+  .btn{display:inline-flex;align-items:center;gap:7px;background:var(--panel);color:var(--txt);border:1px solid var(--stroke-2);padding:8px 14px;border-radius:11px;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .16s;font-family:var(--font);white-space:nowrap}
+  .btn:hover:not(:disabled){border-color:var(--cyan);color:var(--cyan);transform:translateY(-1px);box-shadow:0 6px 18px rgba(34,211,238,.18)}
+  .btn:active:not(:disabled){transform:translateY(0)}
+  .btn.primary{background:var(--grad-btn);color:#04231a;border-color:transparent}
+  .btn.primary:hover{filter:brightness(1.1);color:#04231a;box-shadow:0 8px 24px rgba(56,224,146,.35)}
+  .btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+  .btn.ghost{background:transparent;border:1px dashed var(--stroke-2)}
+  .seg{display:inline-flex;background:var(--panel2);border:1px solid var(--stroke);border-radius:11px;padding:3px;gap:2px}
+  .seg-btn{padding:6px 12px;font-size:.76rem;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--muted)}
+  .seg-btn:hover{color:var(--txt)}
+  .seg-btn.active{background:var(--grad-btn);color:#04231a;font-weight:800;box-shadow:0 4px 12px rgba(56,224,146,.3)}
+  .spacer{flex:1}
+
+  /* ══════════════ STATUS / PROGRESS ══════════════ */
+  .status-card{flex:1;min-width:220px;display:flex;flex-direction:column;gap:6px}
+  .status-line{display:flex;align-items:center;gap:8px;font-family:ui-monospace,Consolas,monospace;font-size:.78rem;color:var(--lime)}
+  .status-line .eq{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+  .eq.idle{background:var(--faint)}
+  .eq.run{background:var(--green);box-shadow:0 0 12px var(--green);animation:blink 1s infinite}
+  .bar{height:7px;border-radius:99px;background:var(--panel);overflow:hidden;border:1px solid var(--stroke)}
+  .bar-fill{height:100%;width:0%;border-radius:99px;background:var(--grad-btn);transition:width .45s cubic-bezier(.22,1,.36,1);box-shadow:0 0 14px rgba(56,224,146,.4)}
+
+  /* ══════════════ LEGEND ══════════════ */
+  .legend{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 34px;font-size:.74rem;color:var(--muted)}
+  .lg{display:inline-flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--stroke);padding:6px 13px;border-radius:999px;transition:all .2s}
+  .lg:hover{border-color:var(--stroke-2);transform:translateY(-1px)}
+  .sw{width:12px;height:12px;border-radius:4px;display:inline-block;flex-shrink:0}
+  .k-entry{background:var(--green);box-shadow:0 0 8px var(--green)}
+  .k-process{background:var(--blue)}
+  .k-branch{background:var(--violet)}
+  .k-gate{background:var(--orange)}
+  .k-money{background:var(--amber)}
+  .k-sys{background:var(--cyan)}
+  .k-mod{background:var(--pink)}
+  .k-end{background:var(--red)}
+
+  /* ══════════════ LANE HEADERS ══════════════ */
+  section{margin:0 0 54px;scroll-margin-top:110px}
+  .lane-header{display:flex;align-items:flex-start;gap:16px;margin:0 0 18px}
+  .lane-num{width:46px;height:46px;border-radius:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.15rem;font-weight:800;background:linear-gradient(145deg,var(--elev),var(--panel));border:1px solid var(--stroke-2);color:var(--cyan);box-shadow:inset 0 0 20px rgba(34,211,238,.08)}
+  .lane-title{font-size:1.5rem;font-weight:800;letter-spacing:-.01em;margin:0 0 4px}
+  .lane-sub{color:var(--muted);font-size:.9rem;margin:0}
+  .lane-progress{margin-left:auto;align-self:center;font-size:.74rem;color:var(--faint);font-weight:600;background:var(--panel);border:1px solid var(--stroke);padding:5px 12px;border-radius:999px}
+
+  /* ══════════════ FLOW GRID ══════════════ */
+  .grid{display:flex;gap:10px;align-items:stretch;overflow-x:auto;padding:24px 18px 20px;background:var(--panel2);border:1px solid var(--stroke);border-radius:var(--r);scroll-behavior:smooth;box-shadow:inset 0 0 60px rgba(0,0,0,.35),var(--shadow)}
+  .grid::-webkit-scrollbar{height:10px}
+  .grid::-webkit-scrollbar-thumb{background:linear-gradient(90deg,var(--stroke-2),var(--cyan));border-radius:10px}
+  .grid::-webkit-scrollbar-track{background:var(--panel);border-radius:10px}
+
+  /* ══════════════ NODES ══════════════ */
+  .node{
+    position:relative;min-width:176px;max-width:196px;flex:1 0 auto;background:var(--panel);
+    border:1.5px solid var(--stroke-2);border-radius:14px;padding:15px 15px 14px;font-size:.8rem;
+    cursor:pointer;text-align:left;transition:transform .2s,box-shadow .25s,border-color .3s,background .3s;
+    user-select:none;box-shadow:0 4px 12px rgba(0,0,0,.25);
+  }
+  .node::after{content:"";position:absolute;inset:auto 0 0 0;height:3px;border-radius:0 0 14px 14px;background:transparent;transition:background .3s}
+  .node:hover{transform:translateY(-5px);box-shadow:0 18px 34px rgba(0,0,0,.5)}
+  .node .n-top{display:flex;align-items:center;gap:9px;margin-bottom:6px}
+  .node .n-ic{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.05rem;background:var(--panel2);border:1px solid var(--stroke);flex-shrink:0}
+  .node .n-title{font-weight:700;font-size:.9rem;line-height:1.25;letter-spacing:-.01em}
+  .node .n-desc{font-size:.72rem;color:var(--muted);line-height:1.45}
+  .node .kchip{font-family:ui-monospace,monospace;font-size:.6rem;color:var(--cyan);margin-top:9px;display:inline-block;background:rgba(34,211,238,.08);padding:2px 8px;border-radius:6px;border:1px solid rgba(34,211,238,.22)}
+  .node .rtime{display:flex;align-items:center;gap:5px;margin-top:10px;font-size:.64rem;font-weight:600;color:var(--cyan);font-family:ui-monospace,monospace;letter-spacing:.2px}
+  .node .rtime .eye{opacity:.85}
+  .node .rtime b{color:var(--lime);font-weight:700}
+
+  /* kind colors */
+  .node.entry .n-title{color:var(--green)} .node.entry{border-color:rgba(56,224,146,.55)}
+  .node.entry::after{background:var(--green)}
+  .node.process .n-title{color:var(--blue)} .node.process{border-color:rgba(90,162,255,.5)}
+  .node.process::after{background:var(--blue)}
+  .node.branch .n-title{color:var(--violet)} .node.branch{border-color:rgba(177,140,255,.5)}
+  .node.branch::after{background:var(--violet)}
+  .node.gate .n-title{color:var(--orange)} .node.gate{border-color:rgba(255,154,90,.5)}
+  .node.gate::after{background:var(--orange)}
+  .node.money .n-title{background:linear-gradient(90deg,var(--amber),var(--orange));-webkit-background-clip:text;background-clip:text;color:transparent} .node.money{border-color:rgba(255,194,75,.5)}
+  .node.money::after{background:var(--amber)}
+  .node.sys .n-title{color:var(--cyan)} .node.sys{border-color:rgba(34,211,238,.5)}
+  .node.sys::after{background:var(--cyan)}
+  .node.mod .n-title{color:var(--pink)} .node.mod{border-color:rgba(255,122,198,.5)}
+  .node.mod::after{background:var(--pink)}
+  .node.end .n-title{color:var(--red)} .node.end{border-color:rgba(255,107,129,.5)}
+  .node.end::after{background:var(--red)}
+
+  /* animation states */
+  .node.hl{transform:translateY(-4px);border-color:var(--cyan);box-shadow:0 0 0 2px var(--cyan),0 22px 44px rgba(34,211,238,.30);background:linear-gradient(180deg,rgba(34,211,238,.10),var(--panel))}
+  .node.trail{border-color:rgba(34,211,238,.7)}
+  .node.trail .n-title{color:var(--cyan)}
+  .node.trail::after{background:var(--cyan)}
+  .node.ok{border-color:var(--green);box-shadow:0 0 0 2px var(--green)}
+  .node.ok .n-title{color:var(--green)} .node.ok::after{background:var(--green)}
+  .node.arrive{animation:pop .5s cubic-bezier(.34,1.56,.64,1)}
+  .node.err{border-color:var(--red);box-shadow:0 0 0 2px var(--red);background:linear-gradient(180deg,rgba(255,107,129,.12),var(--panel));animation:shake .45s}
+  .node.err .n-title{color:var(--red)} .node.err::after{background:var(--red)}
+  @keyframes pop{0%{transform:scale(.6)}60%{transform:scale(1.09)}100%{transform:scale(1)}}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-4px)}}
+  .idx{position:absolute;top:-10px;left:-10px;width:22px;height:22px;border-radius:50%;background:var(--cyan);color:#06222b;font-size:.66rem;font-weight:900;display:flex;align-items:center;justify-content:center;z-index:6;opacity:0;transition:opacity .3s;box-shadow:0 0 0 3px rgba(34,211,238,.25)}
+  .running .idx{animation:bpulse 1.3s infinite}
+  @keyframes bpulse{0%{transform:scale(.65);opacity:0}40%{opacity:1}100%{transform:scale(1.25);opacity:.1}}
+
+  /* connectors */
+  .conn{display:flex;align-items:center;flex-shrink:0;font-size:1.9rem;color:var(--faint);padding:0 1px}
+  .conn .arrow{transition:all .2s;display:inline-block}
+  .conn.on{color:var(--cyan)}
+  .conn.on .arrow{animation:fly .7s infinite;filter:drop-shadow(0 0 6px var(--cyan))}
+  @keyframes fly{0%{transform:translateX(0);opacity:1}100%{transform:translateX(9px);opacity:.35}}
+
+  /* floating token between connector */
+  .token{position:relative;width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#d9fbff,var(--cyan));box-shadow:0 0 18px var(--cyan);position:absolute;opacity:0;z-index:8;pointer-events:none}
+
+  .lane-foot{margin-top:16px;color:var(--faint);font-size:.78rem;background:var(--panel);border-left:3px solid var(--stroke-2);padding:10px 16px;border-radius:0 10px 10px 0}
+  .lane-foot b{color:var(--muted);font-weight:700}
+
+  footer{text-align:center;color:var(--faint);font-size:.78rem;margin-top:50px;padding-top:24px;border-top:1px solid var(--stroke)}
+  footer b{color:var(--cyan);font-weight:600}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ HEADER ═══════════ -->
+<div class="wrap">
+<header>
+  <span class="hero-badge"><span class="dot"></span> System Architecture · Interactive Flow</span>
+  <h1>DonateBazaar <span class="ct">Full System Flow</span></h1>
+  <div class="sub">The complete platform end-to-end — onboarding &amp; fundraising levels → campaigns &amp; KYC → donations &amp; payments → wallets &amp; settlements → supporting modules. Animated, interactive, fully self-contained.</div>
+  <div class="stat-row">
+    <div class="stat"><div class="v">5</div><div class="l">Flows</div></div>
+    <div class="stat"><div class="v">50</div><div class="l">Steps</div></div>
+    <div class="stat"><div class="v">0→₹</div><div class="l">Value Track</div></div>
+    <div class="stat"><div class="v">1</div><div class="l">File</div></div>
+  </div>
+</header>
+
+<!-- ═══════════ TOOLBAR ═══════════ -->
+<div class="toolbar">
+  <span class="lbl">Animate</span>
+  <div class="grp">
+    <button class="btn primary" data-act="all">▶ Full Tour</button>
+    <button class="btn" data-act="reset-all">↺ Reset</button>
+  </div>
+  <span class="divider"></span>
+  <span class="lbl">Lanes</span>
+  <div class="grp">
+    <button class="btn ghost" data-g="0" data-act="play">1 · Onboarding</button>
+    <button class="btn ghost" data-g="1" data-act="play">2 · Campaign+KYC</button>
+    <button class="btn ghost" data-g="2" data-act="play">3 · Payments</button>
+    <button class="btn ghost" data-g="3" data-act="play">4 · Payouts</button>
+    <button class="btn ghost" data-g="4" data-act="play">5 · Modules</button>
+  </div>
+  <span class="divider"></span>
+  <span class="lbl">Speed</span>
+  <div class="grp seg" id="speedSeg">
+    <button class="btn seg-btn" data-speed="2">2×</button>
+    <button class="btn seg-btn" data-speed="1">1×</button>
+    <button class="btn seg-btn" data-speed="0.75">¾×</button>
+    <button class="btn seg-btn active" data-speed="0.5">½×</button>
+  </div>
+  <span class="spacer"></span>
+  <div class="status-card">
+    <div class="status-line"><span class="eq" id="eq">●</span><span id="status">Ready — choose a flow or hit Full Tour.</span></div>
+    <div class="bar"><div class="bar-fill" id="bar"></div></div>
+  </div>
+</div>
+
+<!-- ═══════════ LEGEND ═══════════ -->
+<div class="legend">
+  <span class="lg"><i class="sw k-entry"></i>Entry / Start</span>
+  <span class="lg"><i class="sw k-process"></i>Process</span>
+  <span class="lg"><i class="sw k-branch"></i>Decision</span>
+  <span class="lg"><i class="sw k-gate"></i>Gate / Guard</span>
+  <span class="lg"><i class="sw k-money"></i>Money Flow</span>
+  <span class="lg"><i class="sw k-sys"></i>System / External</span>
+  <span class="lg"><i class="sw k-mod"></i>Moderation</span>
+  <span class="lg"><i class="sw k-end"></i>End / Blocked</span>
+  <span class="lg"><span style="display:inline-flex;align-items:center;gap:7px"><i class="sw" style="background:var(--cyan);box-shadow:0 0 8px var(--cyan);animation:blink 1.2s infinite"></i>Active step</span></span>
+</div>
+
+<!-- ═══════════ LANE 1 ═══════════ -->
+<section id="lane-1">
+  <div class="lane-header">
+    <div class="lane-num">1</div>
+    <div>
+      <div class="lane-title">Auth &amp; Onboarding</div>
+      <p class="lane-sub">Three registration paths → default fundraiser level → verification → initial account state.</p>
+    </div>
+    <div class="lane-progress" id="prog-0">0 / 7</div>
+  </div>
+  <div class="grid" data-lane="0">
+    <div class="node entry" data-node><div class="idx">1</div><div class="n-top"><div class="n-ic">📧</div><div class="n-title">Email / Password</div></div><div class="n-desc">RegisteredUserController → User::create → ensureDefaultLevel() → login</div><span class="kchip">hashed pw</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node entry" data-node><div class="idx">2</div><div class="n-top"><div class="n-ic">🔐</div><div class="n-title">Google OAuth</div></div><div class="n-desc">Socialite callback · create or link by email · pre-verified</div><span class="kchip">google_id</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node entry" data-node><div class="idx">3</div><div class="n-top"><div class="n-ic">📱</div><div class="n-title">OTP / Phone</div></div><div class="n-desc">PhoneVerification (5-min, 5 tries) · firstOrCreate by phone · role=donor</div><span class="kchip">no enumeration</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node process" data-node><div class="idx">4</div><div class="n-top"><div class="n-ic">🎖️</div><div class="n-title">ensureDefaultLevel()</div></div><div class="n-desc">Creates ONE idempotent user_fundraiser_levels row → default level</div><span class="kchip">idempotent</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node branch" data-node><div class="idx">5</div><div class="n-top"><div class="n-ic">📬</div><div class="n-title">Email Verification</div></div><div class="n-desc">MustVerifyEmail · signed URL · Google/OTP pre-verified</div><span class="kchip">signed</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node sys" data-node><div class="idx">6</div><div class="n-top"><div class="n-ic">🏠</div><div class="n-title">Dashboard &amp; Profile</div></div><div class="n-desc">role-aware home · account-active gate · avatar / cover / password / delete</div><span class="kchip">CheckAccountStatus</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node money" data-node><div class="idx">7</div><div class="n-top"><div class="n-ic">🎯</div><div class="n-title">Level Active</div></div><div class="n-desc">Fundraiser level gates campaign creation (count + goal cap)</div><span class="kchip">resolveLevel</span></div>
+  </div>
+</section>
+
+<!-- ═══════════ LANE 2 ═══════════ -->
+<section id="lane-2">
+  <div class="lane-header">
+    <div class="lane-num">2</div>
+    <div>
+      <div class="lane-title">Campaign Lifecycle &amp; KYC</div>
+      <p class="lane-sub">Level-gated create → KYC → admin moderation → publish → expire / resume / complete.</p>
+    </div>
+    <div class="lane-progress" id="prog-1">0 / 13</div>
+  </div>
+  <div class="grid" data-lane="1">
+    <div class="node process" data-node><div class="idx">1</div><div class="n-top"><div class="n-ic">📝</div><div class="n-title">Create Campaign</div></div><div class="n-desc">canCreateCampaign (active count + goal cap) · duplicate-title guard</div><span class="kchip">required_level_id</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node money" data-node><div class="idx">2</div><div class="n-top"><div class="n-ic">✅</div><div class="n-title">state = PENDING</div></div><div class="n-desc">raised_amount=0 · nested updates · products attached</div><span class="kchip">awaiting review</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node branch" data-node><div class="idx">3</div><div class="n-top"><div class="n-ic">🪪</div><div class="n-title">isKycApproved()?</div></div><div class="n-desc">any approved KYC for user — canonical per-user rule</div><span class="kchip">no re-upload</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node process" data-node><div class="idx">4</div><div class="n-top"><div class="n-ic">📤</div><div class="n-title">KYC Upload</div></div><div class="n-desc">per-campaign · encrypted PAN/Aadhaar/bank · private disk</div><span class="kchip">UNIQUE(user,campaign)</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node mod" data-node><div class="idx">5</div><div class="n-top"><div class="n-ic">🔎</div><div class="n-title">Admin KYC Review</div></div><div class="n-desc">approve (verified_at/by) or reject (reason) · audit logged</div><span class="kchip">Admin\KycController</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node entry" data-node><div class="idx">6</div><div class="n-top"><div class="n-ic">✅</div><div class="n-title">KYC APPROVED</div></div><div class="n-desc">isKycApproved() = TRUE app-wide</div><span class="kchip">approved</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node mod" data-node><div class="idx">7</div><div class="n-top"><div class="n-ic">🛡️</div><div class="n-title">Admin Moderation</div></div><div class="n-desc">approve / reject / pause / resume / bulk · CampaignLog</div><span class="kchip">WorkflowService</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node gate" data-node><div class="idx">8</div><div class="n-top"><div class="n-ic">🔒</div><div class="n-title">ownerKycApproved()?</div></div><div class="n-desc">enforced on ALL publish paths · no bypass</div><span class="kchip">defense-in-depth</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node end" data-node><div class="idx">!</div><div class="n-top"><div class="n-ic">🚫</div><div class="n-title">BLOCKED</div></div><div class="n-desc">stays non-public · error returned</div><span class="kchip">not published</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node entry" data-node><div class="idx">9</div><div class="n-top"><div class="n-ic">🟢</div><div class="n-title">state = ACTIVE</div></div><div class="n-desc">public · accepting donations</div><span class="kchip">approve()</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node branch" data-node><div class="idx">10</div><div class="n-top"><div class="n-ic">⏱️</div><div class="n-title">end_date reached?</div></div><div class="n-desc">daily scheduler + lazy-expire on view</div><span class="kchip">campaigns:expire</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node sys" data-node><div class="idx">11</div><div class="n-top"><div class="n-ic">⏸️</div><div class="n-title">PAUSED / RESUME</div></div><div class="n-desc">user or admin · resume requires KYC approved</div><span class="kchip">pause_reason</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node end" data-node><div class="idx">12</div><div class="n-top"><div class="n-ic">⌛</div><div class="n-title">state = EXPIRED</div></div><div class="n-desc">can extend via KYC-gated reactivation</div><span class="kchip">expire()</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node end" data-node><div class="idx">13</div><div class="n-top"><div class="n-ic">🏁</div><div class="n-title">COMPLETED / REJECTED</div></div><div class="n-desc">goal reached → completed · reject → resubmit to pending</div><span class="kchip">resubmit()</span></div>
+  </div>
+</section>
+
+<!-- ═══════════ LANE 3 ═══════════ -->
+<section id="lane-3">
+  <div class="lane-header">
+    <div class="lane-num">3</div>
+    <div>
+      <div class="lane-title">Donations &amp; Payments</div>
+      <p class="lane-sub">Money / product / gift-card → order → Razorpay → verify / webhook → complete → receipt.</p>
+    </div>
+    <div class="lane-progress" id="prog-2">0 / 9</div>
+  </div>
+  <div class="grid" data-lane="2">
+    <div class="node entry" data-node><div class="idx">1</div><div class="n-top"><div class="n-ic">💸</div><div class="n-title">Donor Pays</div></div><div class="n-desc">money (₹1–₹500k) · product cart · optional coupon · gift card</div><span class="kchip">PaymentOrderService</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node process" data-node><div class="idx">2</div><div class="n-top"><div class="n-ic">🧾</div><div class="n-title">Donation PENDING</div></div><div class="n-desc">validates active campaign · coupon · product reservation (15-min) · receipt_number</div><span class="kchip">reserve()</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node sys" data-node><div class="idx">3</div><div class="n-top"><div class="n-ic">🌐</div><div class="n-title">Razorpay Order</div></div><div class="n-desc">platform fee 5% → net_amount · signature + payment_id</div><span class="kchip">createOrder</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node branch" data-node><div class="idx">4</div><div class="n-top"><div class="n-ic">✓</div><div class="n-title">Verify / Webhook</div></div><div class="n-desc">signature + details re-fetch · HMAC · Redis lock + idempotency</div><span class="kchip">captured</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node end" data-node><div class="idx">!</div><div class="n-top"><div class="n-ic">❌</div><div class="n-title">FAILED / CANCELLED</div></div><div class="n-desc">no wallet credit · no stock decrement</div><span class="kchip">payment.failed</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node process" data-node><div class="idx">5</div><div class="n-top"><div class="n-ic">⚙️</div><div class="n-title">Complete Donation</div></div><div class="n-desc">single tx · completed · redeem coupon · stock down · consume reservations · credit wallet</div><span class="kchip">CompletionService</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node sys" data-node><div class="idx">6</div><div class="n-top"><div class="n-ic">📨</div><div class="n-title">Receipt Email</div></div><div class="n-desc">queued · signed URL PDF · policy</div><span class="kchip">receipt_number</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node money" data-node><div class="idx">7</div><div class="n-top"><div class="n-ic">🪙</div><div class="n-title">Wallet RESERVED (7-day)</div></div><div class="n-desc">net_amount → reserved_balance hold · ledger + idempotent</div><span class="kchip">SOURCE_DONATION</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node mod" data-node><div class="idx">8</div><div class="n-top"><div class="n-ic">↩️</div><div class="n-title">Refund (optional)</div></div><div class="n-desc">idempotency key · wallet reversal from reserved · reversal_pending retry</div><span class="kchip">refund.processed</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node branch" data-node><div class="idx">9</div><div class="n-top"><div class="n-ic">🔁</div><div class="n-title">Recurring?</div></div><div class="n-desc">daily/weekly/monthly/quarterly · pause / cancel / resume</div><span class="kchip">recurring_id</span></div>
+  </div>
+  <div class="lane-foot"><b>Notes:</b> Coupons are single-use (durable CouponRedemption). Gift cards: pending → sent → redeemed (creates a completed donation directly).</div>
+</section>
+
+<!-- ═══════════ LANE 4 ═══════════ -->
+<section id="lane-4">
+  <div class="lane-header">
+    <div class="lane-num">4</div>
+    <div>
+      <div class="lane-title">Wallet, Settlement &amp; Payouts</div>
+      <p class="lane-sub">Reserve matures → balance → request payout → risk / AML → admin approve → gateway payout → reconcile / retry.</p>
+    </div>
+    <div class="lane-progress" id="prog-3">0 / 9</div>
+  </div>
+  <div class="grid" data-lane="3">
+    <div class="node money" data-node><div class="idx">1</div><div class="n-top"><div class="n-ic">💹</div><div class="n-title">Reserve Matures (7d)</div></div><div class="n-desc">releaseMaturedReserves · reserved → balance · FundsAvailable nudge</div><span class="kchip">release-reserves</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node process" data-node><div class="idx">2</div><div class="n-top"><div class="n-ic">📤</div><div class="n-title">Request Payout</div></div><div class="n-desc">validate eligible settled donations · balance → pending_settlement</div><span class="kchip">requestSettlement</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node sys" data-node><div class="idx">3</div><div class="n-top"><div class="n-ic">🛡️</div><div class="n-title">Risk / AML Engine</div></div><div class="n-desc">AML screen · KYC verified · large payout · ScoreCalculator → verdict</div><span class="kchip">RiskEngine</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node end" data-node><div class="idx">!</div><div class="n-top"><div class="n-ic">🧾</div><div class="n-title">REJECTED</div></div><div class="n-desc">funds restored to balance</div><span class="kchip">refundSettlementFunds</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node branch" data-node><div class="idx">4</div><div class="n-top"><div class="n-ic">⚖️</div><div class="n-title">Settlement Verdict</div></div><div class="n-desc">auto_approved · manual_review → admin approve/reject · audit logs</div><span class="kchip">StateMachine</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node end" data-node><div class="idx">5</div><div class="n-top"><div class="n-ic">🚫</div><div class="n-title">Rejected / Cancelled</div></div><div class="n-desc">funds returned · terminal state</div><span class="kchip">terminal</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node process" data-node><div class="idx">6</div><div class="n-top"><div class="n-ic">⚙️</div><div class="n-title">Process Settlement</div></div><div class="n-desc">ProcessSettlementJob (3 tries) · Redis lock · stable idempotency key</div><span class="kchip">phase1 commit</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node sys" data-node><div class="idx">7</div><div class="n-top"><div class="n-ic">🏦</div><div class="n-title">Razorpay Payout</div></div><div class="n-desc">verified payout account (encrypted) · typed failures</div><span class="kchip">initiatePayout</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node branch" data-node><div class="idx">8</div><div class="n-top"><div class="n-ic">🔁</div><div class="n-title">Retry / Reconcile</div></div><div class="n-desc">RetrySettlementJob (max 4) · ReconciliationJob for stuck processing</div><span class="kchip">retry_pending</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node end" data-node><div class="idx">!</div><div class="n-top"><div class="n-ic">💰</div><div class="n-title">FAILED → Restore funds</div></div><div class="n-desc">balance + ledger restored (guarded)</div><span class="kchip">restoreSettlementFunds</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node entry" data-node><div class="idx">9</div><div class="n-top"><div class="n-ic">🟩</div><div class="n-title">PAID</div></div><div class="n-desc">donations settled · SettlementPaid event · notifications</div><span class="kchip">settled</span></div>
+  </div>
+</section>
+
+<!-- ═══════════ LANE 5 ═══════════ -->
+<section id="lane-5">
+  <div class="lane-header">
+    <div class="lane-num">5</div>
+    <div>
+      <div class="lane-title">Support Modules</div>
+      <p class="lane-sub">Blog · Events · Jobs · Volunteer · Organization · Engagement · Admin · Notifications · Scheduler.</p>
+    </div>
+    <div class="lane-progress" id="prog-4">0 / 8</div>
+  </div>
+  <div class="grid" data-lane="4">
+    <div class="node mod" data-node><div class="idx">1</div><div class="n-top"><div class="n-ic">📰</div><div class="n-title">Blog</div></div><div class="n-desc">author → submit → moderation → publish · like/comment/report</div><span class="kchip">BlogPolicy</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node sys" data-node><div class="idx">2</div><div class="n-top"><div class="n-ic">🎪</div><div class="n-title">Events</div></div><div class="n-desc">per-campaign · capacity · public registration · no payments</div><span class="kchip">isFull</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node sys" data-node><div class="idx">3</div><div class="n-top"><div class="n-ic">💼</div><div class="n-title">Jobs &amp; Volunteers</div></div><div class="n-desc">job post + apply · volunteer apply + approve (is_verified)</div><span class="kchip">Service</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node mod" data-node><div class="idx">4</div><div class="n-top"><div class="n-ic">🏢</div><div class="n-title">Organizations</div></div><div class="n-desc">4-step wizard → submit → admin review → create Organization · partnership</div><span class="kchip">Application</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node sys" data-node><div class="idx">5</div><div class="n-top"><div class="n-ic">💬</div><div class="n-title">Engagement</div></div><div class="n-desc">search · favorites · contact · newsletter · chatbot · static pages · analytics</div><span class="kchip">tracked</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node mod" data-node><div class="idx">6</div><div class="n-top"><div class="n-ic">🛠️</div><div class="n-title">Admin &amp; Reports</div></div><div class="n-desc">dashboard analytics · moderate content · audit logs · KYC review · settlements</div><span class="kchip">AdminMiddleware</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node sys" data-node><div class="idx">7</div><div class="n-top"><div class="n-ic">🔔</div><div class="n-title">Notifications</div></div><div class="n-desc">~16 types · email + database · preferences (some mandatory)</div><span class="kchip">NotificationService</span></div>
+    <div class="conn"><span class="arrow">→</span></div>
+    <div class="node sys" data-node><div class="idx">8</div><div class="n-top"><div class="n-ic">⏰</div><div class="n-title">Scheduler / Queues</div></div><div class="n-desc">expire · KYC reminders · release reserves · prune · retries · reconciliation</div><span class="kchip">supervisor</span></div>
+  </div>
+</section>
+
+<footer>
+  DonateBazaar · Complete System Flow · <b>interactive animated architecture</b> · single-file<br><br>
+  <span style="font-size:.9rem"><b>Product Designer &amp; Full-Stack Developer — Kanchan Simlandi</b></span>
+</footer>
+</div><!-- /wrap -->
+
+<script>
+(function(){
+  'use strict';
+
+  const statusEl = document.getElementById('status');
+  const eqEl = document.getElementById('eq');
+  const barEl = document.getElementById('bar');
+  const progEls = ['prog-0','prog-1','prog-2','prog-3','prog-4'].map(id=>document.getElementById(id));
+
+  const lanes = Array.from(document.querySelectorAll('.grid[data-lane]')).map((g,i)=>({
+    el:g, nodes:Array.from(g.querySelectorAll('.node[data-node]')), conns:Array.from(g.querySelectorAll('.conn')),
+    timer:null, step:-1
+  }));
+
+  /* helpers */
+  function setStatus(t, mode){ statusEl.textContent=t; eqEl.className='eq '+(mode||'idle'); }
+  function clearLane(l){
+    l.el.querySelectorAll('.hl,.trail,.ok,.err,.arrive').forEach(n=>n.classList.remove('hl','trail','ok','err','arrive'));
+    l.conns.forEach(c=>c.classList.remove('on'));
+    l.el.classList.remove('running');
+    const li = lanes.indexOf(l);
+    if(progEls[li]) progEls[li].textContent = '0 / '+l.nodes.length;
+  }
+
+  /* reading pace: ms added per character so longer nodes linger longer */
+  const READ_MS_PER_CHAR = 42;
+  const MIN_READ_MS = 1600;
+  let SPEED = 0.5;
+
+  function nodeText(n){
+    const t=n.querySelector('.n-title')?.textContent||'';
+    const d=n.querySelector('.n-desc')?.textContent||'';
+    return (t+' '+d).trim();
+  }
+  function readingSeconds(n){
+    const words=nodeText(n).split(/\s+/).filter(Boolean).length;
+    return Math.max(1, Math.round(words/50));
+  }
+
+  function injectReadingTimes(){
+    lanes.forEach((l)=>{
+      l.nodes.forEach(n=>{
+        let rt=n.querySelector('.rtime');
+        if(rt)return;
+        const s=readingSeconds(n);
+        rt=document.createElement('div');
+        rt.className='rtime';
+        rt.innerHTML=`<span class="eye">👁</span> <b>${s}s</b> read`;
+        n.appendChild(rt);
+      });
+    });
+  }
+
+  function stepLane(l){
+    const {nodes,conns}=l;
+    nodes.forEach(n=>n.classList.remove('hl','arrive'));
+    if(l.step<0||l.step>=nodes.length) return false;
+    const cur=nodes[l.step];
+    cur.classList.add('hl','trail','arrive');
+    if(cur.classList.contains('end')) cur.classList.add('err'); else cur.classList.add('ok');
+    if(l.step>0 && conns[l.step-1]) conns[l.step-1].classList.add('on');
+    const title=cur.querySelector('.n-title')?.textContent||'Step';
+    const li=lanes.indexOf(l);
+    const secs=(cur.querySelector('.rtime b')?.textContent)||readingSeconds(cur)+'s';
+    setStatus(`Lane ${li+1} · Step ${l.step+1}/${nodes.length} — ${title}  (${secs.trim()} reading time)`,'run');
+    if(progEls[li]) progEls[li].textContent=(l.step+1)+' / '+nodes.length;
+    // overall progress bar across all lanes
+    let totalNodes=0, reachedNodes=0;
+    lanes.forEach((x,xi)=>{
+      totalNodes+=x.nodes.length;
+      if(xi<li) reachedNodes+=x.nodes.length;
+      else if(xi===li) reachedNodes+=(l.step+1);
+    });
+    barEl.style.width=Math.round((reachedNodes/totalNodes)*100)+'%';
+    cur.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+    return true;
+  }
+
+  function playLane(idx, done){
+    const l=lanes[idx];
+    stopLane(idx,false);
+    clearLane(l); l.step=-1; l.el.classList.add('running');
+    l.el.scrollIntoView({behavior:'smooth',block:'center'});
+    function tick(){
+      l.step++;
+      if(!stepLane(l)){ stopLane(idx,false); l.el.classList.remove('running'); setStatus(`Lane ${idx+1} complete.`,'idle'); if(typeof done==='function')done(); return; }
+      const node=l.nodes[l.step];
+      const hold = Math.max(MIN_READ_MS, nodeText(node).length*READ_MS_PER_CHAR) / SPEED;
+      l.timer=setTimeout(tick, hold);
+    }
+    tick();
+  }
+  function stopLane(idx,clear){ const l=lanes[idx]; if(l.timer){clearTimeout(l.timer);l.timer=null;} l.el.classList.remove('running'); if(clear)clearLane(l); }
+
+  /* Full tour */
+  let tourStop=false;
+  function playAll(){
+    tourStop=false; setStatus('Full system tour — Onboarding first…','run');
+    const seq=[0,1,2,3,4]; let i=0;
+    function next(){
+      if(tourStop)return;
+      if(i>=seq.length){ setStatus('Full system tour complete.' ,'idle'); barEl.style.width='100%'; return; }
+      playLane(seq[i],()=>{ i++; setTimeout(next,600); });
+    }
+    next();
+  }
+
+  /* controls */
+  document.querySelector('.toolbar').addEventListener('click',(e)=>{
+    const btn=e.target.closest('button'); if(!btn)return;
+    const g=btn.dataset.g,act=btn.dataset.act;
+    if(btn.dataset.speed!==undefined){
+      SPEED=parseFloat(btn.dataset.speed);
+      document.querySelectorAll('#speedSeg .seg-btn').forEach(b=>b.classList.toggle('active', b===btn));
+      setStatus(`Reading speed set to ${SPEED}×.`,'idle');
+      return;
+    }
+    if(act==='play'&&g!==undefined){ tourStop=true; playLane(+g); }
+    if(act==='all'){ playAll(); }
+    if(act==='reset-all'){ tourStop=true; lanes.forEach((l,i)=>stopLane(i,true)); setStatus('All lanes reset.','idle'); barEl.style.width='0%'; }
+  });
+
+  /* click node to jump */
+  lanes.forEach((l,li)=>{
+    l.nodes.forEach(n=>{
+      n.addEventListener('click',()=>{
+        tourStop=true; stopLane(li,false);
+        const idx=l.nodes.indexOf(n);
+        // clear then light trail up to idx
+        l.nodes.forEach(x=>x.classList.remove('trail','ok','err','hl','arrive'));
+        l.conns.forEach(c=>c.classList.remove('on'));
+        for(let k=0;k<=idx;k++){ const nn=l.nodes[k]; nn.classList.add('trail'); if(nn.classList.contains('end'))nn.classList.add('err'); else nn.classList.add('ok'); if(k>0&&l.conns[k-1])l.conns[k-1].classList.add('on'); }
+        l.step=idx; stepLane(l);
+      });
+    });
+  });
+
+  injectReadingTimes();
+  lanes.forEach((l,i)=>stopLane(i,true));
+})();
+</script>
+</body>
+</html>

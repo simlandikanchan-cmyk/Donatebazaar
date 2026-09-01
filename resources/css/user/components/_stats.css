@@ -32,7 +32,7 @@
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   transition: all .3s cubic-bezier(.4,0,.2,1);
 }
-.stat-card:hover .stat-icon-wrap { transform: scale(1.1); box-shadow: 0 4px 20px rgba(0,0,0,.08); }
+.stat-card:hover .stat-icon-wrap { transform: scale(1.1); box-shadow: 0 4px 20px color-mix(in srgb, var(--black)  8%, transparent); }
 .stat-card:hover .stat-icon-wrap svg { animation: iconBounce .5s ease both; }
 .stat-card.is-link { cursor: pointer; }
 .stat-card.is-link:hover { border-color: var(--primary); box-shadow: var(--sh-lg); }
@@ -40,14 +40,14 @@
 .stat-card.is-link::after { content: '\2192'; position: absolute; top: 16px; right: 16px; font-size: 14px; color: var(--text3); transition: all .2s ease; }
 .stat-card.is-link:hover::after { color: var(--primary); transform: translateX(3px); }
 .stat-icon-wrap svg { width: 20px; height: 20px; }
-.si-indigo { background: linear-gradient(135deg, rgba(37,99,235,.12), rgba(13,148,136,.08)); color: var(--primary); box-shadow: 0 2px 8px rgba(37,99,235,.12); }
-.si-primary { background: linear-gradient(135deg, rgba(37,99,235,.12), rgba(13,148,136,.08)); color: var(--primary); box-shadow: 0 2px 8px rgba(37,99,235,.12); }
-.si-pink   { background: linear-gradient(135deg, rgba(236,72,153,.12), rgba(244,114,182,.08)); color: var(--pink); box-shadow: 0 2px 8px rgba(236,72,153,.12); }
-.si-green  { background: linear-gradient(135deg, rgba(22,163,74,.12), rgba(52,211,153,.08)); color: var(--green); box-shadow: 0 2px 8px rgba(22,163,74,.12); }
-.si-yellow { background: linear-gradient(135deg, rgba(245,158,11,.12), rgba(251,191,36,.08)); color: var(--warning); box-shadow: 0 2px 8px rgba(245,158,11,.12); }
-.si-blue   { background: linear-gradient(135deg, rgba(59,130,246,.12), rgba(37,99,235,.08)); color: var(--blue); box-shadow: 0 2px 8px rgba(59,130,246,.12); }
-.si-purple { background: linear-gradient(135deg, rgba(37,99,235,.12), rgba(13,148,136,.08)); color: var(--primary); box-shadow: 0 2px 8px rgba(37,99,235,.12); }
-.si-secondary { background: linear-gradient(135deg, rgba(13,148,136,.12), rgba(45,212,191,.08)); color: var(--secondary); box-shadow: 0 2px 8px rgba(13,148,136,.12); }
+.si-indigo { background: linear-gradient(135deg, color-mix(in srgb, var(--primary)  12%, transparent), color-mix(in srgb, var(--secondary)  8%, transparent)); color: var(--primary); box-shadow: 0 2px 8px color-mix(in srgb, var(--primary)  12%, transparent); }
+.si-primary { background: linear-gradient(135deg, color-mix(in srgb, var(--primary)  12%, transparent), color-mix(in srgb, var(--secondary)  8%, transparent)); color: var(--primary); box-shadow: 0 2px 8px color-mix(in srgb, var(--primary)  12%, transparent); }
+.si-pink   { background: linear-gradient(135deg, color-mix(in srgb, var(--pink)  12%, transparent), rgba(244,114,182,.08)); color: var(--pink); box-shadow: 0 2px 8px color-mix(in srgb, var(--pink)  12%, transparent); }
+.si-green  { background: linear-gradient(135deg, color-mix(in srgb, var(--green)  12%, transparent), rgba(52,211,153,.08)); color: var(--green); box-shadow: 0 2px 8px color-mix(in srgb, var(--green)  12%, transparent); }
+.si-yellow { background: linear-gradient(135deg, color-mix(in srgb, var(--warning)  12%, transparent), color-mix(in srgb, var(--warning-light) 8%, transparent)); color: var(--warning); box-shadow: 0 2px 8px color-mix(in srgb, var(--warning)  12%, transparent); }
+.si-blue   { background: linear-gradient(135deg, color-mix(in srgb, var(--primary-light)  12%, transparent), color-mix(in srgb, var(--primary)  8%, transparent)); color: var(--blue); box-shadow: 0 2px 8px color-mix(in srgb, var(--primary-light)  12%, transparent); }
+.si-purple { background: linear-gradient(135deg, color-mix(in srgb, var(--primary)  12%, transparent), color-mix(in srgb, var(--secondary)  8%, transparent)); color: var(--primary); box-shadow: 0 2px 8px color-mix(in srgb, var(--primary)  12%, transparent); }
+.si-secondary { background: linear-gradient(135deg, color-mix(in srgb, var(--secondary)  12%, transparent), rgba(45,212,191,.08)); color: var(--secondary); box-shadow: 0 2px 8px color-mix(in srgb, var(--secondary)  12%, transparent); }
 
 .stat-info { flex: 1; min-width: 0; }
 .stat-label { font-size: 10.5px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: .07em; font-family: var(--mono); margin-bottom: 6px; }

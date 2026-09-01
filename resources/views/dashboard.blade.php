@@ -110,7 +110,6 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 </div>
 
 {{-- ══ RECENT DONOR ACTIVITY ══ --}}
-@if($recentDonations->isNotEmpty())
 <div class="activity-card">
     <div class="activity-hdr">
         <div class="activity-title">
@@ -118,11 +117,12 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
             Recent Donor Activity
         </div>
     </div>
+
+    @forelse($recentDonations as $donation)
+    @php
+        $initial = $donation->is_anonymous ? '?' : strtoupper(substr(trim($donation->donor_name) ?: 'D', 0, 1));
+    @endphp
     <div class="activity-list">
-        @foreach($recentDonations as $donation)
-        @php
-            $initial = $donation->is_anonymous ? '?' : strtoupper(substr(trim($donation->donor_name) ?: 'D', 0, 1));
-        @endphp
         <x-activity-item color="green" :initial="$initial">
             <div class="activity-body-top">
                 <div class="activity-lbl">
@@ -142,10 +142,21 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
                 @endif
             </div>
         </x-activity-item>
-        @endforeach
     </div>
+    @empty
+    <div class="empty-hint-row">
+        <div class="eh-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+        </div>
+        <div class="eh-body">
+            <span class="eh-label">No donations yet.</span> Share your campaign to receive your first donor — it appears here.
+        </div>
+        @if($countAll === 0)
+            <a href="{{ route('campaign.create') }}" class="eh-link">Create campaign →</a>
+        @endif
+    </div>
+    @endforelse
 </div>
-@endif
 
 {{-- ══ PENDING TASKS / ALERTS ══ --}}
 @if($pendingTasks->isNotEmpty())
@@ -245,7 +256,6 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 </div>
 
 {{-- ══ WALLET MINI-VIEW ══ --}}
-@if($recentTransactions->isNotEmpty())
 <div class="wallet-mini-card">
     <div class="wallet-mini-hdr">
         <div class="wallet-mini-title">
@@ -259,7 +269,7 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
         <div class="wallet-mini-bal-val">₹{{ number_format($wallet->available_balance, 2) }}</div>
     </div>
     <div class="wallet-mini-list">
-        @foreach($recentTransactions as $tx)
+        @forelse($recentTransactions as $tx)
         @php
             $txIcon = $tx->type === 'credit' ? 'plus' : 'minus';
             $txColor = $tx->type === 'credit' ? 'var(--green)' : 'var(--red)';
@@ -283,10 +293,19 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
                 {{ $tx->type === 'credit' ? '+' : '-' }}₹{{ number_format(abs($tx->amount), 2) }}
             </div>
         </div>
-        @endforeach
+        @empty
+        <div class="empty-hint-row">
+            <div class="eh-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+            </div>
+            <div class="eh-body">
+                <span class="eh-label">No transactions yet.</span> Donations settle into your wallet and appear here.
+            </div>
+            <a href="{{ route('dashboard.wallet') }}" class="eh-link">Setup payout →</a>
+        </div>
+        @endforelse
     </div>
 </div>
-@endif
 
 {{-- ══ CAMPAIGN COMPARISON BAR CHART ══ --}}
 @php $campChartData = $campaigns->count() > 1 ? $campaigns->map(fn($c) => ['title' => Str::limit($c->title, 22), 'raised' => (float)$c->raised_amount, 'goal' => (float)$c->goal_amount])->values() : collect(); @endphp
@@ -333,12 +352,12 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 {{-- ══ LEVEL PROGRESS + TOP CAMPAIGN ══ --}}
 @php
     $achievements = [
-        ['ico'=>'target','lbl'=>'First Campaign', 'sub'=>'Create your first campaign', 'done'=>$countAll > 0, 'color'=>'var(--blue)'],
-        ['ico'=>'heart','lbl'=>'First Donation', 'sub'=>'Receive your first donation', 'done'=>$totalDonationsCount > 0, 'color'=>'var(--pink)'],
-        ['ico'=>'shield','lbl'=>'KYC Verified', 'sub'=>'Complete identity verification', 'done'=>$kyc && $kyc->status === 'approved', 'color'=>'var(--green)'],
-        ['ico'=>'zap','lbl'=>'Active Fundraiser', 'sub'=>'Have a live campaign', 'done'=>$countActive > 0, 'color'=>'var(--yellow)'],
-        ['ico'=>'award','lbl'=>'Goal Crusher', 'sub'=>'Reach 100% on any campaign', 'done'=>$campaigns->contains(fn($c)=>($c->goal_amount>0 && ($c->raised_amount/$c->goal_amount)>=1)), 'color'=>'var(--accent)'],
-        ['ico'=>'refresh','lbl'=>'Recurring Ready', 'sub'=>'Set up recurring donations', 'done'=>$recurringCount > 0, 'color'=>'var(--primary)'],
+        ['ico'=>'target','lbl'=>'First Campaign', 'sub'=>'Create your first campaign', 'done'=>$countAll > 0],
+        ['ico'=>'heart','lbl'=>'First Donation', 'sub'=>'Receive your first donation', 'done'=>$totalDonationsCount > 0],
+        ['ico'=>'shield','lbl'=>'KYC Verified', 'sub'=>'Complete identity verification', 'done'=>$kyc && $kyc->status === 'approved'],
+        ['ico'=>'zap','lbl'=>'Active Fundraiser', 'sub'=>'Have a live campaign', 'done'=>$countActive > 0],
+        ['ico'=>'award','lbl'=>'Goal Crusher', 'sub'=>'Reach 100% on any campaign', 'done'=>$campaigns->contains(fn($c)=>($c->goal_amount>0 && ($c->raised_amount/$c->goal_amount)>=1))],
+        ['ico'=>'refresh','lbl'=>'Recurring Ready', 'sub'=>'Set up recurring donations', 'done'=>$recurringCount > 0],
     ];
     $earnedCount = count(array_filter($achievements, fn($a)=>$a['done']));
 @endphp
@@ -370,13 +389,14 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
         $tcr = $topCampaign->raised_amount ?? 0;
         $tcg = $topCampaign->goal_amount > 0 ? $topCampaign->goal_amount : 1;
         $tcp = min(100, round(($tcr / $tcg) * 100));
-        $tcCircum = 2 * 3.14159 * 36;
+        $tcCircum = 2 * 3.14159 * 42;
         $tcOffset = $tcCircum - ($tcp / 100) * $tcCircum;
     @endphp
     <div class="insight-card top-campaign-card">
+        <div class="tpc-bg-accent"></div>
         <div class="insight-card-hdr">
             <div class="insight-card-title">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tpc-star-svg"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <span class="tpc-trophy">🏆</span>
                 Top Performer
             </div>
             <span class="badge b-active">Active</span>
@@ -391,32 +411,35 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
             </defs>
         </svg>
 
-        <div class="tpc-ring-wrap">
-            <svg viewBox="0 0 80 80" class="tpc-ring-svg">
-                <circle class="tpc-ring-bg" cx="40" cy="40" r="36"/>
-                <circle class="tpc-ring-fg tpc-ring-dynamic" id="tpcRing" cx="40" cy="40" r="36"
-                    style="--tpc-circum:{{ $tcCircum }};--tpc-offset:{{ $tcOffset }}"/>
-            </svg>
-            <div class="tpc-ring-center">
-                <div class="tpc-ring-pct">{{ $tcp }}%</div>
-                <div class="tpc-ring-label">Funded</div>
+        <div class="tpc-main">
+            <div class="tpc-ring-wrap">
+                <svg viewBox="0 0 100 100" class="tpc-ring-svg">
+                    <circle class="tpc-ring-bg" cx="50" cy="50" r="42"/>
+                    <circle class="tpc-ring-fg tpc-ring-dynamic" id="tpcRing" cx="50" cy="50" r="42"
+                        style="--tpc-circum:{{ $tcCircum }};--tpc-offset:{{ $tcOffset }}"/>
+                </svg>
+                <div class="tpc-ring-center">
+                    <div class="tpc-ring-pct">{{ $tcp }}%</div>
+                    <div class="tpc-ring-lbl">Funded</div>
+                </div>
+            </div>
+
+            <div class="tpc-info">
+                <div class="tpc-meta">
+                    @if($topCampaign->category)
+                        <span class="tpc-meta-chip cat">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+                            {{ $topCampaign->category->name }}
+                        </span>
+                    @endif
+                    <span class="tpc-meta-chip goal">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8V7m0 1v8m0 1v1"/></svg>
+                        ₹{{ number_format($tcg) }} goal
+                    </span>
+                </div>
+                <div class="tpc-title">{{ $topCampaign->title }}</div>
             </div>
         </div>
-
-        <div class="tpc-meta">
-            @if($topCampaign->category)
-                <span class="tpc-meta-chip cat">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
-                    {{ $topCampaign->category->name }}
-                </span>
-            @endif
-            <span class="tpc-meta-chip goal">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8V7m0 1v8m0 1v1"/></svg>
-                ₹{{ number_format($tcg) }} goal
-            </span>
-        </div>
-
-        <div class="tpc-title">{{ $topCampaign->title }}</div>
 
         <div class="tpc-stats">
             <div class="tpc-stat">
@@ -469,7 +492,7 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
     <div class="achieve-grid">
         @foreach($achievements as $a)
         <div class="achieve-item {{ $a['done'] ? 'earned' : '' }}" title="{{ $a['sub'] }}">
-            <div class="achieve-ico achieve-ico-dynamic" style="--achieve-color:{{ $a['color'] }}">
+            <div class="achieve-ico">
                 @if($a['done'])
                 <div class="achieve-check">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
@@ -507,7 +530,6 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 @php
     $allEvents = $myEvents->merge($registeredEvents->pluck('event'))->sortBy('event_date')->take(5);
 @endphp
-@if($allEvents->isNotEmpty())
 <div class="events-card">
     <div class="events-hdr">
         <div class="events-title">
@@ -518,13 +540,14 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
         <a href="{{ url('/events') }}" class="events-link">View all →</a>
         @endif
     </div>
+
+    @forelse($allEvents as $event)
+    @php
+        $daysUntil = now()->startOfDay()->diffInDays(\Carbon\Carbon::parse($event->event_date)->startOfDay(), false);
+        $isUrgent = $daysUntil !== null && $daysUntil >= 0 && $daysUntil <= 3;
+        $isToday = $daysUntil === 0;
+    @endphp
     <div class="events-list">
-        @foreach($allEvents as $event)
-        @php
-            $daysUntil = now()->startOfDay()->diffInDays(\Carbon\Carbon::parse($event->event_date)->startOfDay(), false);
-            $isUrgent = $daysUntil !== null && $daysUntil >= 0 && $daysUntil <= 3;
-            $isToday = $daysUntil === 0;
-        @endphp
         <div class="events-item">
             <div class="events-date {{ $isUrgent ? 'urgent' : '' }}">
                 <div class="events-date-day">{{ \Carbon\Carbon::parse($event->event_date)->format('d') }}</div>
@@ -555,20 +578,30 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
                 </div>
             </div>
         </div>
-        @endforeach
     </div>
+    @empty
+    <div class="empty-hint-row">
+        <div class="eh-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        </div>
+        <div class="eh-body">
+            <span class="eh-label">No upcoming events.</span> Discover community events to join and grow your network.
+        </div>
+        <a href="{{ url('/events') }}" class="eh-link">Browse events →</a>
+    </div>
+    @endforelse
 </div>
-@endif
 
 {{-- ══ RECENT BLOG POSTS ══ --}}
-@if($recentBlogs->isNotEmpty())
 <div class="insight-card blog-section">
     <div class="insight-card-hdr">
         <div class="insight-card-title">Recent Blog Posts</div>
+        @if($recentBlogs->isNotEmpty())
         <a href="{{ url('/user/dashboard/blogs') }}" class="insight-link">View all →</a>
+        @endif
     </div>
     <div class="blog-list">
-        @foreach($recentBlogs as $blog)
+        @forelse($recentBlogs as $blog)
         @php
             $bs = $blog->status;
             $bc = $bs === 'approved' ? 'b-active' : ($bs === 'pending' ? 'b-pending' : ($bs === 'draft' ? 'b-paused' : 'b-default'));
@@ -588,10 +621,19 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
                 View
             </x-button>
         </div>
-        @endforeach
+        @empty
+        <div class="empty-hint-row">
+            <div class="eh-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+            </div>
+            <div class="eh-body">
+                <span class="eh-label">No blog posts yet.</span> Share stories to engage your supporters.
+            </div>
+            <a href="{{ url('/user/dashboard/blogs/create') }}" class="eh-link">Write a post →</a>
+        </div>
+        @endforelse
     </div>
 </div>
-@endif
 
 {{-- ══ CAMPAIGNS SECTION ══ --}}
 <div class="sec-hdr" id="cGrid">
@@ -623,9 +665,11 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
             <option value="expired">Expired ({{ $countExpired }})</option>
         </select>
         <select class="view-select" id="viewSelect">
-                <option value="grid">Grid View</option>
-                <option value="list">List View</option>
-            </select>
+            <option value="grid">Grid View</option>
+            @if($campaigns->total() > 1)
+            <option value="list">List View</option>
+            @endif
+        </select>
     </div>
 </div>
 
@@ -640,13 +684,6 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
     @endforeach
 </div>
 
-{{-- LIST VIEW --}}
-<div class="c-list c-list-hidden" id="campaignList">
-    @foreach($campaigns as $i => $campaign)
-        <x-campaign-card :campaign="$campaign" variant="list" :index="$i" />
-    @endforeach
-</div>
-
 @if($campaigns->hasPages())
 <div class="rd-pagination mt-18">
     {{ $campaigns->links() }}
@@ -654,16 +691,22 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 @endif
 
 @else
-<div class="empty-state">
+<div class="empty-state empty-state--primary">
     <div class="empty-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
     </div>
     <div class="empty-title">Start your first fundraiser</div>
-    <div class="empty-sub">Create a campaign and start making a difference in the world today.</div>
-    <x-button variant="primary" href="{{ route('campaign.create') }}">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-        Create Campaign
-    </x-button>
+    <div class="empty-sub">Create a campaign and start making a difference. Your donors, progress and payouts will all show up here.</div>
+    <div class="empty-cta">
+        <x-button variant="primary" href="{{ route('campaign.create') }}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+            Create Campaign
+        </x-button>
+        <x-button variant="ghost" href="{{ url('/campaigns') }}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            Browse ideas
+        </x-button>
+    </div>
 </div>
 @endif
 

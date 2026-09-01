@@ -17,13 +17,13 @@
 }
 .qnav-card::before {
   content: ''; position: absolute; inset: 0; opacity: 0;
-  background: radial-gradient(ellipse at 50% 0%, var(--qc, rgba(37,99,235,.06)) 0%, transparent 70%);
+  background: radial-gradient(ellipse at 50% 0%, var(--qc, color-mix(in srgb, var(--primary)  6%, transparent)) 0%, transparent 70%);
   transition: opacity .35s ease;
 }
 .qnav-card::after {
   content: ''; position: absolute; inset: -1px; border-radius: 18px;
   border: 1.5px solid transparent;
-  background: linear-gradient(135deg, var(--qc, rgba(37,99,235,.12)), transparent 60%) border-box;
+  background: linear-gradient(135deg, var(--qc, color-mix(in srgb, var(--primary)  12%, transparent)), transparent 60%) border-box;
   -webkit-mask: linear-gradient(var(--white) 0 0) padding-box, linear-gradient(var(--white) 0 0);
   mask: linear-gradient(var(--white) 0 0) padding-box, linear-gradient(var(--white) 0 0);
   -webkit-mask-composite: xor; mask-composite: exclude;
@@ -37,10 +37,10 @@
   width: 48px; height: 48px; border-radius: 14px;
   display: flex; align-items: center; justify-content: center;
   transition: all .3s cubic-bezier(.4,0,.2,1);
-  box-shadow: 0 2px 8px rgba(0,0,0,.04);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--black)  4%, transparent);
   position: relative; z-index: 1;
 }
-.qnav-card:hover .qnav-ico { transform: scale(1.1) translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,.08); }
+.qnav-card:hover .qnav-ico { transform: scale(1.1) translateY(-3px); box-shadow: 0 6px 20px color-mix(in srgb, var(--black)  8%, transparent); }
 .qnav-card:hover .qnav-ico svg { animation: iconBounce .5s ease both; }
 .qnav-ico svg { width: 20px; height: 20px; }
 .qnav-lbl { font-size: 12.5px; font-weight: 600; color: var(--text); position: relative; z-index: 1; }

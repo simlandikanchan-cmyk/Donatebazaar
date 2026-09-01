@@ -16,10 +16,10 @@ button {
     margin-top: 12px;
     font-size: 14px;
 }
-.error { color: #c0392b; }
+.error { color: var(--danger-4); }
 .btn--primary {
-    background: #2563eb;
-    color: #fff;
+    background: var(--primary);
+    color: var(--white);
     border: none;
     border-radius: 8px;
     padding: 12px 24px;
@@ -28,5 +28,5 @@ button {
     cursor: pointer;
     transition: background 0.2s;
 }
-.btn--primary:hover { background: #1d4ed8; }
+.btn--primary:hover { background: var(--primary-hover); }
 .btn--primary:disabled { opacity: 0.6; cursor: not-allowed; }

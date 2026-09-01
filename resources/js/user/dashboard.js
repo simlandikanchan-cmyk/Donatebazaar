@@ -170,16 +170,10 @@ import Chart from 'chart.js/auto';
   }
 
   var grid = document.getElementById('campaignGrid');
-  var list = document.getElementById('campaignList');
   var viewSelect = document.getElementById('viewSelect');
 
   if (viewSelect) {
     viewSelect.addEventListener('change', function () {
-      if (this.value === 'grid') {
-        grid.style.display = ''; list.style.display = 'none';
-      } else {
-        grid.style.display = 'none'; list.style.display = '';
-      }
       applyFilters();
     });
   }

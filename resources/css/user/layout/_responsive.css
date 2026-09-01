@@ -24,7 +24,7 @@
 /* ── 860px: Tablet & Mobile ───────────────────────────────────────── */
 @media (max-width: 860px) {
   .sidebar { transform: translateX(-100%); box-shadow: none; }
-  .sidebar.open { transform: translateX(0); box-shadow: 4px 0 24px rgba(0,0,0,.15); }
+  .sidebar.open { transform: translateX(0); box-shadow: 4px 0 24px color-mix(in srgb, var(--black)  15%, transparent); }
   .main { margin-left: 0; width: 100%; }
   .hamburger { display: flex; }
   .search-wrap, .sort-sel { display: none; }

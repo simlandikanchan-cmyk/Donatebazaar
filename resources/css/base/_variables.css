@@ -168,7 +168,27 @@
   --info:             #06b6d4;
   --info-light:       #38bdf8;
   --info-deep:        #0c447c;
+  --info-soft:        #6ddee9;
+  --info-mid:         #58cbd8;
+  --info-tint:        #d9f7fa;
+  --info-tint-2:      #e6fbfd;
+  --info-tint-3:      #eff9ff;
+  --info-dark:        #0b7285;
+  --info-deep-2:      #0e7d8e;
+  --info-fb:          #1877f2;
+  --info-amazon:      #007185;
   --lime:             #84cc16;
+
+  /* ── Indigo / Violet ──────────────────────────────────────────────── */
+  --indigo:           #6366f1;
+  --indigo-hover:     #4f46e5;
+  --indigo-soft:      #818cf8;
+  --indigo-deep:      #3730a3;
+  --indigo-tint:      #a5b4fc;
+  --violet:           #8b5cf6;
+  --violet-deep:      #4a3a8a;
+  --violet-ink:       #3b0764;
+  --violet-tint:      #ece9f7;
 
   /* ── Pink / Rose ───────────────────────────────────────────────────── */
   --pink:             #ec4899;
@@ -177,6 +197,7 @@
   --pink-tint:        #f9a8d4;
   --pink-tint-2:      #fce7f3;
   --pink-tint-bg:     #fdf2f8;
+  --pink-soft:        #ff8a8a;
   --rose:             #f43f5e;
   --rose-hover:       #e11d48;
   --rose-deep:        #9d174d;
@@ -189,6 +210,46 @@
   --dark-surface:     #13141f;
   --dark-surface-2:   #1a1a2e;
   --dark-surface-3:   #1a1b2e;
+  --violet-tint-2:    #ddd6fe;
+  --violet-light:     #c4b5fd;
+  --violet-2:         #7c3aed;
+  --info-tint-6:      #bfeef3;
+  --info-tint-7:      #7ce8c8;
+  --success-light-2:  #06d99a;
+  --success-deep-4:   #059d6e;
+  --success-amazon:   #1b4b3a;
+  --success-teal-2:   #17466b;
+  --secondary-ink:    #042f2e;
+  --gray-350:         #cbd0e0;
+  --gray-360:         #b9bec0;
+  --gray-370:         #c7caca;
+  --gray-light:       #ccc;
+  --dark-surface-17:  #0a0a0f;
+  --dark-surface-18:  #0e0e16;
+  --dark-surface-19:  #13122b;
+  --dark-surface-20:  #1e1b4b;
+  --dark-surface-21:  #1a1040;
+  --dark-surface-22:  #402a63;
+  --dark-muted-4:     #6d6aaf;
+  --dark-muted-5:     #a5a3c8;
+  --danger-bright:    #c40000;
+  --danger-deep-4:    #611f1f;
+  --gray-850:         #333333;
+  --gray-950-alt:     #333;
+  --surface-warm-3:   #faf9ff;
+  --surface-warm-4:   #f8f9fc;
+  --surface-warm-5:   #f7f8fa;
+  --surface-warm-6:   #fff7ed;
+  --orange-warm-2:    #7a3e12;
+  --orange-warm-3:    #5a2d0c;
+  --indigo-tint:      #a5b4fc;
+  --surface-alt-3:    #f5f5f5;
+  --success-2:        #27ae60;
+  --violet-deep-2:    #5b3a8c;
+  --warning-mid:      #d9870c;
+  --rose-deep-2:      #9d174d;
+  --surface-tint-9:   #f9fafb;
+  --warning-2-hover:  #c2410c;
   --dark-surface-5:   #1e1f35;
   --dark-surface-7:   #1f2233;
   --dark-surface-12:  #131420;
@@ -203,9 +264,14 @@
   --dark-deep-13:     #0f1419;
   --dark-deep-16:     #0a0814;
   --dark-deep-17:     #0c0a1a;
+  --dark-deep-18:     #0b0c14;
   --dark-warm:        #0c0a09;
   --dark-muted:       #3a3f55;
+  --dark-muted-2:     #5a6579;
+  --dark-muted-3:     #a5b4c8;
   --ink-900:          #0f1117;
+  --dark-amazon:      #131a22;
+  --dark-amazon-2:    #232f3e;
 
   /* ── Warm / earth feature palette (job posts) ──────────────────────── */
   --warm-bg-3:        #fef3ee;
@@ -227,6 +293,38 @@
 
   /* ── Extras: exact-value complements ────────────────────────────────── */
   --success-strong:   #059669;
+  --success-whatsapp: #25d366;
+  --success-teal:     #189d68;
+  --success-deep-teal:#05c48a;
+  --success-deep-2:   #067d62;
+  --orange-warm:      #f97316;
+  --orange-deep:      #ea580c;
+  --orange-amazon:    #8a5a12;
+  --surface-alt:      #f8f9fe;
+  --surface-alt-2:    #f0f2f8;
+  --surface-warm:     #fdf1dd;
+  --surface-blue:     #e8f4fb;
+  --info-deep-3:      #1f6a78;
+  --info-deep-4:      #0f5a8a;
+  --info-deep-5:      #0f7c8d;
+  --gray-amazon:      #565959;
+  --gray-amazon-2:    #eaeded;
+  --gray-amazon-3:    #d5d9d9;
+  --gray-amazon-4:    #b9c2c4;
+  --gray-900:         #111827;
+  --info-tint-4:      #e4f2f5;
+  --info-tint-5:      #f0f2f5;
+  --info-deep-6:      #1f7f90;
+  --gray-muted:       #5c6c6f;
+  --danger-deep-2:    #8a2f2f;
+  --danger-deep-3:    #611f1f;
+  --warning-amazon:   #ffd814;
+  --info-deep-7:      #0f3050;
+  --success-deep-3:   #133a2e;
+  --dark-surface-15:  #11102e;
+  --dark-surface-16:  #121212;
+  --surface-warm-2:   #fdf7f0;
+  --violet-tint-2:    #ddd6fe;
   --secondary-tint-bg-2: #e1f5ee;
   --secondary-ink-3:  #085041;
   --info-tint-bg:     #e6f1fb;
@@ -235,30 +333,30 @@
   /* ── Backward-compatible aliases (user/admin legacy tokens) ────────── */
   --accent:       #0d9488;
   --accent2:      #2563eb;
-  --accent-lt:    rgba(13,148,136,.10);
+  --accent-lt:    color-mix(in srgb, var(--secondary)  10%, transparent);
   --sb-bg:        #ffffff;
   --sb-txt:       #64748b;
   --sb-act:       #eef2ff;
   --yellow:       #f59e0b;
-  --yellow-lt:    rgba(245,158,11,.10);
+  --yellow-lt:    color-mix(in srgb, var(--warning)  10%, transparent);
   --amber:        #f59e0b;
-  --amber-lt:     rgba(245,158,11,.10);
+  --amber-lt:     color-mix(in srgb, var(--warning)  10%, transparent);
   --gray:         #6b7280;
-  --gray-lt:      rgba(107,114,128,.10);
+  --gray-lt:      color-mix(in srgb, var(--gray-500)  10%, transparent);
   --blue:         #1d4ed8;
-  --blue-lt:      rgba(59,130,246,.10);
-  --green-lt:     rgba(22,163,74,.10);
-  --pink-lt:      rgba(236,72,153,.10);
+  --blue-lt:      color-mix(in srgb, var(--primary-light)  10%, transparent);
+  --green-lt:     color-mix(in srgb, var(--green)  10%, transparent);
+  --pink-lt:      color-mix(in srgb, var(--pink)  10%, transparent);
   --mono:         'DM Mono', monospace;
   --sh:           var(--shadow);
   --sh-md:        var(--shadow-md);
   --sh-lg:        var(--shadow-lg);
   --r:            var(--radius);
   --r-xs:         7px;
-  --card-bg:      rgba(255,255,255,.65);
-  --glass-bg:     rgba(255,255,255,.65);
-  --glass-border: rgba(255,255,255,.35);
-  --glass-shadow: 0 8px 32px rgba(0,0,0,.06), 0 1px 4px rgba(0,0,0,.04);
+  --card-bg:      color-mix(in srgb, var(--white)  65%, transparent);
+  --glass-bg:     color-mix(in srgb, var(--white)  65%, transparent);
+  --glass-border: color-mix(in srgb, var(--white)  35%, transparent);
+  --glass-shadow: 0 8px 32px color-mix(in srgb, var(--black)  6%, transparent), 0 1px 4px color-mix(in srgb, var(--black)  4%, transparent);
   --sb-w:        260px;
   --a-glow:       rgba(13, 148, 136, .22);
   --a-hover:      #1d4ed8;
@@ -290,6 +388,28 @@
   --radius:    16px;
   --radius-sm: 10px;
   --radius-lg: 24px;
+
+  /* ── Opacity tokens ───────────────────────────────────────────────── */
+  --op-4:  0.04;
+  --op-5:  0.05;
+  --op-6:  0.06;
+  --op-8:  0.08;
+  --op-10: 0.10;
+  --op-12: 0.12;
+  --op-14: 0.14;
+  --op-15: 0.15;
+  --op-18: 0.18;
+  --op-20: 0.20;
+  --op-25: 0.25;
+  --op-30: 0.30;
+  --op-35: 0.35;
+  --op-45: 0.45;
+  --op-50: 0.50;
+  --op-55: 0.55;
+  --op-80: 0.80;
+  --op-85: 0.85;
+  --op-90: 0.90;
+  --op-95: 0.95;
 
   /* ── Button design tokens (single source of truth for .btn) ────────── */
   --btn-radius:        12px;
@@ -339,25 +459,25 @@
   --surface:      #111220;
   --surface2:     #181929;
   --surface3:     #1e2033;
-  --border:       rgba(255,255,255,.055);
-  --border2:      rgba(255,255,255,.09);
+  --border:       color-mix(in srgb, var(--white)  6%, transparent);
+  --border2:      color-mix(in srgb, var(--white)  9%, transparent);
   --text:         #eef0ff;
   --text2:        #9ba3c4;
   --text3:        #505878;
-  --accent-glow:  rgba(37,99,235,.28);
+  --accent-glow:  color-mix(in srgb, var(--primary)  28%, transparent);
   --card-bg:      rgba(17,18,32,.72);
   --glass-bg:     rgba(17,18,32,.72);
-  --glass-border: rgba(255,255,255,.08);
-  --glass-shadow: 0 8px 32px rgba(0,0,0,.25), 0 1px 4px rgba(0,0,0,.15);
-  --shadow:       0 1px 4px rgba(0,0,0,.3), 0 4px 20px rgba(0,0,0,.2);
-  --shadow-md:    0 4px 16px rgba(0,0,0,.35), 0 1px 4px rgba(0,0,0,.2);
-  --shadow-lg:    0 10px 40px rgba(0,0,0,.5);
-  --shadow-xl:    0 20px 60px rgba(0,0,0,.4), 0 4px 16px rgba(0,0,0,.25);
+  --glass-border: color-mix(in srgb, var(--white)  8%, transparent);
+  --glass-shadow: 0 8px 32px color-mix(in srgb, var(--black)  25%, transparent), 0 1px 4px color-mix(in srgb, var(--black)  15%, transparent);
+  --shadow:       0 1px 4px color-mix(in srgb, var(--black)  30%, transparent), 0 4px 20px color-mix(in srgb, var(--black)  20%, transparent);
+  --shadow-md:    0 4px 16px color-mix(in srgb, var(--black)  35%, transparent), 0 1px 4px color-mix(in srgb, var(--black)  20%, transparent);
+  --shadow-lg:    0 10px 40px color-mix(in srgb, var(--black)  50%, transparent);
+  --shadow-xl:    0 20px 60px color-mix(in srgb, var(--black)  40%, transparent), 0 4px 16px color-mix(in srgb, var(--black)  25%, transparent);
 
   /* Admin-specific dark tokens */
   --sb-bg:        #0b0d1a;
-  --sb-txt:       rgba(255,255,255,.55);
-  --sb-act:       rgba(37,99,235,.18);
+  --sb-txt:       color-mix(in srgb, var(--white)  55%, transparent);
+  --sb-act:       color-mix(in srgb, var(--primary)  18%, transparent);
   --sb-border:    rgba(255, 255, 255, .04);
   --a-glow:       rgba(13, 148, 136, .30);
   --purple-lt:    rgba(139, 92, 246, .15);
@@ -372,13 +492,13 @@
    ═══════════════════════════════════════════════════════════════════════ */
 [data-theme="dark"] body::before {
   background:
-      radial-gradient(ellipse at 20% 0%, rgba(37,99,235,.10) 0%, transparent 55%),
-      radial-gradient(ellipse at 80% 100%, rgba(13,148,136,.08) 0%, transparent 55%),
-      radial-gradient(ellipse at 50% 50%, rgba(37,99,235,.06) 0%, transparent 55%);
+      radial-gradient(ellipse at 20% 0%, color-mix(in srgb, var(--primary)  10%, transparent) 0%, transparent 55%),
+      radial-gradient(ellipse at 80% 100%, color-mix(in srgb, var(--secondary)  8%, transparent) 0%, transparent 55%),
+      radial-gradient(ellipse at 50% 50%, color-mix(in srgb, var(--primary)  6%, transparent) 0%, transparent 55%);
 }
 
-[data-theme="dark"] ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.08); }
-[data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.14); }
+[data-theme="dark"] ::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--white)  8%, transparent); }
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: color-mix(in srgb, var(--white)  14%, transparent); }
 
 /* ═══════════════════════════════════════════════════════════════════════
    GLOBAL ANIMATION REDUCED MOTION

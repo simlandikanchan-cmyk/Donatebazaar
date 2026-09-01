@@ -1,3 +1,5 @@
+@import '../components/_campaign-cards.css';
+
 /* ══════════════════════════════════════
    ADMIN — Page: Dashboard
    Hero card (.hero/.hero-metric/.hero-ticker) lives in
@@ -5,7 +7,6 @@
    ══════════════════════════════════════ */
 /* Campaign cards, activity feed and quick-view body are shared with the
    campaigns index — live in components/_campaign-cards.css. */
-@import '../components/_campaign-cards.css';
 /* ── CHART ROW ── */
 .chart-row-2 {
   display: grid;
@@ -85,10 +86,10 @@
   border-radius: 50%;
 }
 .leg-dot--teal {
-  background: #0d9488;
+  background: var(--secondary);
 }
 .leg-dot--rose {
-  background: #f43f5e;
+  background: var(--rose);
 }
 .leg-dot--blue {
   background: var(--a);
@@ -454,13 +455,13 @@
   color: var(--text2);
 }
 .impact-revenue {
-  --accent: #0d9488;
+  --accent: var(--secondary);
 }
 .impact-donors {
-  --accent: #f43f5e;
+  --accent: var(--rose);
 }
 .impact-avg {
-  --accent: #f59e0b;
+  --accent: var(--warning);
 }
 /* ══════════════════════════════════════
    DASHBOARD RESPONSIVE

@@ -46,8 +46,8 @@ body {
     font-family:'DM Mono',monospace;
     letter-spacing:.04em;
     color:var(--success-deep);
-    background:rgba(16,185,129,.08);
-    border:1px solid rgba(16,185,129,.2);
+    background:color-mix(in srgb, var(--success-soft)  8%, transparent);
+    border:1px solid color-mix(in srgb, var(--success-soft)  20%, transparent);
     border-radius:100px;
     padding:5px 14px;
     margin-bottom:16px;
@@ -169,13 +169,13 @@ body {
     border:none;
     border-radius:var(--radius-sm);
     cursor:pointer;
-    box-shadow:0 6px 24px rgba(37,99,235,.45);
+    box-shadow:0 6px 24px color-mix(in srgb, var(--primary)  45%, transparent);
     transition:opacity var(--transition), transform var(--transition), box-shadow var(--transition);
 }
 .reg-btn:hover {
     opacity:.94;
     transform:translateY(-2px);
-    box-shadow:0 12px 32px rgba(37,99,235,.55);
+    box-shadow:0 12px 32px color-mix(in srgb, var(--primary)  55%, transparent);
 }
 .reg-btn:active {
     transform:translateY(0);

@@ -1,3 +1,4 @@
+@import "../../base/_variables.css";
 /* ═══════════════════════════════════════════════════════════════════
    USER PORTAL — Token Overrides
    ═══════════════════════════════════════════════════════════════════
@@ -5,7 +6,6 @@
    This file only adds user-portal-specific overrides and aliases.
    ═══════════════════════════════════════════════════════════════════ */
 
-@import "../../base/_variables.css";
 
 :root {
   --sb-w: 260px;
@@ -14,23 +14,23 @@
 /* Dark theme overrides for user portal */
 [data-theme="dark"] {
   --sb-bg: #0b0d1a;
-  --sb-txt: rgba(255,255,255,.55);
-  --sb-act: rgba(37,99,235,.18);
+  --sb-txt: color-mix(in srgb, var(--white)  55%, transparent);
+  --sb-act: color-mix(in srgb, var(--primary)  18%, transparent);
   --card-bg: rgba(17,18,32,.72);
   --glass-bg: rgba(17,18,32,.72);
-  --glass-border: rgba(255,255,255,.08);
-  --glass-shadow: 0 8px 32px rgba(0,0,0,.25), 0 1px 4px rgba(0,0,0,.15);
-  --shadow: 0 1px 4px rgba(0,0,0,.3), 0 4px 20px rgba(0,0,0,.2);
-  --shadow-md: 0 4px 16px rgba(0,0,0,.35), 0 1px 4px rgba(0,0,0,.2);
-  --shadow-lg: 0 10px 40px rgba(0,0,0,.5);
+  --glass-border: color-mix(in srgb, var(--white)  8%, transparent);
+  --glass-shadow: 0 8px 32px color-mix(in srgb, var(--black)  25%, transparent), 0 1px 4px color-mix(in srgb, var(--black)  15%, transparent);
+  --shadow: 0 1px 4px color-mix(in srgb, var(--black)  30%, transparent), 0 4px 20px color-mix(in srgb, var(--black)  20%, transparent);
+  --shadow-md: 0 4px 16px color-mix(in srgb, var(--black)  35%, transparent), 0 1px 4px color-mix(in srgb, var(--black)  20%, transparent);
+  --shadow-lg: 0 10px 40px color-mix(in srgb, var(--black)  50%, transparent);
 }
 
 [data-theme="dark"] body::before {
   background:
-      radial-gradient(ellipse at 20% 0%, rgba(37,99,235,.10) 0%, transparent 55%),
-      radial-gradient(ellipse at 80% 100%, rgba(13,148,136,.08) 0%, transparent 55%),
-      radial-gradient(ellipse at 50% 50%, rgba(37,99,235,.06) 0%, transparent 55%);
+      radial-gradient(ellipse at 20% 0%, color-mix(in srgb, var(--primary)  10%, transparent) 0%, transparent 55%),
+      radial-gradient(ellipse at 80% 100%, color-mix(in srgb, var(--secondary)  8%, transparent) 0%, transparent 55%),
+      radial-gradient(ellipse at 50% 50%, color-mix(in srgb, var(--primary)  6%, transparent) 0%, transparent 55%);
 }
 
-[data-theme="dark"] ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.08); }
-[data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.14); }
+[data-theme="dark"] ::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--white)  8%, transparent); }
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: color-mix(in srgb, var(--white)  14%, transparent); }

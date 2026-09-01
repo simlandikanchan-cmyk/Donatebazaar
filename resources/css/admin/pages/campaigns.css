@@ -1,8 +1,8 @@
+@import '../components/_campaign-cards.css';
 /* --------------------------------------
    ADMIN — Page: Campaigns (list + create/edit)
    Campaign show styles live in campaign-show.css.
    -------------------------------------- */
-@import '../components/_campaign-cards.css';
 
 /* -- COVER UPLOAD (campaign create) -- */
 .page-grid {
@@ -51,7 +51,7 @@
   line-height: 1.3;
   letter-spacing: -.02em;
   text-shadow: 0 1px 4px rgba(0, 0, 0, .4);
-  color: #fff;
+  color: var(--white);
 }
 .cover-created {
   margin-top: 4px;
@@ -141,11 +141,11 @@
   background: var(--red);
 }
 .chip-expired {
-  color: #6b7280;
+  color: var(--gray-500);
   background: rgba(107, 114, 128, .1);
 }
 .chip-expired .chip-dot {
-  background: #6b7280;
+  background: var(--gray-500);
 }
 .chip-completed {
   color: var(--blue);

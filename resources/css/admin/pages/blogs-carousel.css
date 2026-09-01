@@ -126,7 +126,7 @@
   padding: 10px 14px;
   font-size: 12.5px;
   font-weight: 600;
-  color: #059669;
+  color: var(--success-mid);
   background: var(--green-lt);
   border: 1px solid rgba(5, 196, 138, .25);
   border-radius: var(--r-sm);

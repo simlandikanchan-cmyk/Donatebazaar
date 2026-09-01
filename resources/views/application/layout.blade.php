@@ -1,14 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NGO Application — DonateBazaar</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-@vite(['resources/css/public/application.css', 'resources/js/public/application.js'])
-</head>
-<body>
+@extends('layouts.app')
+
+@section('title', 'NGO Application — DonateBazaar')
+
+@push('styles')
+@vite('resources/css/public/application.css')
+@endpush
+
+@push('scripts')
+@vite('resources/js/public/application.js')
+@endpush
+
+@section('content')
 
 {{-- ══ SUCCESS OVERLAY ══ --}}
 <div class="success-overlay" id="successOverlay">
@@ -201,5 +203,4 @@
   </div>
 </div>
 
-</body>
-</html>
+@endsection

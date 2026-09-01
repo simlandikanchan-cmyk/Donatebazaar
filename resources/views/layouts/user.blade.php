@@ -22,6 +22,7 @@
 @stack('page_styles')
 </head>
 <body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
 
 <div class="toast-container" id="toastContainer"
      @if(session('success')) data-success="{{ session('success') }}" @endif
@@ -40,7 +41,7 @@
 {{-- ══════════════════════════════════════════
      MAIN
 ══════════════════════════════════════════ --}}
-<div class="main">
+<div class="main" id="main-content">
 
     <header class="topbar">
         <div class="topbar-left-wrap">

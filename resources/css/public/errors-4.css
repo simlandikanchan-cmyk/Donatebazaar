@@ -1,12 +1,12 @@
 @import '../base/_variables.css';
 :root {
-  --ink:         #1a1a2e;
-  --ink2:        #3b82f6;
-  --ink3:        #93c5fd;
-  --bg:          #f0f2f8;
-  --border:      rgba(37,99,235,0.14);
+  --ink:         var(--dark-surface-2);
+  --ink2:        var(--primary-light);
+  --ink3:        var(--primary-tint);
+  --bg:          var(--surface-alt-2);
+  --border:      color-mix(in srgb, var(--primary) 14%, transparent);
   --dark-bg:     linear-gradient(160deg, var(--dark-bg) 0%, var(--slate-900) 50%, var(--secondary-ink) 100%);
-  --dark-ring:   rgba(37,99,235,0.11);
+  --dark-ring:   color-mix(in srgb, var(--primary) 11%, transparent);
 }
 
 #error-root {
@@ -34,8 +34,8 @@
     position: absolute;
     inset: 0;
     background-image:
-        linear-gradient(rgba(37,99,235,0.045) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(37,99,235,0.045) 1px, transparent 1px);
+        linear-gradient(color-mix(in srgb, var(--primary) 5%, transparent) 1px, transparent 1px),
+        linear-gradient(90deg, color-mix(in srgb, var(--primary) 5%, transparent) 1px, transparent 1px);
     background-size: 36px 36px;
     pointer-events: none;
     z-index: var(--z-base);
@@ -45,8 +45,8 @@
     position: absolute;
     inset: 0;
     background:
-        radial-gradient(ellipse 55% 60% at 15% 50%, rgba(37,99,235,0.26) 0%, transparent 65%),
-        radial-gradient(ellipse 45% 55% at 85% 30%, rgba(13,148,136,0.20) 0%, transparent 65%);
+        radial-gradient(ellipse 55% 60% at 15% 50%, color-mix(in srgb, var(--primary) 26%, transparent) 0%, transparent 65%),
+        radial-gradient(ellipse 45% 55% at 85% 30%, color-mix(in srgb, var(--secondary) 20%, transparent) 0%, transparent 65%);
     pointer-events: none;
     z-index: var(--z-base);
 }
@@ -59,8 +59,8 @@
     z-index: 1;
 }
 .e-ring-1 { width: 500px; height: 500px; top: -200px; right: -180px; }
-.e-ring-2 { width: 340px; height: 340px; top: -120px; right: -80px; border-color: rgba(37,99,235,0.07); }
-.e-ring-3 { width: 400px; height: 400px; bottom: -160px; left: -150px; border-color: rgba(13,148,136,0.07); }
+.e-ring-2 { width: 340px; height: 340px; top: -120px; right: -80px; border-color: color-mix(in srgb, var(--primary) 7%, transparent); }
+.e-ring-3 { width: 400px; height: 400px; bottom: -160px; left: -150px; border-color: color-mix(in srgb, var(--secondary) 7%, transparent); }
 
 .e-inner {
     position: relative;
@@ -103,7 +103,7 @@
 .e-desc {
     font-family: var(--font);
     font-size: 15px;
-    color: rgba(255,255,255,0.50);
+    color: color-mix(in srgb, var(--white) 50%, transparent);
     line-height: 1.65;
     margin-bottom: 8px;
 }
@@ -136,7 +136,7 @@
 }
 .btn-home:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 28px rgba(37,99,235,0.35);
+    box-shadow: 0 8px 28px color-mix(in srgb, var(--primary) 35%, transparent);
 }
 
 @media (max-width: 520px) {

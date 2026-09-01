@@ -153,7 +153,7 @@
   height: 17px;
 }
 .ci-teal {
-  color: #05c48a;
+  color: var(--success-deep-teal);
   background: rgba(5, 196, 138, .12);
 }
 .ci-purple {
@@ -383,7 +383,7 @@ label.lbl span {
   left: 3px;
   width: 18px;
   height: 18px;
-  background: #fff;
+  background: var(--white);
   border-radius: 50%;
   content: '';
   box-shadow: 0 1px 4px rgba(0, 0, 0, .18);
@@ -443,15 +443,15 @@ label.lbl span {
   border-color: currentColor;
 }
 .sp-draft:has(input:checked) {
-  color: #6b7280;
+  color: var(--gray-500);
   background: rgba(107, 114, 128, .08);
   border-color: rgba(107, 114, 128, .35);
 }
 .sp-draft:has(input:checked) .status-pill-lbl {
-  color: #6b7280;
+  color: var(--gray-500);
 }
 .sp-draft .status-pill-dot {
-  background: #6b7280;
+  background: var(--gray-500);
 }
 .sp-active:has(input:checked) {
   background: var(--green-lt);
@@ -547,7 +547,7 @@ label.lbl span {
   border-color: rgba(240, 68, 68, .4);
 }
 .btn-primary {
-  color: #fff;
+  color: var(--white);
   background: linear-gradient(135deg, var(--a), var(--a2));
   box-shadow: 0 4px 18px rgba(37, 99, 235, .35);
 }
@@ -893,8 +893,8 @@ label.lbl span {
   background: var(--surface3);
 }
 .btn-modal-delete {
-  color: #fff;
-  background: linear-gradient(135deg, #dc2626, #f04444);
+  color: var(--white);
+  background: linear-gradient(135deg, var(--danger-hover), var(--danger-3));
   border: none;
   box-shadow: 0 4px 18px rgba(240, 68, 68, .30);
 }
@@ -922,7 +922,7 @@ label.lbl span {
   padding: 13px 16px;
   font-size: 13px;
   font-weight: 500;
-  color: #fff;
+  color: var(--white);
   border-radius: 14px;
   box-shadow: var(--sh-lg);
   animation: toastIn .3s ease both;
@@ -934,10 +934,10 @@ label.lbl span {
   height: 15px;
 }
 .toast-ok {
-  background: linear-gradient(135deg, #059669, #10b981);
+  background: linear-gradient(135deg, var(--success-mid), var(--success-soft));
 }
 .toast-err {
-  background: linear-gradient(135deg, #dc2626, #f04444);
+  background: linear-gradient(135deg, var(--danger-hover), var(--danger-3));
 }
 .toast-x {
   display: flex;
@@ -947,7 +947,7 @@ label.lbl span {
   height: 18px;
   margin-left: auto;
   font-size: 11px;
-  color: #fff;
+  color: var(--white);
   background: rgba(255, 255, 255, .22);
   border: none;
   border-radius: 5px;
@@ -1016,7 +1016,7 @@ label.lbl span {
   font-family: var(--mono);
   font-size: 11px;
   font-weight: 700;
-  color: #d97706;
+  color: var(--warning-hover);
   background: rgba(245, 158, 11, .12);
   border: 1px solid rgba(245, 158, 11, .3);
   border-radius: 100px;
@@ -1028,7 +1028,7 @@ label.lbl span {
 .unsaved-badge .ud-dot {
   width: 7px;
   height: 7px;
-  background: #f59e0b;
+  background: var(--warning);
   border-radius: 50%;
   box-shadow: 0 0 0 3px rgba(245, 158, 11, .18);
 }

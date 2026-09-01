@@ -144,7 +144,7 @@ textarea.f-input {
   font-family: var(--mono);
   font-size: 14px;
   font-weight: 700;
-  color: #fff;
+  color: var(--white);
   background: linear-gradient(135deg, var(--a), var(--a2));
   border: none;
   border-radius: var(--r-sm);
@@ -169,7 +169,7 @@ textarea.f-input {
   margin-bottom: 20px;
   padding: 12px 16px;
   font-size: 13px;
-  color: #b91c1c;
+  color: var(--danger-dark);
   background: var(--red-lt);
   border: 1px solid rgba(240, 68, 68, .22);
   border-radius: var(--r-sm);
@@ -181,5 +181,5 @@ textarea.f-input {
   margin-top: 1px;
 }
 [data-theme="dark"] .alert-error {
-  color: #f87171;
+  color: var(--danger-light);
 }

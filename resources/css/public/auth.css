@@ -1,50 +1,43 @@
+@import '../base/_variables.css';
+@import '../utilities/_z-index.css';
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-    --bg:          #f4f5fb;
-    --surface:     #ffffff;
-    --surface2:    #f8f9fe;
-    --border:      rgba(0,0,0,0.06);
-    --border2:     rgba(0,0,0,0.10);
-    --text:        #0f1117;
-    --text2:       #4b5563;
-    --text3:       #9ca3af;
-    --accent-glow: rgba(37,99,235,0.18);
-    --green:       #16a34a;
-    --red:         #ef4444;
-    --blue:        #3b82f6;
+    --green-neon:  var(--success-light);
+    --surface:     var(--white);
+    --surface2:    var(--surface-alt);
+    --border:      color-mix(in srgb, var(--black) 6%, transparent);
+    --border2:     color-mix(in srgb, var(--black) 10%, transparent);
+    --accent-glow: color-mix(in srgb, var(--primary) 18%, transparent);
+    --green:       var(--success);
+    --red:         var(--danger);
+    --blue:        var(--primary-light);
     --font:        'DM Sans', sans-serif;
     --font-mono:   'DM Mono', monospace;
     --radius:      14px;
     --radius-sm:   9px;
-    --shadow:      0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
-    --shadow-lg:   0 8px 40px rgba(0,0,0,0.12);
+    --shadow:      0 1px 3px color-mix(in srgb, var(--black) 6%, transparent), 0 4px 16px color-mix(in srgb, var(--black) 4%, transparent);
+    --shadow-lg:   0 8px 40px color-mix(in srgb, var(--black) 12%, transparent);
     --card:  var(--surface);
     --muted: var(--text2);
-    --danger: var(--red);
-    --primary:       #2563eb;
-    --secondary:     #0d9488;
-    --danger-hover:  #dc2626;
-    --dark-bg:       #0d0e1a;
-    --gray-850:      #333333;
-    --primary-ink-5:  #1a1040;
-    --primary-ink-8:  #13122b;
-    --success-strong:#059669;
-    --surface-tint-9:#f9fafb;
+    --primary-ink-5:  var(--dark-surface-21);
+    --primary-ink-8:  var(--dark-surface-19);
+    --success-strong:var(--success-mid);
 }
 
 [data-theme="dark"] {
-    --bg:          #0b0c14;
-    --surface:     #13141f;
-    --surface2:    #1a1b2e;
-    --border:      rgba(255,255,255,0.06);
-    --border2:     rgba(255,255,255,0.10);
-    --text:        #eff6ff;
-    --text2:       #a5b4c8;
-    --text3:       #5a6579;
-    --accent-glow: rgba(37,99,235,0.25);
-    --shadow:      0 1px 3px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.2);
-    --shadow-lg:   0 8px 40px rgba(0,0,0,0.5);
+    --bg:          var(--dark-deep-18);
+    --surface:     var(--dark-surface);
+    --surface2:    var(--dark-surface-2);
+    --border:      color-mix(in srgb, var(--white) 6%, transparent);
+    --border2:     color-mix(in srgb, var(--white) 10%, transparent);
+    --text:        var(--primary-tint-bg);
+    --text2:       var(--dark-muted-3);
+    --text3:       var(--dark-muted-2);
+    --accent-glow: color-mix(in srgb, var(--primary) 25%, transparent);
+    --shadow:      0 1px 3px color-mix(in srgb, var(--black) 30%, transparent), 0 4px 16px color-mix(in srgb, var(--black) 20%, transparent);
+    --shadow-lg:   0 8px 40px color-mix(in srgb, var(--black) 50%, transparent);
 }
 
 body {
@@ -98,7 +91,7 @@ body::after {
     border-radius: 24px;
     overflow: hidden;
     border: 1px solid var(--border);
-    box-shadow: var(--shadow-lg), 0 4px 24px rgba(0,0,0,0.10);
+    box-shadow: var(--shadow-lg), 0 4px 24px color-mix(in srgb, var(--black) 10%, transparent);
     animation: rise 0.55s cubic-bezier(0.22,1,0.36,1) both;
 }
 @keyframes rise {
@@ -108,8 +101,8 @@ body::after {
 
 .left-panel {
     background:
-        radial-gradient(ellipse at 70% 10%, rgba(37,99,235,0.28) 0%, transparent 55%),
-        radial-gradient(ellipse at 20% 90%, rgba(13,148,136,0.20) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 10%, color-mix(in srgb, var(--primary) 28%, transparent) 0%, transparent 55%),
+        radial-gradient(ellipse at 20% 90%, color-mix(in srgb, var(--secondary) 20%, transparent) 0%, transparent 50%),
         linear-gradient(160deg, var(--dark-bg) 0%, var(--primary-ink-8) 45%, var(--primary-ink-5) 100%);
     padding: 40px 36px;
     display: flex;
@@ -122,17 +115,17 @@ body::after {
 .deco-ring {
     position: absolute;
     border-radius: 50%;
-    border: 1px solid rgba(37,99,235,0.12);
+    border: 1px solid color-mix(in srgb, var(--primary) 12%, transparent);
     pointer-events: none;
 }
 .deco-ring-1 { width: 340px; height: 340px; top: -90px; right: -90px; }
-.deco-ring-2 { width: 230px; height: 230px; top: -30px; right: -30px; border-color: rgba(37,99,235,0.08); }
-.deco-ring-3 { width: 280px; height: 280px; bottom: -70px; left: -70px; border-color: rgba(13,148,136,0.08); }
+.deco-ring-2 { width: 230px; height: 230px; top: -30px; right: -30px; border-color: color-mix(in srgb, var(--primary) 8%, transparent); }
+.deco-ring-3 { width: 280px; height: 280px; bottom: -70px; left: -70px; border-color: color-mix(in srgb, var(--secondary) 8%, transparent); }
 .deco-blob {
     position: absolute;
     width: 160px; height: 160px;
     border-radius: 50%;
-    background: rgba(37,99,235,0.07);
+    background: color-mix(in srgb, var(--primary) 7%, transparent);
     bottom: 90px; right: -50px;
     pointer-events: none;
 }
@@ -142,8 +135,8 @@ body::after {
     position: absolute;
     inset: 0;
     background-image:
-        linear-gradient(rgba(37,99,235,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(37,99,235,0.04) 1px, transparent 1px);
+        linear-gradient(color-mix(in srgb, var(--primary) 4%, transparent) 1px, transparent 1px),
+        linear-gradient(90deg, color-mix(in srgb, var(--primary) 4%, transparent) 1px, transparent 1px);
     background-size: 32px 32px;
     pointer-events: none;
     z-index: var(--z-base);
@@ -160,10 +153,10 @@ body::after {
 }
 .brand-icon {
     width: 38px; height: 38px;
-    background: rgba(37,99,235,0.18);
+    background: color-mix(in srgb, var(--primary) 18%, transparent);
     border-radius: 10px;
     display: flex; align-items: center; justify-content: center;
-    border: 1px solid rgba(37,99,235,0.35);
+    border: 1px solid color-mix(in srgb, var(--primary) 35%, transparent);
 }
 .brand-name {
     font-family: var(--font-mono);
@@ -182,9 +175,9 @@ body::after {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: rgba(37,99,235,0.14);
-    border: 1px solid rgba(37,99,235,0.28);
-    color: rgba(255,255,255,0.82);
+    background: color-mix(in srgb, var(--primary) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--primary) 28%, transparent);
+    color: color-mix(in srgb, var(--white) 82%, transparent);
     font-family: var(--font-mono);
     font-size: 10px;
     font-weight: 500;
@@ -216,12 +209,12 @@ body::after {
     letter-spacing: -0.02em;
 }
 .left-heading .dim {
-    color: rgba(255,255,255,0.42);
+    color: color-mix(in srgb, var(--white) 42%, transparent);
 }
 .left-sub {
     font-family: var(--font);
     font-size: 13px;
-    color: rgba(255,255,255,0.52);
+    color: color-mix(in srgb, var(--white) 52%, transparent);
     line-height: 1.68;
 }
 
@@ -234,8 +227,8 @@ body::after {
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    background: rgba(126,255,196,0.10);
-    border: 1px solid rgba(126,255,196,0.22);
+    background: color-mix(in srgb, var(--green-neon) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--green-neon) 22%, transparent);
     border-radius: 99px;
     padding: 3px 10px;
     font-family: var(--font-mono);
@@ -253,8 +246,8 @@ body::after {
     animation: blink 1.3s ease-in-out infinite;
 }
 .activity-card {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(37,99,235,0.18);
+    background: color-mix(in srgb, var(--white) 5%, transparent);
+    border: 1px solid color-mix(in srgb, var(--primary) 18%, transparent);
     border-radius: 14px;
     padding: 13px 15px;
     display: flex;
@@ -281,12 +274,12 @@ body::after {
     font-family: var(--font);
     font-size: 12.5px;
     font-weight: 600;
-    color: rgba(255,255,255,0.88);
+    color: color-mix(in srgb, var(--white) 88%, transparent);
     line-height: 1.2;
 }
 .activity-desc {
     font-size: 11px;
-    color: rgba(255,255,255,0.45);
+    color: color-mix(in srgb, var(--white) 45%, transparent);
 }
 .activity-amount {
     font-family: var(--font-mono);
@@ -295,7 +288,7 @@ body::after {
     color: var(--green);
     flex-shrink: 0;
 }
-.activity-divider { height: 1px; background: rgba(37,99,235,0.12); margin: 0; }
+.activity-divider { height: 1px; background: color-mix(in srgb, var(--primary) 12%, transparent); margin: 0; }
 
 .trust-list {
     position: relative;
@@ -311,13 +304,13 @@ body::after {
     align-items: center;
     gap: 10px;
     font-size: 12.5px;
-    color: rgba(255,255,255,0.62);
+    color: color-mix(in srgb, var(--white) 62%, transparent);
     font-weight: 500;
 }
 .trust-icon {
     width: 30px; height: 30px;
-    background: rgba(37,99,235,0.12);
-    border: 1px solid rgba(37,99,235,0.22);
+    background: color-mix(in srgb, var(--primary) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--primary) 22%, transparent);
     border-radius: 8px;
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
@@ -332,8 +325,8 @@ body::after {
     margin-top: auto;
 }
 .stat-card {
-    background: rgba(37,99,235,0.10);
-    border: 1px solid rgba(37,99,235,0.20);
+    background: color-mix(in srgb, var(--primary) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--primary) 20%, transparent);
     border-radius: 11px;
     padding: 11px 8px;
     text-align: center;
@@ -349,7 +342,7 @@ body::after {
 .stat-label {
     font-family: var(--font);
     font-size: 10px;
-    color: rgba(255,255,255,0.45);
+    color: color-mix(in srgb, var(--white) 45%, transparent);
     font-weight: 500;
 }
 
@@ -378,8 +371,8 @@ body::after {
 }
 
 .session-status {
-    background: rgba(16,185,129,0.07);
-    border: 1px solid rgba(16,185,129,0.22);
+    background: color-mix(in srgb, var(--success-soft) 7%, transparent);
+    border: 1px solid color-mix(in srgb, var(--success-soft) 22%, transparent);
     border-radius: 10px;
     padding: 10px 14px;
     font-size: 13px;
@@ -392,8 +385,8 @@ body::after {
 }
 
 .alert-errors {
-    background: rgba(239,68,68,0.06);
-    border: 1px solid rgba(239,68,68,0.18);
+    background: color-mix(in srgb, var(--danger) 6%, transparent);
+    border: 1px solid color-mix(in srgb, var(--danger) 18%, transparent);
     border-radius: 10px;
     padding: 11px 14px;
     margin-bottom: 16px;
@@ -531,7 +524,7 @@ body::after {
     content: '';
     flex: 1;
     height: 1px;
-    background: rgba(0,0,0,0.07);
+    background: color-mix(in srgb, var(--black) 7%, transparent);
 }
 .divider span { font-size: 11.5px; color: var(--text3); font-weight: 500; font-family: var(--font-mono); }
 
@@ -547,7 +540,7 @@ body::after {
     font-weight: 600;
     color: var(--gray-850);
     background: white;
-    border: 1.5px solid rgba(0,0,0,0.09);
+    border: 1.5px solid color-mix(in srgb, var(--black) 9%, transparent);
     border-radius: 11px;
     cursor: pointer;
     text-decoration: none;
@@ -555,7 +548,7 @@ body::after {
 }
 .btn-google:hover {
     background: var(--surface-tint-9);
-    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    box-shadow: 0 2px 12px color-mix(in srgb, var(--black) 7%, transparent);
 }
 
 .register-link {
@@ -668,8 +661,8 @@ body::after {
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    background: rgba(126,255,196,0.10);
-    border: 1px solid rgba(126,255,196,0.22);
+    background: color-mix(in srgb, var(--green-neon) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--green-neon) 22%, transparent);
     border-radius: 99px;
     padding: 3px 10px;
     font-family: var(--font-mono);
@@ -687,8 +680,8 @@ body::after {
     animation: blink 1.3s ease-in-out infinite;
 }
 .impact-card {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(37,99,235,0.18);
+    background: color-mix(in srgb, var(--white) 5%, transparent);
+    border: 1px solid color-mix(in srgb, var(--primary) 18%, transparent);
     border-radius: 14px;
     padding: 13px 15px;
     display: flex;
@@ -707,25 +700,25 @@ body::after {
     flex-shrink: 0;
 }
 .impact-icon-free {
-    background: linear-gradient(135deg, rgba(126,255,196,0.18), rgba(59,130,246,0.18));
+    background: linear-gradient(135deg, color-mix(in srgb, var(--green-neon) 18%, transparent), color-mix(in srgb, var(--primary-light) 18%, transparent));
 }
 .impact-icon-secure {
-    background: linear-gradient(135deg, rgba(37,99,235,0.2), rgba(236,72,153,0.15));
+    background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 20%, transparent), color-mix(in srgb, var(--pink) 15%, transparent));
 }
 .impact-icon-tax {
-    background: linear-gradient(135deg, rgba(251,191,36,0.18), rgba(249,115,22,0.15));
+    background: linear-gradient(135deg, color-mix(in srgb, var(--warning-light) 18%, transparent), color-mix(in srgb, var(--orange-warm) 15%, transparent));
 }
 .impact-info { flex: 1; min-width: 0; }
 .impact-title {
     font-family: var(--font);
     font-size: 12.5px;
     font-weight: 600;
-    color: rgba(255,255,255,0.88);
+    color: color-mix(in srgb, var(--white) 88%, transparent);
     line-height: 1.2;
 }
 .impact-desc {
     font-size: 11px;
-    color: rgba(255,255,255,0.45);
+    color: color-mix(in srgb, var(--white) 45%, transparent);
 }
 .impact-tag {
     font-family: var(--font-mono);
@@ -736,18 +729,18 @@ body::after {
     flex-shrink: 0;
 }
 .impact-tag-free {
-    background: rgba(126,255,196,0.12);
+    background: color-mix(in srgb, var(--green-neon) 12%, transparent);
     color: var(--green);
 }
 .impact-tag-secure {
-    background: rgba(37,99,235,0.15);
+    background: color-mix(in srgb, var(--primary) 15%, transparent);
     color: var(--primary);
 }
 .impact-tag-tax {
-    background: rgba(251,191,36,0.12);
+    background: color-mix(in srgb, var(--warning-light) 12%, transparent);
     color: var(--warning);
 }
-.impact-divider { height: 1px; background: rgba(37,99,235,0.12); }
+.impact-divider { height: 1px; background: color-mix(in srgb, var(--primary) 12%, transparent); }
 
 .mobile-brand {
     display: none;
@@ -762,10 +755,10 @@ body::after {
 }
 .mobile-brand-icon {
     width: 36px; height: 36px;
-    background: rgba(37,99,235,0.15);
+    background: color-mix(in srgb, var(--primary) 15%, transparent);
     border-radius: 10px;
     display: flex; align-items: center; justify-content: center;
-    border: 1px solid rgba(37,99,235,0.25);
+    border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent);
 }
 .mobile-brand-name {
     font-family: var(--font-mono);
@@ -778,16 +771,16 @@ body::after {
 @media (max-width: 720px) {
     body {
         background: 
-            radial-gradient(circle at 15% 15%, rgba(37,99,235,0.32) 0%, transparent 45%),
-            radial-gradient(circle at 85% 85%, rgba(13,148,136,0.28) 0%, transparent 45%),
-            radial-gradient(circle at 50% 50%, rgba(236,72,153,0.18) 0%, transparent 55%),
+            radial-gradient(circle at 15% 15%, color-mix(in srgb, var(--primary) 32%, transparent) 0%, transparent 45%),
+            radial-gradient(circle at 85% 85%, color-mix(in srgb, var(--secondary) 28%, transparent) 0%, transparent 45%),
+            radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--pink) 18%, transparent) 0%, transparent 55%),
             var(--bg);
     }
     [data-theme="dark"] body {
         background: 
-            radial-gradient(circle at 15% 15%, rgba(37,99,235,0.38) 0%, transparent 45%),
-            radial-gradient(circle at 85% 85%, rgba(13,148,136,0.32) 0%, transparent 45%),
-            radial-gradient(circle at 50% 50%, rgba(139,92,246,0.22) 0%, transparent 55%),
+            radial-gradient(circle at 15% 15%, color-mix(in srgb, var(--primary) 38%, transparent) 0%, transparent 45%),
+            radial-gradient(circle at 85% 85%, color-mix(in srgb, var(--secondary) 32%, transparent) 0%, transparent 45%),
+            radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--violet) 22%, transparent) 0%, transparent 55%),
             var(--bg);
     }
     body::before, body::after { opacity: 0; }
@@ -837,12 +830,12 @@ body::after {
         border: 1px solid rgba(255, 255, 255, 0.08);
     }
     .session-status {
-        background: rgba(16,185,129,0.08);
+        background: color-mix(in srgb, var(--success-soft) 8%, transparent);
         backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);
     }
     .alert-errors {
-        background: rgba(239,68,68,0.05);
+        background: color-mix(in srgb, var(--danger) 5%, transparent);
         backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);
     }

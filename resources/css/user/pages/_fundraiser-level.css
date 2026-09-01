@@ -42,7 +42,7 @@
 .achieve-title-row { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
 .achieve-trophy {
   width: 32px; height: 32px; border-radius: 9px;
-  background: linear-gradient(135deg, rgba(245,158,11,.12), rgba(239,68,68,.08));
+  background: linear-gradient(135deg, color-mix(in srgb, var(--warning)  12%, transparent), color-mix(in srgb, var(--danger)  8%, transparent));
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   color: var(--warning);
 }
@@ -75,7 +75,7 @@
 .achieve-item.earned { background: var(--surface); }
 .achieve-item.earned::before {
   content: ''; position: absolute; inset: 0;
-  background: linear-gradient(135deg, color-mix(in srgb, var(--ac, var(--accent)) 4%, transparent), transparent 60%);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 4%, transparent), transparent 60%);
   pointer-events: none;
 }
 .achieve-ico {
@@ -85,9 +85,9 @@
   transition: all .3s ease; position: relative; z-index: 1;
 }
 .achieve-item.earned .achieve-ico {
-  background: var(--ac); color: var(--white);
-  box-shadow: 0 2px 8px color-mix(in srgb, var(--ac, var(--primary)) 30%, transparent),
-              0 0 0 3px color-mix(in srgb, var(--ac, var(--primary)) 10%, transparent);
+  background: var(--accent); color: var(--white);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--accent) 30%, transparent),
+              0 0 0 3px color-mix(in srgb, var(--accent) 10%, transparent);
 }
 .achieve-ico svg { width: 18px; height: 18px; }
 .achieve-check {
@@ -127,7 +127,7 @@
 .level-number-badge {
   display: inline-flex; align-items: center; justify-content: center;
   width: 36px; height: 36px; border-radius: 10px;
-  font-size: 16px; font-weight: 800; color: #fff;
+  font-size: 16px; font-weight: 800; color: var(--white);
   background: var(--level-color, var(--primary));
   box-shadow: 0 4px 14px color-mix(in srgb, var(--level-color, var(--primary)) 26%, transparent);
 }
@@ -155,8 +155,8 @@
 .level-table td { padding: 12px; border-bottom: 1px solid var(--border); transition: background var(--ease); }
 .level-table tr.is-current { background: var(--accent-lt); }
 .level-table-name { display: flex; align-items: center; gap: 8px; font-weight: 600; }
-.level-table-badge { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 7px; font-size: 12px; font-weight: 700; color: #fff; }
-.level-table-you { font-size: 9px; background: var(--accent); color: #fff; padding: 2px 7px; border-radius: 100px; font-family: var(--mono); font-weight: 700; }
+.level-table-badge { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 7px; font-size: 12px; font-weight: 700; color: var(--white); }
+.level-table-you { font-size: 9px; background: var(--accent); color: var(--white); padding: 2px 7px; border-radius: 100px; font-family: var(--mono); font-weight: 700; }
 .mono { font-family: var(--mono); font-weight: 600; }
 .kyc-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 600; font-family: var(--mono); }
 .kyc-none { background: var(--gray-lt); color: var(--text3); }
@@ -178,7 +178,7 @@
 }
 
 /* Dynamic utility classes */
-.wb-tag-dot-dynamic { background: var(--dot-color, var(--green)); box-shadow: 0 0 0 3px var(--dot-color-shadow, rgba(22,163,74,.15)); }
+.wb-tag-dot-dynamic { background: var(--dot-color, var(--green)); box-shadow: 0 0 0 3px var(--dot-color-shadow, color-mix(in srgb, var(--green)  15%, transparent)); }
 .level-progress-fill-dynamic { width: var(--level-progress-width, 0%); background: var(--level-progress-bg, linear-gradient(90deg, var(--primary), var(--secondary))); }
 .level-table-badge-dynamic { background: var(--badge-bg, var(--primary)); }
 .next-req-fill-dynamic { width: var(--req-width, 0%); background: var(--req-bg, var(--primary)); }

@@ -238,7 +238,7 @@
   transition: all var(--ease);
 }
 .view-btn:hover {
-  color: #fff;
+  color: var(--white);
   background: var(--a);
   box-shadow: 0 4px 14px rgba(37, 99, 235, .35);
 }
@@ -259,23 +259,23 @@
   border-radius: 100px;
 }
 .pill-pending {
-  color: #d9870b;
+  color: var(--warning-mid);
   background: rgba(245, 158, 11, .12);
 }
 .pill-under_review {
-  color: #6366f1;
+  color: var(--indigo);
   background: rgba(99, 102, 241, .12);
 }
 .pill-approved {
-  color: #059d6e;
+  color: var(--success-deep-4);
   background: rgba(5, 196, 138, .12);
 }
 .pill-rejected {
-  color: #ef4444;
+  color: var(--danger);
   background: rgba(239, 68, 68, .12);
 }
 .pill-draft {
-  color: #64748b;
+  color: var(--slate-500);
   background: rgba(148, 163, 184, .14);
 }
 .empty-state {
@@ -320,19 +320,19 @@
   animation-delay: .05s;
 }
 .stat:nth-child(1)::after {
-  background: linear-gradient(90deg, var(--amber), #fbbf24);
+  background: linear-gradient(90deg, var(--amber), var(--warning-light));
 }
 .stat:nth-child(2) {
   animation-delay: .10s;
 }
 .stat:nth-child(2)::after {
-  background: linear-gradient(90deg, var(--green), #34d399);
+  background: linear-gradient(90deg, var(--green), var(--success-tint));
 }
 .stat:nth-child(3) {
   animation-delay: .15s;
 }
 .stat:nth-child(3)::after {
-  background: linear-gradient(90deg, var(--red), #f87171);
+  background: linear-gradient(90deg, var(--red), var(--danger-light));
 }
 .stat:nth-child(4) {
   animation-delay: .20s;
@@ -528,7 +528,7 @@
   margin-bottom: 16px;
   padding: 12px 16px;
   font-size: 13px;
-  color: #065f46;
+  color: var(--success-deep);
   background: rgba(5, 196, 138, .08);
   border: 1px solid rgba(5, 196, 138, .22);
   border-radius: var(--r-sm);

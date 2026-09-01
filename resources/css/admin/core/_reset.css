@@ -70,8 +70,8 @@ select {
   padding: .5rem .75rem;
   font-size: 1rem;
   line-height: 1.5rem;
-  background-color: #fff;
-  border: 1px solid #6b7280;
+  background-color: var(--white);
+  border: 1px solid var(--gray-500);
   border-radius: 0;
 }
 input:where([type='text']):focus,
@@ -92,12 +92,12 @@ textarea:focus,
 select:focus {
   outline: 2px solid transparent;
   outline-offset: 2px;
-  border-color: #2563eb;
-  box-shadow: 0 0 0 1px #2563eb;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px var(--primary);
 }
 input::placeholder,
 textarea::placeholder {
-  color: #6b7280;
+  color: var(--gray-500);
   opacity: 1;
 }
 ::-webkit-datetime-edit-fields-wrapper {
@@ -145,12 +145,12 @@ input:where([type='radio']) {
   width: 1rem;
   height: 1rem;
   padding: 0;
-  color: #2563eb;
+  color: var(--primary);
   vertical-align: middle;
   user-select: none;
   background-origin: border-box;
-  background-color: #fff;
-  border: 1px solid #6b7280;
+  background-color: var(--white);
+  border: 1px solid var(--gray-500);
   print-color-adjust: exact;
 }
 input:where([type='checkbox']) {
@@ -163,7 +163,7 @@ input:where([type='checkbox']):focus,
 input:where([type='radio']):focus {
   outline: 2px solid transparent;
   outline-offset: 2px;
-  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #2563eb;
+  box-shadow: 0 0 0 2px var(--white), 0 0 0 4px var(--primary);
 }
 input:where([type='checkbox']):checked,
 input:where([type='radio']):checked {

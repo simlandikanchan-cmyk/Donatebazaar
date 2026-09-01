@@ -16,11 +16,11 @@ button {
     margin-top: 10px;
     font-size: 14px;
 }
-.error { color: #c0392b; }
-.success { color: #27ae60; }
+.error { color: var(--danger-4); }
+.success { color: var(--success-2); }
 .btn--primary {
-    background: #2563eb;
-    color: #fff;
+    background: var(--primary);
+    color: var(--white);
     border: none;
     border-radius: 8px;
     padding: 12px 24px;
@@ -29,12 +29,12 @@ button {
     cursor: pointer;
     transition: background 0.2s;
 }
-.btn--primary:hover { background: #1d4ed8; }
+.btn--primary:hover { background: var(--primary-hover); }
 .btn--primary:disabled { opacity: 0.6; cursor: not-allowed; }
 .btn--secondary {
-    background: #fff;
-    color: #333;
-    border: 1px solid #ccc;
+    background: var(--white);
+    color: var(--gray-950-alt);
+    border: 1px solid var(--gray-light);
     border-radius: 8px;
     padding: 12px 24px;
     font-size: 14px;
@@ -42,5 +42,5 @@ button {
     cursor: pointer;
     transition: background 0.2s;
 }
-.btn--secondary:hover { background: #f5f5f5; }
+.btn--secondary:hover { background: var(--surface-alt-3); }
 .btn--secondary:disabled { opacity: 0.6; cursor: not-allowed; }

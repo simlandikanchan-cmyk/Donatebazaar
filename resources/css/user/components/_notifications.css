@@ -5,10 +5,10 @@
 .notif-wrap { position: relative; }
 .notif-badge {
   position: absolute; top: -4px; right: -4px; min-width: 16px; height: 16px;
-  border-radius: 100px; background: var(--red, #ef4444); color: #fff;
+  border-radius: 100px; background: var(--red, var(--danger)); color: var(--white);
   font-size: 9px; font-weight: 700; font-family: var(--mono);
   display: inline-flex; align-items: center; justify-content: center;
-  padding: 0 4px; border: 2px solid var(--surface, #fff);
+  padding: 0 4px; border: 2px solid var(--surface, var(--white));
 }
 .notif-panel {
   position: absolute; top: calc(100% + 12px); right: 0; width: 330px; max-width: 88vw;

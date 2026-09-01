@@ -23,7 +23,7 @@
   transition: all var(--ease);
 }
 .step-active {
-  color: #fff;
+  color: var(--white);
   background: var(--a);
   box-shadow: 0 4px 14px rgba(37, 99, 235, .3);
 }
@@ -54,7 +54,7 @@
   background: rgba(255, 255, 255, .2);
 }
 .step-done .step-num {
-  color: #fff;
+  color: var(--white);
   background: var(--green);
 }
 .step-idle .step-num {
@@ -71,7 +71,7 @@
   white-space: nowrap;
 }
 .step-active .step-label {
-  color: #fff;
+  color: var(--white);
 }
 .step-done .step-label {
   color: var(--green);
@@ -445,7 +445,7 @@
   font-family: var(--mono);
   font-size: 12px;
   font-weight: 600;
-  color: #fff;
+  color: var(--white);
 }
 .draft-banner {
   display: flex;
@@ -520,7 +520,7 @@
   left: 3px;
   width: 16px;
   height: 16px;
-  background: #fff;
+  background: var(--white);
   border-radius: 50%;
   content: '';
   box-shadow: 0 2px 4px rgba(0, 0, 0, .15);
@@ -600,11 +600,11 @@
   border-radius: 6px;
 }
 .sb-draft {
-  color: #b45309;
+  color: var(--warning-dark);
   background: var(--amber-lt);
 }
 .sb-publish {
-  color: #059669;
+  color: var(--success-mid);
   background: var(--green-lt);
 }
 .action-bar {
@@ -631,23 +631,23 @@
   height: 14px;
 }
 .btn-publish {
-  color: #fff;
+  color: var(--white);
   background: linear-gradient(135deg, var(--a), var(--a2));
   box-shadow: 0 4px 18px rgba(37, 99, 235, .4);
 }
 .btn-publish:hover {
-  color: #fff;
+  color: var(--white);
   background: linear-gradient(135deg, var(--a), var(--a2));
   box-shadow: 0 8px 28px rgba(37, 99, 235, .5);
   transform: translateY(-2px);
 }
 .btn-draft {
-  color: #b45309;
+  color: var(--warning-dark);
   background: var(--amber-lt);
   border: 1px solid rgba(245, 158, 11, .3);
 }
 .btn-draft:hover {
-  color: #b45309;
+  color: var(--warning-dark);
   background: rgba(245, 158, 11, .2);
   transform: translateY(-1px);
 }
@@ -661,7 +661,7 @@
   background: var(--surface3);
 }
 .btn-next {
-  color: #fff;
+  color: var(--white);
   background: linear-gradient(135deg, var(--a), var(--a2));
   box-shadow: 0 4px 18px rgba(37, 99, 235, .35);
 }
@@ -814,7 +814,7 @@
 .campaign-check svg {
   width: 10px;
   height: 10px;
-  color: #fff;
+  color: var(--white);
 }
 .no-campaigns {
   padding: 40px 20px;

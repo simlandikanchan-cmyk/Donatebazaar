@@ -5,25 +5,25 @@
 :root {
     --db-font:          'DM Sans', 'Inter', system-ui, sans-serif;
     --db-font-mono:     'DM Mono', monospace;
-    --db-accent-from:   #2563eb ;
-    --db-accent-to:     #0d9488;
-    --db-accent-mid:    #1d4ed8;
-    --db-text-primary:  #111827;
-    --db-text-muted:    #6B7280;
-    --db-text-subtle:   #9CA3AF;
+    --db-accent-from:   var(--primary) ;
+    --db-accent-to:     var(--secondary);
+    --db-accent-mid:    var(--primary-hover);
+    --db-text-primary:  var(--gray-900);
+    --db-text-muted:    var(--gray-500);
+    --db-text-subtle:   var(--text3);
     --db-border:        rgba(17, 24, 39, 0.08);
     --db-border-focus:  rgba(59, 111, 232, 0.5);
     --db-surface:       rgba(255, 255, 255, 0.88);
-    --db-surface-solid: #ffffff;
-    --db-danger:        #DC2626;
+    --db-surface-solid: var(--white);
+    --db-danger:        var(--danger-hover);
     --db-danger-bg:     rgba(220, 38, 38, 0.06);
     --db-hover-bg:      rgba(59, 111, 232, 0.06);
     --db-radius-sm:     8px;
     --db-radius-md:     12px;
     --db-radius-lg:     16px;
-    --db-shadow-sm:     0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-    --db-shadow-md:     0 4px 20px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.05);
-    --db-shadow-lg:     0 8px 32px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06);
+    --db-shadow-sm:     0 1px 3px color-mix(in srgb, var(--black) 6%, transparent), 0 1px 2px color-mix(in srgb, var(--black) 4%, transparent);
+    --db-shadow-md:     0 4px 20px color-mix(in srgb, var(--black) 8%, transparent), 0 2px 8px color-mix(in srgb, var(--black) 5%, transparent);
+    --db-shadow-lg:     0 8px 32px color-mix(in srgb, var(--black) 10%, transparent), 0 2px 8px color-mix(in srgb, var(--black) 6%, transparent);
     --db-transition:    0.18s cubic-bezier(0.4, 0, 0.2, 1);
     --db-navbar-h:      64px;
     --db-accent-grad:   linear-gradient(135deg, var(--db-accent-from), var(--db-accent-to));
@@ -288,8 +288,8 @@
 
 .db-btn--ghost:hover {
     color: var(--db-text-primary);
-    background: rgba(0,0,0,0.04);
-    border-color: rgba(0,0,0,0.14);
+    background: color-mix(in srgb, var(--black) 4%, transparent);
+    border-color: color-mix(in srgb, var(--black) 14%, transparent);
 }
 
 .db-btn--full {
@@ -526,7 +526,7 @@
 }
 
 .db-profile__trigger:hover {
-    background: rgba(0,0,0,0.04);
+    background: color-mix(in srgb, var(--black) 4%, transparent);
     border-color: rgba(59, 111, 232, 0.25);
 }
 
@@ -753,12 +753,12 @@
 
 /* ─── Mobile drawer (premium slide-in) ──────────────────────────── */
 .db-drawer {
-    --drawer-text:    #111827;
-    --drawer-text-2:  #6B7280;
-    --drawer-border:  #E5E7EB;
-    --drawer-hover:   #F7F8FA;
-    --drawer-primary: #2563EB;
-    --drawer-success: #16A34A;
+    --drawer-text:    var(--gray-900);
+    --drawer-text-2:  var(--gray-500);
+    --drawer-border:  var(--gray-200);
+    --drawer-hover:   var(--surface-warm-5);
+    --drawer-primary: var(--primary);
+    --drawer-success: var(--success);
     --drawer-radius:  20px;
 
     display: none;

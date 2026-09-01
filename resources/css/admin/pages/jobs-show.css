@@ -66,22 +66,22 @@
   border: 1px solid rgba(37, 99, 235, .3);
 }
 .hc-loc {
-  color: #059669;
+  color: var(--success-mid);
   background: var(--green-lt);
   border: 1px solid rgba(5, 196, 138, .3);
 }
 .hc-sal {
-  color: #059669;
+  color: var(--success-mid);
   background: rgba(5, 196, 138, .2);
   border: 1px solid rgba(5, 196, 138, .3);
 }
 .hc-exp {
-  color: #2563eb;
+  color: var(--primary);
   background: var(--blue-lt);
   border: 1px solid rgba(59, 130, 246, .3);
 }
 .hc-vac {
-  color: #d97706;
+  color: var(--warning-hover);
   background: var(--amber-lt);
   border: 1px solid rgba(245, 158, 11, .3);
 }
@@ -334,7 +334,7 @@
   border-color: rgba(37, 99, 235, .2);
 }
 .ab-view:hover {
-  color: #fff;
+  color: var(--white);
   background: var(--a);
   box-shadow: 0 4px 14px rgba(37, 99, 235, .35);
 }
@@ -344,7 +344,7 @@
   border-color: rgba(5, 196, 138, .2);
 }
 .ab-download:hover {
-  color: #fff;
+  color: var(--white);
   background: var(--green);
   border-color: var(--green);
 }
@@ -354,17 +354,17 @@
   border-color: rgba(245, 158, 11, .2);
 }
 .ab-shortlist:hover {
-  color: #fff;
+  color: var(--white);
   background: var(--amber);
   border-color: var(--amber);
 }
 /* ── badge sub-classes (not in admin.css) ── */
 .b-shortlisted {
-  color: #fff;
+  color: var(--white);
   background: rgba(5, 196, 138, .85);
 }
 .b-hired {
-  color: #fff;
+  color: var(--white);
   background: rgba(37, 99, 235, .85);
 }
 /* ── side card ── */
@@ -453,7 +453,7 @@
   height: 14px;
 }
 .btn-primary {
-  color: #fff;
+  color: var(--white);
   background: linear-gradient(135deg, var(--a), var(--a2));
   box-shadow: 0 4px 18px rgba(37, 99, 235, .35);
 }
@@ -476,7 +476,7 @@
   border: 1px solid rgba(240, 68, 68, .2);
 }
 .btn-danger:hover {
-  color: #fff;
+  color: var(--white);
   background: var(--red);
   border-color: var(--red);
 }
@@ -486,7 +486,7 @@
   border: 1px solid rgba(37, 99, 235, .2);
 }
 .btn-edit:hover {
-  color: #fff;
+  color: var(--white);
   background: var(--a);
   border-color: var(--a);
 }
@@ -580,7 +580,7 @@
   height: 24px;
   font-size: 10px;
   font-weight: 700;
-  color: #fff;
+  color: var(--white);
   border-radius: 50%;
 }
 .tl-dot-done {
@@ -686,7 +686,7 @@
   padding: 12px 16px;
   font-size: 13px;
   font-weight: 500;
-  color: #065f46;
+  color: var(--success-deep);
   background: rgba(5, 196, 138, .09);
   border: 1px solid rgba(5, 196, 138, .25);
   border-radius: var(--r-sm);

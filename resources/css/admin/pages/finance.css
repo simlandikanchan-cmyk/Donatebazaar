@@ -647,7 +647,7 @@
   border-radius: 100px;
 }
 .dn-completed {
-  color: #059c7f;
+  color: var(--secondary-deep);
   background: rgba(5, 196, 138, .12);
   border-color: rgba(5, 196, 138, .25);
 }
@@ -662,17 +662,17 @@
   border-color: rgba(240, 68, 68, .25);
 }
 .dn-refunded {
-  color: #6b7280;
+  color: var(--gray-500);
   background: rgba(107, 114, 128, .12);
   border-color: rgba(107, 114, 128, .25);
 }
 .dn-yes {
-  color: #059c7f;
+  color: var(--secondary-deep);
   background: rgba(5, 196, 138, .12);
   border-color: rgba(5, 196, 138, .25);
 }
 .dn-no {
-  color: #9ca3af;
+  color: var(--text3);
   background: rgba(107, 114, 128, .1);
   border-color: rgba(107, 114, 128, .2);
 }
@@ -682,7 +682,7 @@
   border-color: rgba(37, 99, 235, .2);
 }
 .ab-view:hover {
-  color: #fff;
+  color: var(--white);
   background: var(--a);
   box-shadow: 0 4px 14px rgba(37, 99, 235, .35);
 }

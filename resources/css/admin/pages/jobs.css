@@ -376,15 +376,15 @@
   color: var(--text3);
 }
 .status-pills .sp-draft:has(input:checked) {
-  color: #6b7280;
+  color: var(--gray-500);
   background: rgba(107, 114, 128, .08);
   border-color: rgba(107, 114, 128, .35);
 }
 .status-pills .sp-draft:has(input:checked) .sp-lbl {
-  color: #6b7280;
+  color: var(--gray-500);
 }
 .status-pills .sp-draft .sp-dot {
-  background: #6b7280;
+  background: var(--gray-500);
 }
 .status-pills .sp-active:has(input:checked) {
   color: var(--green);
@@ -1025,22 +1025,22 @@
   border: 1px solid rgba(37, 99, 235, .3);
 }
 .hc-loc {
-  color: #059669;
+  color: var(--success-mid);
   background: var(--green-lt);
   border: 1px solid rgba(5, 196, 138, .3);
 }
 .hc-sal {
-  color: #059669;
+  color: var(--success-mid);
   background: rgba(5, 196, 138, .2);
   border: 1px solid rgba(5, 196, 138, .3);
 }
 .hc-exp {
-  color: #2563eb;
+  color: var(--primary);
   background: var(--blue-lt);
   border: 1px solid rgba(59, 130, 246, .3);
 }
 .hc-vac {
-  color: #d97706;
+  color: var(--warning-hover);
   background: var(--amber-lt);
   border: 1px solid rgba(245, 158, 11, .3);
 }
@@ -1370,10 +1370,10 @@
   color: var(--text3);
 }
 .status-pills .sp-draft .status-pill-dot {
-  background: #6b7280;
+  background: var(--gray-500);
 }
 .status-pills .sp-draft:has(input:checked) .status-pill-lbl {
-  color: #6b7280;
+  color: var(--gray-500);
 }
 .status-pills .sp-active .status-pill-dot {
   background: var(--green);

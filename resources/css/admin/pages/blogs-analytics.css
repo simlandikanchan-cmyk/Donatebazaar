@@ -157,7 +157,7 @@
   border-radius: 6px;
 }
 .sp-green {
-  color: #059669;
+  color: var(--success-mid);
   background: var(--green-lt);
 }
 .sp-red {
@@ -165,7 +165,7 @@
   background: var(--red-lt);
 }
 .sp-amber {
-  color: #b45309;
+  color: var(--warning-dark);
   background: var(--amber-lt);
 }
 .sp-gray {

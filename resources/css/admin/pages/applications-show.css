@@ -40,7 +40,7 @@
   font-family: var(--mono);
   font-size: 22px;
   font-weight: 800;
-  color: #fff;
+  color: var(--white);
   background: linear-gradient(135deg, var(--a), var(--a2));
   border-radius: 16px;
   box-shadow: 0 4px 18px rgba(37, 99, 235, .35);
@@ -164,36 +164,36 @@
   border-radius: 100px;
 }
 .tag-green {
-  color: #047857;
+  color: var(--success-dark);
   background: rgba(5, 196, 138, .12);
   border-color: rgba(5, 196, 138, .22);
 }
 [data-theme="dark"] .tag-green {
-  color: #34d399;
+  color: var(--success-tint);
 }
 .tag-amber {
-  color: #b45309;
+  color: var(--warning-dark);
   background: rgba(245, 158, 11, .12);
   border-color: rgba(245, 158, 11, .22);
 }
 [data-theme="dark"] .tag-amber {
-  color: #fbbf24;
+  color: var(--warning-light);
 }
 .tag-red {
-  color: #b91c1c;
+  color: var(--danger-dark);
   background: rgba(240, 68, 68, .12);
   border-color: rgba(240, 68, 68, .22);
 }
 [data-theme="dark"] .tag-red {
-  color: #f87171;
+  color: var(--danger-light);
 }
 .tag-blue {
-  color: #1d4ed8;
+  color: var(--primary-hover);
   background: rgba(59, 130, 246, .12);
   border-color: rgba(59, 130, 246, .22);
 }
 [data-theme="dark"] .tag-blue {
-  color: #93c5fd;
+  color: var(--primary-tint);
 }
 /* ── Document link ── */
 .doc-link {
@@ -235,12 +235,12 @@
 }
 /* ── Badge override ── */
 .b-review {
-  color: #1d4ed8;
+  color: var(--primary-hover);
   background: rgba(59, 130, 246, .15);
   border: 1px solid rgba(59, 130, 246, .25);
 }
 [data-theme="dark"] .b-review {
-  color: #93c5fd;
+  color: var(--primary-tint);
 }
 /* ── Flash ── */
 .flash-ok {
@@ -251,13 +251,13 @@
   padding: 12px 16px;
   font-size: 13px;
   font-weight: 500;
-  color: #065f46;
+  color: var(--success-deep);
   background: rgba(5, 196, 138, .09);
   border: 1px solid rgba(5, 196, 138, .25);
   border-radius: var(--r-sm);
 }
 [data-theme="dark"] .flash-ok {
-  color: #34d399;
+  color: var(--success-tint);
 }
 .flash-ok svg {
   flex-shrink: 0;
@@ -348,7 +348,7 @@
   height: 24px;
   font-size: 10px;
   font-weight: 700;
-  color: #fff;
+  color: var(--white);
   border-radius: 50%;
 }
 .tl-dot-done {

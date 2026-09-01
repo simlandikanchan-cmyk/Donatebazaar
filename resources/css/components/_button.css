@@ -124,7 +124,7 @@
 
 /* ── 3. VARIANTS ─────────────────────────────────────────────────────── */
 .btn--primary {
-  --btn-bg: linear-gradient(135deg, #5182ef, var(--secondary));
+  --btn-bg: linear-gradient(135deg, var(--primary), var(--secondary));
   --btn-fg: var(--white);
   --btn-bg-h: linear-gradient(135deg, var(--primary-hover), var(--secondary-hover));
   --btn-fg-h: var(--white);
@@ -234,7 +234,8 @@
 }
 .btn--pill { border-radius: 999px; }
 
-.btn--icon { padding: 0; width: var(--btn-min-h); }
+.btn--icon { padding: 0; width: var(--btn-min-h); justify-content: center; }
+.btn--icon .btn__label { display: inline-flex; align-items: center; justify-content: center; }
 .btn--icon.btn--sm { width: var(--btn-min-h-sm); }
 .btn--icon.btn--lg { width: var(--btn-min-h-lg); }
 

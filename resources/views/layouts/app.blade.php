@@ -30,7 +30,7 @@
 
     <a href="#main-content" class="skip-link">Skip to main content</a>
 
-    @if(!request()->routeIs('events.edit') && !request()->routeIs('events.show'))
+    @if(!request()->routeIs('events.edit'))
     {{-- Navigation --}}
     @include('layouts.navigation')
     @endif
@@ -40,7 +40,7 @@
         @yield('content')
     </main>
 
-    @if(!request()->routeIs('events.edit') && !request()->routeIs('events.show'))
+    @if(!request()->routeIs('events.edit'))
     {{-- Footer --}}
     @include('partials.footer')
 

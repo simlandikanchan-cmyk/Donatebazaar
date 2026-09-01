@@ -108,36 +108,31 @@
         </div>
 
         <div class="c-actions">
-            <x-button variant="secondary" href="{{ route('campaign.show', $campaign->id) }}">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7-1.274 4.057-5.064 7-9.542 7"/></svg>
-                View
+            <x-button variant="secondary" href="{{ route('campaign.show', $campaign->id) }}" title="View" iconOnly>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
             </x-button>
-            <x-button variant="secondary" href="{{ route('campaign.edit', $campaign->id) }}">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                Edit
+            <x-button variant="secondary" href="{{ route('campaign.edit', $campaign->id) }}" title="Edit" iconOnly>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16.862 4.487a2.06 2.06 0 1 2.912 2.912L7.5 19.675 3 21l1.325-4.5L16.862 4.487z"/></svg>
             </x-button>
             @if($fv === 'active')
             <form action="{{ route('campaign.pause', $campaign->id) }}" method="POST" data-loading-text="Pausing…">
                 @csrf
-                 <x-button variant="secondary" type="submit">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    Pause
+                <x-button variant="secondary" type="submit" title="Pause" iconOnly>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
                 </x-button>
             </form>
             @elseif($fv === 'paused')
             <form action="{{ route('campaign.resume', $campaign->id) }}" method="POST" data-loading-text="Resuming…">
                 @csrf
-                <x-button variant="secondary" type="submit">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    Resume
+                <x-button variant="secondary" type="submit" title="Resume" iconOnly>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="6,3 20,12 6,21" fill="currentColor"/></svg>
                 </x-button>
             </form>
             @elseif($fv === 'rejected')
             <form action="{{ route('campaign.resubmit', $campaign->id) }}" method="POST" data-loading-text="Resubmitting…">
                 @csrf
-                <x-button variant="secondary" type="submit">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                    Resubmit
+                <x-button variant="secondary" type="submit" title="Resubmit" iconOnly>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>
                 </x-button>
             </form>
             @endif
@@ -197,24 +192,24 @@
         @endif
     </div>
     <div class="c-list-actions">
-        <x-button variant="secondary" href="{{ route('campaign.show', $campaign->id) }}" class="btn btn-secondary">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>View
+        <x-button variant="secondary" href="{{ route('campaign.show', $campaign->id) }}" iconOnly title="View">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
         </x-button>
-        <x-button variant="secondary" href="{{ route('campaign.edit', $campaign->id) }}" class="btn btn-secondary">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>Edit
+        <x-button variant="secondary" href="{{ route('campaign.edit', $campaign->id) }}" iconOnly title="Edit">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16.862 4.487a2.06 2.06 0 1 2.912 2.912L7.5 19.675 3 21l1.325-4.5L16.862 4.487z"/></svg>
         </x-button>
         @if($fv === 'active')
         <form action="{{ route('campaign.pause', $campaign->id) }}" method="POST" data-loading-text="…">
             @csrf
-            <x-button variant="secondary" type="submit">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Pause
+            <x-button variant="secondary" type="submit" iconOnly title="Pause">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
             </x-button>
         </form>
         @elseif($fv === 'paused')
         <form action="{{ route('campaign.resume', $campaign->id) }}" method="POST" data-loading-text="…">
             @csrf
-            <x-button variant="secondary" type="submit">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Resume
+            <x-button variant="secondary" type="submit" iconOnly title="Resume">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="6,3 20,12 6,21" fill="currentColor"/></svg>
             </x-button>
         </form>
         @endif

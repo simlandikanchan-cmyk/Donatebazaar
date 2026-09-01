@@ -1141,7 +1141,7 @@
   background: var(--green-lt);
 }
 .en-pink, .ei-pink {
-  color: #ec4899;
+  color: var(--pink);
   background: rgba(236, 72, 153, .12);
 }
 .en-yellow, .ei-yellow {
@@ -2019,7 +2019,7 @@
   background: var(--blue);
 }
 .fill-pink {
-  background: #ec4899;
+  background: var(--pink);
 }
 .fill-green {
   background: var(--green);

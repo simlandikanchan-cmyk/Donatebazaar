@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KYC &amp; Fundraiser Level Flow — Animated Diagram</title>
+<style>
+  :root{
+    --bg:#0f172a;
+    --panel:#1e293b;
+    --panel2:#0b1322;
+    --border:#334155;
+    --text:#e2e8f0;
+    --muted:#94a3b8;
+    --blue:#38bdf8;
+    --cyan:#22d3ee;
+    --green:#34d399;
+    --yellow:#fbbf24;
+    --red:#fb7185;
+    --violet:#a78bfa;
+    --orange:#fb923c;
+    --radius:14px;
+    --dash:10;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;font-family:"Segoe UI",system-ui,-apple-system,sans-serif;
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(56,189,248,.12), transparent 60%),
+      radial-gradient(1000px 500px at -10% 10%, rgba(167,139,250,.10), transparent 60%),
+      var(--bg);
+    color:var(--text);padding:40px 24px 80px;line-height:1.5;
+  }
+  header{max-width:1100px;margin:0 auto 34px}
+  h1{font-size:clamp(1.6rem,4vw,2.3rem);margin:0 0 6px;letter-spacing:.2px}
+  h1 .dot{color:var(--cyan)}
+  .sub{color:var(--muted);font-size:1rem;margin-bottom:22px}
+  .legend{display:flex;flex-wrap:wrap;gap:18px;font-size:.82rem;color:var(--muted);
+    background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);
+    padding:14px 18px;max-width:1100px;margin:0 auto 40px}
+  .legend span{display:inline-flex;align-items:center;gap:8px}
+  .sw{width:13px;height:13px;border-radius:4px;display:inline-block}
+  .sw.start{background:var(--green)}
+  .sw.process{background:var(--blue)}
+  .sw.branch{background:var(--violet)}
+  .sw.end{background:var(--red)}
+  .sw.data{background:var(--orange)}
+
+  section{max-width:1100px;margin:0 auto 60px}
+  section h2{font-size:1.35rem;margin:0 0 18px;display:flex;align-items:center;gap:10px}
+  section h2 .tag{font-size:.72rem;background:var(--cyan);color:#082f49;padding:3px 9px;
+    border-radius:999px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+
+  .canvas{
+    position:relative;background:var(--panel2);border:1px solid var(--border);
+    border-radius:var(--radius);padding:34px 20px 20px;overflow:hidden;
+    box-shadow:0 20px 50px rgba(0,0,0,.35);
+  }
+  .canvas::before{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background-image:radial-gradient(rgba(255,255,255,.04) 1px, transparent 1px);
+    background-size:22px 22px;
+  }
+  .flow{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;min-height:420px}
+
+  /* ── nodes ───────────────────────────────────────────── */
+  .node{
+    position:relative;background:var(--panel);border:1px solid var(--border);
+    border-radius:var(--radius);padding:14px 22px;text-align:center;
+    font-size:.9rem;width:min(78%,360px);cursor:pointer;
+    transition:transform .2s,box-shadow .2s,border-color .3s;user-select:none;
+  }
+  .node:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(0,0,0,.4)}
+  .node .n-title{font-weight:700;margin-bottom:2px}
+  .node .n-desc{font-size:.76rem;color:var(--muted)}
+  .node.start{border-color:var(--green);box-shadow:0 0 0 1px var(--green) inset}
+  .node.start .n-title{color:var(--green)}
+  .node.process{border-color:var(--blue)}
+  .node.process .n-title{color:var(--blue)}
+  .node.branch{border-color:var(--violet)}
+  .node.branch .n-title{color:var(--violet)}
+  .node.end{border-color:var(--red)}
+  .node.end .n-title{color:var(--red)}
+  .node.data{border-color:var(--orange)}
+  .node.data .n-title{color:var(--orange)}
+  .node:not([data-phase]){opacity:.92}
+  .connector{width:2px;height:34px;background:var(--border);position:relative;z-index:1}
+
+  /* ── labels on vertical connectors ───────────────────── */
+  .badge{position:relative;z-index:2;background:var(--panel);border:1px solid var(--border);
+    color:var(--muted);font-size:.72rem;padding:3px 10px;border-radius:999px;margin:2px 0}
+  .badge.yes{border-color:var(--green);color:var(--green)}
+  .badge.no{border-color:var(--red);color:var(--red)}
+
+  /* ── highlight overlay for animated token ────────────── */
+  .node.hl{border-color:var(--cyan);box-shadow:0 0 0 2px var(--cyan),0 16px 34px rgba(34,211,238,.25);
+    transform:translateY(-2px)}
+  .node.ok{border-color:var(--green);box-shadow:0 0 0 2px var(--green)}
+  .node.err{border-color:var(--red);box-shadow:0 0 0 2px var(--red); animation:shake .4s}
+  .connector.hl{background:var(--cyan);box-shadow:0 0 12px var(--cyan)}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+  /* ── controls ────────────────────────────────────────── */
+  .controls{display:flex;gap:10px;justify-content:center;margin:26px 0 8px;flex-wrap:wrap}
+  .controls button{
+    background:var(--panel);color:var(--text);border:1px solid var(--border);
+    padding:9px 18px;border-radius:10px;font-size:.85rem;cursor:pointer;
+    transition:all .18s;font-weight:600;
+  }
+  .controls button:hover:not(:disabled){border-color:var(--cyan);color:var(--cyan);transform:translateY(-1px)}
+  .controls button.primary{background:var(--cyan);color:#082f49;border-color:var(--cyan)}
+  .controls button.primary:hover{background:#7dd3fc}
+  .controls button:disabled{opacity:.4;cursor:not-allowed}
+  .step-note{
+    text-align:center;color:var(--cyan);font-size:.9rem;min-height:24px;
+    font-family:ui-monospace,Consolas,monospace;letter-spacing:.2px;margin-top:4px;
+  }
+
+  /* ── pulsing index badges on nodes ───────────────────── */
+  .idx{position:absolute;top:-9px;left:-9px;width:22px;height:22px;border-radius:50%;
+    background:var(--cyan);color:#082f49;font-size:.72rem;font-weight:800;
+    display:flex;align-items:center;justify-content:center;opacity:0;z-index:3;
+    transition:opacity .3s}
+  .canvas.running .idx{animation:pulse 1.6s infinite}
+  @keyframes pulse{0%{transform:scale(.8);opacity:0}40%{opacity:1}100%{transform:scale(1.15);opacity:.2}}
+
+  /* ── progressive trail (once visited stays lit) ──────── */
+  .node.trail{border-color:var(--cyan);opacity:1}
+  .node.trail .n-title{color:var(--cyan)}
+  .node.trail.ok{border-color:var(--green)}
+  .node.trail.ok .n-title{color:var(--green)}
+  .node.trail.err{border-color:var(--red)}
+  .node.trail.err .n-title{color:var(--red)}
+  .connector.trail{background:var(--cyan)}
+  .canvas.running .node.trail.ok{background:linear-gradient(180deg, rgba(52,211,153,.10), rgba(52,211,153,.02))}
+
+  .foot{max-width:1100px;margin:30px auto 0;color:var(--muted);font-size:.82rem;
+    display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+  .pill{background:var(--panel);border:1px solid var(--border);padding:6px 14px;border-radius:999px}
+  footer{text-align:center;color:var(--muted);font-size:.78rem;margin-top:50px}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>KYC &amp; Fundraiser Level <span class="dot">Flow</span></h1>
+  <div class="sub">Interactive animated flow of the DonateBazaar campaign lifecycle — KYC verification and fundraiser-level gating.</div>
+</header>
+
+<div class="legend">
+  <span><i class="sw start"></i> Start / Entry</span>
+  <span><i class="sw process"></i> Process</span>
+  <span><i class="sw branch"></i> Decision / Branch</span>
+  <span><i class="sw data"></i> Data / Store</span>
+  <span><i class="sw end"></i> End / Error</span>
+  <span><i class="sw" style="background:var(--cyan)"></i> Animated active step</span>
+</div>
+
+<!-- ══════════════════════ SECTION 1: REGISTRATION + LEVEL ═══════════════════ -->
+<section>
+  <h2><span class="tag">Flow 1</span> Registration &amp; Level Assignment</h2>
+  <div class="canvas" data-flow>
+    <div class="flow">
+      <div class="node start" data-node data-phase="0">
+        <div class="idx">1</div>
+        <div class="n-title">User Registers</div>
+        <div class="n-desc">Password / Google / OTP</div>
+      </div>
+      <div class="connector" data-c></div>
+      <div class="node process" data-node data-phase="1">
+        <div class="idx">2</div>
+        <div class="n-title">ensureDefaultLevel()</div>
+        <div class="n-desc">Creates ONE idempotent user_fundraiser_levels row</div>
+      </div>
+      <div class="connector" data-c></div>
+      <div class="node data" data-node data-phase="2">
+        <div class="idx">3</div>
+        <div class="n-title">Default Level (is_default = true)</div>
+        <div class="n-desc">Usually Starter · level_number 1</div>
+      </div>
+      <div class="connector" data-c></div>
+      <div class="node process" data-node data-phase="3">
+        <div class="idx">4</div>
+        <div class="n-title">User ready to create campaign</div>
+        <div class="n-desc">No approved KYC yet · level row present</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ SECTION 2: CAMPAIGN CREATION ══════════════════════ -->
+<section>
+  <h2><span class="tag">Flow 2</span> Campaign Creation &amp; Level Gate</h2>
+  <div class="canvas" data-flow>
+    <div class="flow">
+      <div class="node process" data-node data-phase="0">
+        <div class="idx">1</div>
+        <div class="n-title">CampaignController::store()</div>
+        <div class="n-desc">User submits a new campaign</div>
+      </div>
+      <div class="connector" data-c></div>
+      <div class="node branch" data-node data-phase="1">
+        <div class="idx">2</div>
+        <div class="n-title">resolveLevel(user)</div>
+        <div class="n-desc">assigned level → default level → null</div>
+      </div>
+      <div class="connector" data-c></div>
+      <div class="node branch" data-node data-phase="2">
+        <div class="idx">3</div>
+        <div class="n-title">canCreateCampaign()</div>
+        <div class="n-desc">1. active count check · 2. goal ≤ level cap</div>
+      </div>
+      <div class="badge">allowed ?</div>
+      <div class="node end" data-node data-phase="3" data-kind="err">
+        <div class="idx">!</div>
+        <div class="n-title">BLOCKED → back with error</div>
+        <div class="n-desc">count exceeded or goal above cap</div>
+      </div>
+      <div class="node start" data-node data-phase="4" data-kind="ok">
+        <div class="idx">4</div>
+        <div class="n-title">Campaign created</div>
+        <div class="n-desc">state = pending · required_level_id set</div>
+      </div>
+      <div class="connector" data-c></div>
+      <div class="node branch" data-node data-phase="5">
+        <div class="idx">5</div>
+        <div class="n-title">isKycApproved()</div>
+        <div class="n-desc">any approved KYC row for this user?</div>
+      </div>
+      <div class="badge">No →</div>
+      <div class="node process" data-node data-phase="6">
+        <div class="idx">6</div>
+        <div class="n-title">Redirect → KYC upload form</div>
+        <div class="n-desc">must verify before activating</div>
+      </div>
+      <div class="badge">Yes →</div>
+      <div class="node start" data-node data-phase="7" data-kind="ok">
+        <div class="idx">✓</div>
+        <div class="n-title">Redirect → campaign.show</div>
+        <div class="n-desc">already verified</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ SECTION 3: KYC VERIFICATION ═══════════════════════ -->
+<section>
+  <h2><span class="tag">Flow 3</span> KYC Verification</h2>
+  <div class="canvas" data-flow>
+    <div class="flow">
+      <div class="node process" data-node data-phase="0">
+        <div class="idx">1</div>
+        <div class="n-title">KycUploadController::store()</div>
+        <div class="n-desc">per-campaign upload (user_id + campaign_id)</div>
+      </div>
+      <div class="connector" data-c></div>
+      <div class="node branch" data-node data-phase="1">
+        <div class="idx">2</div>
+        <div class="n-title">isKycApproved()?</div>
+        <div class="n-desc">already verified?</div>
+      </div>
+      <div class="badge">Yes →</div>
+      <div class="node start" data-node data-phase="2" data-kind="ok">
+        <div class="idx">✓</div>
+        <div class="n-title">"KYC already approved"</div>
+        <div class="n-desc">no re-upload forced</div>
+      </div>
+      <div class="badge">No →</div>
+      <div class="node data" data-node data-phase="3">
+        <div class="idx">3</div>
+        <div class="n-title">updateOrCreate(user_id, campaign_id)</div>
+        <div class="n-desc">store doc on private disk · UNIQUE(user,campaign)</div>
+      </div>
+      <div class="connector" data-c></div>
+      <div class="node process" data-node data-phase="4">
+        <div class="idx">4</div>
+        <div class="n-title">status = pending</div>
+        <div class="n-desc">admins notified</div>
+      </div>
+      <div class="connector" data-c></div>
+      <div class="node branch" data-node data-phase="5">
+        <div class="idx">5</div>
+        <div class="n-title">Admin reviews</div>
+        <div class="n-desc">approve / reject</div>
+      </div>
+      <div class="badge">approve →</div>
+      <div class="node start" data-node data-phase="6" data-kind="ok">
+        <div class="idx">✓</div>
+        <div class="n-title">status = approved</div>
+        <div class="n-desc">verified_at set → isKycApproved() = TRUE</div>
+      </div>
+      <div class="badge">reject →</div>
+      <div class="node end" data-node data-phase="7" data-kind="err">
+        <div class="idx">!</div>
+        <div class="n-title">status = rejected</div>
+        <div class="n-desc">rejection_reason set · user may resubmit</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ SECTION 4: PUBLICATION GATES ══════════════════════ -->
+<section>
+  <h2><span class="tag">Flow 4</span> Publication Gates — KYC enforced everywhere</h2>
+  <div class="canvas" data-flow>
+    <div class="flow">
+      <div class="node branch" data-node data-phase="0">
+        <div class="idx">1</div>
+        <div class="n-title">Publish / Resume Attempt</div>
+        <div class="n-desc">admin approve · admin bulk-approve · admin resume · user resume · user update()</div>
+      </div>
+      <div class="connector" data-c></div>
+      <div class="node branch" data-node data-phase="1">
+        <div class="idx">2</div>
+        <div class="n-title">ownerKycApproved() ?</div>
+        <div class="n-desc">canonical per-user rule · no admin bypass</div>
+      </div>
+      <div class="badge">No →</div>
+      <div class="node end" data-node data-phase="2" data-kind="err">
+        <div class="idx">!</div>
+        <div class="n-title">BLOCKED</div>
+        <div class="n-desc">campaign stays non-public · error returned</div>
+      </div>
+      <div class="badge">Yes →</div>
+      <div class="node process" data-node data-phase="3">
+        <div class="idx">3</div>
+        <div class="n-title">Campaign::approve()</div>
+        <div class="n-desc">defense-in-depth gate repeats the check</div>
+      </div>
+      <div class="connector" data-c></div>
+      <div class="node start" data-node data-phase="4" data-kind="ok">
+        <div class="idx">✓</div>
+        <div class="n-title">state = ACTIVE</div>
+        <div class="n-desc">public &amp; live</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ SECTION 5: LEVEL RESOLUTION ═══════════════════════ -->
+<section>
+  <h2><span class="tag">Flow 5</span> Deterministic Level Resolution</h2>
+  <div class="canvas" data-flow>
+    <div class="flow">
+      <div class="node process" data-node data-phase="0">
+        <div class="idx">1</div>
+        <div class="n-title">resolveLevel(user)</div>
+        <div class="n-desc">no FundraiserLevel::first() · no 25,000 fallback</div>
+      </div>
+      <div class="connector" data-c></div>
+      <div class="node branch" data-node data-phase="1">
+        <div class="idx">2</div>
+        <div class="n-title">assignedLevel exists?</div>
+        <div class="n-desc">user_fundraiser_levels → current_level_id</div>
+      </div>
+      <div class="badge">Yes →</div>
+      <div class="node start" data-node data-phase="2" data-kind="ok">
+        <div class="idx">✓</div>
+        <div class="n-title">Use assigned level</div>
+        <div class="n-desc">max_goal_amount &amp; max_active_campaigns</div>
+      </div>
+      <div class="badge">No →</div>
+      <div class="node branch" data-node data-phase="3">
+        <div class="idx">3</div>
+        <div class="n-title">default level (is_default=true)?</div>
+        <div class="n-desc">single configured default</div>
+      </div>
+      <div class="badge">Yes →</div>
+      <div class="node start" data-node data-phase="4" data-kind="ok">
+        <div class="idx">✓</div>
+        <div class="n-title">Use default level</div>
+        <div class="n-desc">maxCampaignGoal() &amp; fundraiserLevelName()</div>
+      </div>
+      <div class="badge">No →</div>
+      <div class="node end" data-node data-phase="5" data-kind="err">
+        <div class="idx">!</div>
+        <div class="n-title">FAIL explicit</div>
+        <div class="n-desc">"No fundraiser level assigned" · maxCampaignGoal → 0.0</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="foot">
+  <span class="pill">● Canonical KYC rule: any row status=approved</span>
+  <span class="pill">● UNIQUE(user_id, campaign_id)</span>
+  <span class="pill">● idempotent default-level row per user</span>
+  <span class="pill">● no auto-promotion (levels 1→2→3→4 admin-driven)</span>
+</div>
+
+<footer>DonateBazaar · KYC &amp; Fundraiser Level Flow · single-file animated diagram</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ── build controls + wiring for every .canvas[data-flow] ─────────── */
+  const canvases = document.querySelectorAll('.canvas[data-flow]');
+
+  canvases.forEach((canvas, ci) => {
+    const nodes  = Array.from(canvas.querySelectorAll('.node[data-node][data-phase]'));
+    const conns  = Array.from(canvas.querySelectorAll('.connector[data-c]'));
+    // Respect explicit layout order: sort nodes by data-phase ascending.
+    const ordered = nodes.slice().sort((a, b) => +a.dataset.phase - +b.dataset.phase);
+    const maxPhase = Math.max(...nodes.map(n => +n.dataset.phase));
+
+    const note = document.createElement('div');
+    note.className = 'step-note';
+    note.textContent = '';
+    canvas.after(note);
+
+    const controls = document.createElement('div');
+    controls.className = 'controls';
+    controls.innerHTML =
+      '<button data-act="reset">↺ Reset</button>' +
+      '<button data-act="step" class="primary">▶ Step</button>' +
+      '<button data-act="play">⏵ Auto-Play</button>' +
+      '<button data-act="finish">⏭ Skip to End</button>';
+    canvas.after(controls);
+    // note sits above controls
+    canvas.parentNode.insertBefore(note, controls);
+
+    const clean = () => {
+      canvas.querySelectorAll('.hl,.trail,.ok,.err').forEach(el => {
+        el.classList.remove('hl','trail','ok','err');
+      });
+      canvas.classList.remove('running');
+    };
+
+    const applyPhase = (idx) => {
+      nodes.forEach(n => n.classList.remove('hl'));
+      conns.forEach(c => c.classList.remove('hl'));
+      if (idx < 0 || idx > maxPhase) return;
+      const cur = ordered[idx];
+      if (!cur) return;
+      cur.classList.add('hl','trail');
+      const kind = cur.dataset.kind;
+      if (kind === 'ok') cur.classList.add('ok');
+      if (kind === 'err') cur.classList.add('err');
+      // light the connector that feeds this node
+      const conn = conns[Math.min(idx - 1, conns.length - 1)];
+      if (idx > 0 && conn) { conn.classList.add('hl','trail'); }
+      const title = cur.querySelector('.n-title')?.textContent || 'Step';
+      note.textContent = `#${idx + 1} — ${title}`;
+    };
+
+    let step = -1, timer = null;
+
+    const stepOne = () => {
+      if (step >= maxPhase) { clean(); note.textContent = 'Flow complete.'; return; }
+      step++;
+      applyPhase(step);
+    };
+
+    const play = () => {
+      if (timer) return;
+      clean(); step = -1; canvas.classList.add('running');
+      timer = setInterval(() => {
+        if (step >= maxPhase) {
+          clearInterval(timer); timer = null;
+          canvas.classList.remove('running');
+          note.textContent = 'Flow complete.';
+          return;
+        }
+        step++;
+        applyPhase(step);
+      }, 1000);
+    };
+
+    const finish = () => {
+      if (timer) { clearInterval(timer); timer = null; }
+      canvas.classList.remove('running');
+      step = maxPhase;
+      applyPhase(step);
+    };
+
+    const reset = () => {
+      if (timer) { clearInterval(timer); timer = null; }
+      canvas.classList.remove('running');
+      clean(); step = -1; note.textContent = '';
+    };
+
+    controls.addEventListener('click', (e) => {
+      const act = e.target.closest('button')?.dataset.act;
+      if (!act) return;
+      if (act === 'reset') reset();
+      if (act === 'step') { if (timer) { clearInterval(timer); timer = null; canvas.classList.remove('running'); } stepOne(); }
+      if (act === 'play') { if (timer) { clearInterval(timer); timer = null; canvas.classList.remove('running'); reset(); } play(); }
+      if (act === 'finish') finish();
+    });
+
+    // click a node to jump to that phase
+    nodes.forEach(n => n.addEventListener('click', () => {
+      if (timer) { clearInterval(timer); timer = null; canvas.classList.remove('running'); }
+      const idx = ordered.indexOf(n);
+      step = idx;
+      applyPhase(idx);
+    }));
+  });
+
+})();
+</script>
+</body>
+</html>

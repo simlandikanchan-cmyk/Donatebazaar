@@ -1,3 +1,4 @@
+@import "../../components/_forms.css";
 /* ══════════════════════════════════════
    ADMIN — Components: Forms & Inputs
    ══════════════════════════════════════
@@ -5,7 +6,6 @@
    aliases (.search-input, .sinp, .sec-search, .toolbar-search) sharing
    the same rules — ONE implementation, no duplicates.
    ══════════════════════════════════════ */
-@import "../../components/_forms.css";
 
 /* ── SEARCH INPUT (canonical + legacy aliases) ── */
 .search-wrap, .swrap {

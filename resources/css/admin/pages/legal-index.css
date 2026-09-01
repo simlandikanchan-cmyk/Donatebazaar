@@ -150,7 +150,7 @@
   border-color: rgba(59, 130, 246, .18);
 }
 .act-edit:hover {
-  color: #fff;
+  color: var(--white);
   background: var(--blue);
   transform: translateY(-1px);
 }
@@ -160,7 +160,7 @@
   border-color: rgba(37, 99, 235, .2);
 }
 .ab-view:hover {
-  color: #fff;
+  color: var(--white);
   background: var(--a);
   box-shadow: 0 4px 14px rgba(37, 99, 235, .35);
 }

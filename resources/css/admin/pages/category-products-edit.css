@@ -258,7 +258,7 @@ label.lbl .req {
   left: 3px;
   width: 18px;
   height: 18px;
-  background: #fff;
+  background: var(--white);
   border-radius: 50%;
   content: '';
   box-shadow: 0 1px 4px rgba(0, 0, 0, .18);
@@ -338,7 +338,7 @@ label.lbl .req {
   justify-content: center;
   width: 26px;
   height: 26px;
-  color: #fff;
+  color: var(--white);
   background: rgba(240, 68, 68, .9);
   border: none;
   border-radius: 7px;
@@ -418,13 +418,13 @@ label.lbl .req {
   border: 1px solid rgba(240, 68, 68, .2);
 }
 .btn-danger:hover {
-  color: #fff;
+  color: var(--white);
   background: var(--red);
   border-color: var(--red);
 }
 .btn-primary {
-  color: #fff;
-  background: #6366f1;
+  color: var(--white);
+  background: var(--indigo);
   box-shadow: 0 4px 18px rgba(99, 102, 241, .3);
 }
 .btn-primary:hover {
@@ -445,7 +445,7 @@ label.lbl .req {
   margin-bottom: 16px;
   padding: 12px 16px;
   font-size: 13px;
-  color: #065f46;
+  color: var(--success-deep);
   background: rgba(5, 196, 138, .08);
   border: 1px solid rgba(5, 196, 138, .22);
   border-radius: var(--r-sm);
@@ -473,7 +473,7 @@ label.lbl .req {
   font-size: 12px;
 }
 [data-theme="dark"] .alert-ok {
-  color: #189d68;
+  color: var(--success-teal);
 }
 .alert-ok svg, .alert-err svg {
   flex-shrink: 0;
@@ -680,7 +680,7 @@ label.lbl .req {
   padding: 13px 16px;
   font-size: 13px;
   font-weight: 500;
-  color: #fff;
+  color: var(--white);
   border-radius: 14px;
   box-shadow: var(--sh-lg);
   animation: toastIn .3s ease both;
@@ -692,10 +692,10 @@ label.lbl .req {
   height: 15px;
 }
 .toast-ok {
-  background: linear-gradient(135deg, #059669, #10b981);
+  background: linear-gradient(135deg, var(--success-mid), var(--success-soft));
 }
 .toast-err {
-  background: linear-gradient(135deg, #dc2626, #f04444);
+  background: linear-gradient(135deg, var(--danger-hover), var(--danger-3));
 }
 .toast-x {
   display: flex;
@@ -705,7 +705,7 @@ label.lbl .req {
   height: 18px;
   margin-left: auto;
   font-size: 11px;
-  color: #fff;
+  color: var(--white);
   background: rgba(255, 255, 255, .22);
   border: none;
   border-radius: 5px;
@@ -827,8 +827,8 @@ label.lbl .req {
   font-family: var(--font);
   font-size: 13px;
   font-weight: 600;
-  color: #fff;
-  background: linear-gradient(135deg, var(--red), #dc2626);
+  color: var(--white);
+  background: linear-gradient(135deg, var(--red), var(--danger-hover));
   border: none;
   border-radius: var(--r-sm);
   cursor: pointer;

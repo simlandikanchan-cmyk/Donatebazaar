@@ -9,7 +9,7 @@
 .rd-row:hover{border-color:var(--border2);transform:translateY(-1px);}
 .rd-main-link{display:flex;align-items:center;gap:14px;flex:1;min-width:0;text-decoration:none;color:inherit;cursor:pointer;}
 .rd-main-link:hover .rd-title{color:var(--accent);}
-.rd-avatar{width:42px;height:42px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.rd-avatar{width:42px;height:42px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--white);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .rd-avatar svg{width:18px;height:18px;}
 .rd-info{flex:1;min-width:0;}
 .rd-title{font-size:13px;font-weight:700;color:var(--text);letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}

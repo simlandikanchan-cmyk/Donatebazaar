@@ -82,12 +82,12 @@
   opacity: 1;
 }
 .flash-ok {
-  color: #065f46;
+  color: var(--success-deep);
   background: rgba(5, 196, 138, .09);
   border: 1px solid rgba(5, 196, 138, .25);
 }
 .flash-err {
-  color: #b91c1c;
+  color: var(--danger-dark);
   background: rgba(240, 68, 68, .08);
   border: 1px solid rgba(240, 68, 68, .22);
 }
@@ -121,7 +121,7 @@
   font-family: var(--mono);
   font-size: 38px;
   font-weight: 700;
-  color: #fff;
+  color: var(--white);
   background: linear-gradient(135deg, var(--a), var(--a2));
   border: 3px solid var(--border2);
   border-radius: 50%;
@@ -136,7 +136,7 @@
   overflow: hidden;
   width: 34px;
   height: 34px;
-  color: #fff;
+  color: var(--white);
   background: var(--a);
   border: 2px solid var(--surface);
   border-radius: 50%;
@@ -166,7 +166,7 @@
   border-radius: 50%;
   content: '';
   animation: spin .7s linear infinite;
-  border-top-color: #fff;
+  border-top-color: var(--white);
 }
 .av-name {
   margin-bottom: 2px;
@@ -442,7 +442,7 @@
   padding: 0 20px;
   font-size: 12.5px;
   font-weight: 700;
-  color: #fff;
+  color: var(--white);
   background: linear-gradient(135deg, var(--a), var(--a2));
   border: none;
   border-radius: var(--r-sm);
@@ -642,7 +642,7 @@
   transition: all var(--ease);
 }
 .danger-btn:hover {
-  color: #fff;
+  color: var(--white);
   background: var(--red);
   border-color: var(--red);
 }
@@ -753,8 +753,8 @@
   padding: 0 18px;
   font-size: 12.5px;
   font-weight: 700;
-  color: #fff;
-  background: linear-gradient(135deg, #dc2626, #f04444);
+  color: var(--white);
+  background: linear-gradient(135deg, var(--danger-hover), var(--danger-3));
   border: none;
   border-radius: var(--r-sm);
   cursor: pointer;

@@ -1,3 +1,4 @@
+@import "../../components/_button.css";
 /* ═══════════════════════════════════════════════════════════════════
    ADMIN — Button System
    ═══════════════════════════════════════════════════════════════════
@@ -5,7 +6,6 @@
    This file adds admin-specific legacy classes and overrides only.
    ═══════════════════════════════════════════════════════════════════ */
 
-@import "../../components/_button.css";
 
 /* ── ADMIN LEGACY STRUCTURE ── */
 .action-btn, .cv-btn, .btn-edit, .btn-primary, .btn-secondary, .btn-ghost, .btn-red, .btn-modal-cancel, .btn-modal-delete, .bulk-btn, .export-btn, .filter-btn, .clear-btn, .clear-all-btn, .cover-preview-btn, .cover-preview-btn-change, .doc-btn, .editor-btn, .slug-lock-btn, .cp-btn-clear, .gc-btn-clear, .gc-action-btn, .modal-y-btn {

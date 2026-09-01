@@ -1,3 +1,4 @@
+@import "../../base/_variables.css";
 /* ═══════════════════════════════════════════════════════════════════
    ADMIN — Token Overrides
    ═══════════════════════════════════════════════════════════════════
@@ -5,7 +6,6 @@
    This file only adds admin-specific overrides and aliases.
    ═══════════════════════════════════════════════════════════════════ */
 
-@import "../../base/_variables.css";
 
 :root {
   --sb-w: 268px;
@@ -22,7 +22,7 @@
   --r-xs: 8px;
   --accent: #0d9488;
   --accent2: #2563eb;
-  --accent-lt: rgba(13,148,136,.10);
+  --accent-lt: color-mix(in srgb, var(--secondary)  10%, transparent);
   --accent-hover: #0f766e;
   --teal: #0d9488;
   --red-lt: rgba(240, 68, 68, .10);

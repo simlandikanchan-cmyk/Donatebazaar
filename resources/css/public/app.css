@@ -25,8 +25,8 @@ svg:not([width]):not([height]) {
 
 /* Charity palette — global defaults (page-specific :root overrides where present) */
 :root {
-  --accent-glow: rgba(37,99,235,0.18);
-  --green:       #16a34a;
+  --accent-glow: color-mix(in srgb, var(--primary) 18%, transparent);
+  --green:       var(--success);
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -38,8 +38,8 @@ svg:not([width]):not([height]) {
   position: fixed;
   top: 0;
   left: 0;
-  background: #2563eb;
-  color: #ffffff;
+  background: var(--primary);
+  color: var(--white);
   padding: 8px 16px;
   z-index: 10000;
   font-size: 13px;

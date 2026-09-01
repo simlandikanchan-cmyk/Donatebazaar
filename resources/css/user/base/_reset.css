@@ -23,11 +23,11 @@ a{text-decoration:none;color:inherit;}
 button{cursor:pointer;font-family:var(--font);}
 svg{display:block;flex-shrink:0;}
 
-::selection{background:rgba(37,99,235,.18);color:inherit;}
+::selection{background:color-mix(in srgb, var(--primary)  18%, transparent);color:inherit;}
 :focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:4px;}
 
 ::-webkit-scrollbar{width:5px;height:5px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:100px;}
-[data-theme="dark"] ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);}
-[data-theme="dark"] ::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.14);}
+[data-theme="dark"] ::-webkit-scrollbar-thumb{background:color-mix(in srgb, var(--white)  8%, transparent);}
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover{background:color-mix(in srgb, var(--white)  14%, transparent);}

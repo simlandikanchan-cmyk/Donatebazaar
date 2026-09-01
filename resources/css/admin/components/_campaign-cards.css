@@ -221,7 +221,7 @@
   color: var(--red);
 }
 .prog-pct--expired, .prog-pct--inactive, .prog-pct--completed {
-  color: #64748b;
+  color: var(--slate-500);
 }
 .c-form {
   flex: 1;

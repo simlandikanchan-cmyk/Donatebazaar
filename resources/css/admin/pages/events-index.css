@@ -50,7 +50,7 @@
   font-family: var(--font);
   font-size: 12.5px;
   font-weight: 600;
-  color: #fff;
+  color: var(--white);
   background: linear-gradient(135deg, var(--a), var(--a2));
   border: none;
   border-radius: var(--r-sm);
@@ -188,7 +188,7 @@
   transition: background .15s;
 }
 .chip-x:hover {
-  color: #fff;
+  color: var(--white);
   background: var(--a);
 }
 .chip-x svg {
@@ -446,7 +446,7 @@ tbody tr.row-selected {
   transition: width .6s cubic-bezier(.4, 0, .2, 1);
 }
 .prog-fill.pf-full {
-  background: linear-gradient(90deg, var(--green), #06d99a);
+  background: linear-gradient(90deg, var(--green), var(--success-light-2));
 }
 .prog-fill.pf-none {
   background: var(--surface3);
@@ -476,11 +476,11 @@ tbody tr.row-selected {
 }
 /* status badge (definitions) */
 .b-draft {
-  color: #fff;
+  color: var(--white);
   background: rgba(107, 114, 128, .85);
 }
 [data-theme="dark"] .b-draft {
-  color: #cbd0e0;
+  color: var(--gray-350);
   background: rgba(107, 114, 128, .5);
 }
 /* actions */
@@ -521,7 +521,7 @@ tbody tr.row-selected {
   border-color: rgba(37, 99, 235, .2);
 }
 .ab-view:hover {
-  color: #fff;
+  color: var(--white);
   background: var(--a);
   box-shadow: 0 4px 14px rgba(37, 99, 235, .35);
 }
@@ -547,7 +547,7 @@ tbody tr.row-selected {
   font-size: 10.5px;
   font-weight: 600;
   white-space: nowrap;
-  color: #fff;
+  color: var(--white);
   background: var(--text);
   border-radius: 6px;
   content: attr(title);
@@ -573,17 +573,17 @@ tbody tr.row-selected {
   border-color: rgba(37, 99, 235, .2);
 }
 .act-edit:hover {
-  color: #fff;
+  color: var(--white);
   background: var(--a);
   border-color: var(--a);
 }
 .act-approve {
-  color: #059669;
+  color: var(--success-mid);
   background: var(--green-lt);
   border-color: rgba(5, 196, 138, .25);
 }
 .act-approve:hover {
-  color: #fff;
+  color: var(--white);
   background: var(--green);
   border-color: var(--green);
 }
@@ -593,7 +593,7 @@ tbody tr.row-selected {
   border-color: rgba(240, 68, 68, .25);
 }
 .act-reject:hover {
-  color: #fff;
+  color: var(--white);
   background: var(--red);
   border-color: var(--red);
 }
@@ -607,12 +607,12 @@ tbody tr.row-selected {
   background: var(--surface3);
 }
 .act-bell.is-on {
-  color: #059669;
+  color: var(--success-mid);
   background: var(--green-lt);
   border-color: rgba(5, 196, 138, .3);
 }
 .act-bell.is-on:hover {
-  color: #059669;
+  color: var(--success-mid);
   background: var(--green-lt);
 }
 .act-form {
@@ -684,7 +684,7 @@ tbody tr.row-selected {
   animation: fadeUp .3s ease both;
 }
 .flash-success {
-  color: #059669;
+  color: var(--success-mid);
   background: var(--green-lt);
   border: 1px solid rgba(5, 196, 138, .25);
 }
@@ -712,7 +712,7 @@ tbody tr.row-selected {
   max-width: 480px;
   margin: 16px auto 0;
   padding: 8px 8px 8px 20px;
-  color: #fff;
+  color: var(--white);
   background: var(--text);
   border-radius: 100px;
   opacity: 0;
@@ -757,11 +757,11 @@ tbody tr.row-selected {
   height: 11px;
 }
 .bulk-btn-del {
-  color: #fff;
+  color: var(--white);
   background: var(--red);
 }
 .bulk-btn-cancel {
-  color: #fff;
+  color: var(--white);
   background: rgba(255, 255, 255, .12);
 }
 .bulk-btn:hover {

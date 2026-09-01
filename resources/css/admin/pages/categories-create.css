@@ -6,7 +6,7 @@
   margin-bottom: 20px;
   padding: 12px 16px;
   font-size: 13px;
-  color: #b91c1c;
+  color: var(--danger-dark);
   background: var(--red-lt);
   border: 1px solid rgba(240, 68, 68, .22);
   border-radius: var(--r-sm);
@@ -19,7 +19,7 @@
   margin-top: 1px;
 }
 [data-theme="dark"] .alert-error {
-  color: #f87171;
+  color: var(--danger-light);
 }
 .preview-card {
   position: sticky;

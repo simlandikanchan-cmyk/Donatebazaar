@@ -15,25 +15,25 @@
   animation-delay: .05s;
 }
 .stat:nth-child(1)::after {
-  background: linear-gradient(90deg, var(--blue), #6366f1);
+  background: linear-gradient(90deg, var(--blue), var(--indigo));
 }
 .stat:nth-child(2) {
   animation-delay: .10s;
 }
 .stat:nth-child(2)::after {
-  background: linear-gradient(90deg, var(--amber), #f97316);
+  background: linear-gradient(90deg, var(--amber), var(--orange-warm));
 }
 .stat:nth-child(3) {
   animation-delay: .15s;
 }
 .stat:nth-child(3)::after {
-  background: linear-gradient(90deg, var(--green), #34d399);
+  background: linear-gradient(90deg, var(--green), var(--success-tint));
 }
 .stat:nth-child(4) {
   animation-delay: .20s;
 }
 .stat:nth-child(4)::after {
-  background: linear-gradient(90deg, var(--red), #f87171);
+  background: linear-gradient(90deg, var(--red), var(--danger-light));
 }
 .si-red {
   color: var(--red);
@@ -90,7 +90,7 @@
   font-family: var(--font);
   font-size: 12.5px;
   font-weight: 600;
-  color: #fff;
+  color: var(--white);
   background: linear-gradient(135deg, var(--a), var(--a2));
   border: none;
   border-radius: var(--r-sm);
@@ -207,11 +207,11 @@
 }
 /* ── BADGES ── */
 .b-shortlisted {
-  color: #fff;
+  color: var(--white);
   background: rgba(5, 196, 138, .85);
 }
 .b-hired {
-  color: #fff;
+  color: var(--white);
   background: rgba(37, 99, 235, .85);
 }
 /* ── ACTION BUTTONS ── */
@@ -230,7 +230,7 @@
   transition: all var(--ease);
 }
 .act-link:hover {
-  color: #fff;
+  color: var(--white);
   background: var(--a);
   border-color: var(--a);
   transform: translateY(-1px);
@@ -254,7 +254,7 @@
   transition: all var(--ease);
 }
 .cv-link:hover {
-  color: #fff;
+  color: var(--white);
   background: var(--green);
   border-color: var(--green);
   transform: translateY(-1px);
@@ -308,7 +308,7 @@
   animation: fadeUp .3s ease both;
 }
 .flash-success {
-  color: #059669;
+  color: var(--success-mid);
   background: rgba(5, 196, 138, .1);
   border: 1px solid rgba(5, 196, 138, .25);
 }
@@ -318,10 +318,10 @@
   border: 1px solid rgba(240, 68, 68, .25);
 }
 [data-theme="dark"] .flash-success {
-  color: #34d399;
+  color: var(--success-tint);
 }
 [data-theme="dark"] .flash-error {
-  color: #f87171;
+  color: var(--danger-light);
 }
 .flash svg {
   flex-shrink: 0;

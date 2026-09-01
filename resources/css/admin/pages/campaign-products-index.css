@@ -210,14 +210,14 @@
   transition: all var(--ease);
 }
 .cp-bulk-approve {
-  color: #fff;
+  color: var(--white);
   background: var(--green);
 }
 .cp-bulk-approve:hover {
   filter: brightness(1.05);
 }
 .cp-bulk-reject {
-  color: #fff;
+  color: var(--white);
   background: var(--red);
 }
 .cp-bulk-reject:hover {

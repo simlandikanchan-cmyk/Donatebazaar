@@ -577,7 +577,7 @@
   justify-content: center;
   width: 36px;
   height: 36px;
-  color: #fff;
+  color: var(--white);
   background: rgba(255, 255, 255, .1);
   border: 1px solid rgba(255, 255, 255, .2);
   border-radius: 50%;

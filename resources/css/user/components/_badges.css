@@ -3,20 +3,20 @@
    ═══════════════════════════════════════════════════════════════════ */
 
 .badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: .06em; font-family: var(--mono); }
-.b-active   { background: rgba(22,163,74,.85);  color: var(--white); position: relative; }
-.b-active::after { content: ''; position: absolute; inset: -2px; border-radius: 8px; border: 2px solid rgba(22,163,74,.4); animation: badgePulse 2s ease-in-out infinite; }
-.b-pending  { background: rgba(245,158,11,.85);  color: var(--white); }
-.b-rejected { background: rgba(239,68,68,.85);   color: var(--white); }
-.b-paused   { background: rgba(37,99,235,.85);  color: var(--white); }
-.b-expired  { background: rgba(107,114,128,.75); color: var(--white); }
-.b-inactive { background: rgba(59,130,246,.75);  color: var(--white); }
-.b-default  { background: rgba(107,114,128,.7); color: var(--white); }
+.b-active   { background: color-mix(in srgb, var(--green)  85%, transparent);  color: var(--white); position: relative; }
+.b-active::after { content: ''; position: absolute; inset: -2px; border-radius: 8px; border: 2px solid color-mix(in srgb, var(--green)  40%, transparent); animation: badgePulse 2s ease-in-out infinite; }
+.b-pending  { background: color-mix(in srgb, var(--warning)  85%, transparent);  color: var(--white); }
+.b-rejected { background: color-mix(in srgb, var(--danger)  85%, transparent);   color: var(--white); }
+.b-paused   { background: color-mix(in srgb, var(--primary)  85%, transparent);  color: var(--white); }
+.b-expired  { background: color-mix(in srgb, var(--gray-500)  75%, transparent); color: var(--white); }
+.b-inactive { background: color-mix(in srgb, var(--primary-light)  75%, transparent);  color: var(--white); }
+.b-default  { background: color-mix(in srgb, var(--gray-500)  70%, transparent); color: var(--white); }
 
 /* ── Dark mode badges ─────────────────────────────────────────────── */
-[data-theme="dark"] .b-active   { background: rgba(22,163,74,.70); }
-[data-theme="dark"] .b-pending  { background: rgba(245,158,11,.70); }
-[data-theme="dark"] .b-rejected { background: rgba(239,68,68,.70); }
-[data-theme="dark"] .b-paused   { background: rgba(37,99,235,.70); }
-[data-theme="dark"] .b-expired  { background: rgba(107,114,128,.60); }
-[data-theme="dark"] .b-inactive { background: rgba(59,130,246,.60); }
-[data-theme="dark"] .b-default  { background: rgba(107,114,128,.55); }
+[data-theme="dark"] .b-active   { background: color-mix(in srgb, var(--green)  70%, transparent); }
+[data-theme="dark"] .b-pending  { background: color-mix(in srgb, var(--warning)  70%, transparent); }
+[data-theme="dark"] .b-rejected { background: color-mix(in srgb, var(--danger)  70%, transparent); }
+[data-theme="dark"] .b-paused   { background: color-mix(in srgb, var(--primary)  70%, transparent); }
+[data-theme="dark"] .b-expired  { background: color-mix(in srgb, var(--gray-500)  60%, transparent); }
+[data-theme="dark"] .b-inactive { background: color-mix(in srgb, var(--primary-light)  60%, transparent); }
+[data-theme="dark"] .b-default  { background: color-mix(in srgb, var(--gray-500)  55%, transparent); }

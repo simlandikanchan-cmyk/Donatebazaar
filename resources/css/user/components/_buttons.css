@@ -1,3 +1,4 @@
+@import "../../components/_button.css";
 /* ═══════════════════════════════════════════════════════════════════
    USER PORTAL — Button System
    ═══════════════════════════════════════════════════════════════════
@@ -6,7 +7,6 @@
    specific overrides only.
    ═══════════════════════════════════════════════════════════════════ */
 
-@import "../../components/_button.css";
 
 /* User-portal-specific button overrides can be added here if needed.
    Currently none — the canonical system covers all user portal needs. */

@@ -8,15 +8,15 @@
 }
 
 [data-theme="dark"] {
-  --bg:          #0b0c14;
-  --surface:     #13141f;
-  --surface2:    #1a1b2e;
-  --surface3:    #1e1f35;
+  --bg:          var(--dark-deep-18);
+  --surface:     var(--dark-surface);
+  --surface2:    var(--dark-surface-2);
+  --surface3:    var(--dark-surface-5);
   --border:      rgba(255, 255, 255, 0.06);
   --border2:     rgba(255, 255, 255, 0.10);
-  --text:        #eff6ff;
-  --text2:       #a5b4c8;
-  --text3:       #5a6579;
+  --text:        var(--primary-tint-bg);
+  --text2:       var(--dark-muted-3);
+  --text3:       var(--dark-muted-2);
   --accent-glow: rgba(99, 102, 241, 0.25);
   --shadow:      0 1px 3px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.2);
   --shadow-lg:   0 8px 40px rgba(0, 0, 0, 0.5);
@@ -359,10 +359,10 @@ svg:not([width]):not([height]) {
 /* Dark hero overlay → white outline button (matches home.css) */
 .hero-btns .btn--outline {
   --btn-fg:     var(--white);
-  --btn-bd:     rgba(255,255,255,.35);
-  --btn-bg-h:   rgba(255,255,255,.12);
+  --btn-bd:     color-mix(in srgb, var(--white)  35%, transparent);
+  --btn-bg-h:   color-mix(in srgb, var(--white)  12%, transparent);
   --btn-fg-h:   var(--white);
-  --btn-bd-h:   rgba(255,255,255,.6);
+  --btn-bd-h:   color-mix(in srgb, var(--white)  60%, transparent);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   border: 1px solid white;

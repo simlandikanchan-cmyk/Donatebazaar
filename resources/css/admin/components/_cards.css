@@ -1,8 +1,8 @@
+@import "../../components/_cards.css";
 /* ══════════════════════════════════════
    ADMIN — Components: Cards & Section Headers
    .sec-hdr/.sec-ttl come from base/_typography.css
    ══════════════════════════════════════ */
-@import "../../components/_cards.css";
 
 /* ── SECTION HEADER (right side) ── */
 .sec-right {
@@ -253,7 +253,7 @@
   background: var(--primary-tint-bg);
 }
 .ci-teal {
-  color: #0d9488;
+  color: var(--secondary);
   background: rgba(13, 148, 136, .12);
 }
 /* ── LEGACY CARD HEAD (card-hdr/card-ico/card-ttl forms & show pages) ── */

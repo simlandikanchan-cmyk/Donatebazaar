@@ -137,14 +137,14 @@
   transition: all var(--ease);
 }
 .cp-bulk-approve {
-  color: #fff;
+  color: var(--white);
   background: var(--green);
 }
 .cp-bulk-approve:hover {
   filter: brightness(1.05);
 }
 .cp-bulk-reject {
-  color: #fff;
+  color: var(--white);
   background: var(--red);
 }
 .cp-bulk-reject:hover {
@@ -218,7 +218,7 @@
 .cmp-progress > span {
   display: block;
   height: 100%;
-  background: linear-gradient(90deg, var(--green), #34d399);
+  background: linear-gradient(90deg, var(--green), var(--success-tint));
   border-radius: 100px;
 }
 .cmp-pct {
@@ -250,7 +250,7 @@
   transition: all var(--ease);
 }
 .ab-view:hover {
-  color: #fff;
+  color: var(--white);
   background: var(--a);
   box-shadow: 0 4px 14px rgba(37, 99, 235, .35);
 }
@@ -339,7 +339,7 @@
   padding: 11px 14px;
   font-size: 13px;
   font-weight: 500;
-  color: #065f46;
+  color: var(--success-deep);
   background: rgba(16, 185, 129, .09);
   border: 1px solid rgba(16, 185, 129, .25);
   border-radius: 10px;
@@ -358,7 +358,7 @@
   padding: 11px 14px;
   font-size: 13px;
   font-weight: 500;
-  color: #dc2626;
+  color: var(--danger-hover);
   background: rgba(239, 68, 68, .09);
   border: 1px solid rgba(239, 68, 68, .25);
   border-radius: 10px;
@@ -438,7 +438,7 @@
   border-color: var(--a);
 }
 .pagination-links .active {
-  color: #fff;
+  color: var(--white);
   background: var(--a);
   border-color: var(--a);
 }
@@ -448,11 +448,11 @@
   cursor: default;
 }
 .si-paused {
-  color: #6b7280;
+  color: var(--gray-500);
   background: rgba(107, 114, 128, .12);
 }
 .sv-paused {
-  color: #6b7280;
+  color: var(--gray-500);
 }
 .sv-red {
   color: var(--red);
