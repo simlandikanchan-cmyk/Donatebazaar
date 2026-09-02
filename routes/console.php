@@ -15,3 +15,5 @@ Schedule::command('campaigns:send-kyc-reminders')->dailyAt('09:00');
 Schedule::command('telescope:prune --hours=48')->daily();
 
 Schedule::command('wallet:release-reserves')->daily();
+
+Schedule::command('settlements:reconcile')->dailyAt('01:00');

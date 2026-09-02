@@ -14,7 +14,9 @@ class Kernel extends ConsoleKernel
         $schedule->command('campaigns:send-ending-soon')->dailyAt('09:00');
         $schedule->command('product-reservations:prune-expired')->everyFiveMinutes();
         $schedule->command('telescope:prune', ['--hours' => 24])->daily();
-        $schedule->job(new ReconciliationJob)->everyFiveMinutes();
+        $schedule->command('wallet:release-reserves')->daily();
+        $schedule->command('settlements:reconcile')->dailyAt('01:00');
+        $schedule->command('db:backup')->dailyAt('02:00');
     }
 
     protected function commands()

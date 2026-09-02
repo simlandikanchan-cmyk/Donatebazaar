@@ -112,6 +112,15 @@ return [
             'processors' => [\App\Exceptions\SensitiveDataRedactor::class],
         ],
 
+        'backups' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/backups.log'),
+            'level' => 'info',
+            'days' => 30,
+            'replace_placeholders' => true,
+            'processors' => [\App\Exceptions\SensitiveDataRedactor::class],
+        ],
+
         'auth' => [
             'driver' => 'daily',
             'path' => storage_path('logs/auth.log'),

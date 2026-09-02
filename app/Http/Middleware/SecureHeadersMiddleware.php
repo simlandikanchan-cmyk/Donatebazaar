@@ -9,6 +9,10 @@ class SecureHeadersMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
+        if (config('app.force_https') && ! $request->secure()) {
+            return redirect()->secure($request->getRequestUri());
+        }
+
         $response = $next($request);
 
         $response->headers->set('X-Frame-Options', 'DENY');
