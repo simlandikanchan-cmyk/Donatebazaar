@@ -95,11 +95,11 @@
 }
 .card-head {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 16px 18px;
+  justify-content: flex-start;
+  gap: 10px;
+  padding: 14px 20px;
+  background: var(--surface2);
   border-bottom: 1px solid var(--border);
 }
 .card-head-left {
