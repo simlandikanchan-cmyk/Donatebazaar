@@ -321,9 +321,21 @@
       </div>
 
       <div class="vol-privacy">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12" style="vertical-align:middle;margin-right:4px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        Your data is encrypted and secure. We never share your information with third parties.
-        <a href="{{ route('privacy') }}">Privacy Policy</a>
+        <div class="vol-privacy-inner">
+          <div class="vol-privacy-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          </div>
+          <div class="vol-privacy-text">
+            <span class="vol-privacy-title">Your data is encrypted and secure</span>
+            <span class="vol-privacy-sub">We never share your information with third parties.</span>
+          </div>
+          <a href="{{ route('privacy') }}" class="vol-privacy-link">Privacy Policy</a>
+        </div>
+        <div class="vol-privacy-badges">
+          <span class="vol-privacy-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="M9 9h6v6H9z"/><line x1="12" y1="2" x2="12" y2="6"/></svg>SSL Secured</span>
+          <span class="vol-privacy-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9 9h.01M15 15h.01M9 15l6-6"/></svg>GDPR Compliant</span>
+          <span class="vol-privacy-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Never Shared</span>
+        </div>
       </div>
     </div>
 
