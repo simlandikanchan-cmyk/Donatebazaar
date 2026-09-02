@@ -1,6 +1,6 @@
 # Pre-Sale Checklist
 
-Use this checklist before listing DonateBazaar for sale.
+Work through this list before putting DonateBazaar up for sale. It exists because a repo with stray debug scripts, real credentials, or unseeded demo data will cost you far more than the hour it takes to clean up.
 
 ---
 
@@ -60,26 +60,31 @@ Use this checklist before listing DonateBazaar for sale.
 ## Quick Commands
 
 ### Clean Debug Files
+
 ```bash
 Remove-Item -Path "check_*.php","debug_*.php","tmp_*.php","extract_*.php","inspect_*.php","schema_*.php","schema_*.json","test_*.php","final_check.php" -Force
 ```
 
 ### Clean SQL Dumps
+
 ```bash
 Remove-Item -Path "*.sql" -Force
 ```
 
 ### Format Code
+
 ```bash
 vendor/bin/pint
 ```
 
 ### Run Tests
+
 ```bash
 php artisan test
 ```
 
 ### Build Assets
+
 ```bash
 npm run build
 ```
@@ -88,7 +93,7 @@ npm run build
 
 ## Demo Credentials Template
 
-After seeding, provide these to buyers:
+After seeding, hand these to buyers:
 
 | Role | Email | Password |
 |---|---|---|

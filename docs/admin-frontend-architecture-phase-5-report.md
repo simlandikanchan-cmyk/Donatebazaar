@@ -1,8 +1,8 @@
-# DonateBazaar — Phase 5 Admin JS Technical-Debt Cleanup Report
+﻿# DonateBazaar — Phase 5 Admin JS Technical-Debt Cleanup Report
 
 ## 1. Executive Summary
 
-Phase 5 focused on safe, surgical cleanup of verified dead code and remaining manual patterns in the admin JS layer. No UI/UX, business logic, routes, controllers, models, database, or user-facing behavior was intentionally changed.
+Phase 5 performed safe, surgical cleanup of verified dead code and remaining manual patterns in the admin JS layer. No UI/UX, business logic, routes, controllers, models, database, or user-facing behavior was intentionally changed.
 
 **Key accomplishments:**
 - Deleted 7 verified-dead JS files (5 admin + 2 shared utilities)
@@ -179,8 +179,8 @@ None. All remaining `window.*` references are standard browser APIs (`window.loc
 ### Fix applied
 
 **Blade changes:**
-- Line 94: `onclick="openApprove()"` → `data-action="open-modal" data-target="#approveOverlay"`
-- Line 304: `onclick="closeApprove()"` → `data-action="close-modal" data-target="#approveOverlay"`
+- Line 94: `onclick="openApprove()"` changed to `data-action="open-modal" data-target="#approveOverlay"`
+- Line 304: `onclick="closeApprove()"` changed to `data-action="close-modal" data-target="#approveOverlay"`
 
 **settlements-show.js changes:**
 - Added `close-modal` handler to existing `data-action` delegation:
@@ -241,11 +241,11 @@ Searched entire `resources/` tree for references to deleted files:
 
 | Check | Command | Result |
 |-------|---------|--------|
-| **Build** | `npm run build` | ✅ PASS — 168 modules transformed, built in 3.80s |
-| **PHPUnit** | `php artisan test` | ⚠️ 163 failed / 716 passed (1607 assertions) |
-| **View Cache** | `php artisan view:cache` | ✅ PASS — Blade templates cached successfully |
-| **Routes** | `php artisan route:list --path=admin` | ✅ PASS — 177 admin routes valid |
-| **CSS Lint** | `npm run lint:css` | ⚠️ 90 errors (all pre-existing, 0 new) |
+| **Build** | `npm run build` | PASS — 168 modules transformed, built in 3.80s |
+| **PHPUnit** | `php artisan test` | 163 failed / 716 passed (1607 assertions) |
+| **View Cache** | `php artisan view:cache` | PASS — Blade templates cached successfully |
+| **Routes** | `php artisan route:list --path=admin` | PASS — 177 admin routes valid |
+| **CSS Lint** | `npm run lint:css` | 90 errors (all pre-existing, 0 new) |
 
 ### PHPUnit Failure Analysis
 
@@ -269,15 +269,15 @@ Table 'donatebazaar_test.notification_preferences' doesn't exist
 
 | Check | Result |
 |-------|--------|
-| Unresolved JS imports | ✅ None |
-| Duplicate exports | ✅ None |
-| Missing Vite entries | ✅ None introduced (`shell.js` correctly excluded) |
-| Missing Blade `@vite` references | ✅ None introduced |
-| Broken `data-action` handlers | ✅ None — added `close-modal` handler to settlements-show.js |
-| Remaining `window.*` custom globals | ✅ None |
-| Manual CSRF construction in migrated files | ✅ None — all migrated files use `csrfFetch` |
-| FormData Content-Type regression | ✅ None — `csrfFetch` never forces Content-Type for FormData |
-| Duplicate toast implementations remaining | ✅ Only `categories-index.js` (intentionally distinct styling) |
+| Unresolved JS imports | None |
+| Duplicate exports | None |
+| Missing Vite entries | None introduced (`shell.js` correctly excluded) |
+| Missing Blade `@vite` references | None introduced |
+| Broken `data-action` handlers | None — added `close-modal` handler to settlements-show.js |
+| Remaining `window.*` custom globals | None |
+| Manual CSRF construction in migrated files | None — all migrated files use `csrfFetch` |
+| FormData Content-Type regression | None — `csrfFetch` never forces Content-Type for FormData |
+| Duplicate toast implementations remaining | Only `categories-index.js` (intentionally distinct styling) |
 
 ---
 
@@ -340,27 +340,27 @@ No browser automation tools (Playwright, Puppeteer, Selenium) are configured in 
 ### Automated Validation
 | Dimension | Status |
 |-----------|--------|
-| **Build health** | ✅ Clean build, 168 modules, 3.80s |
-| **View cache** | ✅ Blade templates cached |
-| **Routes** | ✅ 177 admin routes valid |
-| **CSS lint** | ✅ 0 new errors (90 pre-existing) |
-| **JS imports** | ✅ No unresolved imports |
-| **Deleted file references** | ✅ None remaining |
+| **Build health** | Clean build, 168 modules, 3.80s |
+| **View cache** | Blade templates cached |
+| **Routes** | 177 admin routes valid |
+| **CSS lint** | 0 new errors (90 pre-existing) |
+| **JS imports** | No unresolved imports |
+| **Deleted file references** | None remaining |
 
 ### Static Architecture Validation
 | Dimension | Status |
 |-----------|--------|
-| **Dead code removed** | ✅ 7 files safely deleted |
-| **Fetch migration** | ✅ 8 calls migrated to `csrfFetch` |
-| **Toast consolidation** | ✅ 3 local implementations removed |
-| **Global state** | ✅ `window.__leaving` removed |
-| **Pre-existing bug fixed** | ✅ `openApprove`/`closeApprove` replaced with working data-action handlers |
-| **shared/dom.js** | ✅ Decision documented (keep) |
+| **Dead code removed** | 7 files safely deleted |
+| **Fetch migration** | 8 calls migrated to `csrfFetch` |
+| **Toast consolidation** | 3 local implementations removed |
+| **Global state** | `window.__leaving` removed |
+| **Pre-existing bug fixed** | `openApprove`/`closeApprove` replaced with working data-action handlers |
+| **shared/dom.js** | Decision documented (keep) |
 
 ### Browser Validation
 | Dimension | Status |
 |-----------|--------|
-| **Browser testing** | ❌ NOT PERFORMED — browser automation unavailable |
+| **Browser testing** | NOT PERFORMED — browser automation unavailable |
 
 ### Overall Assessment
 

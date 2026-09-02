@@ -9,7 +9,7 @@
 
 ## 1. Executive Summary
 
-The platform uses a **reserve-based wallet with admin-approved settlements (payouts)**.
+The platform uses a reserve-based wallet with admin-approved settlements (payouts).
 Money from donations flows into a fundraiser's wallet, sits in a hold/reserve
 period, matures into an available balance, and can then be withdrawn via a
 settlement request that an admin must approve before any bank/UPI payout.

@@ -1,15 +1,17 @@
 # DonateBazaar — Phase 6 Admin/Frontend Architecture Hardening Report
 
-**Date:** 2026-08-17  
-**Phase:** 6  
-**Status:** COMPLETED  
+**Date:** 2026-08-17
+**Phase:** 6
+**Status:** COMPLETED
 **Baseline:** Phase 5 Complete
 
 ---
 
 ## 1. Executive Summary
 
-Phase 6 focused on database schema repair, remaining manual `fetch()` migration, CSRF helper auditing, CSS debt classification, and browser regression verification. The primary blocker — a missing `notification_preferences` table causing 163 PHPUnit failures — was resolved by correcting the migration timestamp ordering. All 879 PHPUnit tests now pass. The remaining raw `fetch()` calls were migrated to `csrfFetch()`. Browser automation via Playwright is available; public-facing flows pass, while admin login browser tests fail due to a pre-existing test-suite issue unrelated to this phase. CSS lint debt (90 issues) was audited and classified as pre-existing legacy issues; no CSS fixes were applied because none could be proven safe without extensive cascade analysis.
+Phase 6 addressed database schema repair, the remaining manual `fetch()` migration, CSRF helper auditing, CSS debt classification, and browser regression verification.
+
+The primary blocker — a missing `notification_preferences` table causing 163 PHPUnit failures — was resolved by correcting the migration timestamp ordering. All 879 PHPUnit tests now pass. The remaining raw `fetch()` calls were migrated to `csrfFetch()`. Browser automation via Playwright is available; public-facing flows pass, while admin login browser tests fail due to a pre-existing test-suite issue unrelated to this phase. CSS lint debt (90 issues) was audited and classified as pre-existing legacy issues; no CSS fixes were applied because none could be proven safe without extensive cascade analysis.
 
 ---
 
@@ -100,7 +102,7 @@ All 163 failures were `NotificationPreferenceTest` and related tests failing wit
 | File | Line | Pattern | Status |
 |------|------|---------|--------|
 | `resources/js/shared/api.js` | 25 | `fetch(url, {` | SAFE — internal `csrfFetch()` definition |
-| `resources/js/public/volunteer-apply.js` | 23 | `fetch('/api/v1/states/india')` | MIGRATED → `csrfFetch()` |
+| `resources/js/public/volunteer-apply.js` | 23 | `fetch('/api/v1/states/india')` | MIGRATED to `csrfFetch()` |
 
 All other `fetch()` calls in the codebase now go through `shared/api.js` (`csrfFetch()` or `csrfFetchJSON()`).
 
@@ -343,7 +345,5 @@ No files deleted in Phase 6.
 
 ---
 
-*Report generated: 2026-08-17*  
+*Report generated: 2026-08-17*
 *Phase 6 status: COMPLETED — all mandatory validation passes; browser regression partially verified*
-
-

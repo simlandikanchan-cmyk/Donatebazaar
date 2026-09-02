@@ -555,6 +555,28 @@
   animation: spin .7s linear infinite;
   border-top-color: var(--a);
 }
+@media (max-width: 640px) {
+  .qk-hero {
+    max-height: 200px;
+  }
+  .qk-cover {
+    height: 140px;
+  }
+  .qk-body {
+    padding: 14px;
+  }
+  .qk-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+  .qk-acts {
+    flex-direction: column;
+  }
+  .qk-acts > form,
+  .qk-acts > button {
+    width: 100%;
+    justify-content: center;
+  }
+}
 /* ── LIGHTBOX ── */
 .lightbox {
   position: fixed;

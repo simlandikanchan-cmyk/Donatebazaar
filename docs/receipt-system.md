@@ -1,8 +1,6 @@
 # Donation Receipt System
 
-## Overview
-
-The receipt system generates, delivers, and secures donation receipts for completed payments. It spans payment verification, financial side effects, email delivery, PDF generation, and secure download.
+The receipt system starts at payment verification and ends with a securely downloadable PDF. It covers the financial side effects of a completed donation, email delivery, PDF generation, and the download flow.
 
 ## Receipt Lifecycle
 
@@ -61,9 +59,11 @@ Receipt PDF Download
   Generates PDF via Dompdf (isRemoteEnabled=false)
 ```
 
+The completion path is the critical part: all financial side effects happen inside a single DB transaction with row locks, and only after it commits is the receipt email queued. The browser verification and the webhook converge on the same `DonationCompletionService::complete()` method, which is what keeps the two paths behaving identically.
+
 ## Configuration
 
-All operational values are in `config/services.php` under `donation`:
+Operational values live in `config/services.php` under `donation`:
 
 | Key | Env Variable | Default | Purpose |
 |-----|-------------|---------|---------|
@@ -77,7 +77,7 @@ All operational values are in `config/services.php` under `donation`:
 
 ### DonationReceiptService
 
-Single source of truth for receipt data. Never recalculates financial values.
+Single source of truth for receipt data. It never recalculates financial values — amounts are stored at donation creation and read back verbatim.
 
 - `data(Donation, withUrls)` → array of receipt fields
 - `receiptDownloadUrl(Donation)` → signed URL
@@ -87,31 +87,31 @@ Single source of truth for receipt data. Never recalculates financial values.
 
 ### DonationCompletionService
 
-Extracted from PaymentVerificationService and PaymentWebhookService. Handles all financial side effects atomically.
+Extracted from `PaymentVerificationService` and `PaymentWebhookService` so both entry points share one atomic completion routine with all financial side effects.
 
 ### Receipt Authorization
 
-- **Signed URL path** (`/donation-receipt/{id}/download`): guest access with valid signed URL + availability check
-- **History path** (`/donations/{id}/receipt`): authenticated owner or admin only
+- **Signed URL path** (`/donation-receipt/{id}/download`): guest access works only with a valid signed URL plus the availability check.
+- **History path** (`/donations/{id}/receipt`): authenticated owner or admin only.
 
 ## Security
 
-- Signed URLs expire automatically (Laravel `temporarySignedRoute`)
-- Dompdf `isRemoteEnabled=false` prevents SSRF
-- Blade escaping prevents XSS in PDF/email
-- Webhook HMAC-SHA256 verification
-- Razorpay signature + amount + currency + status verification
-- Distributed locks prevent duplicate completion
-- Soft-deleted donations cannot have receipts downloaded
+- Signed URLs expire automatically (Laravel `temporarySignedRoute`).
+- Dompdf runs with `isRemoteEnabled=false`, which prevents SSRF through the PDF renderer.
+- Blade escaping prevents XSS in PDF and email.
+- Webhook payloads are verified with HMAC-SHA256.
+- Razorpay signature, amount, currency, and status are all verified.
+- Distributed locks prevent duplicate completion.
+- Soft-deleted donations can never have their receipt downloaded.
 
 ## Financial Integrity
 
-- All amounts calculated server-side at donation creation
-- Stored values used everywhere (no recalculation in email/PDF/controller)
-- Wallet credit idempotent (checks existing transaction)
-- Coupon redemption idempotent (checks existing redemption)
-- Unique receipt_number enforced at DB level
-- Unique payment_id enforced at DB level
+- Amounts are calculated server-side when the donation is created.
+- Stored values are used everywhere — email, PDF, and controllers never recompute fees.
+- Wallet credit is idempotent (checks for an existing transaction).
+- Coupon redemption is idempotent (checks for an existing redemption).
+- `receipt_number` is unique at the DB level.
+- `payment_id` is unique at the DB level.
 
 ## Email Queueing
 
@@ -130,11 +130,11 @@ Receipt emails are queued via `ShouldQueue` with retry/backoff:
 
 - Payment/receipt events → `storage/logs/payments.log`
 - Donation completion events → `storage/logs/donations.log`
-- Structured arrays with sensitive data redaction
+- Structured arrays with sensitive data redacted.
 
 ## Testing
 
-Receipt tests: `tests/Feature/DonationReceiptTest.php`
-E2E tests: `tests/Feature/RealTimeQaEndToEndTest.php`
-Payment flow: `tests/Feature/PaymentFlowTest.php`
-Gateway: `tests/Unit/Gateway/RazorpayGatewayTest.php`
+- Receipt tests: `tests/Feature/DonationReceiptTest.php`
+- E2E tests: `tests/Feature/RealTimeQaEndToEndTest.php`
+- Payment flow: `tests/Feature/PaymentFlowTest.php`
+- Gateway: `tests/Unit/Gateway/RazorpayGatewayTest.php`

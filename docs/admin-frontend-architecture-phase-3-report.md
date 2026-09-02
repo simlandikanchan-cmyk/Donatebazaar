@@ -2,12 +2,12 @@
 
 ## 1. Executive Summary
 
-Phase 3 addressed the two primary architectural deficiencies identified in the Admin Dashboard Audit:
+Phase 3 addressed the two main architectural problems surfaced by the Admin Dashboard Audit:
 
 1. **God module** — `resources/js/admin/admin.js` was a 725-line file mixing global shell behavior with dashboard-specific business logic.
 2. **CSS responsibility overlap** — `resources/css/admin/pages/` and `resources/css/admin/entries/` had unclear, overlapping responsibilities.
 
-The refactor decomposed `admin.js` into three focused modules, introduced a thin shared API service, replaced a global dashboard data object with a page-scoped JSON contract, and cleaned up one exact CSS duplication. All changes are architecture-only; the UI, UX, routes, controllers, models, database, and user workflows remain untouched.
+The refactor split `admin.js` into three focused modules, added a thin shared API service, replaced a global dashboard data object with a page-scoped JSON contract, and removed one exact CSS duplication. All changes are architecture-only; the UI, UX, routes, controllers, models, database, and user workflows remain untouched.
 
 **Result:** Build passes, all 879 PHPUnit tests pass, view cache succeeds, routes validate, and no regressions were introduced.
 
@@ -29,7 +29,7 @@ resources/js/shared/                 8 utilities (toast, modal, theme, csrf, con
 - Modal defaults
 - Form submit loading state
 - Generic data-action delegation
-- 4× Chart.js instances (line, doughnut, revenue, bar)
+- 4x Chart.js instances (line, doughnut, revenue, bar)
 - Campaign grid with AJAX filters
 - Bulk campaign actions (approve, reject, pause)
 - Quick-view slide-over
@@ -204,7 +204,7 @@ Zero remaining callers of `window.__DASHBOARD_DATA__` outside of `dashboard.blad
 | `entries/` | Vite entry points — thin wrappers that aggregate `pages/` files into loadable bundles |
 | `pages/` | Page-specific implementation styles — actual CSS source files |
 
-### Entry → Pages Import Map
+### Entry to Pages Import Map
 
 | Entry File | Imports From `pages/` |
 |------------|----------------------|

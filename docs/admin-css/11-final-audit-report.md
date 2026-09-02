@@ -2,25 +2,26 @@
 
 ## 1. Scope & methodology
 
-Phase 8 (`08-verification-report.md`) proved **0 undefined custom classes** across the whole admin tree (any admin CSS file = defined). This audit is stricter: it verifies **per-bundle coverage** — every class used by a page must be defined in the exact CSS that page loads (admin layout loads exactly `entries/core.css` + the page's single `@stack('page_css')` entry, verified by crawling).
+Phase 8 (`08-verification-report.md`) proved zero undefined custom classes across the whole admin tree. This audit is stricter: it verifies **per-bundle coverage** — every class used by a page must be defined in the exact CSS that page loads. The admin layout loads exactly `entries/core.css` plus the page's single `@stack('page_css')` entry, verified by crawling.
 
-**Audit tooling** (`C:\Users\stdlocal\AppData\Local\Temp\opencode\audit2\`):
+**Audit tooling** (`audit2/`):
 
-- `crawl.ps1` — logs in via the admin account (POST `/login` → 302), crawls 74 admin URLs, records HTTP status + every `<link rel="stylesheet">`/`@vite` CSS URL per page.
+- `crawl.ps1` — logs in via the admin account (POST `/login` → 302), crawls 74 admin URLs, records HTTP status and every `<link rel="stylesheet">`/`@vite` CSS URL per page.
 - `coverage.ps1` — downloads each page's CSS bundles, concatenates them, and reports every `class="…"` token whose `.class` selector is absent from the concatenated CSS.
 
 ## 2. Crawl results
 
-- Every reachable page returns **200** and loads **exactly 1 core bundle + 1 page entry** — no missing CSS links, no duplicate bundles.
+Every reachable page returns **200** and loads **exactly 1 core bundle + 1 page entry** — no missing CSS links, no duplicate bundles.
+
 - `/admin` root → 404 (no route registered; navigation is sidebar-driven — not an issue).
 - `/admin/faqs/1/edit` → 404 (no FAQ rows seeded — not an issue).
 - `/admin/fundraiser-levels/1` → **500 pre-existing PHP error** (controller/view bug, unrelated to CSS — see §6).
 - `categories/1` and `category-products/1` are gone (routes removed — 404 by design).
 - `/admin/campaign/99/quick`, exports → 200, no CSS (JSON/CSV/partial endpoints — partial is injected into the campaigns page context).
 
-## 3. Gaps found & fixed (wrong-bundle / missing classes)
+## 3. Gaps found and fixed
 
-Coverage pass 1 flagged genuinely unstyled or wrong-bundle classes. All were fixed by adding the missing rules to the correct bundle (compiled, verified present in `public/build/assets/*.css`):
+Coverage pass 1 flagged genuinely unstyled or wrong-bundle classes. All were fixed by adding the missing rules to the correct bundle, compiled and verified present in `public/build/assets/*.css`:
 
 | File | Added |
 |---|---|
@@ -31,15 +32,15 @@ Coverage pass 1 flagged genuinely unstyled or wrong-bundle classes. All were fix
 | `components/_toolbar.css` | `.filter-clear` |
 | `components/_campaign-cards.css` | `.prog-pct--active` |
 | `utilities/_colors.css` | `.green` |
-| `pages/events.css` | `.status-banner.sb-active/-pending/-draft/-cancelled/-expired/-completed` (scoped under `.status-banner` to avoid clash with the sidebar-block `.sb-draft`), `.sp-dot`, `.upload-zone/.upload-icon`, full `.cat-*` category picker set + `.no-campaigns` |
-| `pages/jobs.css` | `.field-row`, `.field-hint`, `.char-counter`, `.prev-desc`, `.submit-info`, `.submit-btns`, `.modal-overlay/-desc/-btns` |
-| `pages/misc.css` | `.editor-toolbar/-content/-footer/-divider`, `.meta-row` + `.meta-lbl/.meta-val`, `.sb-custom`, `.ap-yes/.ap-no` |
-| `pages/blogs.css` | `.f-pos/.f-handle/.f-info/.f-name/.f-meta/.f-btn/.f-remove` (carousel), `.field-label/.field-input/.field-hint`, `.toggle-desc`, `.desc-count`, `.char-count/.char-counter`, `.cover-wrap`, `.fill-blue/-yellow/-green/-pink` |
-| `pages/campaigns.css` | `.char-count`, `.cover-preview-wrap` |
-| `pages/applications.css` | `.hero-title/.hero-meta/.hero-meta-item`, `.timeline` + `.tl-*` set (was only in jobs bundle) |
-| `pages/finance.css` | `.chart-card/-hdr/-ttl/-sub` (was only in dashboard bundle) |
-| `pages/organizations.css` | `.form-lbl` (partnerships forms) |
-| `pages/messages.css` | `.msg-hero-relative`, `.msg-meta-card`/`.msg-actions-card` sidebar-body spacing, `.reply-open/-send/-cancel` |
+| `pages/_events.css` | `.status-banner.sb-active/-pending/-draft/-cancelled/-expired/-completed` (scoped under `.status-banner` to avoid clash with the sidebar-block `.sb-draft`), `.sp-dot`, `.upload-zone/.upload-icon`, full `.cat-*` category picker set + `.no-campaigns` |
+| `pages/_jobs.css` | `.field-row`, `.field-hint`, `.char-counter`, `.prev-desc`, `.submit-info`, `.submit-btns`, `.modal-overlay/-desc/-btns` |
+| `pages/_misc.css` | `.editor-toolbar/-content/-footer/-divider`, `.meta-row` + `.meta-lbl/.meta-val`, `.sb-custom`, `.ap-yes/.ap-no` |
+| `pages/_blogs.css` | `.f-pos/.f-handle/.f-info/.f-name/.f-meta/.f-btn/.f-remove` (carousel), `.field-label/.field-input/.field-hint`, `.toggle-desc`, `.desc-count`, `.char-count/.char-counter`, `.cover-wrap`, `.fill-blue/-yellow/-green/-pink` |
+| `pages/_campaigns.css` | `.char-count`, `.cover-preview-wrap` |
+| `pages/_applications.css` | `.hero-title/.hero-meta/.hero-meta-item`, `.timeline` + `.tl-*` set (was only in jobs bundle) |
+| `pages/_finance.css` | `.chart-card/-hdr/-ttl/-sub` (was only in dashboard bundle) |
+| `pages/_organizations.css` | `.form-lbl` (partnerships forms) |
+| `pages/_messages.css` | `.msg-hero-relative`, `.msg-meta-card`/`.msg-actions-card` sidebar-body spacing, `.reply-open/-send/-cancel` |
 
 Nothing was duplicated into a second bundle unless its consumer page loads only that bundle (field-error/field-select/field-textarea stay core-only; `.qk-*` stays core as the quick-view partial renders inside the campaigns page context).
 
@@ -76,10 +77,9 @@ Per the Phase 8 rubric (whole-tree: **10/10**), the stricter per-bundle audit no
 
 ## Re-run procedure
 
-## Re run procedure by admin side 
 ```
 npm run build
-powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\stdlocal\AppData\Local\Temp\opencode\audit2\coverage.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File audit2\coverage.ps1
 ```
 
 Expected: no `== 200 ==` page flags other than the false-positive list in §4; 404/500 pages flag only external/error artifacts.

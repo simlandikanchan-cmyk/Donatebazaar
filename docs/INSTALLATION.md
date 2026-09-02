@@ -1,5 +1,7 @@
 # Installation Guide
 
+This guide covers getting DonateBazaar running locally, in Docker, and on a production server.
+
 ## Table of Contents
 
 - [Requirements](#requirements)
@@ -33,7 +35,8 @@ bcmath, ctype, curl, dom, fileinfo, gd, json, mbstring,
 openssl, pdo, pdo_mysql, redis, tokenizer, xml, zip
 ```
 
-Verify extensions:
+Verify the extensions are present:
+
 ```bash
 php -m | grep -E "bcmath|ctype|curl|dom|fileinfo|gd|json|mbstring|openssl|pdo|redis|tokenizer|xml|zip"
 ```
@@ -55,7 +58,8 @@ cd donatebazaar
 composer install
 ```
 
-For production:
+If you are installing with production conditions in mind:
+
 ```bash
 composer install --no-dev --optimize-autoloader
 ```
@@ -75,7 +79,7 @@ php artisan key:generate
 
 ### Step 5: Configure Environment
 
-Edit `.env` file:
+Edit `.env` with your local values:
 
 ```env
 APP_NAME=DonateBazaar
@@ -120,12 +124,14 @@ php artisan migrate
 
 ### Step 8: Build Assets
 
-For development (with hot reload):
+For development with hot reload:
+
 ```bash
 npm run dev
 ```
 
-For production:
+For a production build:
+
 ```bash
 npm run build
 ```
@@ -136,7 +142,7 @@ npm run build
 php artisan serve
 ```
 
-Visit: http://localhost:8000
+The app is now available at http://localhost:8000.
 
 ---
 
@@ -277,7 +283,8 @@ server {
 }
 ```
 
-Enable site:
+Enable the site:
+
 ```bash
 sudo ln -s /etc/nginx/sites-available/donatebazaar /etc/nginx/sites-enabled/
 sudo nginx -t
@@ -306,7 +313,8 @@ sudo supervisorctl start all
 sudo crontab -e
 ```
 
-Add:
+Add the scheduler entry:
+
 ```
 * * * * * cd /var/www/donatebazaar && php artisan schedule:run >> /dev/null 2>&1
 ```
@@ -350,10 +358,10 @@ php artisan event:cache
 
 ### Razorpay Configuration
 
-1. Create account at https://razorpay.com
-2. Get API keys from Dashboard → Settings → API Keys
-3. Set webhook secret in Dashboard → Settings → Webhooks
-4. Webhook URL: `https://your-domain.com/payment/webhook`
+1. Create an account at https://razorpay.com.
+2. Get your API keys from Dashboard → Settings → API Keys.
+3. Set the webhook secret in Dashboard → Settings → Webhooks.
+4. Point the webhook URL to `https://your-domain.com/payment/webhook`.
 
 ---
 
@@ -397,6 +405,8 @@ stdout_logfile=/var/log/supervisor/fundraise-queue-notifications.log
 
 ### Restart Workers
 
+After deploying new code, signal the workers to pick up the change:
+
 ```bash
 php artisan queue:restart
 ```
@@ -425,9 +435,7 @@ php artisan queue:restart
 
 ## Troubleshooting
 
-### Common Issues
-
-#### 500 Internal Server Error
+### 500 Internal Server Error
 
 ```bash
 # Check logs
@@ -442,7 +450,7 @@ php artisan view:clear
 chmod -R 775 storage bootstrap/cache
 ```
 
-#### Database Connection Error
+### Database Connection Error
 
 ```bash
 # Verify MySQL is running
@@ -455,7 +463,7 @@ mysql -u root -p -e "SELECT 1"
 grep DB_ .env
 ```
 
-#### Queue Not Processing
+### Queue Not Processing
 
 ```bash
 # Check supervisor status
@@ -468,7 +476,7 @@ sudo supervisorctl restart all
 tail -f /var/log/supervisor/fundraise-queue-default.log
 ```
 
-#### Assets Not Loading
+### Assets Not Loading
 
 ```bash
 # Rebuild assets
@@ -481,7 +489,7 @@ ls -la public/build
 php artisan view:clear
 ```
 
-#### Migration Errors
+### Migration Errors
 
 ```bash
 # Reset and re-run migrations
@@ -493,6 +501,6 @@ php artisan migrate:status
 
 ### Getting Help
 
-- Check `storage/logs/laravel.log` for errors
-- Run `php artisan about` for system info
-- Verify all environment variables are set
+- Check `storage/logs/laravel.log` for errors.
+- Run `php artisan about` for system info.
+- Verify all environment variables are set.

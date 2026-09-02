@@ -23,8 +23,60 @@ import Chart from 'chart.js/auto';
   var monthlyData = data.monthlyData || {};
   var campChartData = data.campChartData || [];
 
+  /* ── Font-ready guard + reveal orchestration ── */
+  var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function startAnimations() {
+    animateCounters();
+    runReveal();
+    runBars();
+    runRings();
+  }
+
+  /* Show below-the-fold content once scroll reaches it.
+     Elements are only hidden AFTER JS is confirmed running,
+     so a JS failure never leaves content invisible. */
+  function runReveal() {
+    var targets = document.querySelectorAll('[data-reveal]');
+    // Immediately reveal everything when motion is reduced or IO is absent.
+    if (prefersReduced || !('IntersectionObserver' in window)) {
+      targets.forEach(function (t) { t.classList.add('revealed'); });
+      return;
+    }
+    targets.forEach(function (t) { t.classList.add('reveal-on-load'); });
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.06, rootMargin: '0px 0px -40px 0px' });
+    targets.forEach(function (t) { io.observe(t); });
+  }
+
+  // Preserve layout stability by reserving space before reveal fades in.
+  function runBars() {
+    var bar = document.getElementById('overallBar');
+    if (bar) bar.style.width = overallPct + '%';
+    var lvl = document.getElementById('levelFill');
+    if (lvl) lvl.style.width = levelProgress + '%';
+  }
+  function runRings() {
+    var ring = document.getElementById('impactRing');
+    if (ring) {
+      var circ = 2 * Math.PI * 52;
+      ring.style.strokeDasharray = circ;
+      ring.style.strokeDashoffset = circ - (circ * overallPct / 100);
+    }
+  }
+
   /* ── Animated stat counters ── */
   function animateCounter(el, target, prefix, suffix) {
+    if (prefersReduced) {
+      el.textContent = prefix + target.toLocaleString('en-IN') + suffix;
+      return;
+    }
     var duration = 900, start = 0, startTime = null;
     prefix = prefix || '';
     suffix = suffix || '';
@@ -38,36 +90,42 @@ import Chart from 'chart.js/auto';
     }
     requestAnimationFrame(step);
   }
-  document.querySelectorAll('.stat-val').forEach(function (el) {
-    var original = el.textContent;
-    var prefixMatch = original.match(/^(\D*)/);
-    var prefix = prefixMatch ? prefixMatch[1] : '';
-    var raw = original.replace(/[₹,]/g, '').trim();
-    var num = parseInt(raw, 10);
-    if (!isNaN(num) && num > 0) {
-      var suffix = original.includes('%') ? '%' : '';
-      el.textContent = prefix + '0' + suffix;
-      animateCounter(el, num, prefix, suffix);
-    }
-  });
+  function animateCounters() {
+    document.querySelectorAll('.stat-val').forEach(function (el) {
+      var original = el.textContent;
+      var prefixMatch = original.match(/^(\D*)/);
+      var prefix = prefixMatch ? prefixMatch[1] : '';
+      var raw = original.replace(/[₹,]/g, '').trim();
+      var num = parseInt(raw, 10);
+      if (!isNaN(num) && num > 0) {
+        var suffix = original.includes('%') ? '%' : '';
+        el.textContent = prefix + '0' + suffix;
+        animateCounter(el, num, prefix, suffix);
+      }
+    });
+  }
 
-  /* ── Animate progress bars ── */
-  setTimeout(function () {
-    var bar = document.getElementById('overallBar');
-    if (bar) bar.style.width = overallPct + '%';
-    var lvl = document.getElementById('levelFill');
-    if (lvl) lvl.style.width = levelProgress + '%';
-  }, 700);
-
-  /* ── Animate impact ring ── */
-  setTimeout(function () {
-    var ring = document.getElementById('impactRing');
-    if (!ring) return;
-    var pct = overallPct;
-    var circ = 2 * Math.PI * 52;
-    ring.style.strokeDasharray = circ;
-    ring.style.strokeDashoffset = circ - (circ * pct / 100);
-  }, 450);
+  /* ── Start animations once fonts (and thus metrics) are ready ── */
+  var started = false;
+  function boot() {
+    if (started) return;
+    started = true;
+    if (prefersReduced) { startAnimations(); return; }
+    // Small staggered sync so layout stays stable while content appears.
+    setTimeout(function () {
+      animateCounters();
+      runBars();
+      runRings();
+      runReveal();
+    }, 40);
+  }
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(boot);
+  } else {
+    window.addEventListener('load', boot);
+  }
+  // Safety fallback in case the above never resolves.
+  setTimeout(boot, 2000);
 
   /* ── Filter + Search + Sort ── */
   var activeFilter = 'all', searchQ = '', sortVal = '';
@@ -110,7 +168,11 @@ import Chart from 'chart.js/auto';
     document.getElementById('ftabSelect').value = f;
     applyFilters();
     var el = document.getElementById('cGrid');
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (el) {
+      // Offset for the sticky topbar so the section heading is fully visible.
+      var top = el.getBoundingClientRect().top + window.pageYOffset - 76;
+      window.scrollTo({ top: top, behavior: 'smooth' });
+    }
   }
 
   document.querySelectorAll('.ftab').forEach(function (tab) {
@@ -239,6 +301,11 @@ import Chart from 'chart.js/auto';
         }
       }
     });
+    if (!prefersReduced) {
+      ctx.style.transition = 'opacity .6s ease';
+      ctx.style.opacity = '0';
+      requestAnimationFrame(function () { ctx.style.opacity = '1'; });
+    }
   }
   renderChart();
 

@@ -34,30 +34,110 @@
 
   function handleImageChange(input) {
     if (!input.files || !input.files[0]) return;
+    processFile(input.files[0]);
+  }
+
+  var ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+  var MAX_SIZE = 2 * 1024 * 1024;
+
+  function clearImageError() {
+    var err = document.getElementById('imageError');
+    var zone = document.getElementById('uploadZone');
+    if (err) err.hidden = true;
+    if (zone) zone.classList.remove('has-error');
+  }
+
+  function showImageError(message) {
+    var err = document.getElementById('imageError');
+    var zone = document.getElementById('uploadZone');
+    if (err) { err.textContent = message; err.hidden = false; }
+    if (zone) zone.classList.add('has-error');
+  }
+
+  function processFile(file) {
+    clearImageError();
+
+    if (!file.type || ALLOWED_TYPES.indexOf(file.type) === -1) {
+      showImageError('Invalid file type. Please choose a JPG, PNG or WEBP image.');
+      return;
+    }
+    if (file.size > MAX_SIZE) {
+      showImageError('Image is too large. Maximum size is 2MB.');
+      return;
+    }
+
+    var spinner = document.getElementById('imgPreviewSpinner');
+    var prevErr = document.getElementById('imgPreviewError');
+    var preview = document.getElementById('imgPreview');
+
+    document.getElementById('imgPreviewWrap').hidden = false;
+    document.getElementById('uploadPrompt').style.display = 'none';
+    if (spinner) spinner.hidden = false;
+    if (prevErr) prevErr.hidden = true;
+    preview.classList.remove('loaded');
+    preview.onload = null;
+
     var reader = new FileReader();
     reader.onload = function (e) {
-      document.getElementById('prevImgIcon').style.display = 'none';
+      preview.src = e.target.result;
       var el = document.getElementById('prevImgEl');
-      el.src = e.target.result; el.style.display = 'block';
-      document.getElementById('uploadPrompt').style.display = 'none';
-      document.getElementById('imgPreviewWrap').style.display = 'flex';
-      document.getElementById('imgPreview').src = e.target.result;
+      if (el) { el.src = e.target.result; el.style.display = 'block'; }
+      document.getElementById('prevImgIcon').style.display = 'none';
     };
-    reader.readAsDataURL(input.files[0]);
+    reader.onerror = function () {
+      if (spinner) spinner.hidden = true;
+      if (prevErr) { prevErr.textContent = 'Could not read this image.'; prevErr.hidden = false; }
+    };
+    reader.readAsDataURL(file);
+
+    preview.onload = function () {
+      preview.classList.add('loaded');
+      if (spinner) spinner.hidden = true;
+    };
+    preview.onerror = function () {
+      if (spinner) spinner.hidden = true;
+      if (prevErr) { prevErr.textContent = 'Preview could not be loaded for this file.'; prevErr.hidden = false; }
+      if (preview) preview.classList.remove('loaded');
+    };
+  }
+
+  function showEmptyState() {
+    document.getElementById('uploadPrompt').style.display = '';
+    document.getElementById('imgPreviewWrap').hidden = true;
+    document.getElementById('prevImgIcon').style.display = '';
+    document.getElementById('prevImgEl').style.display = 'none';
+    document.getElementById('imageInput').value = '';
+    clearImageError();
   }
 
   function removeImage() {
-    document.getElementById('imageInput').value = '';
-    document.getElementById('prevImgIcon').style.display = '';
-    document.getElementById('prevImgEl').style.display = 'none';
-    document.getElementById('uploadPrompt').style.display = '';
-    document.getElementById('imgPreviewWrap').style.display = 'none';
+    showEmptyState();
   }
 
+  var uploadInput = document.getElementById('imageInput');
   var zone = document.getElementById('uploadZone');
-  zone.addEventListener('dragover', function (e) { e.preventDefault(); zone.classList.add('drag'); });
-  zone.addEventListener('dragleave', function () { zone.classList.remove('drag'); });
-  zone.addEventListener('drop', function () { zone.classList.remove('drag'); });
+  zone.addEventListener('click', function (e) {
+    if (e.target.closest('[data-action="remove-image"],[data-action="change-image"]')) return;
+    uploadInput.click();
+  });
+  uploadInput.addEventListener('click', function (e) { e.stopPropagation(); });
+  ['dragover', 'dragenter'].forEach(function (ev) {
+    zone.addEventListener(ev, function (e) { e.preventDefault(); zone.classList.add('drag'); });
+  });
+  ['dragleave', 'drop'].forEach(function (ev) {
+    zone.addEventListener(ev, function (e) {
+      e.preventDefault(); zone.classList.remove('drag');
+      if (ev === 'drop' && e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
+        var f = e.dataTransfer.files[0];
+        if (ALLOWED_TYPES.indexOf(f.type) !== -1) {
+          uploadInput.files = e.dataTransfer.files;
+          processFile(f);
+        } else {
+          showImageError('Invalid file type. Please choose a JPG, PNG or WEBP image.');
+        }
+      }
+    });
+  });
 
   document.getElementById('prodForm').addEventListener('submit', function () {
     var btn = document.getElementById('submitBtn');
@@ -89,6 +169,7 @@
     if (!el) return;
     switch (el.getAttribute('data-action')) {
       case 'remove-image': removeImage(); break;
+      case 'change-image': uploadInput.click(); break;
     }
   });
 })();

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -137,42 +137,42 @@
     </div>
     <div class="findings-grid">
       <div class="finding resolved">
-        <h4><span class="dot" style="background:var(--green)"></span>CRITICAL-01 ✅ DonationPayment model</h4>
+        <h4><span class="dot" style="background:var(--green)"></span>CRITICAL-01  DonationPayment model</h4>
         <p>Created missing model for existing donation_payments table.</p>
         <p style="font-size:11px"><code>app/Models/DonationPayment.php</code></p>
       </div>
       <div class="finding resolved">
-        <h4><span class="dot" style="background:var(--green)"></span>CRITICAL-02 ✅ Dead repo methods</h4>
+        <h4><span class="dot" style="background:var(--green)"></span>CRITICAL-02  Dead repo methods</h4>
         <p>Removed getMaturedReserves, getReservesForDonations, markAsReleased.</p>
         <p style="font-size:11px"><code>WalletRepository.php:109-129</code></p>
       </div>
       <div class="finding resolved">
-        <h4><span class="dot" style="background:var(--green)"></span>CRITICAL-03 ✅ CASCADE to RESTRICT</h4>
+        <h4><span class="dot" style="background:var(--green)"></span>CRITICAL-03  CASCADE to RESTRICT</h4>
         <p>wallet_transactions FK changed from CASCADE to RESTRICT.</p>
         <p style="font-size:11px"><code>migration 2026_08_12_000000</code></p>
       </div>
       <div class="finding resolved">
-        <h4><span class="dot" style="background:var(--green)"></span>CRITICAL-04 ✅ Plaintext bank data</h4>
+        <h4><span class="dot" style="background:var(--green)"></span>CRITICAL-04  Plaintext bank data</h4>
         <p>Added encrypted casts for account_number, ifsc_code, etc.</p>
         <p style="font-size:11px"><code>PayoutAccount.php</code></p>
       </div>
       <div class="finding resolved">
-        <h4><span class="dot" style="background:var(--green)"></span>WARNING-01 ✅ Org schema drift</h4>
+        <h4><span class="dot" style="background:var(--green)"></span>WARNING-01  Org schema drift</h4>
         <p>Added 8 missing Organization columns via migration.</p>
         <p style="font-size:11px"><code>2026_08_12_000010</code></p>
       </div>
       <div class="finding resolved">
-        <h4><span class="dot" style="background:var(--green)"></span>WARNING-02 ✅ Dual payout paths</h4>
+        <h4><span class="dot" style="background:var(--green)"></span>WARNING-02  Dual payout paths</h4>
         <p>Admin path now dispatches ProcessSettlementJob.</p>
         <p style="font-size:11px"><code>SettlementController.php:84</code></p>
       </div>
       <div class="finding resolved">
-        <h4><span class="dot" style="background:var(--green)"></span>WARNING-03 ✅ users.phone UNIQUE</h4>
+        <h4><span class="dot" style="background:var(--green)"></span>WARNING-03  users.phone UNIQUE</h4>
         <p>Dropped users_phone_unique constraint.</p>
         <p style="font-size:11px"><code>2026_08_12_000020</code></p>
       </div>
       <div class="finding resolved">
-        <h4><span class="dot" style="background:var(--green)"></span>WARNING-04 ✅ Restore idempotency</h4>
+        <h4><span class="dot" style="background:var(--green)"></span>WARNING-04  Restore idempotency</h4>
         <p>Added restored_at guard + row lock.</p>
         <p style="font-size:11px"><code>SettlementService.php:549-577</code></p>
       </div>
@@ -187,34 +187,34 @@
         <p style="font-size:11px">Max value: 999,999,999.99</p>
       </div>
       <div class="finding info">
-        <h4><span class="dot" style="background:var(--purple)"></span>INFO-04 ✅ Duplicate schedule</h4>
+        <h4><span class="dot" style="background:var(--purple)"></span>INFO-04  Duplicate schedule</h4>
         <p>Removed duplicate ReconciliationJob from routes/console.php.</p>
         <p style="font-size:11px">Now only in Kernel.php</p>
       </div>
       <hr style="grid-column:1/-1;border:0;border-top:1px solid var(--border);margin:16px 0">
       <h4 style="color:var(--accent);font-size:14px;margin-bottom:12px">SECOND PASS REMEDIATIONS (2026-08-12)</h4>
       <div class="finding resolved">
-        <h4><span class="dot" style="background:var(--green)"></span>P0-01 ✅ Role in $guarded</h4>
+        <h4><span class="dot" style="background:var(--green)"></span>P0-01  Role in $guarded</h4>
         <p>Verified role moved to $guarded. Factory uses unguarded() internally so role() state still works.</p>
         <p style="font-size:11px"><code>app/Models/User.php</code></p>
       </div>
       <div class="finding resolved">
-        <h4><span class="dot" style="background:var(--green)"></span>P0-02 ✅ Max retry enforcement</h4>
+        <h4><span class="dot" style="background:var(--green)"></span>P0-02  Max retry enforcement</h4>
         <p>Added retry_count >= maxRetries() pre-check in ProcessSettlementJob::process().</p>
         <p style="font-size:11px"><code>app/Jobs/ProcessSettlementJob.php</code></p>
       </div>
       <div class="finding resolved">
-        <h4><span class="dot" style="background:var(--green)"></span>P1-01 ✅ Two-lock pattern</h4>
+        <h4><span class="dot" style="background:var(--green)"></span>P1-01  Two-lock pattern</h4>
         <p>Cache lock now acquired inside try block — DB lockForUpdate blocking no longer holds Cache lock.</p>
         <p style="font-size:11px"><code>app/Services/WalletService.php:releaseMaturedReserves</code></p>
       </div>
       <div class="finding resolved">
-        <h4><span class="dot" style="background:var(--green)"></span>P1-02 ✅ Concurrency tests</h4>
+        <h4><span class="dot" style="background:var(--green)"></span>P1-02  Concurrency tests</h4>
         <p>Added 4 tests: idempotent credit/debit, insufficient balance, settlement idempotency.</p>
         <p style="font-size:11px"><code>tests/Feature/ConcurrencySafetyTest.php</code></p>
       </div>
       <div class="finding resolved">
-        <h4><span class="dot" style="background:var(--green)"></span>P2-01 ✅ Removed unsafe-eval CSP</h4>
+        <h4><span class="dot" style="background:var(--green)"></span>P2-01  Removed unsafe-eval CSP</h4>
         <p>Removed 'unsafe-eval' from script-src. No eval() usage in codebase.</p>
         <p style="font-size:11px"><code>app/Http/Middleware/SecureHeadersMiddleware.php</code></p>
       </div>
@@ -386,8 +386,8 @@ flowchart LR
       <thead><tr><th>Action</th><th>Priority</th><th>Status</th></tr></thead>
       <tbody>
         <tr><td>Set APP_KEY in .env</td><td>🔴 Critical</td><td>⏳ Your deploy</td></tr>
-        <tr><td>Run php artisan migrate</td><td>🟡 High</td><td>✅ Ready (batches 80+81)</td></tr>
-        <tr><td>Encrypt existing payout_accounts data</td><td>🔴 Critical</td><td>✅ One-time: php artisan payout-accounts:encrypt-sensitive --dry-run</td></tr>
+        <tr><td>Run php artisan migrate</td><td>🟡 High</td><td> Ready (batches 80+81)</td></tr>
+        <tr><td>Encrypt existing payout_accounts data</td><td>🔴 Critical</td><td> One-time: php artisan payout-accounts:encrypt-sensitive --dry-run</td></tr>
         <tr><td>Review CASCADE deletes (wallets→users)</td><td>🟡 High</td><td>ℹ️ Intentional — wallets recreated on demand</td></tr>
         <tr><td>Add INDEX on risk_scores(entity_type, created_at)</td><td>🟢 Low</td><td>Optional</td></tr>
         <tr><td>Migrate inline scripts to nonce CSP</td><td>🟡 Medium</td><td>ℹ️ Technical debt — 92 inline scripts pending</td></tr>

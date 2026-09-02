@@ -42,6 +42,19 @@
   box-shadow: var(--sh);
   animation: fadeUp .4s ease both;
 }
+
+.card-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 20px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    justify-content: flex-start!important;
+}
+
+
+
 .card + .card {
   margin-top: 16px;
 }

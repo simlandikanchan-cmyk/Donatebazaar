@@ -142,6 +142,34 @@
 </div>{{-- /.main --}}
 </div>{{-- /.shell --}}
 
+{{-- Mobile-only action bar: keeps critical actions reachable on phones.
+     Hidden on desktop; topbar controls take over above 860px. --}}
+<nav class="mobile-action-bar" aria-label="Quick actions">
+    <div class="mobile-action-bar-inner">
+        <a href="{{ url('/user/dashboard') }}#cGrid" class="mab-item" id="mabSearch" title="Find a campaign">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <span>Find</span>
+        </a>
+        <button type="button" class="mab-item" id="mabNotif" title="Notifications" aria-label="Notifications">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+            @if(isset($sidebarPending) && ($sidebarPending > 0 || $sidebarRejected > 0))<span class="mab-badge"></span>@endif
+            <span>Alerts</span>
+        </button>
+        <a href="{{ route('campaign.create') }}" class="mab-item mab-create" title="New campaign">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+            <span>New</span>
+        </a>
+        <button type="button" class="mab-item" id="mabTheme" title="Toggle theme" aria-label="Toggle dark mode">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+            <span>Theme</span>
+        </button>
+        <a href="{{ route('profile.show') }}" class="mab-item" title="My profile">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+            <span>Profile</span>
+        </a>
+    </div>
+</nav>
+
 @vite('resources/js/user/user.js')
 @stack('page_scripts')
 </body>

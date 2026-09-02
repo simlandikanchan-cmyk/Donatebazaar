@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -244,7 +244,7 @@ recurring_donations:{d:'donat',ic:'🔁',purpose:'Recurring subscriptions (daily
 coupons:{d:'donat',ic:'🏷️',purpose:'Promotional discounts (percentage/fixed) applicable to donations.',model:'Coupon',pk:'id',meta:{'Table':'coupons'},
   cols:[['id','bigint','PK'],['code','string','UQ'],['type','enum',''],['value','decimal',''],['usage_limit','int',''],['is_active','boolean','']],
   rels:[['donations','coupon_id','1:N',1],['coupon_redemptions','coupon_id','1:N',1]]},
-coupon_redemptions:{d:'donat',ic:'✅',purpose:'Single-use coupon redemption; UNIQUE(coupon+user).',model:'CouponRedemption',pk:'id',meta:{'Table':'coupon_redemptions','UNIQUE':'coupon_id+user_id'},
+coupon_redemptions:{d:'donat',ic:'',purpose:'Single-use coupon redemption; UNIQUE(coupon+user).',model:'CouponRedemption',pk:'id',meta:{'Table':'coupon_redemptions','UNIQUE':'coupon_id+user_id'},
   cols:[['id','bigint','PK'],['coupon_id','bigint','FK'],['user_id','bigint','FK'],['used_at','timestamp','N']],
   rels:[['coupons','coupon_id','N:1',1],['users','user_id','N:1',1]]},
 gift_cards:{d:'donat',ic:'🎁',purpose:'Pre-paid gift card codes redeemable onto a campaign to create a donation.',model:'GiftCard',pk:'id',meta:{'Table':'gift_cards','status':'active/redeemed/expired/void'},

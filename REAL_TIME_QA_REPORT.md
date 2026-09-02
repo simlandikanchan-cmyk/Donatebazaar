@@ -1,4 +1,4 @@
-# CAMPAIGN + DONATION END-TO-END TEST REPORT
+﻿# CAMPAIGN + DONATION END-TO-END TEST REPORT
 
 **Date:** 2026-08-14 | **App:** DONATEBAZAAR (Laravel 12.61.0 / PHP 8.2.12 / MariaDB, XAMPP Windows)
 **Scope:** Full campaign lifecycle (register → create → approve → public page → donate → pay → verify/webhook → wallet → admin) via real-HTTP Laravel feature tests.
@@ -52,31 +52,31 @@ Duration: 122.03s
 
 | # | Test | Result |
 |---|---|---|
-| 1 | Creator (`simlandikanchan@gmail.com`) registers + logs in via real HTTP (role ngo) | ✅ PASS |
-| 2 | Donor (`simlandikanchan2@gmail.com`) registers + logs in via real HTTP (role donor) | ✅ PASS |
-| 3 | Creator creates campaign via HTTP POST `/campaign/store` (state `pending`) | ✅ PASS |
-| 4 | Campaign validation rejects invalid payload (no row created) | ✅ PASS |
-| 5 | Guest cannot create campaign (redirect to login) | ✅ PASS |
-| 6 | Campaign is NOT public before approval (404) | ✅ PASS |
-| 7 | Admin (real HTTP login) approves KYC + campaign → state `active`, `campaign_logs` entry | ✅ PASS |
-| 8 | Approval is blocked until KYC is approved | ✅ PASS |
-| 9 | Non-admin cannot approve campaign | ✅ PASS |
-| 10 | Public page `campaigns/{category}/{slug}` loads after approval, shows title/goal/raised/category/owner | ✅ PASS |
-| 11 | Donor creates ₹100 order (amount, currency INR, campaign, donor, fee 5.00, net 95.00) | ✅ PASS |
-| 12 | Payment verification completes donation; `raised_amount` +100, `platform_earnings` +5 | ✅ PASS |
-| 13 | Creator wallet `reserved_balance` +95.00; `WalletTransaction` (source=donation, type=credit, status=completed) | ✅ PASS |
-| 14 | Receipt email sent to donor + `DonationReceived` notification for owner | ✅ PASS |
-| 15 | Webhook `payment.captured` (valid HMAC) completes pending donation | ✅ PASS |
-| 16 | Webhook invalid signature rejected | ✅ PASS |
-| 17 | Duplicate webhook does not double-credit wallet | ✅ PASS |
-| 18 | Webhook-then-verify idempotent (no double credit) | ✅ PASS |
-| 19 | Failed payment webhook marks donation failed, no credit | ✅ PASS |
-| 20 | Invalid payment signature → donation marked `failed`, 400 returned | ✅ PASS |
-| 21 | Invalid donation amount rejected | ✅ PASS |
-| 22 | Donation against paused campaign blocked | ✅ PASS |
-| 23 | Admin can view campaign + donation records | ✅ PASS |
-| 24 | Admin donation list contains the test donation | ✅ PASS |
-| 25 | Full single journey end-to-end (register → create → approve → donate → verify → wallet) | ✅ PASS |
+| 1 | Creator (`simlandikanchan@gmail.com`) registers + logs in via real HTTP (role ngo) |  PASS |
+| 2 | Donor (`simlandikanchan2@gmail.com`) registers + logs in via real HTTP (role donor) |  PASS |
+| 3 | Creator creates campaign via HTTP POST `/campaign/store` (state `pending`) |  PASS |
+| 4 | Campaign validation rejects invalid payload (no row created) |  PASS |
+| 5 | Guest cannot create campaign (redirect to login) |  PASS |
+| 6 | Campaign is NOT public before approval (404) |  PASS |
+| 7 | Admin (real HTTP login) approves KYC + campaign → state `active`, `campaign_logs` entry |  PASS |
+| 8 | Approval is blocked until KYC is approved |  PASS |
+| 9 | Non-admin cannot approve campaign |  PASS |
+| 10 | Public page `campaigns/{category}/{slug}` loads after approval, shows title/goal/raised/category/owner |  PASS |
+| 11 | Donor creates ₹100 order (amount, currency INR, campaign, donor, fee 5.00, net 95.00) |  PASS |
+| 12 | Payment verification completes donation; `raised_amount` +100, `platform_earnings` +5 |  PASS |
+| 13 | Creator wallet `reserved_balance` +95.00; `WalletTransaction` (source=donation, type=credit, status=completed) |  PASS |
+| 14 | Receipt email sent to donor + `DonationReceived` notification for owner |  PASS |
+| 15 | Webhook `payment.captured` (valid HMAC) completes pending donation |  PASS |
+| 16 | Webhook invalid signature rejected |  PASS |
+| 17 | Duplicate webhook does not double-credit wallet |  PASS |
+| 18 | Webhook-then-verify idempotent (no double credit) |  PASS |
+| 19 | Failed payment webhook marks donation failed, no credit |  PASS |
+| 20 | Invalid payment signature → donation marked `failed`, 400 returned |  PASS |
+| 21 | Invalid donation amount rejected |  PASS |
+| 22 | Donation against paused campaign blocked |  PASS |
+| 23 | Admin can view campaign + donation records |  PASS |
+| 24 | Admin donation list contains the test donation |  PASS |
+| 25 | Full single journey end-to-end (register → create → approve → donate → verify → wallet) |  PASS |
 
 **25/25 PASS, 685 assertions.**
 

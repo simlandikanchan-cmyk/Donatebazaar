@@ -332,6 +332,13 @@ import { csrfFetch } from '../../shared/api.js';
           if (e.target.closest('a,button,form,label,input,textarea')) return;
           openQuick(card.dataset.id);
         });
+        card.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            if (e.target.closest('a,button,form,label,input,textarea')) return;
+            openQuick(card.dataset.id);
+          }
+        });
       });
       grid.querySelectorAll('.c-checkbox').forEach(function (cb) {
         cb.addEventListener('change', updateBulkBar);

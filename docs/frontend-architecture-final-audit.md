@@ -8,7 +8,7 @@
 
 ## 1. Executive Summary
 
-A comprehensive audit of the DonateBazaar Laravel application's frontend architecture was conducted across 165 CSS files, 50+ JS files, and 269 Blade templates. The refactoring effort focused on converting inline JavaScript, eliminating `window.*` global bridges, establishing dedicated JS entry files via Vite, and verifying CSS architectural integrity — all while preserving 100% of existing visual design and user-facing behavior.
+This audit of the DonateBazaar frontend covers 165 CSS files, 50+ JS files, and 269 Blade templates. The refactoring effort focused on converting inline JavaScript to dedicated ES module entry files via Vite, eliminating `window.*` global bridges, and verifying the integrity of the CSS architecture — all while preserving 100% of the existing visual design and user-facing behavior.
 
 ### Before vs After (Inline Handlers)
 
@@ -53,7 +53,7 @@ A comprehensive audit of the DonateBazaar Laravel application's frontend archite
 
 ### 2.1 Entry Point Architecture
 
-The project uses Vite as its bundler with a Laravel Vite plugin. JS entries are declared as page-specific files in `vite.config.js`.
+The project uses Vite with the Laravel Vite plugin. JS entries are declared as page-specific files in `vite.config.js`.
 
 **Entry → Blade references matrix (key entries):**
 
@@ -81,9 +81,9 @@ The project uses Vite as its bundler with a Laravel Vite plugin. JS entries are 
 - `window.axios` in `bootstrap.js` — Standard Laravel bootstrap pattern. Not currently imported by any Blade or JS file, making `bootstrap.js` itself dead code.
 
 **B. Legacy (functional but not migrated):**
-- `window.Chart` in `public/app.js` (lazy), `user/user.js`, `admin/admin.js` — Used by 3 Blade pages with inline `<script>` blocks that reference `Chart` directly. Requires converting those inline scripts to proper ES module entries with `import Chart from 'chart.js/auto'`.
-- `window.toast` in `user/user.js`, `admin/admin.js` — Used by page-specific JS files that call `toast()` or `window.toast()` without importing from `shared/toast.js`. Requires converting consumers to import-based usage.
-- `window.setFilter`, `window.closeBulk`, `window.closeQuick`, `window.openPause`, `window.closePause`, `window.openReject`, `window.closeReject` in `admin/admin.js` — Used by 40+ `onclick=` handlers across admin Blade templates. Requires converting onclick handlers to `data-action` + event delegation.
+- `window.Chart` in `public/app.js` (lazy), `user/user.js`, `admin/admin.js` — Used by 3 Blade pages with inline `<script>` blocks that reference `Chart` directly. Fix requires converting those inline scripts to proper ES module entries with `import Chart from 'chart.js/auto'`.
+- `window.toast` in `user/user.js`, `admin/admin.js` — Used by page-specific JS files that call `toast()` or `window.toast()` without importing from `shared/toast.js`. Fix requires converting consumers to import-based usage.
+- `window.setFilter`, `window.closeBulk`, `window.closeQuick`, `window.openPause`, `window.closePause`, `window.openReject`, `window.closeReject` in `admin/admin.js` — Used by 40+ `onclick=` handlers across admin Blade templates. Fix requires converting onclick handlers to `data-action` + event delegation.
 
 **C. Duplicate:**
 - `function showToast()` in `public/campaigns-show.js` — duplicates `shared/toast.js`. Can import from shared instead.
@@ -116,7 +116,7 @@ The project uses Vite as its bundler with a Laravel Vite plugin. JS entries are 
 | `admin/core/_reset.css`             | `base/_reset.css`                   | `6309c33c...`      |
 | `admin/core/_typography.css`        | `base/_typography.css`              | `a35d809e...`      |
 
-**Recommendation:** Consolidate into `css/base/` only and update `admin/core/*.css` to `@import` from `base/`.
+These could be consolidated into `css/base/` only, with `admin/core/*.css` updated to `@import` from `base/`.
 
 ### 3.3 Near-Duplicate CSS Files
 
@@ -131,7 +131,7 @@ The project uses Vite as its bundler with a Laravel Vite plugin. JS entries are 
 
 ### 3.4 CSS Cross-System Imports
 
-**No cross-system CSS imports found.** Public, admin, and user CSS directories do not import from each other. The shared `base/` directory is used by all systems.
+No cross-system CSS imports were found. Public, admin, and user CSS directories do not import from each other. The shared `base/` directory is used by all systems.
 
 ### 3.5 Vite CSS Entry Architecture
 
@@ -141,7 +141,7 @@ CSS entries in `vite.config.js` use a pattern of thin `@import` wrapper files:
 - `admin/components/*.css` — component-level styles
 - `admin/core/*.css` — foundational styles
 
-This is a valid layered architecture. No orphaned CSS entries found — all 69 CSS entries in `vite.config.js` are referenced via `@vite()` in Blade templates.
+This is a valid layered architecture. No orphaned CSS entries were found — all 69 CSS entries in `vite.config.js` are referenced via `@vite()` in Blade templates.
 
 ---
 
@@ -213,7 +213,7 @@ This is a valid layered architecture. No orphaned CSS entries found — all 69 C
 
 The 253 remaining inline handlers fall into these categories:
 
-1. **Simple `confirm()` calls** (45+ occurrences) — Used in destroy/delete actions across admin and public pages. These are simple confirmation dialogs that don't benefit from JS extraction. Example: `onclick="return confirm('Are you sure?')"`.
+1. **Simple `confirm()` calls** (45+ occurrences) — Used in destroy/delete actions across admin and public pages. These simple confirmation dialogs wouldn't benefit from JS extraction. Example: `onclick="return confirm('Are you sure?')"`.
 
 2. **Simple `alert()` calls** (5+ occurrences) — Used for informational messages. Example: `onclick="alert('Cancel anytime...')"`.
 
@@ -259,7 +259,7 @@ These are predominantly in admin and public pages not yet targeted for refactori
 |-------------------------------|------------------|----------------------------|
 | `admin/blogs/pending.blade.php` | `reject-reason` | **Not dead** — handled by inline script in same file (line 59) |
 
-No truly dead `data-action` attributes found.
+No truly dead `data-action` attributes were found.
 
 ---
 
@@ -283,7 +283,7 @@ No public JS imports admin or user JS. No admin JS imports public or user JS. No
 | `admin/**`  | Only `admin/`, `components/`, `base/` | **Clean** |
 | `user/**`   | Only `user/`, `components/`, `base/` | **Clean** |
 
-No cross-system CSS imports found.
+No cross-system CSS imports were found.
 
 ---
 
@@ -342,23 +342,23 @@ These are loaded via CDN in Blade `<head>` or inline scripts, not via npm. Migra
 
 | Feature              | Status  | Verification Method                |
 |----------------------|---------|------------------------------------|
-| Authentication       | ✅ Pass | PHP tests, password toggle data-action |
-| Registration         | ✅ Pass | PHP tests, password toggle data-action |
-| FAQ accordion        | ✅ Pass | how-it-works, faq, about, contact — all use data-action |
-| Contact page         | ✅ Pass | toggleFAQ → data-action="toggle-faq" |
-| Campaign pages       | ✅ Pass | 382→158 onclick reduction |
-| Donation flow        | ✅ Pass | show.js handles all donation form behavior |
-| Profile              | ✅ Pass | profile-show.js with data-auto-action |
-| Dashboard            | ✅ Pass | admin.js handles grid, modals |
-| Admin actions        | ✅ Pass | admin.js event delegation |
-| Modals               | ✅ Pass | shared/modal.js + page-specific delegation |
-| Dropdowns            | ✅ Pass | campaigns.js dropdown delegation |
-| Tabs                 | ✅ Pass | data-action="switch-tab" in how-it-works, profile |
-| Filters              | ✅ Pass | campaigns.js filter delegation |
-| Forms                | ✅ Pass | auth.js form submission handling |
-| Validation           | ✅ Pass | PHP tests pass, show.js validateDonateForm |
-| Navigation           | ✅ Pass | Navbar and footer JS unchanged |
-| Notifications        | ✅ Pass | shared/toast.js (used by entry files) |
+| Authentication       | Pass | PHP tests, password toggle data-action |
+| Registration         | Pass | PHP tests, password toggle data-action |
+| FAQ accordion        | Pass | how-it-works, faq, about, contact — all use data-action |
+| Contact page         | Pass | toggleFAQ → data-action="toggle-faq" |
+| Campaign pages       | Pass | 382→158 onclick reduction |
+| Donation flow        | Pass | show.js handles all donation form behavior |
+| Profile              | Pass | profile-show.js with data-auto-action |
+| Dashboard            | Pass | admin.js handles grid, modals |
+| Admin actions        | Pass | admin.js event delegation |
+| Modals               | Pass | shared/modal.js + page-specific delegation |
+| Dropdowns            | Pass | campaigns.js dropdown delegation |
+| Tabs                 | Pass | data-action="switch-tab" in how-it-works, profile |
+| Filters              | Pass | campaigns.js filter delegation |
+| Forms                | Pass | auth.js form submission handling |
+| Validation           | Pass | PHP tests pass, show.js validateDonateForm |
+| Navigation           | Pass | Navbar and footer JS unchanged |
+| Notifications        | Pass | shared/toast.js (used by entry files) |
 
 ---
 
@@ -375,30 +375,30 @@ These are loaded via CDN in Blade `<head>` or inline scripts, not via npm. Migra
    - `admin/jobs-create.js` (line ~5)
    - `admin/messages-index.js` (line ~5)
    - `admin/profile-show.js` (line ~5)
-   
-   **Fix:** Import `toast` from `shared/toast.js` in each file.
+
+   Fix: import `toast` from `shared/toast.js` in each file.
 
 3. **window.Chart bridges** — Used by inline Blade scripts in:
    - `dashboard.blade.php` (renders fund and campaign charts)
    - `campaigns/analytics.blade.php` (renders analytics chart)
    - `admin/dashboard.blade.php` (renders admin charts)
-   
-   **Fix:** Move inline scripts to dedicated JS entries with `import Chart from 'chart.js/auto'`.
+
+   Fix: move inline scripts to dedicated JS entries with `import Chart from 'chart.js/auto'`.
 
 4. **window.toast bridges** — Set in `user/user.js` and `admin/admin.js` for cross-file usage by non-module page scripts.
-   
-   **Fix:** Convert all consumer JS files to import `toast` from `shared/toast.js`.
+
+   Fix: convert all consumer JS files to import `toast` from `shared/toast.js`.
 
 5. **Duplicate theme toggle logic** — Defined in 3 files:
    - `public/auth.js`
    - `public/events-edit.js`
    - `user/user.js`
-   
-   **Fix:** Extract to `shared/theme.js` and import.
+
+   Fix: extract to `shared/theme.js` and import.
 
 6. **Duplicate CSRF helpers** — `admin/admin.js` defines `function csrfToken()` instead of using `shared/csrf.js`.
-   
-   **Fix:** Import `getCsrfToken` from `shared/csrf.js`.
+
+   Fix: import `getCsrfToken` from `shared/csrf.js`.
 
 ### Medium Priority
 
@@ -463,7 +463,7 @@ These are loaded via CDN in Blade `<head>` or inline scripts, not via npm. Migra
 ### 🟡 GOOD WITH MINOR TECHNICAL DEBT
 
 **Why:**
-- The refactoring successfully converted 50% of inline handlers to data-action delegation
+- The refactoring converted 50% of inline handlers to data-action delegation
 - 24 `window.*` exports removed from core public JS files
 - 3 new dedicated JS entry files created, eliminating 420+ lines of inline Blade JavaScript
 - Build passes, all 879 PHP tests pass, no new CSS lint errors

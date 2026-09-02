@@ -118,7 +118,7 @@
             <label class="lbl" for="product_type">Product Type <span class="req">*</span></label>
             <select id="product_type" name="product_type" class="sel @error('product_type') err @enderror" required>
               <option value="" disabled>Select type…</option>
-              @foreach(['physical'=>'Physical','digital'=>'Digital','service'=>'Service','bundle'=>'Bundle'] as $val=>$lbl)
+              @foreach(['physical'=>'Physical','digital'=>'Digital','service'=>'Service','donation'=>'Donation'] as $val=>$lbl)
                 <option value="{{ $val }}" {{ old('product_type', $categoryProduct->product_type) === $val ? 'selected' : '' }}>{{ $lbl }}</option>
               @endforeach
             </select>

@@ -34,11 +34,19 @@
   .topbar-left h1 { font-size: 14px; }
   .topbar-left p { display: none; }
   .topbar-right { gap: 4px; }
+  /* Hide the topbar bell but keep .notif-wrap mounted so the dropdown
+     panel can still be opened from the mobile action bar. */
   .topbar-right .tb-btn { display: none; }
-  .topbar-right .notif-wrap { display: none; }
   .topbar-right .theme-toggle { display: none; }
   .topbar-right .create-btn { display: none; }
   .body { padding: 16px 12px 48px; }
+  /* Mobile-friendly notification sheet anchored below the topbar. */
+  .notif-wrap { position: static; }
+  .notif-panel {
+    position: fixed; top: 60px; left: 12px; right: 12px;
+    width: auto; max-width: 100%;
+    box-shadow: 0 20px 60px color-mix(in srgb, var(--black) 30%, transparent);
+  }
 }
 
 /* ── 600px: Small Mobile ──────────────────────────────────────────── */

@@ -1,4 +1,4 @@
-# Database & Architecture Audit — Final Verification Report
+﻿# Database & Architecture Audit — Final Verification Report
 
 **Fundraise / donatebazaar_final** · 2026-08-12 · Read-Only Verification + Remediation  
 **DB:** MariaDB 10.4.32 · **App:** Laravel 12 / PHP 8.2 · **Project root:** `C:\xampp\htdocs\fundraise`
@@ -7,15 +7,15 @@
 
 ## A. Executive Summary
 
-A comprehensive database schema audit was performed against the live `donatebazaar_final` database (104 tables, 149 FK constraints). The audit cross-referenced every financial/security table against its Eloquent model, migration definitions, and business-critical flow code.
+This schema audit cross-referenced every financial and security table in the live `donatebazaar_final` database (104 tables, 149 FK constraints) against its Eloquent model, migration definitions, and the business-critical flow code that touches them.
 
 **15 findings** were identified across 4 severity levels:
 - 4 CRITICAL — all **resolved**
 - 4 WARNING — all **resolved**
 - 5 LOW/INFO — 3 resolved, 2 remain open for future attention
 
-**Key remediation applied:**
-- Deleted `DonationPayment` model → created
+**Remediation applied:**
+- Missing `DonationPayment` model → created
 - Dead `WalletRepository` methods → removed
 - `wallet_transactions` FK CASCADE → RESTRICT
 - `PayoutAccount` plaintext bank fields → encrypted casts
@@ -27,7 +27,7 @@ A comprehensive database schema audit was performed against the live `donatebaza
 
 **Scores:** Database 9/10 · Financial 9/10 · Production Readiness 9/10
 
-> **Note:** `.env` and `APP_KEY` were NOT modified — left for your deploy-time configuration. The `encrypted` cast on `PayoutAccount` requires `APP_KEY` to be set to function at runtime.
+> **Note:** `.env` and `APP_KEY` were NOT modified — left for deploy-time configuration. The `encrypted` cast on `PayoutAccount` requires `APP_KEY` to be set to function at runtime.
 
 ---
 
@@ -54,12 +54,12 @@ A comprehensive database schema audit was performed against the live `donatebaza
 
 | Migration intent | Actual DB state | Status |
 |---|---|---|
-| `wallet_transactions.wallet_id` FK CASCADE | FK is RESTRICT (post-remediation) | ✅ FIXED |
-| `organizations` columns per model | All 8 columns now exist (slug, description, logo, contact_email, contact_phone, registration_number, is_active, verified_at) | ✅ FIXED |
-| `users.phone` UNIQUE | Constraint dropped | ✅ FIXED |
-| `campaign_settlements.restored_at` | Column exists (timestamp, nullable) | ✅ FIXED |
+| `wallet_transactions.wallet_id` FK CASCADE | FK is RESTRICT (post-remediation) | FIXED |
+| `organizations` columns per model | All 8 columns now exist (slug, description, logo, contact_email, contact_phone, registration_number, is_active, verified_at) | FIXED |
+| `users.phone` UNIQUE | Constraint dropped | FIXED |
+| `campaign_settlements.restored_at` | Column exists (timestamp, nullable) | FIXED |
 
-**No additional drift detected** — all FK types match parent columns, no orphaned constraints.
+No additional drift was detected — all FK types match parent columns and no orphaned constraints remain.
 
 ---
 
@@ -99,22 +99,22 @@ A comprehensive database schema audit was performed against the live `donatebaza
 
 | FK | From | To | Action | Assessment |
 |---|---|---|---|---|
-| wallet_transactions_wallet_id_foreign | wallet_transactions.wallet_id | wallets.id | **RESTRICT** | ✅ Safe (was CASCADE, now fixed) |
+| wallet_transactions_wallet_id_foreign | wallet_transactions.wallet_id | wallets.id | **RESTRICT** | Safe (was CASCADE, now fixed) |
 | wallets_user_id_foreign | wallets.user_id | users.id | CASCADE | ⚠️ Acceptable (user deletion removes wallet) |
 | campaign_settlements_campaign_id_foreign | campaign_settlements.campaign_id | campaigns.id | CASCADE | ⚠️ **Risk** — deleting a campaign deletes settlement records |
 | campaign_settlements_organization_id_foreign | campaign_settlements.organization_id | organizations.id | CASCADE | ⚠️ **Risk** — deleting an org deletes settlement records |
-| campaign_settlements_approved_by_foreign | campaign_settlements.approved_by | users.id | SET NULL | ✅ Safe |
-| campaign_settlements_rejected_by_foreign | campaign_settlements.rejected_by | users.id | SET NULL | ✅ Safe |
-| campaign_settlements_payout_account_id_foreign | campaign_settlements.payout_account_id | payout_accounts.id | SET NULL | ✅ Safe |
+| campaign_settlements_approved_by_foreign | campaign_settlements.approved_by | users.id | SET NULL | Safe |
+| campaign_settlements_rejected_by_foreign | campaign_settlements.rejected_by | users.id | SET NULL | Safe |
+| campaign_settlements_payout_account_id_foreign | campaign_settlements.payout_account_id | payout_accounts.id | SET NULL | Safe |
 | payout_attempts_settlement_id_foreign | payout_attempts.settlement_id | campaign_settlements.id | CASCADE | ⚠️ Acceptable (payout attempts die with settlement) |
-| payout_attempts_payout_account_id_foreign | payout_attempts.payout_account_id | payout_accounts.id | SET NULL | ✅ Safe |
+| payout_attempts_payout_account_id_foreign | payout_attempts.payout_account_id | payout_accounts.id | SET NULL | Safe |
 | refunds_donation_id_foreign | refunds.donation_id | donations.id | CASCADE | ⚠️ Acceptable (refund dies with donation) |
-| refunds_donation_payment_id_foreign | refunds.donation_payment_id | donation_payments.id | CASCADE | ✅ Correct (table exists) |
+| refunds_donation_payment_id_foreign | refunds.donation_payment_id | donation_payments.id | CASCADE | Correct (table exists) |
 | settlement_items_campaign_settlement_id_foreign | settlement_items.campaign_settlement_id | campaign_settlements.id | CASCADE | ⚠️ Acceptable (items die with settlement) |
 | settlement_items_donation_id_foreign | settlement_items.donation_id | donations.id | CASCADE | ⚠️ Acceptable |
-| donation_payments_donation_id_foreign | donation_payments.donation_id | donations.id | CASCADE | ✅ Correct |
+| donation_payments_donation_id_foreign | donation_payments.donation_id | donations.id | CASCADE | Correct |
 | payout_accounts_organization_id_foreign | payout_accounts.organization_id | organizations.id | CASCADE | ⚠️ Acceptable (accounts die with org) |
-| payout_accounts_verified_by_foreign | payout_accounts.verified_by | users.id | SET NULL | ✅ Safe |
+| payout_accounts_verified_by_foreign | payout_accounts.verified_by | users.id | SET NULL | Safe |
 
 ### Recommendation (INFO-05)
 Change `campaign_settlements → campaigns` and `campaign_settlements → organizations` from CASCADE to RESTRICT/SET NULL to protect financial settlement records from parent entity deletion.
@@ -167,7 +167,7 @@ Change `campaign_settlements → campaigns` and `campaign_settlements → organi
 | idx_users_social_auth | provider, provider_id | NON-UNIQUE | Social login lookup |
 | users_location_id_foreign | location_id | NON-UNIQUE | FK lookup |
 
-**No duplicate indexes found.**
+No duplicate indexes were found.
 
 ---
 
@@ -186,7 +186,7 @@ currency (char(3), NOT NULL, default 'INR')
 created_at, updated_at
 ```
 
-**Unique:** `wallets_owner_unique` (owner_type, owner_id) — one wallet per owner. ✅ Correct.
+**Unique:** `wallets_owner_unique` (owner_type, owner_id) — one wallet per owner. Correct.
 
 ### wallet_transactions table
 ```
@@ -204,16 +204,16 @@ reference_id (varchar(191), nullable)
 created_at, updated_at
 ```
 
-**Unique:** `wallet_tx_unique` (wallet_id, reference_type, reference_id, source, type) — idempotency. ✅ Correct.
+**Unique:** `wallet_tx_unique` (wallet_id, reference_type, reference_id, source, type) — idempotency. Correct.
 
-**FK:** `wallet_transactions_wallet_id_foreign ON DELETE RESTRICT` ✅ Fixed (was CASCADE).
+**FK:** `wallet_transactions_wallet_id_foreign ON DELETE RESTRICT` — Fixed (was CASCADE).
 
-**Dead code removed:** `WalletRepository::getMaturedReserves()`, `getReservesForDonations()`, `markAsReleased()` — all referenced non-existent columns (`release_at`, `released`, `type='reserve'`). Confirmed removed. ✅
+**Dead code removed:** `WalletRepository::getMaturedReserves()`, `getReservesForDonations()`, `markAsReleased()` — all referenced non-existent columns (`release_at`, `released`, `type='reserve'`). Confirmed removed.
 
 ### WalletService
 Methods: `getOrCreateWallet`, `credit`, `debit`, `releaseMaturedReserves`, `releaseReservesForDonations`, `record`, `ownerForDonation`.
 
-Uses `lockForUpdate()` on wallet rows for atomicity. ✅
+Uses `lockForUpdate()` on wallet rows for atomicity.
 
 ---
 
@@ -234,9 +234,9 @@ deleted_at (timestamp, nullable — soft deletes)
 **DonationPayment model** now exists (`app/Models/DonationPayment.php`) with:
 - `donation()` BelongsTo relation
 - Status constants: `pending`, `success`, `failed`, `refunded`
-- Table `donation_payments` exists in DB with FK to donations.id ✅
+- Table `donation_payments` exists in DB with FK to donations.id
 
-**Refund model** `payment()` relation to `DonationPayment` now resolves correctly. ✅
+**Refund model** `payment()` relation to `DonationPayment` now resolves correctly.
 
 ### Refunds table
 ```
@@ -254,35 +254,35 @@ status (enum('pending','processed','failed'), NOT NULL, default 'pending')
 ### campaign_settlements table
 **Status enum (13 values):** `pending`, `processing`, `paid`, `failed`, `pending_approval`, `approved`, `rejected`, `requested`, `risk_evaluation`, `auto_approved`, `manual_review`, `cancelled`, `retry_pending`
 
-**State Machine (`SettlementStateMachine.php`) valid transitions match DB enum exactly.** ✅
+**State Machine (`SettlementStateMachine.php`) valid transitions match DB enum exactly.**
 
 ### Settlement States → DB Enum Mapping
 | State Machine state | DB enum value | Present |
 |---|---|---|
-| requested | requested | ✅ |
-| risk_evaluation | risk_evaluation | ✅ |
-| auto_approved | auto_approved | ✅ |
-| manual_review | manual_review | ✅ |
-| approved | approved | ✅ |
-| processing | processing | ✅ |
-| paid | paid | ✅ |
-| retry_pending | retry_pending | ✅ |
-| failed | failed | ✅ |
-| rejected | rejected | ✅ |
-| cancelled | cancelled | ✅ |
+| requested | requested | |
+| risk_evaluation | risk_evaluation | |
+| auto_approved | auto_approved | |
+| manual_review | manual_review | |
+| approved | approved | |
+| processing | processing | |
+| paid | paid | |
+| retry_pending | retry_pending | |
+| failed | failed | |
+| rejected | rejected | |
+| cancelled | cancelled | |
 
 **All 13 states match.** No schema drift between state machine and DB enum.
 
 ### restored_at idempotency
-- Column exists: `restored_at timestamp nullable` ✅
-- `restoreSettlementFunds()` in `SettlementService.php` checks `restored_at !== null` before proceeding, locks settlement row, and sets `restored_at = now()`. ✅
+- Column exists: `restored_at timestamp nullable`
+- `restoreSettlementFunds()` in `SettlementService.php` checks `restored_at !== null` before proceeding, locks the settlement row, and sets `restored_at = now()`.
 
 ### ProcessSettlementJob (unified payout path)
-- Uses `Cache::lock("settlement:{id}:processing", 300)` ✅
-- Creates/checks `PayoutAttempt` with idempotency key ✅
-- Phase 1: claims settlement (transitions to `processing`) ✅
-- Phase 2: records outcome (paid/failed/retry_pending) ✅
-- Admin approve path now dispatches `ProcessSettlementJob` instead of `ProcessSettlementPayout` ✅
+- Uses `Cache::lock("settlement:{id}:processing", 300)`
+- Creates/checks `PayoutAttempt` with idempotency key
+- Phase 1: claims settlement (transitions to `processing`)
+- Phase 2: records outcome (paid/failed/retry_pending)
+- Admin approve path now dispatches `ProcessSettlementJob` instead of `ProcessSettlementPayout`
 
 ---
 
@@ -306,7 +306,7 @@ status (enum('pending','processed','failed'), NOT NULL, default 'pending')
 | wallet_hold_days | int | NO | 7 |
 | created_at, updated_at | timestamp | YES | NULL |
 
-**Organization model `$fillable`** now matches ALL DB columns. ✅ No schema drift.
+**Organization model `$fillable`** now matches ALL DB columns. No schema drift.
 
 ### users table
 | Column | Type | Nullable | Default |
@@ -317,7 +317,7 @@ status (enum('pending','processed','failed'), NOT NULL, default 'pending')
 | phone | varchar(255) | YES | NULL |
 | deleted_at | timestamp | YES | NULL |
 
-**`users_phone_unique` constraint:** Does NOT exist (dropped). ✅
+**`users_phone_unique` constraint:** Does NOT exist (dropped).
 
 ---
 
@@ -338,7 +338,7 @@ is_verified (tinyint, NOT NULL, default 0)
 verified_by (bigint FK->users, SET NULL)
 ```
 
-**Encrypted casts applied** to all 5 sensitive fields in `PayoutAccount` model. ✅  
+**Encrypted casts applied** to all 5 sensitive fields in `PayoutAccount` model.  
 **Note:** Existing plaintext data in DB must be migrated to encrypted format at deploy. The `encrypted` cast only encrypts new writes.
 
 ### notification_preferences table
@@ -357,13 +357,13 @@ UNIQUE: uq_user_notif_type_channel (user_id, notification_type, channel)
 
 | Component | Idempotency mechanism | Verified |
 |---|---|---|
-| Wallet transactions | `wallet_tx_unique` composite UNIQUE on (wallet_id, reference_type, reference_id, source, type) | ✅ |
-| Payout attempts | `payout_attempts_idempotency_key_unique` UNIQUE on `idempotency_key` | ✅ |
-| Settlement payout | Cache lock `settlement:{id}:processing` (300s) + PayoutAttempt idempotency key check | ✅ |
-| Fund restoration | `restored_at` guard + row lock on settlement | ✅ |
-| Refunds | `refunds_gateway_refund_id_unique` UNIQUE on `gateway_refund_id` | ✅ |
-| Product reservations | Idempotency key column (from migration `2026_07_22_000002`) | ✅ |
-| Coupon redemptions | `uq_volunteer_campaign` type constraint | ✅ |
+| Wallet transactions | `wallet_tx_unique` composite UNIQUE on (wallet_id, reference_type, reference_id, source, type) | |
+| Payout attempts | `payout_attempts_idempotency_key_unique` UNIQUE on `idempotency_key` | |
+| Settlement payout | Cache lock `settlement:{id}:processing` (300s) + PayoutAttempt idempotency key check | |
+| Fund restoration | `restored_at` guard + row lock on settlement | |
+| Refunds | `refunds_gateway_refund_id_unique` UNIQUE on `gateway_refund_id` | |
+| Product reservations | Idempotency key column (from migration `2026_07_22_000002`) | |
+| Coupon redemptions | `uq_volunteer_campaign` type constraint | |
 
 ---
 
@@ -371,12 +371,12 @@ UNIQUE: uq_user_notif_type_channel (user_id, notification_type, channel)
 
 | Migration | Status | Safe to re-run |
 |---|---|---|
-| 2026_08_12_000000_remove_cascade_delete | Applied (batch 80) | ✅ Idempotent (checks before drop) |
-| 2026_08_12_000010_add_missing_columns_to_organizations | Applied (batch 80) | ✅ Idempotent (Schema::hasColumn checks) |
-| 2026_08_12_000020_drop_users_phone_unique | Applied (batch 80) | ✅ Idempotent (Schema::hasIndex check) |
-| 2026_08_12_000030_add_restored_at_to_campaign_settlements | Applied (batch 80) | ✅ Idempotent (Schema::hasColumn check) |
+| 2026_08_12_000000_remove_cascade_delete | Applied (batch 80) | Idempotent (checks before drop) |
+| 2026_08_12_000010_add_missing_columns_to_organizations | Applied (batch 80) | Idempotent (Schema::hasColumn checks) |
+| 2026_08_12_000020_drop_users_phone_unique | Applied (batch 80) | Idempotent (Schema::hasIndex check) |
+| 2026_08_12_000030_add_restored_at_to_campaign_settlements | Applied (batch 80) | Idempotent (Schema::hasColumn check) |
 
-All 147 migrations have status **Ran**. ✅
+All 147 migrations have status **Ran**.
 
 ---
 
@@ -395,19 +395,19 @@ All 147 migrations have status **Ran**. ✅
 
 | ID | Severity | Title | Status |
 |---|---|---|---|
-| CRITICAL-01 | CRITICAL | DonationPayment model missing → created | ✅ RESOLVED |
-| CRITICAL-02 | CRITICAL | WalletRepository dead methods on ghost columns | ✅ RESOLVED |
-| CRITICAL-03 | CRITICAL | CASCADE delete on wallet_transactions | ✅ RESOLVED (RESTRICT) |
-| CRITICAL-04 | CRITICAL | Plaintext bank details in payout_accounts | ✅ RESOLVED (encrypted cast) |
-| CRITICAL-05 | INFO | Misdiagnosed "missing FK" (was CASCADE) | ✅ CORRECTED |
-| WARNING-01 | WARNING | Organization model missing 8 columns | ✅ RESOLVED |
-| WARNING-02 | WARNING | Dual payout code paths | ✅ RESOLVED (unified) |
-| WARNING-03 | WARNING | users.phone UNIQUE constraint | ✅ RESOLVED (dropped) |
-| WARNING-04 | WARNING | restoreSettlementFunds not idempotent | ✅ RESOLVED (restored_at) |
-| INFO-01 | INFO | wallet_transaction_references table doesn't exist | ✅ CORRECTED |
-| INFO-02 | INFO | Audit referenced non-existent migration files | ✅ CORRECTED |
-| INFO-03 | INFO | risk_score_logs table doesn't exist | ✅ CORRECTED |
-| INFO-04 | LOW | Duplicate ReconciliationJob schedule | ✅ RESOLVED |
+| CRITICAL-01 | CRITICAL | DonationPayment model missing → created | RESOLVED |
+| CRITICAL-02 | CRITICAL | WalletRepository dead methods on ghost columns | RESOLVED |
+| CRITICAL-03 | CRITICAL | CASCADE delete on wallet_transactions | RESOLVED (RESTRICT) |
+| CRITICAL-04 | CRITICAL | Plaintext bank details in payout_accounts | RESOLVED (encrypted cast) |
+| CRITICAL-05 | INFO | Misdiagnosed "missing FK" (was CASCADE) | CORRECTED |
+| WARNING-01 | WARNING | Organization model missing 8 columns | RESOLVED |
+| WARNING-02 | WARNING | Dual payout code paths | RESOLVED (unified) |
+| WARNING-03 | WARNING | users.phone UNIQUE constraint | RESOLVED (dropped) |
+| WARNING-04 | WARNING | restoreSettlementFunds not idempotent | RESOLVED (restored_at) |
+| INFO-01 | INFO | wallet_transaction_references table doesn't exist | CORRECTED |
+| INFO-02 | INFO | Audit referenced non-existent migration files | CORRECTED |
+| INFO-03 | INFO | risk_score_logs table doesn't exist | CORRECTED |
+| INFO-04 | LOW | Duplicate ReconciliationJob schedule | RESOLVED |
 | INFO-05 | LOW | CASCADE deletes on financial-adjacent tables | ⚠️ REVIEW REQUIRED |
 | INFO-06 | LOW | decimal(12,2) vs decimal(18,4) | ⚠️ ACCEPTABLE WITH NOTE |
 
@@ -490,7 +490,7 @@ FOREIGN KEY (wallet_id) REFERENCES wallets(id) ON DELETE RESTRICT
 
 ### READY WITH CONDITIONS
 
-The application is **ready for production deployment** with the following conditions:
+The application is ready for production deployment with the following conditions:
 
 1. **Set `APP_KEY`** in `.env` before deploying — required for `PayoutAccount` encrypted casts to function.
 2. **Run `php artisan migrate`** to apply the 4 remediation migrations (already in batch 80 in the migration log — verify with `php artisan migrate:status`).
@@ -526,9 +526,9 @@ The application is **ready for production deployment** with the following condit
 
 | Check | Result |
 |---|---|
-| Pint lint (14 modified files) | ✅ passed |
-| PHP syntax check (14 files) | ✅ passed |
-| PHPUnit (PayoutProcessingTest) | ✅ 10 tests, 46 assertions |
-| DB schema verification (INFORMATION_SCHEMA) | ✅ 104 tables, 149 FKs, 0 orphaned, 0 type mismatch, 0 duplicate indexes |
-| Migration log verification | ✅ All 147 migrations Ran (4 remediation in batch 80) |
+| Pint lint (14 modified files) | passed |
+| PHP syntax check (14 files) | passed |
+| PHPUnit (PayoutProcessingTest) | 10 tests, 46 assertions |
+| DB schema verification (INFORMATION_SCHEMA) | 104 tables, 149 FKs, 0 orphaned, 0 type mismatch, 0 duplicate indexes |
+| Migration log verification | All 147 migrations Ran (4 remediation in batch 80) |
 | `.env` / `APP_KEY` modified | ⛔ None — left for your deploy |

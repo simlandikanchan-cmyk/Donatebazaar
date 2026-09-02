@@ -20,12 +20,17 @@
   border: 1px solid var(--border);
   border-radius: var(--r);
   box-shadow: var(--sh);
+  cursor: pointer;
   transition:
     transform var(--ease),
     box-shadow var(--ease),
     border-color var(--ease);
   animation: fadeUp .4s ease both;
   animation-delay: var(--delay, 0s);
+}
+.c-card:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
 }
 [data-theme="dark"] .c-card {
   box-shadow: var(--glass-shadow);

@@ -2,7 +2,9 @@
 
 ## System Overview
 
-DonateBazaar is a Laravel 12 application following MVC architecture with service layer abstraction, event-driven processing, and queue-based background jobs.
+DonateBazaar runs on Laravel 12 and follows an MVC layout with a service layer in between controllers and models. Business logic is mostly delegated to services, cross-cutting events are fanned out to listeners, and anything heavy — settlements, reconciliation, notifications — runs through queue jobs so the web requests stay fast.
+
+This document walks through each layer, then covers the database, authentication, payments, the wallet system, settlements, queues, security, caching, storage, and tests.
 
 ---
 
@@ -11,26 +13,26 @@ DonateBazaar is a Laravel 12 application following MVC architecture with service
 ### 1. Presentation Layer
 
 **Controllers** (`app/Http/Controllers/`)
-- 78 controllers organized by domain
-- Admin controllers handle dashboard operations
-- API controllers expose REST endpoints
-- Auth controllers manage authentication flows
+- 78 controllers, grouped by domain.
+- Admin controllers handle dashboard operations.
+- API controllers expose the REST endpoints.
+- Auth controllers manage the authentication flows.
 
 **Views** (`resources/views/`)
-- 273 Blade templates
-- Three distinct UI trees: Admin, User, Public
-- Component-based reusable UI elements
-- 22 email templates for transactional messaging
+- 273 Blade templates split across three UI trees: Admin, User, and Public.
+- Reusable UI elements are built as Blade components.
+- 22 email templates cover transactional messaging (receipts, notifications, reminders).
 
 ### 2. Service Layer
 
 **Services** (`app/Services/`)
-- 12 service classes encapsulating business logic
-- Payment services handle Razorpay integration
-- Notification services manage multi-channel delivery
-- Wallet services implement financial operations
+- 12 service classes encapsulate the business logic.
+- Payment services wrap Razorpay integration.
+- Notification services handle multi-channel delivery.
+- Wallet services implement the financial operations.
 
 **Payment Services** (`app/Services/Payment/`)
+
 | Service | Responsibility |
 |---|---|
 | PaymentOrderService | Create Razorpay orders |
@@ -42,31 +44,21 @@ DonateBazaar is a Laravel 12 application following MVC architecture with service
 ### 3. Domain Layer
 
 **Models** (`app/Models/`)
-- 56 Eloquent models
-- Financial models with strict integrity
-- Encrypted casts for sensitive data
-- Soft deletes for audit trails
+- 56 Eloquent models. Financial models enforce strict integrity, use encrypted casts for sensitive data, and rely on soft deletes for audit trails.
 
 **Events** (`app/Events/`)
-- 10 domain events for settlement lifecycle
-- Event-driven architecture for loose coupling
+- 10 domain events cover the settlement lifecycle. Events keep modules decoupled — a listener reacts, nothing calls things directly.
 
 **Listeners** (`app/Listeners/`)
-- 11 event listeners
-- Notification dispatch on state changes
-- Auto-processing of approved settlements
+- 11 event listeners. They dispatch notifications on state changes and auto-process approved settlements.
 
 ### 4. Infrastructure Layer
 
 **Jobs** (`app/Jobs/`)
-- 5 queue jobs for background processing
-- Settlement processing and retry logic
-- Reconciliation jobs for financial integrity
+- 5 queue jobs handle background work: settlement processing with retry logic, and reconciliation jobs that keep financial data consistent.
 
 **Notifications** (`app/Notifications/`)
-- 16 notification classes
-- Preference-driven delivery
-- Multi-channel support (mail, database)
+- 16 notification classes. Delivery is preference-driven and supports mail plus database channels.
 
 ---
 
@@ -121,13 +113,13 @@ DonateBazaar is a Laravel 12 application following MVC architecture with service
 
 1. **Email/Password** — Laravel Breeze
 2. **Google OAuth** — Laravel Socialite
-3. **Phone OTP** — Custom OTP controller (requires SMS provider)
+3. **Phone OTP** — Custom OTP controller (requires an SMS provider for real delivery)
 
 ### Authorization
 
-- **Middleware**: `AdminMiddleware` for admin routes
-- **Policies**: Event, DonationReceipt, Blog
-- **Role Check**: String-based (`$user->role === 'admin'`)
+- **Middleware**: `AdminMiddleware` guards admin routes.
+- **Policies**: Event, DonationReceipt, Blog.
+- **Role check**: string-based (`$user->role === 'admin'`).
 
 ---
 
@@ -150,19 +142,19 @@ DonateBazaar is a Laravel 12 application following MVC architecture with service
 
 ### Payment Flow
 
-1. User initiates donation
-2. System creates Razorpay order
-3. User completes payment on Razorpay
-4. Razorpay sends webhook
-5. System verifies signature
-6. Donation marked complete
-7. Wallet credited
+1. User initiates a donation.
+2. The system creates a Razorpay order.
+3. The user completes payment on Razorpay.
+4. Razorpay sends a webhook.
+5. The system verifies the signature.
+6. The donation is marked complete.
+7. The wallet is credited.
 
 ### Idempotency
 
-- Payment verification uses idempotency keys
-- Prevents duplicate processing
-- Webhook events tracked for deduplication
+- Payment verification uses idempotency keys.
+- Webhook events are tracked so the same event is never processed twice.
+- Together these prevent duplicate processing when Razorpay retries deliveries.
 
 ---
 
@@ -170,7 +162,7 @@ DonateBazaar is a Laravel 12 application following MVC architecture with service
 
 ### Double-Entry Accounting
 
-Every financial transaction creates two entries:
+Every financial transaction writes two entries:
 
 | Entry | Debit | Credit |
 |---|---|---|
@@ -263,11 +255,11 @@ available_balance = total_credits - total_debits - reserved_balance
 
 ### Layers
 
-1. **Transport** — HTTPS enforced in production
-2. **Application** — CSRF, XSS, SQL injection protection
-3. **Authentication** — Multi-factor (password + OTP)
-4. **Authorization** — Role-based access control
-5. **Data** — Encryption at rest for sensitive fields
+1. **Transport** — HTTPS enforced in production.
+2. **Application** — CSRF, XSS, and SQL injection protection.
+3. **Authentication** — password plus OTP for sensitive flows.
+4. **Authorization** — role-based access control.
+5. **Data** — encryption at rest for sensitive fields.
 
 ### Security Headers
 
@@ -301,9 +293,9 @@ Referrer-Policy: strict-origin-when-cross-origin
 
 ### Cache Invalidation
 
-- Campaign changes → Clear dashboard stats
-- Donation created → Clear dashboard stats
-- Manual cache clear via `artisan cache:clear`
+- Campaign changes → clear dashboard stats.
+- Donation created → clear dashboard stats.
+- Manual cache clear via `artisan cache:clear`.
 
 ---
 
@@ -318,9 +310,8 @@ Referrer-Policy: strict-origin-when-cross-origin
 
 ### Cloudinary (Optional)
 
-- Configured but optional
-- Used for image optimization
-- WebP conversion support
+- Configured but optional.
+- Used for image optimization and WebP conversion.
 
 ---
 

@@ -10,9 +10,11 @@
 
 @section('topbar_left')
   <div class="search-wrap">
-    <svg class="s-icon-inp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <svg class="s-icon-inp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <label for="searchInput" class="sr-only">Search campaigns</label>
     <input class="search-inp" id="searchInput" type="text" placeholder="Search campaigns…" autocomplete="off">
   </div>
+  <label for="sortSelect" class="sr-only">Sort campaigns</label>
   <select class="sort-sel" id="sortSelect">
     <option value="">Sort by…</option>
     <option value="amount-desc">Amount ↓</option>
@@ -20,8 +22,8 @@
     <option value="date-desc">Newest first</option>
     <option value="date-asc">Oldest first</option>
   </select>
-  <button class="tb-btn" title="Notifications">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+  <button class="tb-btn" title="Notifications" aria-label="Notifications{{ $cntPending > 0 ? ', ' . $cntPending . ' pending review' : '' }}">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
     @if($cntPending > 0)<span class="notif-dot"></span>@endif
   </button>
 @endsection
@@ -52,7 +54,6 @@
         <span class="hero-badge hb-green">All caught up</span>
       @endif
       <span class="hero-badge hb-green"><span class="hb-count" data-count="{{ $cntActive }}">0</span> active campaigns</span>
-      <span class="hero-badge hb-primary"><span class="hb-count" data-count="{{ $approvalRate }}">0</span>% approval rate</span>
       <span class="hero-badge hb-teal"><span class="hb-count" data-count="{{ $activeJobs }}">0</span> open jobs</span>
     </div>
     <div class="hero-ticker">

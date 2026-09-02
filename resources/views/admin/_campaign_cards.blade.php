@@ -12,7 +12,7 @@
   $fillMod = $state === 'rejected' ? 'prog-fill-red' : (($state === 'expired' || $state === 'completed') ? 'prog-fill-gray' : '');
   $pctStyle = $state === 'rejected' ? 'color:var(--red)' : (($state === 'expired' || $state === 'completed') ? 'color:#64748b' : '');
 @endphp
-<div class="c-card" data-id="{{ $c->id }}" data-filter="{{ $filter }}" data-title="{{ strtolower($c->title) }}" data-amount="{{ $c->goal_amount }}" data-date="{{ $c->created_at }}" style="animation-delay:{{ $loop->index * 0.04 }}s">
+<div class="c-card" data-id="{{ $c->id }}" data-filter="{{ $filter }}" data-title="{{ strtolower($c->title) }}" data-amount="{{ $c->goal_amount }}" data-date="{{ $c->created_at }}" tabindex="0" role="button" aria-label="Quick view: {{ $c->title }}" style="animation-delay:{{ $loop->index * 0.04 }}s">
   <label class="c-check" title="Select campaign">
     <input type="checkbox" class="c-checkbox" value="{{ $c->id }}">
     <span class="c-check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>

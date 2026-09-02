@@ -2,14 +2,14 @@
 
 ## Scope
 
-Verify zero visual regression across the admin panel after the CSS reorganization (no view markup was changed except removing the two inline `<style>` blocks).
+Verify zero visual regression across the admin panel after the CSS reorganization. No view markup was changed except removing the two inline `<style>` blocks.
 
 ## Automated checks (all green, re-run on any change)
 
-1. **Build**: `npm run build` — must succeed; admin CSS asset regenerates.
-2. **Class coverage**: `final_check.ps1` (path: `C:\Users\stdlocal\AppData\Local\Temp\opencode\final_check.ps1`) — expected `TOTAL UNDEFINED NON-UTILITY: ≤38`, all in the documented skip list (Tailwind/Bootstrap utilities + `js-*` hooks).
-3. **Import integrity**: all 38 `@import`s in `resources/css/admin/admin.css` resolve.
-4. **Inline-style check**: `inline_check.ps1` — re-run if any `cp-*`/`gc-*` class is edited in `pages/_finance.css`.
+1. **Build:** `npm run build` — must succeed; admin CSS asset regenerates.
+2. **Class coverage:** `final_check.ps1` — expected `TOTAL UNDEFINED NON-UTILITY: ≤38`, all in the documented skip list (Tailwind/Bootstrap utilities + `js-*` hooks).
+3. **Import integrity:** all 38 `@import`s in `resources/css/admin/admin.css` resolve.
+4. **Inline-style check:** `inline_check.ps1` — re-run if any `cp-*`/`gc-*` class is edited in `pages/_finance.css`.
 
 ## Manual smoke checklist (XAMPP at /fundraise)
 

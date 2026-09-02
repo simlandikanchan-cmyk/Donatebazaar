@@ -4,8 +4,8 @@ Global color system for the entire application (public pages, user portal, admin
 
 - **Source of truth:** `resources/css/base/_variables.css`
 - **User portal scope:** `resources/css/_core.css` (aligns the same tokens to its surface/text values)
-- **Admin scope:** `resources/css/admin/core/_variables.css` (full mirror + admin shorthand aliases)
-- **Delivered via:** `public/app.css` and `user/user.css` import `base/_variables.css`; admin entries import the admin copy. No Blade/backend changes required.
+- **Admin scope:** `resources/css/admin/core/_variables.css` (full mirror plus admin shorthand aliases)
+- **Delivered via:** `public/app.css` and `user/user.css` import `base/_variables.css`; admin entries import the admin copy. No Blade/backend changes are needed.
 
 ## Brand palette (never change these)
 
@@ -29,7 +29,10 @@ Global color system for the entire application (public pages, user portal, admin
 
 ## SECTION II — canonical tokens (new)
 
+These are the newer tokens that carry dark-mode variants and accessibility-safe values. Use these rather than inventing new hex values.
+
 ### Surfaces
+
 | Token | Light | Dark | Usage |
 |---|---|---|---|
 | `--surface-alt` | `#f8f9fe` | `#13141f` | Subtle section backgrounds, zebra rows |
@@ -37,6 +40,7 @@ Global color system for the entire application (public pages, user portal, admin
 | `--glass-bg` / `--glass-border` / `--glass-shadow` | white 65% / white 35% | `rgba(17,18,32,.72)` | Glassmorphism headers, dashboards |
 
 ### Typography
+
 | Token | Value | Usage |
 |---|---|---|
 | `--text-secondary` | `#4b5563` | Body copy below primary |
@@ -47,6 +51,7 @@ Global color system for the entire application (public pages, user portal, admin
 | `--text-on-secondary` | `#ffffff` | White on teal → AA-large only; use `--secondary-ink` (`#042f2e`) for small text on teal |
 
 ### Borders
+
 | Token | Value | Usage |
 |---|---|---|
 | `--border-light` | `rgba(0,0,0,.045)` | Hairlines inside cards, dividers |
@@ -59,6 +64,7 @@ Global color system for the entire application (public pages, user portal, admin
 Dark mode borders are `rgba(255,255,255,…)` equivalents; focus/success/danger switch to lighter hues for contrast.
 
 ### Focus, interaction, disabled
+
 | Token | Usage |
 |---|---|
 | `--focus-ring` (`0 0 0 3px rgba(37,99,235,.45)`) | Keyboard focus on buttons/links/inputs |
@@ -70,7 +76,7 @@ Dark mode borders are `rgba(255,255,255,…)` equivalents; focus/success/danger 
 
 ## Category colors (campaign badges / pills / stats / charts)
 
-Each category ships: `base`, `hover`, `light`, `tint`, `tint-bg`, `ink`.
+Each category ships a full set: `base`, `hover`, `light`, `tint`, `tint-bg`, `ink`.
 
 | Category | Token prefix | Base | ink (text on tint-bg, AA) |
 |---|---|---|---|
@@ -128,22 +134,22 @@ Each category ships: `base`, `hover`, `light`, `tint`, `tint-bg`, `ink`.
 ## Charts (Chart.js / analytics)
 
 - `--chart-1` … `--chart-12` — categorical series in prominence order (blue, teal, medical red, education violet, environment green, animal amber, disaster orange, children pink, women violet, food amber, community cyan, elderly indigo).
-- `--chart-soft-1` … `--chart-soft-12` — same hues at 14% alpha for area fills / banding.
+- `--chart-soft-1` … `--chart-soft-12` — the same hues at 14% alpha, used for area fills and banding.
 
 ## Illustration palette
 
-`--illu-primary` `#3b82f6`, `--illu-secondary` `#2dd4bf`, `--illu-warm` `#fbbf24`, `--illu-rose` `#fda4af`, `--illu-violet` `#a78bfa`, `--illu-green` `#86efac`, `--illu-sky` `#67e8f9`, `--illu-skin` `#ffd7b3`, `--illu-ink` `#0f1117`, `--illu-soft-bg` `#eef1f9`. Use for SVG artwork, hero illustrations, empty-state art — always paired with `--illu-ink` line work.
+`--illu-primary` `#3b82f6`, `--illu-secondary` `#2dd4bf`, `--illu-warm` `#fbbf24`, `--illu-rose` `#fda4af`, `--illu-violet` `#a78bfa`, `--illu-green` `#86efac`, `--illu-sky` `#67e8f9`, `--illu-skin` `#ffd7b3`, `--illu-ink` `#0f1117`, `--illu-soft-bg` `#eef1f9`. Use for SVG artwork, hero illustrations, and empty-state art — always paired with `--illu-ink` line work.
 
 ## Dark mode
 
-`[data-theme="dark"]` in `base/_variables.css` (plus scope overrides in `_core.css` and admin) redefines: surfaces (`--surface-alt`, `--card`, glass), typography (secondary/muted/disabled), borders (light/strong/focus/success/danger), focus rings (lighter blue `rgba(96,165,250,…)` for contrast on dark), glows, disabled colors, shadows, and category `ink`/`tint-bg` (light tints on translucent color backgrounds). Category `base` hues stay unchanged — identity is preserved.
+`[data-theme="dark"]` in `base/_variables.css` (plus scope overrides in `_core.css` and admin) redefines surfaces (`--surface-alt`, `--card`, glass), typography (secondary/muted/disabled), borders (light/strong/focus/success/danger), focus rings (lighter blue `rgba(96,165,250,…)` for dark contrast), glows, disabled colors, shadows, and category `ink`/`tint-bg` (light tints on translucent color backgrounds). Category `base` hues are unchanged — brand identity is preserved.
 
 ## Accessibility notes
 
 - Category `base` colors on white fail AA for small text (e.g. `#ef4444` ≈ 3.5:1, `#f59e0b` ≈ 2.1:1). Always use the `-ink` variant for text; reserve `base` for icons, filled pills with white text (≥AA-large), charts, and illustrations.
 - `--text3`/`--text-muted` (`#9ca3af`) fails AA on white — use `--text-muted-strong` (`#6b7280`, 4.8:1) for small text.
 - White on `--primary` (#2563eb) is 5.0:1 AA; white on `--secondary` (#0d9488) is AA-large only — use `--secondary-ink` for small text on teal.
-- Focus rings are 3px at 45–50% alpha with a 2px offset; danger/success variants available for context.
+- Focus rings are 3px at 45–50% alpha with a 2px offset; danger/success variants are available for context.
 
 ## Verification
 

@@ -256,7 +256,7 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 </div>
 
 {{-- ══ WALLET MINI-VIEW ══ --}}
-<div class="wallet-mini-card">
+<div class="wallet-mini-card" data-reveal>
     <div class="wallet-mini-hdr">
         <div class="wallet-mini-title">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
@@ -310,7 +310,7 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 {{-- ══ CAMPAIGN COMPARISON BAR CHART ══ --}}
 @php $campChartData = $campaigns->count() > 1 ? $campaigns->map(fn($c) => ['title' => Str::limit($c->title, 22), 'raised' => (float)$c->raised_amount, 'goal' => (float)$c->goal_amount])->values() : collect(); @endphp
 @if($campaigns->count() > 1)
-<div class="chart-card bar-chart-card">
+<div class="chart-card bar-chart-card" data-reveal>
     <div class="chart-card-hdr">
         <div>
             <div class="chart-title">Campaign Comparison</div>
@@ -321,33 +321,44 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 </div>
 @endif
 
-{{-- ══ QUICK NAV ══ --}}
-<div class="qnav">
-    @php
-    $navItems = [
-        ['url'=> route('campaign.create'),       'lbl'=>'New Campaign',     'sub'=>'Start fundraising', 'delay'=>'.05s','bg'=>'var(--accent-lt)',          'color'=>'var(--accent)',  'icon'=>'<path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>'],
-        ['url'=> url('/user/dashboard').'#cGrid','lbl'=>'All Campaigns',    'sub'=>$countAll.' total',   'delay'=>'.10s','bg'=>'var(--green-lt)',            'color'=>'var(--green)',   'icon'=>'<path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>'],
-        ['url'=> route('profile.show'),           'lbl'=>'My Profile',       'sub'=>'View & edit',       'delay'=>'.15s','bg'=>'rgba(59,130,246,.10)',       'color'=>'var(--blue)',    'icon'=>'<path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>'],
-        ['url'=> url('/user/kyc'),                'lbl'=>'KYC Status',       'sub'=>$kyc ? ucfirst($kyc->status) : 'Not submitted','delay'=>'.25s','bg'=>'var(--yellow-lt)', 'color'=>'var(--yellow)',  'icon'=>'<path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>'],
-        ['url'=> route('recurring.index'),        'lbl'=>'Recurring',        'sub'=>'Manage donations',  'delay'=>'.30s','bg'=>'var(--pink-lt)',             'color'=>'var(--pink)',    'icon'=>'<path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>'],
-        ['url'=> url('/user/dashboard/blogs'),    'lbl'=>'My Blogs',         'sub'=>$blogTotal.' posts', 'delay'=>'.35s','bg'=>'rgba(245,158,11,.10)',       'color'=>'var(--yellow)',  'icon'=>'<path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>'],
-        ['url'=> url('/user/dashboard/blogs/create'),'lbl'=>'Write Blog',   'sub'=>'New post',          'delay'=>'.40s','bg'=>'rgba(16,185,129,.10)',       'color'=>'var(--green)',   'icon'=>'<path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>'],
-        ['url'=> route('gift-cards.index'),       'lbl'=>'Gift Cards',       'sub'=>'Buy & redeem',      'delay'=>'.45s','bg'=>'rgba(236,72,153,.10)',       'color'=>'var(--pink)',    'icon'=>'<path stroke-linecap="round" stroke-linejoin="round" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/>'],
-        ['url'=> route('dashboard.wallet'),        'lbl'=>'Wallet',           'sub'=>'View balance & payout','delay'=>'.50s','bg'=>'var(--primary-tint-bg)',         'color'=>'var(--primary)',  'icon'=>'<path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>'],
-    ];
-    @endphp
-    @foreach($navItems as $item)
-    <a href="{{ $item['url'] }}" class="qnav-card qnav-card-dynamic" style="--qnav-delay:{{ $item['delay'] }};--qnav-bg:{{ $item['bg'] }};">
-        <div class="qnav-ico qnav-ico-dynamic" style="--qnav-bg:{{ $item['bg'] }};--qnav-color:{{ $item['color'] }};">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-icon="{{ $item['lbl'] }}">{!! $item['icon'] !!}</svg>
+{{-- ══ CONTEXTUAL QUICK ACTIONS (state-aware, replaces redundant grid) ══ --}}
+@php
+    $ctxActions = [];
+    if ($countAll === 0) {
+        $ctxActions[] = ['url'=> route('campaign.create'), 'color'=>'var(--primary)', 'title'=>'Create your first campaign', 'desc'=>'Start raising funds in minutes', 'icon'=>'<path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>'];
+    } else {
+        $activeCamp = $campaigns->firstWhere('campaign_state','active');
+        if ($activeCamp) {
+            $ctxActions[] = ['url'=> route('campaign.show', $activeCamp->id), 'color'=>'var(--green)', 'title'=>'Share your campaign', 'desc'=>'"'.$activeCamp->title.'" is live — spread the word', 'icon'=>'<path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>'];
+        }
+    }
+    if ($countPending > 0) {
+        $ctxActions[] = ['url'=> url('/user/dashboard').'#cGrid', 'color'=>'var(--warning)', 'title'=> $countPending.' campaign pending review', 'desc'=>'Awaiting approval — we\'re on it', 'icon'=>'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'];
+    }
+    if (!$kyc || $kyc->status !== 'approved') {
+        $ctxActions[] = ['url'=> url('/user/kyc'), 'color'=>'var(--yellow)', 'title'=>'Complete KYC', 'desc'=> $kyc ? ucfirst($kyc->status) : 'Verify your identity to unlock payouts', 'icon'=>'<path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>'];
+    }
+    if ($countAll === 0 || $countActive === 0) {
+        $ctxActions[] = ['url'=> url('/campaigns'), 'color'=>'var(--blue)', 'title'=>'Explore campaigns', 'desc'=>'Get inspired by top fundraisers', 'icon'=>'<path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z"/>'];
+    }
+    $ctxActions = array_slice($ctxActions, 0, 4);
+@endphp
+@if(count($ctxActions) > 0)
+<div class="contextual-actions">
+    @foreach($ctxActions as $action)
+    <a href="{{ $action['url'] }}" class="ctx-action" style="--ctx-color:{{ $action['color'] }}">
+        <div class="ctx-action-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">{!! $action['icon'] !!}</svg>
         </div>
-        <div>
-            <div class="qnav-lbl">{{ $item['lbl'] }}</div>
-            <div class="qnav-sub">{{ $item['sub'] }}</div>
+        <div class="ctx-action-info">
+            <div class="ctx-action-title">{{ $action['title'] }}</div>
+            <div class="ctx-action-desc">{{ $action['desc'] }}</div>
         </div>
+        <svg class="ctx-action-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
     </a>
     @endforeach
 </div>
+@endif
 
 {{-- ══ LEVEL PROGRESS + TOP CAMPAIGN ══ --}}
 @php
@@ -361,7 +372,7 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
     ];
     $earnedCount = count(array_filter($achievements, fn($a)=>$a['done']));
 @endphp
-<div class="insight-row">
+<div class="insight-row" data-reveal>
     @if($nextLevel)
     <div class="insight-card level-card">
         <div class="insight-card-hdr">
@@ -468,7 +479,7 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 @php
     $achievePct = count($achievements) > 0 ? round(($earnedCount / count($achievements)) * 100) : 0;
 @endphp
-<div class="achieve-card">
+<div class="achieve-card" data-reveal>
     <div class="achieve-hdr">
         <div class="achieve-hdr-left">
             <div class="achieve-title-row">
@@ -530,7 +541,7 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 @php
     $allEvents = $myEvents->merge($registeredEvents->pluck('event'))->sortBy('event_date')->take(5);
 @endphp
-<div class="events-card">
+<div class="events-card" data-reveal>
     <div class="events-hdr">
         <div class="events-title">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
@@ -593,7 +604,7 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 </div>
 
 {{-- ══ RECENT BLOG POSTS ══ --}}
-<div class="insight-card blog-section">
+<div class="insight-card blog-section" data-reveal>
     <div class="insight-card-hdr">
         <div class="insight-card-title">Recent Blog Posts</div>
         @if($recentBlogs->isNotEmpty())
@@ -636,7 +647,7 @@ $icoWallet     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 </div>
 
 {{-- ══ CAMPAIGNS SECTION ══ --}}
-<div class="sec-hdr" id="cGrid">
+<div class="sec-hdr" id="cGrid" data-reveal>
     <div class="sec-title">
         Your Campaigns
             @if($campaigns->total() > 0)

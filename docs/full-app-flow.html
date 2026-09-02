@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -288,7 +288,7 @@
   <div class="grid" data-lane="1">
     <div class="node process" data-node><div class="idx">1</div><div class="n-top"><div class="n-ic">📝</div><div class="n-title">Create Campaign</div></div><div class="n-desc">canCreateCampaign (active count + goal cap) · duplicate-title guard</div><span class="kchip">required_level_id</span></div>
     <div class="conn"><span class="arrow">→</span></div>
-    <div class="node money" data-node><div class="idx">2</div><div class="n-top"><div class="n-ic">✅</div><div class="n-title">state = PENDING</div></div><div class="n-desc">raised_amount=0 · nested updates · products attached</div><span class="kchip">awaiting review</span></div>
+    <div class="node money" data-node><div class="idx">2</div><div class="n-top"><div class="n-ic"></div><div class="n-title">state = PENDING</div></div><div class="n-desc">raised_amount=0 · nested updates · products attached</div><span class="kchip">awaiting review</span></div>
     <div class="conn"><span class="arrow">→</span></div>
     <div class="node branch" data-node><div class="idx">3</div><div class="n-top"><div class="n-ic">🪪</div><div class="n-title">isKycApproved()?</div></div><div class="n-desc">any approved KYC for user — canonical per-user rule</div><span class="kchip">no re-upload</span></div>
     <div class="conn"><span class="arrow">→</span></div>
@@ -296,7 +296,7 @@
     <div class="conn"><span class="arrow">→</span></div>
     <div class="node mod" data-node><div class="idx">5</div><div class="n-top"><div class="n-ic">🔎</div><div class="n-title">Admin KYC Review</div></div><div class="n-desc">approve (verified_at/by) or reject (reason) · audit logged</div><span class="kchip">Admin\KycController</span></div>
     <div class="conn"><span class="arrow">→</span></div>
-    <div class="node entry" data-node><div class="idx">6</div><div class="n-top"><div class="n-ic">✅</div><div class="n-title">KYC APPROVED</div></div><div class="n-desc">isKycApproved() = TRUE app-wide</div><span class="kchip">approved</span></div>
+    <div class="node entry" data-node><div class="idx">6</div><div class="n-top"><div class="n-ic"></div><div class="n-title">KYC APPROVED</div></div><div class="n-desc">isKycApproved() = TRUE app-wide</div><span class="kchip">approved</span></div>
     <div class="conn"><span class="arrow">→</span></div>
     <div class="node mod" data-node><div class="idx">7</div><div class="n-top"><div class="n-ic">🛡️</div><div class="n-title">Admin Moderation</div></div><div class="n-desc">approve / reject / pause / resume / bulk · CampaignLog</div><span class="kchip">WorkflowService</span></div>
     <div class="conn"><span class="arrow">→</span></div>

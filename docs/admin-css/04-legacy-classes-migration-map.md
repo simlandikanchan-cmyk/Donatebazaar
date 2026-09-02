@@ -1,6 +1,6 @@
 # Admin CSS Refactor — 646 Legacy Classes Migration Map
 
-All 646 legacy custom classes used by live admin views were relocated. Sources were: the flat old files (`_pages.css`, `_layout.css`, `_tables.css`, `_campaigns.css`, `_colors.css`, `_dashboard_stats.css`), the `121 old-only rules` audit, and the two inline `<style>` blocks.
+All 646 legacy custom classes used by live admin views were relocated. Sources included the flat old files (`_pages.css`, `_layout.css`, `_tables.css`, `_campaigns.css`, `_colors.css`, `_dashboard_stats.css`), the 121 old-only rules audit, and the two inline `<style>` blocks.
 
 ## Family → Destination
 
@@ -40,8 +40,8 @@ All 646 legacy custom classes used by live admin views were relocated. Sources w
 
 - `coupons/index.blade.php`: 26 `cp-*` classes → `pages/_finance.css`.
 - `gift-cards/index.blade.php`: 29 `gc-*` classes → `pages/_finance.css`.
-- Both `<style>` blocks removed; verified programmatically (`inline_check.ps1`) that every inline class exists in the new tree before removal.
+- Both `<style>` blocks were removed after verifying programmatically (`inline_check.ps1`) that every inline class exists in the new tree.
 
 ## Dead classes (correctly NOT defined)
 
-- ~120 classes used only by `dashboard_yoyo.blade.php` (deleted view): `main-layout`, `side-col`, `side-panel`, `donut-wrap`, `sp-*`, `topbar-*`, `theme-toggle*`, `t-user*`, `avatar-dropdown`, `s-upgrade*`, `c-*` cluster, `toast-container`, `reason-y/r`, `chip-y/r`, `js-*`. Do not define these.
+~120 classes used only by `dashboard_yoyo.blade.php` (deleted view) were left undefined: `main-layout`, `side-col`, `side-panel`, `donut-wrap`, `sp-*`, `topbar-*`, `theme-toggle*`, `t-user*`, `avatar-dropdown`, `s-upgrade*`, `c-*` cluster, `toast-container`, `reason-y/r`, `chip-y/r`, `js-*`. Do not define these.

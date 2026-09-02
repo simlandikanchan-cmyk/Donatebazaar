@@ -2,13 +2,13 @@
 
 ## Entry point
 
-`resources/views/layouts/admin.blade.php` (line 11) references only:
+The admin layout (`resources/views/layouts/admin.blade.php`, line 11) references exactly one Vite asset:
 
 ```
 @vite(['resources/css/admin/admin.css'])
 ```
 
-`resources/css/admin/admin.css` contains the full import graph (38 `@import` statements, all resolvable).
+`admin.css` contains the full import graph — 38 `@import` statements, all resolvable.
 
 ## Directory layout
 
@@ -29,8 +29,10 @@
 3. `utilities/_colors.css`, `utilities/_helpers.css`
 4. `layout/_content.css`, `layout/_sidebar.css`, `layout/_topbar.css`
 5. `components/*` (buttons, badges, alerts, cards, forms, tables, toolbar, pagination, tabs, page-header, hero, stats, dropdowns, modals, empty-state)
-6. `pages/*` in the exact order above (`.body` has no `page-*` class, so later page files win ties)
+6. `pages/*` in the exact order above — the `<body>` has no `page-*` class, so later page files win ties
 7. `layout/_responsive.css` (all media queries last)
+
+The page import order matters. When two page files define the same selector, whichever appears later in `admin.css` wins.
 
 ## Component files (15)
 

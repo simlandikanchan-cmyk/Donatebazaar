@@ -8,7 +8,7 @@ https://your-domain.com/api/v1
 
 ## Authentication
 
-Most API endpoints require authentication. Include the session cookie or API token in requests.
+Most API endpoints require an authenticated session. Pass the session cookie or API token in your request; unauthenticated calls are rejected with `401`.
 
 ---
 
@@ -16,7 +16,7 @@ Most API endpoints require authentication. Include the session cookie or API tok
 
 ### GET /health
 
-Returns system health status.
+Returns the current system health status, including cache, database, queue, and Redis checks.
 
 **Response:**
 ```json
@@ -38,7 +38,7 @@ Returns system health status.
 
 ### POST /payment/verify
 
-Verify a Razorpay payment.
+Verifies a Razorpay payment using the payment ID, order ID, and signature returned by the checkout.
 
 **Request:**
 ```json
@@ -64,7 +64,7 @@ Verify a Razorpay payment.
 
 ### GET /states/{country}
 
-Get states for a country.
+Returns the states for a country. The current integration uses `"india"`.
 
 **Parameters:**
 | Name | Type | Description |
@@ -81,7 +81,7 @@ Get states for a country.
 
 ### GET /cities/{state}
 
-Get cities for a state.
+Returns the cities for a given state code.
 
 **Parameters:**
 | Name | Type | Description |
@@ -102,7 +102,7 @@ Get cities for a state.
 
 ### GET /notification-types
 
-Get all notification types.
+Lists every notification type the user can configure.
 
 **Response:**
 ```json
@@ -116,7 +116,7 @@ Get all notification types.
 
 ### GET /notification-preferences
 
-Get user's notification preferences.
+Returns the user's current notification preferences.
 
 **Response:**
 ```json
@@ -133,7 +133,7 @@ Get user's notification preferences.
 
 ### POST /notification-preferences
 
-Update notification preferences.
+Replaces the user's preferences in one call.
 
 **Request:**
 ```json
@@ -150,7 +150,7 @@ Update notification preferences.
 
 ### PUT /notification-preferences/{type}/{channel}
 
-Update a specific preference.
+Toggles a single preference.
 
 **Parameters:**
 | Name | Type | Description |
@@ -167,11 +167,11 @@ Update a specific preference.
 
 ### DELETE /notification-preferences/{type}/{channel}
 
-Delete a preference (resets to default).
+Deletes a preference and resets it to the default.
 
 ### POST /notification-preferences/reset-all
 
-Reset all preferences to defaults.
+Resets all preferences to their defaults.
 
 ---
 
@@ -179,12 +179,12 @@ Reset all preferences to defaults.
 
 ### POST /payment/webhook
 
-Razorpay webhook endpoint (excluded from CSRF).
+Razorpay's webhook endpoint. This route is excluded from CSRF protection because Razorpay cannot send a session token.
 
 **Headers:**
 | Name | Description |
 |---|---|
-| X-Razorpay-Signature | Webhook signature for verification |
+| X-Razorpay-Signature | Webhook signature used for verification |
 
 ---
 
@@ -192,7 +192,7 @@ Razorpay webhook endpoint (excluded from CSRF).
 
 ### GET /campaigns
 
-Get all active campaigns.
+Lists all active campaigns.
 
 **Response:**
 ```json
@@ -230,7 +230,7 @@ Get all active campaigns.
 
 ### GET /campaigns/{slug}
 
-Get a single campaign by slug.
+Returns a single campaign by its slug.
 
 ---
 
@@ -238,11 +238,11 @@ Get a single campaign by slug.
 
 ### GET /donations
 
-Get user's donation history.
+Returns the authenticated user's donation history.
 
 ### POST /donations
 
-Create a new donation.
+Creates a new donation for the given campaign.
 
 **Request:**
 ```json
@@ -260,7 +260,7 @@ Create a new donation.
 
 ### GET /wallet
 
-Get user's wallet details.
+Returns the user's wallet balances.
 
 **Response:**
 ```json
@@ -279,7 +279,7 @@ Get user's wallet details.
 
 ### GET /wallet/transactions
 
-Get wallet transaction history.
+Returns the wallet's transaction history.
 
 ---
 
@@ -287,11 +287,11 @@ Get wallet transaction history.
 
 ### GET /settlements
 
-Get user's settlements.
+Returns the user's settlement requests.
 
 ### POST /settlements
 
-Request a new settlement.
+Requests a new payout from the available balance.
 
 **Request:**
 ```json
@@ -312,6 +312,10 @@ Request a new settlement.
 }
 ```
 
+---
+
+## Rate Limiting
+
 | Endpoint | Limit |
 |---|---|
 | All API | 60 requests/minute |
@@ -322,7 +326,7 @@ Request a new settlement.
 
 ## Error Responses
 
-All errors follow this format:
+Every error follows the same shape, so a client can handle validation failures and server errors uniformly:
 
 ```json
 {

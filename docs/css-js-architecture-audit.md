@@ -1,4 +1,4 @@
-# Frontend Architecture — Final Audit Report
+# CSS & JS Architecture Audit
 
 **Project:** DonateBazaar / Laravel  
 **Date:** 2026-08-15  
@@ -9,7 +9,7 @@
 
 ## 1. Executive Summary
 
-A comprehensive read-only audit was conducted across the entire DonateBazaar Laravel application: **165 CSS files**, **43 JS files**, and **269 Blade templates**. The audit evaluates the current architecture against clean-code principles — **no files were modified during this audit**.
+This read-only audit covered the DonateBazaar Laravel application: **165 CSS files**, **43 JS files**, and **269 Blade templates**. No files were modified. The goal was to evaluate the current frontend architecture against clean-code principles and measure progress from the pre-refactoring baseline.
 
 ### Quick Facts
 
@@ -31,11 +31,11 @@ A comprehensive read-only audit was conducted across the entire DonateBazaar Lar
 
 | Check                  | Result                             |
 |------------------------|------------------------------------|
-| `npm run build`        | ✅ PASS — 3.57s, 0 errors          |
-| `php artisan test`     | ✅ PASS — 879 tests, 2695 assertions |
+| `npm run build`        | PASS — 3.57s, 0 errors          |
+| `php artisan test`     | PASS — 879 tests, 2695 assertions |
 | `npm run lint:css`     | ⚠️ 88 errors (0 from refactor)     |
-| `php artisan view:cache` | ✅ PASS — 199 templates           |
-| `php artisan route:list` | ✅ PASS — 373 routes              |
+| `php artisan view:cache` | PASS — 199 templates           |
+| `php artisan route:list` | PASS — 373 routes              |
 
 ---
 
@@ -56,7 +56,7 @@ A comprehensive read-only audit was conducted across the entire DonateBazaar Lar
 | `onkeydown`    | 1                  | 1        | 0%        |
 | **Total**      | **502**            | **253**  | **49.6%** |
 
-> **Note:** The "Before" baseline of 382 `onclick` is from the pre-refactoring audit. Total inline handlers before were 502 (all types combined).
+The "Before" baseline of 382 `onclick` is from the pre-refactoring audit. Total inline handlers before refactoring were 502 across all types.
 
 ### Inline JavaScript
 
@@ -72,7 +72,7 @@ A comprehensive read-only audit was conducted across the entire DonateBazaar Lar
 | `window.*` assignments | ~30             | 15      |
 | Globally exposed functions | 0            | 4 (module-scoped, not global) |
 
-The 15 remaining `window.*` assignments are all **ES module-level assignments** — they are NOT true browser globals because Vite compiles each entry as a separate module. They are bridge patterns for inline Blade scripts.
+The 15 remaining `window.*` assignments are all ES module-level assignments, not true browser globals — Vite compiles each entry as a separate module. They serve as bridge patterns for inline Blade scripts.
 
 ### JS/CSS Entries
 
@@ -115,25 +115,25 @@ The 15 remaining `window.*` assignments are all **ES module-level assignments** 
 
 | Check                                                | Status | Notes |
 |------------------------------------------------------|--------|-------|
-| ✅ All page JS entries in `vite.config.js`            | ⚠️ NEEDS IMPROVEMENT | 6 entries not directly referenced in Blade (loaded via layouts/dependencies) |
-| ✅ All CSS entries in `vite.config.js`                | ✅ PASS | 69 entries, all used |
-| ✅ No orphaned Vite entries (except `bootstrap.js`)   | ⚠️ NEEDS IMPROVEMENT | `bootstrap.js` not in Vite, dead |
-| ✅ Shared utilities in `shared/` directory              | ⚠️ NEEDS IMPROVEMENT | 4 of 6 shared utilities underused |
-| ✅ Public/admin/user separation                         | ✅ PASS | No cross-system JS or CSS imports |
-| ✅ `@push`/`@stack` stack matching                     | ✅ PASS | All stacks matched across layouts |
-| ✅ `footer.js` loaded exactly once                   | ✅ PASS | In `partials/footer.blade.php` |
-| ✅ No duplicate Vite entries                           | ✅ PASS | 0 duplicates |
-| ✅ No broken `@vite()` references                     | ✅ PASS | 0 missing manifest entries |
-| ❌ No inline `<script>` in refactored pages            | ✅ PASS | How-it-works, FAQ, show, profile — 0 inline scripts |
+| All page JS entries in `vite.config.js`            | ⚠️ NEEDS IMPROVEMENT | 6 entries not directly referenced in Blade (loaded via layouts/dependencies) |
+| All CSS entries in `vite.config.js`                | PASS | 69 entries, all used |
+| No orphaned Vite entries (except `bootstrap.js`)   | ⚠️ NEEDS IMPROVEMENT | `bootstrap.js` not in Vite, dead |
+| Shared utilities in `shared/` directory              | ⚠️ NEEDS IMPROVEMENT | 4 of 6 shared utilities underused |
+| Public/admin/user separation                         | PASS | No cross-system JS or CSS imports |
+| `@push`/`@stack` stack matching                     | PASS | All stacks matched across layouts |
+| `footer.js` loaded exactly once                   | PASS | In `partials/footer.blade.php` |
+| No duplicate Vite entries                           | PASS | 0 duplicates |
+| No broken `@vite()` references                     | PASS | 0 missing manifest entries |
+| ❌ No inline `<script>` in refactored pages            | PASS | How-it-works, FAQ, show, profile — 0 inline scripts |
 | ⚠️ Inline `<script>` in non-refactored pages          | ⚠️ NEEDS IMPROVEMENT | 66 remaining across admin/public pages |
 
 ---
 
 ## 4. Detailed Findings
 
-### 4.1 Inline Event Handlers (Section 1)
+### 4.1 Inline Event Handlers
 
-**Current count:** 253 across 62 files
+**Current count:** 253 across 62 files.
 
 | Handler        | Count | Files | Status |
 |----------------|-------|-------|--------|
@@ -146,12 +146,9 @@ The 15 remaining `window.*` assignments are all **ES module-level assignments** 
 | `onblur`       | 1     | 1     | ⚠️ Field blur handler |
 | `onkeydown`    | 1     | 1     | ⚠️ Keydown handler |
 
-**Justification for remaining:**
-- 26 `onclick="return confirm('...')"` calls are simple confirmation dialogs — no benefit from JS extraction
-- All remaining handlers are in admin or non-targeted public pages outside the refactoring scope
-- No `javascript:` URLs found (0 occurrences)
+26 `onclick="return confirm('...')"` calls are simple confirmation dialogs with no benefit from JS extraction. All remaining handlers sit in admin or non-targeted public pages outside the refactoring scope. No `javascript:` URLs were found (0 occurrences).
 
-### 4.2 window.* Assignments (Section 2)
+### 4.2 window.* Assignments in JS Files
 
 **True `window.*` assignments in JS files: 15**
 
@@ -176,7 +173,7 @@ The 15 remaining `window.*` assignments are all **ES module-level assignments** 
 - `public/chatbot.js`: `function initChat` (module-scoped)
 - `public/how-it-works.js`: `function switchTab`, `function switchFaqTab`, `function toggleFaq` (module-scoped)
 
-These are **safe** — ES module top-level scope is not global.
+These are safe — ES module top-level scope is not global.
 
 ### 4.3 window.* References in Blade Inline Scripts
 
@@ -224,7 +221,7 @@ These are **safe** — ES module top-level scope is not global.
 | `window.setType` | 1 | 1 | Legacy |
 | `window.lucide` | 1 | 1 | Third-party library (CDN) |
 
-**Total:** 43 unique `window.*` references in Blade inline scripts, all classified as **legacy bridges** or **page-specific inline definitions**.
+**Total:** 43 unique `window.*` references in Blade inline scripts, all classified as legacy bridges or page-specific inline definitions.
 
 ### 4.4 JS Entry Architecture
 
@@ -237,15 +234,13 @@ These are **safe** — ES module top-level scope is not global.
 | JS entries orphaned (not in Vite) | 1 (`bootstrap.js`) |
 | CSS entries orphaned | 5 |
 
-**6 JS entries not directly referenced via `@vite()` in Blade:**
+The 6 JS entries not directly referenced via `@vite()` in Blade are loaded through layout includes or component partials:
 - `app.js` — loaded via `layouts/app.blade.php` (base layout)
 - `application.js` — loaded via `application/layout.blade.php`
 - `chatbot.js` — loaded via `layouts/app.blade.php`
 - `events-edit.js` — loaded via `events/edit.blade.php`
 - `navbar.js` — loaded via `partials/navbar.blade.php` or `layouts/app.blade.php`
 - `volunteer-city.js` — loaded via `volunteer/apply.blade.php`
-
-These are legitimate — they're loaded through layout includes or component partials.
 
 **5 orphaned CSS files:**
 | File | Reason |
@@ -256,12 +251,12 @@ These are legitimate — they're loaded through layout includes or component par
 | `base/_typography.css` | Imported by `public/app.css` — **FALSE POSITIVE** |
 | `user/components/_buttons.css` | Imported by `user/user.css` — **FALSE POSITIVE** |
 
-The 4 "false positive" files are actually imported via `@import` in CSS, but the import resolution used relative path comparison that didn't match. These are **not truly orphaned**.
+The 4 false-positive files are imported via `@import` in CSS, but the import resolution used relative path comparison that didn't match. They are not truly orphaned.
 
 ### 4.5 Duplicate JavaScript Implementations
 
 **Toast (7 implementations):**
-1. `shared/toast.js` — proper ES module export ✅
+1. `shared/toast.js` — proper ES module export 
 2. `public/campaigns-show.js` — local `showToast()` (duplicates shared)
 3. `public/campaigns-edit.js` — local `toast()` (duplicates shared)
 4. `admin/categories-index.js` — local `window.toast()` (duplicates shared)
@@ -272,20 +267,20 @@ The 4 "false positive" files are actually imported via `@import` in CSS, but the
 9. `user/user.js` — `window.toast` bridge (wraps shared)
 
 **Modal (5 implementations):**
-1. `shared/modal.js` — `openModal()`, `closeModal()`, `closeAllModals()` ✅
+1. `shared/modal.js` — `openModal()`, `closeModal()`, `closeAllModals()` 
 2. `public/campaigns-edit.js` — `openModal(id)`, `closeModal(id)`
 3. `admin/categories-index.js` — `openModal(id,name,url)`, `closeModal()`
 4. `admin/partnership-index.js` — `openModal(id,name,url)`, `closeModal()`
 5. `admin/category-products-index.js` — `openModal(id,name,url)`, `closeModal()`
 
 **Escape HTML (4 implementations):**
-1. `shared/helpers.js` — `escapeHtml()` ✅
+1. `shared/helpers.js` — `escapeHtml()` 
 2. `admin/job-edit.js` — `window.escapeHtml()`
 3. `public/chatbot.js` — `window.escapeHtml()`
 4. `public/navbar.js` — `window.escapeHtml()`
 
 **CSRF (3 implementations):**
-1. `shared/csrf.js` — `getCsrfToken()`, `csrfHeaders()` ✅
+1. `shared/csrf.js` — `getCsrfToken()`, `csrfHeaders()` 
 2. `admin/admin.js` — `csrfToken()` function (not using shared)
 3. `admin/partnership-index.js` — `csrfInput()` function (not using shared)
 
@@ -322,12 +317,12 @@ The 4 "false positive" files are actually imported via `@import` in CSS, but the
 **CSS Cross-System Verification:**
 | Check | Result |
 |-------|--------|
-| Public CSS imports admin CSS | ✅ None |
-| Admin CSS imports public CSS | ✅ None |
-| User CSS imports public CSS | ✅ None |
-| Admin CSS imports user CSS | ✅ None |
-| Public/User/Admin share `base/` | ✅ (intended) |
-| Public/User/Admin share `components/` | ✅ (intended) |
+| Public CSS imports admin CSS | None |
+| Admin CSS imports public CSS | None |
+| User CSS imports public CSS | None |
+| Admin CSS imports user CSS | None |
+| Public/User/Admin share `base/` | (intended) |
+| Public/User/Admin share `components/` | (intended) |
 
 **CSS Selector Quality:**
 | Metric | Count | Status |
@@ -352,11 +347,11 @@ The 4 "false positive" files are actually imported via `@import` in CSS, but the
 |---------|---------------|--------|
 | `lucide@latest` | CDN (`unpkg.com`) | ⚠️ Could migrate to npm |
 | Font Awesome 6.5.0 | CDN (`cdnjs.cloudflare.com`) | ⚠️ Could migrate to npm |
-| Chart.js | npm (Vite import) | ✅ Loaded via `import` in JS files |
-| Alpine.js | npm (Vite import) | ✅ Loaded via `import` in `app.js` |
-| AOS | Not found | ✅ Not included |
-| Swiper | Not found | ✅ Not included |
-| Lottie | Not found | ✅ Not included |
+| Chart.js | npm (Vite import) | Loaded via `import` in JS files |
+| Alpine.js | npm (Vite import) | Loaded via `import` in `app.js` |
+| AOS | Not found | Not included |
+| Swiper | Not found | Not included |
+| Lottie | Not found | Not included |
 | Axios | npm (but `bootstrap.js` is dead) | ⚠️ `bootstrap.js` not in Vite |
 
 ### 4.8 Blade Architecture
@@ -364,10 +359,10 @@ The 4 "false positive" files are actually imported via `@import` in CSS, but the
 **Layouts and their stacks:**
 | Layout | CSS Stack | JS Stack | Status |
 |--------|-----------|----------|--------|
-| `layouts/app.blade.php` (public) | `@stack('styles')` | `@stack('scripts')` | ✅ |
-| `layouts/admin.blade.php` (admin) | `@stack('page_styles')` | `@stack('page_scripts')` | ✅ |
-| `layouts/user.blade.php` (user) | `@stack('page_styles')`` | `@stack('page_scripts')` | ✅ |
-| `layouts/guest.blade.php` | — | — | ✅ (no stacks) |
+| `layouts/app.blade.php` (public) | `@stack('styles')` | `@stack('scripts')` | |
+| `layouts/admin.blade.php` (admin) | `@stack('page_styles')` | `@stack('page_scripts')` | |
+| `layouts/user.blade.php` (user) | `@stack('page_styles')` | `@stack('page_scripts')` | |
+| `layouts/guest.blade.php` | — | — | (no stacks) |
 
 All `@push` directives have matching `@stack` directives. No mismatches.
 
@@ -438,16 +433,14 @@ npm run lint:css
 5 errors potentially fixable with the "--fix" option
 ```
 
-- All 88 errors are **pre-existing** (duplicate selectors, empty blocks)
-- **0 new errors** introduced by refactoring
-- Error breakdown: `no-duplicate-selectors` (85), `block-no-empty` (2), `no-descending-specificity` (1)
+All 88 errors are pre-existing (duplicate selectors, empty blocks). 0 new errors were introduced by refactoring. Error breakdown: `no-duplicate-selectors` (85), `block-no-empty` (2), `no-descending-specificity` (1).
 
 ### Laravel Validation
 
 ```
-php artisan optimize:clear  → ✅ PASS
-php artisan view:cache       → ✅ PASS (199 templates)
-php artisan route:list       → ✅ PASS (373 routes)
+php artisan optimize:clear  →  PASS
+php artisan view:cache       →  PASS (199 templates)
+php artisan route:list       →  PASS (373 routes)
 ```
 
 ---
@@ -588,4 +581,4 @@ php artisan route:list       → ✅ PASS (373 routes)
 - 1 dead JS file (`bootstrap.js`) and 1 empty Blade file (`show_new_2.blade.php`)
 - 2 CDN libraries (lucide, Font Awesome) could be migrated to npm
 
-**Conclusion:** The project is **production-ready**. The refactoring has significantly improved the architecture of the public-facing pages. The remaining debt is concentrated in the admin panel and represents non-blocking technical debt that can be addressed in future iterations.
+**Conclusion:** The project is production-ready. The refactoring has significantly improved the architecture of the public-facing pages. The remaining debt is concentrated in the admin panel and represents non-blocking technical debt that can be addressed in future iterations.

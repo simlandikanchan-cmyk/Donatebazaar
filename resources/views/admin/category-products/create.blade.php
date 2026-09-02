@@ -94,7 +94,7 @@
               <option value="physical" {{ old('product_type')=='physical'?'selected':'' }}>Physical</option>
               <option value="digital" {{ old('product_type')=='digital'?'selected':'' }}>Digital</option>
               <option value="service" {{ old('product_type')=='service'?'selected':'' }}>Service</option>
-              <option value="bundle" {{ old('product_type')=='bundle'?'selected':'' }}>Bundle</option>
+              <option value="donation" {{ old('product_type')=='donation'?'selected':'' }}>Donation</option>
             </select>
             @error('product_type')<p class="f-error">{{ $message }}</p>@enderror
           </div>
@@ -137,18 +137,34 @@
       </div>
       <div class="card-body">
         <div class="upload-zone" id="uploadZone">
-          <input type="file" name="image" id="imageInput" accept="image/*" data-action="image-change">
+          <input type="file" name="image" id="imageInput" accept="image/jpeg,image/png,image/webp" data-action="image-change">
+
           <div id="uploadPrompt">
             <div class="upload-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg></div>
             <div class="upload-title">Drop image here or click to browse</div>
-            <div class="upload-sub">PNG, JPG, WEBP — max 2MB</div>
+            <div class="upload-sub">PNG, JPG, WEBP · max 2MB</div>
           </div>
-          <div class="img-preview-wrap" id="imgPreviewWrap">
-            <img src="" alt="Preview" class="img-preview" id="imgPreview">
-            <button type="button" class="img-remove" data-action="remove-image">✕ Remove image</button>
+
+          <div class="img-preview-wrap" id="imgPreviewWrap" hidden>
+            <div class="img-preview-box">
+              <img src="" alt="Product image preview" class="img-preview" id="imgPreview">
+              <span class="img-preview-spinner" id="imgPreviewSpinner" hidden></span>
+              <span class="img-preview-error" id="imgPreviewError" hidden></span>
+            </div>
+            <div class="img-actions">
+              <button type="button" class="img-btn img-btn-primary" data-action="change-image">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                Change Image
+              </button>
+              <button type="button" class="img-btn img-btn-danger" data-action="remove-image">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                Remove
+              </button>
+            </div>
           </div>
         </div>
-        @error('image')<p class="f-error" style="margin-top:8px;">{{ $message }}</p>@enderror
+        <p class="f-error" id="imageError" hidden></p>
+        @error('image')<p class="f-error" style="margin-top:6px;">{{ $message }}</p>@enderror
       </div>
     </div>
 

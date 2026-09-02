@@ -3,8 +3,7 @@
 > **Status:** Active standard for all admin pages.
 > **Last verified:** 2026-08-24
 
-This document defines the CSS and JavaScript architecture for the admin panel.
-The current structure is the **project standard** — future admin pages must follow it.
+This document defines how CSS and JavaScript are organized in the admin panel. The structure described below is the **project standard** — new admin pages must follow it rather than introducing their own pattern.
 
 ---
 
@@ -80,12 +79,14 @@ resources/
 
 ## 2. CSS Ownership Rules
 
+Each layer of the CSS tree has a clear owner. If a rule ends up in the wrong layer, it is worth fixing now because the mistake will only get more expensive to undo.
+
 ### `entries/` — Vite Entry Points
 
-**Purpose:** Files registered in `vite.config.js`. Each admin page loads its entry.
+**Purpose:** Files registered in `vite.config.js`. Each admin page loads its own entry.
 
 **Rules:**
-- An entry is the **only CSS file loaded** for a given page (besides `core.css`).
+- An entry is the **only CSS file loaded** for a page (besides `core.css`).
 - Entries `@import` from `pages/`, `components/`, or other layers as needed.
 - Do NOT write page styles directly in entries — delegate to `pages/`.
 
@@ -114,8 +115,8 @@ resources/
 - `_animations.css` — Global keyframe animations
 
 **Rules:**
-- Do NOT put page-specific styles here.
-- Do NOT put component styles here.
+- No page-specific styles here.
+- No component styles here.
 - Variables defined here are the **single source of truth** for design tokens.
 
 ---
@@ -131,7 +132,7 @@ resources/
 - `_responsive.css` — Global responsive layout rules
 
 **Rules:**
-- Do NOT put campaign-specific, dashboard-specific, or other page-specific styles here.
+- Do NOT put campaign-, dashboard-, or other page-specific styles here.
 - Global breakpoint rules that affect the entire admin shell belong here.
 
 ---
@@ -145,7 +146,7 @@ resources/
 **Rules:**
 - A component belongs here when it is **genuinely reusable** across 2+ pages.
 - Do NOT put one-off page styling here just because the selector looks generic.
-- If a component becomes reusable, extract it here **once** — do not duplicate.
+- Extract a component here **once** when it becomes reusable — do not duplicate it.
 
 ---
 
@@ -190,7 +191,7 @@ pages/categories/       ← subfolder for complex page families
 
 ### Current Structure
 
-JavaScript files currently live **flat** in `resources/js/admin/`:
+JavaScript files live **flat** in `resources/js/admin/`, organized by role:
 
 ```text
 js/admin/
@@ -219,7 +220,7 @@ js/admin/
 
 ### Shared Modules
 
-Global shared modules live in `resources/js/shared/`:
+Modules used across multiple systems live in `resources/js/shared/`:
 
 ```text
 js/shared/
@@ -262,9 +263,9 @@ import '../pages/dashboard.js';
 **Do NOT put page-specific logic here.**
 
 **`pages/` — Page-Specific Modules:**
-- Own behavior specific to that page
-- Import shared modules as needed (`toast`, `csrfFetch`, `animateCounter`)
-- Auto-initialize via JSON config blob (`<script type="application/json" id="...">`)
+- Own the behavior specific to their page.
+- Import shared modules as needed (`toast`, `csrfFetch`, `animateCounter`).
+- Auto-initialize via a JSON config blob (`<script type="application/json" id="...">`).
 
 **Do NOT place campaign logic, dashboard logic, or other page logic into `shell.js`.**
 
@@ -274,7 +275,7 @@ import '../pages/dashboard.js';
 
 ### How Pages Load Assets
 
-Each admin page loads:
+Every admin page loads two things:
 
 1. **`core/admin.js`** — loaded globally via `layouts/admin.blade.php`
 2. **One page entry** — loaded in the specific Blade view via `@vite()`
@@ -305,7 +306,7 @@ Each admin page loads:
 
 - Do NOT load every admin page's CSS/JS globally.
 - Each page loads `core.css` + `core/admin.js` globally, plus its own entry.
-- Shared components are included through the entry's `@import` chain, not duplicated.
+- Shared components come in through the entry's `@import` chain, not by duplicating styles per page.
 
 ---
 
@@ -335,7 +336,8 @@ Each admin page loads:
 
 ### Forbidden Names
 
-Do NOT create files such as:
+Do NOT create files such as those below. They end up duplicated, ambiguous, and impossible to maintain:
+
 - `misc.css` / `misc.js` (except the existing catch-all entry)
 - `fix.css` / `fix.js`
 - `temp.css` / `temp.js`
@@ -349,7 +351,7 @@ Use descriptive, permanent names from the start.
 
 ## 6. Cascade Rules
 
-The current admin CSS has been cleaned up and browser-verified.
+The admin CSS has been cleaned up and browser-verified. Keep it that way.
 
 ### Do NOT solve conflicts by blindly adding:
 
@@ -359,7 +361,7 @@ The current admin CSS has been cleaned up and browser-verified.
 ✗ body .content .foo .bar
 ```
 
-### When a conflict arises, determine:
+### When a conflict arises, work through the questions in order:
 
 1. Which file owns the component?
 2. Which file should win?
@@ -367,7 +369,7 @@ The current admin CSS has been cleaned up and browser-verified.
 4. Is the selector incorrectly scoped?
 5. Is the rule actually page-specific?
 
-Only use increased specificity when there is a documented reason.
+Only increase specificity when there is a documented reason.
 
 ### Source Order
 
@@ -418,7 +420,7 @@ If a component genuinely becomes reusable across multiple pages, extract it **on
 
 ## 9. Blade/Template Rules
 
-Future admin Blade files should primarily contain:
+Admin Blade files should primarily contain:
 
 - HTML structure
 - Laravel data
@@ -462,51 +464,41 @@ import '../pages/<page>.js';
 
 ## 10. How to Add a New Admin Page
 
-### Step-by-step recipe
+Follow this recipe in order:
 
-1. **Create the Blade view** in `resources/views/admin/<feature>/`
-
+1. **Create the Blade view** in `resources/views/admin/<feature>/`.
 2. **Create page CSS** (if needed):
    ```
    resources/css/admin/pages/<page>.css
    ```
-
 3. **Create the entry CSS** (if needed):
    ```
    resources/css/admin/entries/<page>.css
    ```
    Content: `@import '../pages/<page>.css';`
-
 4. **Create page JS** (if needed):
    ```
    resources/js/admin/pages/<page>.js
    ```
-
 5. **Create the entry JS** (if needed):
    ```
    resources/js/admin/entries/<page>.js
    ```
    Content: `import '../pages/<page>.js';`
-
 6. **Register the entry in `vite.config.js`**:
    ```js
    'resources/css/admin/entries/<page>.css',
    'resources/js/admin/entries/<page>.js',
    ```
-
 7. **Load only the page assets** in the Blade view:
    ```blade
    @vite('resources/css/admin/entries/<page>.css')
    @vite('resources/js/admin/entries/<page>.js')
    ```
-
-7. **Reuse existing components** — import from `components/` or `shared/` instead of duplicating.
-
-8. **Test desktop/mobile** — verify responsive behavior.
-
-9. **Test light/dark** — verify both themes.
-
-10. **Run production build**:
+8. **Reuse existing components** — import from `components/` or `shared/` instead of duplicating.
+9. **Test desktop/mobile** — verify responsive behavior.
+10. **Test light/dark** — verify both themes.
+11. **Run the production build**:
     ```bash
     npm run build
     ```
@@ -559,13 +551,13 @@ import '../pages/<page>.js';
 
 ### Exceptions (intentional):
 
-- **`entries/misc.css`** — Intentional catch-all for simple CRUD pages (faqs, success-stories, legal, subscribers, etc.). This is a deliberate pattern for pages that share minimal styling.
-- **`pages/misc.css`** — Companion to the entry; contains the actual styles for those simple pages.
-- **No JS `components/` or `utilities/`** — Currently no admin-specific JS components or utilities have been identified. The shared modules in `js/shared/` cover all reusable behavior. If admin-specific reusable behavior emerges in the future, it should go in `js/admin/components/` or `js/admin/utilities/`.
+- **`entries/misc.css`** — Intentional catch-all for simple CRUD pages (faqs, success-stories, legal, subscribers, etc.). Pages like these share minimal styling, so a shared entry avoids one empty stylesheet per feature.
+- **`pages/misc.css`** — Companion to the entry; holds the actual styles for those simple pages.
+- **No JS `components/` or `utilities/`** — so far, no admin-specific JS component or utility has justified separate folders. The shared modules in `js/shared/` cover all reusable behavior. If admin-specific reusable behavior shows up later, it belongs in `js/admin/components/` or `js/admin/utilities/`.
 
 ### Is the current architecture safe for future pages?
 
-**Yes.** Both CSS and JS architectures are solid and ready for new pages. Follow the recipe in Section 10.
+**Yes.** Both the CSS and JS architectures are solid and ready for new pages. Follow the recipe in Section 10.
 
 ### Changes required now:
 

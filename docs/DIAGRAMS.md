@@ -1,5 +1,7 @@
 # System Architecture Diagram
 
+The big picture first: three frontends (public, user, admin) talk to one Laravel app, which splits requests through controllers into services, models, events, and queue jobs, and finally lands on MySQL, Redis, and Razorpay.
+
 ```
                                     ┌─────────────────┐
                                     │     Users       │
@@ -73,6 +75,8 @@
 
 ## Module Interaction Diagram
 
+How the internal modules relate during the money lifecycle: campaigns feed donations, donations go through the payment gateway, the wallet records the credit, and settlements finally drive payout attempts — with KYC and notifications running alongside.
+
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                           DonateBazaar                                   │
@@ -107,6 +111,8 @@
 ---
 
 ## Database Schema Overview
+
+The schema groups cleanly around users, campaigns, donations, the settlement/payout stack, KYC, content, and supporting modules like gift cards and coupons.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -167,6 +173,8 @@
 
 ## Settlement State Machine
 
+A settlement starts `pending`, gets approved (manually or automatically), moves to `processing` while the payout runs, and ends at `paid`, `rejected`, or `failed` — with failures returning to the queue for a retry.
+
 ```
                                     ┌──────────────┐
                                     │              │
@@ -210,6 +218,8 @@
 ---
 
 ## Payment Flow
+
+A donation starts on the campaign page, creates a Razorpay order, and after the user pays, either the browser verification route or the webhook completes the donation and credits the wallet.
 
 ```
 ┌────────┐     ┌────────────┐     ┌────────────┐     ┌──────────┐

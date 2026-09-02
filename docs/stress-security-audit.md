@@ -1,4 +1,4 @@
-# Production-Grade Stress & Security Audit — FINAL REPORT (Post-Remediation)
+﻿# Production-Grade Stress & Security Audit — FINAL REPORT (Post-Remediation)
 
 **Application:** Fundraise / DonateBazaar (donatebazaar_final)  
 **Date:** 2026-08-12 (post-remediation)  
@@ -9,7 +9,7 @@
 
 ## Executive Summary
 
-This is the **final post-remediation audit** of the Fundraise application. All 5 Critical, 4 High, and 4 Medium findings from the initial audit have been resolved. The full test suite passes (827 tests, 1895 assertions), Pint lint passes on all modified files, and database integrity is verified.
+This is the final post-remediation audit of the Fundraise application. All 5 Critical, 4 High, and 4 Medium findings from the initial audit have been resolved. The full test suite passes (827 tests, 1895 assertions), Pint lint passes on all modified files, and database integrity is verified.
 
 **VERDICT: PRODUCTION READY (Score: 9/10)**
 
@@ -33,7 +33,7 @@ This is the **final post-remediation audit** of the Fundraise application. All 5
 
 ## Changes Made
 
-### 1. User Model Mass-Assignment Security — CRITICAL ✅
+### 1. User Model Mass-Assignment Security — CRITICAL
 
 **Files:** `app/Models/User.php`, `app/Http/Controllers/Auth/OtpController.php`, `database/seeders/AdminUserSeeder.php`
 
@@ -41,7 +41,7 @@ This is the **final post-remediation audit** of the Fundraise application. All 5
 
 **After:** Moved all OTP/security-sensitive fields AND `role` to `$guarded`. The `role` field was verified safe to guard because Laravel's `UserFactory` internally uses `unguarded()` to bypass mass-assignment restrictions during test data creation. All production code paths (controllers, seeders) use direct property assignment for `role` (e.g., `$user->role = 'admin'; $user->save();`). `ProfileUpdateRequest` additionally enforces strict input whitelisting at the controller layer (only allows `name`, `phone`, `bio`).
 
-### 2. Donation Model Mass-Assignment Security — HIGH ✅
+### 2. Donation Model Mass-Assignment Security — HIGH
 
 **Files:** `app/Models/Donation.php`, `app/Http/Controllers/PaymentController.php`
 
@@ -49,7 +49,7 @@ This is the **final post-remediation audit** of the Fundraise application. All 5
 
 **After:** Moved all system state fields to `$guarded`. Updated `PaymentController::redirectToPayment()` to use direct property assignment (`new Donation()` + `$donation->total_amount = ...`) instead of `Donation::make([...])` for clarity and defense-in-depth.
 
-### 3. Financial CASCADE Deletes — CRITICAL ✅
+### 3. Financial CASCADE Deletes — CRITICAL
 
 **File:** `database/migrations/2026_08_12_120000_fix_financial_cascade_deletes.php`
 
@@ -57,7 +57,7 @@ This is the **final post-remediation audit** of the Fundraise application. All 5
 
 **After:** All 9 changed to RESTRICT. Only `wallets → users` remains CASCADE (intentional — wallets are recreated on demand via `getOrCreateWallet()` and are not audit records; `wallet_transactions` is the immutable audit trail).
 
-### 4. Webhook Rate Limiting — CRITICAL ✅
+### 4. Webhook Rate Limiting — CRITICAL
 
 **File:** `routes/web/donations.php`
 
@@ -65,7 +65,7 @@ This is the **final post-remediation audit** of the Fundraise application. All 5
 
 **After:** Added `throttle:120,1` (120 requests/minute). HMAC-SHA256 signature verification and cache lock remain as primary protections.
 
-### 5. Payment Verification Rate Limit — MEDIUM ✅
+### 5. Payment Verification Rate Limit — MEDIUM
 
 **File:** `app/Http/Controllers/PaymentController.php`
 
@@ -73,7 +73,7 @@ This is the **final post-remediation audit** of the Fundraise application. All 5
 
 **After:** Increased to 30 requests/60 seconds to accommodate legitimate retry scenarios without removing abuse protection.
 
-### 6. CSP Header — HIGH ✅
+### 6. CSP Header — HIGH
 
 **File:** `app/Http/Middleware/SecureHeadersMiddleware.php`
 
@@ -81,19 +81,19 @@ This is the **final post-remediation audit** of the Fundraise application. All 5
 
 **After:** Added CSP with appropriate allowlist for self, Razorpay checkout, jsDelivr CDN, Google Fonts, inline scripts/styles (required by existing Blade templates), and proper `frame-src` for OAuth and payment gateway iframes.
 
-### 7. WalletService::record() Atomicity — MEDIUM ✅
+### 7. WalletService::record() Atomicity — MEDIUM
 
 **Files:** `app/Services/WalletService.php`, `app/Models/WalletTransaction.php`
 
-**Before:** `balance_after` was set after transaction creation via separate `save()` — potential for inconsistency if something failed between create and save.
+**Before:** `balance_after` was set after transaction creation via a separate `save()` — a potential for inconsistency if something failed between create and save.
 
 **After:** `balance_after` and `status` are set in the initial `create()` call, making the operation atomic within the existing transaction.
 
-### 8. Payout Data Encryption — HIGH ✅
+### 8. Payout Data Encryption — HIGH
 
 **File:** `app/Console/Commands/EncryptPayoutAccountSensitiveData.php`
 
-**Before:** No mechanism to encrypt existing plaintext payout_accounts data after encrypted casts are added at the model level.
+**Before:** No mechanism to encrypt existing plaintext payout_accounts data after encrypted casts were added at the model level.
 
 **After:** Created `payout-accounts:encrypt-sensitive` command with:
 - Intelligent detection of plaintext vs already-encrypted values
@@ -102,7 +102,7 @@ This is the **final post-remediation audit** of the Fundraise application. All 5
 - No plaintext in logs
 - Progress bar
 
-### 9. Comprehensive IDOR/BOLA Security Tests — HIGH ✅
+### 9. Comprehensive IDOR/BOLA Security Tests — HIGH
 
 **File:** `tests/Feature/FinancialIdorTest.php`
 
@@ -120,7 +120,7 @@ This is the **final post-remediation audit** of the Fundraise application. All 5
 - Donation system state fields cannot be mass-assigned
 - CSP and security headers are present
 
-### 10. Financial Soft-Delete Policy — Documented ✅
+### 10. Financial Soft-Delete Policy — Documented
 
 **Policy:**
 - `wallet_transactions` — **immutable** (no soft deletes, no hard deletes; audit trail)
@@ -128,9 +128,9 @@ This is the **final post-remediation audit** of the Fundraise application. All 5
 - `refunds`, `donation_payments` — **immutable** (financial audit trail, no deletes)
 - `payout_accounts` — **SoftDeletes recommended** (account history should persist)
 - `wallets` — **no deletes** (recreated via `getOrCreateWallet`, records should use soft delete if implemented)
-- `donations` — already has SoftDeletes ✅
+- `donations` — already has SoftDeletes
 
-### 11. OTP Controller Security — CRITICAL ✅
+### 11. OTP Controller Security — CRITICAL
 
 **File:** `app/Http/Controllers/Auth/OtpController.php`
 
@@ -159,16 +159,16 @@ Changed `role` and `phone_verified_at` from mass-assignment via `update()` to di
 
 | Check | Command | Result |
 |---|---|---|
-| Full test suite | `php vendor/bin/phpunit --no-coverage` | ✅ 827 tests, 1895 assertions, ALL PASSED |
-| Pint lint (modified files) | `php vendor/bin/pint --test` | ✅ All passed |
-| PHP syntax | `php -l` (all app files) | ✅ All valid |
-| Route list | `php artisan route:list` | ✅ OK |
-| Config cache | `php artisan config:cache` | ✅ OK |
-| Route cache | `php artisan route:cache` | ✅ OK |
-| View cache | `php artisan view:cache` | ✅ OK |
-| Migration status | `php artisan migrate:status` | ✅ All 150 migrations Ran |
-| DB integrity | INFORMATION_SCHEMA audit | ✅ 0 orphaned FKs, 0 mismatches, 0 dup indexes |
-| Encryption command | `php artisan payout-accounts:encrypt-sensitive --dry-run` | ✅ OK (0 records) |
+| Full test suite | `php vendor/bin/phpunit --no-coverage` | 827 tests, 1895 assertions, ALL PASSED |
+| Pint lint (modified files) | `php vendor/bin/pint --test` | All passed |
+| PHP syntax | `php -l` (all app files) | All valid |
+| Route list | `php artisan route:list` | OK |
+| Config cache | `php artisan config:cache` | OK |
+| Route cache | `php artisan route:cache` | OK |
+| View cache | `php artisan view:cache` | OK |
+| Migration status | `php artisan migrate:status` | All 150 migrations Ran |
+| DB integrity | INFORMATION_SCHEMA audit | 0 orphaned FKs, 0 mismatches, 0 dup indexes |
+| Encryption command | `php artisan payout-accounts:encrypt-sensitive --dry-run` | OK (0 records) |
 
 ---
 
@@ -176,19 +176,19 @@ Changed `role` and `phone_verified_at` from mass-assignment via `update()` to di
 
 Additional items addressed in a targeted follow-up pass:
 
-### P0-3: Enforce maximum settlement retries at job level — CRITICAL ✅
+### P0-3: Enforce maximum settlement retries at job level — CRITICAL
 
 **Files:** `app/Jobs/ProcessSettlementJob.php`, `tests/Unit/Queue/ProcessSettlementJobTest.php`
 
 Added a pre-check in `ProcessSettlementJob::process()` that compares the settlement's `retry_count` against `RetryPolicy::maxRetries()` before attempting processing. This is a safety net alongside `RetrySettlementJob`'s own max-retry check, preventing any path from exceeding the policy limit. Verified with a dedicated test `job_does_not_process_when_max_retries_exceeded`.
 
-### P1-1: Fix two-lock pattern in `releaseMaturedReserves` — MEDIUM ✅
+### P1-1: Fix two-lock pattern in `releaseMaturedReserves` — MEDIUM
 
 **Files:** `app/Services/WalletService.php`
 
 Moved the Cache lock acquisition (`Cache::lock('wallet_release_...')`) inside the `try` block so that if the DB transaction blocks on `lockForUpdate()`, the Cache lock is not held unnecessarily during the block wait. The Cache lock still prevents concurrent batch execution; the DB row lock still provides atomicity for the actual balance update.
 
-### P1-2: Add actual concurrent wallet/settlement tests — MEDIUM ✅
+### P1-2: Add actual concurrent wallet/settlement tests — MEDIUM
 
 **Files:** `tests/Feature/ConcurrencySafetyTest.php`
 
@@ -197,11 +197,11 @@ Added 4 tests covering:
 - Insufficient balance protection (second debit fails after balance exhausted)
 - Settlement request idempotency (second request for same donations is rejected)
 
-### P2-1: Review real Razorpay timeout — LOW (no change needed) ✅
+### P2-1: Review real Razorpay timeout — LOW (no change needed)
 
 The `RazorpayGateway` is a mock/simulation — no real HTTP client is used. The 120s job timeout is appropriate and documented. No real timeout adjustment needed.
 
-### P2-2: Remove `unsafe-eval` from CSP — LOW ✅
+### P2-2: Remove `unsafe-eval` from CSP — LOW
 
 **Files:** `app/Http/Middleware/SecureHeadersMiddleware.php`
 

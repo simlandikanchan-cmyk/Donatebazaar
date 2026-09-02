@@ -95,14 +95,16 @@ import { escapeHtml } from '../shared/helpers.js';
   }
 
   function updateNotifBadge(count) {
-    if (!notifBadge) return;
-    count = parseInt(count, 10) || 0;
-    if (count > 0) {
-      notifBadge.textContent = count > 9 ? '9+' : count;
-      notifBadge.hidden = false;
-    } else {
-      notifBadge.hidden = true;
+    if (notifBadge) {
+      count = parseInt(count, 10) || 0;
+      if (count > 0) {
+        notifBadge.textContent = count > 9 ? '9+' : count;
+        notifBadge.hidden = false;
+      } else {
+        notifBadge.hidden = true;
+      }
     }
+    syncMabBadge(count);
   }
 
   function renderNotifs(items) {
@@ -213,6 +215,33 @@ import { escapeHtml } from '../shared/helpers.js';
     btn.style.setProperty('--mx', x + '%');
     btn.style.setProperty('--my', y + '%');
   });
+
+  /* ── Mobile action bar wiring (mirrors topbar controls) ── */
+  const mabNotif = document.getElementById('mabNotif');
+  if (mabNotif && notifBell && notifPanel) {
+    mabNotif.addEventListener('click', function (e) {
+      e.stopPropagation();
+      notifPanel.hidden = !notifPanel.hidden;
+      notifBell.setAttribute('aria-expanded', String(!notifPanel.hidden));
+      if (!notifPanel.hidden) loadNotifs();
+    });
+  }
+
+  const mabTheme = document.getElementById('mabTheme');
+  if (mabTheme && toggle) {
+    mabTheme.addEventListener('click', function () {
+      toggle.checked = !toggle.checked;
+      toggle.dispatchEvent(new Event('change'));
+    });
+  }
+
+  /* Keep the mobile alert badge in sync with the topbar count. */
+  function syncMabBadge(count) {
+    var dot = mabNotif ? mabNotif.querySelector('.mab-badge') : null;
+    if (!dot) return;
+    count = parseInt(count, 10) || 0;
+    dot.style.display = count > 0 ? 'block' : 'none';
+  }
 
   /* ── Form submit loading (data-loading-text) ── */
   document.addEventListener('submit', function (e) {
