@@ -117,6 +117,10 @@ class PublicBlogController extends Controller
                 'comments.replies.author:id,name,avatar',
                 'reviewer:id,name',
             ])
+            ->withCount([
+                'likes',
+                'allComments as comments_count',
+            ])
             ->where('slug', $slug)
             ->firstOrFail();
 
@@ -256,7 +260,7 @@ class PublicBlogController extends Controller
         );
 
         $user = Auth::user();
-        $liked = $user ? $blog->likes()->toggle($user->id)->attached() : false;
+        $liked = $user ? $blog->toggleLike($user->id) : false;
 
         if (request()->wantsJson()) {
 

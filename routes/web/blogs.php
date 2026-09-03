@@ -9,7 +9,7 @@ Route::prefix('blog')->name('blogs.')->group(function () {
     Route::get('/category/{slug}', [PublicBlogController::class, 'byCategory'])->name('category');
     Route::get('/tag/{slug}', [PublicBlogController::class, 'byTag'])->name('tag');
 
-    Route::middleware(['auth', 'verified'])->group(function () {
+    Route::middleware('auth')->group(function () {
         Route::post('/{blog}/like', [PublicBlogController::class, 'toggleLike'])->name('like');
         Route::post('/{blog}/comment', [PublicBlogController::class, 'comment'])->name('comment');
         Route::post('/{blog}/report', [PublicBlogController::class, 'report'])->name('report');

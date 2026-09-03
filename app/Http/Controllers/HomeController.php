@@ -50,6 +50,7 @@ class HomeController extends Controller
 
         $latestBlogs = Cache::remember('homepage.latest_blogs', 300, function () {
             return Blog::with(['author', 'category'])
+                ->withCount(['likes', 'allComments as comments_count'])
                 ->where('status', 'published')
                 ->latest('published_at')
                 ->take(6)
