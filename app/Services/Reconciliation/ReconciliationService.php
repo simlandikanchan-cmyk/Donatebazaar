@@ -181,7 +181,10 @@ class ReconciliationService
             \App\Models\Donation::whereIn('id', $donationIds)->update([
                 'settlement_status' => 'settled',
                 'campaign_settlement_id' => $locked->id,
+                'payout_amount' => $locked->net_amount,
             ]);
+
+            app(\App\Services\Financial\FinancialLedgerService::class)->recordPayout($locked);
 
             return true;
         });

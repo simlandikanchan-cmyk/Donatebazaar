@@ -29,6 +29,16 @@
     --db-accent-grad:   linear-gradient(135deg, var(--db-accent-from), var(--db-accent-to));
 }
 
+/* Dark theme: keep header text in sync with the footer's muted colour.
+   (navbar.css has no dark override of its own, so mirror footer.css) */
+html[data-theme="dark"] {
+    --db-text-primary:  color-mix(in srgb, var(--white) 92%, transparent);
+    --db-text-muted:    color-mix(in srgb, var(--white) 48%, transparent);
+    --db-text-subtle:   color-mix(in srgb, var(--white) 28%, transparent);
+    --db-surface:       rgba(13, 14, 26, 0.88);
+    --db-surface-solid: #0d0e1a;
+}
+
 /* ─── Navbar shell ───────────────────────────────────────────────── */
 .db-navbar {
     position: sticky;
@@ -44,7 +54,7 @@
 }
 
 .db-navbar.is-scrolled {
-    background: rgba(255, 255, 255, 0.96);
+    background: var(--db-surface);
     box-shadow: var(--db-shadow-md);
 }
 

@@ -69,6 +69,17 @@ class PaymentVerificationService
                 ->where('order_id', $request->razorpay_order_id)
                 ->firstOrFail();
 
+            if ($donation->user_id !== Auth::id()) {
+                Log::channel('payments')->warning('Payment verification rejected — ownership mismatch', [
+                    'donation_id' => $donation->id,
+                    'donation_user_id' => $donation->user_id,
+                    'authenticated_user_id' => Auth::id(),
+                    'ip' => $request->ip(),
+                ]);
+
+                abort(403, 'You are not authorized to verify this donation.');
+            }
+
             if ($donation->payment_status === 'completed') {
                 return response()->json([
                     'success' => true,

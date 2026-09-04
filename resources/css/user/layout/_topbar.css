@@ -128,10 +128,15 @@
   display: none; width: 34px; height: 34px; border-radius: var(--r-sm);
   border: 1px solid var(--border2); background: var(--surface2); cursor: pointer;
   color: var(--text2); align-items: center; justify-content: center; flex-shrink: 0;
-  transition: all var(--ease);
+  transition: all var(--ease); position: relative;
 }
 .hamburger:hover { background: var(--accent-lt); color: var(--primary); border-color: var(--primary); }
 .hamburger svg { width: 15px; height: 15px; }
+/* Extend the tap area of compact icon buttons to meet the 44px minimum
+   touch-target size without enlarging their visible footprint. */
+.hamburger::before, .tb-btn::before {
+  content: ""; position: absolute; inset: -8px; border-radius: inherit; z-index: 1;
+}
 
 @keyframes notifPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
 @keyframes ddIn { from { opacity:0; transform:translateY(-6px) scale(.97); } to { opacity:1; transform:none; } }

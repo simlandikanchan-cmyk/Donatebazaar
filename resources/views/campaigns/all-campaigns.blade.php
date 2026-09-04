@@ -431,7 +431,7 @@
         $percentage  = $goal > 0 ? round(($raised / $goal) * 100) : 0;
         $donors      = $campaign->donations_count ?? 0;
         $daysLeft    = isset($campaign->end_date)
-            ? max(0, now()->diffInDays($campaign->end_date, false))
+            ? max(0, (int) floor(now()->diffInDays($campaign->end_date, false)))
             : null;
 
         $isSpotlight = $index === 0 && !request('search') && !request('category');

@@ -517,14 +517,17 @@ if (document.readyState === 'loading') {
         if (w < 900) return 2;
         return 3;
     }
-    function maxIndex() { return Math.max(0, total - perView()); }
- 
+    function pageCount() {
+        var pv = perView();
+        return Math.max(1, Math.ceil(total / pv));
+    }
+
     function buildDots() {
         dotsWrap.innerHTML = '';
-        for (var i = 0; i <= maxIndex(); i++) {
+        for (var i = 0; i < pageCount(); i++) {
             var d = document.createElement('button');
             d.className = 'hbs-dot' + (i === current ? ' active' : '');
-            d.setAttribute('aria-label', 'Slide ' + (i + 1));
+            d.setAttribute('aria-label', 'Page ' + (i + 1));
             d.dataset.i = i;
             d.addEventListener('click', function () { goTo(+this.dataset.i); resetAuto(); });
             dotsWrap.appendChild(d);
@@ -535,25 +538,27 @@ if (document.readyState === 'loading') {
             d.classList.toggle('active', i === current);
         });
     }
-    function goTo(idx) {
-        current = Math.max(0, Math.min(idx, maxIndex()));
-        track.style.transform = 'translateX(-' + current * (cards[0].offsetWidth + 20) + 'px)';
+    function goTo(page) {
+        var pv = perView();
+        current = Math.max(0, Math.min(page, pageCount() - 1));
+        var offset = Math.min(current * pv, total - pv) * (cards[0].offsetWidth + 20);
+        track.style.transform = 'translateX(-' + offset + 'px)';
         prevBtn.disabled = current === 0;
-        nextBtn.disabled = current >= maxIndex();
+        nextBtn.disabled = current >= pageCount() - 1;
         updateDots();
     }
  
     prevBtn.addEventListener('click', function () { goTo(current - 1); resetAuto(); });
     nextBtn.addEventListener('click', function () { goTo(current + 1); resetAuto(); });
- 
+
     var startX = 0;
     track.addEventListener('touchstart', function (e) { startX = e.touches[0].clientX; }, { passive: true });
     track.addEventListener('touchend',   function (e) {
         var diff = startX - e.changedTouches[0].clientX;
         if (Math.abs(diff) > 40) { goTo(current + (diff > 0 ? 1 : -1)); resetAuto(); }
     }, { passive: true });
- 
-    function startAuto() { autoTimer = setInterval(function () { goTo(current >= maxIndex() ? 0 : current + 1); }, 5000); }
+
+    function startAuto() { autoTimer = setInterval(function () { goTo(current >= pageCount() - 1 ? 0 : current + 1); }, 5000); }
     function resetAuto() { clearInterval(autoTimer); startAuto(); }
  
     function init() { current = 0; buildDots(); goTo(0); }
@@ -564,7 +569,7 @@ if (document.readyState === 'loading') {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(function () {
             buildDots();
-            goTo(Math.min(current, maxIndex()));
+            goTo(Math.min(current, pageCount() - 1));
         }, 150);
     }, { passive: true });
  

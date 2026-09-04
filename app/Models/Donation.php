@@ -24,6 +24,10 @@ class Donation extends Model
         'original_amount',
         'discount_amount',
         'platform_fee',
+        'gateway_fee',
+        'gateway_tax',
+        'gateway_fee_bearer',
+        'fee_capture_status',
         'net_amount',
         'order_id',
         'payment_gateway',
@@ -34,6 +38,8 @@ class Donation extends Model
         'is_anonymous',
         'message',
         'refund_idempotency_key',
+        'refunded_amount',
+        'payout_amount',
     ];
 
     protected $guarded = [
@@ -49,9 +55,13 @@ class Donation extends Model
     protected $casts = [
         'total_amount' => 'decimal:2',
         'platform_fee' => 'decimal:2',
+        'gateway_fee' => 'decimal:2',
+        'gateway_tax' => 'decimal:2',
         'net_amount' => 'decimal:2',
         'original_amount' => 'decimal:2',
         'discount_amount' => 'decimal:2',
+        'refunded_amount' => 'decimal:2',
+        'payout_amount' => 'decimal:2',
         'paid_at' => 'datetime',
         'refunded_at' => 'datetime',
         'released_at' => 'datetime',
@@ -99,5 +109,10 @@ class Donation extends Model
     public function items()
     {
         return $this->hasMany(DonationItem::class);
+    }
+
+    public function ledger()
+    {
+        return $this->morphMany(FinancialLedger::class, 'reference');
     }
 }

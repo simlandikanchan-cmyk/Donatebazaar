@@ -53,7 +53,7 @@ class HomeController extends Controller
                 ->withCount(['likes', 'allComments as comments_count'])
                 ->where('status', 'published')
                 ->latest('published_at')
-                ->take(6)
+                ->take(9)
                 ->get();
         });
 

@@ -47,6 +47,30 @@ return [
         'min_amount' => env('DONATION_MIN_AMOUNT', 1),
         'max_amount' => env('DONATION_MAX_AMOUNT', 500000),
         'currency' => env('DONATION_CURRENCY', 'INR'),
+        /*
+         * Who bears the Razorpay processing (gateway) fee?
+         *
+         * ONLY the following value is currently supported:
+         *
+         * 'platform'       -> the platform absorbs the gateway fee. Campaign owner
+         *                     always receives net_amount = total_amount - platform_fee.
+         *                     Actual retained revenue = platform_fee - gateway_fee - gateway_tax.
+         *
+         * The value 'campaign_owner' is NOT implemented: the wallet credit and
+         * payout code would not subtract the gateway fee, so selecting it would
+         * silently change accounting expectations without changing the actual
+         * money calculation. The FinancialLedgerService::bearer() method rejects
+         * any unsupported value loudly rather than pretending to work.
+         */
+        'gateway_fee_bearer' => env('GATEWAY_FEE_BEARER', 'platform'),
+        /*
+         * If the actual gateway fee cannot be fetched from the payment record,
+         * the system records the fee capture as unavailable and does NOT invent
+         * an estimated value. Set this to true only if you have a verified
+         * provider contract with a fixed processing rate.
+         */
+        'allow_estimated_gateway_fee' => env('ALLOW_ESTIMATED_GATEWAY_FEE', false),
+        'estimated_gateway_fee_percent' => env('ESTIMATED_GATEWAY_FEE_PERCENT', 0.0),
     ],
 
     'google' => [

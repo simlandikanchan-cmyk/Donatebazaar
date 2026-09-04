@@ -7,6 +7,7 @@ use App\Mail\DonationRefundMail;
 use App\Models\Donation;
 use App\Models\Refund;
 use App\Models\User;
+use App\Services\Financial\FinancialLedgerService;
 use App\Services\WalletService;
 use App\Models\WalletTransaction;
 use App\Support\Money;
@@ -22,7 +23,8 @@ class RefundService
 
     public function __construct(
         private RazorpayGateway $gateway,
-        private WalletService $walletService
+        private WalletService $walletService,
+        private FinancialLedgerService $ledger
     ) {}
 
     public function processAdminRefund(Donation $donation, User $admin, string $reason): Refund
@@ -35,6 +37,11 @@ class RefundService
 
         try {
             $donation->refresh();
+
+            // Before initiating a refund, enforce the settlement-state safety
+            // guard. Donations that have already been paid out (or are actively
+            // being paid out) must NOT be refunded through the normal flow.
+            $this->assertRefundAllowed($donation);
 
             // A prior attempt reached the gateway but failed to reverse the
             // owner wallet (insufficient balance etc.). Retry must NOT call the
@@ -210,6 +217,8 @@ class RefundService
     private function attemptWalletReversal(Donation $donation, Refund $refund, string $idempotencyKey): void
     {
         DB::transaction(function () use ($donation, $refund, $idempotencyKey) {
+            $this->assertRefundAmountSupported($donation, $refund);
+
             $netAmount = Money::of($donation->net_amount);
 
             if ($netAmount->isPositive()) {
@@ -227,11 +236,122 @@ class RefundService
                 }
             }
 
+            $platformFeeReversed = $this->reversePlatformEarnings($donation, $refund);
+
+            $donation->refunded_amount = Money::of($donation->refunded_amount ?? 0)
+                ->add($refund->amount)
+                ->toString();
+            $donation->save();
+
             $refund->status = Refund::STATUS_PROCESSED;
             $refund->processed_at = now();
             $refund->notes = null;
             $refund->save();
+
+            $this->ledger->recordRefund($refund, $donation, $platformFeeReversed);
         });
+    }
+
+    /**
+     * A refund must match the full donation amount. Partial refunds are not
+     * currently supported — reject any refund amount that differs from the
+     * original donation so a stray/accidental partial value cannot slip through.
+     */
+    private function assertRefundAmountSupported(Donation $donation, Refund $refund): void
+    {
+        $donationTotal = Money::of($donation->total_amount);
+        $refundAmount = Money::of($refund->amount);
+
+        if (! $refundAmount->isEqualTo($donationTotal)) {
+            throw new \InvalidArgumentException(
+                'PARTIAL REFUNDS ARE NOT CURRENTLY SUPPORTED. Refund amount must equal the full donation amount ('
+                .$donationTotal.') but got '.$refundAmount.'.'
+            );
+        }
+    }
+
+    /**
+     * Determine whether a donation may be refunded based on its settlement
+     * state. Prevents the normal refund flow from reversing money that has
+     * already been (or is being) paid out to the campaign owner.
+     *
+     * Settlement states:
+     *   A. Not in a settlement              -> refund allowed.
+     *   B. Request/approved/retry_pending   -> refund allowed (locally reversible
+     *                                           under the current wallet state).
+     *   C. Processing (payout in flight)    -> refund BLOCKED.
+     *   D. Paid                             -> refund BLOCKED (needs manual
+     *                                           recovery / gateway reversal).
+     *
+     * Refunds here never auto-reverse a completed payout nor call any
+     * unverified Razorpay reversal API. A paid-out donation requires a manual
+     * recovery workflow.
+     */
+    private function assertRefundAllowed(Donation $donation): void
+    {
+        $settlement = \App\Models\SettlementItem::where('donation_id', $donation->id)
+            ->whereHas('settlement', function ($q) {
+                $q->whereIn('status', ['paid', 'processing', 'approved', 'auto_approved', 'manual_review', 'pending_approval', 'retry_pending']);
+            })
+            ->with('settlement')
+            ->get()
+            ->pluck('settlement')
+            ->first();
+
+        if (! $settlement) {
+            return;
+        }
+
+        if ($settlement->isProcessing()) {
+            throw new \App\Exceptions\RefundNotAllowedException(
+                'Refund is blocked because the settlement payout for this donation is currently processing.'
+            );
+        }
+
+        if ($settlement->isPaid()) {
+            throw new \App\Exceptions\RefundNotAllowedException(
+                'Donation has already been paid out and requires a manual recovery or reversal process.'
+            );
+        }
+
+        // States B (requested/approved/retry_pending) are locally reversible and
+        // are allowed — the existing reversal logic debits the owner wallet and
+        // reverses platform earnings within the same transaction.
+    }
+
+    /**
+     * Reverse the platform fee that was booked to campaign platform_earnings at
+     * donation time. Clamped to the currently booked amount so a refund can
+     * never drive platform_earnings below zero.
+     *
+     * @return Money the actual amount reversed (may be less than the donation's
+     *               platform fee if the booked earnings were already reduced).
+     */
+    private function reversePlatformEarnings(Donation $donation, Refund $refund): Money
+    {
+        $campaign = \App\Models\Campaign::lockForUpdate()->find($donation->campaign_id);
+
+        if (! $campaign) {
+            return Money::zero();
+        }
+
+        $feeToReverse = Money::of($donation->platform_fee);
+
+        if (! $feeToReverse->isPositive()) {
+            return Money::zero();
+        }
+
+        $booked = Money::of($campaign->platform_earnings ?? 0);
+
+        if (! $booked->isPositive()) {
+            return Money::zero();
+        }
+
+        $reversed = $booked->isLessThan($feeToReverse) ? $booked : $feeToReverse;
+
+        $campaign->decrement('platform_earnings', $reversed->toFloat());
+
+        return $reversed;
     }
 
     /**
@@ -286,6 +406,38 @@ class RefundService
                     ->first();
 
                 if (! $donation) {
+                    return;
+                }
+
+                // Never create a local refund for a donation that has already
+                // been paid out (or is actively being paid out) — reversing the
+                // owner wallet would corrupt balances. Such refunds require a
+                // manual recovery workflow. Blocked webhook refunds are logged
+                // and skipped (no local mutation, no gateway retry storm).
+                try {
+                    $this->assertRefundAllowed($donation);
+                } catch (\App\Exceptions\RefundNotAllowedException $e) {
+                    Log::channel('payments')->warning('Webhook refund skipped (settlement state blocks local reversal)', [
+                        'donation_id' => $donation->id,
+                        'payment_id' => $paymentId,
+                        'refund_id' => $refundId,
+                        'reason' => $e->getMessage(),
+                    ]);
+
+                    return;
+                }
+
+                // Reject any partial refund amount before mutating anything.
+                // Only full (100%) refunds are supported.
+                if (! Money::of($amount)->isEqualTo(Money::of($donation->total_amount))) {
+                    Log::channel('payments')->warning('Webhook refund rejected: PARTIAL REFUNDS ARE NOT CURRENTLY SUPPORTED', [
+                        'donation_id' => $donation->id,
+                        'payment_id' => $paymentId,
+                        'refund_id' => $refundId,
+                        'refund_amount' => $amount,
+                        'donation_total' => $donation->total_amount,
+                    ]);
+
                     return;
                 }
 

@@ -270,6 +270,32 @@ class RazorpayGateway
         return $this->getApi()->payment->fetch($paymentId);
     }
 
+    /**
+     * Return the actual gateway processing fee and tax for a payment, if the
+     * provider exposes them.
+     *
+     * Razorpay payment entities expose `fee` and `tax` (in paise) for captured
+     * payments. When the fields are absent (e.g. fee not yet known), this
+     * returns nulls so the caller can record the fee capture as 'unavailable'
+     * rather than inventing an estimate.
+     *
+     * @return array{fee: float|null, tax: float|null}
+     */
+    public function fetchPaymentFees(string $paymentId): array
+    {
+        $payment = $this->fetchPayment($paymentId);
+
+        $fee = isset($payment['fee']) && $payment['fee'] !== null
+            ? (float) ((int) $payment['fee'] / 100)
+            : null;
+
+        $tax = isset($payment['tax']) && $payment['tax'] !== null
+            ? (float) ((int) $payment['tax'] / 100)
+            : null;
+
+        return ['fee' => $fee, 'tax' => $tax];
+    }
+
     public function verifyPaymentDetails(string $paymentId, string $orderId, float $expectedAmount, string $currency): void
     {
         $payment = $this->fetchPayment($paymentId);

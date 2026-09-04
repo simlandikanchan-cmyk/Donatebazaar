@@ -4,6 +4,7 @@ namespace App\Services\Payment;
 
 use App\Mail\CampaignGoalReachedMail;
 use App\Mail\DonationReceiptMail;
+use App\Gateways\RazorpayGateway;
 use App\Models\Campaign;
 use App\Models\CampaignProduct;
 use App\Models\Coupon;
@@ -11,6 +12,7 @@ use App\Models\CouponRedemption;
 use App\Models\Donation;
 use App\Models\DonationItem;
 use App\Models\ProductReservation;
+use App\Services\Financial\FinancialLedgerService;
 use App\Services\ProductReservationService;
 use App\Services\WalletService;
 use App\Models\WalletTransaction;
@@ -22,7 +24,9 @@ class DonationCompletionService
 {
     public function __construct(
         private ProductReservationService $productReservationService,
-        private WalletService $walletService
+        private WalletService $walletService,
+        private RazorpayGateway $gateway,
+        private FinancialLedgerService $ledger
     ) {}
 
     public function complete(Donation $donation, ?string $paymentId = null, ?string $signature = null): array
@@ -82,6 +86,8 @@ class DonationCompletionService
         });
 
         if ($donationToMail) {
+            $this->captureGatewayFees($donationToMail);
+            $this->ledger->recordDonationCaptured($donationToMail);
             $this->sendReceiptEmail($donationToMail);
             $this->checkGoalReached($donationToMail);
         }
@@ -90,6 +96,56 @@ class DonationCompletionService
             'donation' => $donationToMail,
             'owner' => $ownerForNotif,
         ];
+    }
+
+    /**
+     * Fetch and persist the actual provider processing fee for the payment,
+     * once the real value is available. Runs after the completion transaction
+     * commits so an external lookup never holds DB locks.
+     *
+     * Fee capture is best-effort: a lookup failure is logged and the fee is
+     * marked 'unavailable' rather than inventing an estimate.
+     */
+    private function captureGatewayFees(Donation $donation): void
+    {
+        $paymentId = $donation->payment_id;
+
+        if (empty($paymentId)) {
+            return;
+        }
+
+        if ($donation->gateway_fee !== null) {
+            return;
+        }
+
+        try {
+            $fees = $this->gateway->fetchPaymentFees($paymentId);
+
+            if (! is_array($fees)) {
+                $fees = ['fee' => null, 'tax' => null];
+            }
+
+            $hasFee = isset($fees['fee']) && $fees['fee'] !== null;
+
+            $donation->gateway_fee = $fees['fee'] ?? null;
+            $donation->gateway_tax = $fees['tax'] ?? null;
+            $donation->gateway_fee_bearer = $this->ledger->bearer();
+            $donation->fee_capture_status = $hasFee ? 'captured' : 'unavailable';
+            $donation->save();
+
+            if ($hasFee) {
+                $this->ledger->recordGatewayFee($donation->fresh());
+            }
+        } catch (\Throwable $e) {
+            Log::channel('payments')->warning('Gateway fee capture failed for donation', [
+                'donation_id' => $donation->id,
+                'payment_id' => $paymentId,
+                'error' => $e->getMessage(),
+            ]);
+
+            $donation->fee_capture_status = 'unavailable';
+            $donation->save();
+        }
     }
 
     private function checkGoalReached(Donation $donation): void

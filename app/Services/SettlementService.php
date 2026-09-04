@@ -27,6 +27,7 @@ use App\Models\User;
 use App\Models\Wallet;
 use App\Models\WalletTransaction;
 use App\Services\Risk\RiskEngine;
+use App\Services\Financial\FinancialLedgerService;
 use App\Services\Settlement\SettlementStateMachine;
 use App\Support\Money;
 use Illuminate\Support\Facades\DB;
@@ -37,7 +38,8 @@ class SettlementService
         private readonly WalletService $walletService,
         private readonly SettlementStateMachine $stateMachine,
         private readonly RiskEngine $riskEngine,
-        private readonly RazorpayGateway $gateway
+        private readonly RazorpayGateway $gateway,
+        private readonly ?FinancialLedgerService $ledger = null
     ) {}
 
     /**
@@ -315,6 +317,8 @@ class SettlementService
             throw new \InvalidArgumentException('Only approved, auto_approved, retry_pending or processing settlements can be processed.');
         }
 
+        $this->validatePayoutSafety($settlement);
+
         $org = $settlement->organization;
         if (! $org) {
             throw new \InvalidArgumentException('Settlement has no organization.');
@@ -430,7 +434,10 @@ class SettlementService
                     Donation::whereIn('id', $donationIds)->update([
                         'settlement_status' => 'settled',
                         'campaign_settlement_id' => $locked->id,
+                        'payout_amount' => $locked->net_amount,
                     ]);
+
+                    $this->ledger()?->recordPayout($locked->fresh());
 
                     event(new SettlementPaid($locked, $result['gateway_reference']));
 
@@ -610,5 +617,50 @@ class SettlementService
         }
 
         return $owner;
+    }
+
+    private function ledger(): ?FinancialLedgerService
+    {
+        return $this->ledger ?? app(FinancialLedgerService::class);
+    }
+
+    /**
+     * Pre-payout safety validation. Read-only: it never mutates data, it only
+     * prevents a payout that would be financially inconsistent.
+     *
+     * Verifies:
+     *  - the settlement net_amount matches the sum of its item amounts
+     *  - none of the settled donations have been refunded since approval
+     *  - the settlement amount is positive
+     */
+    private function validatePayoutSafety(CampaignSettlement $settlement): void
+    {
+        $amount = Money::of($settlement->net_amount);
+
+        if (! $amount->isPositive()) {
+            throw new \InvalidArgumentException('Settlement net amount must be positive for payout.');
+        }
+
+        $items = $settlement->settlementItems()->get();
+
+        if ($items->isNotEmpty()) {
+            $itemSum = Money::sum($items->pluck('amount'));
+
+            if (! $itemSum->isEqualTo($amount)) {
+                throw new \InvalidArgumentException(
+                    'Payout safety check failed: settlement net_amount does not match its items.'
+                );
+            }
+        }
+
+        $refunded = Donation::whereIn('id', $items->pluck('donation_id'))
+            ->where('is_refunded', true)
+            ->exists();
+
+        if ($refunded) {
+            throw new \InvalidArgumentException(
+                'Payout safety check failed: one or more donations in this settlement have been refunded.'
+            );
+        }
     }
 }

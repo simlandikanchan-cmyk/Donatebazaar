@@ -8,15 +8,15 @@
 .b-pending  { background: color-mix(in srgb, var(--warning)  85%, transparent);  color: var(--white); }
 .b-rejected { background: color-mix(in srgb, var(--danger)  85%, transparent);   color: var(--white); }
 .b-paused   { background: color-mix(in srgb, var(--primary)  85%, transparent);  color: var(--white); }
-.b-expired  { background: color-mix(in srgb, var(--gray-500)  75%, transparent); color: var(--white); }
-.b-inactive { background: color-mix(in srgb, var(--primary-light)  75%, transparent);  color: var(--white); }
-.b-default  { background: color-mix(in srgb, var(--gray-500)  70%, transparent); color: var(--white); }
+.b-expired  { background: var(--gray-600); color: var(--white); }
+.b-inactive { background: var(--primary);   color: var(--white); }
+.b-default  { background: var(--gray-600); color: var(--white); }
 
 /* ── Dark mode badges ─────────────────────────────────────────────── */
+/* Neutral/inactive badges use opaque fills so white text keeps its
+   contrast on both light and dark surfaces; only the saturated badges
+   need a dark-mode tint adjustment. */
 [data-theme="dark"] .b-active   { background: color-mix(in srgb, var(--green)  70%, transparent); }
 [data-theme="dark"] .b-pending  { background: color-mix(in srgb, var(--warning)  70%, transparent); }
 [data-theme="dark"] .b-rejected { background: color-mix(in srgb, var(--danger)  70%, transparent); }
 [data-theme="dark"] .b-paused   { background: color-mix(in srgb, var(--primary)  70%, transparent); }
-[data-theme="dark"] .b-expired  { background: color-mix(in srgb, var(--gray-500)  60%, transparent); }
-[data-theme="dark"] .b-inactive { background: color-mix(in srgb, var(--primary-light)  60%, transparent); }
-[data-theme="dark"] .b-default  { background: color-mix(in srgb, var(--gray-500)  55%, transparent); }

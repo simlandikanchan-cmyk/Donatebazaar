@@ -7,7 +7,7 @@
 .wallet-pa-item { flex: 1; min-width: 200px; padding: 12px 16px; background: var(--surface2); border-radius: 10px; border: 1px solid var(--border); }
 .wallet-pa-top { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
 .wallet-pa-name { font-size: 12px; font-weight: 600; }
-.wallet-pa-badge { font-size: 10px; padding: 2px 6px; border-radius: 4px; background: var(--yellow-lt); color: var(--warning); font-weight: 600; }
+.wallet-pa-badge { font-size: 10px; padding: 2px 6px; border-radius: 4px; background: var(--yellow-lt); color: var(--warning-deep); font-weight: 600; }
 .wallet-pa-badge.verified { background: var(--green-lt); color: var(--green); }
 .wallet-pa-detail { font-size: 12px; color: var(--text3); }
 .wallet-pa-form { display: flex; flex-wrap: wrap; gap: 10px; }

@@ -134,6 +134,8 @@ class ReceiptIntegrationTest extends TestCase
 
         $service = new PaymentVerificationService($mockGateway, app(\App\Services\Payment\DonationCompletionService::class));
 
+        $this->actingAs($this->donor);
+
         $request = request()->merge([
             'razorpay_order_id' => 'order_duplicate_test',
             'razorpay_payment_id' => 'pay_duplicate_test',

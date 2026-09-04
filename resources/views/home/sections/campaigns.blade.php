@@ -55,7 +55,7 @@
 
                     // Urgency: days remaining until the campaign closes.
                     $endDate  = $campaign->end_date;
-                    $daysLeft = $endDate ? now()->diffInDays($endDate, false) : null;
+                    $daysLeft = $endDate ? (int) floor(now()->diffInDays($endDate, false)) : null;
                     $endingSoon = $daysLeft !== null && $daysLeft >= 0 && $daysLeft <= 7;
 
                     $ownerAvatar = $campaign->user?->avatar

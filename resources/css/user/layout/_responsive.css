@@ -43,7 +43,7 @@
   /* Mobile-friendly notification sheet anchored below the topbar. */
   .notif-wrap { position: static; }
   .notif-panel {
-    position: fixed; top: 60px; left: 12px; right: 12px;
+    position: fixed; top: 56px; left: 12px; right: 12px;
     width: auto; max-width: 100%;
     box-shadow: 0 20px 60px color-mix(in srgb, var(--black) 30%, transparent);
   }
